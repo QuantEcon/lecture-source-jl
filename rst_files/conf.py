@@ -62,7 +62,7 @@ source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
-master_pdf_doc = 'jl/index'
+master_pdf_doc = 'index'
 
 # General information about the project.
 project = 'QuantEcon.lectures-julia'
@@ -374,9 +374,9 @@ linkcheck_timeout = 30
 # Conversion Mode Settings
 # If "all", convert codes and texts into notebook
 # If "code", convert codes only
-jupyter_conversion_mode = "code"
+jupyter_conversion_mode = "all"
 
-jupyter_write_metadata = True
+jupyter_write_metadata = False
 
 # Location for _static folder
 jupyter_static_file_path = ["_static"]
