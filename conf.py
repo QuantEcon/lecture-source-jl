@@ -34,13 +34,12 @@ needs_sphinx = '1.5'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-sys.path.insert(0, os.path.abspath("_sphinxext"))  #Add Custom Sphinx Extension
-extensions = [  
+extensions = [
 	'sphinx.ext.mathjax', 
 	'sphinxcontrib.bibtex', 
 	'IPython.sphinxext.ipython_console_highlighting',
     # Custom Sphinx Extensions
-    'jupyter', 
+    'sphinxcontrib.jupyter', 
 ]
 
 # Retired Extensions but may be useful in Future
@@ -394,9 +393,9 @@ jupyter_kernels = {
     },
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 0.6.2",
+            "display_name": "Julia 1.0.0",
             "language": "julia",
-            "name": "julia-0.6"
+            "name": "julia-1.0"
             },
         "file_extension": ".jl"
     }
