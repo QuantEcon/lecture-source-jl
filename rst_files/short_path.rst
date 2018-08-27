@@ -404,6 +404,7 @@ with in the local directory --- then scroll down for the solution.
 
 .. code-block:: julia
 
+    using Printf
     function read_graph(in_file)
         graph = Dict()
         infile = open(in_file, "r")
@@ -414,7 +415,7 @@ with in the local directory --- then scroll down for the solution.
             if node != "node99"
                 for element in elements
                     dest, cost = split(element)
-                    push!(graph[node], [strip(dest), float(cost)])
+                    push!(graph[node], [strip(dest), parse(Float64, cost)])
                 end
             end
             
