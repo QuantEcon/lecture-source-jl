@@ -223,65 +223,66 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
 
   =#
   using Plots
-  pyplot()
   using Distributions
   using LaTeXStrings
+  using Base: OneTo
+  using Random: seed!
+  using Statistics: mean, std
 
   n = 100
-  srand(42)  # reproducible results
+  seed!(42)  # reproducible results
 
-  # == Arbitrary collection of distributions == #
-  distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
-                   "β(2, 2)" => Beta(2.0, 2.0),
-                   "lognormal LN(0, 1/2)" => LogNormal(0.5),
-                   "γ(5, 1/2)" => Gamma(5.0, 2.0),
-                   "poisson(4)" => Poisson(4),
-                   "exponential with lambda = 1" => Exponential(1))
+  function tmp()
+      # == Arbitrary collection of distributions == #
+      distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
+                           "β(2, 2)" => Beta(2.0, 2.0),
+                           "lognormal LN(0, 1/2)" => LogNormal(0.5),
+                           "γ(5, 1/2)" => Gamma(5.0, 2.0),
+                           "poisson(4)" => Poisson(4),
+                           "exponential with lambda = 1" => Exponential(1))
 
-  num_plots = 3
-  dist_data = zeros(num_plots, n)
-  sample_means = []
-  dist_means = []
-  titles = []
-  for i = 1:num_plots
-      dist_names = collect(keys(distributions))
-      # == Choose a randomly selected distribution == #
-      name = dist_names[rand(1:length(dist_names))]
-      dist = pop!(distributions, name)
+      num_plots = 3
+      dist_data = zeros(num_plots, n)
+      sample_means = []
+      dist_means = []
+      titles = []
+      for i ∈ OneTo(num_plots)
+          dist_names = collect(keys(distributions))
+          # == Choose a randomly selected distribution == #
+          name = dist_names[rand(1:length(dist_names))]
+          dist = pop!(distributions, name)
 
-      # == Generate n draws from the distribution == #
-      data = rand(dist, n)
+          # == Generate n draws from the distribution == #
+          data = rand(dist, n)
 
-      # == Compute sample mean at each n == #
-      sample_mean = Array{Float64}(n)
-      for j=1:n
-          sample_mean[j] = mean(data[1:j])
+          # == Compute sample mean at each n == #
+          sample_mean = Vector{Float64}(undef, n)
+          for j ∈ OneTo(n)
+              sample_mean[j] = mean(data[1:j])
+          end
+
+          m = mean(dist)
+
+          dist_data[i, :] = data'
+          push!(sample_means, sample_mean)
+          push!(dist_means, m * ones(n))
+          push!(titles, name)
+
       end
 
-      m = mean(dist)
-
-      dist_data[i, :] = data'
-      push!(sample_means, sample_mean)
-      push!(dist_means, m * ones(n))
-      push!(titles, name)
-
+      # == Plot == #
+      N = repeat(reshape(repeat(1:n, 1, num_plots)', 1, n * num_plots), 2, 1)
+      heights = [zeros(1, n * num_plots); reshape(dist_data, 1, n * num_plots)]
+      plot(N, heights, layout=(3, 1), label="", color=:grey, alpha=0.5)
+      plot!(1:n, dist_data', layout=(3, 1), color=:grey, markershape=:circle,
+            alpha=0.5, label="", linewidth=0)
+      plot!(1:n, sample_means, linewidth=3, alpha=0.6, color=:green, legend=:topleft,
+            layout=(3, 1), label=[LaTeXString("\$\\bar{X}_n\$") "" ""])
+      plot!(1:n, dist_means, color=:black, linewidth=1.5, layout=(3, 1),
+            linestyle=:dash, grid=false, label=[LaTeXString("\$\\mu\$") "" ""])
+      plot!(title=reshape(titles, 1, length(titles)))
   end
-
-  # == Plot == #
-  N = repmat(reshape(repmat(1:n, 1, num_plots)', 1, n * num_plots), 2, 1)
-  heights = [zeros(1, n * num_plots); reshape(dist_data, 1, n * num_plots)]
-  plot(N, heights, layout=(3, 1), label="", color=:grey, alpha=0.5)
-  plot!(1:n, dist_data', layout=(3, 1), color=:grey, markershape=:circle,
-          alpha=0.5, label="", linewidth=0)
-  plot!(1:n, sample_means, linewidth=3, alpha=0.6, color=:green, legend=:topleft,
-        layout=(3, 1), label=[LaTeXString("\$\\bar{X}_n\$") "" ""])
-  plot!(1:n, dist_means, color=:black, linewidth=1.5, layout=(3, 1),
-        linestyle=:dash, grid=false, label=[LaTeXString("\$\\mu\$") "" ""])
-  plot!(title=reshape(titles, 1, length(titles)))
-
-
-
-
+  tmp()
 
 
 The three distributions are chosen at random from a selection stored in the dictionary ``distributions``
@@ -307,14 +308,14 @@ The next figure shows 100 independent draws from this distribution
 
 .. code-block:: julia
 
-  srand(12)  # reproducible results
+  seed!(12)  # reproducible results
   n = 200
   dist = Cauchy()
   data = rand(dist, n)
 
   function plot_draws()
       t = "$n observations from the Cauchy distribution"
-      N = repmat(linspace(1, n, n), 1, 2)'
+      N = repeat(range(1, stop = n, length = n), 1, 2)'
       heights = [zeros(1,n); data']
       plot(1:n, data, color=:blue, markershape=:circle,
            alpha=0.5, title=t, legend=:none, linewidth=0)
@@ -336,8 +337,8 @@ Let's now have a look at the behavior of the sample mean
 
   function plot_means()
       # == Compute sample mean at each n == #
-      sample_mean = Array{Float64}(n)
-      for i=1:n
+      sample_mean = Vector{Float64}(undef, n)
+      for i ∈ OneTo(n)
           sample_mean[i] = mean(data[1:i])
       end
 
@@ -350,10 +351,6 @@ Let's now have a look at the behavior of the sample mean
   end
 
   plot_means()
-
-
-
-
 
 
 Here we've increased :math:`n` to 1000, but the sequence still shows no sign
@@ -391,10 +388,6 @@ In view of :eq:`lln_cch`, this is just :math:`e^{-|t|}`
 Thus, in the case of the Cauchy distribution, the sample mean itself has the very same Cauchy distribution, regardless of :math:`n`
 
 In particular, the sequence :math:`\bar X_n` does not converge to a point
-
-
-
-
 
 
 CLT
@@ -457,29 +450,27 @@ Think of :math:`X_i = 1` as a "success", so that :math:`Y_n = \sum_{i=1}^n X_i` 
 
 The next figure plots the probability mass function of :math:`Y_n` for :math:`n = 1, 2, 4, 8`
 
-
-
 .. code-block:: julia
 
-  srand(42)  # reproducible results
-  ns = [1, 2, 4, 8]
-  dom = 0:9
+  seed!(42)  # reproducible results
+  function tmp()
+      ns = [1, 2, 4, 8]
+      dom = 0:9
 
-  pdfs = []
-  titles = []
-  for n in ns
-      b = Binomial(n, 0.5)
-      push!(pdfs, pdf.(Ref(b), dom))
-      t = LaTeXString("\$n = $n\$")
-      push!(titles, t)
+      pdfs = []
+      titles = []
+      for n ∈ ns
+          b = Binomial(n, 0.5)
+          push!(pdfs, pdf.(Ref(b), dom))
+          t = LaTeXString("\$n = $n\$")
+          push!(titles, t)
+      end
+
+      bar(dom, pdfs, layout=4, alpha=0.6, xlims=(-0.5, 8.5), ylims=(0, 0.55),
+          xticks=dom, yticks=[0.0, 0.2, 0.4], legend=:none,
+          title=reshape(titles, 1, length(titles)))
   end
-
-  bar(dom, pdfs, layout=4, alpha=0.6, xlims=(-0.5, 8.5), ylims=(0, 0.55),
-      xticks=dom, yticks=[0.0, 0.2, 0.4], legend=:none, title=reshape(titles, 1, length(titles)))
-
-
-
-
+  tmp()
 
 
 When :math:`n = 1`, the distribution is flat --- one success or no successes
@@ -508,10 +499,6 @@ If we continue, the bell-shaped curve becomes ever more pronounced
 We are witnessing the `binomial approximation of the normal distribution <https://en.wikipedia.org/wiki/De_Moivre%E2%80%93Laplace_theorem>`_
 
 
-
-
-
-
 Simulation 1
 ----------------
 
@@ -533,49 +520,41 @@ Here's some code that does exactly this for the exponential distribution
 (Please experiment with other choices of :math:`F`, but remember that, to conform with the conditions of the CLT, the distribution must have finite second moment)
 
 
-
 .. code-block:: julia
 
-
-
   # == Set parameters == #
-  srand(42)  # reproducible results
-  n = 250    # Choice of n
-  k = 10000  # Number of draws of Y_n
-  dist = Exponential(1./2.)  # Exponential distribution, lambda = 1/2
-  μ, s = mean(dist), std(dist)
+  seed!(42)  # reproducible results
 
-  # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
-  data = rand(dist, k, n)
+  function tmp()
+      n = 250    # Choice of n
+      k = 10000  # Number of draws of Y_n
+      dist = Exponential(1 ./ 2.)  # Exponential distribution, lambda = 1/2
+      μ, s = mean(dist), std(dist)
 
-  # == Compute mean of each row, producing k draws of \bar X_n == #
-  sample_means = mean(data, 2)
+      # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
+      data = rand(dist, k, n)
 
-  # == Generate observations of Y_n == #
-  Y = sqrt(n) * (sample_means .- μ)
+      # == Compute mean of each row, producing k draws of \bar X_n == #
+      sample_means = mean(data, dims = 2)
 
-  # == Plot == #
-  xmin, xmax = -3 * s, 3 * s
-  histogram(Y, nbins=60, alpha=0.5, xlims=(xmin, xmax),
-            norm=true, label="")
-  xgrid = linspace(xmin, xmax, 200)
-  plot!(xgrid, pdf.(Normal(0.0, s), xgrid), color=:black,
-        linewidth=2, label=LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
-        legendfont=font(12))
+      # == Generate observations of Y_n == #
+      Y = sqrt(n) * (sample_means .- μ)
 
-
-
-
-
-
+      # == Plot == #
+      xmin, xmax = -3 * s, 3 * s
+      histogram(Y, nbins=60, alpha=0.5, xlims=(xmin, xmax),
+                norm=true, label="")
+      xgrid = range(xmin, stop = xmax, length = 200)
+      plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color=:black,
+            linewidth=2, label=LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
+            legendfont=font(12))
+  end
+  tmp()
 
 
 The fit to the normal density is already tight, and can be further improved by increasing ``n``
 
 You can also experiment with other specifications of :math:`F`
-
-
-
 
 
 Simulation 2
@@ -602,8 +581,6 @@ specified as the convex combination of three different beta densities
 In the figure, the closest density is that of :math:`Y_1`, while the furthest is that of
 :math:`Y_5`
 
-
-
 .. code-block:: julia
 
   using KernelDensity
@@ -615,14 +592,14 @@ In the figure, the closest density is that of :math:`Y_1`, while the furthest is
       bdraws = rand(beta_dist, 3, k)
 
       # == Transform rows, so each represents a different distribution == #
-      bdraws[1, :] -= 0.5
-      bdraws[2, :] += 0.6
-      bdraws[3, :] -= 1.1
+      bdraws[1, :] .-= 0.5
+      bdraws[2, :] .+= 0.6
+      bdraws[3, :] .-= 1.1
 
       # == Set X[i] = bdraws[j, i], where j is a random draw from {1, 2, 3} == #
       js = rand(1:3, k)
-      X = Array{Float64}(k)
-      for i=1:k
+      X = Vector{Float64}(undef, k)
+      for i ∈ OneTo(k)
           X[i]=  bdraws[js[i], i]
       end
 
@@ -631,45 +608,48 @@ In the figure, the closest density is that of :math:`Y_1`, while the furthest is
       return (X .- m) ./ sigma
   end
 
-  nmax = 5
-  reps = 100000
-  ns = 1:nmax
+  function tmp()
+      nmax = 5
+      reps = 100000
+      ns = 1:nmax
 
-  # == Form a matrix Z such that each column is reps independent draws of X == #
-  Z = Array{Float64}(reps, nmax)
-  for i=ns
-      Z[:, i] = gen_x_draws(reps)
+      # == Form a matrix Z such that each column is reps independent draws of X == #
+      Z = Matrix{Float64}(undef, reps, nmax)
+      for i ∈ ns
+          Z[:, i] = gen_x_draws(reps)
+      end
+
+      # == Take cumulative sum across columns
+      S = cumsum(Z, dims = 2)
+
+      # == Multiply j-th column by sqrt j == #
+      Y = S .* (1. ./ sqrt.(ns))'
+
+      # == Plot == #
+      a, b = -3, 3
+      gs = 100
+      xs = range(a, stop = b, length = gs)
+
+      x_vec = []
+      y_vec = []
+      z_vec = []
+      colors = []
+      for n ∈ ns
+          kde_est = kde(Y[:, n])
+          _xs, ys = kde_est.x, kde_est.density
+          push!(x_vec, collect(_xs))
+          push!(y_vec, ys)
+          push!(z_vec, collect(n*ones( length(_xs))))
+          push!(colors, RGBA(0, 0, 0, 1-(n-1)/nmax))
+      end
+
+      plot(x_vec, z_vec, y_vec, color = reshape(colors,1,length(colors)),
+           legend=:none)
+      plot!(xlims=(a,b), xticks=[-3; 0; 3], ylims=(1, nmax), yticks=ns,
+            ylabel="n", xlabel = "\$ Y_n \$", zlabel = "\$ p(y_n) \$",
+            zlims=(0, 0.4), zticks=[0.2; 0.4])
   end
-
-  # == Take cumulative sum across columns
-  S = cumsum(Z, 2)
-
-  # == Multiply j-th column by sqrt j == #
-  Y = S .* (1. ./ sqrt.(ns))'
-
-  # == Plot == #
-  a, b = -3, 3
-  gs = 100
-  xs = linspace(a, b, gs)
-
-  x_vec = []
-  y_vec = []
-  z_vec = []
-  colors = []
-  for n=ns
-      kde_est = kde(Y[:, n])
-      _xs, ys = kde_est.x, kde_est.density
-      push!(x_vec, collect(_xs))
-      push!(y_vec, ys)
-      push!(z_vec, collect(n*ones( length(_xs))))
-      push!(colors, RGBA(0, 0, 0, 1-(n-1)/nmax))
-  end
-
-  plot(x_vec, z_vec, y_vec, color = reshape(colors,1,length(colors)), legend=:none)
-  plot!(xlims=(a,b), xticks=[-3; 0; 3], ylims=(1, nmax), yticks=ns, ylabel="n", 
-      xlabel = "\$ Y_n \$", zlabel = "\$ p(y_n) \$" , zlims=(0, 0.4), zticks=[0.2; 0.4])
-
-
+  tmp()
 
 
 As expected, the distribution smooths out into a bell curve as :math:`n`
@@ -680,7 +660,6 @@ We leave you to investigate its contents if you wish to know more
 If you run the file from the ordinary Julia or IJulia shell, the figure should pop up in a
 window that you can rotate with your mouse, giving different views on the
 density sequence
-
 
 
 .. _multivariate_clt:
@@ -963,14 +942,12 @@ where
 
 Hints:
 
-#. ``sqrtm(A)`` computes the square root of ``A``.  You still need to invert it
-#. You should be able to work out :math:`\Sigma` from the proceding information
+#. ``sqrt(A::AbstractMatrix{<:Number})`` computes the square root of ``A``.  You still need to invert it
+#. You should be able to work out :math:`\Sigma` from the proceeding information
 
 
 Solutions
 ==========
-
-
 
 
 Exercise 1
@@ -983,33 +960,36 @@ depending on your configuration
 
 .. code-block:: julia
 
-    # == Set parameters == #
-    srand(42)   # reproducible results
-    n = 250     # Choice of n
-    k = 100000  # Number of draws of Y_n
-    dist = Uniform(0, π/2)
-    μ, s = mean(dist), std(dist)
+  function tmp()
+      # == Set parameters == #
+      seed!(42)   # reproducible results
+      n = 250     # Choice of n
+      k = 100000  # Number of draws of Y_n
+      dist = Uniform(0, π/2)
+      μ, s = mean(dist), std(dist)
 
-    g = sin
-    g′ = cos
+      g = sin
+      g′ = cos
 
-    # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
-    data = rand(dist, k, n)
+      # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
+      data = rand(dist, k, n)
 
-    # == Compute mean of each row, producing k draws of \bar X_n == #
-    sample_means = mean(data, 2)
+      # == Compute mean of each row, producing k draws of \bar X_n == #
+      sample_means = mean(data, dims = 2)
 
-    error_obs = sqrt(n) .* (g.(sample_means) - g.(μ))
+      error_obs = sqrt(n) .* (g.(sample_means) .- g.(μ))
 
-    # == Plot == #
-    asymptotic_sd = g′(μ) .* s
-    xmin = -3 * g′(μ) * s
-    xmax = -xmin
-    histogram(error_obs, nbins=60, alpha=0.5, normed=true, label="")
-    xgrid = linspace(xmin, xmax, 200)
-    plot!(xgrid, pdf.(Normal(0.0, asymptotic_sd), xgrid), color=:black,
-          linewidth=2, label=LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
-          legendfont=font(12), xlims=(xmin, xmax), grid=false)
+      # == Plot == #
+      asymptotic_sd = g′(μ) .* s
+      xmin = -3 * g′(μ) * s
+      xmax = -xmin
+      histogram(error_obs, nbins=60, alpha=0.5, normed=true, label="")
+      xgrid = range(xmin, stop = xmax, length = 200)
+      plot!(xgrid, pdf.(Ref(Normal(0.0, asymptotic_sd)), xgrid), color=:black,
+            linewidth=2, label=LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
+            legendfont=font(12), xlims=(xmin, xmax), grid=false)
+  end
+  tmp()
 
 
 
@@ -1077,51 +1057,44 @@ Our solution is as follows
 
 .. code-block:: julia
 
-    # == Set parameters == #
-    n = 250
-    replications = 50000
-    dw = Uniform(-1, 1)
-    du = Uniform(-2, 2)
-    sw, su = std(dw), std(du)
-    vw, vu = sw^2, su^2
-    Σ = [vw    vw
-         vw vw+vu]
+  function tmp()
+      # == Set parameters == #
+      n = 250
+      replications = 50000
+      dw = Uniform(-1, 1)
+      du = Uniform(-2, 2)
+      sw, su = std(dw), std(du)
+      vw, vu = sw^2, su^2
+      Σ = [vw    vw
+           vw vw+vu]
 
-    # == Compute Σ^{-1/2} == #
-    Q = inv(sqrtm(Σ))
+      # == Compute Σ^{-1/2} == #
+      Q = inv(sqrt(Σ))
 
-    # == Generate observations of the normalized sample mean == #
-    error_obs = Array{Float64}(2, replications)
-    for i=1:replications
-        # == Generate one sequence of bivariate shocks == #
-        X = Array{Float64}(2, n)
-        W = rand(dw, n)
-        U = rand(du, n)
+      # == Generate observations of the normalized sample mean == #
+      error_obs = Matrix{Float64}(undef, 2, replications)
+      for i ∈ OneTo(replications)
+          # == Generate one sequence of bivariate shocks == #
+          X = Matrix{Float64}(undef, 2, n)
+          W = rand(dw, n)
+          U = rand(du, n)
 
-        # == Construct the n observations of the random vector == #
-        X[1, :] = W
-        X[2, :] = W + U
+          # == Construct the n observations of the random vector == #
+          X[1, :] = W
+          X[2, :] = W + U
 
-        # == Construct the i-th observation of Y_n == #
-        error_obs[:, i] = sqrt(n) .* mean(X, 2)
-    end
+          # == Construct the i-th observation of Y_n == #
+          error_obs[:, i] = sqrt(n) .* mean(X, dims = 2)
+      end
 
-    chisq_obs = squeeze(sum((Q * error_obs).^2, 1), 1)
+      chisq_obs = dropdims(sum(abs2, Q * error_obs, dims = 1), dims = 1)
 
-    # == Plot == #
-    xmin, xmax = 0, 8
-    histogram(chisq_obs, nbins=50, normed=true, label="")
-    xgrid = linspace(xmin, xmax, 200)
-    plot!(xgrid, pdf.(Chisq(2), xgrid), color=:black,
-          linewidth=2, label="Chi-squared with 2 degrees of freedom",
-          legendfont=font(12), xlims=(xmin, xmax), grid=false)
-
-
-
-
-
-
-
-
-
-
+      # == Plot == #
+      xmin, xmax = 0, 8
+      histogram(chisq_obs, nbins=50, normed=true, label="")
+      xgrid = range(xmin, stop = xmax, length = 200)
+      plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color=:black,
+            linewidth=2, label="Chi-squared with 2 degrees of freedom",
+            legendfont=font(12), xlims=(xmin, xmax), grid=false)
+  end
+  tmp()
