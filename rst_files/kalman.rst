@@ -102,7 +102,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   using Plots
   pyplot()
   using LaTeXStrings
-
+  using LinearAlgebra
 
   function bivariate_normal(X::Matrix,
                             Y::Matrix,
@@ -128,7 +128,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
            -0.2]''
 
   # == Define the matrices G and R from the equation y = G x + N(0, R) == #
-  G = eye(2)
+  G = I
   R = 0.5 .* Σ
 
   # == The matrices A and Q == #
@@ -140,10 +140,10 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   y = [2.3, -1.9]''
 
   # == Set up grid for plotting == #
-  x_grid = linspace(-1.5, 2.9, 100)
-  y_grid = linspace(-3.1, 1.7, 100)
-  X=repmat(x_grid', length(y_grid), 1)
-  Y=repmat(y_grid, 1, length(y_grid))
+  x_grid = range(-1.5, stop = 2.9, length = 100)
+  y_grid = range(-3.1, stop = 1.7, length = 100)
+  X=repeat(x_grid', length(y_grid))
+  Y=repeat(y_grid, inner = (1, length(y_grid)))
 
   function gen_gaussian_plot_vals(μ, C)
       "Z values for plotting the bivariate Gaussian N(μ, C)"
