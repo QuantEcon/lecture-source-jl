@@ -491,10 +491,7 @@ The following code is example of usage for the stochastic growth model :ref:`des
             Victoria Gregory <victoria.gregory@nyu.edu>
 
   =#
-  using QuantEcon
-  using Distributions
-  using Plots
-  using LaTeXStrings
+  using Distributions, LaTeXStrings, Plots, QuantEcon, Random
 
   s = 0.2
   δ = 0.1
@@ -514,39 +511,41 @@ The following code is example of usage for the stochastic growth model :ref:`des
       # scipy silently evaluates the pdf of the lognormal dist at a negative
       # value as zero. It should be undefined and Julia recognizes this.
       pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-      return pdf.(ϕ, pdf_arg) ./ d
+      return pdf.(Ref(ϕ), pdf_arg) ./ d
   end
 
+  function tmp()
 
-  n = 10000  # Number of observations at each date t
-  T = 30     # Compute density of k_t at 1,...,T+1
+      n = 10000  # Number of observations at each date t
+      T = 30     # Compute density of k_t at 1,...,T+1
 
-  # Generate matrix s.t. t-th column is n observations of k_t
-  k = Array{Float64}(n, T)
-  A = rand!(ϕ, Array{Float64}(n, T))
+      # Generate matrix s.t. t-th column is n observations of k_t
+      k = zeros(n, T)
+      A = rand!(ϕ, zeros(n, T))
 
-  # Draw first column from initial distribution
-  k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale=0.5 in py version
-  for t=1:T-1
-      k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+      # Draw first column from initial distribution
+      k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale=0.5 in py version
+      for t ∈ 1:T-1
+          k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+      end
+
+      # Generate T instances of LAE using this data, one for each date t
+      laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
+
+      # Plot
+      ygrid = range(0.01, stop = 4.0, length = 200)
+      laes_plot = []
+      colors = []
+      for i ∈ 1:T
+          ψ = laes[i]
+          push!(laes_plot, lae_est(ψ , ygrid))
+          push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
+      end
+      plot(ygrid, laes_plot, color=reshape(colors, 1, length(colors)), lw=2, xlabel="capital", legend=:none)
+      t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
+      plot!(title=t)
   end
-
-  # Generate T instances of LAE using this data, one for each date t
-  laes = [LAE(p, k[:, t]) for t=T:-1:1]
-
-  # Plot
-  ygrid = linspace(0.01, 4.0, 200)
-  laes_plot = []
-  colors = []
-  for i = 1:T
-      ψ = laes[i]
-      push!(laes_plot, lae_est(ψ , ygrid))
-      push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
-  end
-  plot(ygrid, laes_plot, color=reshape(colors, 1, length(colors)), lw=2, xlabel="capital", legend=:none)
-  t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
-  plot!(title=t)
-  
+  tmp()
 
 
 The figure shows part of the density sequence :math:`\{\psi_t\}`, with each
@@ -557,7 +556,6 @@ converging --- more on this in just a moment
 
 Another quick comment is that each of these distributions could be interpreted
 as a cross sectional distribution (recall :ref:`this discussion <mc_eg1-1>`)
-
 
 
 Beyond Densities
@@ -635,7 +633,6 @@ Here :math:`F_t` and :math:`F_{t+1}` are cdfs representing the distribution of t
 The intuition behind :eq:`statd_fddc` is essentially the same as for :eq:`statd_fdd`
 
 
-
 Computation
 ------------
 
@@ -645,9 +642,6 @@ Indeed, you should not use any density estimator, since the objects you are
 estimating/computing are not densities
 
 One good option is simulation as before, combined with the `empirical distribution function <https://en.wikipedia.org/wiki/Empirical_distribution_function>`__
-
-
-
 
 
 Stability
@@ -660,7 +654,6 @@ Here we will cover the same topics for the continuous case
 We will, however, treat only the density case (as in :ref:`this section <statd_density_case>`), where the stochastic kernel is a family of densities
 
 The general case is relatively similar --- references are given below
-
 
 
 Theoretical Results
@@ -745,9 +738,6 @@ In addition
   lecture
 
 
-
-
-
 An Example of Stability
 ------------------------
 
@@ -770,10 +760,8 @@ All sequences are converging towards the same limit, regardless of their initial
 The details regarding initial conditions and so on are given in :ref:`this exercise <statd_ex2>`, where you are asked to replicate the figure
 
 
-
 Computing Stationary Densities
 --------------------------------
-
 
 In the preceding figure, each sequence of densities is converging towards the unique stationary density :math:`\psi^*`
 
@@ -821,11 +809,8 @@ for the look ahead estimator is very good
 The first exercise helps illustrate this point
 
 
-
-
 Exercises
 =============
-
 
 .. _statd_ex1:
 
@@ -894,7 +879,6 @@ Begin with the code found in `stochasticgrowth.py <https://github.com/QuantEcon/
 Use the same parameters
 
 
-
 For the four initial distributions, use the beta distribution and shift the random draws as shown below
 
  .. code-block:: none
@@ -906,7 +890,6 @@ For the four initial distributions, use the beta distribution and shift the rand
     for i=1:4
         # .... some code
         rand_draws = (rand(ψ_0, n) .+ 2.5i) ./ 2
-
 
 
 .. _statd_ex3:
@@ -933,10 +916,6 @@ The three data sets are
 The figure looks as follows
 
 
-
-
-
-
 Each data set is represented by a box, where the top and bottom of the box are the third and first quartiles of the data, and the red line in the center is the median
 
 The boxes give some indication as to
@@ -957,14 +936,10 @@ boxplots
 In particular, the exercise is to generate `J` boxplot figures, one for each initial condition :math:`X_0` in
 
 
-
-
-
 .. code-block:: julia
     :class: no-execute
 
-    initial_conditions = linspace(8, 0, J)
-
+    initial_conditions = range(8, stop = 0, length = J)
 
 
 For each :math:`X_0` in this set,
@@ -980,10 +955,8 @@ Use :math:`\theta = 0.9, n = 20, k = 5000, J = 8`
 .. TODO: Exercise 4, to be written: From LAE to GLAE --- GARCH as in MOR
 
 
-
 Solutions
 ==========
-
 
 
 .. code-block:: julia
@@ -1003,34 +976,35 @@ to get an idea of the speed of convergence.
 
 .. code-block:: julia
 
-    ϕ = Normal(0.0, 1.0)
-    n = 500
-    θ = 0.8
-    d = sqrt(1.0 - θ^2)
-    δ = θ / d
-    srand(41)  # reproducible results
+  function tmp()
+      ϕ = Normal(0.0, 1.0)
+      n = 500
+      θ = 0.8
+      d = sqrt(1.0 - θ^2)
+      δ = θ / d
+      Random.seed!(41)  # reproducible results
 
-    # true density of TAR model
-    ψ_star(y) = 2 .* pdf.(ϕ, y) .* cdf.(ϕ, δ * y)
+      # true density of TAR model
+      ψ_star(y) = 2 .* pdf.(Ref(ϕ), y) .* cdf.(Ref(ϕ), δ * y)
 
-    # Stochastic kernel for the TAR model.
-    p_TAR(x, y) = pdf.(ϕ, (y .- θ .* abs.(x)) ./ d) ./ d
+      # Stochastic kernel for the TAR model.
+      p_TAR(x, y) = pdf.(Ref(ϕ), (y .- θ .* abs.(x)) ./ d) ./ d
 
-    Z = rand(ϕ, n)
-    X = zeros(n)
-    for t=1:n-1
-        X[t+1] = θ * abs(X[t]) + d * Z[t]
-    end
+      Z = rand(ϕ, n)
+      X = zeros(n)
+      for t ∈ 1:n-1
+          X[t+1] = θ * abs(X[t]) + d * Z[t]
+      end
 
-    ψ_est(a) = lae_est(LAE(p_TAR, X), a)
-    k_est = kde(X)
+      ψ_est(a) = lae_est(LAE(p_TAR, X), a)
+      k_est = kde(X)
 
-    ys = linspace(-3, 3, 200)
-    plot(ys, ψ_star(ys), color=:blue, lw=2, alpha=0.6, label="true")
-    plot!(ys, ψ_est(ys), color=:green, lw=2, alpha=0.6, label="look ahead estimate")
-    plot!(k_est.x, k_est.density, color=:black, lw=2, alpha=0.6, label="kernel based estimate")
-
-
+      ys = range(-3, stop = 3, length = 200)
+      plot(ys, ψ_star(ys), color=:blue, lw=2, alpha=0.6, label="true")
+      plot!(ys, ψ_est(ys), color=:green, lw=2, alpha=0.6, label="look ahead estimate")
+      plot!(k_est.x, k_est.density, color=:black, lw=2, alpha=0.6, label="kernel based estimate")
+  end
+  tmp()
 
 
 Exercise 2
@@ -1046,7 +1020,7 @@ Here's one program that does the job.
     α = 0.4    # We set f(k) = k**α
     ψ_0 = Beta(5.0, 5.0)  # Initial distribution
     ϕ = LogNormal(0.0, a_σ)
-    srand(42)  # reproducible results
+    Random.seed!(42)  # reproducible results
 
 
     function p_growth(x, y)
@@ -1059,44 +1033,45 @@ Here's one program that does the job.
         # scipy silently evaluates the pdf of the lognormal dist at a negative
         # value as zero. It should be undefined and Julia recognizes this.
         pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-        return pdf.(ϕ, pdf_arg) ./ d
+        return pdf.(Ref(ϕ), pdf_arg) ./ d
     end
 
+    function tmp()
+        n = 1000  # Number of observations at each date t
+        T = 40    # Compute density of k_t at 1,...,T+1
 
-    n = 1000  # Number of observations at each date t
-    T = 40    # Compute density of k_t at 1,...,T+1
+        xmax = 6.5
+        ygrid = range(0.01, stop = xmax, length = 150)
+        laes_plot = zeros(length(ygrid), 4*T)
+        colors = []
+        for i ∈ 1:4
+            k = zeros(n, T)
+            A = rand!(ϕ, zeros(n, T))
 
-    xmax = 6.5
-    ygrid = linspace(0.01, xmax, 150)
-    laes_plot = zeros(length(ygrid), 4*T)
-    colors = []
-    for i=1:4
-        k = Array{Float64}(n, T)
-        A = rand!(ϕ, Array{Float64}(n, T))
+            # Draw first column from initial distribution
+            # match scale=0.5 and loc=2*i in julia version
+            k[:, 1] = (rand(ψ_0, n) .+ 2.5i) ./ 2
+            for t ∈ 1:T-1
+                k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+            end
 
-        # Draw first column from initial distribution
-        # match scale=0.5 and loc=2*i in julia version
-        k[:, 1] = (rand(ψ_0, n) .+ 2.5i) ./ 2
-        for t=1:T-1
-            k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+            # Generate T instances of LAE using this data, one for each date t
+            laes = [LAE(p_growth, k[:, t]) for t ∈ T:-1:1]
+            ind = i
+            for j ∈ 1:T
+                ψ = laes[j]
+                laes_plot[:, ind] = lae_est(ψ, ygrid)
+                ind = ind + 4
+                push!(colors,  RGBA(0, 0, 0, 1 - (j - 1)/T))
+            end
         end
 
-        # Generate T instances of LAE using this data, one for each date t
-        laes = [LAE(p_growth, k[:, t]) for t=T:-1:1]
-        ind = i
-        for j = 1:T
-            ψ = laes[j]
-            laes_plot[:, ind] = lae_est(ψ, ygrid)
-            ind = ind + 4
-            push!(colors,  RGBA(0, 0, 0, 1 - (j - 1)/T))
-        end
+        #colors = reshape(reshape(colors, T, 4)', 4*T, 1)
+        colors=reshape(colors, 1,length(colors))
+        plot(ygrid, laes_plot, layout=(2,2), color=colors,
+             legend=:none, xlabel="capital", xlims=(0, xmax))
     end
-
-    #colors = reshape(reshape(colors, T, 4)', 4*T, 1)
-    colors=reshape(colors, 1,length(colors))
-    plot(ygrid, laes_plot, layout=(2,2), color=colors,
-         legend=:none, xlabel="capital", xlims=(0, xmax))
-
+    tmp()
 
 
 Exercise 3
@@ -1109,49 +1084,43 @@ series for one boxplot all at once.
 
 .. code-block:: julia
 
-    n = 20
-    k = 5000
-    J = 6
-    srand(43)  # reproducible results
+    function tmp()
+        n = 20
+        k = 5000
+        J = 6
+        Random.seed!(43)  # reproducible results
 
-    θ = 0.9
-    d = sqrt(1 - θ^2)
-    δ = θ / d
+        θ = 0.9
+        d = sqrt(1 - θ^2)
+        δ = θ / d
 
-    initial_conditions = linspace(8, 0, J)
+        initial_conditions = range(8, stop = 0, length = J)
 
-    Z = randn(k, n, J)
-    titles = []
-    data = []
-    x_labels = []
-    for j=1:J
-        title = "time series from t = $(initial_conditions[j])"
-        push!(titles, title)
+        Z = randn(k, n, J)
+        titles = []
+        data = []
+        x_labels = []
+        for j ∈ 1:J
+            title = "time series from t = $(initial_conditions[j])"
+            push!(titles, title)
 
-        X = Array{Float64}(k, n)
-        X[:, 1] = initial_conditions[j]
-        labels = []
-        labels = vcat(labels, ones(k, 1))
-        for t=2:n
-            X[:, t] = θ .* abs.(X[:, t-1]) .+ d .* Z[:, t, j]
-            labels = vcat(labels, t*ones(k, 1))
+            X = zeros(k, n)
+            X[:, 1] .= initial_conditions[j]
+            labels = []
+            labels = vcat(labels, ones(k, 1))
+            for t ∈ 2:n
+                X[:, t] = θ .* abs.(X[:, t-1]) .+ d .* Z[:, t, j]
+                labels = vcat(labels, t*ones(k, 1))
+            end
+            X = reshape(X, n*k, 1)
+            push!(data, X)
+            push!(x_labels, labels)
         end
-        X = reshape(X, n*k, 1)
-        push!(data, X)
-        push!(x_labels, labels)
+        boxplot(x_labels, data, layout=(J,1), title=reshape(titles,1,length(titles)), ylims=(-4, 8),
+        legend=:none, yticks=-4:2:8, xticks=1:20)
+        plot!(size=(800, 2000))
     end
-
-
-.. code-block:: julia
-
-    boxplot(x_labels, data, layout=(J,1), title=reshape(titles,1,length(titles)), ylims=(-4, 8),
-    legend=:none, yticks=-4:2:8, xticks=1:20)
-    plot!(size=(800, 2000))
-
-
-
-
-
+    tmp()
 
 
 Appendix
@@ -1168,6 +1137,3 @@ By the definition of :math:`V`, we have :math:`F_V(v) = \mathbb P \{ a + b U \le
 In other words, :math:`F_V(v) = F_U ( (v - a)/b )`
 
 Differentiating with respect to :math:`v` yields :eq:`statd_dv`
-
-
-
