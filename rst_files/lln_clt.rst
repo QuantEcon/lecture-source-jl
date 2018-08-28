@@ -313,7 +313,7 @@ The next figure shows 100 independent draws from this distribution
 
   function plot_draws()
       t = "$n observations from the Cauchy distribution"
-      N = repeat(range(1, stop = n, length = n), 1, 2)'
+      N = repeat(1.0:n, 1, 2)'
       heights = [zeros(1,n); data']
       plot(1:n, data, color = :blue, markershape=:circle,
            alpha = 0.5, title = t, legend = :none, linewidth = 0)
