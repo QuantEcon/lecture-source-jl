@@ -60,7 +60,6 @@ Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
 
 
-
 :index:`Vectors`
 ================
 
@@ -83,40 +82,37 @@ the point
 The following figure represents three vectors in this manner
 
 
-
 .. code-block:: julia
 
-  #=
+    #=
 
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
+    @author : Spencer Lyon <spencer.lyon@nyu.edu>
+              Victoria Gregory <victoria.gregory@nyu.edu>
 
-  =#
+    =#
 
-  using Plots
-  pyplot()
-  using LaTeXStrings
+    using Plots
+    using LaTeXStrings
 
-  vecs = ([2, 4], [-3, 3], [-4, -3.5])
-  x_vals = zeros(2, length(vecs))
-  y_vals = zeros(2, length(vecs))
-  labels = []
+    let
+        vecs = ([2, 4], [-3, 3], [-4, -3.5])
+        x_vals = zeros(2, length(vecs))
+        y_vals = zeros(2, length(vecs))
+        labels = []
 
-  # Create matrices of x and y values, labels for plotting
-  for i = 1:length(vecs)
-    v = vecs[i]
-    x_vals[2, i] = v[1]
-    y_vals[2, i] = v[2]
-    labels = [labels; (1.1 * v[1], 1.1 * v[2], "$v")]
-  end
+        # Create matrices of x and y values, labels for plotting
+        for i ∈ eachindex(vecs)
+            v = vecs[i]
+            x_vals[2, i] = v[1]
+            y_vals[2, i] = v[2]
+            labels = [labels; (1.1 * v[1], 1.1 * v[2], "$v")]
+        end
 
-  plot(x_vals, y_vals, arrow=true, color=:blue,
-       legend=:none, xlims=(-5, 5), ylims=(-5, 5),
-       annotations=labels, xticks=-5:1:5, yticks=-5:1:5, 
-       framestyle=:origin)
-
-
-
+        plot(x_vals, y_vals, arrow = true, color = :blue,
+             legend = :none, xlims = (-5, 5), ylims = (-5, 5),
+             annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+             framestyle = :origin)
+    end
 
 
 Vector Operations
@@ -184,37 +180,34 @@ Scalar multiplication is illustrated in the next figure
 
 .. code-block:: julia
 
-  # illustrate scalar multiplication
+    let
+        # illustrate scalar multiplication
 
-  x = [2, 2]
-  scalars = [-2, 2]
+        x = [2, 2]
+        scalars = [-2, 2]
 
-  # Create matrices of x and y values, labels for plotting
-  x_vals = zeros(2, 1 + length(scalars))
-  y_vals = zeros(2, 1 + length(scalars))
-  labels = []
-  x_vals[2, 3] = x[1]
-  y_vals[2, 3] = x[2]
-  labels = [labels; (x[1] + 0.4, x[2] - 0.2, L"$x$")]
+        # Create matrices of x and y values, labels for plotting
+        x_vals = zeros(2, 1 + length(scalars))
+        y_vals = zeros(2, 1 + length(scalars))
+        labels = []
+        x_vals[2, 3] = x[1]
+        y_vals[2, 3] = x[2]
+        labels = [labels; (x[1] + 0.4, x[2] - 0.2, "x")]
 
-  # Perform scalar multiplication, store results in plotting matrices
-  for i = 1:length(scalars)
-    s = scalars[i]
-    v = s .* x
-    x_vals[2, i] = v[1]
-    y_vals[2, i] = v[2]
-    labels = [labels; (v[1] + 0.4, v[2] - 0.2, LaTeXString("\$$s x\$"))]
-  end
+        # Perform scalar multiplication, store results in plotting matrices
+        for i ∈ eachindex(scalars)
+            s = scalars[i]
+            v = s .* x
+            x_vals[2, i] = v[1]
+            y_vals[2, i] = v[2]
+            labels = [labels; (v[1] + 0.4, v[2] - 0.2, string(s, "x"))]
+        end
 
-  plot(x_vals, y_vals, arrow=true, color=[:red :red :blue],
-       legend=:none, xlims=(-5, 5), ylims=(-5, 5),
-       annotations=labels, xticks=-5:1:5, yticks=-5:1:5, 
-       framestyle=:origin)
-
-  
-
-
-
+        plot(x_vals, y_vals, arrow = true, color = [:red :red :blue],
+             legend = :none, xlims = (-5, 5), ylims = (-5, 5),
+             annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+             framestyle = :origin)
+    end
 
 
 In Julia, a vector can be represented as a one dimensional `Array`
@@ -226,11 +219,9 @@ Julia `Arrays` allow us to express scalar multiplication and addition with a ver
     x = ones(3)
 
 
-
 .. code-block:: julia
 
     y = [2, 4, 6]
-
 
 
 .. code-block:: julia
@@ -238,14 +229,9 @@ Julia `Arrays` allow us to express scalar multiplication and addition with a ver
     x + y
 
 
-	 
 .. code-block:: julia
 
     4x  # equivalent to 4 * x and 4 .* x
-	
-
-
-
 
 
 Inner Product and Norm
@@ -278,8 +264,9 @@ The expression :math:`\| x - y\|` is thought of as the distance between :math:`x
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
 
+.. code-block:: julia
 
-
+    using LinearAlgebra
 
 
 .. code-block:: julia
@@ -287,26 +274,19 @@ follows
     dot(x, y)               # Inner product of x and y
 
 
-
 .. code-block:: julia
 
-    sum(x .* y)             # Gives the same result
+    sum(i * j for (i, j) ∈ zip(x, y))             # Gives the same result
 
 
-	
 .. code-block:: julia
 
     norm(x)                 # Norm of x
 
 
-
 .. code-block:: julia
 
-    sqrt(sum(x.^2))         # Gives the same result
-
-
-
-
+    sqrt(sum(abs2, x))         # Gives the same result
 
 
 Span
@@ -336,67 +316,65 @@ The next figure shows the span of :math:`A = \{a_1, a_2\}` in :math:`\mathbb R ^
 The span is a 2 dimensional plane passing through these two points and the origin
 
 
-
 .. code-block:: julia
   :class: collapse
 
-  x_min, x_max = -5, 5
-  y_min, y_max = -5, 5
+  let
+      x_min, x_max = -5, 5
+      y_min, y_max = -5, 5
 
-  α, β = 0.2, 0.1
+      α, β = 0.2, 0.1
 
-  # Axes
-  gs = 3
-  z = linspace(x_min, x_max, gs)
-  x = zeros(gs)
-  y = zeros(gs)
-  plot(x, y, z, color=:black, linewidth=2, alpha=0.5, label="", legend=false)
-  plot!(z, x, y, color=:black, linewidth=2, alpha=0.5, label="")
-  plot!(y, z, x, color=:black, linewidth=2, alpha=0.5, label="")
+      # Axes
+      gs = 3
+      z = range(x_min, stop = x_max, length = gs)
+      x = zeros(gs)
+      y = zeros(gs)
+      plot(x, y, z, color = :black, linewidth=2, alpha=0.5, label = "", legend=false)
+      plot!(z, x, y, color = :black, linewidth=2, alpha=0.5, label = "")
+      plot!(y, z, x, color = :black, linewidth=2, alpha=0.5, label = "")
 
-  # Fixed linear function, to generate a plane
-  f(x, y) = α .* x + β .* y
+      # Fixed linear function, to generate a plane
+      f(x, y) = α .* x + β .* y
 
-  # Vector locations, by coordinate
-  x_coords = [3, 3]
-  y_coords = [4, -4]
-  z = f(x_coords, y_coords)
+      # Vector locations, by coordinate
+      x_coords = [3, 3]
+      y_coords = [4, -4]
+      z = f(x_coords, y_coords)
 
-  # Lines to vectors
-  n = 2
-  x_vec = zeros(n, n)
-  y_vec = zeros(n, n)
-  z_vec = zeros(n, n)
-  labels = []
+      # Lines to vectors
+      n = 2
+      x_vec = zeros(n, n)
+      y_vec = zeros(n, n)
+      z_vec = zeros(n, n)
+      labels = []
 
-  for i=1:n
-    x_vec[:, i] = [0; x_coords[i]]
-    y_vec[:, i] = [0; y_coords[i]]
-    z_vec[:, i] = [0; f(x_coords[i], y_coords[i])]
-    lab = string("a", i)
-    push!(labels, lab)
-  end
-
-  plot!(x_vec, y_vec, z_vec, color=[:blue :red], linewidth=1.5, 
-        alpha=0.6, label=labels)
-
-  # Draw the plane
-  grid_size = 20
-  xr2 = linspace(x_min, x_max, grid_size)
-  yr2 = linspace(y_min, y_max, grid_size)
-  z2 = Array{Float64}(grid_size, grid_size)
-  for i in 1:grid_size
-      for j in 1:grid_size
-          z2[j, i] = f(xr2[i], yr2[j])
+      for i ∈ 1:n
+          x_vec[:, i] = [0; x_coords[i]]
+          y_vec[:, i] = [0; y_coords[i]]
+          z_vec[:, i] = [0; f(x_coords[i], y_coords[i])]
+          lab = string("a", i)
+          push!(labels, lab)
       end
+
+      plot!(x_vec, y_vec, z_vec, color = [:blue :red], linewidth = 1.5,
+            alpha = 0.6, label = labels)
+
+      # Draw the plane
+      grid_size = 20
+      xr2 = range(x_min, stop = x_max, length = grid_size)
+      yr2 = range(y_min, stop = y_max, length = grid_size)
+      z2 = zeros(grid_size, grid_size)
+      for i ∈ 1:grid_size
+          for j ∈ 1:grid_size
+              z2[j, i] = f(xr2[i], yr2[j])
+          end
+      end
+      surface!(xr2, yr2, z2, cbar = false, alpha = 0.2, fill = :blues,
+               xlims = (x_min, x_max), ylims = (x_min, x_max),
+               zlims = (x_min, x_max), xticks = [0], yticks = [0],
+               zticks = [0])
   end
-  surface!(xr2, yr2, z2, cbar=false, alpha=0.2, fill=:blues, 
-           xlims=(x_min, x_max), ylims=(x_min, x_max), 
-           zlims=(x_min, x_max), xticks=[0], yticks=[0], 
-           zticks=[0])
-  
-
-
 
 
 Examples
@@ -524,7 +502,6 @@ then
 Linear independence now implies :math:`\gamma_i = \beta_i` for all :math:`i`
 
 
-
 Matrices
 ==========
 
@@ -565,8 +542,6 @@ For a square matrix :math:`A`, the :math:`i` elements of the form :math:`a_{ii}`
 :math:`A` is called *diagonal* if the only nonzero entries are on the principal diagonal
 
 If, in addition to being diagonal, each element along the principal diagonal is equal to 1, then :math:`A` is called the *identity matrix*, and denoted by :math:`I`
-
-
 
 
 Matrix Operations
@@ -692,7 +667,6 @@ You should check that if :math:`A` is :math:`n \times k` and :math:`I` is the :m
 If :math:`I` is the :math:`n \times n` identity matrix, then :math:`IA = A`
 
 
-
 Matrices in Julia
 -----------------
 
@@ -702,7 +676,7 @@ You can create them as follows
 
 .. code-block:: julia
 
-    A = [1 2    
+    A = [1 2
          3 4]
 
 
@@ -714,7 +688,6 @@ You can create them as follows
 .. code-block:: julia
 
     size(A)
-
 
 
 The ``size`` function returns a tuple giving the number of rows and columns
@@ -729,37 +702,26 @@ There are many convenient functions for creating common matrices (matrices of ze
 
 Since operations are performed elementwise by default, scalar multiplication and addition have very natural syntax
 
-.. code-block:: julia
-
-    A = eye(3)
-
-
 
 .. code-block:: julia
 
-    B = ones(3, 3)
-
+    A = ones(3, 3)
 
 
 .. code-block:: julia
 
-    2A
+    2I
 
 
 
 .. code-block:: julia
 
-    A + B
-
-
+    A + I
 
 
 To multiply matrices we use the ``*`` operator
 
 In particular, ``A * B`` is matrix multiplication, whereas ``A .* B`` is element by element multiplication
-
-
-
 
 
 .. _la_linear_map:
@@ -784,8 +746,6 @@ A function :math:`f \colon \mathbb R ^k \to \mathbb R ^n` is called *linear* if,
 You can check that this holds for the function :math:`f(x) = A x + b` when :math:`b` is the zero vector, and fails when :math:`b` is nonzero
 
 In fact, it's `known <https://en.wikipedia.org/wiki/Linear_map#Matrices>`_ that :math:`f` is linear if and *only if* there exists a matrix :math:`A` such that :math:`f(x) = Ax` for all :math:`x`
-
-
 
 
 Solving Systems of Equations
@@ -827,56 +787,56 @@ The answer to both these questions is negative, as the next figure shows
 
   =#
 
+  let
 
-  f(x) = 0.6 * cos(4.0 * x) + 1.3
+      f(x) = 0.6 * cos(4.0 * x) + 1.3
 
-  xmin, xmax = -1.0, 1.0
-  Nx = 160
-  x = linspace(xmin, xmax, Nx)
-  y = f.(x)
-  ya, yb = minimum(y), maximum(y)
+      xmin, xmax = -1.0, 1.0
+      Nx = 160
+      x = range(xmin, stop = xmax, length = Nx)
+      y = f.(x)
+      ya, yb = extrema(y)
 
-  p1 = plot(x, y, color=:black, label=[L"$f$" ""], grid=false)
-  plot!(x, ya*ones(Nx, 1), fill_between=yb*ones(Nx, 1),
-       fillalpha=0.1, color=:blue, label="", lw=0)
-  plot!(zeros(2, 2), [ya ya; yb yb], lw=3, color=:blue, label=[L"range of $f$" ""])
-  annotate!(0.04, -0.3, L"$0$", ylims=(-0.6, 3.2))
-  vline!([0], color=:black, label="")
-  hline!([0], color=:black, label="")
-  plot!(foreground_color_axis=:white, foreground_color_text=:white,
-        foreground_color_border=:white)
+      p1 = plot(x, y, color = :black, label = [L"$f$" ""], grid = false)
+      plot!(x, ya * ones(Nx, 1), fill_between = yb * ones(Nx, 1),
+            fillalpha = 0.1, color = :blue, label = "", lw = 0)
+      plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
+      annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
+      vline!([0], color = :black, label = "")
+      hline!([0], color = :black, label = "")
+      plot!(foreground_color_axis = :white, foreground_color_text = :white,
+            foreground_color_border = :white)
 
-  ybar = 1.5
-  plot!(x, x .* 0 .+ ybar, color=:black, linestyle=:dash, label="")
-  annotate!(0.05, 0.8 * ybar, L"$y$")
+      ybar = 1.5
+      plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, label = "")
+      annotate!(0.05, 0.8 * ybar, L"$y$")
 
-  x_vals = Array{Float64}(2, 4)
-  y_vals = Array{Float64}(2, 4)
-  labels = []
-  for (i, z) in enumerate([-0.35, 0.35])
-    x_vals[:, 2*i-1] = z*ones(2, 1)
-    y_vals[2, 2*i-1] = f(z)
-    labels = [labels; (z, -0.2, LaTeXString("\$x_$i\$"))]
+      x_vals = zeros(2, 4)
+      y_vals = similar(x_vals)
+      labels = []
+      for (i, z) ∈ enumerate([-0.35, 0.35])
+          x_vals[:, 2*i-1] = z * ones(2, 1)
+          y_vals[2, 2*i-1] = f(z)
+          labels = [labels; (z, -0.2, LaTeXString("\$x_$i\$"))]
+      end
+      plot!(x_vals, y_vals, color = :black, linestyle = :dash, label = "", annotation = labels)
+
+      p2 = plot(x, y, color = :black, label = [L"$f$" ""], grid=false)
+      plot!(x, ya*ones(Nx, 1), fill_between = yb * ones(Nx, 1),
+            fillalpha = 0.1, color = :blue, label = "", lw = 0)
+      plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
+      annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
+      vline!([0], color = :black, label = "")
+      hline!([0], color = :black, label = "")
+      plot!(foreground_color_axis = :white, foreground_color_text = :white,
+            foreground_color_border = :white)
+
+      ybar = 2.6
+      plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, legend = :none)
+      annotate!(0.04, 0.91 * ybar, L"$y$")
+
+      plot(p1, p2, layout = (2, 1), size = (600, 700))
   end
-  plot!(x_vals, y_vals, color=:black, linestyle=:dash, label="", annotation=labels)
-
-  p2 = plot(x, y, color=:black, label=[L"$f$" ""], grid=false)
-  plot!(x, ya*ones(Nx, 1), fill_between=yb*ones(Nx, 1),
-       fillalpha=0.1, color=:blue, label="", lw=0)
-  plot!(zeros(2, 2), [ya ya; yb yb], lw=3, color=:blue, label=[L"range of $f$" ""])
-  annotate!(0.04, -0.3, L"$0$", ylims=(-0.6, 3.2))
-  vline!([0], color=:black, label="")
-  hline!([0], color=:black, label="")
-  plot!(foreground_color_axis=:white, foreground_color_text=:white,
-        foreground_color_border=:white)
-
-  ybar = 2.6
-  plot!(x, x .* 0 .+ ybar, color=:black, linestyle=:dash, legend=:none)
-  annotate!(0.04, 0.91 * ybar, L"$y$")
-
-  plot(p1, p2, layout=(2, 1), size=(600, 700))
-
-
 
 
 In the first plot there are multiple solutions, as the function is not one-to-one, while
@@ -1047,8 +1007,6 @@ Then if :math:`y = Ax = x_1 a_1 + x_2 a_2 + x_3 a_3`, we can also write
 In other words, uniqueness fails
 
 
-
-
 Linear Equations with Julia
 ----------------------------------
 
@@ -1064,54 +1022,31 @@ Here's an illustration of how to solve linear equations with Julia's built-in li
 
     y = ones(2, 1);  # A column vector
 
-
-
-
-
 .. code-block:: julia
 
     det(A)
-
-
 
 .. code-block:: julia
 
     A_inv = inv(A)
 
-
-
-
-
 .. code-block:: julia
 
     x = A_inv * y  # solution
-
-
-
-
 
 .. code-block:: julia
 
     A * x  # should equal y (a vector of ones)
 
-
-
-
-
 .. code-block:: julia
 
-    A\y  # produces the same solution
-
-
-
-
+    A \ y  # produces the same solution
 
 Observe how we can solve for :math:`x = A^{-1} y` by either via ``inv(A) * y``, or using ``A \ y``
 
-The latter method is preferred because it automatically selects the best algorithm for the problem based on the values of ``A`` and ``y`` 
+The latter method is preferred because it automatically selects the best algorithm for the problem based on the types of ``A`` and ``y``
 
 If ``A`` is not square then  ``A \ y`` returns the least squares solution :math:`\hat x = (A'A)^{-1}A'y`
-
 
 
 .. _la_eigen:
@@ -1145,38 +1080,37 @@ The next figure shows two eigenvectors (blue arrows) and their images under :mat
 As expected, the image :math:`Av` of each :math:`v` is just a scaled version of the original
 
 
-
 .. code-block:: julia
   :class: collapse
 
-  A = [1 2
-       2 1]
-  evals, evecs = eig(A)
-  a1, a2 = evals[1], evals[2]
-  evecs = evecs[:, 1], evecs[:, 2]
-  eig_1 = zeros(2, length(evecs))
-  eig_2 = zeros(2, length(evecs))
-  labels = []
+  let
+      A = [1 2
+           2 1]
+      evals, evecs = eigen(A)
+      a1, a2 = evals[1], evals[2]
+      evecs = evecs[:, 1], evecs[:, 2]
+      eig_1 = zeros(2, length(evecs))
+      eig_2 = zeros(2, length(evecs))
+      labels = []
 
-  for i = 1:length(evecs)
-    v = evecs[i]
-    eig_1[2, i] = v[1]
-    eig_2[2, i] = v[2]
+      for i ∈ eachindex(evecs)
+          v = evecs[i]
+          eig_1[2, i] = v[1]
+          eig_2[2, i] = v[2]
+      end
+
+      x = range(-5, stop = 5, length = 10)
+      y = -x
+
+      plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow = true, color = :red,
+           legend = :none, xlims = (-3, 3), ylims = (-3, 3),
+           annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+           framestyle = :origin)
+      plot!(a2 * eig_1[:, 2], a2 * eig_2, arrow = true, color = :red)
+      plot!(eig_1, eig_2, arrow = true, color = :blue)
+      plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
+      plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
   end
-
-  x = linspace(-5, 5, 10)
-  y = -linspace(-5, 5, 10)
-
-  plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow=true, color=:red,
-       legend=:none, xlims=(-3, 3), ylims=(-3, 3),
-       annotations=labels, xticks=-5:1:5, yticks=-5:1:5, 
-       framestyle=:origin)
-  plot!(a2 * eig_1[:, 2], a2 * eig_2, arrow=true, color=:red)
-  plot!(eig_1, eig_2, arrow=true, color=:blue)
-  plot!(x, y, color=:blue, lw=0.4, alpha=0.6)
-  plot!(x, x, color=:blue, lw=0.4, alpha=0.6)
-  
-
 
 
 The eigenvalue equation is equivalent to :math:`(A - \lambda I) v = 0`, and
@@ -1207,7 +1141,6 @@ Some nice facts about the eigenvalues of a square matrix :math:`A` are as follow
 A corollary of the first statement is that a matrix is invertible if and only if all its eigenvalues are nonzero
 
 
-
 Using Julia, we can solve for the eigenvalues and eigenvectors of a matrix as
 follows
 
@@ -1217,21 +1150,16 @@ follows
 
 .. code-block:: julia
 
-    evals, evecs = eig(A);
+    evals, evecs = eigen(A);
 
 .. code-block:: julia
 
     evals
 
 
-
-
-
 .. code-block:: julia
 
     evecs
-
-
 
 
 Note that the *columns* of ``evecs`` are the eigenvectors
@@ -1399,10 +1327,7 @@ Exercise 1 below asks you to apply these formulas
 Further Reading
 -----------------
 
-
-
 The documentation of the linear algebra features built into Julia can be found `here <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_
-
 
 
 Chapters 2 and 3 of the `Econometric Theory <http://www.johnstachurski.net/emet.html>`_ contains
@@ -1410,7 +1335,6 @@ a discussion of linear algebra along the same lines as above, with solved exerci
 
 If you don't mind a slightly abstract approach, a nice intermediate-level text on linear algebra
 is :cite:`Janich1994`
-
 
 
 Exercises
@@ -1473,7 +1397,6 @@ Solutions
 ===========
 
 
-
 Thanks to `Willem Hekman <https://qutech.nl/person/willem-hekman/>`__ and Guanlong Ren
 for providing this solution.
 
@@ -1482,11 +1405,11 @@ Exercise 1
 
 We have an optimization problem:
 
-.. math::  v(x) = \max_{y,u} \{ -y'Py - u'Qu \} 
+.. math::  v(x) = \max_{y,u} \{ -y'Py - u'Qu \}
 
 s.t.
 
-.. math::  y = Ax + Bu 
+.. math::  y = Ax + Bu
 
 with primitives
 
@@ -1534,9 +1457,9 @@ Substituting :math:`\lambda = -2 P y` gives
 Substituting the linear constraint :math:`y = Ax + Bu` into above
 equation gives
 
-.. math::  Qu + B'P(Ax + Bu) = 0  
+.. math::  Qu + B'P(Ax + Bu) = 0
 
-.. math::  (Q + B'PB)u + B'PAx = 0 
+.. math::  (Q + B'PB)u + B'PAx = 0
 
 which is the first-order condition for maximizing L w.r.t. u.
 
@@ -1558,7 +1481,7 @@ function, we get
 Since we know the optimal choice of u satisfies $ u = -(Q +
 B'PB)^{-1}B'PAx $, then
 
-.. math::  v(x) =  -(Ax+ B u)'P(Ax+B u) - u'Q u  \,\,\,\, with \,\,\,\, u = -(Q + B'PB)^{-1}B'PAx 
+.. math::  v(x) =  -(Ax+ B u)'P(Ax+B u) - u'Q u  \,\,\,\, with \,\,\,\, u = -(Q + B'PB)^{-1}B'PAx
 
 To evaluate the function
 
@@ -1577,7 +1500,7 @@ For simplicity, denote by :math:`S := (Q + B'PB)^{-1} B'PA`, then $ u =
 
 Regarding the second term :math:`- 2u'B'PAx`,
 
-.. math:: 
+.. math::
    :nowrap:
 
    \begin{align}
@@ -1616,11 +1539,7 @@ Therefore, the solution to the optimization problem
 :math:`v(x) = -x' \tilde{P}x` follows the above result by denoting
 :math:`\tilde{P} := A'PA - A'PB(Q + B'PB)^{-1}B'PA`.
 
-
-
 .. rubric:: Footnotes
 
 
-
 .. [#cfn] Suppose that :math:`\|S \| < 1`. Take any nonzero vector :math:`x`, and let :math:`r := \|x\|`. We have :math:`\| Sx \| = r \| S (x/r) \| \leq r \| S \| < r = \| x\|`. Hence every point is pulled towards the origin.
-
