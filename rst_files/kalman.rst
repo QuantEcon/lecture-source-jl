@@ -99,18 +99,16 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
             Victoria Gregory <victoria.gregory@nyu.edu>
 
   =#
-  using Plots
-  pyplot()
-  using LaTeXStrings
+  using Plots, LaTeXStrings, LinearAlgebra
 
 
-  function bivariate_normal(X::Matrix,
-                            Y::Matrix,
-                            σ_x::Real=1.0,
-                            σ_y::Real=1.0,
-                            μ_x::Real=0.0,
-                            μ_y::Real=0.0,
-                            σ_xy::Real=0.0)
+  function bivariate_normal(X,
+                            Y,
+                            σ_x = 1.0,
+                            σ_y = 1.0,
+                            μ_x = 0.0,
+                            μ_y = 0.0,
+                            σ_xy = 0.0)
       Xμ = X .- μ_x
       Yμ = Y .- μ_y
 
@@ -128,7 +126,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
            -0.2]''
 
   # == Define the matrices G and R from the equation y = G x + N(0, R) == #
-  G = eye(2)
+  G = I
   R = 0.5 .* Σ
 
   # == The matrices A and Q == #
@@ -137,13 +135,13 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   Q = 0.3 .* Σ
 
   # == The observed value of y == #
-  y = [2.3, -1.9]''
+  y = [2.3, -1.9]
 
   # == Set up grid for plotting == #
-  x_grid = linspace(-1.5, 2.9, 100)
-  y_grid = linspace(-3.1, 1.7, 100)
-  X=repmat(x_grid', length(y_grid), 1)
-  Y=repmat(y_grid, 1, length(y_grid))
+  x_grid = range(-1.5, stop = 2.9, length = 100)
+  y_grid = range(-3.1, stop = 1.7, length = 100)
+  X = repeat(x_grid', length(y_grid), 1)
+  Y = repeat(y_grid, 1, length(y_grid))
 
   function gen_gaussian_plot_vals(μ, C)
       "Z values for plotting the bivariate Gaussian N(μ, C)"
@@ -155,8 +153,8 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 
   # == Plot the figure == #
   Z = gen_gaussian_plot_vals(x_hat, Σ)
-  contour(x_grid, y_grid, Z, fill=true, levels=6, color=:lightrainbow, alpha=0.6)
-  contour!(x_grid, y_grid, Z, fill=false, levels=6, color=:grays, cbar=false)
+  contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
+  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
 
 
 
@@ -172,15 +170,13 @@ The next figure shows the original prior :math:`p(x)` and the new reported
 location :math:`y`
 
 
-
 .. code-block:: julia
 
   # == Plot the figure == #
   Z = gen_gaussian_plot_vals(x_hat, Σ)
-  contour(x_grid, y_grid, Z, fill=true, levels=6, color=:lightrainbow, alpha=0.6)
-  contour!(x_grid, y_grid, Z, fill=false, levels=6, color=:grays, cbar=false)
-  annotate!(y[1], y[2], L"$y$", color=:black)
-
+  contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
+  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
+  annotate!(y[1], y[2], L"$y$", color = :black)
 
 
 The bad news is that our sensors are imprecise.
@@ -246,7 +242,7 @@ The original density is left in as contour lines for comparison
 
 
 .. code-block:: julia
-  
+
   # == Plot the figure == #
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   M = Σ * G' * inv(G * Σ * G' + R)
@@ -254,11 +250,11 @@ The original density is left in as contour lines for comparison
   Σ_F = Σ - M * G * Σ
   new_Z = gen_gaussian_plot_vals(x_hat_F, Σ_F)
   # Plot Density 1
-  contour(x_grid, y_grid, new_Z, fill=true, levels=6, color=:lightrainbow, alpha=0.6)
-  contour!(x_grid, y_grid, new_Z, fill=false, levels=6, color=:grays, cbar=false)
+  contour(x_grid, y_grid, new_Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
+  contour!(x_grid, y_grid, new_Z, fill = false, levels = 6, color = :grays, cbar = false)
   # Plot Density 2
-  contour!(x_grid, y_grid, Z, fill=false, levels=6, color=:grays, cbar=false)
-  annotate!(y[1], y[2], L"$y$", color=:black)
+  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
+  annotate!(y[1], y[2], L"$y$", color = :black)
 
 
 
@@ -357,8 +353,6 @@ the update has used parameters
     Q = 0.3 * \Sigma
 
 
-
-
 .. code-block:: julia
 
   # == Plot the figure == #
@@ -371,15 +365,13 @@ the update has used parameters
   new_Σ = A * Σ_F * A' + Q
   new_Z = gen_gaussian_plot_vals(new_x_hat, new_Σ)
   # Plot Density 1
-  contour(x_grid, y_grid, new_Z, fill=true, levels=6, color=:lightrainbow, alpha=0.6)
-  contour!(x_grid, y_grid, new_Z, fill=false, levels=6, color=:grays, cbar=false)
+  contour(x_grid, y_grid, new_Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
+  contour!(x_grid, y_grid, new_Z, fill = false, levels = 6, color = :grays, cbar = false)
   # Plot Density 2
-  contour!(x_grid, y_grid, Z, fill=false, levels=6, color=:grays, cbar=false)
+  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
   # Plot Density 3
-  contour!(x_grid, y_grid, Z_F, fill=false, levels=6, color=:grays, cbar=false)
-  annotate!(y[1], y[2], L"$y$", color=:black)
-  
-
+  contour!(x_grid, y_grid, Z_F, fill = false, levels = 6, color = :grays, cbar = false)
+  annotate!(y[1], y[2], L"$y$", color = :black)
 
 
 The Recursive Procedure
@@ -468,7 +460,6 @@ A sufficient (but not necessary) condition is that all the eigenvalues :math:`\l
 In this case, for any initial choice of :math:`\Sigma_0` that is both nonnegative and symmetric, the sequence :math:`\{\Sigma_t\}` in :eq:`kalman_sdy` converges to a nonnegative symmetric matrix :math:`\Sigma` that solves :eq:`kalman_dare`
 
 
-
 Implementation
 =========================
 
@@ -476,10 +467,7 @@ Implementation
     single: Kalman Filter; Programming Implementation
 
 
-
 The `QuantEcon.jl`_ package is able to implement the Kalman filter by using methods for the type ``Kalman``
-
-
 
 
 
@@ -490,10 +478,9 @@ The `QuantEcon.jl`_ package is able to implement the Kalman filter by using meth
     * the moments :math:`(\hat x_t, \Sigma_t)` of the current prior
 
 
-
 * The type ``Kalman`` from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package has a number of methods, some that we will wait to use until we study more advanced applications in subsequent lectures
 
-* Methods pertinent for this lecture  are: 
+* Methods pertinent for this lecture  are:
 
     * ``prior_to_filtered``, which updates :math:`(\hat x_t, \Sigma_t)` to :math:`(\hat x_t^F, \Sigma_t^F)`
 
@@ -505,7 +492,6 @@ The `QuantEcon.jl`_ package is able to implement the Kalman filter by using meth
 
 
 You can view the program `on GitHub <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/kalman.jl>`__
-
 
 
 Exercises
@@ -632,8 +618,6 @@ You should end up with a figure similar to the following (modulo randomness)
 Observe how, after an initial learning period, the Kalman filter performs quite well, even relative to the competitor who predicts optimally with knowledge of the latent state
 
 
-
-
 .. _kalman_ex4:
 
 Exercise 4
@@ -646,11 +630,8 @@ Observe how the diagonal values in the stationary solution :math:`\Sigma` (see :
 The interpretation is that more randomness in the law of motion for :math:`x_t` causes more (permanent) uncertainty in prediction
 
 
-
-
 Solutions
 ==========
-
 
 
 .. code-block:: julia
@@ -662,38 +643,42 @@ Exercise 1
 
 .. code-block:: julia
 
-    import Distributions: Normal, pdf
+    using Distributions
+
     # == Parameters == #
 
     θ = 10
     A, G, Q, R = 1.0, 1.0, 0.0, 1.0
     x_hat_0, Σ_0 = 8.0, 1.0
 
-    # == Initialize Kalman filter == #
+    let
 
-    kalman = Kalman(A, G, Q, R)
-    set_state!(kalman, x_hat_0, Σ_0)
-    # == Run == #
+        # == Initialize Kalman filter == #
 
-    N = 5
-    xgrid = linspace(θ - 5, θ + 2, 200)
-    densities = []
-    labels = []
-    for i=1:N
-        # Record the current predicted mean and variance, and plot their densities
-        m, v = kalman.cur_x_hat, kalman.cur_sigma
-        push!(densities, pdf.(Normal(m, sqrt(v)), xgrid))
-        push!(labels, LaTeXString("\$t=$i\$"))
+        kalman = Kalman(A, G, Q, R)
+        set_state!(kalman, x_hat_0, Σ_0)
+        # == Run == #
 
-        # Generate the noisy signal
-        y = θ + randn()
+        N = 5
+        xgrid = range(θ - 5, stop = θ + 2, length = 200)
+        densities = []
+        labels = []
+        for i ∈ 1:N
+            # Record the current predicted mean and variance, and plot their densities
+            m, v = kalman.cur_x_hat, kalman.cur_sigma
+            push!(densities, pdf.(Ref(Normal(m, sqrt(v))), xgrid))
+            push!(labels, LaTeXString("\$t=$i\$"))
 
-        # Update the Kalman filter
-        update!(kalman, y)
+            # Generate the noisy signal
+            y = θ + randn()
+
+            # Update the Kalman filter
+            update!(kalman, y)
+        end
+
+        plot(xgrid, densities, label = reshape(labels,1,length(labels)), legend = :topleft, grid = false,
+             title = LaTeXString("First $N densities when \$θ = $θ\$"))
     end
-
-    plot(xgrid, densities, label=reshape(labels,1,length(labels)), legend=:topleft, grid=false,
-         title=LaTeXString("First $N densities when \$θ = $θ\$"))
 
 
 
@@ -702,88 +687,85 @@ Exercise 2
 
 .. code-block:: julia
 
-    srand(42)  # reproducible results
-    ϵ = 0.1
-    kalman = Kalman(A, G, Q, R)
-    set_state!(kalman, x_hat_0, Σ_0)
+    using Random
+    let
+        Random.seed!(42)  # reproducible results
+        ϵ = 0.1
+        kalman = Kalman(A, G, Q, R)
+        set_state!(kalman, x_hat_0, Σ_0)
 
-    nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
+        nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
 
-    T = 600
-    z = Array{Float64}(T)
-    for t=1:T
-        # Record the current predicted mean and variance, and plot their densities
-        m, v = kalman.cur_x_hat, kalman.cur_sigma
-        dist = Normal(m, sqrt(v))
-        integral = do_quad((x)->pdf.(dist, x), nodes, weights)
-        z[t] = 1. - integral
+        T = 600
+        z = zeros(T)
+        for t ∈ 1:T
+            # Record the current predicted mean and variance, and plot their densities
+            m, v = kalman.cur_x_hat, kalman.cur_sigma
+            dist = Normal(m, sqrt(v))
+            integral = do_quad(x -> pdf.(dist, x), nodes, weights)
+            z[t] = 1. - integral
         # Generate the noisy signal and update the Kalman filter
         update!(kalman, θ + randn())
+        end
+
+    plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,
+         legend = false, xlims = (0, T), ylims = (0, 1))
     end
-
-    plot(1:T, z, fillrange=0, color=:blue, fillalpha=0.2, grid=false,
-         legend=false, xlims=(0, T), ylims=(0, 1))
-
-
-
 
 Exercise 3
 ----------
 
 .. code-block:: julia
 
-    import Distributions: MultivariateNormal, rand
-    srand(41)  # reproducible results
+    Random.seed!(41)  # reproducible results
 
-    # === Define A, Q, G, R === #
-    G = eye(2)
-    R = 0.5 .* G
-    A = [0.5 0.4
-         0.6 0.3]
-    Q = 0.3 .* G
+    let
+        # === Define A, Q, G, R === #
+        G = Matrix{Float64}(I, 2, 2)
+        R = 0.5 .* G
+        A = [0.5 0.4
+             0.6 0.3]
+        Q = 0.3 .* G
 
-    # === Define the prior density === #
-    Σ = [0.9 0.3
-         0.3 0.9]
-    x_hat = [8, 8]''
+        # === Define the prior density === #
+        Σ = [0.9 0.3
+             0.3 0.9]
+        x_hat = [8, 8]
 
-    # === Initialize the Kalman filter === #
-    kn = Kalman(A, G, Q, R)
-    set_state!(kn, x_hat, Σ)
+        # === Initialize the Kalman filter === #
+        kn = Kalman(A, G, Q, R)
+        set_state!(kn, x_hat, Σ)
 
-    # === Set the true initial value of the state === #
-    x = zeros(2)
+        # === Set the true initial value of the state === #
+        x = zeros(2)
 
-    # == Print eigenvalues of A == #
-    println("Eigenvalues of A:\n$(eigvals(A))")
+        # == Print eigenvalues of A == #
+        println("Eigenvalues of A:\n$(eigvals(A))")
 
-    # == Print stationary Σ == #
-    S, K = stationary_values(kn)
-    println("Stationary prediction error variance:\n$S")
+        # == Print stationary Σ == #
+        S, K = stationary_values(kn)
+        println("Stationary prediction error variance:\n$S")
 
-    # === Generate the plot === #
-    T = 50
-    e1 = Array{Float64}(T)
-    e2 = Array{Float64}(T)
-    for t=1:T
-        # == Generate signal and update prediction == #
-        dist = MultivariateNormal(G*x, R)
-        y = rand(dist)
-        update!(kn, y)
+        # === Generate the plot === #
+        T = 50
+        e1 = zeros(T)
+        e2 = similar(e1)
+        for t ∈ 1:T
+            # == Generate signal and update prediction == #
+            dist = MultivariateNormal(G * x, R)
+            y = rand(dist)
+            update!(kn, y)
 
-        # == Update state and record error == #
-        Ax = A * x
-        x = rand(MultivariateNormal(Ax, Q))
-        e1[t] = sum((x - kn.cur_x_hat).^2)
-        e2[t] = sum((x - Ax).^2)
+            # == Update state and record error == #
+            Ax = A * x
+            x = rand(MultivariateNormal(Ax, Q))
+            e1[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, kn.cur_x_hat))
+            e2[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, Ax))
+        end
+
+        plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
+        plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
     end
-
-    plot(1:T, e1, color=:black, linewidth=2, alpha=0.6, label="Kalman filter error", grid=false)
-    plot!(1:T, e2, color=:green, linewidth=2, alpha=0.6, label="conditional expectation error")
-
-
-
-
 
 
 .. rubric:: Footnotes
