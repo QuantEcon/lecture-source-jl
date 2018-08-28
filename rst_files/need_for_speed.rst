@@ -14,7 +14,7 @@ Overview
 
 Computer scientists often classify programming languages according to the following two categories
 
-*High level languages* aim to maximize productivity by 
+*High level languages* aim to maximize productivity by
 
 * being easy to read, write and debug
 
@@ -22,13 +22,13 @@ Computer scientists often classify programming languages according to the follow
 
 * being interactive, etc.
 
-*Low level languages* aim for speed and control, which they achieve by 
+*Low level languages* aim for speed and control, which they achieve by
 
 * being closer to the metal (direct access to CPU, memory, etc.)
 
 * requiring a relatively large amount of information from the user (e.g., all data types must be specified)
 
-Traditionally we understand this as a trade off 
+Traditionally we understand this as a trade off
 
 * high productivity or high performance
 
@@ -46,12 +46,10 @@ For longer, more sophisticated programs, you need to be aware of potential stumb
 This lecture covers the key points
 
 
-
 Requirements
 -------------
 
 You should read our :doc:`earlier lecture <types_methods>` on types, methods and multiple dispatch before this one
-
 
 
 Foundations
@@ -67,10 +65,8 @@ Let's think about how quickly code runs, taking as given
 We'll start by discussing the kinds of instructions that machines understand
 
 
-
 Machine Code
 -------------
-
 
 All instructions for computers end up as *machine code*
 
@@ -112,8 +108,8 @@ or Python
 .. code-block:: python
     :class: no-execute
 
-    def f(a, b): 
-        y = 2 * a + 8 * b 
+    def f(a, b):
+        y = 2 * a + 8 * b
         return y
 
 or even C
@@ -137,13 +133,10 @@ Generating Machine Code
 ---------------------------
 
 
-
 The process for turning high level code into machine code differs across
 languages
 
 Let's look at some of the options and how they differ from one another
-
-
 
 
 AOT Compiled Languages
@@ -157,14 +150,13 @@ These languages compile down to efficient machine code because users are forced 
 
 The compiler therefore has ample information for building the corresponding machine code ahead of time (AOT) in a way that
 
-* organizes the data optimally in memory and 
-  
+* organizes the data optimally in memory and
+
 * implements efficient operations as required for the task in hand
 
 At the same time, the syntax and semantics of C and Fortran are verbose and unwieldy when compared to something like Julia
 
 Moreover, these low level languages lack the interactivity that's so crucial for scientific work
-
 
 
 Interpreted Languages
@@ -177,24 +169,22 @@ This allows them to be flexible and interactive
 Moreover, programmers can leave many tedious details to the runtime environment, such as
 
 * specifying variable types
-  
+
 * memory allocation/deallocation, etc.
 
 But all this convenience and flexibility comes at a cost: it's hard to turn
 instructions written in these languages into efficient machine code
 
 For example, consider what happens when Python adds a long list of numbers
-together 
+together
 
-Typically the runtime environment has to check the type of these objects one by one before it figures out how to add them 
+Typically the runtime environment has to check the type of these objects one by one before it figures out how to add them
 
 This involves substantial overheads
 
 There are also significant overheads associated with accessing the data values themselves, which might not be stored contiguously in memory
 
 The resulting machine code is often complex and slow
-
-
 
 
 Just-in-time compilation
@@ -212,7 +202,6 @@ In some instances, all the information is supplied by the programmer
 
 In other cases, the compiler will attempt to infer missing information on the fly based on usage
 
-
 Through this approach, computing environments built around JIT compilers aim to
 
 * provide all the benefits of high level languages discussed above and, at the same time,
@@ -220,22 +209,17 @@ Through this approach, computing environments built around JIT compilers aim to
 * produce efficient instruction sets when functions are compiled down to machine code
 
 
-
-
 JIT Compilation in Julia
 ==========================
 
-
 JIT compilation is the approach used by Julia
 
-In an ideal setting, all information necessary to generate efficient native machine code is supplied or inferred 
+In an ideal setting, all information necessary to generate efficient native machine code is supplied or inferred
 
 In such a setting, Julia will be on par with machine code from low level languages
 
-
 An Example
 --------------
-
 
 Consider the function
 
@@ -250,7 +234,7 @@ Suppose we call ``f`` with integer arguments (e.g., ``z = f(1, 2)``)
 
 The JIT compiler now knows the types of ``a`` and ``b``
 
-Moreover, it can infer types for other variables inside the function 
+Moreover, it can infer types for other variables inside the function
 
 * e.g., ``y`` will also be an integer
 
@@ -264,8 +248,7 @@ We can view the corresponding machine code using the `@code_native` macro
     @code_native f(1, 2)
 
 
-
-If we now call ``f`` again, but this time with floating point arguments, the JIT compiler will once more infer types for the other variables inside the function 
+If we now call ``f`` again, but this time with floating point arguments, the JIT compiler will once more infer types for the other variables inside the function
 
 * e.g., ``y`` will also be a float
 
@@ -274,7 +257,6 @@ It then compiles a new version to handle this type of argument
 .. code-block:: julia
 
     @code_native f(1.0, 2.0)
-
 
 
 Subsequent calls using either floats or integers are now routed to the appropriate compiled code
@@ -288,11 +270,8 @@ In some senses, what we saw above was a best case scenario
 Sometimes the JIT compiler produces messy, slow machine code
 
 This happens when type inference fails or the compiler has insufficient information to optimize effectively
-  
+
 The next section looks at situations where these problems arise and how to get around them
-
-
-
 
 
 Fast and Slow Julia Code
@@ -300,7 +279,7 @@ Fast and Slow Julia Code
 
 To summarize what we've learned so far, Julia provides a platform for generating highly efficient machine code with relatively little effort by combining
 
-#. JIT compilation 
+#. JIT compilation
 
 #. Optional type declarations and type inference to pin down the types of variables and hence compile efficient code
 
@@ -317,9 +296,9 @@ Global Variables
 
 Global variables are names assigned to values outside of any function or type definition
 
-The are convenient and novice programmers typically use them with abandon 
+The are convenient and novice programmers typically use them with abandon
 
-But global variables are also dangerous, especially in medium to large size programs, since 
+But global variables are also dangerous, especially in medium to large size programs, since
 
 * they can affect what happens in any part of your program
 
@@ -328,7 +307,6 @@ But global variables are also dangerous, especially in medium to large size prog
 This makes it much harder to be certain about what some  small part of a given piece of code actually commands
 
 Here's a `useful discussion on the topic <http://wiki.c2.com/?GlobalVariablesAreBad>`__
-
 
 When it comes to JIT compilation, global variables create further problems
 
@@ -341,7 +319,8 @@ To illustrate, consider this code, where ``b`` is global
 
     b = 1.0
     function g(a)
-        for i in 1:1_000_000
+        global b
+        for i ∈ 1:1_000_000
             tmp = a + b
         end
     end
@@ -350,9 +329,9 @@ The code executes relatively slowly and uses a huge amount of memory
 
 .. code-block:: julia
 
-    @time g(1.0)
+    using BenchmarkTools
 
-
+    @btime g(1.0)
 
 
 If you look at the corresponding machine code you will see that it's a mess
@@ -362,31 +341,26 @@ If you look at the corresponding machine code you will see that it's a mess
     @code_native g(1.0)
 
 
-
 If we eliminate the global variable like so
 
 .. code-block:: julia
 
     function g(a, b)
-        for i in 1:1_000_000
+        for i ∈ 1:1_000_000
             tmp = a + b
         end
     end
 
-
-then execution speed improves dramatically 
-
-.. code-block:: julia
-
-    @time g(1.0, 1.0)
-
-
+then execution speed improves dramatically
 
 .. code-block:: julia
 
     @time g(1.0, 1.0)
 
 
+.. code-block:: julia
+
+    @time g(1.0, 1.0)
 
 
 Note that the second run was dramatically faster than the first
@@ -397,16 +371,13 @@ Notice also how small the memory footprint of the execution is
 
 Also, the machine code is simple and clean
 
-
 .. code-block:: julia
 
     @code_native g(1.0, 1.0)
 
 
-
 Now the compiler is certain of types throughout execution of the function and
 hence can optimize accordingly
-
 
 
 The ``const`` keyword
@@ -419,7 +390,8 @@ prepend it with ``const``
 
     const b_const = 1.0
     function g(a)
-        for i in 1:1_000_000
+        global b_const
+        for i ∈ 1:1_000_000
             tmp = a + b_const
         end
     end
@@ -430,7 +402,6 @@ Now the compiler can again generate efficient machine code
 We'll leave you to experiment with it
 
 
-
 Composite Types with Abstract Field Types
 --------------------------------------------
 
@@ -439,7 +410,7 @@ fields with abstract types
 
 We met this issue :ref:`earlier <spec_field_types>`, when we discussed AR(1) models
 
-Let's experiment, using, respectively, 
+Let's experiment, using, respectively,
 
 * an untyped field
 
@@ -488,9 +459,7 @@ In the last case, concrete type information for the fields is embedded in the ob
 
     typeof(fc)
 
-
 This is significant because such information is detected by the compiler
-
 
 Timing
 ^^^^^^^^^
@@ -500,11 +469,10 @@ Here's a function that uses the field ``a`` of our objects
 .. code-block:: julia
 
     function f(foo)
-        for i in 1:1_000_000
+        for i ∈ 1:1_000_000
             tmp = i + foo.a
         end
     end
-            
 
 
 Let's try timing our code, starting with the generic case:
@@ -512,9 +480,7 @@ Let's try timing our code, starting with the generic case:
 
 .. code-block:: julia
 
-    @time f(fg)
-
-
+    @btime f($fg)
 
 The timing is not very impressive
 
@@ -525,13 +491,11 @@ Here's the nasty looking machine code
     @code_native f(fg)
 
 
-
 The abstract case is similar
 
 .. code-block:: julia
 
-    @time f(fa)
-
+    @btime f($fa)
 
 
 Note the large memory footprint
@@ -542,12 +506,10 @@ Finally, let's look at the parametrically typed version
 
 .. code-block:: julia
 
-    @time f(fc)
+    @btime f($fc)
 
 
-
-Some of this time is JIT compilation, and one more execution gets us down to 
-
+Some of this time is JIT compilation, and one more execution gets us down to
 
 
 Here's the corresponding machine code
@@ -555,8 +517,6 @@ Here's the corresponding machine code
 .. code-block:: julia
 
     @code_native f(fc)
-
-
 
 
 Much nicer...
@@ -572,31 +532,27 @@ Consider the following function, which essentially does the same job as Julia's 
 
 .. code-block:: julia
 
-    function sum_float_array(x::Array{Float64, 1})
+    function sum_float_array(x::AbstractVector{<:Number})
         sum = 0.0
-        for i in 1:length(x)
+        for i ∈ eachindex(x)
             sum += x[i]
         end
         return sum
     end
 
 
-
 Calls to this function run very quickly
 
 .. code-block:: julia
 
-    x = linspace(0, 1, 1e6)
+    x = range(0, stop = 1, length = Int(1e6))
     x = collect(x)
     typeof(x)
 
 
-
 .. code-block:: julia
 
-    @time sum_float_array(x)
-
-
+    @btime sum_float_array($x)
 
 
 When Julia compiles this function, it knows that the data passed in as ``x`` will be an array of 64 bit floats
@@ -617,7 +573,7 @@ Here's the same function minus the type annotation in the function signature
 
     function sum_array(x)
         sum = 0.0
-        for i in 1:length(x)
+        for i ∈ eachindex(x)
             sum += x[i]
         end
         return sum
@@ -628,8 +584,7 @@ similar speed as the function with type information
 
 .. code-block:: julia
 
-    @time sum_array(x)
-
+    @btime sum_array($x)
 
 
 The reason is that when ``sum_array()`` is first called on a vector of a given
@@ -648,20 +603,18 @@ For example, the following snippet creates an array where the element type is ``
 
 .. code-block:: julia
 
-    x = Any[1/i for i in 1:1e6];
+    x = Any[ 1/i for i ∈ 1:Int(1e6) ];
 
 .. code-block:: julia
 
     eltype(x)
 
 
-
 Now summation is much slower and memory management is less efficient
 
 .. code-block:: julia
 
-    @time sum_array(x)
-
+    @btime sum_array($x)
 
 
 Further Comments
@@ -669,7 +622,6 @@ Further Comments
 
 
 Here are some final comments on performance
-
 
 
 Explicit Typing
@@ -691,14 +643,11 @@ Moreover, explicitly typing everything is not necessary for optimal performance
 The Julia compiler is smart and can often infer types perfectly well, without
 any performance cost
 
-What we really want to do is 
+What we really want to do is
 
 * keep our code simple, elegant and generic
 
 * help the compiler out in situations where it's liable to get tripped up
-
-
-
 
 Summary and Tips
 -----------------------
@@ -712,9 +661,9 @@ If types are not supplied then they will be inferred
 If types are stable and can be inferred effectively your functions will run fast
 
 
-
 Further Reading
 -----------------------
+
 
 A good next stop for further reading is the `relevant part <https://docs.julialang.org/en/stable/manual/performance-tips/>`_ of the Julia documentation
 
@@ -724,10 +673,11 @@ A good next stop for further reading is the `relevant part <https://docs.juliala
 
 .. http://stackoverflow.com/questions/10268028/julia-compiles-the-script-everytime
 
+
 .. This is how Julia gets good performance even when code is written without type annotations: if you call f(1) you get code specialized for Int64 — the type of 1 on 64-bit systems; if you call f(1.0) you get a newly jitted version that is specialized for Float64 — the type of 1.0 on all systems. Since each compiled version of the function knows what types it will be getting, it can run at C-like speed. You can sabotage this by writing and using "type-unstable" functions whose return type depends on run-time data, rather than just types, but we've taken great care not to do that in designing the core language and standard library.
 
-.. http://scientopia.org/blogs/goodmath/2014/02/04/everyone-stop-implementing-programming-languages-right-now-its-been-solved/
 
+.. http://scientopia.org/blogs/goodmath/2014/02/04/everyone-stop-implementing-programming-languages-right-now-its-been-solved/
 
 
 .. ADD EXERCISES
