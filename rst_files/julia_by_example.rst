@@ -323,14 +323,12 @@ This function will be passed a choice of probability distribution and respond by
 
 In doing so we'll make use of the Distributions package
 
-The following code installs the Distributions package if it is not installed already
-
-Do not worry about the syntax which will covered later on
+The following code installs the Distributions package
 
 .. code-block:: julia
 
-    using Pkg: add, installed
-    "Distributions" ∈ keys(installed()) || add("Distributions")
+    using Pkg
+    Pkg.add("Distributions")
 
 
 Here's the code
