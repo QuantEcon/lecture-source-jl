@@ -276,7 +276,7 @@ follows
 
 .. code-block:: julia
 
-    sum(i * j for (i, j) ∈ zip(x, y))             # Gives the same result
+    sum(prod, zip(x, y))    # Gives the same result
 
 
 .. code-block:: julia
