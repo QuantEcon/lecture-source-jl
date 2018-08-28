@@ -264,21 +264,19 @@ We'll write our code as a function that takes the following three arguments
 
 .. code-block:: julia
 
-    function mc_sample_path(P; init=1, sample_size=1000)
-        X = Array{Int64}(sample_size) # allocate memory
+    function mc_sample_path(P; init = 1, sample_size = 1000)
+        X = zeros(Int, sample_size) # allocate memory
         X[1] = init
         # === convert each row of P into a distribution === #
         n = size(P)[1]
-        P_dist = [DiscreteRV(vec(P[i,:])) for i in 1:n]
+        P_dist = [ DiscreteRV(vec(P[i,:])) for i ∈ 1:n ]
 
         # === generate the sample path === #
-        for t in 1:(sample_size - 1)
+        for t ∈ 1:(sample_size - 1)
             X[t+1] = rand(P_dist[X[t]])
         end
         return X
     end
-
-
 
 
 Let's see how it works using the small matrix
@@ -304,7 +302,7 @@ If you run the following code you should get roughly that answer
 .. code-block:: julia
 
     P = [0.4 0.6; 0.2 0.8]
-    X = mc_sample_path(P, sample_size=100000);
+    X = mc_sample_path(P, sample_size = 100000);
     println(mean(X .== 1))
 
 
@@ -348,12 +346,12 @@ The following code illustrates
 .. code-block:: julia
 
     mc = MarkovChain(P, ["unemployed", "employed"])
-    simulate(mc, 4, init=1)   # Start at state 1
-    
+    simulate(mc, 4, init = 1)   # Start at state 1
+
 
 .. code-block:: julia
 
-    simulate(mc, 4, init=2)  # Start at state 2 
+    simulate(mc, 4, init = 2)  # Start at state 2
 
 
 
@@ -731,15 +729,6 @@ We can confirm that the stochastic matrix is periodic as follows
     is_aperiodic(mc)
 
 
-
-
-
-
-
-
-
-
-
 :index:`Stationary Distributions`
 =================================
 
@@ -751,15 +740,11 @@ As seen in :eq:`fin_mc_fr`, we can shift probabilities forward one unit of time 
 Some distributions are invariant under this updating process --- for example,
 
 
-
 .. code-block:: julia
 
     P = [.4 .6; .2 .8];
     ψ = [0.25, 0.75];
     ψ' * P
-
-
-
 
 
 Such distributions are called **stationary**, or **invariant**
@@ -865,16 +850,11 @@ Hence we need to impose the restriction that the solution must be a probability 
 A suitable algorithm is implemented in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ --- the next code block illustrates
 
 
-
 .. code-block:: julia
-
 
     P = [.4 .6; .2 .8];
     mc = MarkovChain(P);
     stationary_distributions(mc)
-
-
-
 
 
 The stationary distribution is unique
@@ -897,37 +877,37 @@ The convergence in the theorem is illustrated in the next figure
 .. code-block:: julia
 
     using Plots
-    pyplot() 
 
-    P = [0.971 0.029 0.000
-         0.145 0.778 0.077
-         0.000 0.508 0.492]
+    let
+        P = [0.971 0.029 0.000
+             0.145 0.778 0.077
+             0.000 0.508 0.492]
 
-    ψ = [0.0 0.2 0.8]
+        ψ = [0.0 0.2 0.8]
 
-    t = 20
-    x_vals = Array{Float64}(t+1)
-    y_vals = Array{Float64}(t+1)
-    z_vals = Array{Float64}(t+1)
-    colors = []
+        t = 20
+        x_vals = zeros(t+1)
+        y_vals = similar(x_vals)
+        z_vals = similar(x_vals)
+        colors = []
 
-    for i=1:t
-        x_vals[i] = ψ[1]
-        y_vals[i] = ψ[2]
-        z_vals[i] = ψ[3]
-        ψ = ψ*P
-        push!(colors, :red)
+        for i ∈ 1:t
+            x_vals[i] = ψ[1]
+            y_vals[i] = ψ[2]
+            z_vals[i] = ψ[3]
+            ψ = ψ * P
+            push!(colors, :red)
+        end
+        push!(colors, :black)
+
+        mc = MarkovChain(P)
+        ψ_star = stationary_distributions(mc)[1]
+        x_vals[t+1] = ψ_star[1]
+        y_vals[t+1] = ψ_star[2]
+        z_vals[t+1] = ψ_star[3]
+        scatter(x_vals, y_vals, z_vals, color = colors)
+        plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
     end
-    push!(colors, :black)
-
-    mc = MarkovChain(P)
-    ψ_star = stationary_distributions(mc)[1]
-    x_vals[t+1] = ψ_star[1]
-    y_vals[t+1] = ψ_star[2]
-    z_vals[t+1] = ψ_star[3]
-    scatter(x_vals, y_vals, z_vals, color=colors)
-    plot!(lims=(0, 1), ticks=[0.25 0.5 0.75]', legend=:none, camera=(300, 30))
-  
 
 
 Here
@@ -977,10 +957,6 @@ The result tells us that the fraction of time the chain spends at state :math:`x
 This gives us another way to interpret the stationary distribution --- provided that the convergence result in :eq:`llnfmc0` is valid
 
 The convergence in :eq:`llnfmc0` is a special case of a law of large numbers result for Markov chains --- see `EDTC <http://johnstachurski.net/edtc.html>`_, section 4.3.4 for some additional information
-
-
-
-
 
 
 .. _mc_eg1-2:
@@ -1113,8 +1089,6 @@ where
 
 
 Premultiplication by :math:`(I - \beta P)^{-1}` amounts to "applying the **resolvent operator**"
-
-
 
 
 Exercises
@@ -1293,16 +1267,12 @@ The following code snippet provides a hint as to how you can go about this
 
 .. code-block:: jlcon
 
-    matchall(r"\w", "x +++ y ****** z")
-
+    collect((m.match for m ∈ eachmatch(r"\w", "x +++ y ****** z")))
 
 
 .. code-block:: jlcon
 
-    matchall(r"\w", "a ^^ b &&& \$\$ c")
-
-
-
+    collect((m.match for m ∈ eachmatch(r"\w", "a ^^ b &&& \$\$ c")))
 
 
 When you solve for the ranking, you will find that the highest ranked node is in fact ``g``, while the lowest is ``a``
@@ -1373,7 +1343,7 @@ The values :math:`P(x_i, x_j)` are computed to approximate the AR(1) process ---
     P(x_i, x_j) = F(x_j - \rho x_i + s/2) - F(x_j - \rho x_i - s/2)
 
 
-The exercise is to write a function ``approx_markov(rho, sigma_u, m=3, n=7)`` that returns
+The exercise is to write a function ``approx_markov(rho, sigma_u, m = 3, n = 7)`` that returns
 :math:`\{x_0, \ldots, x_{n-1}\} \subset \mathbb R` and :math:`n \times n` matrix
 :math:`P` as described above
 
@@ -1384,10 +1354,9 @@ Solutions
 ===========
 
 
-
 .. code-block:: julia
 
-    using LaTeXStrings
+    using LaTeXStrings, Printf
 
 Exercise 1
 ----------
@@ -1397,39 +1366,34 @@ compare it to the stationary probability.
 
 .. code-block:: julia
 
-    α = β = 0.1
-    N = 10000
-    p = β / (α + β)
+    let
+        α = β = 0.1
+        N = 10000
+        p = β / (α + β)
 
-    P = [1 - α       α   # Careful: P and p are distinct
-             β   1 - β]
+        P = [1 - α   α    # Careful: P and p are distinct
+             β     1 - β]
 
-    mc = MarkovChain(P)
+        mc = MarkovChain(P)
 
+        labels = []
+        y_vals = []
 
+        for x0 ∈ 1:2
+            # == Generate time series for worker that starts at x0 == #
+            X = simulate_indices(mc, N; init = x0)
 
+            # == Compute fraction of time spent unemployed, for each n == #
+            X_bar = cumsum(X.==1) ./ collect(1:N)
 
-.. code-block:: julia
+            l = LaTeXString("\$X_0 = $x0\$")
+            push!(labels, l)
+            push!(y_vals, X_bar .- p)
+        end
 
-    labels = []
-    y_vals = []
-
-    for x0 = 1:2
-        # == Generate time series for worker that starts at x0 == #
-        X = simulate_indices(mc, N; init=x0)
-
-        # == Compute fraction of time spent unemployed, for each n == #
-        X_bar = cumsum(X.==1) ./ (collect(1:N))
-
-        l = LaTeXString("\$X_0 = $x0\$")
-        push!(labels, l)
-        push!(y_vals, X_bar - p)
+        plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
+             ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
     end
-
-    plot(y_vals, color=[:blue :green], fillrange=0, fillalpha=0.1,
-         ylims=(-0.25, 0.25), label=reshape(labels,1,length(labels)))
-
-
 
 
 Exercise 2
@@ -1488,57 +1452,53 @@ executing the next cell
     Return list of pages, ordered by rank
     =#
 
-    infile = "web_graph_data.txt"
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    let
+        infile = "web_graph_data.txt"
+        alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-    n = 14 # Total number of web pages (nodes)
+        n = 14 # Total number of web pages (nodes)
 
-    # == Create a matrix Q indicating existence of links == #
-    #  * Q[i, j] = 1 if there is a link from i to j
-    #  * Q[i, j] = 0 otherwise
-    Q = zeros(Int64, n, n)
-    f = open(infile, "r")
-    edges = readlines(f)
-    close(f)
-    for edge in edges
-        from_node, to_node = matchall(r"\w", edge)
-        i = searchindex(alphabet, from_node)
-        j = searchindex(alphabet, to_node)
-        Q[i, j] = 1
+        # == Create a matrix Q indicating existence of links == #
+        #  * Q[i, j] = 1 if there is a link from i to j
+        #  * Q[i, j] = 0 otherwise
+        Q = zeros(Int64, n, n)
+        f = open(infile, "r")
+        edges = readlines(f)
+        close(f)
+        for edge ∈ edges
+            from_node, to_node = collect((m.match for m = eachmatch(r"\w", edge)))
+            i = first(something(findfirst(from_node, alphabet), 0:-1))
+            j = first(something(findfirst(to_node, alphabet), 0:-1))
+            Q[i, j] = 1
+        end
+
+        # == Create the corresponding Markov matrix P == #
+        P = zeros(n, n)
+        for i ∈ 1:n
+            P[i, :] = Q[i, :] / sum(Q[i, :])
+        end
+
+        mc = MarkovChain(P)
+
+        # == Compute the stationary distribution r == #
+        r = stationary_distributions(mc)[1]
+        ranked_pages = Dict(alphabet[i] => r[i] for i ∈ 1:n)
+
+        # == Print solution, sorted from highest to lowest rank == #
+        println("Rankings\n ***")
+        sort_inds = reverse!(sortperm(collect(values(ranked_pages))))
+        the_keys = collect(keys(ranked_pages))
+        the_vals = collect(values(ranked_pages))
+        for i ∈ sort_inds
+            @printf("%s: %.4f\n", the_keys[i], the_vals[i])
+        end
     end
-
-    # == Create the corresponding Markov matrix P == #
-    P = Array{Float64}(n, n)
-    for i=1:n
-        P[i, :] = Q[i, :] / sum(Q[i, :])
-    end
-
-    mc = MarkovChain(P)
-
-    # == Compute the stationary distribution r == #
-    r = stationary_distributions(mc)[1]
-    ranked_pages = Dict(alphabet[i] => r[i] for i=1:n)
-
-    # == Print solution, sorted from highest to lowest rank == #
-    println("Rankings\n ***")
-    sort_inds = reverse!(sortperm(collect(values(ranked_pages))))
-    the_keys = collect(keys(ranked_pages))
-    the_vals = collect(values(ranked_pages))
-    for i in sort_inds
-        @printf("%s: %.4f\n", the_keys[i], the_vals[i])
-    end
-
-
 
 
 Exercise 3
 ----------
 
 A solution from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ can be found `here <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`_
-
-
-
-
 
 
 .. rubric:: Footnotes
