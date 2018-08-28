@@ -49,7 +49,7 @@ We'll restrict ourselves to a few simple examples (the package itself has `detai
 
 * defaults are ``n = 1`` and ``p = 0.5``
 
-Distributions.jl defines various methods for acting on these instances in order to obtain 
+Distributions.jl defines various methods for acting on these instances in order to obtain
 
 * random draws
 
@@ -57,7 +57,7 @@ Distributions.jl defines various methods for acting on these instances in order 
 
 * mean, variance, kurtosis, etc.
 
-For example, 
+For example,
 
 * To generate ``k`` draws from the instance ``d`` use ``rand(d, k)``
 
@@ -83,11 +83,6 @@ Although data can be heterogeneous within a ``DataFrame``, the contents of the c
 
 This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) or, more loosely, a spreadsheet in Excel
 
-The DataFrames package also supplies a ``DataArray`` type, which is like a one dimensional ``DataFrame``
-
-In terms of working with data, the advantage of a ``DataArray`` over a
-standard numerical array is that it can handle missing values
-
 Here's an example
 
 .. code-block:: julia
@@ -98,19 +93,13 @@ Here's an example
 
     commodities = ["crude", "gas", "gold", "silver"]
 
+.. code-block:: julia
 
+    last_price = [4.2, 11.3, 12.1, missing]
 
 .. code-block:: julia
 
-    last_price = @data([4.2, 11.3, 12.1, NA])  # Create DataArray
-
-
-	   
-.. code-block:: julia
-
-    df = DataFrame(commod=commodities, price=last_price)
-
-
+    df = DataFrame(commod = commodities, price = last_price)
 
 
 Columns of the DataFrame can be accessed by name
@@ -121,15 +110,9 @@ Columns of the DataFrame can be accessed by name
     df[:price]
 
 
-
-
-
-
 .. code-block:: julia
 
     df[:commod]
-
-
 
 
 The DataFrames package provides a number of methods for acting on DataFrames
@@ -141,26 +124,29 @@ A simple one is ``describe()``
     describe(df)
 
 
-
-
 There are also functions for splitting, merging and other data munging
 operations
 
-Data can be read from and written to CSV files using syntax ``df = readtable("data_file.csv")`` and ``writetable("data_file.csv", df)`` respectively
+Data can be read from and written to CSV files using the CSV package
+
+.. code-block:: julia
+    :class: no-execute
+
+    using CSV
+    df = CSV.read("data_file.csv")
+    CSV.write("data_file.csv", df)
 
 Other packages for working with data can be found at `JuliaStats <https://github.com/JuliaStats>`_ and `JuliaQuant <https://github.com/JuliaQuant>`_
 
 
-
-
-Interpolation 
+Interpolation
 =============================
 
-In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of points) 
+In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of points)
 
 We also need such representations to be fast and efficient
 
-The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/tlycken/Interpolations.jl>`_
+The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
 
 One downside of Interpolations.jl is that the code to set up simple interpolation objects is relatively verbose
 
@@ -168,10 +154,9 @@ The upside is that the routines have excellent performance
 
 The package is also well written and well maintained
 
-Another alternative, if using univariate linear interpolation, is `LinInterp` from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ 
+Another alternative, if using univariate linear interpolation, is `LinInterp` from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_
 
 As we show below, the syntax for this function is much simpler
-
 
 
 Univariate Interpolation
@@ -185,30 +170,28 @@ We begin by creating some data points, using a sine function
 
     using Interpolations
     using Plots
-    plotlyjs()
-    
+
     x = -7:7             # x points, coase grid
     y = sin.(x)          # corresponding y points
-    
-    xf = -7:0.1:7        # fine grid
-    plot(xf, sin.(xf), label="sine function")
-    scatter!(x, y, label="sampled data", markersize=4)
-	
 
-We can implement linear interpolation easily using QuantEcon's `LinInterp` 
+    xf = -7:0.1:7        # fine grid
+    plot(xf, sin.(xf), label = "sine function")
+    scatter!(x, y, label = "sampled data", markersize = 4)
+
+
+We can implement linear interpolation easily using QuantEcon's `LinInterp`
 
 
 .. code-block:: julia
 
     using QuantEcon
-    
+
     li = LinInterp(x, y)        # create LinInterp object
     li(0.3)                     # evaluate at a single point
     y_linear_qe = li.(xf)       # evaluate at multiple points
-    
-    plot(xf, y_linear_qe, label="linear")
-    scatter!(x, y, label="sampled data", markersize=4)
 
+    plot(xf, y_linear_qe, label = "linear")
+    scatter!(x, y, label = "sampled data", markersize = 4)
 
 
 The syntax is simple and the code is efficient, but for other forms of
@@ -234,7 +217,6 @@ When we want to evaluate them at points in their domain (i.e., between
     itp_cubic[0.3]
 
 
-
 Note the use of square brackets, rather than parentheses!
 
 Let's plot these objects created above
@@ -242,12 +224,12 @@ Let's plot these objects created above
 .. code-block:: julia
 
     xf = -7:0.1:7
-    y_const = [itp_const[x] for x in xf]
-    y_linear = [itp_linear[x] for x in xf]
-    y_cubic = [itp_cubic[x] for x in xf]
-    
-    plot(xf, [y_const y_linear y_cubic], label=["constant" "linear" "cubic"])
-    scatter!(x, y, label="sampled data", markersize=4)
+    y_const = [ itp_const[x] for x ∈ xf ]
+    y_linear = [ itp_linear[x] for x ∈ xf ]
+    y_cubic = [ itp_cubic[x] for x ∈ xf ]
+
+    plot(xf, [y_const y_linear y_cubic], label = ["constant" "linear" "cubic"])
+    scatter!(x, y, label = "sampled data", markersize = 4)
 
 
 
@@ -261,23 +243,21 @@ The `Interpolations.jl` code is a bit more picky
 Here's an example of the latter with an irregular grid
 
 .. code-block:: julia
-    
-    x = log.(linspace(1, exp(4), 10)) + 1  # Uneven grid
+
+    x = log.(range(1, stop = exp(4), length = 10)) .+ 1  # Uneven grid
     y = log.(x)                            # Corresponding y points
-    
+
     itp_const = interpolate((x, ), y, Gridded(Constant()))
     itp_linear = interpolate((x, ), y, Gridded(Linear()))
-    
-    xf = log.(linspace(1, exp(4), 100)) + 1
-    y_const = [itp_const[x] for x in xf]
-    y_linear = [itp_linear[x] for x in xf]
-    y_true = [log(x) for x in xf]
-    
+
+    xf = log.(range(1, stop = exp(4), length = 100)) .+ 1
+    y_const = [ itp_const[x] for x ∈ xf ]
+    y_linear = [ itp_linear[x] for x ∈ xf ]
+    y_true = [ log(x) for x ∈ xf ]
+
     labels = ["piecewise constant" "linear" "true function"]
-    plot(xf, [y_const y_linear y_true], label=labels)
-    scatter!(x, y, label="sampled data", markersize=4, size=(800, 400))
-
-
+    plot(xf, [y_const y_linear y_true], label = labels)
+    scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
 
 
 Multivariate Interpolation
@@ -289,42 +269,42 @@ The following example gives one illustration
 
 .. code-block:: julia
 
-    n = 5
-    x = linspace(-3, 3, n)
-    y = copy(x)
-    
-    z = Array{Float64}(n, n)
-    f(x, y) = cos(x^2 + y^2) / (1 + x^2 + y^2)
-    for i in 1:n
-        for j in 1:n
-            z[j, i] = f(x[i], y[j])
-        end
-    end
-    
-    itp = interpolate((x, y), z, Gridded(Linear()));
-    
-    nf = 50
-    xf = linspace(-3, 3, nf)
-    yf = copy(xf)
-    
-    zf = Array{Float64}(nf, nf)
-    ztrue = Array{Float64}(nf, nf)
-    for i in 1:nf
-        for j in 1:nf
-            zf[j, i] = itp[xf[i], yf[j]]
-            ztrue[j, i] = f(xf[i], yf[j])
-        end
-    end
-    
-    grid = gridmake(x, y)
-    z = reshape(z, n * n, 1)
-    
-    pyplot()
-    surface(xf, yf, zf', color=:greens, falpha=0.7, cbar=false)
-    surface!(xf, yf, ztrue', fcolor=:blues, falpha=0.25, cbar=false)
-    scatter!(grid[:, 1], grid[:, 2], vec(z), legend=:none, color=:black, markersize=4)
+    let
+        n = 5
+        x = range(-3, stop = 3, length = n)
+        y = copy(x)
 
+        z = zeros(n, n)
+        f(x, y) = cos(x^2 + y^2) / (1 + x^2 + y^2)
+        for i ∈ 1:n
+            for j ∈ 1:n
+                z[j, i] = f(x[i], y[j])
+            end
+        end
 
+        itp = interpolate((x, y), z, Gridded(Linear()));
+
+        nf = 50
+        xf = range(-3, stop = 3, length = nf)
+        yf = copy(xf)
+
+        zf = zeros(nf, nf)
+        ztrue = similar(zf)
+        for i ∈ 1:nf
+            for j ∈ 1:nf
+                zf[j, i] = itp[xf[i], yf[j]]
+                ztrue[j, i] = f(xf[i], yf[j])
+            end
+        end
+
+        grid = gridmake(x, y)
+        z = reshape(z, n * n, 1)
+
+        surface(xf, yf, zf', color = :greens, falpha = 0.7, cbar = false)
+        surface!(xf, yf, ztrue', fcolor = :blues, falpha = 0.25, cbar = false)
+        scatter!(grid[:, 1], grid[:, 2], vec(z), legend = :none, color = :black,
+                 markersize = 4)
+    end
 
 The original function is in blue, while the linear interpolant is shown in green
 
@@ -332,12 +312,10 @@ Optimization, Roots and Fixed Points
 =========================================
 
 
-Let's look briefly at the optimization and root finding algorithms 
+Let's look briefly at the optimization and root finding algorithms
 
 
-
-
-Roots 
+Roots
 -----------------
 
 A root of a real function :math:`f` on :math:`[a,b]` is an :math:`x \in [a, b]` such that :math:`f(x)=0`
@@ -355,13 +333,9 @@ with :math:`x \in [0,1]` we get
 .. _root_fig:
 
 
-
 The unique root is approximately 0.408
 
-One common root-finding algorithm is the `Newton-Raphson method <https://en.wikipedia.org/wiki/Newton%27s_method>`_
-
-This is implemented as ``newton()`` in the `Roots <https://github.com/JuliaLang/Roots.jl>`_ package and is called with
-the function and an initial guess
+The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
 
 .. code-block:: julia
 
@@ -371,33 +345,15 @@ the function and an initial guess
 
     f(x) = sin(4 * (x - 1/4)) + x + x^20 - 1
 
-
-
-.. code-block:: julia
-
-    newton(f, 0.2)
-
-
-The Newton-Raphson method uses local slope information, which can lead to failure of convergence for some initial conditions
-
-.. code-block:: julia
-
-    newton(f, 0.7)
-
-
-
-For this reason most modern solvers use more robust "hybrid methods", as does Roots's ``fzero()`` function
-
 .. code-block:: julia
 
     fzero(f, 0, 1)
 
 
-
 Optimization
 ---------------------
 
-For constrained, univariate minimization a useful option is ``optimize()`` from the 
+For constrained, univariate minimization a useful option is ``optimize()`` from the
 `Optim <https://github.com/JuliaOpt/Optim.jl>`_ package
 
 This function defaults to a robust hybrid optimization routine called Brent's method
@@ -405,9 +361,8 @@ This function defaults to a robust hybrid optimization routine called Brent's me
 .. code-block:: julia
 
     using Optim
-	
+
     optimize(x -> x^2, -1.0, 1.0)
-	
 
 
 For other optimization routines, including least squares and multivariate optimization, see `the documentation <https://github.com/JuliaOpt/Optim.jl/blob/master/README.md>`_
@@ -415,15 +370,8 @@ For other optimization routines, including least squares and multivariate optimi
 A number of alternative packages for optimization can be found at `JuliaOpt <http://www.juliaopt.org/>`_
 
 
-
-
-
-
 Other Topics
 =================
-
-
-
 
 Numerical Integration
 -----------------------
@@ -433,12 +381,11 @@ Gaussian quadrature
 
 .. code-block:: julia
 
-    import QuadGK.quadgk
-    quadgk(x -> cos(x), -2pi, 2pi)
+    using QuadGK
+    quadgk(cos, -2π, 2π)
 
 
-	
-This is an adaptive Gauss-Kronrod integration technique that's relatively accurate for smooth functions 
+This is an adaptive Gauss-Kronrod integration technique that's relatively accurate for smooth functions
 
 However, its adaptive implementation makes it slow and not well suited to inner loops
 
@@ -446,32 +393,30 @@ For this kind of integration you can use the quadrature routines from QuantEcon
 
 .. code-block:: julia
 
-    nodes, weights = qnwlege(65, -2pi, 2pi);
+    nodes, weights = qnwlege(65, -2π, 2π);
     integral = do_quad(x -> cos.(x), nodes, weights)
-	
 
 
 Let's time the two implementations
 
 .. code-block:: julia
 
-    @time quadgk(x -> cos.(x), -2pi, 2pi)
-    @time do_quad(x -> cos.(x), nodes, weights)
-
-
+    using BenchmarkTools
+    @btime quadgk(x -> cos.(x), -2π, 2π)
+    @btime do_quad(x -> cos.(x), $nodes, $weights)
 
 
 We get similar accuracy with a speed up factor approaching three orders of magnitude
 
 More numerical integration (and differentiation) routines can be found in the
-package `Calculus <https://github.com/johnmyleswhite/Calculus.jl>`_
+package `Calculus <https://github.com/JuliaMath/Calculus.jl>`_
 
 
 Linear Algebra
 -----------------
 
 The standard library contains many useful routines for linear algebra, in
-addition to standard functions such as ``det()``, ``inv()``, ``eye()``, etc.
+addition to standard functions such as ``det()``, ``inv()``, ``factorize()``, etc.
 
 Routines are available for
 
@@ -479,21 +424,14 @@ Routines are available for
 
 * LU decomposition
 
-* Singular value decomposition, 
-  
+* Singular value decomposition,
+
 * Schur factorization, etc.
 
 See `here <https://docs.julialang.org/en/stable/manual/linear-algebra/>`__ for further details
-
 
 
 Further Reading
 ===================
 
 The full set of libraries available under the Julia packaging system can be browsed at `pkg.julialang.org <http://pkg.julialang.org/>`_
-
-
-
-
-
-
