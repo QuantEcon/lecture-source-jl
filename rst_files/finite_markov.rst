@@ -1384,7 +1384,7 @@ compare it to the stationary probability.
             X = simulate_indices(mc, N; init = x0)
 
             # == Compute fraction of time spent unemployed, for each n == #
-            X_bar = cumsum(X.==1) ./ 1:N
+            X_bar = cumsum(X.==1) ./ collect(1:N)
 
             l = LaTeXString("\$X_0 = $x0\$")
             push!(labels, l)
