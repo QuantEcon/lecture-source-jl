@@ -603,7 +603,7 @@ For example, the following snippet creates an array where the element type is ``
 
 .. code-block:: julia
 
-    x = Any[ 1/i for i ∈ 1:Int(1e6) ];
+    x = Any[ 1/i for i ∈ 1:1e6 ];
 
 .. code-block:: julia
 
