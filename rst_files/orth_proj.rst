@@ -18,13 +18,13 @@ Orthogonal Projections and Their Applications
 Overview
 ===========
 
-Orthogonal projection is a cornerstone of vector space methods, with many diverse applications 
+Orthogonal projection is a cornerstone of vector space methods, with many diverse applications
 
-These include, but are not limited to, 
+These include, but are not limited to,
 
 * Least squares projection, also known as linear regression
 
-* Conditional expectations for multivariate normal (Gaussian) distributions  
+* Conditional expectations for multivariate normal (Gaussian) distributions
 
 * Gram--Schmidt orthogonalization
 
@@ -35,9 +35,9 @@ These include, but are not limited to,
 * etc
 
 
-In this lecture we focus on 
+In this lecture we focus on
 
-* key ideas 
+* key ideas
 
 * least squares regression
 
@@ -47,7 +47,7 @@ Further Reading
 
 For background and foundational concepts, see our lecture :doc:`on linear algebra <linear_algebra>`
 
-For more proofs and greater theoretical detail, see `A Primer in Econometric Theory <http://www.johnstachurski.net/emet.html>`_ 
+For more proofs and greater theoretical detail, see `A Primer in Econometric Theory <http://www.johnstachurski.net/emet.html>`_
 
 For a complete set of proofs in a general setting, see, for example, :cite:`Roman2005`
 
@@ -58,7 +58,7 @@ Key Definitions
 ===============
 
 
-Assume  :math:`x, z \in \RR^n` 
+Assume  :math:`x, z \in \RR^n`
 
 Define :math:`\langle x,  z\rangle = \sum_i x_i z_i`
 
@@ -68,26 +68,24 @@ The **law of cosines** states that :math:`\langle x, z \rangle = \| x \| \| z \|
 
 When :math:`\langle x,  z\rangle = 0`, then :math:`\cos(\theta) = 0` and  :math:`x` and :math:`z` are said to be **orthogonal** and we write :math:`x \perp z`
 
-   
-
 
 .. figure:: /_static/figures/orth_proj_def1.png
     :scale: 50%
 
 For a linear subspace  :math:`S \subset \RR^n`, we call :math:`x \in \RR^n` **orthogonal to** :math:`S` if :math:`x \perp z` for all :math:`z \in S`, and write :math:`x \perp S`
-   
+
 
 .. figure:: /_static/figures/orth_proj_def2.png
     :scale: 50%
-   
+
 
 
 The **orthogonal complement** of linear subspace :math:`S \subset RR^n` is the set :math:`S^{\perp} := \{x \in \RR^n \,:\, x \perp S\}`
- 
-   
+
+
 .. figure:: /_static/figures/orth_proj_def3.png
-    :scale: 50% 
-   
+    :scale: 50%
+
 
 :math:`S^\perp` is  a linear subspace of :math:`\RR^n`
 
@@ -103,27 +101,27 @@ The **orthogonal complement** of linear subspace :math:`S \subset RR^n` is the s
 
 
 * Hence :math:`\alpha x + \beta y \in S^{\perp}`, as was to be shown
- 
+
 
 A set of vectors :math:`\{x_1, \ldots, x_k\} \subset \RR^n` is called an **orthogonal set** if :math:`x_i \perp x_j` whenever :math:`i \not= j`
- 
+
 
 If :math:`\{x_1, \ldots, x_k\}` is an orthogonal set, then the **Pythagorean Law** states that
 
 .. math::
 
-    \| x_1 + \cdots + x_k \|^2 
-    = \| x_1 \|^2 + \cdots + \| x_k \|^2 
+    \| x_1 + \cdots + x_k \|^2
+    = \| x_1 \|^2 + \cdots + \| x_k \|^2
 
 
-For example, when  :math:`k=2`, :math:`x_1 \perp x_2` implies 
+For example, when  :math:`k=2`, :math:`x_1 \perp x_2` implies
 
 .. math::
 
-    \| x_1 + x_2 \|^2 
+    \| x_1 + x_2 \|^2
      = \langle x_1 + x_2, x_1 + x_2 \rangle
      = \langle x_1, x_1 \rangle + 2 \langle  x_2, x_1 \rangle + \langle x_2, x_2 \rangle
-     = \| x_1 \|^2 + \| x_2 \|^2 
+     = \| x_1 \|^2 + \| x_2 \|^2
 
 
 Linear Independence vs Orthogonality
@@ -143,7 +141,7 @@ What vector within a linear subspace of :math:`\RR^n`  best approximates a given
 
 The next theorem provides answers this question
 
-**Theorem** (OPT) Given :math:`y \in \RR^n` and linear subspace :math:`S \subset \RR^n`, 
+**Theorem** (OPT) Given :math:`y \in \RR^n` and linear subspace :math:`S \subset \RR^n`,
 there exists a unique solution to the minimization problem
 
 .. math::
@@ -161,18 +159,15 @@ The minimizer :math:`\hat y` is the unique vector in :math:`\RR^n` that satisfie
 The vector :math:`\hat y` is called the **orthogonal projection** of :math:`y` onto :math:`S`
 
 The next figure provides some intuition
-   
+
 .. figure:: /_static/figures/orth_proj_thm1.png
     :scale: 50%
-  
-
-
 
 
 Proof of sufficiency
 --------------------
 
-We'll omit the full proof.  
+We'll omit the full proof.
 
 But we will prove sufficiency of the asserted conditions
 
@@ -190,7 +185,7 @@ Let :math:`z` be any other point in :math:`S` and use the fact that :math:`S` is
 
 
 Hence :math:`\| y - z \| \geq \| y - \hat y \|`, which completes the proof
- 
+
 
 
 Orthogonal Projection as a Mapping
@@ -209,23 +204,23 @@ In what follows we denote this operator by a matrix :math:`P`
 
 * :math:`P y` represents the projection :math:`\hat y`
 
-* This is sometimes expressed as :math:`\hat E_S y = P y`, where :math:`\hat E` denotes a **wide-sense expectations operator** and the subscript :math:`S` indicates that we are projecting :math:`y` onto the linear subspace :math:`S` 
+* This is sometimes expressed as :math:`\hat E_S y = P y`, where :math:`\hat E` denotes a **wide-sense expectations operator** and the subscript :math:`S` indicates that we are projecting :math:`y` onto the linear subspace :math:`S`
 
 The operator :math:`P` is called the **orthogonal projection mapping onto** :math:`S`
 
 
 .. figure:: /_static/figures/orth_proj_thm2.png
     :scale: 50%
-  
 
 
-It is immediate from the OPT that for any :math:`y \in \RR^n` 
+
+It is immediate from the OPT that for any :math:`y \in \RR^n`
 
 #. :math:`P y \in S` and
 
 #. :math:`y - P y \perp S`
 
-From this we can deduce additional useful properties, such as 
+From this we can deduce additional useful properties, such as
 
 #. :math:`\| y \|^2 = \| P y \|^2 + \| y - P y \|^2` and
 
@@ -236,7 +231,7 @@ For example, to prove 1, observe that :math:`y  = P y  + y - P y` and apply the 
 Orthogonal Complement
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Let :math:`S \subset \RR^n`.  
+Let :math:`S \subset \RR^n`.
 
 The **orthogonal complement** of :math:`S` is the linear subspace :math:`S^{\perp}` that satisfies
 :math:`x_1 \perp x_2` for every :math:`x_1 \in S` and :math:`x_2 \in S^{\perp}`
@@ -252,11 +247,11 @@ We write
 to indicate that for every :math:`y \in Y` there is unique :math:`x_1 \in S` and a unique :math:`x_2 \in S^{\perp}`
 such that :math:`y = x_1 + x_2`.
 
-Moreover, :math:`x_1 = \hat E_S y` and :math:`x_2 = y - \hat E_S y`    
+Moreover, :math:`x_1 = \hat E_S y` and :math:`x_2 = y - \hat E_S y`
 
 This amounts to another version of the OPT:
 
-**Theorem**.  If :math:`S` is a linear subspace of :math:`\RR^n`, :math:`\hat E_S y = P y` and :math:`\hat E_{S^{\perp}} y = M y`, then   
+**Theorem**.  If :math:`S` is a linear subspace of :math:`\RR^n`, :math:`\hat E_S y = P y` and :math:`\hat E_{S^{\perp}} y = M y`, then
 
 .. math::
 
@@ -270,7 +265,7 @@ The next figure illustrates
 
 .. figure:: /_static/figures/orth_proj_thm3.png
     :scale: 50%
-    
+
 
 
 Orthonormal Basis
@@ -285,10 +280,10 @@ If :math:`O` is orthonormal and :math:`\Span O = S`, then :math:`O` is called an
 
 :math:`O` is necessarily a basis of :math:`S` (being independent by orthogonality and the fact that no element is the zero vector)
 
-One example of an orthonormal set is the canonical basis :math:`\{e_1, \ldots, e_n\}` 
+One example of an orthonormal set is the canonical basis :math:`\{e_1, \ldots, e_n\}`
 that forms an orthonormal basis of :math:`\RR^n`, where :math:`e_i` is the :math:`i` th unit vector
 
-If :math:`\{u_1, \ldots, u_k\}` is an orthonormal basis of linear subspace :math:`S`, then 
+If :math:`\{u_1, \ldots, u_k\}` is an orthonormal basis of linear subspace :math:`S`, then
 
 .. math::
 
@@ -310,14 +305,12 @@ Taking the inner product with respect to :math:`u_i` gives
 
 .. math::
 
-    \langle x, u_i \rangle 
+    \langle x, u_i \rangle
     = \sum_{j=1}^k \alpha_j \langle u_j, u_i \rangle
-    = \alpha_i 
+    = \alpha_i
 
 
 Combining this result with :eq:`pob` verifies the claim
-
-
 
 
 Projection onto an Orthonormal Basis
@@ -366,7 +359,7 @@ We want to compute the matrix :math:`P` that verifies
 
 Evidently  :math:`Py` is a linear function from :math:`y \in \RR^n` to :math:`P y \in \RR^n`
 
-This reference is useful `<https://en.wikipedia.org/wiki/Linear_map#Matrices>`_ 
+This reference is useful `<https://en.wikipedia.org/wiki/Linear_map#Matrices>`_
 
 **Theorem.** Let the columns of :math:`n \times k` matrix :math:`X` form a basis of :math:`S`.  Then
 
@@ -375,18 +368,18 @@ This reference is useful `<https://en.wikipedia.org/wiki/Linear_map#Matrices>`_
     P = X (X'X)^{-1} X'
 
 
-Proof: Given arbitrary :math:`y \in \RR^n` and :math:`P = X (X'X)^{-1} X'`, our claim is that 
+Proof: Given arbitrary :math:`y \in \RR^n` and :math:`P = X (X'X)^{-1} X'`, our claim is that
 
 #. :math:`P y \in S`, and
 
 #. :math:`y - P y \perp S`
 
-Claim 1 is true because 
+Claim 1 is true because
 
 .. math::
 
     P y = X (X' X)^{-1} X' y = X a
-    \quad \text{when} \quad 
+    \quad \text{when} \quad
     a := (X' X)^{-1} X' y
 
 
@@ -407,8 +400,8 @@ This is true: If :math:`b \in \RR^K`, then
 .. math::
 
     (X b)' [y - X (X' X)^{-1} X'
-    y] 
-    = b' [X' y - X' y] 
+    y]
+    = b' [X' y - X' y]
     = 0
 
 
@@ -429,11 +422,9 @@ Then the columns of :math:`X` form a basis of :math:`S`
 
 From the preceding theorem, :math:`P = X (X' X)^{-1} X' y` projects :math:`y` onto :math:`S`
 
-In this context, :math:`P` is often called the **projection matrix** 
-        
+In this context, :math:`P` is often called the **projection matrix**
+
 * The matrix :math:`M = I - P` satisfies :math:`M y = \hat E_{S^{\perp}} y` and is sometimes called the **annihilator matrix**
-
-
 
 
 The Orthonormal Case
@@ -456,7 +447,7 @@ Hence
 
 .. math::
 
-    P y 
+    P y
     = U U' y
     = \sum_{i=1}^k \langle u_i, y \rangle u_i
 
@@ -469,15 +460,15 @@ basis
 Application: Overdetermined Systems of Equations
 ------------------------------------------------
 
-Let :math:`y \in \RR^n` and let :math:`X` is :math:`n \times k` with linearly independent columns 
-        
+Let :math:`y \in \RR^n` and let :math:`X` is :math:`n \times k` with linearly independent columns
+
 Given :math:`X` and :math:`y`, we seek :math:`b \in \RR^k` satisfying the system of linear equations :math:`X b = y`
 
 If :math:`n > k` (more equations than unknowns), then :math:`b` is said to be **overdetermined**
 
 Intuitively, we may not be able find a :math:`b` that satisfies all :math:`n` equations
 
-The best approach here is to 
+The best approach here is to
 
 * Accept that an exact solution may not exist
 
@@ -489,7 +480,7 @@ The next theorem shows that the solution is well defined and unique
 
 The proof uses the OPT
 
-**Theorem** The unique minimizer of  :math:`\| y - X b \|` over :math:`b \in \RR^K` is 
+**Theorem** The unique minimizer of  :math:`\| y - X b \|` over :math:`b \in \RR^K` is
 
 .. math::
 
@@ -508,15 +499,15 @@ Since :math:`P y` is the orthogonal projection onto :math:`\Span(X)` we have
 
 .. math::
 
-    \| y - P y \| 
-    \leq \| y - z \| \text{ for any } z \in \Span(X)   
+    \| y - P y \|
+    \leq \| y - z \| \text{ for any } z \in \Span(X)
 
 
 Because :math:`Xb \in \Span(X)`
 
 .. math::
 
-    \| y - X \hat \beta \| 
+    \| y - X \hat \beta \|
     \leq \| y - X b \| \text{ for any } b \in \RR^K
 
 
@@ -536,12 +527,12 @@ We treat only some examples
 Squared risk measures
 ----------------------
 
-Given pairs :math:`(x, y) \in \RR^K \times \RR`, consider choosing :math:`f \colon \RR^K \to \RR` to minimize 
+Given pairs :math:`(x, y) \in \RR^K \times \RR`, consider choosing :math:`f \colon \RR^K \to \RR` to minimize
 the **risk**
 
 .. math::
 
-    R(f) := \EE [(y - f(x))^2] 
+    R(f) := \EE [(y - f(x))^2]
 
 
 If probabilities and hence :math:`\EE` are unknown, we cannot solve this problem directly
@@ -557,9 +548,9 @@ Minimizing this expression is called **empirical risk minimization**
 
 The set :math:`\fF` is sometimes called the hypothesis space
 
-The theory of statistical learning tells us that to prevent overfitting we should take the set :math:`\fF` to be relatively simple 
+The theory of statistical learning tells us that to prevent overfitting we should take the set :math:`\fF` to be relatively simple
 
-If we let :math:`\fF` be the class of linear functions :math:`1/N`, the problem is 
+If we let :math:`\fF` be the class of linear functions :math:`1/N`, the problem is
 
 .. math::
 
@@ -578,7 +569,7 @@ Define the matrices
 
 .. math::
 
-    y := 
+    y :=
     \left(
     \begin{array}{c}
         y_1 \\
@@ -588,10 +579,10 @@ Define the matrices
     \end{array}
     \right),
     \quad
-    x_n := 
+    x_n :=
     \left(
     \begin{array}{c}
-        x_{n1} \\ 
+        x_{n1} \\
         x_{n2} \\
         \vdots \\
         x_{nK}
@@ -604,13 +595,13 @@ and
 
 .. math::
 
-    X := 
+    X :=
     \left(
     \begin{array}{c}
         x_1'  \\
         x_2'  \\
         \vdots     \\
-        x_N'  
+        x_N'
     \end{array}
     \right)
     :=:
@@ -619,7 +610,7 @@ and
         x_{11} & x_{12} & \cdots & x_{1K} \\
         x_{21} & x_{22} & \cdots & x_{2K} \\
         \vdots & \vdots &  & \vdots \\
-        x_{N1} & x_{N2} & \cdots & x_{NK} 
+        x_{N1} & x_{N2} & \cdots & x_{NK}
     \end{array}
     \right)
 
@@ -632,16 +623,16 @@ Since monotone transforms don't affect minimizers, we have
 
 .. math::
 
-    \argmin_{b \in \RR^K} \sum_{n=1}^N (y_n - b' x_n)^2 
+    \argmin_{b \in \RR^K} \sum_{n=1}^N (y_n - b' x_n)^2
     = \argmin_{b \in \RR^K} \| y - X b \|
 
 
-By our results about overdetermined linear systems of equations, the solution is 
+By our results about overdetermined linear systems of equations, the solution is
 
 .. math::
 
     \hat \beta := (X' X)^{-1} X' y
-   
+
 
 Let :math:`P` and :math:`M` be the projection and annihilator associated with :math:`X`:
 
@@ -663,26 +654,24 @@ The **vector of residuals** is
 
 .. math::
 
-    \hat u :=  y - \hat y = y - P y = M y  
+    \hat u :=  y - \hat y = y - P y = M y
 
 
 Here are some more standard definitions:
 
 * The **total sum of squares** is :math:`:=  \| y \|^2`
-        
+
 * The **sum of squared residuals** is :math:`:= \| \hat u \|^2`
-        
+
 * The **explained sum of squares** is :math:`:= \| \hat y \|^2`
 
- TSS = ESS + SSR 
+ TSS = ESS + SSR
 
 We can prove this easily using the OPT
 
-From the OPT we have :math:`y =  \hat y + \hat u` and :math:`\hat u \perp \hat y` 
+From the OPT we have :math:`y =  \hat y + \hat u` and :math:`\hat u \perp \hat y`
 
 Applying the Pythagorean law completes the proof
-
-
 
 
 Orthogonalization and Decomposition
@@ -695,20 +684,18 @@ A result of much interest is a famous algorithm for constructing orthonormal set
 The next section gives details
 
 
-
-
 .. _gram_schmidt:
 
 Gram-Schmidt Orthogonalization
 -----------------------------------
 
-**Theorem** For each linearly independent set :math:`\{x_1, \ldots, x_k\} \subset \RR^n`, there exists an 
+**Theorem** For each linearly independent set :math:`\{x_1, \ldots, x_k\} \subset \RR^n`, there exists an
 orthonormal set :math:`\{u_1, \ldots, u_k\}` with
 
 .. math::
 
     \Span \{x_1, \ldots, x_i\}
-    = 
+    =
     \Span \{u_1, \ldots, u_i\}
     \quad \text{for} \quad
     i = 1, \ldots, k
@@ -716,7 +703,7 @@ orthonormal set :math:`\{u_1, \ldots, u_k\}` with
 
 The **Gram-Schmidt orthogonalization** procedure constructs an orthogonal set :math:`\{ u_1, u_2, \ldots, u_n\}`
 
-One description of this procedure is as follows: 
+One description of this procedure is as follows:
 
 * For :math:`i = 1, \ldots, k`, form :math:`S_i := \Span\{x_1, \ldots, x_i\}` and :math:`S_i^{\perp}`
 
@@ -724,9 +711,9 @@ One description of this procedure is as follows:
 
 * For :math:`i \geq 2` set :math:`v_i := \hat E_{S_{i-1}^{\perp}} x_i` and :math:`u_i := v_i / \| v_i \|`
 
-The sequence :math:`u_1, \ldots, u_k` has the stated properties 
+The sequence :math:`u_1, \ldots, u_k` has the stated properties
 
-A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in :doc:`A First Look at the Kalman filter<kalman>` 
+A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in :doc:`A First Look at the Kalman filter<kalman>`
 
 In some exercises below you are asked to implement this algorithm and test it using projection
 
@@ -743,13 +730,13 @@ The following result uses the preceding algorithm to produce a useful decomposit
 
 * :math:`Q` is :math:`n \times k` with orthonormal columns
 
-Proof sketch: Let 
+Proof sketch: Let
 
 * :math:`x_j := \col_j (X)`
 
 * :math:`\{u_1, \ldots, u_k\}` be orthonormal with same span as :math:`\{x_1, \ldots, x_k\}` (to be constructed using Gram--Schmidt)
-  
-* :math:`Q` be formed from cols :math:`u_i` 
+
+* :math:`Q` be formed from cols :math:`u_i`
 
 Since :math:`x_j \in \Span\{u_1, \ldots, u_j\}`, we have
 
@@ -759,7 +746,7 @@ Since :math:`x_j \in \Span\{u_1, \ldots, u_j\}`, we have
     \quad \text{for } j = 1, \ldots, k
 
 
-Some rearranging gives :math:`X = Q R` 
+Some rearranging gives :math:`X = Q R`
 
 
 
@@ -774,17 +761,15 @@ Using the QR decomposition :math:`X = Q R` gives
 .. math::
 
     \begin{aligned}
-        \hat \beta 
+        \hat \beta
         & = (R'Q' Q R)^{-1} R' Q' y \\
         & = (R' R)^{-1} R' Q' y \\
-        & = R^{-1} (R')^{-1} R' Q' y 
-            = R^{-1} Q' y 
+        & = R^{-1} (R')^{-1} R' Q' y
+            = R^{-1} Q' y
     \end{aligned}
 
 
 Numerical routines would in this case use the alternative form :math:`R \hat \beta = Q' y` and back substitution
-
-
 
 
 
@@ -810,7 +795,7 @@ Using Gram-Schmidt orthogonalization, produce a linear projection of :math:`y` o
 
 .. math::
 
-    y := 
+    y :=
     \left(
     \begin{array}{c}
         1 \\
@@ -824,12 +809,12 @@ and
 
 .. math::
 
-    X := 
+    X :=
     \left(
     \begin{array}{cc}
         1 &  0  \\
         0 & -6 \\
-        2 &  2 
+        2 &  2
     \end{array}
     \right)
 
@@ -864,52 +849,39 @@ algorithm given in the lecture.
 
 .. code-block:: julia
 
-    """
-    Implements Gram-Schmidt orthogonalization.  
-    
-    Parameters
-    ----------
-    X : an n x k array with linearly independent columns
-    
-    Returns
-    -------
-    U : an n x k array with orthonormal columns
-    
-    """
+    using LinearAlgebra
+
     function gram_schmidt(X)
-        
+
         n, k = size(X)
-        U = Array{Float64}(n, k)
-        I = eye(n)
-        
+        U = zeros(n, k)
+
         # The first col of U is just the normalized first col of X
-        v1 = X[:,1]  
+        v1 = X[:,1]
         U[:,1] = v1 / norm(v1)
-    
-        for i in 2:k
+
+        for i ∈ 2:k
             # Set up
             b = X[:,i]        # The vector we're going to project
             Z = X[:, 1:i-1]   # first i-1 columns of X
-            
+
             # Project onto the orthogonal complement of the col span of Z
-            M = I - Z * inv(Z' * Z) * Z'
+            M = I - Z * inv(Z'Z) * Z'
             u = M * b
-            
+
             # Normalize
             U[:,i] = u / norm(u)
         end
-        
+
         return U
     end
-
-
 
 
 Here are the arrays we'll work with
 
 .. code-block:: julia
 
-    y = [1 3 -3]'
+    y = [1, 3, -3]
     X = [1 0; 0 -6; 2 2];
 
 First let's do ordinary projection of :math:`y` onto the basis spanned
@@ -917,9 +889,7 @@ by the columns of :math:`X`.
 
 .. code-block:: julia
 
-    Py1 = X * inv(X' * X) * X' * y
-
-
+    Py1 = X * inv(X'X) * X' * y
 
 
 Now let's orthogonalize first, using Gram--Schmidt:
@@ -927,8 +897,6 @@ Now let's orthogonalize first, using Gram--Schmidt:
 .. code-block:: julia
 
     U = gram_schmidt(X)
-
-
 
 
 Now we can project using the orthonormal basis and see if we get the
@@ -939,26 +907,18 @@ same thing:
     Py2 = U * U' * y
 
 
-
-
 The result is the same. To complete the exercise, we get an orthonormal
 basis by QR decomposition and project once more.
 
 .. code-block:: julia
 
     Q, R = qr(X)
-
+    Q = Matrix(Q)
+    (Q, R)
 
 
 .. code-block:: julia
 
-    Py3 = Q * Q' * y
-
-
+    Py2 ≈ Q * Q' * y
 
 Again, the result is the same
-
-
-
-
-
