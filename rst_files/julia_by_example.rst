@@ -8,7 +8,7 @@ An Introductory Example
 
 .. contents:: :depth: 2
 
-Overview 
+Overview
 ==================
 
 
@@ -27,13 +27,6 @@ In particular, we assume you have some familiarity with fundamental programming 
 * loops
 
 * conditionals (if/else)
-
-If you have no such programming experience, then one option is to try Python first
-
-Python is a great first language and there are many introductory treatments
-
-Otherwise, just dive in and see how you go...
-
 
 Approach
 -------------
@@ -54,7 +47,6 @@ We assume that you've worked your way through :doc:`our getting started lecture 
 For this lecture, we recommend that you work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
 
-
 Other References
 --------------------
 
@@ -65,13 +57,11 @@ The manual is thoughtfully written but also quite dense (and somewhat evangelica
 The presentation in this and our remaining lectures is more of a tutorial style based around examples
 
 
-
 Example: Plotting a White Noise Process
 ================================================
 
-
 To begin, let's suppose that we want to simulate and plot the white noise
-process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal 
+process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal
 
 In other words, we want to generate figures that look something like this:
 
@@ -85,14 +75,13 @@ Fire up a :ref:`Jupyter notebook <jl_jupyter>` and enter the following in a cell
 .. code-block:: julia
 
     using Plots
+
     ts_length = 100
     ϵ_values = randn(ts_length)
-    plot(ϵ_values, color="blue")
-
+    plot(ϵ_values, color = "blue")
 
 
 Let's break this down and see how it works
-
 
 .. _import:
 
@@ -102,12 +91,13 @@ Importing Functions
 
 The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available in the global scope
 
-If you prefer to be more selective you can replace ``using Plots`` with ``import Plots: plot``
+If you prefer to be more selective you can replace ``using Plots`` with ``using Plots: plot``
 
 Now only the ``plot`` function is accessible
 
-Since our program uses only the plot function from this module, either would have worked in the previous example
+If we wanted to have extended the functionality of ``Plots.plot`` we would have needed to specify this using ``import Plots: plot``
 
+Since our program uses only the plot function from this module, either would have worked in the previous example
 
 Arrays
 --------
@@ -120,26 +110,17 @@ most fundamental Julia data types: an array
 
     typeof(ϵ_values)
 
-
-
-
 .. code-block:: julia
 
     ϵ_values
 
-
-
-
-
 The information from ``typeof()`` tells us that ``ϵ_values`` is an array of 64 bit floating point values, of dimension 1
- 
+
 Julia arrays are quite flexible --- they can store heterogeneous data for example
 
 .. code-block:: julia
 
     x = [10, "foo", false]
-
- 
 
 Notice now that the data type is recorded as ``Any``, since the array contains mixed data
 
@@ -149,16 +130,11 @@ The first element of ``x`` is an integer
 
     typeof(x[1])
 
-
-
 The second is a string
-
 
 .. code-block:: julia
 
     typeof(x[2])
-
-
 
 The third is the boolean value ``false``
 
@@ -166,9 +142,7 @@ The third is the boolean value ``false``
 
     typeof(x[3])
 
-
-
-Notice from the above that 
+Notice from the above that
 
 * array indices start at 1 (unlike Python, where arrays are zero-based)
 
@@ -183,42 +157,22 @@ For now here's several examples, applied to the same list ``x = [10, "foo", fals
 
     length(x)
 
-
-
-
-
 .. code-block:: julia
 
     pop!(x)
 
-
-
-
 .. code-block:: julia
 
     x
-
-
-
-
 
 .. code-block:: julia
 
     push!(x, "bar")
 
 
-
-
-
-
-
 .. code-block:: julia
 
     x
-
-
-
-
 
 
 The first example just returns the length of the list
@@ -244,14 +198,14 @@ program, for the sake of learning syntax let's rewrite our program to use a
 
 .. code-block:: julia
 
-    ts_length = 100
-    ϵ_values = Array{Float64}(ts_length)
-    for i in 1:ts_length
-        ϵ_values[i] = randn()
+    let
+        ts_length = 100
+        ϵ_values = zeros(ts_length)
+        for i ∈ eachindex(ϵ_values)
+            ϵ_values[i] = randn()
+        end
+        plot(ϵ_values, color = "blue")
     end
-    plot(ϵ_values, color="blue")
-    
-
 
 Here we first declared ``ϵ_values`` to be an empty array for storing 64 bit floating point numbers
 
@@ -262,9 +216,9 @@ The ``for`` loop then populates this array by successive calls to ``randn()``
 
 Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``
 
-The word ``in`` from the ``for`` loop can be replaced by symbol ``=``
+The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
 
-The expression ``1:ts_length`` creates an **iterator** that is looped over --- in this case the integers from ``1`` to ``ts_length``
+The expression ``eachindex(ϵ_values)`` creates an **iterator** that is looped over --- in this case the integers from ``1`` to ``ts_length``
 
 Iterators are memory efficient because the elements are generated on the fly rather than stored in memory
 
@@ -272,12 +226,12 @@ In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-    words = ["foo", "bar"]
-    for word in words
-        println("Hello $word")
+    let
+        words = ["foo", "bar"]
+        for word ∈ words
+            println("Hello $word")
+        end
     end
-
-
 
 
 While Loops
@@ -288,36 +242,36 @@ The syntax for the while loop contains no surprises
 
 .. code-block:: julia
 
-    ts_length = 100
-    ϵ_values = Array{Float64}(ts_length)
-    i = 1
-    while i <= ts_length
-        ϵ_values[i] = randn()
-        i = i + 1
+    let
+        ts_length = 100
+        ϵ_values = zeros(ts_length)
+        i = 1
+        while i ≤ ts_length
+            ϵ_values[i] = randn()
+            i += 1
+        end
+        plot(ϵ_values, color = "blue")
     end
-    plot(ϵ_values, color="blue")
-
 
 
 The next example does the same thing with a condition and the ``break``
 statement
 
-
-
 .. code-block:: julia
 
-    ts_length = 100
-    ϵ_values = Array{Float64}(ts_length)
-    i = 1
-    while true
-        ϵ_values[i] = randn()
-        i = i + 1
-        if i > ts_length
-            break
+    let
+        ts_length = 100
+        ϵ_values = Vector(undef, ts_length)
+        i = 1
+        while true
+            ϵ_values[i] = randn()
+            i += 1
+            if i > ts_length
+                break
+            end
         end
+        return plot(ϵ_values, color = "blue")
     end
-    plot(ϵ_values, color="blue")
-    
 
 
 .. _user_defined_functions:
@@ -330,20 +284,17 @@ For the sake of the exercise, let's now go back to the ``for`` loop but restruct
 .. code-block:: julia
 
     function generate_data(n)
-        ϵ_values = Array{Float64}(n)
-        for i = 1:n
+        ϵ_values = zeros(n)
+        for i ∈ eachindex(ϵ_values)
             ϵ_values[i] = randn()
         end
         return ϵ_values
     end
-    
-    ts_length = 100
-    data = generate_data(ts_length)
-    plot(data, color="blue")
 
+    data = generate_data(100)
+    plot(data, color = "blue")
 
-     
-Here 
+Here
 
 * ``function`` is a Julia keyword that indicates the start of a function definition
 
@@ -360,39 +311,45 @@ We could just write the following and be done
 
 .. code-block:: julia
 
-    ts_length = 100
-    data = randn(ts_length)
-    plot(data, color="blue")
-    
+    let
+        data = randn(100)
+        plot(data, color = "blue")
+    end
 
-Let's make a slightly more useful function 
+
+Let's make a slightly more useful function
 
 This function will be passed a choice of probability distribution and respond by plotting a histogram of observations
 
 In doing so we'll make use of the Distributions package
 
+The following code installs the Distributions package if it is not installed already
+
+Do not worry about the syntax which will covered later on
 
 .. code-block:: julia
 
-    Pkg.add("Distributions")
+    using Pkg: add, installed
+    "Distributions" ∈ keys(installed()) || add("Distributions")
 
-    
+
 Here's the code
 
 .. code-block:: julia
 
     using Distributions
-    
+
     function plot_histogram(distribution, n)
         ϵ_values = rand(distribution, n)  # n draws from distribution
         histogram(ϵ_values)
     end
-    
-    lp = Laplace()
-    plot_histogram(lp, 500)
+
+    let
+        lp = Laplace()
+        plot_histogram(lp, 500)
+    end
 
 The resulting figure looks like this
-
 
 
 Let's have a casual discussion of how all this works while leaving technical details for later in the lectures
@@ -423,10 +380,6 @@ The function ``rand()`` is defined in the base library such that ``rand(n)`` ret
     rand(3)
 
 
-
-
-
-
 On the other hand, ``distribution`` points to a data type representing the Laplace distribution that has been defined in a third party package
 
 So how can it be that ``rand()`` is able to take this kind of object as an
@@ -444,8 +397,6 @@ The interpreter knows which function definition to apply in a given setting by l
 In Julia these alternative versions of a function are called **methods**
 
 
-
-
 Exercises
 ===============
 
@@ -459,8 +410,7 @@ Recall that :math:`n!` is read as ":math:`n` factorial" and defined as
 
 In Julia you can compute this value with ``factorial(n)``
 
-Write your own version of this function, called ``factorial2``, using a ``for`` loop 
-
+Write your own version of this function, called ``factorial2``, using a ``for`` loop
 
 
 .. _jbe_ex2:
@@ -478,8 +428,6 @@ Using only ``rand()`` from the set of Julia's built-in random number
 generators (not the Distributions package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`
 
 Hint: If :math:`U` is uniform on :math:`(0, 1)` and :math:`p \in (0,1)`, then the expression ``U < p`` evaluates to ``true`` with probability :math:`p`
-
-
 
 
 .. _jbe_ex3:
@@ -500,8 +448,6 @@ Your hints are as follows:
 * For a circle, area = π * radius^2
 
 
-
-
 .. _jbe_ex4:
 
 Exercise 4
@@ -516,7 +462,6 @@ Write a program that prints one realization of the following random device:
 Once again use only ``rand()`` as your random number generator
 
 
-
 .. _jbe_ex5:
 
 Exercise 5
@@ -528,15 +473,13 @@ Simulate and plot the correlated time series
 
     x_{t+1} = \alpha \, x_t + \epsilon_{t+1}
     \quad \text{where} \quad
-    x_0 = 0 
+    x_0 = 0
     \quad \text{and} \quad t = 0,\ldots,T
 
 
 The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
 
-Set :math:`T=200` and :math:`\alpha = 0.9`
-
-
+Set :math:`T = 200` and :math:`\alpha = 0.9`
 
 
 .. _jbe_ex6:
@@ -544,13 +487,12 @@ Set :math:`T=200` and :math:`\alpha = 0.9`
 Exercise 6
 ----------------------------------
 
-Plot three simulated time series, one for each of the cases :math:`\alpha=0`, :math:`\alpha=0.8` and :math:`\alpha=0.98`
+Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8` and :math:`\alpha = 0.98`
 
 In particular, you should produce (modulo randomness) a figure that looks as follows
 
 
 (The figure illustrates how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
-
 
 
 Solutions
@@ -563,27 +505,17 @@ Exercise 1
 
     function factorial2(n)
         k = 1
-        for i in 1:n
-            k = k * i
+        for i ∈ 1:n
+            k *= i
         end
         return k
     end
-    
+
     factorial2(4)
-
-
-
-
-
 
 .. code-block:: julia
 
-    factorial(4)  # Built-in function
-
-
-
-
-
+    factorial2(4) == factorial(4)  # Built-in function
 
 
 Exercise 2
@@ -594,27 +526,27 @@ Exercise 2
     function binomial_rv(n, p)
         count = 0
         U = rand(n)
-        for i in 1:n
+        for i ∈ 1:n
             if U[i] < p
-                count = count + 1    # Or count += 1
+                count += 1    # Or count = count + 1
             end
         end
         return count
     end
-    
-    for j in 1:25
-        b = binomial_rv(10, 0.5)
-        print("$b, ")
+
+    let
+        for j ∈ 1:25
+            b = binomial_rv(10, 0.5)
+            print("$b, ")
+        end
     end
-
-
 
 Exercise 3
 ----------
 
 Consider the circle of diameter 1 embedded in the unit square
 
-Let :math:`A` be its area and let :math:`r=1/2` be its radius
+Let :math:`A` be its area and let :math:`r = 1/2` be its radius
 
 If we know :math:`\pi` then we can compute :math:`A` via
 :math:`A = \pi r^2`
@@ -630,22 +562,21 @@ fraction that fall into the unit circle
 
 .. code-block:: julia
 
-    n = 1000000
-    
-    count = 0
-    for i in 1:n
-        u, v = rand(2)
-        d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # Distance from middle of square
-        if d < 0.5
-            count += 1
+    let
+        n = 1000000
+        count = 0
+        for i ∈ 1:n
+            u, v = rand(2)
+            d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # Distance from middle of square
+            if d < 0.5
+                count += 1
+            end
         end
+
+        area_estimate = count / n
+
+        print(area_estimate * 4)  # dividing by radius**2
     end
-    
-    area_estimate = count / n
-    
-    print(area_estimate * 4)  # dividing by radius**2
-
-
 
 
 Exercise 4
@@ -653,27 +584,26 @@ Exercise 4
 
 .. code-block:: julia
 
-    payoff = 0
-    count = 0
-    
-    print("Count = ")
-    
-    for i in 1:10
-        U = rand()
-        if U < 0.5
-            count += 1
-        else
-            count = 0
+    let
+        payoff = 0
+        count = 0
+
+        print("Count = ")
+
+        for i ∈ 1:10
+            U = rand()
+            if U < 0.5
+                count += 1
+            else
+                count = 0
+            end
+            print(count)
+            if count == 3
+                payoff = 1
+            end
         end
-        print(count)
-        if count == 3
-            payoff = 1
-        end
+        println("\npayoff = $payoff")
     end
-    print("\n")
-    println("payoff = $payoff")
-
-
 
 
 We can simplify this somewhat using the **ternary operator**. Here's
@@ -681,45 +611,37 @@ some examples
 
 .. code-block:: julia
 
-    a = 1 < 2 ? "foo" : "bar"
-    a
-
-
-
-
-
+    let
+        a = 1  < 2 ? "foo" : "bar"
+    end
 
 .. code-block:: julia
 
-    a = 1 > 2 ? "foo" : "bar"
-    a
-
-
-
-
+    let
+        a = 1 > 2 ? "foo" : "bar"
+    end
 
 
 Using this construction:
 
 .. code-block:: julia
 
-    payoff = 0
-    count = 0
-    
-    print("Count = ")
-    
-    for i in 1:10
-        U = rand()
-        count = U < 0.5 ? count + 1 : 0  
-        print(count)
-        if count == 3
-            payoff = 1
+    let
+        payoff = 0
+        count = 0
+
+        print("Count = ")
+
+        for i ∈ 1:10
+            U = rand()
+            count = U < 0.5 ? count + 1 : 0
+            print(count)
+            if count == 3
+                payoff = 1
+            end
         end
+        println("\npayoff = $payoff")
     end
-    print("\n")
-    println("payoff = $payoff")
-
-
 
 
 Exercise 5
@@ -729,17 +651,16 @@ Here's one solution
 
 .. code-block:: julia
 
-    α = 0.9
-    T = 200
-    x = zeros(T + 1)
-    
-    for t in 1:T
-        x[t+1] = α * x[t] + randn()
+    let
+        α = 0.9
+        T = 200
+        x = zeros(T + 1)
+
+        for t ∈ 1:T
+            x[t+1] = α * x[t] + randn()
+        end
+        return plot(x, color = "blue")
     end
-    plot(x, color="blue")
-
-
-
 
 
 Exercise 6
@@ -747,25 +668,22 @@ Exercise 6
 
 .. code-block:: julia
 
-    αs = [0.0, 0.8, 0.98]
-    T = 200
-    
-    series = []
-    labels = []
-    
-    for α in αs
-        x = zeros(T + 1)
-        x[1] = 0
-        for t in 1:T
-            x[t+1] = α * x[t] + randn()
+    let
+        αs = [0.0, 0.8, 0.98]
+        T = 200
+
+        series = []
+        labels = []
+
+        for α ∈ αs
+            x = zeros(T + 1)
+            x[1] = 0
+            for t ∈ 1:T
+                x[t+1] = α * x[t] + randn()
+            end
+            push!(series, x)
+            push!(labels, "α = $α")
         end
-        push!(series, x)
-        push!(labels, "α = $α")
+
+        plot(series, label = reshape(labels, 1, length(labels)))
     end
-    
-    plot(series, label=reshape(labels, 1, length(labels)))
-
-
-
-
-
