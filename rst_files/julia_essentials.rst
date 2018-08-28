@@ -23,7 +23,6 @@ Topics:
 * Comparisons and logic
 
 
-
 Common Data Types
 ======================
 
@@ -48,26 +47,14 @@ A particularly simple data type is a Boolean value, which can be either ``true``
     x = true
 
 
-
-
-
 .. code-block:: julia
 
     typeof(x)
 
 
-
-
-
-
-
 .. code-block:: julia
 
     y = 1 > 2  # Now y = false
-
-
-
-
 
 
 Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
@@ -77,17 +64,9 @@ Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0
     true + false
 
 
-
-
-
-
 .. code-block:: julia
 
     sum([true, false, false, true])
-
-
-
-
 
 
 The two most common data types used to represent numbers are integers and
@@ -101,16 +80,9 @@ handled in a different way)
     typeof(1.0)
 
 
-
-
-
-
 .. code-block:: julia
 
     typeof(1)
-
-
-
 
 
 If you're running a 32 bit system you'll still see ``Float64``, but you will see ``Int32`` instead of ``Int64`` (see `the section on Integer types <https://docs.julialang.org/en/stable/manual/integers-and-floating-point-numbers/#Integers-1>`_ from the Julia manual)
@@ -123,16 +95,9 @@ Arithmetic operations are fairly standard
     x = 2; y = 1.0
 
 
-
-
-
-
 .. code-block:: julia
 
     x * y
-
-
-
 
 
 .. code-block:: julia
@@ -140,28 +105,17 @@ Arithmetic operations are fairly standard
     x^2
 
 
-
-
-
-
 .. code-block:: julia
 
     y / x
 
 
-
-
-
-
-Although the ``*`` can be omitted for multiplication between a numeric literal and a variable 
+Although the ``*`` can be omitted for multiplication between a numeric literal and a variable
 
 
 .. code-block:: julia
 
     2x - 3y
-
-
-
 
 
 Also, you can use function (instead of infix) notation if you so desire
@@ -171,17 +125,9 @@ Also, you can use function (instead of infix) notation if you so desire
     +(10, 20)
 
 
-
-
-
-
 .. code-block:: julia
 
     *(10, 20)
-
-
-
-
 
 
 Complex numbers are another primitive data type, with the imaginary part being specified by ``im``
@@ -192,26 +138,14 @@ Complex numbers are another primitive data type, with the imaginary part being s
     x = 1 + 2im
 
 
-
-
-
-
 .. code-block:: julia
 
     y = 1 - 2im
 
 
-
-
-
-
 .. code-block:: julia
 
     x * y  # Complex multiplication
-
-
-
-
 
 
 There are several more primitive data types that we'll introduce as necessary
@@ -228,15 +162,9 @@ A string is a data type for storing a sequence of characters
     x = "foobar"
 
 
-
-
-
 .. code-block:: julia
 
     typeof(x)
-
-
-
 
 
 You've already seen examples of Julia's simple string formatting operations
@@ -246,27 +174,14 @@ You've already seen examples of Julia's simple string formatting operations
     x = 10; y = 20
 
 
-
-
-
-
-
 .. code-block:: julia
 
     "x = $x"
 
 
-
-
-
-
 .. code-block:: julia
 
     "x + y = $(x + y)"
-
-
-
-
 
 
 To concatenate strings use ``*``
@@ -276,9 +191,6 @@ To concatenate strings use ``*``
     "foo" * "bar"
 
 
-
-
-
 Julia provides many functions for working with strings
 
 .. code-block:: julia
@@ -286,29 +198,14 @@ Julia provides many functions for working with strings
     s = "Charlie don't surf"
 
 
-
-
-
-
-
 .. code-block:: julia
 
     split(s)
 
 
-
-  
-
-
-
 .. code-block:: julia
 
-    replace(s, "surf", "ski")
-
-
-
-
-
+    replace(s, "surf" => "ski")
 
 
 .. code-block:: julia
@@ -316,19 +213,9 @@ Julia provides many functions for working with strings
     split("fee,fi,fo", ",")
 
 
-
-
-
-
-
 .. code-block:: julia
 
     strip(" foobar ")  # Remove whitespace
-
-
-
-
-
 
 
 Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see the documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ on regular expressions for more info)
@@ -336,10 +223,6 @@ Julia can also find and replace using `regular expressions <https://en.wikipedia
 .. code-block:: julia
 
     match(r"(\d+)", "Top 10")  # Find digits in string
-
-
-
-
 
 
 Containers
@@ -356,16 +239,9 @@ A related data type is **tuples**, which can act like "immutable" arrays
     x = ("foo", "bar")
 
 
-
-
-
-
 .. code-block:: julia
 
     typeof(x)
-
-
-
 
 
 An immutable object is one that cannot be altered once it resides in memory
@@ -378,17 +254,12 @@ In particular, tuples do not support item assignment:
     x[1] = 42
 
 
-    
-
 This is similar to Python, as is the fact that the parenthesis can be omitted
 
 
 .. code-block:: julia
 
     x = "foo", "bar"
-
-
-
 
 
 Another similarity with Python is tuple unpacking, which means that the
@@ -400,19 +271,9 @@ following convenient syntax is valid
     x = ("foo", "bar")
 
 
-
-
-
-
-
 .. code-block:: julia
 
     word1, word2 = x
-
-
-
-
-
 
 
 .. code-block:: julia
@@ -420,21 +281,9 @@ following convenient syntax is valid
     word1
 
 
-
-
-
-
-
 .. code-block:: julia
 
     word2
-
-
-
-
-
-
-
 
 
 Referencing Items
@@ -447,28 +296,14 @@ The last element of a sequence type can be accessed with the keyword ``end``
     x = [10, 20, 30, 40]
 
 
-
-
-
-
-
 .. code-block:: julia
 
     x[end]
 
 
-
-
-
-
-
 .. code-block:: julia
 
     x[end-1]
-
-
-
-
 
 
 To access multiple elements of an array or tuple, you can use slice notation
@@ -478,18 +313,9 @@ To access multiple elements of an array or tuple, you can use slice notation
     x[1:3]
 
 
-
-
-
-
-
 .. code-block:: julia
 
     x[2:end]
-
-
-
-
 
 
 The same slice notation works on strings
@@ -497,10 +323,6 @@ The same slice notation works on strings
 .. code-block:: julia
 
     "foobar"[3:end]
-
-
-
-
 
 
 Dictionaries
@@ -515,18 +337,9 @@ Dictionaries are like arrays except that the items are named instead of numbered
     d = Dict("name" => "Frodo", "age" => 33)
 
 
-
-
-
-
-
 .. code-block:: julia
 
     d["age"]
-
-
-
-
 
 
 The strings ``name`` and ``age`` are called the **keys**
@@ -534,10 +347,6 @@ The strings ``name`` and ``age`` are called the **keys**
 The objects that the keys are mapped to (``"Frodo"`` and ``33``) are called the **values**
 
 They can be accessed via ``keys(d)`` and ``values(d)`` respectively
-
-
-
-
 
 
 Input and Output
@@ -554,27 +363,14 @@ We'll start with writing
     f = open("newfile.txt", "w")  # "w" for writing
 
 
-
-
-
-
-
 .. code-block:: julia
 
     write(f, "testing\n")         # \n for newline
 
 
-
-
-
-
-
 .. code-block:: julia
 
     write(f, "more testing\n")
-
-
-
 
 
 .. code-block:: julia
@@ -585,7 +381,6 @@ The effect of this is to create a file called ``newfile.txt`` in your present
 working directory with contents
 
 
-
 We can read the contents of ``newline.txt`` as follows
 
 .. code-block:: julia
@@ -593,15 +388,9 @@ We can read the contents of ``newline.txt`` as follows
     f = open("newfile.txt", "r")  # Open for reading
 
 
-
-
-
-
 .. code-block:: julia
 
-    print(readstring(f))
-
-
+    print(read(f, String))
 
 
 .. code-block:: julia
@@ -616,9 +405,6 @@ We can read the contents of ``newline.txt`` as follows
 Often when reading from a file we want to step through the lines of a file, performing an action on each one
 
 There's a neat interface to this in Julia, which takes us to our next topic
-
-
-
 
 
 .. _iterating_version_1:
@@ -640,12 +426,12 @@ These include sequence data types like arrays
 
 .. code-block:: julia
 
-    actions = ["surf", "ski"]
-    for action in actions
-        println("Charlie don't $action")
+    let
+        actions = ["surf", "ski"]
+        for action ∈ actions
+            println("Charlie don't $action")
+        end
     end
-
-
 
 
 They also include so-called **iterators**
@@ -654,8 +440,11 @@ You've already come across these types of objects
 
 .. code-block:: julia
 
-    for i in 1:3 print(i) end
-
+    let
+        for i ∈ 1:3
+            print(i)
+        end
+    end
 
 
 If you ask for the keys of dictionary you get an iterator
@@ -666,16 +455,9 @@ If you ask for the keys of dictionary you get an iterator
     d = Dict("name" => "Frodo", "age" => 33)
 
 
-
-
-
-
 .. code-block:: julia
 
     keys(d)
-
-
-
 
 
 This makes sense, since the most common thing you want to do with keys is loop over them
@@ -690,11 +472,6 @@ Should you need to transform an iterator into an array you can always use ``coll
     collect(keys(d))
 
 
-
-
-
-
-
 Looping without Indices
 ------------------------
 
@@ -705,24 +482,20 @@ For example compare
 
 .. code-block:: julia
 
-    x_values = linspace(0, 3, 10)
+    x_values = range(0, stop = 3, length = 10)
 
 .. code-block:: julia
 
-    for x in x_values
+    for x ∈ x_values
         println(x * x)
     end
 
 
-
-
 .. code-block:: julia
 
-    for i in 1:length(x_values)
+    for i ∈ eachindex(x_values)
         println(x_values[i] * x_values[i])
     end
-
-
 
 
 Julia provides some functional-style helper functions (similar to Python) to facilitate looping without indices
@@ -733,13 +506,13 @@ For example, try running the following code
 
 .. code-block:: julia
 
-    countries = ("Japan", "Korea", "China")
-    cities = ("Tokyo", "Seoul", "Beijing")
-    for (country, city) in zip(countries, cities)
-        println("The capital of $country is $city")
+    let
+        countries = ("Japan", "Korea", "China")
+        cities = ("Tokyo", "Seoul", "Beijing")
+        for (country, city) ∈ zip(countries, cities)
+            println("The capital of $country is $city")
+        end
     end
-
-
 
 
 If we happen to need the index as well as the value, one option is to use ``enumerate()``
@@ -748,17 +521,14 @@ The following snippet will give you the idea
 
 .. code-block:: julia
 
-    countries = ("Japan", "Korea", "China")
-    cities = ("Tokyo", "Seoul", "Beijing")
-    for (i, country) in enumerate(countries)
-        city = cities[i]
-        println("The capital of $country is $city")
+    let
+        countries = ("Japan", "Korea", "China")
+        cities = ("Tokyo", "Seoul", "Beijing")
+        for (i, country) ∈ enumerate(countries)
+            city = cities[i]
+            println("The capital of $country is $city")
+        end
     end
-
-
-
-
-
 
 
 Comprehensions
@@ -770,12 +540,7 @@ Here's some examples
 
 .. code-block:: julia
 
-    doubles = [2i for i in 1:4]
-
-
-
-
-
+    doubles = [ 2i for i ∈ 1:4 ]
 
 
 .. code-block:: julia
@@ -783,47 +548,26 @@ Here's some examples
     animals = ["dog", "cat", "bird"];   # Semicolon suppresses output
 
 
-
 .. code-block:: julia
 
-    plurals = [animal * "s" for animal in animals]
-
-
-
-
-
+    plurals = [ animal * "s" for animal ∈ animals ]
 
 
 .. code-block:: julia
 
-    [i + j for i in 1:3, j in 4:6]
-
-
-
-
-
-
+    [ i + j for i ∈ 1:3, j ∈ 4:6 ]
 
 
 .. code-block:: julia
 
-    [i + j + k for i in 1:3, j in 4:6, k in 7:9]
-
-
-
-
+    [ i + j + k for i ∈ 1:3, j ∈ 4:6, k ∈ 7:9 ]
 
 
 The same kind of expression works for dictionaries
 
 .. code-block:: julia
 
-    Dict("$i" => i for i in 1:3)
-
-
-
-
-
+    Dict(string(i) => i for i ∈ 1:3)
 
 
 Comparisons and Logical Operators
@@ -840,30 +584,16 @@ As we saw earlier, when testing for equality we use ``==``
     x = 1
 
 
-
-
-
-
-
-
 .. code-block:: julia
 
     x == 2
 
 
-
-
-
-
-For "not equal" use ``!=``
+For "not equal" use ``!=`` or ``≠``
 
 .. code-block:: julia
 
-    x != 3
-
-
-
-
+    x ≠ 3
 
 
 We can chain inequalities:
@@ -874,18 +604,9 @@ We can chain inequalities:
     1 < 2 < 3
 
 
-
-
-
-
-
 .. code-block:: julia
 
-    1 <= 2 <= 3
-
-
-
-
+    1 ≤ 2 ≤ 3
 
 
 In many languages you can use integers or other values when testing conditions but Julia is more fussy
@@ -896,16 +617,10 @@ In many languages you can use integers or other values when testing conditions b
     while 0 println("foo") end
 
 
-
-
-
 .. code-block:: julia
     :class: no-execute
 
     if 1 print("foo") end
-
-
-    
 
 
 Combining Expressions
@@ -914,14 +629,9 @@ Combining Expressions
 Here are the standard logical connectives (conjunction, disjunction)
 
 
-
 .. code-block:: julia
 
     true && false
-    false
-
-
-
 
 
 .. code-block:: julia
@@ -929,16 +639,11 @@ Here are the standard logical connectives (conjunction, disjunction)
     true || false
 
 
-
-
-
 Remember
 
 * ``P && Q`` is ``true`` if both are ``true``, otherwise it's ``false``
 
 * ``P || Q`` is ``false`` if both are ``false``, otherwise it's ``true``
-
-
 
 
 User-Defined Functions
@@ -982,7 +687,7 @@ have identical behavior
     function f1(a, b)
         return a * b
     end
-    
+
     function f2(a, b)
         a * b
     end
@@ -1028,8 +733,6 @@ Let's check that it works
     ff(1 / pi)
 
 
-
-
 Julia also allows for you to define anonymous functions
 
 For example, to define ``f(x) = sin(1 / x)`` you can use ``x -> sin(1 / x)``
@@ -1045,9 +748,6 @@ Typically it's as an argument to another function
     map(x -> sin(1 / x), randn(3))  # Apply function to each element
 
 
-
-
-
 Optional and Keyword Arguments
 ------------------------------------
 
@@ -1055,9 +755,7 @@ Function arguments can be given default values
 
 .. code-block:: julia
 
-    function fff(x, a=1)
-        return exp(cos(a * x))
-    end
+    fff(x, a = 1) = exp(cos(a * x))
 
 If the argument is not supplied the default value is substituted
 
@@ -1066,17 +764,9 @@ If the argument is not supplied the default value is substituted
     fff(pi)
 
 
-
-
-
-
 .. code-block:: julia
 
     fff(pi, 2)
-
-
-
-
 
 
 Another option is to use **keyword** arguments
@@ -1099,10 +789,11 @@ To define a function with keyword arguments you need to use ``;`` like so
 .. code-block:: julia
     :class: no-execute
 
-    function simulate_kw(param1, param2; max_iterations=100, error_tolerance=0.01)
+    function simulate_kw(param1, param2;
+                         max_iterations = 100,
+                         error_tolerance = 0.01)
         # Function body here
     end
-
 
 
 Vectorized Functions
@@ -1125,7 +816,7 @@ The following code will do the job
 
     x_vec = [2.0, 4.0, 6.0, 8.0]
     y_vec = similar(x_vec)
-    for (i, x) in enumerate(x_vec)
+    for (i, x) ∈ enumerate(x_vec)
         y_vec[i] = sin(x)
     end
 
@@ -1147,19 +838,15 @@ In doing this we'll exploit the fact that, if we take ``k`` independent standard
 .. code-block:: julia
 
     function chisq(k::Integer)
-        @assert k > 0 "k must be a natural number"
+        k > 0 || throw(ArgumentError("$k must be a natural number"))
         z = randn(k)
-        return sum(z.^2)
+        return sum(z -> z^2, z) # same as `sum(x^2 for x ∈ z)`
     end
-
 
 
 .. code-block:: julia
 
     chisq(3)
-
-
-
 
 
 Note that calls with integers less than 1 will trigger an assertion failure inside
@@ -1171,17 +858,11 @@ the function body
     chisq(-2)
 
 
-
-
 Let's try this out on an array of integers, adding the vectorized notation
 
 .. code-block:: julia
 
     chisq.([2, 4, 6])
-
-
-
-
 
 
 Exercises
@@ -1198,10 +879,9 @@ their inner product using ``zip()``
 
 Part 2: Using a comprehension, count the number of even numbers between 0 and 99
 
-* Hint: ``x % 2`` returns 0 if ``x`` is even, 1 otherwise
+* Hint: ``iseven`` returns ``true`` for even numbers and ``false`` for odds.
 
 Part 3: Using a comprehension, take ``pairs = ((2, 5), (4, 2), (9, 8), (12, 10))`` and count the number of pairs ``(a, b)`` such that both ``a`` and ``b`` are even
-
 
 
 .. _pyess_ex2:
@@ -1215,7 +895,7 @@ Consider the polynomial
     :label: polynom0
 
     p(x)
-    = a_0 + a_1 x + a_2 x^2 + \cdots a_n x^n 
+    = a_0 + a_1 x + a_2 x^2 + \cdots a_n x^n
     = \sum_{i=0}^n a_i x^i
 
 
@@ -1230,7 +910,6 @@ Exercise 3
 Write a function that takes a string as an argument and returns the number of capital letters in the string
 
 Hint: ``uppercase("foo")`` returns ``"FOO"``
-
 
 
 .. _pyess_ex4:
@@ -1262,21 +941,16 @@ In particular, write a function ``linapprox`` that takes as arguments
 
 * An integer ``n`` determining the number of grid points
 
-* A number ``x`` satisfying ``a <= x <= b``
+* A number ``x`` satisfying ``a ≤ x ≤ b``
 
 and returns the `piecewise linear interpolation <https://en.wikipedia.org/wiki/Linear_interpolation>`_ of ``f`` at ``x``, based on ``n`` evenly spaced grid points ``a = point[1] < point[2] < ... < point[n] = b``
 
 Aim for clarity, not efficiency
 
-
-
 Exercise 6
 ---------------------------------
 
-
 The following data lists US cities and their populations
-
-
 
 Copy this text into a text file called ``us_cities.txt`` and save it in your present working directory
 
@@ -1309,7 +983,6 @@ Hints:
 * ``parse(Int, "100")`` converts the string ``"100"`` into an integer
 
 
-
 Solutions
 ==========
 
@@ -1324,12 +997,7 @@ Here's one possible solution
 
     x_vals = [1, 2, 3]
     y_vals = [1, 1, 1]
-    sum([x * y for (x, y) in zip(x_vals, y_vals)])
-
-
-
-
-
+    sum(x * y for (x, y) ∈ zip(x_vals, y_vals))
 
 
 Part 2 solution:
@@ -1338,21 +1006,7 @@ One solution is
 
 .. code-block:: julia
 
-    sum([x % 2 == 0 for x in 0:99])
-
-
-
-
-
-
-This also works
-
-.. code-block:: julia
-
-    sum(map(x -> x % 2 == 0, 0:99))
-
-
-
+    sum(iseven, 0:99)
 
 
 Part 3 solution:
@@ -1362,12 +1016,7 @@ Here's one possibility
 .. code-block:: julia
 
     pairs = ((2, 5), (4, 2), (9, 8), (12, 10))
-    sum([(x % 2 == 0) && (y % 2 == 0) for (x, y) in pairs])
-
-
-
-
-
+    sum(xy -> all(iseven, xy), pairs)
 
 
 Exercise 2
@@ -1375,16 +1024,12 @@ Exercise 2
 
 .. code-block:: julia
 
-    p(x, coeff) = sum([a * x^(i-1) for (i, a) in enumerate(coeff)])
-
+    p(x, coeff) = sum(a * x^(i-1) for (i, a) ∈ enumerate(coeff))
 
 
 .. code-block:: julia
 
     p(1, (2, 4))
-
-
-
 
 
 Exercise 3
@@ -1396,20 +1041,15 @@ Here's one solutions:
 
     function f_ex3(string)
         count = 0
-        for letter in string
-            if (letter == uppercase(letter)) && isalpha(letter)
+        for letter ∈ string
+            if (letter == uppercase(letter)) && isletter(letter)
                 count += 1
             end
         end
         return count
     end
-        
+
     f_ex3("The Rain in Spain")
-
-
-
-
-
 
 
 Exercise 4
@@ -1421,33 +1061,28 @@ Here's one solutions:
 
     function f_ex4(seq_a, seq_b)
         is_subset = true
-        for a in seq_a
-            if !(a in seq_b)
+        for a ∈ seq_a
+            if a ∉ seq_b
                 is_subset = false
             end
         end
         return is_subset
     end
-    
+
     # == test == #
-    
+
     println(f_ex4([1, 2], [1, 2, 3]))
     println(f_ex4([1, 2, 3], [1, 2]))
-
-
 
 
 if we use the `Set` data type then the solution is easier
 
 .. code-block:: julia
 
-    f_ex4_2(seq_a, seq_b) = issubset(Set(seq_a), Set(seq_b))
-    
+    f_ex4_2(seq_a, seq_b) = Set(seq_a) ⊆ Set(seq_b) # \subseteq (⊆) is unicode for `issubset`
+
     println(f_ex4_2([1, 2], [1, 2, 3]))
     println(f_ex4_2([1, 2, 3], [1, 2]))
-
-
-
 
 
 Exercise 5
@@ -1457,23 +1092,23 @@ Exercise 5
 
     function linapprox(f, a, b, n, x)
         #=
-        Evaluates the piecewise linear interpolant of f at x on the interval 
+        Evaluates the piecewise linear interpolant of f at x on the interval
         [a, b], with n evenly spaced grid points.
-    
+
         =#
         length_of_interval = b - a
         num_subintervals = n - 1
-        step = length_of_interval / num_subintervals  
-    
+        step = length_of_interval / num_subintervals
+
         # === find first grid point larger than x === #
         point = a
-        while point <= x
+        while point ≤ x
             point += step
         end
-        
+
         # === x must lie between the gridpoints (point - step) and point === #
-        u, v = point - step, point  
-    
+        u, v = point - step, point
+
         return f(u) + (x - u) * (f(v) - f(u)) / (v - u)
     end
 
@@ -1488,16 +1123,17 @@ Let's test it
 .. code-block:: julia
 
     using Plots
-    pyplot()
 
 
 .. code-block:: julia
 
-    x_grid = linspace(-1, 1, 100)
-    y_vals = map(f_ex5, x_grid)
-    y_approx = map(g_ex5, x_grid)
-    plot(x_grid, y_vals, label="true")
-    plot!(x_grid, y_approx, label="approximation")
+    let
+        x_grid = range(-1, stop = 1, length = 100)
+        y_vals = f_ex5.(x_grid)
+        y_approx = g_ex5.(x_grid)
+        plot(x_grid, y_vals, label = "true")
+        plot!(x_grid, y_approx, label = "approximation")
+    end
 
 
 Exercise 6
@@ -1505,14 +1141,13 @@ Exercise 6
 
 .. code-block:: julia
 
-    f_ex6 = open("us_cities.txt", "r")
-    total_pop = 0
-    for line in eachline(f_ex6)
-        city, population = split(line, ':')            # Tuple unpacking
-        total_pop += parse(Int, population)
+    let
+        f_ex6 = open("us_cities.txt", "r")
+        total_pop = 0
+        for line ∈ eachline(f_ex6)
+            city, population = split(line, ':')            # Tuple unpacking
+            total_pop += parse(Int, population)
+        end
+        close(f_ex6)
+        println("Total population = $total_pop")
     end
-    close(f_ex6)
-    println("Total population = $total_pop")
-
-
-
