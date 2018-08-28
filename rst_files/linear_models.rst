@@ -53,11 +53,6 @@ Its many applications include:
     * Sargent and Wallace's "unpleasant monetarist arithmetic," etc.
 
 
-
-
-
-
-
 The Linear State Space Model
 ===============================
 
@@ -136,9 +131,6 @@ In the present case, since :math:`\{x_t\}` is our state sequence, this means tha
 This is a weaker condition than that :math:`\{w_t\}` is iid with :math:`w_{t+1} \sim N(0,I)`
 
 
-
-
-
 Examples
 --------------
 
@@ -203,7 +195,6 @@ The next figure shows dynamics of this process when :math:`\phi_0 = 1.1, \phi_1=
     :scale: 80%
 
 Later you'll be asked to recreate this figure
-
 
 
 Univariate Autoregressive Processes
@@ -317,7 +308,6 @@ To map this into :eq:`st_space_rep`, we set
 where :math:`I` is the :math:`k \times k` identity matrix and :math:`\sigma` is a :math:`k \times k` matrix
 
 
-
 Seasonals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -354,7 +344,6 @@ It is easy to check that :math:`A^4 = I`, which implies that :math:`x_t` is stri
 Such an :math:`x_t` process can be used to model deterministic seasonals in quarterly time series.
 
 The *indeterministic* seasonal produces recurrent, but aperiodic, seasonal fluctuations.
-
 
 
 Time Trends
@@ -504,8 +493,6 @@ The second term is a translated linear function of time
 For this reason, :math:`x_{1t}` is called a *martingale with drift*
 
 
-
-
 Distributions and Moments
 ===========================
 
@@ -592,7 +579,7 @@ is not quite as good as knowing the full distribution
 However, there are some situations where these moments alone tell us all we
 need to know
 
-These are situations in which the mean vector and covariance matrix are **sufficient statistics** for the population distribution 
+These are situations in which the mean vector and covariance matrix are **sufficient statistics** for the population distribution
 
 (Sufficient statistics form a list of objects that characterize a population distribution)
 
@@ -950,7 +937,7 @@ regardless of the initial conditions :math:`\mu_0` and :math:`\Sigma_0`
 
 .. only:: latex
 
-    This is the *globally stable case* --- see `these notes <https://lectures.quantecon.org/_downloads/iteration_notes.pdf>`__ for more a theoretical treatment    
+    This is the *globally stable case* --- see `these notes <https://lectures.quantecon.org/_downloads/iteration_notes.pdf>`__ for more a theoretical treatment
 
 However, global stability is more than we need for stationary solutions, and often more than we want
 
@@ -1335,15 +1322,7 @@ the file `lss.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.
 The code implements a type which the linear state space models can act on directly through specific methods (for simulations, calculating moments, etc.)
 
 
-
-
-
-
-
-
-
 Examples of usage are given in the solutions to the exercises
-
 
 
 Exercises
@@ -1356,8 +1335,6 @@ Exercise 1
 ------------
 
 Replicate :ref:`this figure <lss_sode_fig>` using the ``LSS`` type from ``lss.jl``
-
-
 
 
 .. _lss_ex2:
@@ -1397,20 +1374,13 @@ The number of sample paths is 80, and the time horizon in the figure is 100
 Producing the vertical bars and dots is optional, but if you wish to try,
 the bars are at dates 10, 50 and 75
 
-
-
-
 Solutions
 ==========
-
-
-
 
 .. code-block:: julia
 
     using QuantEcon
     using Plots
-    pyplot()
     using LaTeXStrings
 
 Exercise 1
@@ -1418,20 +1388,23 @@ Exercise 1
 
 .. code-block:: julia
 
-    ϕ_0, ϕ_1, ϕ_2 = 1.1, 0.8, -0.8
-    
-    A = [1.0   0.0   0
-         ϕ_0   ϕ_1   ϕ_2
-         0.0   1.0   0.0]
-    C = zeros(3, 1)
-    G = [0.0 1.0 0.0]
-    μ_0 = ones(3)
-    
-    lss = LSS(A, C, G; mu_0=μ_0)
-    
-    x, y = simulate(lss, 50)
-    plot(squeeze(y, 1), color=:blue, linewidth=2, alpha=0.7)
-    plot!(xlabel="time", ylabel=L"$y_t$", legend=:none)
+    let
+
+        ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
+
+        A = [1.0   0.0   0
+             ϕ0    ϕ1    ϕ2
+             0.0   1.0   0.0]
+        C = zeros(3, 1)
+        G = [0.0 1.0 0.0]
+        μ_0 = ones(3)
+
+        lss = LSS(A, C, G; mu_0=μ_0)
+
+        x, y = simulate(lss, 50)
+        plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
+        plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    end
 
 
 Exercise 2
@@ -1439,24 +1412,26 @@ Exercise 2
 
 .. code-block:: julia
 
-    ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
-    σ = 0.2
-    
-    A = [ϕ_1   ϕ_2   ϕ_3   ϕ_4
-         1.0   0.0   0.0   0.0
-         0.0   1.0   0.0   0.0
-         0.0   0.0   1.0   0.0]
-    C = [σ
-         0.0 
-         0.0
-         0.0]''
-    G = [1.0 0.0 0.0 0.0]
-    
-    ar = LSS(A, C, G; mu_0=ones(4))
-    x, y = simulate(ar, 200)
-    
-    plot(squeeze(y, 1), color=:blue, linewidth=2, alpha=0.7)
-    plot!(xlabel="time", ylabel=L"$y_t$", legend=:none)
+    let
+        ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+        σ = 0.2
+
+        A = [ϕ1     ϕ2    ϕ3    ϕ4
+             1.0   0.0   0.0   0.0
+             0.0   1.0   0.0   0.0
+             0.0   0.0   1.0   0.0]
+        C = [σ
+             0.0
+             0.0
+             0.0]''
+        G = [1.0 0.0 0.0 0.0]
+
+        ar = LSS(A, C, G; mu_0 = ones(4))
+        x, y = simulate(ar, 200)
+
+        plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
+        plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    end
 
 
 Exercise 3
@@ -1464,45 +1439,46 @@ Exercise 3
 
 .. code-block:: julia
 
-    ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
-    σ = 0.1
-    
-    A = [ϕ_1   ϕ_2   ϕ_3   ϕ_4
-         1.0   0.0   0.0   0.0
-         0.0   1.0   0.0   0.0
-         0.0   0.0   1.0   0.0]
-    C = [σ
-         0.0 
-         0.0
-         0.0]''
-    G = [1.0 0.0 0.0 0.0]
-    I = 20
-    T = 50
-    ar = LSS(A, C, G; mu_0=ones(4))
-    ymin, ymax = -0.5, 1.15
-    
-    ensemble_mean = zeros(T)
-    ys = []
-    for i=1:I
-        x, y = simulate(ar, T)
-        y = squeeze(y, 1)
-        push!(ys, y)
-        ensemble_mean .+= y
-    end
-    
-    ensemble_mean = ensemble_mean ./ I
-    plot(ys, color=:blue, alpha=0.2, linewidth=0.8, label="")
-    plot!(ensemble_mean, color=:blue, linewidth=2, label=L"$\bar y_t$")
-    m = moment_sequence(ar)
-    state = start(m)
-    pop_means = Float64[]
-    for t=1:T
-        (μ_x, μ_y, Σ_x, Σ_y), state = next(m,state)
-        push!(pop_means, μ_y[1])
-    end
-    plot!(pop_means, color=:green, linewidth=2, label=L"$G\mu_t$")
-    plot!(ylims=(ymin, ymax), xlabel="time", ylabel=L"$y_t$", legendfont=font(12))
+    let
+        ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+        σ = 0.1
 
+        A = [ ϕ1    ϕ2    ϕ3    ϕ4
+             1.0   0.0   0.0   0.0
+             0.0   1.0   0.0   0.0
+             0.0   0.0   1.0   0.0]
+        C = [σ
+             0.0
+             0.0
+             0.0]''
+        G = [1.0 0.0 0.0 0.0]
+        I = 20
+        T = 50
+        ar = LSS(A, C, G; mu_0 = ones(4))
+        ymin, ymax = -0.5, 1.15
+
+        ensemble_mean = zeros(T)
+        ys = []
+        for i ∈ 1:I
+            x, y = simulate(ar, T)
+            y = dropdims(y, dims = 1)
+            push!(ys, y)
+            ensemble_mean .+= y
+        end
+
+        ensemble_mean = ensemble_mean ./ I
+        plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
+        plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
+        m = moment_sequence(ar)
+        state = start(m)
+        pop_means = Float64[]
+        for t ∈ 1:T
+            (μ_x, μ_y, Σ_x, Σ_y), state = next(m,state)
+            push!(pop_means, μ_y[1])
+        end
+        plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
+        plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
+    end
 
 
 Exercise 4
@@ -1510,50 +1486,50 @@ Exercise 4
 
 .. code-block:: julia
 
-    ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
-    σ = 0.1
-    
-    A = [ϕ_1   ϕ_2   ϕ_3   ϕ_4
-         1.0   0.0   0.0   0.0
-         0.0   1.0   0.0   0.0
-         0.0   0.0   1.0   0.0]
-    C = [σ
-         0.0 
-         0.0
-         0.0]''
-    G = [1.0 0.0 0.0 0.0]
-    
-    T0 = 10
-    T1 = 50
-    T2 = 75
-    T4 = 100
-    
-    ar = LSS(A, C, G; mu_0=ones(4))
-    ymin, ymax = -0.6, 0.6
-    
-    μ_x, μ_y, Σ_x, Σ_y = stationary_distributions(ar)
-    ar = LSS(A, C, G; mu_0=μ_x, Sigma_0=Σ_x)
-    colors = ["c", "g", "b"]
-    
-    ys = []
-    x_scatter = []
-    y_scatter = []
-    for i=1:80
-        rcolor = colors[rand(1:3)]
-        x, y = simulate(ar, T4)
-        y = squeeze(y, 1)
-        push!(ys, y)
-        x_scatter = [x_scatter; T0; T1; T2]
-        y_scatter = [y_scatter; y[T0]; y[T1]; y[T2]]
+    let
+        ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+        σ = 0.1
+
+        A = [ϕ1     ϕ2    ϕ3    ϕ4
+             1.0   0.0   0.0   0.0
+             0.0   1.0   0.0   0.0
+             0.0   0.0   1.0   0.0]
+        C = [σ
+             0.0
+             0.0
+             0.0]''
+        G = [1.0 0.0 0.0 0.0]
+
+        T0 = 10
+        T1 = 50
+        T2 = 75
+        T4 = 100
+
+        ar = LSS(A, C, G; mu_0 = ones(4))
+        ymin, ymax = -0.6, 0.6
+
+        μ_x, μ_y, Σ_x, Σ_y = stationary_distributions(ar)
+        ar = LSS(A, C, G; mu_0=μ_x, Sigma_0=Σ_x)
+        colors = ["c", "g", "b"]
+
+        ys = []
+        x_scatter = []
+        y_scatter = []
+        for i ∈ 1:80
+            rcolor = colors[rand(1:3)]
+            x, y = simulate(ar, T4)
+            y = dropdims(y, dims = 1)
+            push!(ys, y)
+            x_scatter = [x_scatter; T0; T1; T2]
+            y_scatter = [y_scatter; y[T0]; y[T1]; y[T2]]
+        end
+
+        plot(ys, linewidth = 0.8, alpha = 0.5)
+        plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
+        scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
+        plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
+        plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
     end
-    
-    plot(ys, linewidth=0.8, alpha=0.5)
-    plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color=:black, legend=:none)
-    scatter!(x_scatter, y_scatter, color=:black, alpha=0.5)
-    plot!(ylims=(ymin, ymax), ylabel=L"$y_t$", xticks=[], yticks=ymin:0.2:ymax)
-    plot!(annotations=[(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
-
-
 
 
 .. rubric:: Footnotes
