@@ -15,7 +15,7 @@ struct LucasTree{TF<:AbstractFloat}
     α::TF                 # Correlation coefficient in the shock process
     σ::TF                 # Volatility of shock process
     ϕ::Distribution       # Distribution for shock process
-    grid::Vector{TF}      # Grid of points on which to evaluate prices
+    grid::AbstractRange   # Grid of points on which to evaluate prices
     shocks::Vector{TF}    # Draws of the shock
     h::Vector{TF}         # The h function represented as a vector
 end
@@ -82,7 +82,7 @@ function solve_lucas_model(lt::LucasTree;
     grid, γ = lt.grid, lt.γ
     
     i = 0
-    f = zeros(grid)  # Initial guess of f
+    f = zero(grid)  # Initial guess of f
     error = tol + 1
     
     while (error > tol) && (i < max_iter)
