@@ -111,7 +111,6 @@ a < 0 && error("`a` parameter invalid")
 # GOOD!
 @assert a < 0 
 ```
-- **Do not** use a `;` to call functions with keyword arguments unless it is required.  i.e. prefer `range(1, stop=5)` to `range(1; stop=5)`
 - **Use** the adjoint notation, `A'` instead of calling `transpose(A)` directly when working with real matrices (where they are identical).  With complex matrices, use whichever is appropriate.
 - **Use** the notation for stacking instead of the functions.  That is,
 ```julia
@@ -183,7 +182,7 @@ x = [2.0 * i^2 for i in 1:N]
 f(i) = 2.0 * i^2
 x = f.(1:5) #Use broadcasting
 ```
-- Prefer `eachindex` to accessing the sizes of matrices.
+- Prefer `eachindex` to accessing the sizes of vectors.
 ```julia
 x = [1.0, 2.0, 5.0, 2.1]
 y = similar(x)
@@ -232,9 +231,21 @@ n
 sum(xval -> xval^2, x) #i.e. transform each x and then reduce
 ```
 
+- **Use `eachindex`** to iterate through matrices and arrays of dimension > 2 as long as you don't need the actual index.  Otherwise,   For example,
+```julia
+A = [1 2 3; 4 5 6]
+# BAD!
+...for loops TODO
+
+# BETTER!
+for i in eachindex(A)
+       B[i] = A[i]^2
+end
+```
+TODO: when you need the `i` and `j` what do you do?  Just loop over both... 
+
 - **Avoid `range` when possible** and use the `1.0:0.1:1.0` style notation, etc.  Getting rid of the `linspace` is a pain, but use ranges if the exact top doesn't matter.
 ```julia
-Base.OneTo(5) # BAD!
 range(1, stop=5) #BAD!
 1:5 #GOOD!
 
@@ -261,7 +272,7 @@ r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
 @assert maximum(r) == 0.88 #Use to get the maxium of the range, perhaps != 
 ```
-
+- **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 
 ## Dependencies
@@ -274,8 +285,6 @@ r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
 - **Always seed random numbers** in order for automated testing to function.
 
 ## Work in Progress Discussions
-1. When and how do we use `eachindex` with multidimensional arrays you want to iterate through?
-2. How best to stack arrays and unpack them for use with solvers/etc.?  
+2. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
 3. Simple error handling of reasonable failures (e.g. returning a union with `Nothing`, etc.)  I am not sure we want to teach them about exceptions, for example.
 4. Can we really use Latex for labels?  Is it stable enough with various backends?  If so, I think that LatexStrings is the way to go.
-5. Lets say `x` is vector of length `N`.  Is `y = similar(x, N)` or `y = similar(x)` a better way to denote the preallocation of the same size?  I kind of like the first in this case, but I think we can use our judgement.
