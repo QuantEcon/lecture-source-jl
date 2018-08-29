@@ -631,7 +631,6 @@ the type `AssetPriceModel`
         test_stability(ap, J)
 
         # == Compute v == #
-        I = eye(ap.n)
         Ones = ones(ap.n)
         v = (I - β * J) \ (β * J * Ones)
 
@@ -772,7 +771,6 @@ The above is implemented in the function `consol_price`
         test_stability(ap, M)
 
         # == Compute price == #
-        I = eye(ap.n)
         Ones = ones(ap.n)
         p = (I - β * M) \ ( β * ζ * M * Ones)
 
@@ -882,7 +880,7 @@ We can find the solution with the following function `call_option`
         error = ϵ + 1
         while (error > ϵ)
             # == Maximize across columns == #
-            w_new = max.(β * M * w, p - p_s)
+            w_new = max.(β * M * w, p .- p_s)
             # == Find maximal difference of each component and update == #
             error = maximum(abs, w - w_new)
             w = w_new
@@ -992,7 +990,7 @@ Consider the following primitives
 
     n = 5
     P = 0.0125 .* ones(n, n)
-    P .+= diagm(0.95 .- 0.0125 .* ones(5))
+    P .+= diagm(0 => repeat([0.95 - 0.0125], 5))
     s = [1.05, 1.025, 1.0, 0.975, 0.95]
     γ = 2.0
     β = 0.94
@@ -1064,14 +1062,14 @@ Solutions
 
 
 
-Exercise 1
+Exercise 2
 ----------
 
 .. code-block:: julia
 
     n = 5
     P = 0.0125 .* ones(n, n)
-    P = P .+ diagm(0.95 - 0.0125 .* ones(5))
+    P .+= diagm(0 => repeat([0.95 - 0.0125], 5))
     s = [0.95, 0.975, 1.0, 1.025, 1.05]  # state values
     mc = MarkovChain(P, s)
 
@@ -1111,7 +1109,7 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
 
 
 
-Exercise 2
+Exercise 3
 ----------
 
 Here's a suitable function:
@@ -1136,7 +1134,7 @@ Here's a suitable function:
         w = zeros(ap.n, 1)
         for i in 1:k
             # == Maximize across columns == #
-            w = max.(β * M * w, p - p_s)
+            w = max.(β * M * w, p .- p_s)
         end
 
         return w
