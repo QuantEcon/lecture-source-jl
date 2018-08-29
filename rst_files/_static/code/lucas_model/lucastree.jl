@@ -4,8 +4,7 @@
 
 =#
 
-using QuantEcon
-using Distributions
+using QuantEcon, Distributions
 
 """
 The Lucas asset pricing model --- parameters and grid data
@@ -36,8 +35,8 @@ function LucasTree(;γ::AbstractFloat=2.0,
     # == build a grid with mass around stationary distribution == #
     ssd = σ / sqrt(1 - α^2)
     grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
-    grid = collect(linspace(grid_min, grid_max, grid_size))
-
+    grid = range(grid_min, stop = grid_max, length = grid_size)
+    
     # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
     h = similar(grid)
     for (i, y) in enumerate(grid)
@@ -67,7 +66,7 @@ function lucas_operator(lt::LucasTree, f::Vector)
 
     Af = LinInterp(grid, f)
 
-    Tf = [h[i] + β * mean(Af.(grid[i]^α.*z)) for i in 1:length(grid)]
+    Tf = [h[i] + β * mean(Af.(grid[i]^α.*z)) for i ∈ 1:length(grid)]
     return Tf
 end
 
