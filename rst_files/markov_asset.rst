@@ -324,9 +324,7 @@ The next figure shows a simulation, where
 
 .. code-block:: julia
 
-    using QuantEcon
-    using Plots
-    using LaTeXStrings
+    using QuantEcon, Plots, LaTeXStrings
 
     pyplot()
 
@@ -426,13 +424,13 @@ Here's the code, including a test of the spectral radius condition
 
 .. code-block:: julia
 
+    using LinearAlgebra
     n = 25  # size of state space
     β = 0.9
     mc = tauchen(n, 0.96, 0.02)
 
     K = mc.p .* exp.(mc.state_values)'
 
-    I = eye(n)
     v = (I - β * K) \  (β * K * ones(n, 1))
 
     plot(mc.state_values,
