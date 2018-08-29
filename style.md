@@ -16,7 +16,7 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 8. Don't use fancy features and control flow from Julia - unless it makes the code look closer to the math
 9. Avoid both micro-optimizations and coding patterns that pessimize (i.e. poor performance with no benefit in code clarity)
 
-We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.  If they want to write their own packages, they will need to learn much more about Julia, but most never will need to.
+We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
 ## Naming Conventions, Comments, etc.
 
