@@ -701,7 +701,13 @@ Exercise 1
     plot(xgrid, densities, label = reshape(labels,1,length(labels)), legend = :topleft, grid = false,
             title = LaTeXString("First $N densities when \$θ = $θ\$"))
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Solution 1 Tests" begin
+        @test length(xgrid) == 200 && xgrid[1] == 5.0 && xgrid[end] == 12.0
+        @test densities[1][4] == 0.006048628905320978
+    end 
 
 Exercise 2
 ----------
@@ -730,6 +736,15 @@ Exercise 2
 
     plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,
          legend = false, xlims = (0, T), ylims = (0, 1))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Solution 2 Tests" begin 
+        @test z[4] == 0.9467254193267353
+        @test T == 600 
+        @test 
+    end 
 
 Exercise 3
 ----------
@@ -784,6 +799,14 @@ Exercise 3
     plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
     plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Solution 3 Tests" begin 
+        @test e1[2] == 5.123448550499836
+        @test e2[19] == 0.03717649374189149
+        @test x[1] == 0.9619597742127561 && x[2] == 0.8669993304801348
+    end 
 
 .. rubric:: Footnotes
 
