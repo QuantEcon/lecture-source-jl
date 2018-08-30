@@ -213,6 +213,10 @@ The dots represent the underlying observations :math:`X_i` for :math:`i = 1, \ld
 In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occurs as predicted
 
 
+.. code-block:: julia 
+    :class: test 
+
+    using Test 
 
 .. code-block:: julia
 
@@ -276,6 +280,16 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
         linestyle = :dash, grid = false, label = [LaTeXString("\$\\mu\$") "" ""])
     plot!(title = reshape(titles, 1, length(titles)))
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "First block" begin
+        @test sample_means[1][3] ≈ 0.3028346957143721 atol = 1e-10
+        @test titles == Any["exponential with lambda = 1", "lognormal LN(0, 1/2)", "β(2, 2)"]
+        @test dist_data[3, 5] ≈ 0.12935926689122224 atol = 1e-10
+    end 
+
+
 The three distributions are chosen at random from a selection stored in the dictionary ``distributions``
 
 
@@ -314,6 +328,14 @@ The next figure shows 100 independent draws from this distribution
   end
 
   plot_draws()
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Second block" begin
+        @test data[100] ≈ 0.0034392986762718037 atol = 1e-10
+        @test isa(dist, Cauchy) # Make sure dist is bound correctly. 
+    end 
 
 
 Notice how extreme observations are far more prevalent here than the previous figure
@@ -458,6 +480,14 @@ The next figure plots the probability mass function of :math:`Y_n` for :math:`n 
         xticks = dom, yticks = [0.0, 0.2, 0.4], legend = :none,
         title = reshape(titles, 1, length(titles)))
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "CLT Tests" begin
+        @test pdfs[4][3] ≈ 0.10937500000000006 atol = 1e-10
+        @test dom ⊆ 0:9 && 0:9 ⊆ dom # Ensure that this set is invariant. 
+    end 
+
 
 When :math:`n = 1`, the distribution is flat --- one success or no successes
 have the same probability
@@ -533,6 +563,15 @@ Here's some code that does exactly this for the exponential distribution
     plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color = :black,
         linewidth = 2, label = LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
         legendfont = font(12))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Histogram tests" begin
+        @test Y[5] ≈ 0.040522717350285495 atol = 1e-10
+        @test xmin == -1.5 && xmax == 1.5 # Ensure this doesn't change. 
+        @test μ == 0.5 && s == 0.5 $ Ensure this is immune to reparametrization, etc. 
+    end 
 
 
 The fit to the normal density is already tight, and can be further improved by increasing ``n``
@@ -630,6 +669,15 @@ In the figure, the closest density is that of :math:`Y_1`, while the furthest is
     plot!(xlims = (a,b), xticks = [-3; 0; 3], ylims = (1, nmax), yticks = ns,
         ylabel = "n", xlabel = "\$ Y_n \$", zlabel = "\$ p(y_n) \$",
         zlims=(0, 0.4), zticks=[0.2; 0.4])
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Kernel Density tests" begin
+        @test Y[4] ≈ -0.4011927141138582 atol = 1e-10
+        @test x_vec[1][3] ≈ -2.0682375953288794 atol = 1e-10
+        @test length(xs) == 100 && xs[1] == -3.0 && xs[end] == 3.0
+    end 
 
 
 As expected, the distribution smooths out into a bell curve as :math:`n`
@@ -968,7 +1016,13 @@ depending on your configuration
         linewidth = 2, label = LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
         legendfont = font(12), xlims = (xmin, xmax), grid = false)
 
+.. code-block:: julia
+    :class: test 
 
+    @testset "Exercise 1 Tests" begin
+        @test asymptotic_sd ≈ 0.320637457540466 atol = 1e-10
+        @test error_obs[4] ≈ -0.08627184475065548 atol = 1e-10
+    end 
 
 What happens when you replace :math:`[0, \pi / 2]` with
 :math:`[0, \pi]`?
@@ -1072,3 +1126,12 @@ Our solution is as follows
     plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color = :black,
         linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
         legendfont = font(12), xlims = (xmin, xmax), grid = false)
+
+.. code-block::julia 
+    :class: test 
+
+    @testset "Exercise 2 Tests" begin
+        @test chisq_obs[14] ≈ 0.6562777108377652 atol = 1e-10
+        @test error_obs[2, 7] ≈ 1.1438399952303242 atol = 1e-10
+        @test length(xgrid) == 200 && xgrid[1] == 0.0 && xgrid[end] == 8.0
+    end  
