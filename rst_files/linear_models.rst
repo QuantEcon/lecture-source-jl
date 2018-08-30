@@ -1377,17 +1377,21 @@ the bars are at dates 10, 50 and 75
 Solutions
 ==========
 
+.. code-block:: julia 
+    :class: test 
+
+    using Test 
+
 .. code-block:: julia
 
-    using QuantEcon
-    using Plots
-    using LaTeXStrings
+    using QuantEcon, Plots, LaTeXStrings
 
 Exercise 1
 ----------
 
 .. code-block:: julia
-
+    using Random 
+    Random.seed!(42)
     ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
 
     A = [1.0   0.0   0
