@@ -513,37 +513,34 @@ The following code is example of usage for the stochastic growth model :ref:`des
       return pdf.(Ref(ϕ), pdf_arg) ./ d
   end
 
-  let
+    n = 10000  # Number of observations at each date t
+    T = 30     # Compute density of k_t at 1,...,T+1
 
-      n = 10000  # Number of observations at each date t
-      T = 30     # Compute density of k_t at 1,...,T+1
+    # Generate matrix s.t. t-th column is n observations of k_t
+    k = zeros(n, T)
+    A = rand!(ϕ, zeros(n, T))
 
-      # Generate matrix s.t. t-th column is n observations of k_t
-      k = zeros(n, T)
-      A = rand!(ϕ, zeros(n, T))
+    # Draw first column from initial distribution
+    k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
+    for t ∈ 1:T-1
+        k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+    end
 
-      # Draw first column from initial distribution
-      k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
-      for t ∈ 1:T-1
-          k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
-      end
+    # Generate T instances of LAE using this data, one for each date t
+    laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
 
-      # Generate T instances of LAE using this data, one for each date t
-      laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
-
-      # Plot
-      ygrid = range(0.01, stop = 4.0, length = 200)
-      laes_plot = []
-      colors = []
-      for i ∈ 1:T
-          ψ = laes[i]
-          push!(laes_plot, lae_est(ψ , ygrid))
-          push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
-      end
-      plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2, xlabel = "capital", legend = :none)
-      t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
-      plot!(title = t)
-  end
+    # Plot
+    ygrid = range(0.01, stop = 4.0, length = 200)
+    laes_plot = []
+    colors = []
+    for i ∈ 1:T
+        ψ = laes[i]
+        push!(laes_plot, lae_est(ψ , ygrid))
+        push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
+    end
+    plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2, xlabel = "capital", legend = :none)
+    t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
+    plot!(title = t)
 
 
 The figure shows part of the density sequence :math:`\{\psi_t\}`, with each
@@ -989,34 +986,32 @@ to get an idea of the speed of convergence.
 
 .. code-block:: julia
 
-  let
-      ϕ = Normal()
-      n = 500
-      θ = 0.8
-      d = sqrt(1.0 - θ^2)
-      δ = θ / d
-      Random.seed!(41)  # reproducible results
+    ϕ = Normal()
+    n = 500
+    θ = 0.8
+    d = sqrt(1.0 - θ^2)
+    δ = θ / d
+    Random.seed!(41)  # reproducible results
 
-      # true density of TAR model
-      ψ_star(y) = 2 .* pdf.(Ref(ϕ), y) .* cdf.(Ref(ϕ), δ * y)
+    # true density of TAR model
+    ψ_star(y) = 2 .* pdf.(Ref(ϕ), y) .* cdf.(Ref(ϕ), δ * y)
 
-      # Stochastic kernel for the TAR model.
-      p_TAR(x, y) = pdf.(Ref(ϕ), (y .- θ .* abs.(x)) ./ d) ./ d
+    # Stochastic kernel for the TAR model.
+    p_TAR(x, y) = pdf.(Ref(ϕ), (y .- θ .* abs.(x)) ./ d) ./ d
 
-      Z = rand(ϕ, n)
-      X = zeros(n)
-      for t ∈ 1:n-1
-          X[t+1] = θ * abs(X[t]) + d * Z[t]
-      end
+    Z = rand(ϕ, n)
+    X = zeros(n)
+    for t ∈ 1:n-1
+        X[t+1] = θ * abs(X[t]) + d * Z[t]
+    end
 
-      ψ_est(a) = lae_est(LAE(p_TAR, X), a)
-      k_est = kde(X)
+    ψ_est(a) = lae_est(LAE(p_TAR, X), a)
+    k_est = kde(X)
 
-      ys = range(-3, stop = 3, length = 200)
-      plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label="true")
-      plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
-      plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, label="kernel based estimate")
-  end
+    ys = range(-3, stop = 3, length = 200)
+    plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label="true")
+    plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
+    plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, label="kernel based estimate")
 
 
 Exercise 2
@@ -1048,41 +1043,39 @@ Here's one program that does the job.
         return pdf.(Ref(ϕ), pdf_arg) ./ d
     end
 
-    let
-        n = 1000  # Number of observations at each date t
-        T = 40    # Compute density of k_t at 1,...,T+1
+    n = 1000  # Number of observations at each date t
+    T = 40    # Compute density of k_t at 1,...,T+1
 
-        xmax = 6.5
-        ygrid = range(0.01, stop = xmax, length = 150)
-        laes_plot = zeros(length(ygrid), 4*T)
-        colors = []
-        for i ∈ 1:4
-            k = zeros(n, T)
-            A = rand!(ϕ, zeros(n, T))
+    xmax = 6.5
+    ygrid = range(0.01, stop = xmax, length = 150)
+    laes_plot = zeros(length(ygrid), 4*T)
+    colors = []
+    for i ∈ 1:4
+        k = zeros(n, T)
+        A = rand!(ϕ, zeros(n, T))
 
-            # Draw first column from initial distribution
-            # match scale = 0.5 and loc = 2i in julia version
-            k[:, 1] = (rand(ψ_0, n) .+ 2.5i) ./ 2
-            for t ∈ 1:T-1
-                k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
-            end
-
-            # Generate T instances of LAE using this data, one for each date t
-            laes = [LAE(p_growth, k[:, t]) for t ∈ T:-1:1]
-            ind = i
-            for j ∈ 1:T
-                ψ = laes[j]
-                laes_plot[:, ind] = lae_est(ψ, ygrid)
-                ind = ind + 4
-                push!(colors,  RGBA(0, 0, 0, 1 - (j - 1)/T))
-            end
+        # Draw first column from initial distribution
+        # match scale = 0.5 and loc = 2i in julia version
+        k[:, 1] = (rand(ψ_0, n) .+ 2.5i) ./ 2
+        for t ∈ 1:T-1
+            k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
         end
 
-        #colors = reshape(reshape(colors, T, 4)', 4*T, 1)
-        colors = reshape(colors, 1, length(colors))
-        plot(ygrid, laes_plot, layout = (2,2), color = colors,
-             legend = :none, xlabel = "capital", xlims = (0, xmax))
+        # Generate T instances of LAE using this data, one for each date t
+        laes = [LAE(p_growth, k[:, t]) for t ∈ T:-1:1]
+        ind = i
+        for j ∈ 1:T
+            ψ = laes[j]
+            laes_plot[:, ind] = lae_est(ψ, ygrid)
+            ind = ind + 4
+            push!(colors,  RGBA(0, 0, 0, 1 - (j - 1)/T))
+        end
     end
+
+    #colors = reshape(reshape(colors, T, 4)', 4*T, 1)
+    colors = reshape(colors, 1, length(colors))
+    plot(ygrid, laes_plot, layout = (2,2), color = colors,
+            legend = :none, xlabel = "capital", xlims = (0, xmax))
 
 
 Exercise 3
@@ -1095,42 +1088,40 @@ series for one boxplot all at once.
 
 .. code-block:: julia
 
-    let
-        n = 20
-        k = 5000
-        J = 6
-        Random.seed!(43)  # reproducible results
+    n = 20
+    k = 5000
+    J = 6
+    Random.seed!(43)  # reproducible results
 
-        θ = 0.9
-        d = sqrt(1 - θ^2)
-        δ = θ / d
+    θ = 0.9
+    d = sqrt(1 - θ^2)
+    δ = θ / d
 
-        initial_conditions = range(8, stop = 0, length = J)
+    initial_conditions = range(8, stop = 0, length = J)
 
-        Z = randn(k, n, J)
-        titles = []
-        data = []
-        x_labels = []
-        for j ∈ 1:J
-            title = "time series from t = $(initial_conditions[j])"
-            push!(titles, title)
+    Z = randn(k, n, J)
+    titles = []
+    data = []
+    x_labels = []
+    for j ∈ 1:J
+        title = "time series from t = $(initial_conditions[j])"
+        push!(titles, title)
 
-            X = zeros(k, n)
-            X[:, 1] .= initial_conditions[j]
-            labels = []
-            labels = vcat(labels, ones(k, 1))
-            for t ∈ 2:n
-                X[:, t] = θ .* abs.(X[:, t-1]) .+ d .* Z[:, t, j]
-                labels = vcat(labels, t*ones(k, 1))
-            end
-            X = reshape(X, n*k, 1)
-            push!(data, X)
-            push!(x_labels, labels)
+        X = zeros(k, n)
+        X[:, 1] .= initial_conditions[j]
+        labels = []
+        labels = vcat(labels, ones(k, 1))
+        for t ∈ 2:n
+            X[:, t] = θ .* abs.(X[:, t-1]) .+ d .* Z[:, t, j]
+            labels = vcat(labels, t*ones(k, 1))
         end
-        boxplot(x_labels, data, layout = (J,1), title = reshape(titles, 1, length(titles)), ylims = (-4, 8),
-        legend = :none, yticks = -4:2:8, xticks = 1:20)
-        plot!(size=(800, 2000))
+        X = reshape(X, n*k, 1)
+        push!(data, X)
+        push!(x_labels, labels)
     end
+    boxplot(x_labels, data, layout = (J,1), title = reshape(titles, 1, length(titles)), ylims = (-4, 8),
+    legend = :none, yticks = -4:2:8, xticks = 1:20)
+    plot!(size=(800, 2000))
 
 
 Appendix
