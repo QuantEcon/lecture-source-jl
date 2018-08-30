@@ -1385,13 +1385,12 @@ Solutions
 .. code-block:: julia
 
     using QuantEcon, Plots, LaTeXStrings
+    pyplot()
 
 Exercise 1
 ----------
 
 .. code-block:: julia
-    using Random 
-    Random.seed!(42)
     ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
 
     A = [1.0   0.0   0
@@ -1412,6 +1411,8 @@ Exercise 2
 ----------
 
 .. code-block:: julia
+    using Random 
+    Random.seed!(42) # For deterministic results. 
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.2
@@ -1432,6 +1433,13 @@ Exercise 2
     plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
     plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 2 tests" begin
+        @test x[1, 2] ≈ 0.5240344147620781 atol = 1e-10
+        @test x[1, :]' == y 
+    end 
 
 Exercise 3
 ----------
@@ -1448,7 +1456,7 @@ Exercise 3
     C = [σ
             0.0
             0.0
-            0.0]''
+            0.0]
     G = [1.0 0.0 0.0 0.0]
     I = 20
     T = 50
@@ -1476,6 +1484,16 @@ Exercise 3
     end
     plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
     plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 3 tests" begin 
+        @test pop_means[3] == 0.7 
+        @test ensemble_mean[3] ≈ 0.6983944247703417 atol = 1e-10
+        @test m.lss.A[1, 2] == -0.2
+        @test pop_means[end] == 0.01665357418047883
+    end 
 
 Exercise 4
 ----------
