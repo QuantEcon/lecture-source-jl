@@ -1127,7 +1127,7 @@ Our solution is as follows
         linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
         legendfont = font(12), xlims = (xmin, xmax), grid = false)
 
-.. code-block::julia 
+.. code-block:: julia 
     :class: test 
 
     @testset "Exercise 2 Tests" begin
