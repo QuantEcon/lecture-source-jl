@@ -743,7 +743,6 @@ Exercise 2
     @testset "Solution 2 Tests" begin 
         @test z[4] == 0.9467254193267353
         @test T == 600 
-        @test 
     end 
 
 Exercise 3
