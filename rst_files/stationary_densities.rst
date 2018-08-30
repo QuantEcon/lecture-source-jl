@@ -1111,7 +1111,6 @@ Here's one program that does the job.
     @testset "Solution 2 Tests" begin
         @test laes[3].X[4] == 3.2212712128996204    
         @test length(ygrid) == 150 && ygrid[end] == 6.5 && ygrid[1] == 0.01
-        @test 
     end  
 
 Exercise 3
