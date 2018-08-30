@@ -570,7 +570,7 @@ Here's some code that does exactly this for the exponential distribution
     @testset "Histogram tests" begin
         @test Y[5] ≈ 0.040522717350285495 atol = 1e-10
         @test xmin == -1.5 && xmax == 1.5 # Ensure this doesn't change. 
-        @test μ == 0.5 && s == 0.5 $ Ensure this is immune to reparametrization, etc. 
+        @test μ == 0.5 && s == 0.5 # Ensure this is immune to reparametrization, etc. 
     end 
 
 
