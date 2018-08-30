@@ -81,6 +81,10 @@ the point
 
 The following figure represents three vectors in this manner
 
+.. code-block:: julia 
+    :class: test 
+
+    using Test # Should put this near the top of every notebook. 
 
 .. code-block:: julia
 
@@ -91,28 +95,33 @@ The following figure represents three vectors in this manner
 
     =#
 
-    using Plots
-    using LaTeXStrings
+    using Plots, LaTeXStrings
 
-    let
-        vecs = ([2, 4], [-3, 3], [-4, -3.5])
-        x_vals = zeros(2, length(vecs))
-        y_vals = zeros(2, length(vecs))
-        labels = []
+    vecs = ([2, 4], [-3, 3], [-4, -3.5])
+    x_vals = zeros(2, length(vecs))
+    y_vals = zeros(2, length(vecs))
+    labels = []
 
-        # Create matrices of x and y values, labels for plotting
-        for i ∈ eachindex(vecs)
-            v = vecs[i]
-            x_vals[2, i] = v[1]
-            y_vals[2, i] = v[2]
-            labels = [labels; (1.1 * v[1], 1.1 * v[2], "$v")]
-        end
-
-        plot(x_vals, y_vals, arrow = true, color = :blue,
-             legend = :none, xlims = (-5, 5), ylims = (-5, 5),
-             annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
-             framestyle = :origin)
+    # Create matrices of x and y values, labels for plotting
+    for i ∈ eachindex(vecs)
+        v = vecs[i]
+        x_vals[2, i] = v[1]
+        y_vals[2, i] = v[2]
+        labels = [labels; (1.1 * v[1], 1.1 * v[2], "$v")]
     end
+
+    plot(x_vals, y_vals, arrow = true, color = :blue,
+            legend = :none, xlims = (-5, 5), ylims = (-5, 5),
+            annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+            framestyle = :origin)
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "First Block" begin
+        @test labels[2][1] ≈ -3.3
+        @test y_vals[2, :] == [4.0, 3.0, -3.5]
+    end 
 
 
 Vector Operations
@@ -180,34 +189,32 @@ Scalar multiplication is illustrated in the next figure
 
 .. code-block:: julia
 
-    let
-        # illustrate scalar multiplication
+    # illustrate scalar multiplication
 
-        x = [2, 2]
-        scalars = [-2, 2]
+    x = [2, 2]
+    scalars = [-2, 2]
 
-        # Create matrices of x and y values, labels for plotting
-        x_vals = zeros(2, 1 + length(scalars))
-        y_vals = zeros(2, 1 + length(scalars))
-        labels = []
-        x_vals[2, 3] = x[1]
-        y_vals[2, 3] = x[2]
-        labels = [labels; (x[1] + 0.4, x[2] - 0.2, "x")]
+    # Create matrices of x and y values, labels for plotting
+    x_vals = zeros(2, 1 + length(scalars))
+    y_vals = zeros(2, 1 + length(scalars))
+    labels = []
+    x_vals[2, 3] = x[1]
+    y_vals[2, 3] = x[2]
+    labels = [labels; (x[1] + 0.4, x[2] - 0.2, "x")]
 
-        # Perform scalar multiplication, store results in plotting matrices
-        for i ∈ eachindex(scalars)
-            s = scalars[i]
-            v = s .* x
-            x_vals[2, i] = v[1]
-            y_vals[2, i] = v[2]
-            labels = [labels; (v[1] + 0.4, v[2] - 0.2, string(s, "x"))]
-        end
-
-        plot(x_vals, y_vals, arrow = true, color = [:red :red :blue],
-             legend = :none, xlims = (-5, 5), ylims = (-5, 5),
-             annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
-             framestyle = :origin)
+    # Perform scalar multiplication, store results in plotting matrices
+    for i ∈ eachindex(scalars)
+        s = scalars[i]
+        v = s .* x
+        x_vals[2, i] = v[1]
+        y_vals[2, i] = v[2]
+        labels = [labels; (v[1] + 0.4, v[2] - 0.2, string(s, "x"))]
     end
+
+    plot(x_vals, y_vals, arrow = true, color = [:red :red :blue],
+            legend = :none, xlims = (-5, 5), ylims = (-5, 5),
+            annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+            framestyle = :origin)
 
 
 In Julia, a vector can be represented as a one dimensional `Array`
@@ -288,6 +295,11 @@ follows
 
     sqrt(sum(abs2, x))         # Gives the same result
 
+.. code-block:: julia 
+    :class: test 
+
+    @test norm(x) ≈ 1.7320508075688772 atol = 1e-10
+    @test sqrt(sum(x.^2)) ≈ 1.7320508075688772 atol = 1e-10
 
 Span
 -----
@@ -319,62 +331,69 @@ The span is a 2 dimensional plane passing through these two points and the origi
 .. code-block:: julia
   :class: collapse
 
-  let
-      x_min, x_max = -5, 5
-      y_min, y_max = -5, 5
+    x_min, x_max = -5, 5
+    y_min, y_max = -5, 5
 
-      α, β = 0.2, 0.1
+    α, β = 0.2, 0.1
 
-      # Axes
-      gs = 3
-      z = range(x_min, stop = x_max, length = gs)
-      x = zeros(gs)
-      y = zeros(gs)
-      plot(x, y, z, color = :black, linewidth=2, alpha=0.5, label = "", legend=false)
-      plot!(z, x, y, color = :black, linewidth=2, alpha=0.5, label = "")
-      plot!(y, z, x, color = :black, linewidth=2, alpha=0.5, label = "")
+    # Axes
+    gs = 3
+    z = range(x_min, stop = x_max, length = gs)
+    x = zeros(gs)
+    y = zeros(gs)
+    plot(x, y, z, color = :black, linewidth=2, alpha=0.5, label = "", legend=false)
+    plot!(z, x, y, color = :black, linewidth=2, alpha=0.5, label = "")
+    plot!(y, z, x, color = :black, linewidth=2, alpha=0.5, label = "")
 
-      # Fixed linear function, to generate a plane
-      f(x, y) = α .* x + β .* y
+    # Fixed linear function, to generate a plane
+    f(x, y) = α .* x + β .* y
 
-      # Vector locations, by coordinate
-      x_coords = [3, 3]
-      y_coords = [4, -4]
-      z = f(x_coords, y_coords)
+    # Vector locations, by coordinate
+    x_coords = [3, 3]
+    y_coords = [4, -4]
+    z = f(x_coords, y_coords)
 
-      # Lines to vectors
-      n = 2
-      x_vec = zeros(n, n)
-      y_vec = zeros(n, n)
-      z_vec = zeros(n, n)
-      labels = []
+    # Lines to vectors
+    n = 2
+    x_vec = zeros(n, n)
+    y_vec = zeros(n, n)
+    z_vec = zeros(n, n)
+    labels = []
 
-      for i ∈ 1:n
-          x_vec[:, i] = [0; x_coords[i]]
-          y_vec[:, i] = [0; y_coords[i]]
-          z_vec[:, i] = [0; f(x_coords[i], y_coords[i])]
-          lab = string("a", i)
-          push!(labels, lab)
-      end
+    for i ∈ 1:n
+        x_vec[:, i] = [0; x_coords[i]]
+        y_vec[:, i] = [0; y_coords[i]]
+        z_vec[:, i] = [0; f(x_coords[i], y_coords[i])]
+        lab = string("a", i)
+        push!(labels, lab)
+    end
 
-      plot!(x_vec, y_vec, z_vec, color = [:blue :red], linewidth = 1.5,
-            alpha = 0.6, label = labels)
+    plot!(x_vec, y_vec, z_vec, color = [:blue :red], linewidth = 1.5,
+        alpha = 0.6, label = labels)
 
-      # Draw the plane
-      grid_size = 20
-      xr2 = range(x_min, stop = x_max, length = grid_size)
-      yr2 = range(y_min, stop = y_max, length = grid_size)
-      z2 = zeros(grid_size, grid_size)
-      for i ∈ 1:grid_size
-          for j ∈ 1:grid_size
-              z2[j, i] = f(xr2[i], yr2[j])
-          end
-      end
-      surface!(xr2, yr2, z2, cbar = false, alpha = 0.2, fill = :blues,
-               xlims = (x_min, x_max), ylims = (x_min, x_max),
-               zlims = (x_min, x_max), xticks = [0], yticks = [0],
-               zticks = [0])
-  end
+    # Draw the plane
+    grid_size = 20
+    xr2 = range(x_min, stop = x_max, length = grid_size)
+    yr2 = range(y_min, stop = y_max, length = grid_size)
+    z2 = zeros(grid_size, grid_size)
+    for i ∈ 1:grid_size
+        for j ∈ 1:grid_size
+            z2[j, i] = f(xr2[i], yr2[j])
+        end
+    end
+    surface!(xr2, yr2, z2, cbar = false, alpha = 0.2, fill = :blues,
+            xlims = (x_min, x_max), ylims = (x_min, x_max),
+            zlims = (x_min, x_max), xticks = [0], yticks = [0],
+            zticks = [0])
+
+.. code-block:: julia
+    :class: test 
+
+    @testset "Surface Plot Test" begin
+        @test z2[2, 2] ≈ -1.342105263157895
+        @test x_vec[2, 2] == 3.0
+        @test xr2[2] ≈ -4.473684210526316
+    end 
 
 
 Examples
@@ -787,57 +806,62 @@ The answer to both these questions is negative, as the next figure shows
 
   =#
 
-  let
+    f(x) = 0.6 * cos(4.0 * x) + 1.3
 
-      f(x) = 0.6 * cos(4.0 * x) + 1.3
+    xmin, xmax = -1.0, 1.0
+    Nx = 160
+    x = range(xmin, stop = xmax, length = Nx)
+    y = f.(x)
+    ya, yb = extrema(y)
 
-      xmin, xmax = -1.0, 1.0
-      Nx = 160
-      x = range(xmin, stop = xmax, length = Nx)
-      y = f.(x)
-      ya, yb = extrema(y)
+    p1 = plot(x, y, color = :black, label = [L"$f$" ""], grid = false)
+    plot!(x, ya * ones(Nx, 1), fill_between = yb * ones(Nx, 1),
+        fillalpha = 0.1, color = :blue, label = "", lw = 0)
+    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
+    annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
+    vline!([0], color = :black, label = "")
+    hline!([0], color = :black, label = "")
+    plot!(foreground_color_axis = :white, foreground_color_text = :white,
+        foreground_color_border = :white)
 
-      p1 = plot(x, y, color = :black, label = [L"$f$" ""], grid = false)
-      plot!(x, ya * ones(Nx, 1), fill_between = yb * ones(Nx, 1),
-            fillalpha = 0.1, color = :blue, label = "", lw = 0)
-      plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
-      annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
-      vline!([0], color = :black, label = "")
-      hline!([0], color = :black, label = "")
-      plot!(foreground_color_axis = :white, foreground_color_text = :white,
-            foreground_color_border = :white)
+    ybar = 1.5
+    plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, label = "")
+    annotate!(0.05, 0.8 * ybar, L"$y$")
 
-      ybar = 1.5
-      plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, label = "")
-      annotate!(0.05, 0.8 * ybar, L"$y$")
+    x_vals = zeros(2, 4)
+    y_vals = similar(x_vals)
+    labels = []
+    for (i, z) ∈ enumerate([-0.35, 0.35])
+        x_vals[:, 2*i-1] = z * ones(2, 1)
+        y_vals[2, 2*i-1] = f(z)
+        labels = [labels; (z, -0.2, LaTeXString("\$x_$i\$"))]
+    end
+    plot!(x_vals, y_vals, color = :black, linestyle = :dash, label = "", annotation = labels)
 
-      x_vals = zeros(2, 4)
-      y_vals = similar(x_vals)
-      labels = []
-      for (i, z) ∈ enumerate([-0.35, 0.35])
-          x_vals[:, 2*i-1] = z * ones(2, 1)
-          y_vals[2, 2*i-1] = f(z)
-          labels = [labels; (z, -0.2, LaTeXString("\$x_$i\$"))]
-      end
-      plot!(x_vals, y_vals, color = :black, linestyle = :dash, label = "", annotation = labels)
+    p2 = plot(x, y, color = :black, label = [L"$f$" ""], grid=false)
+    plot!(x, ya*ones(Nx, 1), fill_between = yb * ones(Nx, 1),
+        fillalpha = 0.1, color = :blue, label = "", lw = 0)
+    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
+    annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
+    vline!([0], color = :black, label = "")
+    hline!([0], color = :black, label = "")
+    plot!(foreground_color_axis = :white, foreground_color_text = :white,
+        foreground_color_border = :white)
 
-      p2 = plot(x, y, color = :black, label = [L"$f$" ""], grid=false)
-      plot!(x, ya*ones(Nx, 1), fill_between = yb * ones(Nx, 1),
-            fillalpha = 0.1, color = :blue, label = "", lw = 0)
-      plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
-      annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
-      vline!([0], color = :black, label = "")
-      hline!([0], color = :black, label = "")
-      plot!(foreground_color_axis = :white, foreground_color_text = :white,
-            foreground_color_border = :white)
+    ybar = 2.6
+    plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, legend = :none)
+    annotate!(0.04, 0.91 * ybar, L"$y$")
 
-      ybar = 2.6
-      plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, legend = :none)
-      annotate!(0.04, 0.91 * ybar, L"$y$")
+    plot(p1, p2, layout = (2, 1), size = (600, 700))
 
-      plot(p1, p2, layout = (2, 1), size = (600, 700))
-  end
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Sinusoid Plot Test" begin
+        @test ybar == 2.6 
+        @test y[4] - 0.8439924889513749 ≈ 0.0 atol = 1e-10
+        @test y_vals[2, 3] - 1.4019802857401447 ≈ 0.0 atol = 1e-10
+    end 
 
 In the first plot there are multiple solutions, as the function is not one-to-one, while
 in the second there are no solutions, since :math:`y` lies outside the range of :math:`f`
@@ -1083,34 +1107,32 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
 .. code-block:: julia
   :class: collapse
 
-  let
-      A = [1 2
-           2 1]
-      evals, evecs = eigen(A)
-      a1, a2 = evals[1], evals[2]
-      evecs = evecs[:, 1], evecs[:, 2]
-      eig_1 = zeros(2, length(evecs))
-      eig_2 = zeros(2, length(evecs))
-      labels = []
+    A = [1 2
+        2 1]
+    evals, evecs = eigen(A)
+    a1, a2 = evals[1], evals[2]
+    evecs = evecs[:, 1], evecs[:, 2]
+    eig_1 = zeros(2, length(evecs))
+    eig_2 = zeros(2, length(evecs))
+    labels = []
 
-      for i ∈ eachindex(evecs)
-          v = evecs[i]
-          eig_1[2, i] = v[1]
-          eig_2[2, i] = v[2]
-      end
+    for i ∈ eachindex(evecs)
+        v = evecs[i]
+        eig_1[2, i] = v[1]
+        eig_2[2, i] = v[2]
+    end
 
-      x = range(-5, stop = 5, length = 10)
-      y = -x
+    x = range(-5, stop = 5, length = 10)
+    y = -x
 
-      plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow = true, color = :red,
-           legend = :none, xlims = (-3, 3), ylims = (-3, 3),
-           annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
-           framestyle = :origin)
-      plot!(a2 * eig_1[:, 2], a2 * eig_2, arrow = true, color = :red)
-      plot!(eig_1, eig_2, arrow = true, color = :blue)
-      plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
-      plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
-  end
+    plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow = true, color = :red,
+        legend = :none, xlims = (-3, 3), ylims = (-3, 3),
+        annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+        framestyle = :origin)
+    plot!(a2 * eig_1[:, 2], a2 * eig_2, arrow = true, color = :red)
+    plot!(eig_1, eig_2, arrow = true, color = :blue)
+    plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
+    plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 
 
 The eigenvalue equation is equivalent to :math:`(A - \lambda I) v = 0`, and
