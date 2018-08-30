@@ -480,7 +480,10 @@ Example
 
 The following code is example of usage for the stochastic growth model :ref:`described above <solow_swan>`
 
+.. code-block:: julia 
+    :class: test 
 
+    using Test
 
 .. code-block:: julia
 
@@ -491,7 +494,8 @@ The following code is example of usage for the stochastic growth model :ref:`des
 
   =#
   using Distributions, LaTeXStrings, Plots, QuantEcon, Random
-
+  Random.seed!(42) # For deterministic results. 
+  
   s = 0.2
   δ = 0.1
   a_σ = 0.4                    # A = exp(B) where B ~ N(0, a_σ)
@@ -542,6 +546,14 @@ The following code is example of usage for the stochastic growth model :ref:`des
     t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
     plot!(title = t)
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "First Figure Tests" begin
+        @test laes[2].X[4] == 2.6707630703642655
+        @test length(ygrid) == 200 && ygrid[1] == 0.01 && ygrid[end] == 4.0
+        @test k[5, 5] == 0.461853841701963
+    end 
 
 The figure shows part of the density sequence :math:`\{\psi_t\}`, with each
 density computed via the look ahead estimator
@@ -899,19 +911,27 @@ To illustrate, let's generate three artificial data sets and compare them with a
 .. code-block:: julia
 
     using StatPlots     # needed for box plot support
+    Random.seed!(42) # For determinism 
 
-    let
-        n = 500
-        x = randn(n)        # N(0, 1)
-        x = exp.(x)         # Map x to lognormal
-        y = randn(n) .+ 2.0  # N(2, 1)
-        z = randn(n) .+ 4.0  # N(4, 1)
-        data = vcat(x, y, z)
-        l = [LaTeXString("\$X\$") LaTeXString("\$Y\$")  LaTeXString("\$Z\$") ]
-        xlabels = reshape(repeat(l, n), 3n, 1)
+    n = 500
+    x = randn(n)        # N(0, 1)
+    x = exp.(x)         # Map x to lognormal
+    y = randn(n) .+ 2.0  # N(2, 1)
+    z = randn(n) .+ 4.0  # N(4, 1)
+    data = vcat(x, y, z)
+    l = [LaTeXString("\$X\$") LaTeXString("\$Y\$")  LaTeXString("\$Z\$") ]
+    xlabels = reshape(repeat(l, n), 3n, 1)
 
-        boxplot(xlabels, data, label = "", ylims = (-2, 14))
-    end
+    boxplot(xlabels, data, label = "", ylims = (-2, 14))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 3 Tests" begin
+        @test x[5] == 5.917186591766507
+        @test y[5] == 2.8356012641450112
+        @test z[5] == 3.921272296865464
+    end 
 
 The three data sets are
 
@@ -991,7 +1011,7 @@ to get an idea of the speed of convergence.
     θ = 0.8
     d = sqrt(1.0 - θ^2)
     δ = θ / d
-    Random.seed!(41)  # reproducible results
+    Random.seed!(42)  # reproducible results
 
     # true density of TAR model
     ψ_star(y) = 2 .* pdf.(Ref(ϕ), y) .* cdf.(Ref(ϕ), δ * y)
@@ -1013,6 +1033,14 @@ to get an idea of the speed of convergence.
     plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
     plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, label="kernel based estimate")
 
+.. code-block:: julia 
+    :class: test
+
+    @testset "Solution 1 Tests" begin
+        @test length(ys) == 200 && ys[1] == -3.0 && ys[end] == 3.0 
+        @test X[7] == 0.2729845006695114
+        @test Z[3] == 0.027155338009193845
+    end 
 
 Exercise 2
 ----------
@@ -1077,6 +1105,14 @@ Here's one program that does the job.
     plot(ygrid, laes_plot, layout = (2,2), color = colors,
             legend = :none, xlabel = "capital", xlims = (0, xmax))
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Solution 2 Tests" begin
+        @test laes[3].X[4] == 3.2212712128996204    
+        @test length(ygrid) == 150 && ygrid[end] == 6.5 && ygrid[1] == 0.01
+        @test 
+    end  
 
 Exercise 3
 ----------
@@ -1091,7 +1127,7 @@ series for one boxplot all at once.
     n = 20
     k = 5000
     J = 6
-    Random.seed!(43)  # reproducible results
+    Random.seed!(42)  # reproducible results
 
     θ = 0.9
     d = sqrt(1 - θ^2)
@@ -1123,6 +1159,13 @@ series for one boxplot all at once.
     legend = :none, yticks = -4:2:8, xticks = 1:20)
     plot!(size=(800, 2000))
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Solution 3 Tests" begin 
+        @test X[end-5] == 0.48235969268877943
+        @test Z[1, 2, 3] == 0.7233220581593061
+    end 
 
 Appendix
 ===========
