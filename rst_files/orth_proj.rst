@@ -900,9 +900,9 @@ by the columns of :math:`X`.
     :class: test 
 
     @testset "Test Py1" begin
-        @test Py1[1] ≈ -0.5652173913043479 atol = 1e-10
-        @test Py1[2] ≈ 3.2608695652173916 atol = 1e-10
-        @test Py1[3] ≈ -2.217391304347826 atol = 1e-10
+        @test Py1[1] ≈ -0.5652173913043479 
+        @test Py1[2] ≈ 3.2608695652173916 
+        @test Py1[3] ≈ -2.217391304347826 
     end 
 
 Now let's orthogonalize first, using Gram--Schmidt:
@@ -922,7 +922,7 @@ same thing:
     :class: test 
 
     @testset "Test Py2" begin
-        @test norm(Py2-Py1) ≈ 0 atol = 1e-10
+        @test norm(Py2-Py1) ≈ 0 
     end 
 
 
@@ -943,7 +943,7 @@ basis by QR decomposition and project once more.
 .. code-block:: julia 
     :class: test 
     @testset "Test Py3" begin 
-        @test norm(Py3-Py1) ≈ 0 atol = 1e-10
+        @test norm(Py3-Py1) ≈ 0 
     end 
 
 Again, the result is the same
