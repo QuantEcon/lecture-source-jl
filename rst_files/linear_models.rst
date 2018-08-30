@@ -1391,6 +1391,7 @@ Exercise 1
 ----------
 
 .. code-block:: julia
+
     ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
 
     A = [1.0   0.0   0
@@ -1411,6 +1412,7 @@ Exercise 2
 ----------
 
 .. code-block:: julia
+
     using Random 
     Random.seed!(42) # For deterministic results. 
 
@@ -1445,6 +1447,8 @@ Exercise 3
 ----------
 
 .. code-block:: julia
+
+    Random.seed!(42)
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.1
@@ -1490,7 +1494,7 @@ Exercise 3
 
     @testset "Exercise 3 tests" begin 
         @test pop_means[3] == 0.7 
-        @test ensemble_mean[3] ≈ 0.6983944247703417 atol = 1e-10
+        @test ensemble_mean[3] ≈ 0.7416701474185808 atol = 1e-10
         @test m.lss.A[1, 2] == -0.2
         @test pop_means[end] == 0.01665357418047883
     end 
@@ -1499,6 +1503,8 @@ Exercise 4
 ----------
 
 .. code-block:: julia
+
+    Random.seed!(42)
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.1
@@ -1543,6 +1549,14 @@ Exercise 4
     plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
     plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 4 Tests" begin
+        @test ys[4][7] == 0.011484225879516554
+        @test ar.A[1, 4] == 0.5 
+        @test Σ_y[1] == 0.020833333252863163
+    end 
 
 .. rubric:: Footnotes
 
