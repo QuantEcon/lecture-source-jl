@@ -20,7 +20,10 @@ We want users to be able to say _"the code is clearer than Matlab, and even clos
 
 ## Naming Conventions, Comments, etc.
 
-- **Use unicode** where possible in names so that symbols match the math in the document
+- **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
+- **Use ascii for control flow** That is,
+    - Use `in` instead of  `∈` and `!=` and `!=` to `≠` when writing code.
+    - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.  **TODO** 
 - **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
 ```julia
@@ -285,6 +288,6 @@ r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
 - **Always seed random numbers** in order for automated testing to function.
 
 ## Work in Progress Discussions
-2. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
-3. Simple error handling of reasonable failures (e.g. returning a union with `Nothing`, etc.)  I am not sure we want to teach them about exceptions, for example.
-4. Can we really use Latex for labels?  Is it stable enough with various backends?  If so, I think that LatexStrings is the way to go.
+1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
+2. Simple error handling of reasonable failures (e.g. returning a union with `Nothing`, etc.)  I am not sure we want to teach them about exceptions, for example.
+3. Can we really use Latex for labels?  Is it stable enough with various backends?  If so, I think that LatexStrings is the way to go.
