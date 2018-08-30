@@ -166,7 +166,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     @testset "First Plot Tests" begin
         @test Q == [0.12 0.09; 0.09 0.135]
         @test G isa UniformScaling 
-        @test Z == 0.0006198176959262997 # Final Gaussian plot data. 
+        @test Z[3] == 7.987729252590346e-5 # Final Gaussian plot data. 
     end 
 
 The Filtering Step
@@ -270,8 +270,8 @@ The original density is left in as contour lines for comparison
     :class: test 
 
     @testset "Updated Belief Tests" begin
-        @test M == [0.666667 1.11022e-16; 1.11022e-16 0.666667]
-        @test Σ_F == [0.133333 0.1; 0.1 0.15]
+        @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 1.1102230246251565e-16 0.6666666666666667]
+        @test Σ_F ≈ [0.13333333333333325 0.09999999999999992; 0.09999999999999998 0.15000000000000002]
         @test new_Z[19] == 4.183648381237758e-22 # Final data to be plotted. 
     end 
 
