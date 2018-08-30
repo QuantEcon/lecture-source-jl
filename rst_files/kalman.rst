@@ -88,7 +88,10 @@ where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
 
 This density :math:`p(x)` is shown below as a contour map, with the center of the red ellipse being equal to :math:`\hat x`
 
+.. code-block:: julia 
+    :class: test 
 
+    using Test 
 
 .. code-block:: julia
   :class: collapse
@@ -157,7 +160,14 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
 
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "First Plot Tests" begin
+        @test Q == [0.12 0.09; 0.09 0.135]
+        @test G isa UniformScaling 
+        @test Z == 0.0006198176959262997 # Final Gaussian plot data. 
+    end 
 
 The Filtering Step
 --------------------
@@ -256,7 +266,14 @@ The original density is left in as contour lines for comparison
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
   annotate!(y[1], y[2], L"$y$", color = :black)
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Updated Belief Tests" begin
+        @test M == [0.666667 1.11022e-16; 1.11022e-16 0.666667]
+        @test Σ_F == [0.133333 0.1; 0.1 0.15]
+        @test new_Z[19] == 4.183648381237758e-22 # Final data to be plotted. 
+    end 
 
 Our new density twists the prior :math:`p(x)` in a direction determined by  the new
 information :math:`y - G \hat x`
@@ -373,6 +390,13 @@ the update has used parameters
   contour!(x_grid, y_grid, Z_F, fill = false, levels = 6, color = :grays, cbar = false)
   annotate!(y[1], y[2], L"$y$", color = :black)
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Prediction Test" begin
+        @test new_x_hat ≈ [1.9199999999999995, 0.26666666666666655]
+        @test new_Σ ≈ [0.312 0.066; 0.066 0.141]
+    end 
 
 The Recursive Procedure
 -------------------------
@@ -651,34 +675,31 @@ Exercise 1
     A, G, Q, R = 1.0, 1.0, 0.0, 1.0
     x_hat_0, Σ_0 = 8.0, 1.0
 
-    let
+    # == Initialize Kalman filter == #
 
-        # == Initialize Kalman filter == #
+    kalman = Kalman(A, G, Q, R)
+    set_state!(kalman, x_hat_0, Σ_0)
+    # == Run == #
 
-        kalman = Kalman(A, G, Q, R)
-        set_state!(kalman, x_hat_0, Σ_0)
-        # == Run == #
+    N = 5
+    xgrid = range(θ - 5, stop = θ + 2, length = 200)
+    densities = []
+    labels = []
+    for i ∈ 1:N
+        # Record the current predicted mean and variance, and plot their densities
+        m, v = kalman.cur_x_hat, kalman.cur_sigma
+        push!(densities, pdf.(Ref(Normal(m, sqrt(v))), xgrid))
+        push!(labels, LaTeXString("\$t=$i\$"))
 
-        N = 5
-        xgrid = range(θ - 5, stop = θ + 2, length = 200)
-        densities = []
-        labels = []
-        for i ∈ 1:N
-            # Record the current predicted mean and variance, and plot their densities
-            m, v = kalman.cur_x_hat, kalman.cur_sigma
-            push!(densities, pdf.(Ref(Normal(m, sqrt(v))), xgrid))
-            push!(labels, LaTeXString("\$t=$i\$"))
+        # Generate the noisy signal
+        y = θ + randn()
 
-            # Generate the noisy signal
-            y = θ + randn()
-
-            # Update the Kalman filter
-            update!(kalman, y)
-        end
-
-        plot(xgrid, densities, label = reshape(labels,1,length(labels)), legend = :topleft, grid = false,
-             title = LaTeXString("First $N densities when \$θ = $θ\$"))
+        # Update the Kalman filter
+        update!(kalman, y)
     end
+
+    plot(xgrid, densities, label = reshape(labels,1,length(labels)), legend = :topleft, grid = false,
+            title = LaTeXString("First $N densities when \$θ = $θ\$"))
 
 
 
@@ -688,29 +709,27 @@ Exercise 2
 .. code-block:: julia
 
     using Random
-    let
-        Random.seed!(42)  # reproducible results
-        ϵ = 0.1
-        kalman = Kalman(A, G, Q, R)
-        set_state!(kalman, x_hat_0, Σ_0)
+    Random.seed!(42)  # reproducible results
+    ϵ = 0.1
+    kalman = Kalman(A, G, Q, R)
+    set_state!(kalman, x_hat_0, Σ_0)
 
-        nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
+    nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
 
-        T = 600
-        z = zeros(T)
-        for t ∈ 1:T
-            # Record the current predicted mean and variance, and plot their densities
-            m, v = kalman.cur_x_hat, kalman.cur_sigma
-            dist = Normal(m, sqrt(v))
-            integral = do_quad(x -> pdf.(dist, x), nodes, weights)
-            z[t] = 1. - integral
-        # Generate the noisy signal and update the Kalman filter
-        update!(kalman, θ + randn())
-        end
+    T = 600
+    z = zeros(T)
+    for t ∈ 1:T
+        # Record the current predicted mean and variance, and plot their densities
+        m, v = kalman.cur_x_hat, kalman.cur_sigma
+        dist = Normal(m, sqrt(v))
+        integral = do_quad(x -> pdf.(dist, x), nodes, weights)
+        z[t] = 1. - integral
+    # Generate the noisy signal and update the Kalman filter
+    update!(kalman, θ + randn())
+    end
 
     plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,
          legend = false, xlims = (0, T), ylims = (0, 1))
-    end
 
 Exercise 3
 ----------
@@ -719,53 +738,51 @@ Exercise 3
 
     Random.seed!(41)  # reproducible results
 
-    let
-        # === Define A, Q, G, R === #
-        G = Matrix{Float64}(I, 2, 2)
-        R = 0.5 .* G
-        A = [0.5 0.4
-             0.6 0.3]
-        Q = 0.3 .* G
+    # === Define A, Q, G, R === #
+    G = Matrix{Float64}(I, 2, 2)
+    R = 0.5 .* G
+    A = [0.5 0.4
+            0.6 0.3]
+    Q = 0.3 .* G
 
-        # === Define the prior density === #
-        Σ = [0.9 0.3
-             0.3 0.9]
-        x_hat = [8, 8]
+    # === Define the prior density === #
+    Σ = [0.9 0.3
+            0.3 0.9]
+    x_hat = [8, 8]
 
-        # === Initialize the Kalman filter === #
-        kn = Kalman(A, G, Q, R)
-        set_state!(kn, x_hat, Σ)
+    # === Initialize the Kalman filter === #
+    kn = Kalman(A, G, Q, R)
+    set_state!(kn, x_hat, Σ)
 
-        # === Set the true initial value of the state === #
-        x = zeros(2)
+    # === Set the true initial value of the state === #
+    x = zeros(2)
 
-        # == Print eigenvalues of A == #
-        println("Eigenvalues of A:\n$(eigvals(A))")
+    # == Print eigenvalues of A == #
+    println("Eigenvalues of A:\n$(eigvals(A))")
 
-        # == Print stationary Σ == #
-        S, K = stationary_values(kn)
-        println("Stationary prediction error variance:\n$S")
+    # == Print stationary Σ == #
+    S, K = stationary_values(kn)
+    println("Stationary prediction error variance:\n$S")
 
-        # === Generate the plot === #
-        T = 50
-        e1 = zeros(T)
-        e2 = similar(e1)
-        for t ∈ 1:T
-            # == Generate signal and update prediction == #
-            dist = MultivariateNormal(G * x, R)
-            y = rand(dist)
-            update!(kn, y)
+    # === Generate the plot === #
+    T = 50
+    e1 = zeros(T)
+    e2 = similar(e1)
+    for t ∈ 1:T
+        # == Generate signal and update prediction == #
+        dist = MultivariateNormal(G * x, R)
+        y = rand(dist)
+        update!(kn, y)
 
-            # == Update state and record error == #
-            Ax = A * x
-            x = rand(MultivariateNormal(Ax, Q))
-            e1[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, kn.cur_x_hat))
-            e2[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, Ax))
-        end
-
-        plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
-        plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
+        # == Update state and record error == #
+        Ax = A * x
+        x = rand(MultivariateNormal(Ax, Q))
+        e1[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, kn.cur_x_hat))
+        e2[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, Ax))
     end
+
+    plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
+    plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
 
 
 .. rubric:: Footnotes
