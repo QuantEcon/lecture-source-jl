@@ -1439,7 +1439,7 @@ Exercise 2
     :class: test 
 
     @testset "Exercise 2 tests" begin
-        @test x[1, 2] ≈ 0.5240344147620781 atol = 1e-10
+        @test x[1, 2] ≈ 1.155572219611465 atol = 1e-10
         @test x[1, :]' == y 
     end 
 
