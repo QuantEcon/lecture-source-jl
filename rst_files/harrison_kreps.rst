@@ -116,7 +116,7 @@ The stationary (i.e., invariant) distributions of these two matrices can be calc
 .. code-block:: julia
 
     using QuantEcon
-    
+
     qa = [1/2 1/2; 2/3 1/3]
     qb = [2/3 1/3; 1/4 3/4]
     mcA = MarkovChain(qa)
@@ -309,8 +309,25 @@ The first two rows of of the table report :math:`p_a(s)` and :math:`p_b(s)`
 
 Here's a function that can be used to compute these values
 
-.. literalinclude:: /_static/code/harrison_kreps/hk_price_singlebeliefs.jl
+.. code-block:: julia 
 
+    #=
+
+    Authors: Shunsuke Hori
+
+    =#
+    using LinearAlgebra 
+
+    function price_single_beliefs(transition::AbstractMatrix, dividend_payoff::AbstractVector;
+                                β::AbstractFloat=.75)
+        # First compute inverse piece
+        imbq_inv = inv(I - β * transition)
+        
+        # Next compute prices
+        prices = β * ((imbq_inv * transition) * dividend_payoff)
+
+        return prices
+    end
 
 Single belief prices as benchmarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -435,8 +452,37 @@ Investors of type :math:`a` want to sell the asset in state :math:`1` while inve
 
 Here's code to solve for :math:`\bar p`, :math:`\hat p_a` and :math:`\hat p_b` using the iterative method described above
 
-.. literalinclude:: /_static/code/harrison_kreps/hk_price_optimisticbeliefs.jl
+.. code-block:: julia 
 
+    function price_optimistic_beliefs(transitions::AbstractVector, dividend_payoff::AbstractVector;
+                                    β::AbstractFloat=.75, max_iter::Integer=50000,
+                                    tol::AbstractFloat=1e-16)
+
+        # We will guess an initial price vector of [0, 0]
+        p_new = [0,0]
+        p_old = [10.0,10.0]
+
+        # We know this is a contraction mapping, so we can iterate to conv
+        for i ∈ 1:max_iter
+            p_old = p_new
+            temp = [maximum((q * p_old) + (q * dividend_payoff))
+                                for q in transitions]
+            p_new = β * temp
+
+            # If we succed in converging, break out of for loop
+            if maximum(sqrt, ((p_new - p_old).^2)) < 1e-12
+                break
+            end
+        end
+
+        temp=[minimum((q * p_old) + (q * dividend_payoff)) for q in transitions]
+        ptwiddle = β * temp
+
+        phat_a = [p_new[1], ptwiddle[2]]
+        phat_b = [ptwiddle[1], p_new[2]]
+
+        return p_new, phat_a, phat_b
+    end
 
 Insufficient Funds
 ------------------
@@ -476,9 +522,29 @@ Constraints on short sales prevent that
 
 Here's code to solve for :math:`\check p` using iteration
 
-.. literalinclude:: /_static/code/harrison_kreps/hk_price_pessimisticbeliefs.jl
+.. code-block:: julia 
 
+    function price_pessimistic_beliefs(transitions::AbstractVector, dividend_payoff::AbstractVector;
+                                    β::AbstractFloat=.75, max_iter::Integer=50000,
+                                    tol::AbstractFloat=1e-16)
+        # We will guess an initial price vector of [0, 0]
+        p_new = [0, 0]
+        p_old = [10.0, 10.0]
 
+        # We know this is a contraction mapping, so we can iterate to conv
+        for i ∈ 1:max_iter
+            p_old = p_new
+            temp=[minimum((q * p_old) + (q* dividend_payoff)) for q in transitions]
+            p_new = β * temp
+
+            # If we succed in converging, break out of for loop
+            if maximum(sqrt, ((p_new - p_old).^2)) < 1e-12
+                break
+            end
+        end
+
+        return p_new
+    end
 
 Further Interpretation
 -------------------------
@@ -557,7 +623,7 @@ investors are optimistic or pessimistic
     for (transition, label) in zip(transitions, labels)
         println(label)
         println(repeat("=", 20))
-        s0, s1 = round.(price_single_beliefs(transition, dividendreturn), 2)
+        s0, s1 = round.(price_single_beliefs(transition, dividendreturn), digits=2)
         println("State 0: $s0")
         println("State 1: $s1")
         println(repeat("-", 20))
@@ -575,10 +641,10 @@ heterogeneous beliefs
     opt_beliefs = price_optimistic_beliefs([qa, qb], dividendreturn)
     labels = ["p_optimistic", "p_hat_a", "p_hat_b"]
 
-    for (p, label) in zip(opt_beliefs, labels)
+    for (p, label) ∈ zip(opt_beliefs, labels)
         println(label)
         println(repeat("=", 20))
-        s0, s1 = round.(p, 2)
+        s0, s1 = round.(p, digits = 2)
         println("State 0: $s0")
         println("State 1: $s1")
         println(repeat("-", 20))
