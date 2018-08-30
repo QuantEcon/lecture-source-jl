@@ -318,9 +318,6 @@ Here's a function that can be used to compute these values
     =#
     using LinearAlgebra 
 
-    """
-    Function to Solve Single Beliefs
-    """
     function price_single_beliefs(transition::Matrix, dividend_payoff::Vector;
                                 β::AbstractFloat=.75)
         # First compute inverse piece
@@ -457,9 +454,6 @@ Here's code to solve for :math:`\bar p`, :math:`\hat p_a` and :math:`\hat p_b` u
 
 .. code-block:: julia 
 
-    """
-    Function to Solve Optimistic Beliefs
-    """
     function price_optimistic_beliefs(transitions::Vector, dividend_payoff::Vector;
                                     β::AbstractFloat=.75, max_iter::Integer=50000,
                                     tol::AbstractFloat=1e-16)
@@ -530,9 +524,6 @@ Here's code to solve for :math:`\check p` using iteration
 
 .. code-block:: julia 
 
-    """
-    Function to Solve Pessimistic Beliefs
-    """
     function price_pessimistic_beliefs(transitions::Vector, dividend_payoff::Vector;
                                     β::AbstractFloat=.75, max_iter::Integer=50000,
                                     tol::AbstractFloat=1e-16)
