@@ -848,6 +848,11 @@ Here's a function that computes the orthonormal vectors using the GS
 algorithm given in the lecture.
 
 .. code-block:: julia
+    :class: Test 
+
+    using Test # Put this before any code in the lecture. 
+
+.. code-block:: julia
 
     using LinearAlgebra
 
@@ -891,6 +896,14 @@ by the columns of :math:`X`.
 
     Py1 = X * inv(X'X) * X' * y
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Test Py1" begin
+        @test Py1[1] ≈ -0.5652173913043479 atol = 1e-10
+        @test Py1[2] ≈ 3.2608695652173916 atol = 1e-10
+        @test Py1[3] ≈ -2.217391304347826 atol = 1e-10
+    end 
 
 Now let's orthogonalize first, using Gram--Schmidt:
 
@@ -898,13 +911,19 @@ Now let's orthogonalize first, using Gram--Schmidt:
 
     U = gram_schmidt(X)
 
-
 Now we can project using the orthonormal basis and see if we get the
 same thing:
 
 .. code-block:: julia
 
     Py2 = U * U' * y
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Test Py2" begin
+        @test norm(Py2-Py1) ≈ 0 atol = 1e-10
+    end 
 
 
 The result is the same. To complete the exercise, we get an orthonormal
@@ -919,6 +938,12 @@ basis by QR decomposition and project once more.
 
 .. code-block:: julia
 
-    Py2 ≈ Q * Q' * y
+    Py3 = Q * Q' * y
+
+.. code-block:: julia 
+    :class: test 
+    @testset "Test Py3" begin 
+        @test norm(Py3-Py1) ≈ 0 atol = 1e-10
+    end 
 
 Again, the result is the same
