@@ -213,74 +213,81 @@ The dots represent the underlying observations :math:`X_i` for :math:`i = 1, \ld
 In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occurs as predicted
 
 
+.. code-block:: julia 
+    :class: test 
+
+    using Test 
 
 .. code-block:: julia
 
-  #=
+    #=
 
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
+    @author : Spencer Lyon <spencer.lyon@nyu.edu>
             Victoria Gregory <victoria.gregory@nyu.edu>
 
-  =#
-  using Plots
-  using Distributions
-  using LaTeXStrings
-  using Random
-  using Statistics
+    =#
+    using Plots, Distributions, LaTeXStrings, Random, Statistics
 
-  n = 100
-  Random.seed!(42)  # reproducible results
+    n = 100
+    Random.seed!(42)  # reproducible results
 
-  let
-      # == Arbitrary collection of distributions == #
-      distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
-                           "β(2, 2)" => Beta(2.0, 2.0),
-                           "lognormal LN(0, 1/2)" => LogNormal(0.5),
-                           "γ(5, 1/2)" => Gamma(5.0, 2.0),
-                           "poisson(4)" => Poisson(4),
-                           "exponential with lambda = 1" => Exponential(1))
+    # == Arbitrary collection of distributions == #
+    distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
+        "β(2, 2)" => Beta(2.0, 2.0),
+        "lognormal LN(0, 1/2)" => LogNormal(0.5),
+        "γ(5, 1/2)" => Gamma(5.0, 2.0),
+        "poisson(4)" => Poisson(4),
+        "exponential with lambda = 1" => Exponential(1))
 
-      num_plots = 3
-      dist_data = zeros(num_plots, n)
-      sample_means = []
-      dist_means = []
-      titles = []
-      for i ∈ 1:num_plots
-          dist_names = collect(keys(distributions))
-          # == Choose a randomly selected distribution == #
-          name = dist_names[rand(1:length(dist_names))]
-          dist = pop!(distributions, name)
+    num_plots = 3
+    dist_data = zeros(num_plots, n)
+    sample_means = []
+    dist_means = []
+    titles = []
+    for i ∈ 1:num_plots
+        dist_names = collect(keys(distributions))
+        # == Choose a randomly selected distribution == #
+        name = dist_names[rand(1:length(dist_names))]
+        dist = pop!(distributions, name)
 
-          # == Generate n draws from the distribution == #
-          data = rand(dist, n)
+        # == Generate n draws from the distribution == #
+        data = rand(dist, n)
 
-          # == Compute sample mean at each n == #
-          sample_mean = zeros(n)
-          for j ∈ 1:n
-              sample_mean[j] = mean(data[1:j])
-          end
+        # == Compute sample mean at each n == #
+        sample_mean = zeros(n)
+        for j ∈ 1:n
+            sample_mean[j] = mean(data[1:j])
+        end
 
-          m = mean(dist)
+        m = mean(dist)
 
-          dist_data[i, :] = data'
-          push!(sample_means, sample_mean)
-          push!(dist_means, m * ones(n))
-          push!(titles, name)
+        dist_data[i, :] = data'
+        push!(sample_means, sample_mean)
+        push!(dist_means, m * ones(n))
+        push!(titles, name)
 
-      end
+    end
 
-      # == Plot == #
-      N = repeat(reshape(repeat(1:n, 1, num_plots)', 1, n * num_plots), 2, 1)
-      heights = [zeros(1, n * num_plots); reshape(dist_data, 1, n * num_plots)]
-      plot(N, heights, layout = (3, 1), label = "", color = :grey, alpha = 0.5)
-      plot!(1:n, dist_data', layout = (3, 1), color = :grey, markershape=:circle,
-            alpha = 0.5, label = "", linewidth = 0)
-      plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green, legend = :topleft,
-            layout = (3, 1), label = [LaTeXString("\$\\bar{X}_n\$") "" ""])
-      plot!(1:n, dist_means, color = :black, linewidth = 1.5, layout = (3, 1),
-            linestyle = :dash, grid = false, label = [LaTeXString("\$\\mu\$") "" ""])
-      plot!(title = reshape(titles, 1, length(titles)))
-  end
+    # == Plot == #
+    N = repeat(reshape(repeat(1:n, 1, num_plots)', 1, n * num_plots), 2, 1)
+    heights = [zeros(1, n * num_plots); reshape(dist_data, 1, n * num_plots)]
+    plot(N, heights, layout = (3, 1), label = "", color = :grey, alpha = 0.5)
+    plot!(1:n, dist_data', layout = (3, 1), color = :grey, markershape=:circle,
+        alpha = 0.5, label = "", linewidth = 0)
+    plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green, legend = :topleft,
+        layout = (3, 1), label = [LaTeXString("\$\\bar{X}_n\$") "" ""])
+    plot!(1:n, dist_means, color = :black, linewidth = 1.5, layout = (3, 1),
+        linestyle = :dash, grid = false, label = [LaTeXString("\$\\mu\$") "" ""])
+    plot!(title = reshape(titles, 1, length(titles)))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "First block" begin
+        @test sample_means[1][3] ≈ 0.3028346957143721 atol = 1e-10
+        @test titles == Any["exponential with lambda = 1", "lognormal LN(0, 1/2)", "β(2, 2)"]
+        @test dist_data[3, 5] ≈ 0.12935926689122224 atol = 1e-10
+    end 
 
 
 The three distributions are chosen at random from a selection stored in the dictionary ``distributions``
@@ -321,6 +328,14 @@ The next figure shows 100 independent draws from this distribution
   end
 
   plot_draws()
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Second block" begin
+        @test data[100] ≈ 0.0034392986762718037 atol = 1e-10
+        @test isa(dist, Cauchy) # Make sure dist is bound correctly. 
+    end 
 
 
 Notice how extreme observations are far more prevalent here than the previous figure
@@ -449,23 +464,29 @@ The next figure plots the probability mass function of :math:`Y_n` for :math:`n 
 .. code-block:: julia
 
   Random.seed!(42)  # reproducible results
-  let
-      ns = [1, 2, 4, 8]
-      dom = 0:9
+    ns = [1, 2, 4, 8]
+    dom = 0:9
 
-      pdfs = []
-      titles = []
-      for n ∈ ns
-          b = Binomial(n, 0.5)
-          push!(pdfs, pdf.(Ref(b), dom))
-          t = LaTeXString("\$n = $n\$")
-          push!(titles, t)
-      end
+    pdfs = []
+    titles = []
+    for n ∈ ns
+        b = Binomial(n, 0.5)
+        push!(pdfs, pdf.(Ref(b), dom))
+        t = LaTeXString("\$n = $n\$")
+        push!(titles, t)
+    end
 
-      bar(dom, pdfs, layout = 4, alpha = 0.6, xlims = (-0.5, 8.5), ylims = (0, 0.55),
-          xticks = dom, yticks = [0.0, 0.2, 0.4], legend = :none,
-          title = reshape(titles, 1, length(titles)))
-  end
+    bar(dom, pdfs, layout = 4, alpha = 0.6, xlims = (-0.5, 8.5), ylims = (0, 0.55),
+        xticks = dom, yticks = [0.0, 0.2, 0.4], legend = :none,
+        title = reshape(titles, 1, length(titles)))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "CLT Tests" begin
+        @test pdfs[4][3] ≈ 0.10937500000000006 atol = 1e-10
+        @test dom ⊆ 0:9 && 0:9 ⊆ dom # Ensure that this set is invariant. 
+    end 
 
 
 When :math:`n = 1`, the distribution is flat --- one success or no successes
@@ -520,30 +541,37 @@ Here's some code that does exactly this for the exponential distribution
   # == Set parameters == #
   Random.seed!(42)  # reproducible results
 
-  let
-      n = 250    # Choice of n
-      k = 10000  # Number of draws of Y_n
-      dist = Exponential(1 ./ 2.)  # Exponential distribution, lambda = 1/2
-      μ, s = mean(dist), std(dist)
+    n = 250    # Choice of n
+    k = 10000  # Number of draws of Y_n
+    dist = Exponential(1 ./ 2.)  # Exponential distribution, lambda = 1/2
+    μ, s = mean(dist), std(dist)
 
-      # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
-      data = rand(dist, k, n)
+    # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
+    data = rand(dist, k, n)
 
-      # == Compute mean of each row, producing k draws of \bar X_n == #
-      sample_means = mean(data, dims = 2)
+    # == Compute mean of each row, producing k draws of \bar X_n == #
+    sample_means = mean(data, dims = 2)
 
-      # == Generate observations of Y_n == #
-      Y = sqrt(n) * (sample_means .- μ)
+    # == Generate observations of Y_n == #
+    Y = sqrt(n) * (sample_means .- μ)
 
-      # == Plot == #
-      xmin, xmax = -3 * s, 3 * s
-      histogram(Y, nbins = 60, alpha = 0.5, xlims = (xmin, xmax),
-                norm = true, label = "")
-      xgrid = range(xmin, stop = xmax, length = 200)
-      plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color = :black,
-            linewidth = 2, label = LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
-            legendfont = font(12))
-  end
+    # == Plot == #
+    xmin, xmax = -3 * s, 3 * s
+    histogram(Y, nbins = 60, alpha = 0.5, xlims = (xmin, xmax),
+            norm = true, label = "")
+    xgrid = range(xmin, stop = xmax, length = 200)
+    plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color = :black,
+        linewidth = 2, label = LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
+        legendfont = font(12))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Histogram tests" begin
+        @test Y[5] ≈ 0.040522717350285495 atol = 1e-10
+        @test xmin == -1.5 && xmax == 1.5 # Ensure this doesn't change. 
+        @test μ == 0.5 && s == 0.5 # Ensure this is immune to reparametrization, etc. 
+    end 
 
 
 The fit to the normal density is already tight, and can be further improved by increasing ``n``
@@ -602,47 +630,54 @@ In the figure, the closest density is that of :math:`Y_1`, while the furthest is
       return (X .- m) ./ sigma
   end
 
-  let
-      nmax = 5
-      reps = 100000
-      ns = 1:nmax
+    nmax = 5
+    reps = 100000
+    ns = 1:nmax
 
-      # == Form a matrix Z such that each column is reps independent draws of X == #
-      Z = zeros(reps, nmax)
-      for i ∈ ns
-          Z[:, i] = gen_x_draws(reps)
-      end
+    # == Form a matrix Z such that each column is reps independent draws of X == #
+    Z = zeros(reps, nmax)
+    for i ∈ ns
+        Z[:, i] = gen_x_draws(reps)
+    end
 
-      # == Take cumulative sum across columns
-      S = cumsum(Z, dims = 2)
+    # == Take cumulative sum across columns
+    S = cumsum(Z, dims = 2)
 
-      # == Multiply j-th column by sqrt j == #
-      Y = S .* (1. ./ sqrt.(ns))'
+    # == Multiply j-th column by sqrt j == #
+    Y = S .* (1. ./ sqrt.(ns))'
 
-      # == Plot == #
-      a, b = -3, 3
-      gs = 100
-      xs = range(a, stop = b, length = gs)
+    # == Plot == #
+    a, b = -3, 3
+    gs = 100
+    xs = range(a, stop = b, length = gs)
 
-      x_vec = []
-      y_vec = []
-      z_vec = []
-      colors = []
-      for n ∈ ns
-          kde_est = kde(Y[:, n])
-          _xs, ys = kde_est.x, kde_est.density
-          push!(x_vec, collect(_xs))
-          push!(y_vec, ys)
-          push!(z_vec, collect(n*ones( length(_xs))))
-          push!(colors, RGBA(0, 0, 0, 1-(n-1)/nmax))
-      end
+    x_vec = []
+    y_vec = []
+    z_vec = []
+    colors = []
+    for n ∈ ns
+        kde_est = kde(Y[:, n])
+        _xs, ys = kde_est.x, kde_est.density
+        push!(x_vec, collect(_xs))
+        push!(y_vec, ys)
+        push!(z_vec, collect(n*ones( length(_xs))))
+        push!(colors, RGBA(0, 0, 0, 1-(n-1)/nmax))
+    end
 
-      plot(x_vec, z_vec, y_vec, color = reshape(colors,1,length(colors)),
-           legend = :none)
-      plot!(xlims = (a,b), xticks = [-3; 0; 3], ylims = (1, nmax), yticks = ns,
-            ylabel = "n", xlabel = "\$ Y_n \$", zlabel = "\$ p(y_n) \$",
-            zlims=(0, 0.4), zticks=[0.2; 0.4])
-  end
+    plot(x_vec, z_vec, y_vec, color = reshape(colors,1,length(colors)),
+        legend = :none)
+    plot!(xlims = (a,b), xticks = [-3; 0; 3], ylims = (1, nmax), yticks = ns,
+        ylabel = "n", xlabel = "\$ Y_n \$", zlabel = "\$ p(y_n) \$",
+        zlims=(0, 0.4), zticks=[0.2; 0.4])
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Kernel Density tests" begin
+        @test Y[4] ≈ -0.4011927141138582 atol = 1e-10
+        @test x_vec[1][3] ≈ -2.0682375953288794 atol = 1e-10
+        @test length(xs) == 100 && xs[1] == -3.0 && xs[end] == 3.0
+    end 
 
 
 As expected, the distribution smooths out into a bell curve as :math:`n`
@@ -953,36 +988,41 @@ depending on your configuration
 
 .. code-block:: julia
 
-  let
-      # == Set parameters == #
-      Random.seed!(42)   # reproducible results
-      n = 250     # Choice of n
-      k = 100000  # Number of draws of Y_n
-      dist = Uniform(0, π/2)
-      μ, s = mean(dist), std(dist)
+    # == Set parameters == #
+    Random.seed!(42)   # reproducible results
+    n = 250     # Choice of n
+    k = 100000  # Number of draws of Y_n
+    dist = Uniform(0, π/2)
+    μ, s = mean(dist), std(dist)
 
-      g = sin
-      g′ = cos
+    g = sin
+    g′ = cos
 
-      # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
-      data = rand(dist, k, n)
+    # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
+    data = rand(dist, k, n)
 
-      # == Compute mean of each row, producing k draws of \bar X_n == #
-      sample_means = mean(data, dims = 2)
+    # == Compute mean of each row, producing k draws of \bar X_n == #
+    sample_means = mean(data, dims = 2)
 
-      error_obs = sqrt(n) .* (g.(sample_means) .- g.(μ))
+    error_obs = sqrt(n) .* (g.(sample_means) .- g.(μ))
 
-      # == Plot == #
-      asymptotic_sd = g′(μ) .* s
-      xmin = -3 * g′(μ) * s
-      xmax = -xmin
-      histogram(error_obs, nbins = 60, alpha = 0.5, normed = true, label = "")
-      xgrid = range(xmin, stop = xmax, length = 200)
-      plot!(xgrid, pdf.(Ref(Normal(0.0, asymptotic_sd)), xgrid), color = :black,
-            linewidth = 2, label = LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
-            legendfont = font(12), xlims = (xmin, xmax), grid = false)
-  end
+    # == Plot == #
+    asymptotic_sd = g′(μ) .* s
+    xmin = -3 * g′(μ) * s
+    xmax = -xmin
+    histogram(error_obs, nbins = 60, alpha = 0.5, normed = true, label = "")
+    xgrid = range(xmin, stop = xmax, length = 200)
+    plot!(xgrid, pdf.(Ref(Normal(0.0, asymptotic_sd)), xgrid), color = :black,
+        linewidth = 2, label = LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
+        legendfont = font(12), xlims = (xmin, xmax), grid = false)
 
+.. code-block:: julia
+    :class: test 
+
+    @testset "Exercise 1 Tests" begin
+        @test asymptotic_sd ≈ 0.320637457540466 atol = 1e-10
+        @test error_obs[4] ≈ -0.08627184475065548 atol = 1e-10
+    end 
 
 What happens when you replace :math:`[0, \pi / 2]` with
 :math:`[0, \pi]`?
@@ -1048,43 +1088,50 @@ Our solution is as follows
 
 .. code-block:: julia
 
-  let
-      # == Set parameters == #
-      n = 250
-      replications = 50000
-      dw = Uniform(-1, 1)
-      du = Uniform(-2, 2)
-      sw, su = std(dw), std(du)
-      vw, vu = sw^2, su^2
-      Σ = [vw    vw
-           vw vw+vu]
+    # == Set parameters == #
+    n = 250
+    replications = 50000
+    dw = Uniform(-1, 1)
+    du = Uniform(-2, 2)
+    sw, su = std(dw), std(du)
+    vw, vu = sw^2, su^2
+    Σ = [vw    vw
+        vw vw+vu]
 
-      # == Compute Σ^{-1/2} == #
-      Q = inv(sqrt(Σ))
+    # == Compute Σ^{-1/2} == #
+    Q = inv(sqrt(Σ))
 
-      # == Generate observations of the normalized sample mean == #
-      error_obs = zeros(2, replications)
-      for i ∈ 1:replications
-          # == Generate one sequence of bivariate shocks == #
-          X = zeros(2, n)
-          W = rand(dw, n)
-          U = rand(du, n)
+    # == Generate observations of the normalized sample mean == #
+    error_obs = zeros(2, replications)
+    for i ∈ 1:replications
+        # == Generate one sequence of bivariate shocks == #
+        X = zeros(2, n)
+        W = rand(dw, n)
+        U = rand(du, n)
 
-          # == Construct the n observations of the random vector == #
-          X[1, :] = W
-          X[2, :] = W + U
+        # == Construct the n observations of the random vector == #
+        X[1, :] = W
+        X[2, :] = W + U
 
-          # == Construct the i-th observation of Y_n == #
-          error_obs[:, i] = sqrt(n) .* mean(X, dims = 2)
-      end
+        # == Construct the i-th observation of Y_n == #
+        error_obs[:, i] = sqrt(n) .* mean(X, dims = 2)
+    end
 
-      chisq_obs = dropdims(sum(abs2, Q * error_obs, dims = 1), dims = 1)
+    chisq_obs = dropdims(sum(abs2, Q * error_obs, dims = 1), dims = 1)
 
-      # == Plot == #
-      xmin, xmax = 0, 8
-      histogram(chisq_obs, nbins = 50, normed = true, label = "")
-      xgrid = range(xmin, stop = xmax, length = 200)
-      plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color = :black,
-            linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
-            legendfont = font(12), xlims = (xmin, xmax), grid = false)
-  end
+    # == Plot == #
+    xmin, xmax = 0, 8
+    histogram(chisq_obs, nbins = 50, normed = true, label = "")
+    xgrid = range(xmin, stop = xmax, length = 200)
+    plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color = :black,
+        linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
+        legendfont = font(12), xlims = (xmin, xmax), grid = false)
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 2 Tests" begin
+        @test chisq_obs[14] ≈ 0.6562777108377652 atol = 1e-10
+        @test error_obs[2, 7] ≈ 1.1438399952303242 atol = 1e-10
+        @test length(xgrid) == 200 && xgrid[1] == 0.0 && xgrid[end] == 8.0
+    end  
