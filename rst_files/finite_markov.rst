@@ -238,17 +238,28 @@ In order to implement this simulation procedure, we need a method for generating
 
 For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
 
+.. code-block:: julia
+    :class: test 
 
+    using Test 
 
 .. code-block:: julia
 
-    using QuantEcon
+    using QuantEcon, Random 
+
+    Random.seed!(42)
 
     ψ = [0.1, 0.9];        # Probabilities over sample space {1, 2}
     d = DiscreteRV(ψ);
-    rand(d, 5)             # Generate 5 independent draws from ψ
+    init = rand(d, 5)             # Generate 5 independent draws from ψ
 
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Initial Block" begin
+        @test init == [2, 2, 1, 2, 2] # Mainly to check seeding invariance. 
+    end 
 
 
 
@@ -301,14 +312,19 @@ If you run the following code you should get roughly that answer
 
 .. code-block:: julia
 
+    Random.seed!(42)
     P = [0.4 0.6; 0.2 0.8]
     X = mc_sample_path(P, sample_size = 100000);
-    println(mean(X .== 1))
+    μ_1 = mean(X .== 1)
 
 
+.. code-block:: julia 
+    :class: test 
 
-
-
+    @testset "Sample Path Test" begin
+        @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change. 
+        @test X[1:5] == [1, 2, 2, 1, 1]
+    end 
 
 
 Using QuantEcon's Routines
@@ -322,14 +338,20 @@ Here's an illustration using the same `P` as the preceding example
 
 .. code-block:: julia
 
+    Random.seed!(42)
     P = [0.4 0.6; 0.2 0.8];
     mc = MarkovChain(P)
     X = simulate(mc, 100000);
-    mean(X .== 1)             # Should be close to 0.25
+    μ_2 = mean(X .== 1)             # Should be close to 0.25
 
+.. code-block:: julia 
+    :class: test 
 
-
-
+    @testset "QE Sample Path Test" begin
+        @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
+        @test X[1:5] == [2, 2, 1, 1, 2]
+        @test μ_1 ≈ μ_2 atol = 1e-4
+    end 
 
 Adding state values and initial conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -610,7 +632,12 @@ We can also test this using `QuantEcon.jl <http://quantecon.org/julia_index.html
     mc = MarkovChain(P)
     is_irreducible(mc)
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Irreducibility Check" begin
+        @test is_irreducible(mc) == true
+    end 
 
 
 
@@ -625,8 +652,6 @@ This stochastic matrix is not irreducible, since, for example, `rich` is not acc
 
 Let's confirm this
 
-
-
 .. code-block:: julia
 
     P = [1.0 0.0 0.0; 0.1 0.8 0.1; 0.0 0.2 0.8];
@@ -637,9 +662,7 @@ Let's confirm this
 
 
 
-We can also determine the "communication classes"
-
-
+We can also determine the "communication classes," or the sets of communicating states (where communication refers to a nonzero probability of moving in each direction).
 
 .. code-block:: julia
 
@@ -681,7 +704,12 @@ The chain cycles with period 3:
     mc = MarkovChain(P);
     period(mc)
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Periodicity Check" begin
+        @test period(mc) == 3 # Confirm that everything is behaving as expected. 
+    end 
 
 
 
@@ -878,36 +906,34 @@ The convergence in the theorem is illustrated in the next figure
 
     using Plots
 
-    let
-        P = [0.971 0.029 0.000
-             0.145 0.778 0.077
-             0.000 0.508 0.492]
+    P = [0.971 0.029 0.000
+            0.145 0.778 0.077
+            0.000 0.508 0.492]
 
-        ψ = [0.0 0.2 0.8]
+    ψ = [0.0 0.2 0.8]
 
-        t = 20
-        x_vals = zeros(t+1)
-        y_vals = similar(x_vals)
-        z_vals = similar(x_vals)
-        colors = []
+    t = 20
+    x_vals = zeros(t+1)
+    y_vals = similar(x_vals)
+    z_vals = similar(x_vals)
+    colors = []
 
-        for i ∈ 1:t
-            x_vals[i] = ψ[1]
-            y_vals[i] = ψ[2]
-            z_vals[i] = ψ[3]
-            ψ = ψ * P
-            push!(colors, :red)
-        end
-        push!(colors, :black)
-
-        mc = MarkovChain(P)
-        ψ_star = stationary_distributions(mc)[1]
-        x_vals[t+1] = ψ_star[1]
-        y_vals[t+1] = ψ_star[2]
-        z_vals[t+1] = ψ_star[3]
-        scatter(x_vals, y_vals, z_vals, color = colors)
-        plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
+    for i ∈ 1:t
+        x_vals[i] = ψ[1]
+        y_vals[i] = ψ[2]
+        z_vals[i] = ψ[3]
+        ψ = ψ * P
+        push!(colors, :red)
     end
+    push!(colors, :black)
+
+    mc = MarkovChain(P)
+    ψ_star = stationary_distributions(mc)[1]
+    x_vals[t+1] = ψ_star[1]
+    y_vals[t+1] = ψ_star[2]
+    z_vals[t+1] = ψ_star[3]
+    scatter(x_vals, y_vals, z_vals, color = colors)
+    plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
 
 
 Here
@@ -1366,35 +1392,42 @@ compare it to the stationary probability.
 
 .. code-block:: julia
 
-    let
-        α = β = 0.1
-        N = 10000
-        p = β / (α + β)
+    Random.seed!(42)
+    α = β = 0.1
+    N = 10000
+    p = β / (α + β)
 
-        P = [1 - α   α    # Careful: P and p are distinct
-             β     1 - β]
+    P = [1 - α   α    # Careful: P and p are distinct
+            β     1 - β]
 
-        mc = MarkovChain(P)
+    mc = MarkovChain(P)
 
-        labels = []
-        y_vals = []
+    labels = []
+    y_vals = []
 
-        for x0 ∈ 1:2
-            # == Generate time series for worker that starts at x0 == #
-            X = simulate_indices(mc, N; init = x0)
+    for x0 ∈ 1:2
+        # == Generate time series for worker that starts at x0 == #
+        X = simulate_indices(mc, N; init = x0)
 
-            # == Compute fraction of time spent unemployed, for each n == #
-            X_bar = cumsum(X.==1) ./ (1:N) # (1:N) required, as otherwise the colon takes precedence.
+        # == Compute fraction of time spent unemployed, for each n == #
+        X_bar = cumsum(X.==1) ./ (1:N) # (1:N) required, as otherwise the colon takes precedence.
 
-            l = LaTeXString("\$X_0 = $x0\$")
-            push!(labels, l)
-            push!(y_vals, X_bar .- p)
-        end
-
-        plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
-             ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
+        l = LaTeXString("\$X_0 = $x0\$")
+        push!(labels, l)
+        push!(y_vals, X_bar .- p)
     end
 
+    plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
+            ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 1 Tests" begin
+        @test y_vals[2][5] == -0.5 
+        @test X[1:5] == [2, 2, 2, 2, 2]
+        @test labels == Any[L"$X_0 = 1$", L"$X_0 = 2$"]
+    end 
 
 Exercise 2
 ----------
@@ -1452,48 +1485,53 @@ executing the next cell
     Return list of pages, ordered by rank
     =#
 
-    let
-        infile = "web_graph_data.txt"
-        alphabet = "abcdefghijklmnopqrstuvwxyz"
+    infile = "web_graph_data.txt"
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-        n = 14 # Total number of web pages (nodes)
+    n = 14 # Total number of web pages (nodes)
 
-        # == Create a matrix Q indicating existence of links == #
-        #  * Q[i, j] = 1 if there is a link from i to j
-        #  * Q[i, j] = 0 otherwise
-        Q = zeros(Int64, n, n)
-        f = open(infile, "r")
-        edges = readlines(f)
-        close(f)
-        for edge ∈ edges
-            from_node, to_node = collect((m.match for m = eachmatch(r"\w", edge)))
-            i = first(something(findfirst(from_node, alphabet), 0:-1))
-            j = first(something(findfirst(to_node, alphabet), 0:-1))
-            Q[i, j] = 1
-        end
-
-        # == Create the corresponding Markov matrix P == #
-        P = zeros(n, n)
-        for i ∈ 1:n
-            P[i, :] = Q[i, :] / sum(Q[i, :])
-        end
-
-        mc = MarkovChain(P)
-
-        # == Compute the stationary distribution r == #
-        r = stationary_distributions(mc)[1]
-        ranked_pages = Dict(alphabet[i] => r[i] for i ∈ 1:n)
-
-        # == Print solution, sorted from highest to lowest rank == #
-        println("Rankings\n ***")
-        sort_inds = reverse!(sortperm(collect(values(ranked_pages))))
-        the_keys = collect(keys(ranked_pages))
-        the_vals = collect(values(ranked_pages))
-        for i ∈ sort_inds
-            @printf("%s: %.4f\n", the_keys[i], the_vals[i])
-        end
+    # == Create a matrix Q indicating existence of links == #
+    #  * Q[i, j] = 1 if there is a link from i to j
+    #  * Q[i, j] = 0 otherwise
+    Q = zeros(Int64, n, n)
+    f = open(infile, "r")
+    edges = readlines(f)
+    close(f)
+    for edge ∈ edges
+        from_node, to_node = collect((m.match for m = eachmatch(r"\w", edge)))
+        i = first(something(findfirst(from_node, alphabet), 0:-1))
+        j = first(something(findfirst(to_node, alphabet), 0:-1))
+        Q[i, j] = 1
     end
 
+    # == Create the corresponding Markov matrix P == #
+    P = zeros(n, n)
+    for i ∈ 1:n
+        P[i, :] = Q[i, :] / sum(Q[i, :])
+    end
+
+    mc = MarkovChain(P)
+
+    # == Compute the stationary distribution r == #
+    r = stationary_distributions(mc)[1]
+    ranked_pages = Dict(alphabet[i] => r[i] for i ∈ 1:n)
+
+    # == Print solution, sorted from highest to lowest rank == #
+    println("Rankings\n ***")
+    sort_inds = reverse!(sortperm(collect(values(ranked_pages))))
+    the_keys = collect(keys(ranked_pages))
+    the_vals = collect(values(ranked_pages))
+    for i ∈ sort_inds
+        @printf("%s: %.4f\n", the_keys[i], the_vals[i])
+    end
+
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Exercise 2 Tests" begin
+        @test ranked_pages['g'] == 0.16070778858515053
+        @test ranked_pages['l'] == 0.032017852378295776
+    end 
 
 Exercise 3
 ----------
