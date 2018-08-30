@@ -299,7 +299,6 @@ follows
     :class: test 
 
     @test norm(x) ≈ 1.7320508075688772 atol = 1e-10
-    @test sqrt(sum(x.^2)) ≈ 1.7320508075688772 atol = 1e-10
 
 Span
 -----
