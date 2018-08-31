@@ -291,9 +291,6 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
         return (1 / uc.a) * (1 - exp(temp1 + temp2)) - uc.c
     end
 
-    """
-    Update beliefs (μ, γ) based on aggregates X and M.
-    """
     function update_beliefs!(uc::UncertaintyTrapEcon, X::Real, M::Real)
         # Simplify names
         γ_x, ρ, σ_θ = uc.γ_x, uc.ρ, uc.σ_θ
@@ -310,10 +307,6 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
     update_θ!(uc::UncertaintyTrapEcon, w::Real) =
         (uc.θ = uc.ρ * uc.θ + uc.σ_θ * w)
 
-    """
-    Generate aggregates based on current beliefs (μ, γ).  This
-    is a simulation step that depends on the draws for F.
-    """
     function gen_aggregates(uc::UncertaintyTrapEcon)
         F_vals = uc.σ_F * randn(uc.num_firms)
 
