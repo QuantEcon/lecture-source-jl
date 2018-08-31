@@ -217,7 +217,128 @@ Let's code up these equations
 Here's the code:
 
 
-.. literalinclude:: /_static/code/lake_model/lake_model.jl
+.. code-block:: julia 
+
+    #=
+
+    @author : Victoria Gregory, John Stachurski
+
+    =#
+
+
+    struct LakeModel{TF <: AbstractFloat}
+        λ::TF
+        α::TF
+        b::TF
+        d::TF
+        g::TF
+        A::Matrix{TF}
+        A_hat::Matrix{TF}
+    end
+
+    """
+    Constructor with default values for `LakeModel`
+
+    ##### Fields of `LakeModel`
+
+    - λ : job finding rate
+    - α : dismissal rate
+    - b : entry rate into labor force
+    - d : exit rate from labor force
+    - g : net entry rate
+    - A : updates stock
+    - A_hat : updates rate
+
+    """
+    function LakeModel(;λ::AbstractFloat=0.283,
+                        α::AbstractFloat=0.013,
+                        b::AbstractFloat=0.0124,
+                        d::AbstractFloat=0.00822)
+
+        g = b - d
+        A = [(1-λ) * (1-d) + b  (1-d) * α + b;
+            (1-d) * λ          (1-d) * (1-α)]
+        A_hat = A ./ (1 + g)
+
+        return LakeModel(λ, α, b, d, g, A, A_hat)
+    end
+
+    """
+    Finds the steady state of the system :math:`x_{t+1} = \hat A x_{t}`
+
+    ##### Arguments
+
+    - lm : instance of `LakeModel`
+    - tol: convergence tolerance
+
+    ##### Returns
+
+    - x : steady state vector of employment and unemployment rates
+
+    """
+
+    function rate_steady_state(lm::LakeModel, tol::AbstractFloat=1e-6)
+        x = 0.5 * ones(2)
+        error = tol + 1
+        while (error > tol)
+            new_x = lm.A_hat * x
+            error = maximum(abs, new_x - x)
+            x = new_x
+        end
+        return x
+    end
+
+    """
+    Simulates the the sequence of Employment and Unemployent stocks
+
+    ##### Arguments
+
+    - X0 : contains initial values (E0, U0)
+    - T : number of periods to simulate
+
+    ##### Returns
+
+    - X_path : contains sequence of employment and unemployment stocks
+
+    """
+
+    function simulate_stock_path{TF<:AbstractFloat}(lm::LakeModel,
+                                                    X0::AbstractVector{TF},
+                                                    T::Integer)
+        X_path = Array{TF}(2, T)
+        X = copy(X0)
+        for t in 1:T
+            X_path[:, t] = X
+            X = lm.A * X
+        end
+        return X_path
+    end
+
+    """
+    Simulates the the sequence of employment and unemployent rates.
+
+    ##### Arguments
+
+    - X0 : contains initial values (E0, U0)
+    - T : number of periods to simulate
+
+    ##### Returns
+
+    - X_path : contains sequence of employment and unemployment rates
+
+    """
+    function simulate_rate_path{TF<:AbstractFloat}(lm::LakeModel,
+                                                x0::Vector{TF},
+                                                T::Integer)
+        x_path = Array{TF}(2, T)
+        x = copy(x0)
+        for t in 1:T
+            x_path[:, t] = x
+            x = lm.A_hat * x
+        end
+        return x_path
+    end
+
 
 
 
@@ -315,7 +436,27 @@ This is the case for our default parameters:
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
 
 
-.. literalinclude:: /_static/code/lake_model/lake_rate_dynamics.jl
+.. code-block:: julia 
+
+    lm = LakeModel()
+    e_0 = 0.92     # Initial employment rate
+    u_0 = 1 - e_0  # Initial unemployment rate
+    T = 50         # Simulation length
+
+    xbar = rate_steady_state(lm)
+    x_0 = [u_0; e_0]
+    x_path = simulate_rate_path(lm, x_0, T)
+
+    titles = ["Unmployment rate" "Employment rate"]
+
+    fig, axes = subplots(2, 1, figsize=(10, 8))
+
+    for (i, ax) in enumerate(axes)
+        ax[:plot](1:T, x_path[i, :], c="blue", lw=2, alpha=0.5)
+        ax[:hlines](xbar[i], 0, T, "r", "--")
+        ax[:set](title=titles[i])
+        ax[:grid]("on")
+    end
 
 
 
@@ -428,7 +569,37 @@ We can use `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__
 Let's plot the path of the sample averages over 5,000 periods
 
 
-.. literalinclude:: /_static/code/lake_model/lake_agent_dynamics.jl
+.. code-block:: julia 
+
+    using QuantEcon
+
+    srand(42)
+    lm = LakeModel(d=0.0, b=0.0)
+    T = 5000                        # Simulation length
+
+    α, λ = lm.α, lm.λ
+    P = [(1 - λ)     λ; 
+        α       (1 - α)]
+
+    mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
+    xbar = rate_steady_state(lm)
+
+    s_path = simulate(mc, T; init=2)
+    s_bar_e = cumsum(s_path) ./ (1:T)
+    s_bar_u = 1 - s_bar_e
+    s_bars = [s_bar_u s_bar_e]
+
+    titles = ["Percent of time unemployed" "Percent of time employed"]
+
+    fig, axes = subplots(2, 1, figsize=(10, 8))
+
+    for (i, ax) in enumerate(axes)
+        ax[:plot](1:T, s_bars[:, i], c="blue", lw=2, alpha=0.5)
+        ax[:hlines](xbar[i], 0, T, "r", "--")
+        ax[:set](title=titles[i])
+        ax[:grid]("on")
+    end
+
 
 
 
@@ -579,7 +750,114 @@ Now let's compute and plot welfare, employment, unemployment, and tax revenue as
 function of the unemployment compensation rate 
 
 
-.. literalinclude:: /_static/code/lake_model/lake_fiscal_policy.jl
+.. code-block:: julia 
+
+    # Some global variables that will stay constant
+    α = 0.013
+    α_q = (1 - (1 - α)^3)
+    b_param = 0.0124
+    d_param = 0.00822
+    β = 0.98
+    γ = 1.0
+    σ = 2.0
+
+    # The default wage distribution: a discretized log normal
+    log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
+    w_vec = linspace(1e-3, max_wage, wage_grid_size + 1)
+    logw_dist = Normal(log(log_wage_mean), 1)
+    cdf_logw = cdf.(logw_dist, log.(w_vec))
+    pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
+    p_vec = pdf_logw ./ sum(pdf_logw)
+    w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
+
+    """
+    Compute the reservation wage, job finding rate and value functions of the
+    workers given c and τ.
+
+    """
+    function compute_optimal_quantities(c::AbstractFloat, τ::AbstractFloat)
+        mcm = McCallModel(α_q,
+                        β,
+                        γ,
+                        c-τ,                # post-tax compensation
+                        σ,
+                        collect(w_vec-τ),   # post-tax wages
+                        p_vec)
+
+
+        w_bar, V, U = compute_reservation_wage(mcm, return_values=true)
+        λ = γ * sum(p_vec[w_vec - τ .> w_bar])
+
+        return w_bar, λ, V, U
+    end
+
+    """
+    Compute the steady state unemployment rate given c and tau using optimal
+    quantities from the McCall model and computing corresponding steady state
+    quantities
+
+    """
+    function compute_steady_state_quantities(c::AbstractFloat, τ::AbstractFloat)
+        w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
+
+        # Compute steady state employment and unemployment rates
+        lm = LakeModel(λ=λ_param, α=α_q, b=b_param, d=d_param)
+        x = rate_steady_state(lm)
+        u_rate, e_rate = x
+
+        # Compute steady state welfare
+        w = sum(V .* p_vec .* (w_vec - τ .> w_bar)) / sum(p_vec .* (w_vec - τ .> w_bar))
+        welfare = e_rate .* w + u_rate .* U
+
+        return u_rate, e_rate, welfare
+    end
+
+    """
+    Find tax level that will induce a balanced budget.
+
+    """
+    function find_balanced_budget_tax(c::Real)
+        function steady_state_budget(t::Real)
+        u_rate, e_rate, w = compute_steady_state_quantities(c, t)
+        return t - u_rate * c
+        end
+
+        τ = brent(steady_state_budget, 0.0, 0.9 * c)
+
+        return τ
+    end
+
+    # Levels of unemployment insurance we wish to study
+    Nc = 60
+    c_vec = linspace(5.0, 140.0, Nc)
+
+    tax_vec = Vector{Float64}(Nc)
+    unempl_vec = Vector{Float64}(Nc)
+    empl_vec = Vector{Float64}(Nc)
+    welfare_vec = Vector{Float64}(Nc)
+
+    for i = 1:Nc
+        t = find_balanced_budget_tax(c_vec[i])
+        u_rate, e_rate, welfare = compute_steady_state_quantities(c_vec[i], t)
+        tax_vec[i] = t
+        unempl_vec[i] = u_rate
+        empl_vec[i] = e_rate
+        welfare_vec[i] = welfare
+    end
+
+    fig, axes = subplots(2, 2, figsize=(15, 10))
+
+    plots = [unempl_vec, tax_vec, empl_vec, welfare_vec]
+    titles = ["Unemployment", "Tax", "Employment", "Welfare"]
+
+    for (ax, plot, title) in zip(axes, plots, titles)
+        ax[:plot](c_vec, plot, "b-", lw=2, alpha=0.7)
+        ax[:set](title=title)
+        ax[:grid]("on")
+    end
+
+    fig[:tight_layout]()
+
 
 Welfare first increases and then decreases as unemployment benefits rise
 
