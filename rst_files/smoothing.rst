@@ -378,7 +378,114 @@ Here's some code that, among other things, contains a function called `consumpti
 
 This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes given a set of parameters, under the assumption of complete markets
 
-.. literalinclude:: /_static/code/smoothing/smoothing_actions.jl
+.. code-block:: julia 
+
+    using QuantEcon
+
+    """
+    The data for a consumption problem, including some default values.
+    """
+    struct ConsumptionProblem{TF<:AbstractFloat}
+        β::TF
+        y::Vector{TF}
+        b0::TF
+        P::Matrix{TF}
+    end
+
+    """
+    Parameters
+    ----------
+
+    β : discount factor
+    P : 2x2 transition matrix
+    y : Array containing the two income levels
+    b0 : debt in period 0 (= state_1 debt level)
+    """
+    function ConsumptionProblem(β = 0.96,
+                                y = [2.0, 1.5],
+                                b0 = 3.0,
+                                P = [0.8 0.2;
+                                    0.4 0.6])
+
+        ConsumptionProblem(β, y, b0, P)
+    end
+
+    """
+    Computes endogenous values for the complete market case.
+
+    Parameters
+    ----------
+
+    cp : instance of ConsumptionProblem
+
+    Returns
+    -------
+
+        c_bar : constant consumption
+        b1 : rolled over b0
+        b2 : debt in state_2
+
+    associated with the price system
+
+        Q = β * P
+
+    """
+
+    function consumption_complete(cp::ConsumptionProblem)
+
+        β, P, y, b0 = cp.β, cp.P, cp.y, cp.b0   # Unpack
+
+        y1, y2 = y                              # extract income levels
+        b1 = b0                                 # b1 is known to be equal to b0
+        Q = β * P                               # assumed price system
+
+        # Using equation (7) calculate b2
+        b2 = (y2 - y1 - (Q[1, 1] - Q[2, 1] - 1) * b1) / (Q[1, 2] + 1 - Q[2, 2])
+
+        # Using equation (5) calculae c_bar
+        c_bar = y1 - b0 + ([b1 b2] * Q[1, :] )[1]
+
+        return c_bar, b1, b2
+    end
+
+    """
+    Computes endogenous values for the incomplete market case.
+
+    Parameters
+    ----------
+
+    cp : instance of ConsumptionProblem
+    N_simul : Integer
+
+    """
+    function consumption_incomplete(cp::ConsumptionProblem;
+                                    N_simul::Integer=150)
+
+        β, P, y, b0 = cp.β, cp.P, cp.y, cp.b0  # Unpack
+        # For the simulation use the MarkovChain type
+        mc = MarkovChain(P)
+
+        # Useful variables
+        y = y''
+        v = inv(eye(2) - β * P) * y
+
+        # Simulat state path
+        s_path = simulate(mc, N_simul, init=1)
+
+        # Store consumption and debt path
+        b_path, c_path = ones(N_simul + 1), ones(N_simul)
+        b_path[1] = b0
+
+        # Optimal decisions from (12) and (13)
+        db = ((1 - β) * v - y) / β
+
+        for (i, s) in enumerate(s_path)
+            c_path[i] = (1 - β) * (v - b_path[i] * ones(2, 1))[s, 1]
+            b_path[i + 1] = b_path[i] + db[s, 1]
+        end
+
+        return c_path, b_path[1:end-1], y[s_path], s_path
+    end
 
 Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget constraint 
 
@@ -561,7 +668,37 @@ The code above also contains a function called `consumption_incomplete()` that u
 
 Let's try this, using the same parameters in both complete and incomplete markets economies
 
-.. literalinclude:: /_static/code/smoothing/consumption_paths.jl
+.. code-block:: julia 
+
+    using PyPlot
+
+    srand(1)
+    N_simul = 150
+    cp = ConsumptionProblem()
+
+    c_bar, b1, b2 = consumption_complete(cp)
+    debt_complete = [b1, b2]
+
+    c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul=N_simul)
+
+    fig, ax = subplots(1, 2, figsize=(15, 5))
+
+    ax[1][:set_title]("Consumption paths")
+    ax[1][:plot](1:N_simul, c_path, label="incomplete market")
+    ax[1][:plot](1:N_simul, c_bar * ones(N_simul), label="complete market")
+    ax[1][:plot](1:N_simul, y_path, label="income", lw=2, alpha=.6, ls="--")
+    ax[1][:legend]()
+    ax[1][:set_xlabel]("Periods")
+    ax[1][:set_ylim]([1.4, 2.1])
+
+    ax[2][:set_title]("Debt paths")
+    ax[2][:plot](1:N_simul, debt_path, label="incomplete market")
+
+    ax[2][:plot](1:N_simul, debt_complete[s_path], label="complete market")
+    ax[2][:plot](1:N_simul, y_path, label="income", alpha=.6, ls="--")
+    ax[2][:legend]()
+    ax[2][:axhline](0, color="k", ls="--")
+    ax[2][:set_xlabel]("Periods")
 
 
 In the graph on the left, for the same sample path of nonfinancial
@@ -650,7 +787,65 @@ asset level to :math:`0`, so that :math:`b_1 =0`
 
 Here's our code to compute a quantitative example with zero debt in peace time:
 
-.. literalinclude:: /_static/code/smoothing/war_peace_example.jl
+.. code-block:: julia 
+
+    # Parameters
+
+    β = .96
+    y = [1.0, 2.0]
+    b0 = 0.0
+    P = [0.8 0.2;
+        0.4 0.6]
+
+    cp = ConsumptionProblem(β, y, b0, P)
+    Q = β * P
+    N_simul = 150
+
+    c_bar, b1, b2 = consumption_complete(cp)
+    debt_complete = [b1, b2]
+
+    println("P = $P")
+    println("Q = $Q")
+    println("Govt expenditures in peace and war = $y")
+    println("Constant tax collections = $c_bar")
+    println("Govt assets in two states = $debt_complete")
+
+    msg = """
+    Now let's check the government's budget constraint in peace and war.
+    Our assumptions imply that the government always purchases 0 units of the
+    Arrow peace security.
+    """
+    println(msg)
+
+    AS1 = Q[1, 2] * b2
+    println("Spending on Arrow war security in peace = $AS1")
+    AS2 = Q[2, 2] * b2
+    println("Spending on Arrow war security in war = $AS2")
+
+    println("\n")
+    println("Government tax collections plus asset levels in peace and war")
+    TB1 = c_bar + b1
+    println("T+b in peace = $TB1")
+    TB2 = c_bar + b2
+    println("T+b in war = $TB2")
+
+
+    println("\n")
+    println("Total government spending in peace and war")
+    G1= y[1] + AS1
+    G2 = y[2] + AS2
+    println("total govt spending in peace = $G1")
+    println("total govt spending in war = $G2")
+
+
+    println("\n")
+    println("Let's see ex post and ex ante returns on Arrow securities")
+
+    Π = 1 ./ Q    # reciprocal(Q)
+    exret = Π
+    println("Ex post returns to purchase of Arrow securities = $exret")
+    exant = Π .* P
+    println("Ex ante returns to purchase of Arrow securities = $exant")
 
 
 
@@ -825,7 +1020,91 @@ the state :math:`x_t` described by :eq:`cs_15`
 Here's an example that shows how in this setting the availability of insurance against fluctuating nonfinancial income
 allows the consumer completely to smooth consumption across time and across states of the world.
 
-.. literalinclude:: /_static/code/smoothing/lss_example.jl
+.. code-block:: julia 
+
+    """
+    Computes the path of consumption and debt for the previously described
+    complete markets model where exogenous income follows a linear
+    state space
+    """
+    function complete_ss(β::AbstractFloat,
+                        b0::Union{AbstractFloat, Array},
+                        x0::Union{AbstractFloat, Array},
+                        A::Union{AbstractFloat, Array},
+                        C::Union{AbstractFloat, Array},
+                        S_y::Union{AbstractFloat, Array},
+                        T::Integer=12)
+
+        # Create a linear state space for simulation purposes
+        # This adds "b" as a state to the linear state space system
+        # so that setting the seed places shocks in same place for
+        # both the complete and incomplete markets economy
+        # Atilde = vcat(hcat(A, zeros(size(A,1), 1)),
+        #               zeros(1, size(A,2) + 1))
+        # Ctilde = vcat(C, zeros(1, 1))
+        # S_ytilde = hcat(S_y, zeros(1, 1))
+
+        lss = LSS(A, C, S_y, mu_0=x0)
+
+        # Add extra state to initial condition
+        # x0 = hcat(x0, 0)
+
+        # Compute the (I - β*A)^{-1}
+        rm = inv(eye(size(A, 1)) - β * A)
+
+        # Constant level of consumption
+        cbar = (1 - β) * (S_y * rm * x0 - b0)
+        c_hist = ones(T) * cbar[1]
+
+        # Debt
+        x_hist, y_hist = simulate(lss, T)
+        b_hist = (S_y * rm * x_hist - cbar[1] / (1.0 - β))
+
+
+        return c_hist, vec(b_hist), vec(y_hist), x_hist
+    end
+
+    N_simul = 150
+
+    # Define parameters
+    α, ρ1, ρ2 = 10.0, 0.9, 0.0
+    σ = 1.0
+    # N_simul = 1
+    # T = N_simul
+    A = [1.0 0.0 0.0;
+        α    ρ1  ρ2;
+        0.0 1.0 0.0]
+    C = [0.0, σ, 0.0]
+    S_y = [1.0 1.0 0.0]
+    β, b0 = 0.95, -10.0
+    x0 = [1.0, α / (1 - ρ1), α / (1 - ρ1)]
+
+    # Do simulation for complete markets
+    s = rand(1:10000)
+    srand(s)  # Seeds get set the same for both economies
+    out = complete_ss(β, b0, x0, A, C, S_y, 150)
+    c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
+
+
+    fig, ax = subplots(1, 2, figsize=(15, 5))
+
+    # Consumption plots
+    ax[1][:set_title]("Cons and income")
+    ax[1][:plot](1:N_simul, c_hist_com, label="consumption")
+    ax[1][:plot](1:N_simul, y_hist_com, label="income",
+                lw=2, alpha=0.6, ls="--")
+    ax[1][:legend]()
+    ax[1][:set_xlabel]("Periods")
+    ax[1][:set_ylim]([-5.0, 110])
+
+    # Debt plots
+    ax[2][:set_title]("Debt and income")
+    ax[2][:plot](1:N_simul, b_hist_com, label="debt")
+    ax[2][:plot](1:N_simul, y_hist_com, label="Income",
+                lw=2, alpha=0.6, ls="--")
+    ax[2][:legend]()
+    ax[2][:axhline](0, color="k", ls="--")
+    ax[2][:set_xlabel]("Periods")
 
 
 Interpretation of Graph
