@@ -454,8 +454,7 @@ different values of :math:`M`
 
 .. code-block:: julia
 
-    using QuantEcon
-    using Gadfly, DataFrames, LaTeXStrings
+    using QuantEcon, Gadfly, DataFrames, LaTeXStrings
 
 .. code-block:: julia
 
@@ -463,9 +462,9 @@ different values of :math:`M`
     ρ, σ_θ, γ_x = econ.ρ, econ.σ_θ, econ.γ_x # simplify names
 
     # grid for γ and γ_{t+1}
-    γ = linspace(1e-10, 3, 200)
+    γ = range(1e-10, stop = 3, length = 200)
     M_range = 0:6
-    γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') + σ_θ^2)
+    γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
 
     p1 = plot(x=repeat(collect(γ), outer=[length(M_range)+1]),
          y=vec([γ γp]),
@@ -483,14 +482,16 @@ is, the number of active firms and average output.
 
 .. code-block:: julia
 
-    function QuantEcon.simulate{TF<:AbstractFloat, TI<:Integer}(
-                            uc::UncertaintyTrapEcon{TF, TI}, capT::TI=2000)
+    function QuantEcon.simulate(uc::UncertaintyTrapEcon{TF, TI}, capT::TI=2000) where {TF <: AbstractFloat, TI <: Integer}
+
         # allocate memory
-        μ_vec = Vector{TF}(capT)
-        θ_vec = Vector{TF}(capT)
-        γ_vec = Vector{TF}(capT)
-        X_vec = Vector{TF}(capT)
-        M_vec = Vector{TI}(capT)
+        μ_vec = Vector{TF}(undef, capT)
+        θ_vec = Vector{TF}(undef, capT)
+        γ_vec = Vector{TF}(undef, capT)
+        X_vec = Vector{TF}(undef, capT)
+        M_vec = Vector{TI}(undef, capT)
+
+
 
         # set initial using fields from object
         μ_vec[1] = uc.μ
@@ -526,7 +527,8 @@ simulations
 
 .. code-block:: julia
 
-    srand(42)  # set random seed for reproducible results
+    using Random 
+    Random.seed!(42)  # set random seed for reproducible results
     μ_vec, γ_vec, θ_vec, X_vec, M_vec = simulate(econ)
 
     p2 = plot(x=repeat(collect(1:length(μ_vec)), outer=[2]),
