@@ -699,8 +699,6 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
 
 .. _addfunc_egcode:
 
-
-
 .. code-block:: julia
 
     ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
