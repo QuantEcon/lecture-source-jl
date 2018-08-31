@@ -310,9 +310,9 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
     function gen_aggregates(uc::UncertaintyTrapEcon)
         F_vals = uc.σ_F * randn(uc.num_firms)
 
-        M = sum(ψ.(uc, F_vals) .> 0)  # Counts number of active firms
+        M = sum(ψ.(Ref(uc), F_vals) .> 0)  # Counts number of active firms
         if M > 0
-            x_vals = uc.θ + uc.σ_x * randn(M)
+            x_vals = uc.θ .+ uc.σ_x * randn(M)
             X = mean(x_vals)
         else
             X = 0.0
