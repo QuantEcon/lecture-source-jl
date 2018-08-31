@@ -527,7 +527,37 @@ Note:
 
 The following code sets up these objects for us 
 
-.. literalinclude:: /_static/code/discrete_dp/finite_dp_og_example.jl
+.. code-block:: julia 
+
+    struct SimpleOG{TI <: Integer, T <: Real,
+                    TR <: AbstractArray{T}, TQ <: AbstractArray{T}}
+        B :: TI
+        M :: TI
+        α :: T
+        β :: T
+        R :: TR
+        Q :: TQ
+    end
+
+    function SimpleOG{T <: Real}(;B::Integer=10, M::Integer=5, α::T=0.5, β::T=0.9)
+
+        u(c) = c^α
+        n = B + M + 1
+        m = M + 1
+
+        R = Matrix{T}(n, m)
+        Q = zeros(Float64,n,m,n)
+
+        for a in 0:M
+            Q[:, a + 1, (a:(a + B)) + 1] = 1 / (B + 1)
+            for s in 0:(B + M)
+                R[s + 1, a + 1] = a<=s ? u(s - a) : -Inf
+            end
+        end
+
+        return SimpleOG(B, M, α, β, R, Q)
+    end
+
 
 Let's run this code and create an instance of ``SimpleOG``
 
@@ -694,7 +724,39 @@ The call signature of the second formulation is ``DiscreteDP(R, Q, β, s_indices
 
 Here's how we could set up these objects for the preceding example
 
-.. literalinclude:: /_static/code/discrete_dp/og_example_state_action.jl
+.. code-block:: julia 
+
+    using QuantEcon 
+
+    B = 10
+    M = 5
+    α = 0.5
+    β = 0.9
+    u(c) = c^α
+    n = B + M + 1
+    m = M + 1
+
+    s_indices = Int64[]
+    a_indices = Int64[]
+    Q = Array{Float64}(0, n)
+    R = Float64[]
+
+    b = 1.0 / (B + 1)
+
+    for s in 0:(M + B)
+        for a in 0:min(M, s)
+            s_indices = [s_indices; s + 1]
+            a_indices = [a_indices; a + 1]
+            q = zeros(Float64, 1, n)
+            q[(a + 1):((a + B) + 1)] = b 
+            Q = [Q; q]
+            R = [R; u(s-a)]
+        end
+    end
+
+    ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
+    results = solve(ddp, PFI)
+
 
 
 
