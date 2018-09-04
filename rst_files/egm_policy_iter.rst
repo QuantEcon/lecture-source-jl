@@ -147,16 +147,130 @@ The Operator
 
 Here's an implementation of :math:`K` using EGM as described above
 
-.. literalinclude:: /_static/code/egm_policy_iter/coleman_egm.jl
+.. code-block:: julia 
+
+    #=
+
+    Authors: Shunsuke Hori
+
+    =#
+
+    """
+    The approximate Coleman operator, updated using the endogenous grid
+    method.
+
+    Parameters
+    ----------
+    g : Function
+        The current guess of the policy function
+    k_grid : AbstractVector
+        The set of *exogenous* grid points, for capital k = y - c
+    β : AbstractFloat
+        The discount factor
+    u_prime : Function
+        The derivative u'(c) of the utility function
+    u_prime_inv : Function
+        The inverse of u' (which exists by assumption)
+    f : Function
+        The production function f(k)
+    f_prime : Function
+        The derivative f'(k)
+    shocks : AbstractVector
+        An array of draws from the shock, for Monte Carlo integration (to
+        compute expectations).
+    """
+
+    function coleman_egm(g::Function,
+                        k_grid::AbstractVector,
+                        β::AbstractFloat,
+                        u_prime::Function,
+                        u_prime_inv::Function,
+                        f::Function,
+                        f_prime::Function,
+                        shocks::AbstractVector)
+
+        # Allocate memory for value of consumption on endogenous grid points
+        c = similar(k_grid)
+
+        # Solve for updated consumption value
+        for (i, k) in enumerate(k_grid)
+            vals = u_prime.(g.(f(k) * shocks)) .* f_prime(k) .* shocks
+            c[i] = u_prime_inv(β * mean(vals))
+        end
+
+        # Determine endogenous grid
+        y = k_grid + c  # y_i = k_i + c_i
+
+        # Update policy function and return
+        Kg = LinInterp(y,c)
+        Kg_f(x) = Kg(x)
+        return Kg_f
+    end
+
 
 Note the lack of any root finding algorithm 
 
 We'll also run our original implementation, which uses an exogenous grid and requires root finding, so we can perform some comparisons
 
 
-.. literalinclude:: /_static/code/coleman_policy_iter/coleman.jl
+.. code-block:: julia 
     :class: collapse
 
+    #=
+
+    Author: Shunsuke Hori
+
+    =#
+
+    using QuantEcon
+
+    """
+    g: input policy function
+    grid: grid points
+    β: discount factor
+    u_prime: derivative of utility function
+    f: production function
+    f_prime: derivative of production function
+    shocks::shock draws, used for Monte Carlo integration to compute expectation
+    Kg: output value is stored
+    """
+    function coleman_operator!(g::AbstractVector,
+                            grid::AbstractVector,
+                            β::AbstractFloat,
+                            u_prime::Function,
+                            f::Function,
+                            f_prime::Function,
+                            shocks::AbstractVector,
+                            Kg::AbstractVector=similar(g))
+
+        # This function requires the container of the output value as argument Kg
+
+        # Construct linear interpolation object #
+        g_func = LinInterp(grid, g)
+
+        # solve for updated consumption value #
+        for (i, y) in enumerate(grid)
+            function h(c)
+                vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
+                return u_prime(c) - β * mean(vals)
+            end
+            Kg[i] = brent(h, 1e-10, y - 1e-10)
+        end
+        return Kg
+    end
+
+    # The following function does NOT require the container of the output value as argument
+    function coleman_operator(g::AbstractVector,
+                            grid::AbstractVector,
+                            β::AbstractFloat,
+                            u_prime::Function,
+                            f::Function,
+                            f_prime::Function,
+                            shocks::AbstractVector)
+
+        return coleman_operator!(g, grid, β, u_prime,
+                                f, f_prime, shocks, similar(g))
+    end
 
 Let's test out the code above on some example parameterizations, after the following imports
 
@@ -182,7 +296,63 @@ As we :doc:`did for value function iteration <optgrowth>` and :doc:`time iterati
 
 The first step is to bring in the model that we used in the :doc:`Coleman policy function iteration <coleman_policy_iter>`
 
-.. literalinclude:: /_static/code/coleman_policy_iter/Model.jl
+.. code-block:: julia 
+
+    #=
+
+    Author: Shunsuke Hori
+
+    =#
+
+    struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
+        α::TR              # Productivity parameter
+        β::TF              # Discount factor
+        γ::TR              # risk aversion
+        μ::TR              # First parameter in lognorm(μ, σ)
+        s::TR              # Second parameter in lognorm(μ, σ)
+        grid_min::TR       # Smallest grid point
+        grid_max::TR       # Largest grid point
+        grid_size::TI      # Number of grid points
+        u::Function        # utility function
+        u_prime::Function  # derivative of utility function
+        f::Function        # production function
+        f_prime::Function  # derivative of production function
+        grid::Vector{TR}   # grid
+    end
+
+    """
+    construct Model instance using the information of parameters and functional form
+
+    arguments: see above
+
+    return: Model type instance
+    """
+    function Model(; α::Real=0.65,                      # Productivity parameter
+                    β::AbstractFloat=0.95,             # Discount factor
+                    γ::Real=1.0,                       # risk aversion
+                    μ::Real=0.0,                       # First parameter in lognorm(μ, σ)
+                    s::Real=0.1,                       # Second parameter in lognorm(μ, σ)
+                    grid_min::Real=1e-6,               # Smallest grid point
+                    grid_max::Real=4.0,                # Largest grid point
+                    grid_size::Integer=200,            # Number of grid points
+                    u::Function= c->(c^(1-γ)-1)/(1-γ), # utility function
+                    u_prime::Function = c-> c^(-γ),    # u'
+                    f::Function = k-> k^α,             # production function
+                    f_prime::Function = k -> α*k^(α-1) # f'
+                    )
+
+        grid = collect(linspace(grid_min, grid_max, grid_size))
+
+        if γ == 1                                       # when γ==1, log utility is assigned
+            u_log(c) = log(c)
+            m = Model(α, β, γ, μ, s, grid_min, grid_max,
+                    grid_size, u_log, u_prime, f, f_prime, grid)
+        else
+            m = Model(α, β, γ, μ, s, grid_min, grid_max,
+                    grid_size, u, u_prime, f, f_prime, grid)
+        end
+        return m
+    end
 
 
 
