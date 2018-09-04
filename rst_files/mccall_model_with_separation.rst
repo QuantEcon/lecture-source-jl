@@ -232,8 +232,10 @@ The default utility function is a CRRA utility function
 
 
 
+.. code-block:: julia 
+    :class: test 
 
-
+    using Test
 
 .. code-block:: julia 
 
@@ -350,7 +352,14 @@ We'll use the default parameterizations found in the code above
         α=0.7, 
         label=[L"$V$" L"$U$"])
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "First Plot Tests" begin
+        @test U == 45.623263135173644 # U value 
+        @test V[3] == 45.58068793055933 # Arbitrary V 
+
+    end 
 
 
 The value :math:`V` is increasing because higher :math:`w` generates a higher wage flow conditional on staying employed
@@ -549,7 +558,14 @@ we can create an array for reservation wages for different values of :math:`c`,
         ylabel="reservation wage",
         label=L"$\bar w$ as a function of $c$")
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Solutions 1 Tests" begin 
+        @test w_bar_vals[10] == 11.35593220338983
+        @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25 
+        @test w_bar_vals[17] - c_vals[17] == 4.72316384180791 # Just a sanity check on how these things relate. 
+    end 
 
 
 Exercise 2
@@ -579,6 +595,13 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
         ylabel="reservation wage",
         label=L"$\bar w$ as a function of $γ$")
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "Solutions 2 Tests" begin 
+        @test w_bar_vals[17] == 11.35593220338983 # same as w_bar_vals[10] before. 
+        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == grid_size == 25 
+    end 
 
 As expected, the reservation wage increases in :math:`\gamma`
 
