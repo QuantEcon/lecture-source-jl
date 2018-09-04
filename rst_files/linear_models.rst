@@ -1378,33 +1378,34 @@ Solutions
 ==========
 
 .. code-block:: julia
+    :class: test
 
-    using QuantEcon
-    using Plots
-    using LaTeXStrings
+    using Test
+
+.. code-block:: julia
+
+    using QuantEcon, Plots, LaTeXStrings
+    pyplot()
 
 Exercise 1
 ----------
 
 .. code-block:: julia
 
-    let
+    ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
 
-        ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
+    A = [1.0   0.0   0
+            ϕ0    ϕ1    ϕ2
+            0.0   1.0   0.0]
+    C = zeros(3, 1)
+    G = [0.0 1.0 0.0]
+    μ_0 = ones(3)
 
-        A = [1.0   0.0   0
-             ϕ0    ϕ1    ϕ2
-             0.0   1.0   0.0]
-        C = zeros(3, 1)
-        G = [0.0 1.0 0.0]
-        μ_0 = ones(3)
+    lss = LSS(A, C, G; mu_0=μ_0)
 
-        lss = LSS(A, C, G; mu_0=μ_0)
-
-        x, y = simulate(lss, 50)
-        plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-        plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
-    end
+    x, y = simulate(lss, 50)
+    plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
+    plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
 
 
 Exercise 2
@@ -1412,125 +1413,150 @@ Exercise 2
 
 .. code-block:: julia
 
-    let
-        ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
-        σ = 0.2
+    using Random
+    Random.seed!(42) # For deterministic results.
 
-        A = [ϕ1     ϕ2    ϕ3    ϕ4
-             1.0   0.0   0.0   0.0
-             0.0   1.0   0.0   0.0
-             0.0   0.0   1.0   0.0]
-        C = [σ
-             0.0
-             0.0
-             0.0]''
-        G = [1.0 0.0 0.0 0.0]
+    ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+    σ = 0.2
 
-        ar = LSS(A, C, G; mu_0 = ones(4))
-        x, y = simulate(ar, 200)
+    A = [ϕ1     ϕ2    ϕ3    ϕ4
+            1.0   0.0   0.0   0.0
+            0.0   1.0   0.0   0.0
+            0.0   0.0   1.0   0.0]
+    C = [σ
+            0.0
+            0.0
+            0.0]''
+    G = [1.0 0.0 0.0 0.0]
 
-        plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-        plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    ar = LSS(A, C, G; mu_0 = ones(4))
+    x, y = simulate(ar, 200)
+
+    plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
+    plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+
+.. code-block:: julia
+    :class: test
+
+    @testset "Exercise 2 tests" begin
+        @test x[1, 2] ≈ 1.155572219611465 atol = 1e-10
+        @test x[1, :]' == y
     end
-
 
 Exercise 3
 ----------
 
 .. code-block:: julia
 
-    let
-        ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
-        σ = 0.1
+    Random.seed!(42)
 
-        A = [ ϕ1    ϕ2    ϕ3    ϕ4
-             1.0   0.0   0.0   0.0
-             0.0   1.0   0.0   0.0
-             0.0   0.0   1.0   0.0]
-        C = [σ
-             0.0
-             0.0
-             0.0]''
-        G = [1.0 0.0 0.0 0.0]
-        I = 20
-        T = 50
-        ar = LSS(A, C, G; mu_0 = ones(4))
-        ymin, ymax = -0.5, 1.15
+    ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+    σ = 0.1
 
-        ensemble_mean = zeros(T)
-        ys = []
-        for i ∈ 1:I
-            x, y = simulate(ar, T)
-            y = dropdims(y, dims = 1)
-            push!(ys, y)
-            ensemble_mean .+= y
-        end
+    A = [ ϕ1    ϕ2    ϕ3    ϕ4
+            1.0   0.0   0.0   0.0
+            0.0   1.0   0.0   0.0
+            0.0   0.0   1.0   0.0]
+    C = [σ
+            0.0
+            0.0
+            0.0]
+    G = [1.0 0.0 0.0 0.0]
+    I = 20
+    T = 50
+    ar = LSS(A, C, G; mu_0 = ones(4))
+    ymin, ymax = -0.5, 1.15
 
-        ensemble_mean = ensemble_mean ./ I
-        plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
-        plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
-        m = moment_sequence(ar)
-        state = start(m)
-        pop_means = Float64[]
-        for t ∈ 1:T
-            (μ_x, μ_y, Σ_x, Σ_y), state = next(m,state)
-            push!(pop_means, μ_y[1])
-        end
-        plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
-        plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
+    ensemble_mean = zeros(T)
+    ys = []
+    for i ∈ 1:I
+        x, y = simulate(ar, T)
+        y = dropdims(y, dims = 1)
+        push!(ys, y)
+        ensemble_mean .+= y
     end
 
+    ensemble_mean = ensemble_mean ./ I
+    plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
+    plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
+    m = moment_sequence(ar)
+    pop_means = Float64[]
+    for (i, t) ∈ enumerate(m)
+        (μ_x, μ_y, Σ_x, Σ_y) = t
+        push!(pop_means, μ_y[1])
+        i == 50 && break
+    end
+    plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
+    plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
+
+.. code-block:: julia
+    :class: test
+
+    @testset "Exercise 3 tests" begin
+        @test pop_means[3] == 0.7
+        @test ensemble_mean[3] ≈ 0.7416701474185808 atol = 1e-10
+        @test m.lss.A[1, 2] == -0.2
+        @test pop_means[end] == 0.01665357418047883
+    end
 
 Exercise 4
 ----------
 
 .. code-block:: julia
 
-    let
-        ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
-        σ = 0.1
+    Random.seed!(42)
 
-        A = [ϕ1     ϕ2    ϕ3    ϕ4
-             1.0   0.0   0.0   0.0
-             0.0   1.0   0.0   0.0
-             0.0   0.0   1.0   0.0]
-        C = [σ
-             0.0
-             0.0
-             0.0]''
-        G = [1.0 0.0 0.0 0.0]
+    ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+    σ = 0.1
 
-        T0 = 10
-        T1 = 50
-        T2 = 75
-        T4 = 100
+    A = [ϕ1     ϕ2    ϕ3    ϕ4
+            1.0   0.0   0.0   0.0
+            0.0   1.0   0.0   0.0
+            0.0   0.0   1.0   0.0]
+    C = [σ
+            0.0
+            0.0
+            0.0]''
+    G = [1.0 0.0 0.0 0.0]
 
-        ar = LSS(A, C, G; mu_0 = ones(4))
-        ymin, ymax = -0.6, 0.6
+    T0 = 10
+    T1 = 50
+    T2 = 75
+    T4 = 100
 
-        μ_x, μ_y, Σ_x, Σ_y = stationary_distributions(ar)
-        ar = LSS(A, C, G; mu_0=μ_x, Sigma_0=Σ_x)
-        colors = ["c", "g", "b"]
+    ar = LSS(A, C, G; mu_0 = ones(4))
+    ymin, ymax = -0.6, 0.6
 
-        ys = []
-        x_scatter = []
-        y_scatter = []
-        for i ∈ 1:80
-            rcolor = colors[rand(1:3)]
-            x, y = simulate(ar, T4)
-            y = dropdims(y, dims = 1)
-            push!(ys, y)
-            x_scatter = [x_scatter; T0; T1; T2]
-            y_scatter = [y_scatter; y[T0]; y[T1]; y[T2]]
-        end
+    μ_x, μ_y, Σ_x, Σ_y = stationary_distributions(ar)
+    ar = LSS(A, C, G; mu_0=μ_x, Sigma_0=Σ_x)
+    colors = ["c", "g", "b"]
 
-        plot(ys, linewidth = 0.8, alpha = 0.5)
-        plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
-        scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
-        plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
-        plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
+    ys = []
+    x_scatter = []
+    y_scatter = []
+    for i ∈ 1:80
+        rcolor = colors[rand(1:3)]
+        x, y = simulate(ar, T4)
+        y = dropdims(y, dims = 1)
+        push!(ys, y)
+        x_scatter = [x_scatter; T0; T1; T2]
+        y_scatter = [y_scatter; y[T0]; y[T1]; y[T2]]
     end
 
+    plot(ys, linewidth = 0.8, alpha = 0.5)
+    plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
+    scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
+    plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
+    plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
+
+.. code-block:: julia
+    :class: test
+
+    @testset "Exercise 4 Tests" begin
+        @test ys[4][7] == 0.011484225879516554
+        @test ar.A[1, 4] == 0.5
+        @test Σ_y[1] == 0.020833333252863163
+    end
 
 .. rubric:: Footnotes
 
