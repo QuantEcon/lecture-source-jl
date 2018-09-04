@@ -302,7 +302,10 @@ Implementation
 
 Let's start with some imports
 
+.. code-block:: julia 
+    :class: test 
 
+    using Test 
 
 .. code-block:: julia
 
@@ -332,7 +335,14 @@ Here's the distribution of wage offers we'll work with
 
     plt.show()
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "First Plot Test" begin
+        @test p_vals[4] == 5.789516415478556e-17 # p invariance 
+        @test w_vals[1] == 10 && w_vals[end] == 60 && length(w_vals) == 51 # grid invariance 
+        @test dist isa Distributions.BetaBinomial && dist.n == 50 && dist.α == 200 && dist.β == 100 # distribution invariance
+    end 
 
 
 First let's have a look at the sequence of approximate value functions that
@@ -341,9 +351,6 @@ the algorithm above generates
 Default parameter values are embedded in the function
 
 Our initial guess :math:`v` is the value of accepting at every given wage
-
-
-
 
 .. code:: julia
 
@@ -373,9 +380,6 @@ Our initial guess :math:`v` is the value of accepting at every given wage
     fig, ax = plt.subplots(figsize=(9, 6.5))
     plot_value_function_seq(ax)
     plt.show()
-
-
-
 
 Here's more serious iteration effort, that continues until measured deviation
 between successive iterates is below `tol`
@@ -413,12 +417,7 @@ between successive iterates is below `tol`
        return (1 - β) * (c + β * sum(v .* p_vals))
     end
 
-
-
-
 Let's compute the reservation wage at the default parameters
-
-
 
 .. code-block:: julia
 
@@ -426,16 +425,12 @@ Let's compute the reservation wage at the default parameters
     β = 0.99
     compute_reservation_wage(c, β)
 
+.. code-block:: julia 
+    :class: test 
 
-
-
-
-
-
-
-
-
-
+    @testset "Reservation Wage Tests" begin
+        @test compute_reservation_wage(c, β) == 47.316499709964695
+    end 
 
 Comparative Statics
 -------------------
@@ -446,10 +441,6 @@ parameters
 
 In particular, let's look at what happens when we change :math:`\beta` and
 :math:`c`
-
-
-
-
 
 .. code:: julia
 
@@ -465,10 +456,15 @@ In particular, let's look at what happens when we change :math:`\beta` and
         end
     end
 
+.. code-block:: julia 
+    :class: test 
 
-
-
-
+    @testset "Comparative Statics Tests" begin
+        @test R[4, 4] == 41.15851842026257 # Arbitrary reservation wage. 
+        @test grid_size = 25 # grid invariance. 
+        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance. 
+        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance. 
+    end 
 
 .. code:: julia
 
@@ -695,4 +691,9 @@ Here's one solution
 
     plt.show()
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Solution 1 Tests" begin 
+        # Just eyeball the plot pending undeprecation and rewrite. 
+    end 
