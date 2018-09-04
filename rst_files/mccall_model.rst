@@ -461,7 +461,7 @@ In particular, let's look at what happens when we change :math:`\beta` and
 
     @testset "Comparative Statics Tests" begin
         @test R[4, 4] == 41.15851842026257 # Arbitrary reservation wage. 
-        @test grid_size = 25 # grid invariance. 
+        @test grid_size == 25 # grid invariance. 
         @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance. 
         @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance. 
     end 
