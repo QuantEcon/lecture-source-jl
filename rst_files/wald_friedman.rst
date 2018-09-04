@@ -171,7 +171,10 @@ The next figure shows two discretized beta distributions in the top panel
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
 
+.. code-block:: julia 
+    :class: test 
 
+    using Test 
 
 .. code-block:: julia
 
@@ -211,6 +214,14 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 
   plot(a, b, layout=(2, 1), size=(800, 600))
 
+.. code-block:: julia 
+    :class: test 
+
+    @testset "First Plot Tests" begin 
+        @test mix[7] == 0.005059526866095018
+        @test all(f0 .== 0.02) 
+        @test f1[10] == 0.0011405494355950728
+    end 
 
 
 
@@ -510,12 +521,16 @@ Here's the code
     J1 = compute_fixed_point(x -> bellman_operator(pg, 0.5, f0, f1, 5.0, 5.0, x),
         zeros(length(pg)), err_tol=1e-6, print_skip=5);
 
+.. code-block:: test 
+    :class: test 
+
+    @testset "Second Block Tests" begin 
+        @test J1[19] == 0.36
+        @test f1[40] == 0.002163769345396983
+        @test length(pg) == 251 && pg[1] == 0 && pg[end] == 1
+    end 
 
 Running it produces the following output on our machine
-
-
-
-
 
 
 The distance column shows the maximal distance between successive iterates
@@ -881,7 +896,13 @@ Now let's use our type to solve Bellman equation :eq:`new1` and verify that it g
     @printf("If this is true then both approaches gave same answer:\n")
     print(isapprox(J1, J2; atol=1e-5))
 
+.. code-block:: julia 
+    :class: test 
 
+    @testset "Second Calculation Tests" begin 
+        @test J2 == J1 
+        @test f1 == f1 
+    end 
 
 We get the same output in terms of distance
 
@@ -960,7 +981,10 @@ We'll start with the following parameterization
 
   analysis_plot()
   
- 
+ .. code-block:: julia 
+    :class: test 
+
+    # These tests need to be eyeballed, AFAIK, since the function above doesn't return anything. 
 
 
 The code to generate this figure can be found in `wald_solution_plots.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/wald_friedman/wald_solution_plots.jl>`__
