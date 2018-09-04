@@ -480,8 +480,8 @@ Example
 
 The following code is example of usage for the stochastic growth model :ref:`described above <solow_swan>`
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     using Test
 
@@ -494,8 +494,8 @@ The following code is example of usage for the stochastic growth model :ref:`des
 
   =#
   using Distributions, LaTeXStrings, Plots, QuantEcon, Random
-  Random.seed!(42) # For deterministic results. 
-  
+  Random.seed!(42) # For deterministic results.
+
   s = 0.2
   δ = 0.1
   a_σ = 0.4                    # A = exp(B) where B ~ N(0, a_σ)
@@ -517,43 +517,43 @@ The following code is example of usage for the stochastic growth model :ref:`des
       return pdf.(Ref(ϕ), pdf_arg) ./ d
   end
 
-    n = 10000  # Number of observations at each date t
-    T = 30     # Compute density of k_t at 1,...,T+1
+  n = 10000  # Number of observations at each date t
+  T = 30     # Compute density of k_t at 1,...,T+1
 
-    # Generate matrix s.t. t-th column is n observations of k_t
-    k = zeros(n, T)
-    A = rand!(ϕ, zeros(n, T))
+  # Generate matrix s.t. t-th column is n observations of k_t
+  k = zeros(n, T)
+  A = rand!(ϕ, zeros(n, T))
 
-    # Draw first column from initial distribution
-    k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
-    for t ∈ 1:T-1
-        k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
-    end
+  # Draw first column from initial distribution
+  k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
+  for t ∈ 1:T-1
+      k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+  end
 
-    # Generate T instances of LAE using this data, one for each date t
-    laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
+  # Generate T instances of LAE using this data, one for each date t
+  laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
 
-    # Plot
-    ygrid = range(0.01, stop = 4.0, length = 200)
-    laes_plot = []
-    colors = []
-    for i ∈ 1:T
-        ψ = laes[i]
-        push!(laes_plot, lae_est(ψ , ygrid))
-        push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
-    end
-    plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2, xlabel = "capital", legend = :none)
-    t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
-    plot!(title = t)
+  # Plot
+  ygrid = range(0.01, stop = 4.0, length = 200)
+  laes_plot = []
+  colors = []
+  for i ∈ 1:T
+      ψ = laes[i]
+      push!(laes_plot, lae_est(ψ , ygrid))
+      push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
+  end
+  plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2, xlabel = "capital", legend = :none)
+  t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
+  plot!(title = t)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "First Figure Tests" begin
         @test laes[2].X[4] == 2.6707630703642655
         @test length(ygrid) == 200 && ygrid[1] == 0.01 && ygrid[end] == 4.0
         @test k[5, 5] == 0.461853841701963
-    end 
+    end
 
 The figure shows part of the density sequence :math:`\{\psi_t\}`, with each
 density computed via the look ahead estimator
@@ -911,7 +911,7 @@ To illustrate, let's generate three artificial data sets and compare them with a
 .. code-block:: julia
 
     using StatPlots     # needed for box plot support
-    Random.seed!(42) # For determinism 
+    Random.seed!(42) # For determinism
 
     n = 500
     x = randn(n)        # N(0, 1)
@@ -924,14 +924,14 @@ To illustrate, let's generate three artificial data sets and compare them with a
 
     boxplot(xlabels, data, label = "", ylims = (-2, 14))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Exercise 3 Tests" begin
         @test x[5] == 5.917186591766507
         @test y[5] == 2.8356012641450112
         @test z[5] == 3.921272296865464
-    end 
+    end
 
 The three data sets are
 
@@ -1033,14 +1033,14 @@ to get an idea of the speed of convergence.
     plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
     plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, label="kernel based estimate")
 
-.. code-block:: julia 
+.. code-block:: julia
     :class: test
 
     @testset "Solution 1 Tests" begin
-        @test length(ys) == 200 && ys[1] == -3.0 && ys[end] == 3.0 
+        @test length(ys) == 200 && ys[1] == -3.0 && ys[end] == 3.0
         @test X[7] == 0.2729845006695114
         @test Z[3] == 0.027155338009193845
-    end 
+    end
 
 Exercise 2
 ----------
@@ -1105,13 +1105,13 @@ Here's one program that does the job.
     plot(ygrid, laes_plot, layout = (2,2), color = colors,
             legend = :none, xlabel = "capital", xlims = (0, xmax))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Solution 2 Tests" begin
-        @test laes[3].X[4] == 3.2212712128996204    
+        @test laes[3].X[4] == 3.2212712128996204
         @test length(ygrid) == 150 && ygrid[end] == 6.5 && ygrid[1] == 0.01
-    end  
+    end
 
 Exercise 3
 ----------
@@ -1158,13 +1158,13 @@ series for one boxplot all at once.
     legend = :none, yticks = -4:2:8, xticks = 1:20)
     plot!(size=(800, 2000))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solution 3 Tests" begin 
+    @testset "Solution 3 Tests" begin
         @test X[end-5] == 0.48235969268877943
         @test Z[1, 2, 3] == 0.7233220581593061
-    end 
+    end
 
 Appendix
 ===========
