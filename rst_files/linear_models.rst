@@ -1377,10 +1377,10 @@ the bars are at dates 10, 50 and 75
 Solutions
 ==========
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    using Test 
+    using Test
 
 .. code-block:: julia
 
@@ -1413,8 +1413,8 @@ Exercise 2
 
 .. code-block:: julia
 
-    using Random 
-    Random.seed!(42) # For deterministic results. 
+    using Random
+    Random.seed!(42) # For deterministic results.
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.2
@@ -1435,13 +1435,13 @@ Exercise 2
     plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
     plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Exercise 2 tests" begin
         @test x[1, 2] ≈ 1.155572219611465 atol = 1e-10
-        @test x[1, :]' == y 
-    end 
+        @test x[1, :]' == y
+    end
 
 Exercise 3
 ----------
@@ -1480,24 +1480,24 @@ Exercise 3
     plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
     plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
     m = moment_sequence(ar)
-    state = start(m)
     pop_means = Float64[]
-    for t ∈ 1:T
-        (μ_x, μ_y, Σ_x, Σ_y), state = next(m,state)
+    for (i, t) ∈ enumerate(m)
+        (μ_x, μ_y, Σ_x, Σ_y) = t
         push!(pop_means, μ_y[1])
+        i == 50 && break
     end
     plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
     plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Exercise 3 tests" begin 
-        @test pop_means[3] == 0.7 
+    @testset "Exercise 3 tests" begin
+        @test pop_means[3] == 0.7
         @test ensemble_mean[3] ≈ 0.7416701474185808 atol = 1e-10
         @test m.lss.A[1, 2] == -0.2
         @test pop_means[end] == 0.01665357418047883
-    end 
+    end
 
 Exercise 4
 ----------
@@ -1549,14 +1549,14 @@ Exercise 4
     plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
     plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Exercise 4 Tests" begin
         @test ys[4][7] == 0.011484225879516554
-        @test ar.A[1, 4] == 0.5 
+        @test ar.A[1, 4] == 0.5
         @test Σ_y[1] == 0.020833333252863163
-    end 
+    end
 
 .. rubric:: Footnotes
 
