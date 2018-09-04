@@ -521,7 +521,7 @@ Here's the code
     J1 = compute_fixed_point(x -> bellman_operator(pg, 0.5, f0, f1, 5.0, 5.0, x),
         zeros(length(pg)), err_tol=1e-6, print_skip=5);
 
-.. code-block:: test 
+.. code-block:: julia 
     :class: test 
 
     @testset "Second Block Tests" begin 
@@ -900,8 +900,7 @@ Now let's use our type to solve Bellman equation :eq:`new1` and verify that it g
     :class: test 
 
     @testset "Second Calculation Tests" begin 
-        @test J2 == J1 
-        @test f1 == f1 
+        @test J1 ≈ J2 atol = 1e-5
     end 
 
 We get the same output in terms of distance
@@ -981,7 +980,7 @@ We'll start with the following parameterization
 
   analysis_plot()
   
- .. code-block:: julia 
+.. code-block:: julia 
     :class: test 
 
     # These tests need to be eyeballed, AFAIK, since the function above doesn't return anything. 
