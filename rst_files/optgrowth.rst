@@ -520,7 +520,10 @@ What's important here is that the function approximation scheme must not only pr
 
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
+.. code-block:: julia 
+   :class: test  
 
+  using Test 
 
 .. code-block:: julia
 
@@ -529,7 +532,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 
   f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
   c_grid = 0:.2:1
-  f_grid = linspace(0, 1, 150)
+  f_grid = range(0, stop = 1, length = 150)
 
   Af = LinInterp(c_grid, f(c_grid))
 
@@ -540,8 +543,6 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
            label="linear approximation")
   ax[:vlines](c_grid, c_grid * 0, f(c_grid), linestyle="dashed", alpha=0.5)
   ax[:legend](loc="upper center")
-
-
 
 Another advantage of piecewise linear interpolation is that it preserves useful shape properties such as monotonicity and concavity / convexity
 
@@ -712,6 +713,15 @@ Let's code this up now so we can test against it below
     # True value function
     v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
     
+.. code-block:: julia 
+  :class: test 
+
+  @testset "Primitives Tests" begin
+    @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998, 1.6233766233766234]
+    @test u_prime(c1) ≈ -0.08255792258789846
+    @test v_star(3) ≈ -25.245288867900843
+  end 
+
 
 A First Test
 --------------
@@ -727,16 +737,23 @@ We need a grid and some shock draws for Monte Carlo integration
 
 
 .. code-block:: julia
+    using Random 
+    Random.seed!(42) # For reproducible results. 
 
     grid_max = 4         # Largest grid point
     grid_size = 200      # Number of grid points
     shock_size = 250     # Number of shock draws in Monte Carlo integral
     
-    grid_y = collect(linspace(1e-5, grid_max, grid_size))
-    shocks = exp.(μ + s * randn(shock_size))
+    grid_y = collect(range(1e-5, stop = grid_max, length = grid_size))
+    shocks = exp.(μ .+ s * randn(shock_size))
 
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Shock Invariance Tests" begin 
+    @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250 
+  end 
 
 Now let's do some tests
 
@@ -766,10 +783,13 @@ In practice we expect some small numerical error
     
     show()
 
+.. code-block:: julia 
+  :class: test 
 
-
-
-
+  @testset "Bellman Operator Tests" begin 
+    @test w[4] ≈ -31.59897775567377
+    @test length(w) == 200
+  end 
 
 The two functions are essentially indistinguishable, so we are off to a good start
 
@@ -874,7 +894,12 @@ We can check our result by plotting it against the true value
     ax[:legend](loc="lower right")
     show()
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Iteration Scheme Tests" begin 
+    @test v_star_approx[4] ≈ -31.850304884715662
+  end 
 
 Alternatively, we can use `QuantEcon <http://quantecon.org/julia_index.html>`__'s `compute_fixed_point` function
 to converge to :math:`v^*`
@@ -925,6 +950,12 @@ Let's have a look at the result
     ax[:legend](loc="lower right")
     show()
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset "QuantEcon Iteration Test" begin 
+    @test v_star_approx[17] ≈ -29.131728770166063
+  end 
 
 
 The figure shows that we are pretty much on the money
@@ -998,9 +1029,10 @@ We have also dialed down the shocks a bit
 
 
 .. code-block:: julia
+    Random.seed!(42)
 
     s = 0.05
-    shocks = exp.(μ + s * randn(shock_size))
+    shocks = exp.(μ .+ s * randn(shock_size))
 
 
 
@@ -1033,7 +1065,7 @@ Here's one solution (assuming as usual that you've executed everything above)
     Compute a time series given consumption policy σ.
     """
     function simulate_og(σ, y0 = 0.1, ts_length=100)
-        y = Array{Float64}(ts_length)
+        y = Array{Float64}(undef, ts_length)
         ξ = randn(ts_length-1)
         y[1] = y0
         for t in 1:(ts_length-1)
