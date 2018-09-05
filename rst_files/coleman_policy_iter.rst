@@ -1088,6 +1088,3 @@ It assumes that you've just run the code from the previous exercise
 .. code-block:: julia
 
     exercise3(m_ex, shocks)
-
-.. code-block:: julia 
-  :class: test 
