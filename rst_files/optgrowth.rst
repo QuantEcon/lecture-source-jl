@@ -521,7 +521,7 @@ What's important here is that the function approximation scheme must not only pr
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
 .. code-block:: julia 
-   :class: test  
+  :class: test
 
   using Test 
 
@@ -737,6 +737,7 @@ We need a grid and some shock draws for Monte Carlo integration
 
 
 .. code-block:: julia
+
     using Random 
     Random.seed!(42) # For reproducible results. 
 
@@ -1029,6 +1030,7 @@ We have also dialed down the shocks a bit
 
 
 .. code-block:: julia
+
     Random.seed!(42)
 
     s = 0.05
