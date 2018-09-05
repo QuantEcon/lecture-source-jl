@@ -407,6 +407,11 @@ The Operator
 
 Here's some code that implements the Coleman operator
 
+.. code-block:: julia
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia 
 
     #=
@@ -610,7 +615,7 @@ Here's a struct containing data from the log-linear growth model we used in the 
                     f_prime::Function = k -> α*k^(α-1) # f'
                     )
 
-        grid = collect(linspace(grid_min, grid_max, grid_size))
+        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)
@@ -642,16 +647,24 @@ Next we generate an instance
 We also need some shock draws for Monte Carlo integration
 
 .. code-block:: julia
+  using Random
+  Random.seed!(42) # For reproducible results. 
 
     shock_size = 250                                       # Number of shock draws in Monte Carlo integral
-    shocks = collect(exp.(m.μ + m.s * randn(shock_size)))  # generate shocks
+    shocks = collect(exp.(m.μ .+ m.s * randn(shock_size)))  # generate shocks
 
 
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the
 theory
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Shock Tests" begin
+    @test shocks[4] ≈ 0.9704956010607036
+    @test length(shocks) == 250 == shock_size 
+  end 
 
 .. code-block:: julia
 
@@ -690,7 +703,14 @@ theory
     c_star = (1 - m.α * m.β) * m.grid                      # True policy (c^*)
     verify_true_policy(m, shocks, c_star)
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Verify True Policy Tests" begin 
+    @test c_star[4] ≈ 0.023065703366834174
+    @test length(c_star) == 200 
+    # The plot should look like a 45-degree line. 
+  end 
 
 We can't really distinguish the two plots, so we are looking good, at least
 for this test
@@ -1069,6 +1089,5 @@ It assumes that you've just run the code from the previous exercise
 
     exercise3(m_ex, shocks)
 
-
-
-
+.. code-block:: julia 
+  :class: test 
