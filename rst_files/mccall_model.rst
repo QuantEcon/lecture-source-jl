@@ -26,7 +26,7 @@ Overview
 
 The McCall search model :cite:`McCall1970` helped transform economists' way of thinking about labor markets
 
-To clarify vague notions such as "involuntary" unemployment, McCall modeled the decision problem of unemployed agents directly, in terms of factors such as 
+To clarify vague notions such as "involuntary" unemployment, McCall modeled the decision problem of unemployed agents directly, in terms of factors such as
 
 *  current and likely future wages
 
@@ -34,7 +34,7 @@ To clarify vague notions such as "involuntary" unemployment, McCall modeled the 
 
 *  unemployment compensation
 
-To solve the decision problem he used dynamic programming 
+To solve the decision problem he used dynamic programming
 
 Here we set up McCall's model and adopt the same solution method
 
@@ -61,7 +61,7 @@ The wage sequence :math:`\{W_t\}` is assumed to be iid with probability mass fun
 
 Here :math:`p_i` is the probability of observing wage offer :math:`W_t = w_i` in the set :math:`w_1, \ldots, w_n`
 
-The worker is infinitely lived and aims to maximize the expected discounted sum of earnings 
+The worker is infinitely lived and aims to maximize the expected discounted sum of earnings
 
 .. math::
     \mathbb{E} \sum_{t=0}^{\infty} \beta^t Y_t
@@ -93,8 +93,8 @@ To decide optimally in the face of this trade off, we use dynamic programming
 
 Dynamic programming can be thought of as a two step procedure that
 
-#. first assigns values to "states" and 
-   
+#. first assigns values to "states" and
+
 #. then deduces optimal actions given those values
 
 We'll go through these steps in turn
@@ -154,10 +154,10 @@ The Optimal Policy
 -------------------
 
 Suppose for now that we are able to solve :eq:`odu_pv` for the unknown
-function :math:`V` 
+function :math:`V`
 
 Once we have this function in hand we can behave optimally (i.e., make the
-right choice between accept and reject) 
+right choice between accept and reject)
 
 All we have to do is select the maximal choice on the r.h.s. of :eq:`odu_pv`
 
@@ -174,9 +174,9 @@ Thus, we have a map from :math:`\RR` to :math:`\{0, 1\}`, with 1 meaning accept 
 We can write the policy as follows
 
 .. math::
-    \sigma(w) := \mathbf{1} 
-        \left\{ 
-            \frac{w}{1 - \beta} \geq c + \beta \sum_{i=1}^n V(w_i) p_i 
+    \sigma(w) := \mathbf{1}
+        \left\{
+            \frac{w}{1 - \beta} \geq c + \beta \sum_{i=1}^n V(w_i) p_i
         \right\}
 
 Here :math:`\mathbf{1}\{ P \} = 1` if statement :math:`P` is true and equals zero otherwise
@@ -230,7 +230,7 @@ It turns out that there is exactly one vector :math:`v := (v_i)_{i=1}^n` in
 The Algorithm
 -------------
 
-To compute this vector, we proceed as follows: 
+To compute this vector, we proceed as follows:
 
 Step 1: pick an arbitrary initial guess :math:`v \in \mathbb R^n`
 
@@ -302,19 +302,14 @@ Implementation
 
 Let's start with some imports
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    using Test 
+    using Test
 
 .. code-block:: julia
 
-    using PyPlot
-    using QuantEcon
-    using Distributions
-    using LaTeXStrings
-    plt = PyPlot
-
+    using Plots, QuantEcon, Distributions, LaTeXStrings, LinearAlgebra, Random
 
 
 Here's the distribution of wage offers we'll work with
@@ -324,25 +319,21 @@ Here's the distribution of wage offers we'll work with
 
     n, a, b = 50, 200, 100
     w_min, w_max = 10, 60
-    const w_vals = linspace(w_min, w_max, n+1)
+    const w_vals = range(w_min, stop = w_max, length = n+1)
     dist = BetaBinomial(n, a, b)
-    const p_vals = pdf.(dist, support(dist))
+    const p_vals = pdf.(Ref(dist), support(dist))
 
-    fig, ax = plt.subplots(figsize=(9, 6.5))
-    ax[:stem](w_vals, p_vals, label=L"$p_i$")
-    ax[:set_xlabel]("wages")
-    ax[:set_ylabel]("probabilities")
+    plt = plot(w_vals, p_vals, label = L"$p_i$", xlabel = "wages", ylabel = "probabilities")
 
-    plt.show()
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "First Plot Test" begin
-        @test p_vals[4] == 5.789516415478556e-17 # p invariance 
-        @test w_vals[1] == 10 && w_vals[end] == 60 && length(w_vals) == 51 # grid invariance 
+        @test p_vals[4] ≈ 5.789516415478556e-17 # p invariance
+        @test w_vals[1] == 10 && w_vals[end] == 60 && length(w_vals) == 51 # grid invariance
         @test dist isa Distributions.BetaBinomial && dist.n == 50 && dist.α == 200 && dist.β == 100 # distribution invariance
-    end 
+    end
 
 
 First let's have a look at the sequence of approximate value functions that
@@ -354,16 +345,17 @@ Our initial guess :math:`v` is the value of accepting at every given wage
 
 .. code:: julia
 
-    function plot_value_function_seq(ax,
-                                     c=25,
-                                     β=0.99,
-                                     num_plots=6)
+    function plot_value_function_seq(plt,
+                                     c = 25,
+                                     β = 0.99,
+                                     num_plots = 6)
 
-        v = w_vals ./ (1 - β)
+        plt = deepcopy(plt)
+        v = collect(w_vals ./ (1 - β))
         v_next = similar(v)
 
         for i in 1:num_plots
-            ax[:plot](w_vals, v, label="iterate $i")
+            plot!(plt, w_vals, v, label = "iterate $i")
 
             # Update guess
             for (j, w) in enumerate(w_vals)
@@ -371,31 +363,27 @@ Our initial guess :math:`v` is the value of accepting at every given wage
                 cont_val = c + β * sum(v .* p_vals)
                 v_next[j] = max(stop_val, cont_val)
             end
-            v[:] = v_next
+            v[:] .= v_next
         end
-        ax[:legend](loc="lower right")
-
+        return plt
     end
 
-    fig, ax = plt.subplots(figsize=(9, 6.5))
-    plot_value_function_seq(ax)
-    plt.show()
+    plot_value_function_seq(plt)
+
 
 Here's more serious iteration effort, that continues until measured deviation
 between successive iterates is below `tol`
 
 
-
 .. code-block:: julia
 
-    function compute_reservation_wage(c::Float64,
-                                      β::Float64;
-                                      max_iter::Int64=500,
-                                      tol::Float64=1e-6)
+    function compute_reservation_wage(c, β;
+                                      max_iter = 500,
+                                      tol = 1e-6)
 
     # == First compute the value function == #
 
-    v = w_vals ./ (1 - β)
+    v = collect(w_vals ./ (1 - β))
     v_next = similar(v)
     i = 0
     error = tol + 1
@@ -407,10 +395,10 @@ between successive iterates is below `tol`
             v_next[j] = max(stop_val, cont_val)
         end
 
-        error = maximum(abs.(v_next - v))
+        error = maximum(abs(a - b) for (a, b) in zip(v_next, v))
         i += 1
 
-        v[:] = v_next  # copy contents into v
+        v[:] .= v_next  # copy contents into v
     end
 
     # == Now compute the reservation wage == #
@@ -425,12 +413,12 @@ Let's compute the reservation wage at the default parameters
     β = 0.99
     compute_reservation_wage(c, β)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Reservation Wage Tests" begin
-        @test compute_reservation_wage(c, β) == 47.316499709964695
-    end 
+        @test compute_reservation_wage(c, β) ≈ 47.316499709964695
+    end
 
 Comparative Statics
 -------------------
@@ -445,10 +433,10 @@ In particular, let's look at what happens when we change :math:`\beta` and
 .. code:: julia
 
     grid_size = 25
-    R = rand((grid_size, grid_size))
+    R = rand(Float64, (grid_size, grid_size))
 
-    c_vals = linspace(10.0, 30.0, grid_size)
-    β_vals = linspace(0.9, 0.99, grid_size)
+    c_vals = range(10.0, stop = 30.0, length = grid_size)
+    β_vals = range(0.9, stop = 0.99, length = grid_size)
 
     for (i, c) in enumerate(c_vals)
         for (j, β) in enumerate(β_vals)
@@ -456,44 +444,26 @@ In particular, let's look at what happens when we change :math:`\beta` and
         end
     end
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Comparative Statics Tests" begin
-        @test R[4, 4] == 41.15851842026257 # Arbitrary reservation wage. 
-        @test grid_size == 25 # grid invariance. 
-        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance. 
-        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance. 
-    end 
+        @test R[4, 4] ≈ 41.15851842026257 # Arbitrary reservation wage.
+        @test grid_size == 25 # grid invariance.
+        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance.
+        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance.
+    end
 
 .. code:: julia
 
-    fig, ax = plt.subplots(figsize=(10, 5.7))
-
-    cs1 = ax[:contourf](c_vals, β_vals, R', alpha=0.75)
-    ctr1 = ax[:contour](c_vals, β_vals, R')
-
-    plt.clabel(ctr1, inline=1, fontsize=13)
-    plt.colorbar(cs1, ax=ax)
-
-    ax[:set_title]("reservation wage")
-    ax[:set_xlabel](L"$c$", fontsize=16)
-    ax[:set_ylabel](L"$β$", fontsize=16)
-
-    ax[:ticklabel_format](useOffset=false)
-
-    plt.show()
-
-
-
+    contourf(c_vals, β_vals, R',
+             title = "Reservation Wage",
+             xlabel = "c",
+             ylabel = L"\beta")
 
 
 As expected, the reservation wage increases both with patience and with
 unemployment compensation
-
-
-
-
 
 
 Computing the Optimal Policy: Take 2
@@ -506,7 +476,7 @@ For this particular problem, there's also an easier way, which circumvents the
 need to compute the value function
 
 Let :math:`\psi` denote the value of not accepting a job in this period but
-then behaving optimally in all subsequent periods 
+then behaving optimally in all subsequent periods
 
 That is,
 
@@ -581,10 +551,10 @@ Here's an implementation:
 
 .. code-block:: julia
 
-    function compute_reservation_wage_two(c::Float64;
-                                          β=0.99,
-                                          max_iter=500,
-                                          tol=1e-5)
+    function compute_reservation_wage_two(c;
+                                          β = 0.99,
+                                          max_iter = 500,
+                                          tol = 1e-5)
         # == First compute ψ == #
 
         ψ = dot(w_vals, p_vals) ./ (1 - β)
@@ -605,7 +575,6 @@ Here's an implementation:
 
         return (1 - β) * (c + β * ψ)
     end
-
 
 
 You can use this code to solve the exercise below
@@ -648,7 +617,7 @@ Here's one solution
 
     function compute_stopping_time(w_bar; seed=1234)
 
-        srand(seed)
+        Random.seed!(seed)
         stopping_time = 0
 
         t = 1
@@ -656,7 +625,7 @@ Here's one solution
             # Generate a wage draw
             d = DiscreteRV(p_vals)
             w = w_vals[rand(d)]
-            if w >= w_bar
+            if w ≥ w_bar
                 stopping_time = t
                 break
             else
@@ -666,16 +635,10 @@ Here's one solution
         return stopping_time
     end
 
-    function compute_mean_stopping_time(w_bar, num_reps=10000)
-        obs = zeros(num_reps)
-        for i in 1:num_reps
-            obs[i] = compute_stopping_time(w_bar, seed=i)
-        end
-        return mean(obs)
-    end
+    compute_mean_stopping_time(w_bar, num_reps=10000) =
+        mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
 
-
-    c_vals = linspace(10, 40, 25)
+    c_vals = range(10, stop = 40, length = 25)
     stop_times = similar(c_vals)
 
     for (i, c) in enumerate(c_vals)
@@ -683,17 +646,13 @@ Here's one solution
         stop_times[i] = compute_mean_stopping_time(w_bar)
     end
 
-    fig, ax = plt.subplots(figsize=(9, 6.5))
+    plot(c_vals, stop_times, label = "mean unemployment duration",
+         xlabel = "unemployment compensation", ylabel = "months")
 
-    ax[:plot](c_vals, stop_times, label="mean unemployment duration")
-    ax[:set](xlabel="unemployment compensation", ylabel="months")
-    ax[:legend]()
 
-    plt.show()
+.. code-block:: julia
+    :class: test
 
-.. code-block:: julia 
-    :class: test 
-
-    @testset "Solution 1 Tests" begin 
-        # Just eyeball the plot pending undeprecation and rewrite. 
-    end 
+    @testset "Solution 1 Tests" begin
+        # Just eyeball the plot pending undeprecation and rewrite.
+    end
