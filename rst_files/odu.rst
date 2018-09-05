@@ -162,7 +162,10 @@ Following  section 6.6 of :cite:`Ljungqvist2012`, our baseline parameterization 
 
 With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following shape
 
+.. code-block:: julia 
+  :class: test 
 
+  using Test # At the head of every lecture. 
 
 .. code-block:: julia
 
@@ -177,8 +180,10 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
   plot(x, pdf.(G, x/w_max)/w_max, label="g")
   plot!(x, pdf.(F, x/w_max)/w_max, label="f")
   
+.. code-block:: julia 
+  :class: test 
 
-
+  # Just eyeball these plots. 
 
 .. _looking_forward:
 
