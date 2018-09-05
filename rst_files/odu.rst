@@ -173,7 +173,7 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
   using Plots
 
   w_max = 2
-  x = linspace(0, w_max, 200)
+  x = range(0, stop = w_max, length = 200)
 
   G = Beta(3, 1.6)
   F = Beta(1, 1)
@@ -222,225 +222,225 @@ The code is as follows
 
 .. code-block:: julia 
 
-    #=
+  #=
 
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
+  @author : Spencer Lyon <spencer.lyon@nyu.edu>
 
-    =#
+  =#
 
-    using QuantEcon
-    using Interpolations
+  using QuantEcon
+  using Interpolations
 
-    """
-    Unemployment/search problem where offer distribution is unknown
+  """
+  Unemployment/search problem where offer distribution is unknown
 
-    ##### Fields
+  ##### Fields
 
-    - `β::Real` : Discount factor on (0, 1)
-    - `c::Real` : Unemployment compensation
-    - `F::Distribution` : Offer distribution `F`
-    - `G::Distribution` : Offer distribution `G`
-    - `f::Function` : The pdf of `F`
-    - `g::Function` : The pdf of `G`
-    - `n_w::Int` : Number of points on the grid for w
-    - `w_max::Real` : Maximum wage offer
-    - `w_grid::AbstractVector` : Grid of wage offers w
-    - `n_π::Int` : Number of points on grid for π
-    - `π_min::Real` : Minimum of π grid
-    - `π_max::Real` : Maximum of π grid
-    - `π_grid::AbstractVector` : Grid of probabilities π
-    - `quad_nodes::Vector` : Notes for quadrature ofer offers
-    - `quad_weights::Vector` : Weights for quadrature ofer offers
+  - `β::Real` : Discount factor on (0, 1)
+  - `c::Real` : Unemployment compensation
+  - `F::Distribution` : Offer distribution `F`
+  - `G::Distribution` : Offer distribution `G`
+  - `f::Function` : The pdf of `F`
+  - `g::Function` : The pdf of `G`
+  - `n_w::Int` : Number of points on the grid for w
+  - `w_max::Real` : Maximum wage offer
+  - `w_grid::AbstractVector` : Grid of wage offers w
+  - `n_π::Int` : Number of points on grid for π
+  - `π_min::Real` : Minimum of π grid
+  - `π_max::Real` : Maximum of π grid
+  - `π_grid::AbstractVector` : Grid of probabilities π
+  - `quad_nodes::Vector` : Notes for quadrature ofer offers
+  - `quad_weights::Vector` : Weights for quadrature ofer offers
 
-    """
-    struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
-                        TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
-        β::TR
-        c::TR
-        F::Distribution
-        G::Distribution
-        f::Function
-        g::Function
-        n_w::TI
-        w_max::TR
-        w_grid::TAVw
-        n_π::TI
-        π_min::TR
-        π_max::TR
-        π_grid::TAVpi
-        quad_nodes::Vector{TF}
-        quad_weights::Vector{TF}
-    end
+  """
+  struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
+                      TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
+      β::TR
+      c::TR
+      F::Distribution
+      G::Distribution
+      f::Function
+      g::Function
+      n_w::TI
+      w_max::TR
+      w_grid::TAVw
+      n_π::TI
+      π_min::TR
+      π_max::TR
+      π_grid::TAVpi
+      quad_nodes::Vector{TF}
+      quad_weights::Vector{TF}
+  end
 
-    """
-    Constructor for `SearchProblem` with default values
+  """
+  Constructor for `SearchProblem` with default values
 
-    ##### Arguments
+  ##### Arguments
 
-    - `β::Real(0.95)` : Discount factor in (0, 1)
-    - `c::Real(0.6)` : Unemployment compensation
-    - `F_a::Real(1), F_b::Real(1)` : Parameters of `Beta` distribution for `F`
-    - `G_a::Real(3), G_b::Real(1.2)` : Parameters of `Beta` distribution for `G`
-    - `w_max::Real(2)` : Maximum of wage offer grid
-    - `w_grid_size::Integer(40)` : Number of points in wage offer grid
-    - `π_grid_size::Integer(40)` : Number of points in probability grid
+  - `β::Real(0.95)` : Discount factor in (0, 1)
+  - `c::Real(0.6)` : Unemployment compensation
+  - `F_a::Real(1), F_b::Real(1)` : Parameters of `Beta` distribution for `F`
+  - `G_a::Real(3), G_b::Real(1.2)` : Parameters of `Beta` distribution for `G`
+  - `w_max::Real(2)` : Maximum of wage offer grid
+  - `w_grid_size::Integer(40)` : Number of points in wage offer grid
+  - `π_grid_size::Integer(40)` : Number of points in probability grid
 
-    ##### Notes
+  ##### Notes
 
-    There is also a version of this function that accepts keyword arguments for
-    each parameter
+  There is also a version of this function that accepts keyword arguments for
+  each parameter
 
-    """
+  """
 
-    # use key word argment
-    function SearchProblem(;β::Real=0.95, c::Real=0.6, F_a::Real=1, F_b::Real=1,
-                        G_a::Real=3, G_b::Real=1.2, w_max::Real=2.0,
-                        w_grid_size::Integer=40, π_grid_size::Integer=40)
+  # use key word argment
+  function SearchProblem(;β::Real=0.95, c::Real=0.6, F_a::Real=1, F_b::Real=1,
+                      G_a::Real=3, G_b::Real=1.2, w_max::Real=2.0,
+                      w_grid_size::Integer=40, π_grid_size::Integer=40)
 
-        F = Beta(F_a, F_b)
-        G = Beta(G_a, G_b)
+      F = Beta(F_a, F_b)
+      G = Beta(G_a, G_b)
 
-        # NOTE: the x./w_max)./w_max in these functions makes our dist match
-        #       the scipy one with scale=w_max given
-        f(x) = pdf.(F, x/w_max)/w_max
-        g(x) = pdf.(G, x/w_max)/w_max
+      # NOTE: the x./w_max)./w_max in these functions makes our dist match
+      #       the scipy one with scale=w_max given
+      f(x) = pdf.(F, x/w_max)/w_max
+      g(x) = pdf.(G, x/w_max)/w_max
 
-        π_min = 1e-3  # avoids instability
-        π_max = 1 - π_min
+      π_min = 1e-3  # avoids instability
+      π_max = 1 - π_min
 
-        w_grid = linspace(0, w_max, w_grid_size)
-        π_grid = linspace(π_min, π_max, π_grid_size)
+      w_grid = range(0, stop = w_max, length = w_grid_size)
+      π_grid = range(π_min, stop = π_max, length = π_grid_size)
 
-        nodes, weights = qnwlege(21, 0.0, w_max)
+      nodes, weights = qnwlege(21, 0.0, w_max)
 
-        SearchProblem(β, c, F, G, f, g,
-                    w_grid_size, w_max, w_grid,
-                    π_grid_size, π_min, π_max, π_grid, nodes, weights)
-    end
+      SearchProblem(β, c, F, G, f, g,
+                  w_grid_size, w_max, w_grid,
+                  π_grid_size, π_min, π_max, π_grid, nodes, weights)
+  end
 
-    function q(sp::SearchProblem, w, π_val)
-        new_π = 1.0 / (1 + ((1 - π_val) * sp.g(w)) / (π_val * sp.f(w)))
+  function q(sp::SearchProblem, w, π_val)
+      new_π = 1.0 / (1 + ((1 - π_val) * sp.g(w)) / (π_val * sp.f(w)))
 
-        # Return new_π when in [π_min, π_max] and else end points
-        return clamp(new_π, sp.π_min, sp.π_max)
-    end
+      # Return new_π when in [π_min, π_max] and else end points
+      return clamp(new_π, sp.π_min, sp.π_max)
+  end
 
-    """
-    Apply the Bellman operator for a given model and initial value.
+  """
+  Apply the Bellman operator for a given model and initial value.
 
-    ##### Arguments
+  ##### Arguments
 
-    - `sp::SearchProblem` : Instance of `SearchProblem`
-    - `v::Matrix`: Current guess for the value function
-    - `out::Matrix` : Storage for output.
-    - `;ret_policy::Bool(false)`: Toggles return of value or policy functions
+  - `sp::SearchProblem` : Instance of `SearchProblem`
+  - `v::Matrix`: Current guess for the value function
+  - `out::Matrix` : Storage for output.
+  - `;ret_policy::Bool(false)`: Toggles return of value or policy functions
 
-    ##### Returns
+  ##### Returns
 
-    None, `out` is updated in place. If `ret_policy == true` out is filled with the
-    policy function, otherwise the value function is stored in `out`.
+  None, `out` is updated in place. If `ret_policy == true` out is filled with the
+  policy function, otherwise the value function is stored in `out`.
 
-    """
-    function bellman_operator!(sp::SearchProblem, v::Matrix, out::Matrix;
-                            ret_policy::Bool=false)
-        # Simplify names
-        f, g, β, c = sp.f, sp.g, sp.β, sp.c
-        nodes, weights = sp.quad_nodes, sp.quad_weights
+  """
+  function bellman_operator!(sp::SearchProblem, v::Matrix, out::Matrix;
+                          ret_policy::Bool=false)
+      # Simplify names
+      f, g, β, c = sp.f, sp.g, sp.β, sp.c
+      nodes, weights = sp.quad_nodes, sp.quad_weights
 
-        vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
-                        Gridded(Linear())), Flat())
+      vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
+                      Gridded(Linear())), Flat())
 
-        # set up quadrature nodes/weights
-        # q_nodes, q_weights = qnwlege(21, 0.0, sp.w_max)
+      # set up quadrature nodes/weights
+      # q_nodes, q_weights = qnwlege(21, 0.0, sp.w_max)
 
-        for (w_i, w) in enumerate(sp.w_grid)
-            # calculate v1
-            v1 = w / (1 - β)
+      for (w_i, w) in enumerate(sp.w_grid)
+          # calculate v1
+          v1 = w / (1 - β)
 
-            for (π_j, _π) in enumerate(sp.π_grid)
-                # calculate v2
-                integrand(m) = [vf[m[i], q.(sp, m[i], _π)] *
-                            (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
-                integral = do_quad(integrand, nodes, weights)
-                # integral = do_quad(integrand, q_nodes, q_weights)
-                v2 = c + β * integral
+          for (π_j, _π) in enumerate(sp.π_grid)
+              # calculate v2
+              integrand(m) = [vf[m[i], q.(Ref(sp), m[i], _π)] *
+                          (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
+              integral = do_quad(integrand, nodes, weights)
+              # integral = do_quad(integrand, q_nodes, q_weights)
+              v2 = c + β * integral
 
-                # return policy if asked for, otherwise return max of values
-                out[w_i, π_j] = ret_policy ? v1 > v2 : max(v1, v2)
-            end
-        end
-        return out
-    end
+              # return policy if asked for, otherwise return max of values
+              out[w_i, π_j] = ret_policy ? v1 > v2 : max(v1, v2)
+          end
+      end
+      return out
+  end
 
-    function bellman_operator(sp::SearchProblem, v::Matrix;
-                            ret_policy::Bool=false)
-        out_type = ret_policy ? Bool : Float64
-        out = Array{out_type}(sp.n_w, sp.n_π)
-        bellman_operator!(sp, v, out, ret_policy=ret_policy)
-    end
+  function bellman_operator(sp::SearchProblem, v::Matrix;
+                          ret_policy::Bool=false)
+      out_type = ret_policy ? Bool : Float64
+      out = Array{out_type}(undef, sp.n_w, sp.n_π)
+      bellman_operator!(sp, v, out, ret_policy=ret_policy)
+  end
 
 
-    """
-    Extract the greedy policy (policy function) of the model.
+  """
+  Extract the greedy policy (policy function) of the model.
 
-    ##### Arguments
+  ##### Arguments
 
-    - `sp::SearchProblem` : Instance of `SearchProblem`
-    - `v::Matrix`: Current guess for the value function
-    - `out::Matrix` : Storage for output
+  - `sp::SearchProblem` : Instance of `SearchProblem`
+  - `v::Matrix`: Current guess for the value function
+  - `out::Matrix` : Storage for output
 
-    ##### Returns
+  ##### Returns
 
-    None, `out` is updated in place to hold the policy function
+  None, `out` is updated in place to hold the policy function
 
-    """
-    get_greedy!(sp::SearchProblem, v::Matrix, out::Matrix) =
-        bellman_operator!(sp, v, out, ret_policy=true)
+  """
+  get_greedy!(sp::SearchProblem, v::Matrix, out::Matrix) =
+      bellman_operator!(sp, v, out, ret_policy=true)
 
-    get_greedy(sp::SearchProblem, v::Matrix) =
-        bellman_operator(sp, v, ret_policy=true)
+  get_greedy(sp::SearchProblem, v::Matrix) =
+      bellman_operator(sp, v, ret_policy=true)
 
-    """
-    Updates the reservation wage function guess ϕ via the operator Q.
+  """
+  Updates the reservation wage function guess ϕ via the operator Q.
 
-    ##### Arguments
+  ##### Arguments
 
-    - `sp::SearchProblem` : Instance of `SearchProblem`
-    - `ϕ::Vector`: Current guess for ϕ
-    - `out::Vector` : Storage for output
+  - `sp::SearchProblem` : Instance of `SearchProblem`
+  - `ϕ::Vector`: Current guess for ϕ
+  - `out::Vector` : Storage for output
 
-    ##### Returns
+  ##### Returns
 
-    None, `out` is updated in place to hold the updated levels of ϕ
-    """
-    function res_wage_operator!(sp::SearchProblem, ϕ::Vector, out::Vector)
-        # Simplify name
-        f, g, β, c = sp.f, sp.g, sp.β, sp.c
+  None, `out` is updated in place to hold the updated levels of ϕ
+  """
+  function res_wage_operator!(sp::SearchProblem, ϕ::Vector, out::Vector)
+      # Simplify name
+      f, g, β, c = sp.f, sp.g, sp.β, sp.c
 
-        # Construct interpolator over π_grid, given ϕ
-        ϕ_f = LinInterp(sp.π_grid, ϕ)
+      # Construct interpolator over π_grid, given ϕ
+      ϕ_f = LinInterp(sp.π_grid, ϕ)
 
-        # set up quadrature nodes/weights
-        q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
+      # set up quadrature nodes/weights
+      q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
 
-        for (i, _π) in enumerate(sp.π_grid)
-            integrand(x) = max.(x, ϕ_f.(q.(sp, x, _π))) .* (_π * f(x) + (1 - _π) * g(x))
-            integral = do_quad(integrand, q_nodes, q_weights)
-            out[i] = (1 - β) * c + β * integral
-        end
-    end
+      for (i, _π) in enumerate(sp.π_grid)
+          integrand(x) = max.(x, ϕ_f.(q.(Ref(sp), x, _π))) .* (_π * f(x) + (1 - _π) * g(x))
+          integral = do_quad(integrand, q_nodes, q_weights)
+          out[i] = (1 - β) * c + β * integral
+      end
+  end
 
-    """
-    Updates the reservation wage function guess ϕ via the operator Q.
+  """
+  Updates the reservation wage function guess ϕ via the operator Q.
 
-    See the documentation for the mutating method of this function for more details
-    on arguments
-    """
-    function res_wage_operator(sp::SearchProblem, ϕ::Vector)
-        out = similar(ϕ)
-        res_wage_operator!(sp, ϕ, out)
-        return out
-    end
+  See the documentation for the mutating method of this function for more details
+  on arguments
+  """
+  function res_wage_operator(sp::SearchProblem, ϕ::Vector)
+      out = similar(ϕ)
+      res_wage_operator!(sp, ϕ, out)
+      return out
+  end
 
 
 The type ``SearchProblem`` is used to store parameters and methods needed to compute optimal actions
@@ -464,27 +464,27 @@ Here's the value function:
 
   # Set up the problem and initial guess, solve by VFI
   sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
-  v_init = zeros(sp.n_w, sp.n_π) + sp.c / (1 - sp.β)
+  v_init = zeros(sp.n_w, sp.n_π) .+ sp.c / (1 - sp.β)
   f(x) = bellman_operator(sp, x)
   v = compute_fixed_point(f, v_init)
   policy = get_greedy(sp, v)
 
   # Make functions for the linear interpolants of these
   vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v, Gridded(Linear())),
-                   Flat())
+                  Flat())
   pf = extrapolate(interpolate((sp.w_grid, sp.π_grid), policy,
-                   Gridded(Linear())), Flat())
+                  Gridded(Linear())), Flat())
 
   function plot_value_function(;w_plot_grid_size::Integer=100,
                               π_plot_grid_size::Integer=100)
-     π_plot_grid = linspace(0.001, 0.99, π_plot_grid_size)
-     w_plot_grid = linspace(0, sp.w_max, w_plot_grid_size)
-     Z = [vf[w_plot_grid[j], π_plot_grid[i]]
-             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6, 
-                 fill=true, size=(400, 400), c=:lightrainbow)
-     plot!(xlabel=L"$\pi$", ylabel="2", xguidefont=font(12))
-     return p
+    π_plot_grid = range(0.001, stop = 0.99, length =  π_plot_grid_size)
+    w_plot_grid = range(0, stop = sp.w_max, length = w_plot_grid_size)
+    Z = [vf[w_plot_grid[j], π_plot_grid[i]]
+            for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
+    p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
+                fill=true, size=(400, 400), c=:lightrainbow)
+    plot!(xlabel=L"$\pi$", ylabel="2", xguidefont=font(12))
+    return p
   end
 
   plot_value_function()
@@ -500,8 +500,8 @@ The optimal policy:
 
   function plot_policy_function(;w_plot_grid_size::Integer=100,
                                 π_plot_grid_size::Integer=100)
-      π_plot_grid = linspace(0.001, 0.99, π_plot_grid_size)
-      w_plot_grid = linspace(0, sp.w_max, w_plot_grid_size)
+      π_plot_grid = range(0.001, stop = 0.99, length = π_plot_grid_size)
+      w_plot_grid = range(0, stop = sp.w_max, length = w_plot_grid_size)
       Z = [pf[w_plot_grid[j], π_plot_grid[i]]
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
       p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, size=(400, 400), c=:coolwarm)
@@ -511,8 +511,7 @@ The optimal policy:
       return p
   end
 
-  plot_policy_function()
-  
+  plot_policy_function()  
 
 
 The code takes several minutes to run
@@ -716,18 +715,17 @@ time is much shorter than that of the value function approach in
 
 .. code-block:: julia
 
-    sp = SearchProblem(π_grid_size=50)
+  sp = SearchProblem(π_grid_size=50)
 
-    ϕ_init = ones(sp.n_π)
-    f_ex1(x) = res_wage_operator(sp, x)
-    w_bar = compute_fixed_point(f_ex1, ϕ_init)
+  ϕ_init = ones(sp.n_π)
+  f_ex1(x) = res_wage_operator(sp, x)
+  w_bar = compute_fixed_point(f_ex1, ϕ_init)
 
-    plot(sp.π_grid, w_bar, linewidth=2, color=:black,
-    fill_between=0, fillalpha=0.15, fillcolor=:blue)
-    plot!(sp.π_grid, 2*ones(length(w_bar)), linewidth=0, fill_between=w_bar,
-    fillalpha=0.12, fillcolor=:green, legend=:none)
-    plot!(ylims=(0, 2), annotations=[(0.42, 1.2, "reject"), (0.7, 1.8, "accept")])
-
+  plot(sp.π_grid, w_bar, linewidth=2, color=:black,
+  fill_between=0, fillalpha=0.15, fillcolor=:blue)
+  plot!(sp.π_grid, 2*ones(length(w_bar)), linewidth=0, fill_between=w_bar,
+  fillalpha=0.12, fillcolor=:green, legend=:none)
+  plot!(ylims=(0, 2), annotations=[(0.42, 1.2, "reject"), (0.7, 1.8, "accept")])
 
 
 The next piece of code is not one of the exercises from QuantEcon -- it's
@@ -743,72 +741,72 @@ The code takes a few minutes to run.
 
 .. code-block:: julia
 
-    # Set up model and compute the function w_bar
-    sp = SearchProblem(π_grid_size=50, F_a=1, F_b=1)
-    ϕ_init = ones(sp.n_π)
-    g(x) = res_wage_operator(sp, x)
-    w_bar_vals = compute_fixed_point(g, ϕ_init)
-    w_bar = extrapolate(interpolate((sp.π_grid, ), w_bar_vals,
-                        Gridded(Linear())), Flat())
+  # Determinism and random objects. 
+  using Random 
+  Random.seed!(42)
 
-    # Holds the employment state and beliefs of an individual agent.
-    mutable struct Agent
-        _π
-        employed
-    end
+  # Set up model and compute the function w_bar
+  sp = SearchProblem(π_grid_size=50, F_a=1, F_b=1)
+  ϕ_init = ones(sp.n_π)
+  g(x) = res_wage_operator(sp, x)
+  w_bar_vals = compute_fixed_point(g, ϕ_init)
+  w_bar = extrapolate(interpolate((sp.π_grid, ), w_bar_vals,
+                      Gridded(Linear())), Flat())
 
-    Agent(_π=1e-3) = Agent(_π, 1)
+  # Holds the employment state and beliefs of an individual agent.
+  mutable struct Agent
+      _π
+      employed
+  end
 
-    function update!(ag::Agent, H::Distribution)
-        if ag.employed == 0
-            w = rand(H) * 2   # account for scale in julia
-            if w >= w_bar[ag._π]
-                ag.employed = 1
-            else
-                ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
-            end
-        end
-        nothing
-    end
+  Agent(_π=1e-3) = Agent(_π, 1)
 
-    num_agents = 5000
-    separation_rate = 0.025  # Fraction of jobs that end in each period
-    separation_num = round(Int, num_agents * separation_rate)
-    agent_indices = collect(1:num_agents)
-    agents = [Agent() for i=1:num_agents]
-    sim_length = 600
-    H = sp.G                 # Start with distribution G
-    change_date = 200        # Change to F after this many periods
-    unempl_rate = Vector{Float64}(sim_length)
+  function update!(ag::Agent, H::Distribution)
+      if ag.employed == 0
+          w = rand(H) * 2   # account for scale in julia
+          if w >= w_bar[ag._π]
+              ag.employed = 1
+          else
+              ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
+          end
+      end
+      nothing
+  end
 
-    for i=1:sim_length
-        if i % 20 == 0
-            println("date = $i")
-        end
+  num_agents = 5000
+  separation_rate = 0.025  # Fraction of jobs that end in each period
+  separation_num = round(Int, num_agents * separation_rate)
+  agent_indices = collect(1:num_agents)
+  agents = [Agent() for i=1:num_agents]
+  sim_length = 600
+  H = sp.G                 # Start with distribution G
+  change_date = 200        # Change to F after this many periods
+  unempl_rate = Vector{Float64}(undef, sim_length)
 
-        if i == change_date
-            H = sp.F
-        end
+  for i=1:sim_length
+      if i % 20 == 0
+          println("date = $i")
+      end
 
-        # Randomly select separation_num agents and set employment status to 0
-        shuffle!(agent_indices)
-        separation_list = agent_indices[1:separation_num]
+      if i == change_date
+          H = sp.F
+      end
 
-        for agent in agents[separation_list]
-            agent.employed = 0
-        end
+      # Randomly select separation_num agents and set employment status to 0
+      shuffle!(agent_indices)
+      separation_list = agent_indices[1:separation_num]
 
-        # update agents
-        for agent in agents
-            update!(agent, H)
-        end
-        employed = Int[agent.employed for agent in agents]
-        unempl_rate[i] = 1.0 - mean(employed)
-    end
+      for agent in agents[separation_list]
+          agent.employed = 0
+      end
 
-    plot(unempl_rate, linewidth=2, label="unemployment rate")
-    vline!([change_date], color=:red, label="")
+      # update agents
+      for agent in agents
+          update!(agent, H)
+      end
+      employed = Int[agent.employed for agent in agents]
+      unempl_rate[i] = 1.0 - mean(employed)
+  end
 
-
-
-
+  plot(unempl_rate, linewidth=2, label="unemployment rate")
+  vline!([change_date], color=:red, label="")
