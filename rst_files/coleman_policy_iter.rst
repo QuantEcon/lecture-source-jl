@@ -639,14 +639,10 @@ Next we generate an instance
 
     m = Model(γ=1.0)   # model instance with specific parameter
 
-
-
-
-
-
 We also need some shock draws for Monte Carlo integration
 
 .. code-block:: julia
+
   using Random
   Random.seed!(42) # For reproducible results. 
 
