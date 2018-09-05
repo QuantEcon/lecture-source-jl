@@ -649,9 +649,14 @@ Here's code to produce the 45 degree diagram
 
     h_func(x, b, U) = (1 - b) * G(x, ϕ(x)) + b * max(G(x, ϕ(x)), U)
 
+.. code-block:: julia 
+  :class: test 
 
-
-
+  using Test 
+  @testset "Solutions 1 Tests" begin
+    @test s(3) == 0.0001
+    @test ϕ(4) ≈ 0.2857857142857143
+  end 
 
 .. code-block:: julia
 
@@ -676,10 +681,6 @@ Here's code to produce the 45 degree diagram
     plot(plot_grid, plot_grid, color=:black, linestyle=:dash, legend=:none)
     scatter!(xs, ys, alpha=0.25, color=:green, lims=(0, plot_grid_max), ticks=ticks)
     plot!(xlabel=L"x_t", ylabel=L"x_{t+1}", guidefont=font(16))
-
-
-
-
 
 Looking at the dynamics, we can see that
 
