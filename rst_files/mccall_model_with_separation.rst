@@ -32,7 +32,7 @@ Once separation enters the picture, the agent comes to view
 
 
 
-The Model 
+The Model
 ============
 
 The model concerns the life of an infinitely lived worker and
@@ -45,7 +45,7 @@ The model concerns the life of an infinitely lived worker and
 
 The worker can be in one of two states: employed or unemployed
 
-He wants to maximize 
+He wants to maximize
 
 .. math::
     :label: objective
@@ -53,7 +53,7 @@ He wants to maximize
     {\mathbb E} \sum_{t=0}^\infty \beta^t u(Y_t)
 
 The only difference from the :doc:`baseline model <mccall_model>` is that
-we've added some flexibility over preferences by introducing a utility function :math:`u` 
+we've added some flexibility over preferences by introducing a utility function :math:`u`
 
 It satisfies :math:`u'> 0` and :math:`u'' < 0`
 
@@ -65,7 +65,7 @@ Timing and Decisions
 Here's what happens at the start of a given period in our model with search and separation
 
 If currently *employed*, the worker consumes his wage :math:`w`, receiving utility :math:`u(w)`
-  
+
 If currently *unemployed*, he
 
 * receives and consumes unemployment compensation :math:`c`
@@ -82,17 +82,13 @@ When employed, the agent faces a constant probability :math:`\alpha` of becoming
 
 
 (Note: we do not allow for job search while employed---this topic is taken
-up in a :doc:`later lecture <jv>`) 
-
-
-
-
+up in a :doc:`later lecture <jv>`)
 
 
 Solving the Model using Dynamic Programming
 ============================================
 
-Let 
+Let
 
 * :math:`V(w)` be the total lifetime value accruing to a worker who enters the current period *employed* with wage :math:`w`
 
@@ -102,7 +98,7 @@ Here *value* means the value of the objective function :eq:`objective` when the 
 
 Suppose for now that the worker can calculate the function :math:`V` and the constant :math:`U` and use them in his decision making
 
-Then :math:`V` and :math:`U`  should satisfy 
+Then :math:`V` and :math:`U`  should satisfy
 
 .. math::
     :label: bell1_mccall
@@ -115,7 +111,7 @@ and
 .. math::
     :label: bell2_mccall
 
-    U = u(c) + \beta \sum_i \max \left\{ U, V(w_i) \right\} p_i 
+    U = u(c) + \beta \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
 
 Let's interpret these two equations in light of the fact that today's tomorrow is tomorrow's today
@@ -138,9 +134,6 @@ Equations :eq:`bell1_mccall` and :eq:`bell2_mccall` provide enough information t
 Before discussing this, however, let's make a small extension to the model
 
 
-
-
-
 Stochastic Offers
 -----------------
 
@@ -155,7 +148,7 @@ He either accepts or rejects the offer
 Otherwise the model is the same
 
 
-With some thought, you  will be able to convince yourself that :math:`V` and :math:`U`  should now satisfy 
+With some thought, you  will be able to convince yourself that :math:`V` and :math:`U`  should now satisfy
 
 .. math::
     :label: bell01_mccall
@@ -168,7 +161,7 @@ and
 .. math::
     :label: bell02_mccall
 
-    U = u(c) + 
+    U = u(c) +
       \beta (1 - \gamma) U
           + \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
@@ -203,7 +196,7 @@ and
 .. math::
     :label: bell2001
 
-    U_{n+1} = u(c) + 
+    U_{n+1} = u(c) +
         \beta (1 - \gamma) U_n
          + \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
 
@@ -214,8 +207,6 @@ As before, the system always converges to the true solutions---in this case,
 the :math:`V` and :math:`U` that solve :eq:`bell01_mccall` and :eq:`bell02_mccall`
 
 A proof can be obtained via the Banach contraction mapping theorem
-
-
 
 
 Implementation
@@ -232,18 +223,18 @@ The default utility function is a CRRA utility function
 
 
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using Distributions
+    using Distributions, LinearAlgebra
 
     # A default utility function
 
-    function u(c::Real, σ::Real)
+    function u(c, σ)
         if c > 0
             return (c^(1 - σ) - 1) / (1 - σ)
         else
@@ -253,11 +244,11 @@ The default utility function is a CRRA utility function
 
     # default wage vector with probabilities
 
-    const n = 60                                   # n possible outcomes for wage
-    const default_w_vec = linspace(10, 20, n)      # wages between 10 and 20
-    const a, b = 600, 400                          # shape parameters
+    const n = 60                                           # n possible outcomes for wage
+    const default_w_vec = range(10, stop = 20, length = n) # wages between 10 and 20
+    const a, b = 600, 400                                  # shape parameters
     const dist = BetaBinomial(n-1, a, b)
-    const default_p_vec = pdf.(dist, support(dist))
+    const default_p_vec = pdf.(Ref(dist), support(dist))
 
     mutable struct McCallModel{TF <: AbstractFloat,
                             TAV <: AbstractVector{TF},
@@ -270,25 +261,20 @@ The default utility function is a CRRA utility function
         w_vec::TAV    # Possible wage values
         p_vec::TAV2   # Probabilities over w_vec
 
-        McCallModel(α::TF=0.2,
-                    β::TF=0.98,
-                    γ::TF=0.7,
-                    c::TF=6.0,
-                    σ::TF=2.0,
-                    w_vec::TAV=default_w_vec,
-                    p_vec::TAV2=default_p_vec) where {TF, TAV, TAV2} =
+        McCallModel(α::TF = 0.2,
+                    β::TF = 0.98,
+                    γ::TF = 0.7,
+                    c::TF = 6.0,
+                    σ::TF = 2.0,
+                    w_vec::TAV = default_w_vec,
+                    p_vec::TAV2 = default_p_vec) where {TF, TAV, TAV2} =
             new{TF, TAV, TAV2}(α, β, γ, c, σ, w_vec, p_vec)
     end
 
-    """
-    A function to update the Bellman equations.  Note that V_new is modified in
-    place (i.e, modified by this function).  The new value of U is returned.
-
-    """
-    function update_bellman!(mcm::McCallModel,
-                            V::AbstractVector,
-                            V_new::AbstractVector,
-                            U::Real)
+    function update_bellman!(mcm,
+                            V,
+                            V_new,
+                            U)
         # Simplify notation
         α, β, σ, c, γ = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ
 
@@ -304,9 +290,9 @@ The default utility function is a CRRA utility function
     end
 
 
-    function solve_mccall_model(mcm::McCallModel;
-                                tol::AbstractFloat=1e-5,
-                                max_iter::Integer=2000)
+    function solve_mccall_model(mcm;
+                                tol = 1e-5,
+                                max_iter = 2000)
 
         V = ones(length(mcm.w_vec))    # Initial guess of V
         V_new = similar(V)             # To store updates to V
@@ -336,35 +322,32 @@ Let's plot the approximate solutions :math:`U` and :math:`V` to see what they lo
 We'll use the default parameterizations found in the code above
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using Plots, LaTeXStrings
-    pyplot()
 
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)
     U_vec = U .* ones(length(mcm.w_vec))
 
-    plot(mcm.w_vec, 
+    plot(mcm.w_vec,
         [V U_vec],
-        lw=2, 
-        α=0.7, 
-        label=[L"$V$" L"$U$"])
+        lw = 2,
+        α = 0.7,
+        label = [L"$V$" L"$U$"])
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "First Plot Tests" begin
-        @test U == 45.623263135173644 # U value 
-        @test V[3] == 45.58068793055933 # Arbitrary V 
+        @test U ≈ 45.623263135173644 # U value
+        @test V[3] ≈ 45.58068793055933 # Arbitrary V
 
-    end 
+    end
 
 
 The value :math:`V` is increasing because higher :math:`w` generates a higher wage flow conditional on staying employed
-
-
 
 
 The Reservation Wage
@@ -394,33 +377,12 @@ It uses `np.searchsorted <https://docs.scipy.org/doc/numpy/reference/generated/n
 
 If :math:`V(w) < U` for all :math:`w`, then the function returns `np.inf`
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    """
-    Computes the reservation wage of an instance of the McCall model
-    by finding the smallest w such that V(w) > U.
-
-    If V(w) > U for all w, then the reservation wage w_bar is set to
-    the lowest wage in mcm.w_vec.
-
-    If v(w) < U for all w, then w_bar is set to np.inf.
-
-    Parameters
-    ----------
-    mcm : an instance of McCallModel
-    return_values : bool (optional, default=false)
-        Return the value functions as well
-
-    Returns
-    -------
-    w_bar : scalar
-        The reservation wage
-
-    """
     function compute_reservation_wage(mcm::McCallModel; return_values::Bool=false)
 
         V, U = solve_mccall_model(mcm)
-        w_idx = searchsortedfirst(V - U, 0)
+        w_idx = searchsortedfirst(V .- U, 0)
 
         if w_idx == length(V)
             w_bar = Inf
@@ -443,8 +405,6 @@ Let's use it to look at how the reservation wage varies with parameters
 In each instance below we'll show you a figure and then ask you to reproduce it in the exercises
 
 
-
-
 The Reservation Wage and Unemployment Compensation
 ----------------------------------------------------
 
@@ -461,7 +421,6 @@ As expected, higher unemployment compensation causes the worker to hold out for 
 In effect, the cost of continuing job search is reduced
 
 
-
 The Reservation Wage and Discounting
 ----------------------------------------------------
 
@@ -474,7 +433,6 @@ The next figure plots the reservation wage associated with different values of
     :scale: 100%
 
 Again, the results are intuitive: More patient workers will hold out for higher wages
-
 
 
 The Reservation Wage and Job Destruction
@@ -495,10 +453,8 @@ If the separation rate is high, then the benefit of holding out for a higher wag
 Hence the reservation wage is lower
 
 
-
 Exercises
 =============
-
 
 
 Exercise 1
@@ -511,19 +467,15 @@ Exercise 2
 
 Plot the reservation wage against the job offer rate :math:`\gamma`
 
-Use 
-
-
+Use
 
 .. code-block:: julia
 
 	grid_size = 25
-	γ_vals = linspace(0.05, 0.95, grid_size)
-
+	γ_vals = range(0.05, stop = 0.95, length = grid_size)
 
 
 Interpret your results
-
 
 
 Solutions
@@ -536,10 +488,10 @@ Using the `compute_reservation_wage` function mentioned earlier in the lecture,
 we can create an array for reservation wages for different values of :math:`c`,
 :math:`\beta` and :math:`\alpha` and plot the results like so
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    grid_size = 25  
-    c_vals = linspace(2, 12, grid_size)  
+    grid_size = 25
+    c_vals = range(2, stop = 12, length = grid_size)
     w_bar_vals = similar(c_vals)
 
     mcm = McCallModel()
@@ -550,22 +502,22 @@ we can create an array for reservation wages for different values of :math:`c`,
         w_bar_vals[i] = w_bar
     end
 
-    plot(c_vals, 
-        w_bar_vals, 
-        lw=2, 
-        α=0.7, 
-        xlabel="unemployment compensation",
-        ylabel="reservation wage",
-        label=L"$\bar w$ as a function of $c$")
+    plot(c_vals,
+         w_bar_vals,
+         lw = 2,
+         α = 0.7,
+         xlabel = "unemployment compensation",
+         ylabel = "reservation wage",
+         label = L"$\bar w$ as a function of $c$")
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solutions 1 Tests" begin 
-        @test w_bar_vals[10] == 11.35593220338983
-        @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25 
-        @test w_bar_vals[17] - c_vals[17] == 4.72316384180791 # Just a sanity check on how these things relate. 
-    end 
+    @testset "Solutions 1 Tests" begin
+        @test w_bar_vals[10] ≈ 11.35593220338983
+        @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25
+        @test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791 # Just a sanity check on how these things relate.
+    end
 
 
 Exercise 2
@@ -573,10 +525,10 @@ Exercise 2
 
 Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    grid_size = 25  
-    γ_vals = linspace(0.05, 0.95, grid_size)  
+    grid_size = 25
+    γ_vals = range(0.05, stop = 0.95, length = grid_size)
     w_bar_vals = similar(γ_vals)
 
     mcm = McCallModel()
@@ -587,21 +539,21 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
         w_bar_vals[i] = w_bar
     end
 
-    plot(γ_vals, 
-        w_bar_vals, 
-        lw=2, 
-        α=0.7, 
-        xlabel="job offer rate",
-        ylabel="reservation wage",
-        label=L"$\bar w$ as a function of $γ$")
+    plot(γ_vals,
+         w_bar_vals,
+         lw = 2,
+         α = 0.7,
+         xlabel = "job offer rate",
+         ylabel = "reservation wage",
+         label = L"$\bar w$ as a function of $\gamma$")
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solutions 2 Tests" begin 
-        @test w_bar_vals[17] == 11.35593220338983 # same as w_bar_vals[10] before. 
-        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == grid_size == 25 
-    end 
+    @testset "Solutions 2 Tests" begin
+        @test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
+        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == grid_size == 25
+    end
 
 As expected, the reservation wage increases in :math:`\gamma`
 
@@ -609,4 +561,3 @@ This is because higher :math:`\gamma` translates to a more favorable job
 search environment
 
 Hence workers are less willing to accept lower offers
-
