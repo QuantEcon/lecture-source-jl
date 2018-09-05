@@ -457,7 +457,6 @@ In particular, let's look at what happens when we change :math:`\beta` and
 .. code:: julia
 
     contourf(c_vals, β_vals, R',
-             fill = true,
              title = "Reservation Wage",
              xlabel = "c",
              ylabel = L"\beta")
