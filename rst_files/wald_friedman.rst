@@ -218,9 +218,9 @@ The bottom panel presents mixtures of these distributions, with various mixing p
     :class: test 
 
     @testset "First Plot Tests" begin 
-        @test mix[7] == 0.005059526866095018
+        @test mix[7] ≈ 0.005059526866095018
         @test all(f0 .== 0.02) 
-        @test f1[10] == 0.0011405494355950728
+        @test f1[10] ≈ 0.0011405494355950728
     end 
 
 
@@ -526,7 +526,7 @@ Here's the code
 
     @testset "Second Block Tests" begin 
         @test J1[19] == 0.36
-        @test f1[40] == 0.002163769345396983
+        @test f1[40] ≈ 0.002163769345396983
         @test length(pg) == 251 && pg[1] == 0 && pg[end] == 1
     end 
 
