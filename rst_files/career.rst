@@ -20,7 +20,7 @@ Overview
 
 Next we study a computational problem concerning career and job choices
 
-The model is originally due to Derek Neal :cite:`Neal1999` 
+The model is originally due to Derek Neal :cite:`Neal1999`
 
 This exposition draws on the presentation in :cite:`Ljungqvist2012`, section 6.5
 
@@ -140,59 +140,41 @@ Nice properties:
 
 Here's a figure showing the effect of different shape parameters when :math:`n=50`
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
-  using PyPlot
-  using QuantEcon
-  using Distributions
+  using Plots, QuantEcon, Distributions # used PyPlot
 
   n = 50
   a_vals = [0.5, 1, 100]
   b_vals = [0.5, 1, 100]
 
-  fig, ax = plt[:subplots](figsize=(8, 5))
+  plt = plot()
   for (a, b) in zip(a_vals, b_vals)
-      ab_label = latexstring("a = $a, b = $b")
+      ab_label = "a = $a, b = $b"
       dist = BetaBinomial(n, a, b)
-      ax[:plot](0:n, pdf.(dist, support(dist)), "-o", label=ab_label)
+      plot!(plt, 0:n, pdf.(Ref(dist), support(dist)), label = ab_label)
   end
-  ax[:legend]()
+  plt
 
-.. code-block:: julia 
-  :class: test 
+
+.. code-block:: julia
+  :class: test
 
   # The above plot should look like a green sombrero, an orange line, and a blue concave up.
 
-Implementation: 
+Implementation:
 
 ==============================================
 
 The code for solving the DP problem described above is found below:
 
 
-.. code-block:: julia 
-
-  """
-  Career/job choice model of Derek Neal (1999)
-
-  ##### Fields
-
-  - `β::AbstractFloat` : Discount factor in (0, 1)
-  - `N::Integer` : Number of possible realizations of both ϵ and θ
-  - `B::AbstractFloat` : upper bound for both ϵ and θ
-  - `θ::AbstractVector` : A grid of values on [0, B]
-  - `ϵ::AbstractVector` : A grid of values on [0, B]
-  - `F_probs::AbstractVector` : The pdf of each value associated with of F
-  - `G_probs::AbstractVector` : The pdf of each value associated with of G
-  - `F_mean::AbstractFloat` : The mean of the distribution F
-  - `G_mean::AbstractFloat` : The mean of the distribution G
-
-  """
+.. code-block:: julia
 
   struct CareerWorkerProblem{TF<:AbstractFloat,
                             TI<:Integer,
@@ -209,71 +191,33 @@ The code for solving the DP problem described above is found below:
       G_mean::TF
   end
 
-
-  """
-  Constructor with default values for `CareerWorkerProblem`
-
-  ##### Arguments
-
-  - `β::Real(0.95)` : Discount factor in (0, 1)
-  - `B::Real(5.0)` : upper bound for both ϵ and θ
-  - `N::Real(50)` : Number of possible realizations of both ϵ and θ
-  - `F_a::Real(1), F_b::Real(1)` : Parameters of the distribution F
-  - `G_a::Real(1), G_b::Real(1)` : Parameters of the distribution F
-
-  ##### Notes
-
-  There is also a version of this function that accepts keyword arguments for
-  each parameter
-  """
-  # use key word argument
-  function CareerWorkerProblem(;β::TF=0.95,
-                                                  B::TF=5.0,
-                                                  N::Integer=50,
-                                                  F_a::TF=1.0,
-                                                  F_b::TF=1.0,
-                                                  G_a::TF=1.0,
-                                                  G_b::TF=1.0) where {TF <: AbstractFloat}
+  function CareerWorkerProblem(;β = 0.95,
+                               B = 5.0,
+                               N = 50,
+                               F_a = 1.0,
+                               F_b = 1.0,
+                               G_a = 1.0,
+                               G_b = 1.0)
       θ = range(0, stop = B, length = N)
       ϵ = copy(θ)
       dist_F = BetaBinomial(N-1, F_a, F_b)
       dist_G = BetaBinomial(N-1, G_a, G_b)
-      F_probs = pdf.(dist_F, support(dist_F))
-      G_probs = pdf.(dist_G, support(dist_G))
+      F_probs = pdf.(Ref(dist_F), support(dist_F))
+      G_probs = pdf.(Ref(dist_G), support(dist_G))
       F_mean = sum(θ .* F_probs)
       G_mean = sum(ϵ .* G_probs)
       CareerWorkerProblem(β, N, B, θ, ϵ, F_probs, G_probs, F_mean, G_mean)
   end
 
-
-  """
-  Apply the Bellman operator for a given model and initial value.
-
-  ##### Arguments
-
-  - `cp::CareerWorkerProblem` : Instance of `CareerWorkerProblem`
-  - `v::Matrix`: Current guess for the value function
-  - `out::Matrix` : Storage for output
-  - `;ret_policy::Bool(false)`: Toggles return of value or policy functions
-
-  ##### Returns
-
-  None, `out` is updated in place. If `ret_policy == true` out is filled with the
-  policy function, otherwise the value function is stored in `out`.
-
-  """
-  function update_bellman!(cp::CareerWorkerProblem,
-                          v::Array,
-                          out::Array;
-                          ret_policy::Bool=false)
+  function update_bellman!(cp, v, out; ret_policy = false)
 
       # new life. This is a function of the distribution parameters and is
       # always constant. No need to recompute it in the loop
       v3 = (cp.G_mean + cp.F_mean .+ cp.β .*
             cp.F_probs' * v * cp.G_probs)[1]        # don't need 1 element array
 
-      for j=1:cp.N
-          for i=1:cp.N
+      for j in 1:cp.N
+          for i in 1:cp.N
               # stay put
               v1 = cp.θ[i] + cp.ϵ[j] + cp.β * v[i, j]
 
@@ -298,36 +242,19 @@ The code for solving the DP problem described above is found below:
   end
 
 
-  function update_bellman(cp::CareerWorkerProblem, v::Array; ret_policy::Bool=false)
+  function update_bellman(cp, v; ret_policy = false)
       out = similar(v)
-      update_bellman!(cp, v, out, ret_policy=ret_policy)
+      update_bellman!(cp, v, out, ret_policy = ret_policy)
       return out
   end
 
-  """
-  Extract the greedy policy (policy function) of the model.
-
-  ##### Arguments
-
-  - `cp::CareerWorkerProblem` : Instance of `CareerWorkerProblem`
-  - `v::Matrix`: Current guess for the value function
-  - `out::Matrix` : Storage for output
-
-  ##### Returns
-
-  None, `out` is updated in place to hold the policy function
-
-  """
-  function get_greedy!(cp::CareerWorkerProblem, v::Array, out::Array)
-      update_bellman!(cp, v, out, ret_policy=true)
+  function get_greedy!(cp, v, out)
+      update_bellman!(cp, v, out, ret_policy = true)
   end
 
-
-  function get_greedy(cp::CareerWorkerProblem, v::Array)
-      update_bellman(cp, v, ret_policy=true)
+  function get_greedy(cp, v)
+      update_bellman(cp, v, ret_policy = true)
   end
-
-
 
 
 The code defines
@@ -351,13 +278,12 @@ value function and optimal policy respectively
 Here's the value function
 
 
-
 .. code-block:: julia
 
   wp = CareerWorkerProblem()
   v_init = fill(100.0, wp.N, wp.N)
   func(x) = update_bellman(wp, x)
-  v = compute_fixed_point(func, v_init, max_iter=500, verbose=false)
+  v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
   # === plot value function === #
   tg, eg = meshgrid(wp.θ, wp.ϵ)
@@ -381,9 +307,10 @@ Here's the value function
   ax[:view_init](ax[:elev], 225)
 
 
-  The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
+The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
 
-  .. _career_opt_pol:
+
+.. _career_opt_pol:
 
   .. figure:: /_static/figures/career_solutions_ex3_jl.png
     :scale: 100%
@@ -423,7 +350,6 @@ In particular, modulo randomness, reproduce the following figure (where the hori
    :scale: 100%
 
 Hint: To generate the draws from the distributions :math:`F` and :math:`G`, use the type `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_
-
 
 
 .. _career_ex2:
@@ -474,7 +400,6 @@ Solutions
 ====================
 
 
-
 Exercise 1
 ----------
 
@@ -482,10 +407,10 @@ Exercise 1
 
     wp = CareerWorkerProblem()
 
-    function solve_wp(wp::CareerWorkerProblem)
+    function solve_wp(wp)
         v_init = fill(100.0, wp.N, wp.N)
         func(x) = update_bellman(wp, x)
-        v = compute_fixed_point(func, v_init, max_iter=500, verbose=false)
+        v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
         optimal_policy = get_greedy(wp, v)
         return v, optimal_policy
     end
@@ -495,7 +420,7 @@ Exercise 1
     F = DiscreteRV(wp.F_probs)
     G = DiscreteRV(wp.G_probs)
 
-    function gen_path(T=20)
+    function gen_path(T = 20)
         i = j = 1
         θ_ind = Int[]
         ϵ_ind = Int[]
@@ -522,9 +447,6 @@ Exercise 1
     end
 
 
-
-
-
 Exercise 2
 ----------
 
@@ -532,7 +454,7 @@ The median for the original parameterization can be computed as follows
 
 .. code-block:: julia
 
-  function gen_first_passage_time(optimal_policy::Matrix)
+  function gen_first_passage_time(optimal_policy)
       t = 0
       i = j = 1
       while true
@@ -549,18 +471,18 @@ The median for the original parameterization can be computed as follows
 
 
   M = 25000
-  samples = Array{Float64}(undef, M)
-  for i=1:M
+  samples = zeros(M)
+  for i in 1:M
       samples[i] = gen_first_passage_time(optimal_policy)
   end
   print(median(samples))
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @testset "Solutions 2 Tests" begin
     @test median(samples) ≈ 7.0
-  end 
+  end
 
 
 To compute the median with :math:`\beta=0.99` instead of the default value :math:`\beta=0.95`, replace ``wp=CareerWorkerProblem()`` with ``wp=CareerWorkerProblem(β=0.99)``
@@ -573,18 +495,18 @@ The medians are subject to randomness, but should be about 7 and 14 respectively
 
   v2, optimal_policy2 = solve_wp(wp2)
 
-  samples2 = Array{Float64}(undef, M)
-  for i=1:M
+  samples2 = zeros(M)
+  for i in 1:M
       samples2[i] = gen_first_passage_time(optimal_policy2)
   end
   print(median(samples2))
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Solutions 2 Tests" begin 
-    @test median(samples2) ≈ 14.0 
-  end 
+  @testset "Solutions 2 Tests" begin
+    @test median(samples2) ≈ 14.0
+  end
 
 
 Exercise 3
@@ -625,4 +547,3 @@ In the new figure, you will see that the region for which the worker
 will stay put has grown because the distribution for :math:`\epsilon`
 has become more concentrated around the mean, making high-paying jobs
 less realistic
-
