@@ -31,7 +31,7 @@ The technique we use to solve the model is dynamic programming
 
 Our treatment of dynamic programming follows on from earlier
 treatments in our lectures on :doc:`shortest paths <short_path>` and
-:doc:`job search <mccall_model>` 
+:doc:`job search <mccall_model>`
 
 We'll discuss some of the technical details of dynamic programming as we
 go along
@@ -41,20 +41,20 @@ go along
 The Model
 ==========================
 
-.. index:: 
+.. index::
     single: Optimal Growth; Model
 
 Consider an agent who owns an amount :math:`y_t \in \mathbb R_+ := [0, \infty)` of a consumption good at time :math:`t`
 
-This output can either be consumed or invested 
+This output can either be consumed or invested
 
-When the good is invested it is transformed one-for-one into capital 
+When the good is invested it is transformed one-for-one into capital
 
 The resulting capital stock, denoted here by :math:`k_{t+1}`, will then be used for production
 
 Production is stochastic, in that it also depends on a shock :math:`\xi_{t+1}` realized at the end of the current period
 
-Next period output is 
+Next period output is
 
 
 .. math::
@@ -69,7 +69,7 @@ The resource constraint is
 .. math::
     :label: outcsdp0
 
-    k_{t+1} + c_t \leq y_t 
+    k_{t+1} + c_t \leq y_t
 
 
 and all variables are required to be nonnegative
@@ -80,8 +80,8 @@ Assumptions and Comments
 
 In what follows,
 
-* The sequence :math:`\{\xi_t\}` is assumed to be IID 
-  
+* The sequence :math:`\{\xi_t\}` is assumed to be IID
+
 * The common distribution of each :math:`\xi_t` will be denoted :math:`\phi`
 
 * The production function :math:`f` is assumed to be increasing and continuous
@@ -92,7 +92,7 @@ While many other treatments of the stochastic growth model use :math:`k_t` as th
 
 This will allow us to treat a stochastic model while maintaining only one state variable
 
-We consider alternative states and timing specifications in some of our other lectures 
+We consider alternative states and timing specifications in some of our other lectures
 
 
 Optimization
@@ -117,10 +117,10 @@ subject to
     \quad \text{for all } t
 
 
-where 
+where
 
-* :math:`u` is a bounded, continuous and strictly increasing utility function and 
-  
+* :math:`u` is a bounded, continuous and strictly increasing utility function and
+
 * :math:`\beta \in (0, 1)` is a discount factor
 
 In :eq:`og_conse` we are assuming that the resource constraint :eq:`outcsdp0` holds with equality --- which is reasonable because :math:`u` is strictly increasing and no output will be wasted at the optimum
@@ -144,13 +144,10 @@ In the present context
 * :math:`c_t` is called the *control* variable --- a value chosen by the agent each period after observing the state
 
 
-
-
-
 The Policy Function Approach
 --------------------------------
 
-.. index:: 
+.. index::
     single: Optimal Growth; Policy Function Approach
 
 
@@ -171,7 +168,7 @@ This is quite intuitive but if you wish you can find proofs in texts such as :ci
 Hereafter we focus on finding the best Markov policy
 
 In our context, a Markov policy is a function :math:`\sigma \colon
-\mathbb R_+ \to \mathbb R_+`, with the understanding that states are mapped to actions via 
+\mathbb R_+ \to \mathbb R_+`, with the understanding that states are mapped to actions via
 
 .. math::
 
@@ -192,12 +189,12 @@ In other words, a feasible consumption policy is a Markov policy that respects t
 
 The set of all feasible consumption policies will be denoted by :math:`\Sigma`
 
-Each :math:`\sigma \in \Sigma` determines a :doc:`continuous state Markov process <stationary_densities>` :math:`\{y_t\}` for output via 
+Each :math:`\sigma \in \Sigma` determines a :doc:`continuous state Markov process <stationary_densities>` :math:`\{y_t\}` for output via
 
 .. math::
     :label: firstp0_og2
 
-    y_{t+1} = f(y_t - \sigma(y_t)) \xi_{t+1}, 
+    y_{t+1} = f(y_t - \sigma(y_t)) \xi_{t+1},
     \quad y_0 \text{ given}
 
 
@@ -227,8 +224,7 @@ The aim is to select a policy that makes this number as large as possible
 The next section covers these ideas more formally
 
 
-
-Optimality 
+Optimality
 ------------------------------------
 
 The **policy value function** :math:`v_{\sigma}` associated with a given policy :math:`\sigma` is the mapping defined by
@@ -236,9 +232,9 @@ The **policy value function** :math:`v_{\sigma}` associated with a given policy 
 .. math::
     :label: vfcsdp00
 
-    v_{\sigma}(y) 
+    v_{\sigma}(y)
     =
-    \mathbb E \left[ \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \right] 
+    \mathbb E \left[ \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \right]
 
 
 when :math:`\{y_t\}` is given by :eq:`firstp0_og2` with :math:`y_0 = y`
@@ -263,7 +259,7 @@ A policy :math:`\sigma \in \Sigma` is called **optimal** if it attains the supre
 The Bellman Equation
 ----------------------
 
-With our assumptions on utility and production function, the value function as defined in :eq:`vfcsdp0` also satisfies a **Bellman equation** 
+With our assumptions on utility and production function, the value function as defined in :eq:`vfcsdp0` also satisfies a **Bellman equation**
 
 For this problem, the Bellman equation takes the form
 
@@ -277,14 +273,14 @@ For this problem, the Bellman equation takes the form
     \qquad (y \in \mathbb R_+)
 
 
-This is a *functional equation in* :math:`w` 
+This is a *functional equation in* :math:`w`
 
-The term :math:`\int w(f(y - c) z) \phi(dz)` can be understood as the expected next period value when 
+The term :math:`\int w(f(y - c) z) \phi(dz)` can be understood as the expected next period value when
 
 * :math:`w` is used to measure value
 
-* the state is :math:`y` 
-  
+* the state is :math:`y`
+
 * consumption is set to :math:`c`
 
 As shown in `EDTC <http://johnstachurski.net/edtc.html>`_, theorem 10.1.11 and a range of other texts
@@ -293,10 +289,10 @@ As shown in `EDTC <http://johnstachurski.net/edtc.html>`_, theorem 10.1.11 and a
 
 In other words, :eq:`fpb30` holds when :math:`w=v^*`
 
-The intuition is that maximal value from a given state can be obtained by optimally trading off 
+The intuition is that maximal value from a given state can be obtained by optimally trading off
 
 * current reward from a given action, vs
-  
+
 * expected discounted future value of the state resulting from that action
 
 The Bellman equation is important because it gives us more information about the value function
@@ -343,8 +339,6 @@ The advantage is that we are now solving a much lower dimensional optimization
 problem
 
 
-
-
 The Bellman Operator
 ------------------------
 
@@ -376,7 +370,7 @@ For example, if :math:`Tw = w`, then, for any :math:`y \geq 0`,
 .. math::
 
     w(y)
-    = Tw(y) 
+    = Tw(y)
     = \max_{0 \leq c \leq y}
     \left\{
         u(c) + \beta \int v^*(f(y - c) z) \phi(dz)
@@ -388,11 +382,10 @@ which says precisely that :math:`w` is a solution to the Bellman equation
 It follows that :math:`v^*` is a fixed point of :math:`T`
 
 
-
 Review of Theoretical Results
 ---------------------------------
 
-.. index:: 
+.. index::
     single: Dynamic Programming; Theory
 
 
@@ -409,9 +402,9 @@ Hence it has exactly one fixed point in this set, which we know is equal to the 
 
 It follows that
 
-* The value function :math:`v^*` is bounded and continuous 
+* The value function :math:`v^*` is bounded and continuous
 
-* Starting from any bounded and continuous :math:`w`, the sequence :math:`w, Tw, T^2 w, \ldots` generated by iteratively applying :math:`T` converges uniformly to :math:`v^*` 
+* Starting from any bounded and continuous :math:`w`, the sequence :math:`w, Tw, T^2 w, \ldots` generated by iteratively applying :math:`T` converges uniformly to :math:`v^*`
 
 This iterative method is called **value function iteration**
 
@@ -425,12 +418,10 @@ Hence at least one optimal policy exists
 Our problem now is how to compute it
 
 
-
-
 :index:`Unbounded Utility`
 --------------------------
 
-.. index:: 
+.. index::
     single: Dynamic Programming; Unbounded Utility
 
 The results stated above assume that the utility function is bounded
@@ -447,12 +438,10 @@ the bounded case just above (as long as we drop the word "bounded")
 Consult,  for example, section 12.2 of `EDTC <http://johnstachurski.net/edtc.html>`_, :cite:`Kamihigashi2012` or :cite:`MV2010`
 
 
-
-
 Computation
 =============
 
-.. index:: 
+.. index::
     single: Dynamic Programming; Computation
 
 Let's now look at computing the value function and the optimal policy
@@ -462,7 +451,7 @@ Let's now look at computing the value function and the optimal policy
 Fitted Value Iteration
 -------------------------
 
-.. index:: 
+.. index::
     single: Dynamic Programming; Value Function Iteration
 
 The first step is to compute the value function by value function iteration
@@ -497,10 +486,9 @@ More precisely, the algorithm will be
 
 #. Begin with an array of values :math:`\{ w_1, \ldots, w_I \}` representing the values of some initial function :math:`w` on the grid points :math:`\{ y_1, \ldots, y_I \}`
 
-#. Build a function :math:`\hat w` on the state space :math:`\mathbb R_+` by interpolation or approximation, based on these data points 
+#. Build a function :math:`\hat w` on the state space :math:`\mathbb R_+` by interpolation or approximation, based on these data points
 
 #.  Obtain and record the value :math:`T \hat w(y_i)` on each grid point :math:`y_i` by repeatedly solving :eq:`fcbell20_optgrowth`
-
 
 #. Unless some stopping condition is satisfied, set :math:`\{ w_1, \ldots, w_I \} = \{ T \hat w(y_1), \ldots, T \hat w(y_I) \}` and go to step 2
 
@@ -520,14 +508,14 @@ What's important here is that the function approximation scheme must not only pr
 
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
-.. code-block:: julia 
+.. code-block:: julia
   :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
-  using PyPlot
+  using Plotly # change to Plots
   using QuantEcon
 
   f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
@@ -553,7 +541,7 @@ The Bellman Operator
 Here's a function that implements the Bellman operator using linear interpolation
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
@@ -564,42 +552,8 @@ Here's a function that implements the Bellman operator using linear interpolatio
     using Optim
 
 
-    """
-    The approximate Bellman operator, which computes and returns the
-    updated value function Tw on the grid points.  An array to store
-    the new set of values Tw is optionally supplied (to avoid having to
-    allocate new arrays at each iteration).  If supplied, any existing data in 
-    Tw will be overwritten.
-
-    #### Arguments
-
-    `w` : Vector
-        The value of the input function on different grid points
-    `grid` : Vector
-            The set of grid points
-    `β` : AbstractFloat
-            The discount factor
-    `u` : Function
-        The utility function
-    `f` : Function
-        The production function
-    `shocks` : Vector
-            An array of draws from the shock, for Monte Carlo integration (to
-            compute expectations).
-    `Tw` : Vector, optional (default=similar(w))
-        Array to write output values to
-    `compute_policy` : Bool, optional (default=false)
-                    Whether or not to compute policy function
-
-    """
-    function bellman_operator(w::Vector, 
-                            grid::Vector,
-                            β::AbstractFloat, 
-                            u::Function, 
-                            f::Function, 
-                            shocks::Vector, 
-                            Tw::Vector = similar(w);
-                            compute_policy::Bool = false)
+    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
+                              compute_policy = false)
 
         # === Apply linear interpolation to w === #
         w_func = LinInterp(grid, w)
@@ -625,7 +579,7 @@ Here's a function that implements the Bellman operator using linear interpolatio
             return Tw
         end
     end
-    
+
 
 The arguments to `bellman_operator` are described in the docstring to the function
 
@@ -638,10 +592,9 @@ Notice that the expectation in :eq:`fcbell20_optgrowth` is computed via Monte Ca
 
 where :math:`\{\xi_i\}_{i=1}^n` are IID draws from :math:`\phi`
 
-Monte Carlo is not always the most efficient way to compute integrals numerically but it does have some theoretical advantages in the present setting 
+Monte Carlo is not always the most efficient way to compute integrals numerically but it does have some theoretical advantages in the present setting
 
 (For example, it preserves the contraction mapping property of the Bellman operator --- see, e.g., :cite:`pal2013`)
-
 
 
 .. _benchmark_growth_mod:
@@ -651,9 +604,9 @@ An Example
 
 Let's test out our operator when
 
-* :math:`f(k) = k^{\alpha}` 
+* :math:`f(k) = k^{\alpha}`
 
-* :math:`u(c) = \ln c` 
+* :math:`u(c) = \ln c`
 
 * :math:`\phi` is the distribution of :math:`\exp(\mu + \sigma \zeta)` when :math:`\zeta` is standard normal
 
@@ -662,9 +615,9 @@ As is well-known (see :cite:`Ljungqvist2012`, section 3.1.2), for this particula
 .. math::
     :label: dpi_tv
 
-    v^*(y) = 
+    v^*(y) =
     \frac{\ln (1 - \alpha \beta) }{ 1 - \beta}
-    + 
+    +
     \frac{(\mu + \alpha \ln (\alpha \beta))}{1 - \alpha}
      \left[
          \frac{1}{1- \beta} - \frac{1}{1 - \alpha \beta}
@@ -680,12 +633,10 @@ The optimal consumption policy is
     \sigma^*(y) = (1 - \alpha \beta ) y
 
 
-
-
 Let's code this up now so we can test against it below
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     α = 0.4
     β = 0.96
@@ -697,7 +648,7 @@ Let's code this up now so we can test against it below
     c3 = 1 / (1 - β)
     c4 = 1 / (1 - α * β)
 
-    # Utility 
+    # Utility
     u(c) = log(c)
 
     u_prime(c) = 1 / c
@@ -712,15 +663,15 @@ Let's code this up now so we can test against it below
 
     # True value function
     v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
-    
-.. code-block:: julia 
-  :class: test 
+
+.. code-block:: julia
+  :class: test
 
   @testset "Primitives Tests" begin
     @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998, 1.6233766233766234]
     @test u_prime(c1) ≈ -0.08255792258789846
     @test v_star(3) ≈ -25.245288867900843
-  end 
+  end
 
 
 A First Test
@@ -729,32 +680,28 @@ A First Test
 To test our code, we want to see if we can replicate the analytical solution numerically, using fitted value function iteration
 
 
-
-
-
 We need a grid and some shock draws for Monte Carlo integration
-
 
 
 .. code-block:: julia
 
-    using Random 
-    Random.seed!(42) # For reproducible results. 
+    using Random
+    Random.seed!(42) # For reproducible results.
 
     grid_max = 4         # Largest grid point
     grid_size = 200      # Number of grid points
     shock_size = 250     # Number of shock draws in Monte Carlo integral
-    
+
     grid_y = collect(range(1e-5, stop = grid_max, length = grid_size))
     shocks = exp.(μ .+ s * randn(shock_size))
 
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Shock Invariance Tests" begin 
-    @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250 
-  end 
+  @testset "Shock Invariance Tests" begin
+    @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
+  end
 
 Now let's do some tests
 
@@ -765,7 +712,6 @@ In theory, the resulting function should again be :math:`v^*`
 In practice we expect some small numerical error
 
 
-
 .. code-block:: julia
 
     w = bellman_operator(v_star.(grid_y),
@@ -774,23 +720,23 @@ In practice we expect some small numerical error
                          log,
                          k -> k^α,
                          shocks)
-    
+
     fig, ax = subplots(figsize=(9, 5))
-    
+
     ax[:set_ylim](-35, -24)
     ax[:plot](grid_y, w, lw=2, alpha=0.6, label=L"$Tv^*$")
     ax[:plot](grid_y, v_star.(grid_y), lw=2, alpha=0.6, label=L"$v^*$")
     ax[:legend](loc="lower right")
-    
+
     show()
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Bellman Operator Tests" begin 
+  @testset "Bellman Operator Tests" begin
     @test w[4] ≈ -31.59897775567377
     @test length(w) == 200
-  end 
+  end
 
 The two functions are essentially indistinguishable, so we are off to a good start
 
@@ -800,14 +746,12 @@ from an arbitrary initial condition
 The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
 
 
-
-
 .. code-block:: julia
 
     w = 5 * log.(grid_y)  # An initial condition -- fairly arbitrary
     n = 35
     fig, ax = subplots(figsize=(9, 6))
-    
+
     ax[:set_ylim](-50, 10)
     ax[:set_xlim](minimum(grid_y), maximum(grid_y))
     lb = "initial condition"
@@ -820,19 +764,15 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
                              log,
                              k -> k^α,
                              shocks)
-    
+
         ax[:plot](grid_y, w, color=jet(i / n), lw=2, alpha=0.6)
     end
-    
+
     lb = "true value function"
     ax[:plot](grid_y, v_star.(grid_y), "k-", lw=2, alpha=0.8, label=lb)
     ax[:legend](loc="lower right")
-    
+
     show()
-
-
-
-
 
 
 The figure shows
@@ -849,12 +789,11 @@ We can write a function that iterates until the difference is below a particular
 tolerance level
 
 
-
 .. code-block:: julia
 
     function solve_optgrowth(initial_w;
-                             tol::AbstractFloat=1e-6,
-                             max_iter::Integer=500)
+                             tol = 1e-6,
+                             max_iter = 500)
 
         w = initial_w  # Set initial condition
         error = tol + 1
@@ -880,11 +819,11 @@ tolerance level
 
         return w
     end
-    
+
 We can check our result by plotting it against the true value
 
 .. code-block:: julia
-  
+
     initial_w = 5 * log.(grid_y)
     v_star_approx = solve_optgrowth(initial_w)
 
@@ -895,52 +834,40 @@ We can check our result by plotting it against the true value
     ax[:legend](loc="lower right")
     show()
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Iteration Scheme Tests" begin 
+  @testset "Iteration Scheme Tests" begin
     @test v_star_approx[4] ≈ -31.850304884715662
-  end 
+  end
 
 Alternatively, we can use `QuantEcon <http://quantecon.org/julia_index.html>`__'s `compute_fixed_point` function
 to converge to :math:`v^*`
 
 
-
 .. code-block:: julia
 
     import QuantEcon: compute_fixed_point
-    
+
     Tw = similar(grid_y)
     initial_w = 5 * log.(grid_y)
-    
+
     bellman_operator(w) = bellman_operator(w,
                                            grid_y,
                                            β,
                                            log,
                                            k -> k^α,
                                            shocks)
-    
+
     v_star_approx = compute_fixed_point(bellman_operator,
                                         initial_w,
-                                        max_iter=500,
-                                        verbose=2,
-                                        print_skip=10,
-                                        err_tol=1e-5)
-
-
-
-
-
-
-
-
+                                        max_iter = 500,
+                                        verbose = 2,
+                                        print_skip = 10,
+                                        err_tol = 1e-5)
 
 
 Let's have a look at the result
-
-
-
 
 .. code-block:: julia
 
@@ -951,23 +878,21 @@ Let's have a look at the result
     ax[:legend](loc="lower right")
     show()
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "QuantEcon Iteration Test" begin 
+  @testset "QuantEcon Iteration Test" begin
     @test v_star_approx[17] ≈ -29.131728770166063
-  end 
+  end
 
 
 The figure shows that we are pretty much on the money
 
 
-
-
 The Policy Function
 -----------------------
 
-.. index:: 
+.. index::
     single: Optimal Growth; Policy Function
 
 To compute an approximate optimal policy, we take the approximate value
@@ -975,8 +900,6 @@ function we just calculated and then compute the corresponding greedy policy
 
 The next figure compares the result to the exact solution, which, as mentioned
 above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
-
-
 
 
 .. code-block:: julia
@@ -987,20 +910,15 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
                              log,
                              k -> k^α,
                              shocks;
-                             compute_policy=true)
-    
-    
+                             compute_policy = true)
+
     cstar = (1 - α * β) * grid_y
-    
+
     fig, ax = subplots(figsize=(9, 5))
     ax[:plot](grid_y, σ, lw=2, alpha=0.6, label="approximate policy function")
     ax[:plot](grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
     ax[:legend](loc="lower right")
     show()
-
-
-
-
 
 
 The figure shows that we've done a good job in this instance of approximating
@@ -1028,14 +946,12 @@ The discount factors are ``discount_factors = (0.8, 0.9, 0.98)``
 We have also dialed down the shocks a bit
 
 
-
 .. code-block:: julia
 
     Random.seed!(42)
 
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
-
 
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
@@ -1045,12 +961,8 @@ Notice that more patient agents typically have higher wealth
 Replicate the figure modulo randomness
 
 
-
-
-
 Solutions
 ==========
-
 
 
 Exercise 1
@@ -1060,14 +972,10 @@ Exercise 1
 Here's one solution (assuming as usual that you've executed everything above)
 
 
-
 .. code-block:: julia
 
-    """
-    Compute a time series given consumption policy σ.
-    """
     function simulate_og(σ, y0 = 0.1, ts_length=100)
-        y = Array{Float64}(undef, ts_length)
+        y = zeros(ts_length)
         ξ = randn(ts_length-1)
         y[1] = y0
         for t in 1:(ts_length-1)
@@ -1075,38 +983,33 @@ Here's one solution (assuming as usual that you've executed everything above)
         end
         return y
     end
-    
+
     fig, ax = subplots(figsize=(9, 6))
-    
+
     for β in (0.9, 0.94, 0.98)
-    
+
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
-    
+
         v_star_approx = compute_fixed_point(bellman_operator,
                                             initial_w,
-                                            max_iter=50,
-                                            verbose=0,
-                                            print_skip=10,
-                                            err_tol=1e-5)
-    
+                                            max_iter = 50,
+                                            verbose = 0,
+                                            print_skip = 10,
+                                            err_tol = 1e-5)
+
         Tw, σ = bellman_operator(v_star_approx,
                                  grid_y,
                                  β,
                                  log,
                                  k -> k^α,
                                  shocks,
-                                 compute_policy=true)
-    
+                                 compute_policy = true)
+
         σ_func = LinInterp(grid_y, σ)
         y = simulate_og(σ_func)
         ax[:plot](y, lw=2, alpha=0.6, label="β = $β" )
     end
-    
-    
+
     ax[:legend](loc="lower right")
     show()
-
-
-
-
