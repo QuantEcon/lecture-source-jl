@@ -312,8 +312,9 @@ The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_e
 
 .. _career_opt_pol:
 
-  .. figure:: /_static/figures/career_solutions_ex3_jl.png
-    :scale: 100%
+
+.. figure:: /_static/figures/career_solutions_ex3_jl.png
+   :scale: 100%
 
 
 Interpretation:
