@@ -33,7 +33,7 @@ In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical im
 The Euler Equation
 ==========================
 
-Let's take the model set out in :doc:`the stochastic growth model lecture <optgrowth>` and add the assumptions that 
+Let's take the model set out in :doc:`the stochastic growth model lecture <optgrowth>` and add the assumptions that
 
 #. :math:`u` and :math:`f` are continuously differentiable and strictly concave
 
@@ -43,10 +43,10 @@ Let's take the model set out in :doc:`the stochastic growth model lecture <optgr
 
 #. :math:`\lim_{k \to 0} f'(k) = \infty` and :math:`\lim_{k \to \infty} f'(k) = 0`
 
-The last two conditions are usually called **Inada conditions** 
+The last two conditions are usually called **Inada conditions**
 
 
-Recall the Bellman equation 
+Recall the Bellman equation
 
 .. math::
     :label: cpi_fpb30
@@ -63,7 +63,7 @@ Let the optimal consumption policy be denoted by :math:`c^*`
 
 We know that :math:`c^*` is a :math:`v^*` greedy policy, so that :math:`c^*(y)` is the maximizer in :eq:`cpi_fpb30`
 
-The conditions above imply that 
+The conditions above imply that
 
 * :math:`c^*` is the unique optimal policy for the stochastic optimal growth model
 
@@ -76,7 +76,7 @@ The conditions above imply that
 
     (v^*)'(y) = u' (c^*(y) ) := (u' \circ c^*)(y)
 
-The last result is called the **envelope condition** due to its relationship with the `envelope theorem <https://en.wikipedia.org/wiki/Envelope_theorem>`_ 
+The last result is called the **envelope condition** due to its relationship with the `envelope theorem <https://en.wikipedia.org/wiki/Envelope_theorem>`_
 
 To see why :eq:`cpi_env` might be valid, write the Bellman equation in the equivalent
 form
@@ -89,7 +89,7 @@ form
         \right\},
 
 
-differentiate naively with respect to :math:`y`,  and then  evaluate at the optimum 
+differentiate naively with respect to :math:`y`,  and then  evaluate at the optimum
 
 Section 12.1 of `EDTC <http://johnstachurski.net/edtc.html>`_ contains full proofs of these results, and closely related discussions can be found in many other texts
 
@@ -109,7 +109,7 @@ Combining :eq:`cpi_env` and the first-order condition :eq:`cpi_foc` gives the fa
 .. math::
     :label: cpi_euler
 
-    (u'\circ c^*)(y) 
+    (u'\circ c^*)(y)
     = \beta \int (u'\circ c^*)(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)
 
 
@@ -118,7 +118,7 @@ We can think of the Euler equation as a functional equation
 .. math::
     :label: cpi_euler_func
 
-    (u'\circ \sigma)(y) 
+    (u'\circ \sigma)(y)
     = \beta \int (u'\circ \sigma)(f(y - \sigma(y)) z) f'(y - \sigma(y)) z \phi(dz)
 
 
@@ -147,7 +147,7 @@ will now introduce an operator over policies to help us solve the Euler
 equation
 
 This operator :math:`K` will act on the set of all :math:`\sigma \in \Sigma`
-that are continuous, strictly increasing and interior (i.e., :math:`0 < \sigma(y) < y` for all strictly positive :math:`y`) 
+that are continuous, strictly increasing and interior (i.e., :math:`0 < \sigma(y) < y` for all strictly positive :math:`y`)
 
 Henceforth we denote this set of policies by :math:`\mathscr P`
 
@@ -158,7 +158,7 @@ Henceforth we denote this set of policies by :math:`\mathscr P`
 .. math::
     :label: cpi_coledef
 
-    u'(c) 
+    u'(c)
     = \beta \int (u' \circ \sigma) (f(y - c) z ) f'(y - c) z \phi(dz)
 
 
@@ -178,7 +178,7 @@ solves
 
 .. math::
 
-    u'(c) 
+    u'(c)
     = \beta \int (u' \circ c^*) (f(y - c) z ) f'(y - c) z \phi(dz)
 
 
@@ -195,14 +195,14 @@ In particular, is there always a unique :math:`c \in (0, y)` that solves
 
 The answer is yes, under our assumptions
 
-For any :math:`\sigma \in \mathscr P`, the right side of :eq:`cpi_coledef`  
+For any :math:`\sigma \in \mathscr P`, the right side of :eq:`cpi_coledef`
 
 * is continuous and strictly increasing in :math:`c` on :math:`(0, y)`
 
 * diverges to :math:`+\infty` as :math:`c \uparrow y`
 
 
-The left side of :eq:`cpi_coledef`  
+The left side of :eq:`cpi_coledef`
 
 * is continuous and strictly decreasing in :math:`c` on :math:`(0, y)`
 
@@ -271,14 +271,14 @@ Now let another function :math:`h \colon Y \to Y` where :math:`Y` is another set
 
 
 
-Suppose further that 
+Suppose further that
 
 * there exists a bijection :math:`\tau` from :math:`X` to :math:`Y`
 
 * the two functions **commute** under :math:`\tau`, which is to say that
   :math:`\tau(g(x)) = h (\tau(x))` for all :math:`x \in X`
 
-The last statement can be written more simply as 
+The last statement can be written more simply as
 
 .. math::
 
@@ -344,7 +344,7 @@ always in our applications) that :math:`u(0) = 0`
 A Bijection
 ^^^^^^^^^^^^^
 
-Let :math:`\mathscr V` be all strictly concave, continuously differentiable functions :math:`v` mapping :math:`\mathbb R_+` to itself and satisfying :math:`v(0) = 0` and :math:`v'(y) > u'(y)` for all positive :math:`y` 
+Let :math:`\mathscr V` be all strictly concave, continuously differentiable functions :math:`v` mapping :math:`\mathbb R_+` to itself and satisfying :math:`v(0) = 0` and :math:`v'(y) > u'(y)` for all positive :math:`y`
 
 For :math:`v \in \mathscr V` let
 
@@ -357,7 +357,7 @@ Although we omit details, :math:`\sigma := M v` is actually the unique
 
 * See proposition 12.1.18 of `EDTC <http://johnstachurski.net/edtc.html>`__
 
-It turns out that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P` 
+It turns out that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P`
 
 A (solved) exercise below asks you to confirm this
 
@@ -372,7 +372,7 @@ It is an additional solved exercise (see below) to show that :math:`T` and :math
 
     M \circ T = K \circ M
 
-In view of the preceding discussion, this implies that 
+In view of the preceding discussion, this implies that
 
 .. math::
 
@@ -407,7 +407,12 @@ The Operator
 
 Here's some code that implements the Coleman operator
 
-.. code-block:: julia 
+.. code-block:: julia
+  :class: test
+
+  using Test
+
+.. code-block:: julia
 
     #=
 
@@ -417,24 +422,8 @@ Here's some code that implements the Coleman operator
 
     using QuantEcon
 
-    """
-    g: input policy function
-    grid: grid points
-    β: discount factor
-    u_prime: derivative of utility function
-    f: production function
-    f_prime: derivative of production function
-    shocks::shock draws, used for Monte Carlo integration to compute expectation
-    Kg: output value is stored
-    """
-    function coleman_operator!(g::AbstractVector,
-                            grid::AbstractVector,
-                            β::AbstractFloat,
-                            u_prime::Function,
-                            f::Function,
-                            f_prime::Function,
-                            shocks::AbstractVector,
-                            Kg::AbstractVector=similar(g))
+    function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
+                               Kg = similar(g))
 
         # This function requires the container of the output value as argument Kg
 
@@ -453,29 +442,20 @@ Here's some code that implements the Coleman operator
     end
 
     # The following function does NOT require the container of the output value as argument
-    function coleman_operator(g::AbstractVector,
-                            grid::AbstractVector,
-                            β::AbstractFloat,
-                            u_prime::Function,
-                            f::Function,
-                            f_prime::Function,
-                            shocks::AbstractVector)
-
-        return coleman_operator!(g, grid, β, u_prime,
-                                f, f_prime, shocks, similar(g))
-    end
+    coleman_operator(g, grid, β, u_prime, f, f_prime, shocks) =
+        coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks, similar(g))
 
 
-It has some similarities to the code for the Bellman operator in our :doc:`optimal growth lecture <optgrowth>` 
+It has some similarities to the code for the Bellman operator in our :doc:`optimal growth lecture <optgrowth>`
 
 For example, it evaluates integrals by Monte Carlo and approximates functions using linear interpolation
 
 Here's that Bellman operator code again, which needs to be executed because we'll use it in some tests below
 
-.. code-block:: julia 
+.. code-block:: julia
     :class: collapse
 
-        #=
+    #=
 
     @authors : Spencer Lyon, John Stachurski
 
@@ -483,43 +463,8 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
     using Optim
 
-
-    """
-    The approximate Bellman operator, which computes and returns the
-    updated value function Tw on the grid points.  An array to store
-    the new set of values Tw is optionally supplied (to avoid having to
-    allocate new arrays at each iteration).  If supplied, any existing data in 
-    Tw will be overwritten.
-
-    #### Arguments
-
-    `w` : Vector
-        The value of the input function on different grid points
-    `grid` : Vector
-            The set of grid points
-    `β` : AbstractFloat
-            The discount factor
-    `u` : Function
-        The utility function
-    `f` : Function
-        The production function
-    `shocks` : Vector
-            An array of draws from the shock, for Monte Carlo integration (to
-            compute expectations).
-    `Tw` : Vector, optional (default=similar(w))
-        Array to write output values to
-    `compute_policy` : Bool, optional (default=false)
-                    Whether or not to compute policy function
-
-    """
-    function bellman_operator(w::Vector, 
-                            grid::Vector,
-                            β::AbstractFloat, 
-                            u::Function, 
-                            f::Function, 
-                            shocks::Vector, 
-                            Tw::Vector = similar(w);
-                            compute_policy::Bool = false)
+    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
+                              compute_policy = false)
 
         # === Apply linear interpolation to w === #
         w_func = LinInterp(grid, w)
@@ -555,17 +500,9 @@ testing our method in the presence of a model that does have an analytical
 solution
 
 
-
-
-
-
-
-
-
 Here's a struct containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
 
-
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
@@ -589,28 +526,21 @@ Here's a struct containing data from the log-linear growth model we used in the 
         grid::Vector{TR}   # grid
     end
 
-    """
-    construct Model instance using the information of parameters and functional form
-
-    arguments: see above
-
-    return: Model type instance
-    """
-    function Model(; α::Real=0.65,                      # Productivity parameter
-                    β::AbstractFloat=0.95,             # Discount factor
-                    γ::Real=1.0,                       # risk aversion
-                    μ::Real=0.0,                       # First parameter in lognorm(μ, σ)
-                    s::Real=0.1,                       # Second parameter in lognorm(μ, σ)
-                    grid_min::Real=1e-6,               # Smallest grid point
-                    grid_max::Real=4.0,                # Largest grid point
-                    grid_size::Integer=200,            # Number of grid points
-                    u::Function= c->(c^(1-γ)-1)/(1-γ), # utility function
-                    u_prime::Function = c-> c^(-γ),    # u'
-                    f::Function = k-> k^α,             # production function
-                    f_prime::Function = k -> α*k^(α-1) # f'
+    function Model(;α = 0.65,                      # Productivity parameter
+                    β = 0.95,                      # Discount factor
+                    γ = 1.0,                       # risk aversion
+                    μ = 0.0,                       # First parameter in lognorm(μ, σ)
+                    s = 0.1,                       # Second parameter in lognorm(μ, σ)
+                    grid_min = 1e-6,               # Smallest grid point
+                    grid_max = 4.0,                # Largest grid point
+                    grid_size = 200,               # Number of grid points
+                    u = c->(c^(1-γ)-1)/(1-γ),     # utility function
+                    u_prime = c-> c^(-γ),          # u'
+                    f = k-> k^α,                   # production function
+                    f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(linspace(grid_min, grid_max, grid_size))
+        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)
@@ -624,51 +554,40 @@ Here's a struct containing data from the log-linear growth model we used in the 
     end
 
 
-
-
 Next we generate an instance
-
-
 
 .. code-block:: julia
 
-    m = Model(γ=1.0)   # model instance with specific parameter
-
-
-
-
-
+    m = Model(γ = 1.0)   # model instance with specific parameter
 
 We also need some shock draws for Monte Carlo integration
 
 .. code-block:: julia
 
+  using Random
+  Random.seed!(42) # For reproducible results.
+
     shock_size = 250                                       # Number of shock draws in Monte Carlo integral
-    shocks = collect(exp.(m.μ + m.s * randn(shock_size)))  # generate shocks
+    shocks = collect(exp.(m.μ .+ m.s * randn(shock_size)))  # generate shocks
 
 
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the
 theory
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Shock Tests" begin
+    @test shocks[4] ≈ 0.9704956010607036
+    @test length(shocks) == 250 == shock_size
+  end
 
 .. code-block:: julia
 
-    using PyPlot
+    using PyPlot # change to Plots
 
-    """
-    This function plots a specified policy function and map of the policy function
-    If they are same, the policy function is true
-
-    m: instance of Model type, storing all parameters
-    shocks: shocks for Monte Carlo integration
-    c_star: true policy function
-    """
-
-    function verify_true_policy(m::Model,
-                                shocks::AbstractVector,
-                                c_star::AbstractVector)
+    function verify_true_policy(m, shocks, c_star)
         # Compute (Kc^*)
         c_star_new = coleman_operator(c_star,
                                       m.grid,
@@ -690,7 +609,14 @@ theory
     c_star = (1 - m.α * m.β) * m.grid                      # True policy (c^*)
     verify_true_policy(m, shocks, c_star)
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Verify True Policy Tests" begin
+    @test c_star[4] ≈ 0.023065703366834174
+    @test length(c_star) == 200
+    # The plot should look like a 45-degree line.
+  end
 
 We can't really distinguish the two plots, so we are looking good, at least
 for this test
@@ -702,25 +628,10 @@ converge towards :math:`c^*`
 The initial condition we'll use is the one that eats the whole pie: :math:`c(y) = y`
 
 
-
 .. code-block:: julia
 
-    """
-    This function plots the resulting policy function of each iteration and
-    compares it with the true one
-
-    m: instance of Model type, storing all parameters
-    shocks:: shocks for Monte Carlo integration
-    c_star: true policy function
-    n_iter: number of iterations
-    g_init: initial policy function
-    """
-
-    function check_convergence(m::Model,
-                               shocks::AbstractVector,
-                               c_star::AbstractVector,
-                               g_init::AbstractVector;
-                               n_iter::Integer=15)
+    function check_convergence(m, shocks, c_star, g_init;
+                               n_iter = 15)
 
         fig, ax = subplots(figsize=(9, 6))
         jet = ColorMap("jet")
@@ -743,13 +654,11 @@ The initial condition we'll use is the one that eats the whole pie: :math:`c(y) 
     check_convergence(m, shocks, c_star, m.grid, n_iter=15)
 
 
-
 We see that the policy has converged nicely, in only a few steps
 
 Now let's compare the accuracy of iteration using the Coleman and Bellman operators
 
-
-We'll generate 
+We'll generate
 
 #. :math:`K^n c` where :math:`c(y) = y`
 
@@ -764,22 +673,10 @@ But in fact we expect the first method to be more accurate for reasons
 discussed above
 
 
-
 .. code-block:: julia
 
-    """
-
-    This function updates the argument of the function by its output
-
-    func: function whose argument is updated by its return
-    arg_init: initial argument of the function
-    sim_length: number of iteration
-
-    """
-
-    function iterate_updating(func::Function,
-                              arg_init::AbstractVector;
-                              sim_length::Integer=20)
+    function iterate_updating(func, arg_init;
+                              sim_length = 20)
         arg = arg_init;
         for i=1:sim_length
             new_arg = func(arg)
@@ -788,22 +685,8 @@ discussed above
         return arg
     end
 
-
-    """
-    This function compares the gap between true policy and policy function
-    derived from policy function iteration and value function iteration
-
-    m: Model instance
-    shocks: shocks for Monte Carlo integration
-    g_init: initial policy function
-    w_init: initial value function
-    sim_length: number of iterations
-    """
-    function compare_error(m::Model,
-                           shocks::AbstractVector,
-                           g_init::AbstractVector,
-                           w_init::AbstractVector;
-                           sim_length::Integer=20)
+    function compare_error(m, shocks, g_init, w_init;
+                           sim_length = 20)
 
         g, w = g_init, w_init
         ## two functions for simplification
@@ -833,21 +716,17 @@ discussed above
     compare_error(m, shocks, m.grid, m.u.(m.grid), sim_length=20)
 
 
-
-
 As you can see, time iteration is much more accurate for a given
 number of iterations
-
 
 
 Exercises
 ===========
 
-
 Exercise 1
 -----------
 
-Show that :eq:`cpi_ed_tk` is valid.  In particular, 
+Show that :eq:`cpi_ed_tk` is valid.  In particular,
 
 * Let :math:`v` be strictly concave and continuously differentiable on :math:`(0, \infty)`
 
@@ -857,7 +736,7 @@ Show that :eq:`cpi_ed_tk` is valid.  In particular,
 Exercise 2
 -----------
 
-Show that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P` 
+Show that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P`
 
 
 Exercise 3
@@ -884,15 +763,11 @@ Compare the resulting policies and check that they are close
 Exercise 4
 -----------
 
-
 Do the same exercise, but now, rather than plotting results, time how long 20
 iterations takes in each case
 
-
-
 Solutions
 ===========
-
 
 Solution to Exercise 1
 -------------------------
@@ -905,7 +780,7 @@ where :math:`c(y)` solves
 .. math::
     :label: cpi_foo
 
-    u'(c(y)) 
+    u'(c(y))
     = \beta \int v' (f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)
 
 
@@ -917,10 +792,10 @@ On the other hand, :math:`KMv(y)` is the :math:`c(y)` that solves
 .. math::
 
     \begin{aligned}
-        u'(c(y)) 
+        u'(c(y))
         & = \beta \int (u' \circ (Mv)) (f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)
         \\
-        & = \beta \int (u' \circ ((u')^{-1} \circ v')) 
+        & = \beta \int (u' \circ ((u')^{-1} \circ v'))
             (f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)
         \\
         & = \beta \int v'(f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)
@@ -933,14 +808,14 @@ We see that :math:`c(y)` is the same in each case
 Solution to Exercise 2
 -------------------------
 
-We need to show that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P` 
+We need to show that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P`
 
 To see this, first observe that, in view of our assumptions above, :math:`u'` is a strictly decreasing continuous bijection from :math:`(0,\infty)` to itself
 
 It `follows <https://math.stackexchange.com/questions/672174/continuity-of-an-inverse-function>`__ that :math:`h` has the same properties
 
 Moreover, for fixed :math:`v \in \mathscr V`, the derivative :math:`v'` is
-a continuous, strictly decreasing function 
+a continuous, strictly decreasing function
 
 Hence, for fixed :math:`v \in \mathscr V`, the map :math:`M v = h \circ v'`
 is strictly increasing and continuous, taking values in :math:`(0, \infty)`
@@ -950,7 +825,7 @@ Moreover, interiority holds because :math:`v'` strictly dominates :math:`u'`, im
 .. math:: (M v)(y) = h(v'(y)) < h(u'(y)) = y
 
 In particular, :math:`\sigma(y) := (Mv)(y)` is an element of :math:`\mathscr
-P` 
+P`
 
 To see that each :math:`\sigma \in \mathscr P` has a preimage :math:`v \in \mathscr V` with :math:`Mv = \sigma`, fix any :math:`\sigma \in \mathscr P`
 
@@ -961,7 +836,7 @@ With a small amount of effort you will be able to show that :math:`v \in \mathsc
 It's also true that :math:`M` is one-to-one on :math:`\mathscr V`
 
 To see this, suppose that  :math:`v` and :math:`w` are elements of :math:`\mathscr V`
-satisfying :math:`Mv = Mw` 
+satisfying :math:`Mv = Mw`
 
 Then :math:`v(0) = w(0) = 0` and :math:`v' = w'` on :math:`(0, \infty)`
 
@@ -971,10 +846,7 @@ The fundamental theorem of calculus then implies that :math:`v = w` on :math:`\m
 Solution to Exercise 3
 -------------------------
 
-
-
 Here's the code, which will execute if you've run all the code above
-
 
 
 .. code-block:: julia
@@ -985,21 +857,8 @@ Here's the code, which will execute if you've run all the code above
 
 .. code-block:: julia
 
-    """
-    This function conducts the analysis of exercise 2
-
-    m: instance of Model type, storing all parameters
-    shocks: shocks for Monte Carlo integration
-    g_init: initial policy
-    w_init: initial value
-    sim_length: number of iterations
-    """
-
-    function exercise2(m::Model,
-                       shocks::AbstractVector,
-                       g_init::AbstractVector=m.grid,
-                       w_init::AbstractVector=m.u.(m.grid);
-                       sim_length::Integer=20)
+    function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
+                       sim_length = 20)
 
         # initial policy and value
         g, w = g_init, w_init
@@ -1025,10 +884,7 @@ Here's the code, which will execute if you've run all the code above
     exercise2(m_ex, shocks, m.grid, m.u.(m.grid), sim_length=20)
 
 
-
 The policies are indeed close
-
-
 
 
 Solution to Exercise 4
@@ -1040,18 +896,9 @@ Here's the code
 It assumes that you've just run the code from the previous exercise
 
 
-
-
 .. code-block:: julia
 
-    """
-    This function implements the exercise 3
-
-    m: Model instance
-    shocks: shocks for Monte Carlo integration
-    """
-
-    function exercise3(m::Model, shocks::AbstractVector)
+    function exercise3(m, shocks)
         bellman_single_arg(w) = bellman_operator(w, m.grid, m.β, m.u,
                                                  m.f, shocks)
         coleman_single_arg(g) = coleman_operator(g, m.grid, m.β, m.u_prime,
@@ -1068,7 +915,3 @@ It assumes that you've just run the code from the previous exercise
 .. code-block:: julia
 
     exercise3(m_ex, shocks)
-
-
-
-
