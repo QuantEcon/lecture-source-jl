@@ -171,6 +171,10 @@ Implementation
 
 The following code solves the DP problem described above
 
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
 
 .. code-block:: julia 
 
