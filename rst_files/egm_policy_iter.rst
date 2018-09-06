@@ -148,6 +148,11 @@ The Operator
 Here's an implementation of :math:`K` using EGM as described above
 
 .. code-block:: julia 
+  :class: test 
+
+  using Test 
+
+.. code-block:: julia 
 
     #=
 
@@ -341,7 +346,7 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
                     f_prime::Function = k -> α*k^(α-1) # f'
                     )
 
-        grid = collect(linspace(grid_min, grid_max, grid_size))
+        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)
@@ -366,19 +371,23 @@ Next we generate an instance
 
     mlog = Model(γ=1.0) # Log Linear model
 
-
-
-
-
-
 We also need some shock draws for Monte Carlo integration
 
 .. code-block:: julia
 
+    using Random
+    Random.seed!(42) # For reproducible behavior. 
+
     shock_size = 250     # Number of shock draws in Monte Carlo integral
-    shocks = exp.(mlog.μ + mlog.s * randn(shock_size))
+    shocks = exp.(mlog.μ .+ mlog.s * randn(shock_size))
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Shocks Test" begin
+    @test shocks[3] ≈ 1.0027192242025453
+    @test shocks[19] ≈ 1.041920180552774
+  end 
 
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theory
@@ -398,6 +407,12 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
     v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset "Fixed-Point Tests" begin 
+    @test [c1, c2, c3, c4] ≈ [-19.22053251431091, -0.8952843908914377, 19.999999999999982, 2.61437908496732] 
+  end 
 
 .. code-block:: julia
 
@@ -418,7 +433,10 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
     verify_true_policy(mlog,shocks,c_star)
 
+.. code-block:: julia 
+  :class: test 
 
+  # This should look like a 45-degree line. 
 
 Notice that we're passing `u_prime` to `coleman_egm` twice
 
@@ -439,7 +457,13 @@ In fact it's easy to see that the difference is essentially zero:
     maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid)))
 
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Discrepancy Test" begin 
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 2.369331983805674e-7 # Check that the error is the same as it was before. 
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) < 1e-5 # Test that the error is objectively very small. 
+  end 
 
 
 
@@ -504,7 +528,12 @@ Here's the model and some convenient functions
     mcrra = Model(α = 0.65, β = 0.95, γ = 1.5)
     u_prime_inv(c) = c^(-1/mcrra.γ)
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "U Prime Tests" begin
+    @test u_prime_inv(3) ≈ 0.4807498567691362 # Test that the behavior of this function is invariant. 
+  end 
 
 
 Here's the result
