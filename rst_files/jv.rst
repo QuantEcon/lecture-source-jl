@@ -663,6 +663,7 @@ Here's code to produce the 45 degree diagram
   end 
 
 .. code-block:: julia
+
     using Random  
     Random.seed!(42)
     K = 50
