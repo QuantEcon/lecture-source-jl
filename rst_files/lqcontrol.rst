@@ -690,6 +690,11 @@ The following figure was computed using :math:`r = 0.05, \beta = 1 / (1
 The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
 .. code-block:: julia 
+  :class: test 
+
+  using Test 
+
+.. code-block:: julia 
 
     using QuantEcon
     using Plots
@@ -710,7 +715,7 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     R = zeros(2, 2)
     Rf = zeros(2, 2); Rf[1, 1] = q
     A = [1.0+r -c_bar+μ;
-        0.0   1.0     ]
+        0.0  1.0]
     B = [-1.0; 0.0]
     C = [σ; 0.0]
 
@@ -721,15 +726,23 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
     # == Convert back to assets, consumption and income == #
     assets = vec(xp[1, :])               # a_t
-    c = vec(up + c_bar)                  # c_t
-    income = vec(σ * wp[1, 2:end] + μ)   # y_t
+    c = vec(up .+ c_bar)                  # c_t
+    income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
 
     # == Plot results == #
-    p=plot(Vector[assets, c, zeros(T + 1), income, cumsum(income - μ)],
+    p=plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
     lab=["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
     color=[:blue :green :black :orange :red],
     xaxis=("Time"), layout=(2, 1),
     bottom_margin = 20mm, size=(600, 600))
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset "First Plots Tests" begin 
+    @test income[3] ≈ 0.9812822443525681 # Test determinism and intermediate calculations. 
+    @test up[4] ≈ -1.010200105783321 # Test downstream invariance. 
+  end 
 
 The top panel shows the time path of consumption :math:`c_t` and income :math:`y_t` in the simulation
 
@@ -764,6 +777,8 @@ relatively more weight on later consumption values
 .. code-block:: julia
   :class: collapse
 
+  Random.seed!(42) # For reproducible results. 
+
   # == Compute solutions and simulate == #
   lq = LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)
   x0 = [0.0; 1.0]
@@ -771,17 +786,16 @@ relatively more weight on later consumption values
 
   # == Convert back to assets, consumption and income == #
   assets = vec(xp[1, :])               # a_t
-  c = vec(up + c_bar)                  # c_t
-  income = vec(σ * wp[1, 2:end] + μ)   # y_t
+  c = vec(up .+ c_bar)                  # c_t
+  income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
 
   # == Plot results == #
-  p=plot(Vector[assets, c, zeros(T + 1), income, cumsum(income - μ)],
+  p=plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
          lab=["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
          color=[:blue :green :black :orange :red],
          xaxis=("Time"), layout=(2, 1),
          bottom_margin=20mm, size=(600, 600))
     
-
 
 We now have a slowly rising consumption stream and a hump-shaped build
 up of assets in the middle periods to fund rising consumption
@@ -1389,7 +1403,6 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
 -  :math:`p(T) = 0`.
 
 .. code-block:: julia
-
     # == Model parameters == #
     r = 0.05
     β = 1/(1 + r)
@@ -1419,7 +1432,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     
     # == Convert results back to assets, consumption and income == #
     ap = vec(xp[1, 1:end])                                  # Assets
-    c = vec(up + c_bar)                                     # Consumption
+    c = vec(up .+ c_bar)                                     # Consumption
     time = 1:T
     income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2   # Income
     
@@ -1503,7 +1516,7 @@ the lecture.
     assets = vec(xp[1, :])               # Assets
     
     up = [up_w up_r]
-    c = vec(up + c_bar)                  # Consumption
+    c = vec(up .+ c_bar)                  # Consumption
     
     time = 1:K
     income_w = σ * vec(wp_w[1, 2:K+1]) + m1 .* time + m2 .* time.^2   # Income
