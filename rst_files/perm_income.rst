@@ -509,6 +509,10 @@ Defining assets as :math:`-b_t`, we see that assets are just the cumulative sum 
 The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 1`, and :math:`\sigma = 0.15`
 
 
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
 
 .. code-block:: julia
 
@@ -519,8 +523,9 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
             
   =#
 
-  using Plots
+  using Plots, Random 
   pyplot()
+  Random.seed!(42) 
 
   const r = 0.05
   const β = 1.0 / (1.0 + r)
@@ -531,21 +536,29 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
   function time_path2()
       w = randn(T+1)
       w[1] =  0.0
-      b = Array{Float64}(T+1)
+      b = zeros(Float64, T+1)
       for t=2:T+1
           b[t] = sum(w[1:t])
       end
       b .*= -σ
-      c = μ + (1.0 - β) .* (σ .* w .- b)
+      c = μ .+ (1.0 - β) .* (σ .* w .- b)
       return w, b, c
   end
   
   w, b, c = time_path2()
-  p = plot(0:T, μ + σ .* w, color=:green, label="non-financial income")
+  p = plot(0:T, μ .+ σ .* w, color=:green, label="non-financial income")
   plot!(c, color=:black, label="consumption")
   plot!(b, color=:blue, label="debt")
   plot!(xlabel="Time", linewidth=2, alpha=0.7, xlims=(0, T))
   
+.. code-block:: julia 
+  :class: test 
+
+  @testset "First Plots Test" begin 
+    @test w[3] ≈ 0.027155338009193845
+    @test c[4] ≈ 0.9927414557155834
+    @test b[5] ≈ -0.1591723482896868
+  end 
 
 
 Observe that consumption is considerably smoother than income
@@ -555,6 +568,8 @@ The figure below shows the consumption paths of 250 consumers with independent i
 
 
 .. code-block:: julia
+
+  Random.seed!(42)
 
   time_paths = []
   n = 250
@@ -566,8 +581,13 @@ The figure below shows the consumption paths of 250 consumers with independent i
   p = plot(time_paths, linewidth=0.8, alpha=0.7, legend=:none)
   plot!(xlabel="Time", ylabel="Consumption", xlims=(0, T))
   
+.. code-block:: julia 
+  :class: test 
 
-
+  @testset "Second Plot Tests" begin 
+    @test time_paths[12][14] ≈ 0.9970822013087883
+    @test time_paths[4][20] ≈ 1.0405721547541182
+  end 
 
 Alternative Representations
 ================================
@@ -930,6 +950,13 @@ permanent income shocks using impulse-response functions
     plot!(title=reshape(t,1,length(t)), xlabel="Time", ylims=(-L, L), legend=[:topright :bottomright])
     vline!([S S], color=:black, layout=(2, 1), label="")
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset "Third Plot Tests" begin
+    @test c1[14] ≈ 0.0071428571428571504
+    @test c2[13] == 0.15
+  end 
 
 Example 2
 ------------
