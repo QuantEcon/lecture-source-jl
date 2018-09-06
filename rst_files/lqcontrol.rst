@@ -699,6 +699,9 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     using QuantEcon
     using Plots
     using Plots.PlotMeasures
+    using Random 
+
+    Random.seed!(42)
     pyplot()
 
     # == Model parameters == #
