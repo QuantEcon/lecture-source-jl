@@ -439,7 +439,7 @@ Now create the appropriate instance of an LQ model
 
 .. code-block:: julia
 
-    LQPI = LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet=β_LQ)
+    LQPI = QuantEcon.LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet=β_LQ);
 
 
 
