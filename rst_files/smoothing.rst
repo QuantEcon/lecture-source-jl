@@ -504,7 +504,14 @@ Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget co
     isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
 
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Budget Constraint Tests" begin
+    @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0) # Assert that the object above is always true. 
+    @test c_bar ≈ 1.7241558441558444 # Default example invariance. 
+    @test debt_complete[2] ≈ 2.188311688311688 # One of the other objects. 
+  end 
 
 
 Below, we'll take the outcomes produced by this code -- in particular the implied
@@ -705,6 +712,14 @@ Let's try this, using the same parameters in both complete and incomplete market
     ax[2][:axhline](0, color="k", ls="--")
     ax[2][:set_xlabel]("Periods")
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset "First Plot Tests" begin
+    @test c_path[4] ≈ 1.7436363636363656
+    @test debt_path[2] ≈ 2.8376623376623398
+    @test debt_complete ≈  [3.0, 2.188311688311688]
+  end 
 
 In the graph on the left, for the same sample path of nonfinancial
 income :math:`y_t`, notice that
@@ -749,7 +764,10 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
     ax[2][:set_xlabel]("Periods")
     
 
+.. code-block:: julia 
+  :class: test 
 
+  # This is the same plot as the above, simply relabeled. 
 
 
 
@@ -853,10 +871,16 @@ Here's our code to compute a quantitative example with zero debt in peace time:
     println("Ex ante returns to purchase of Arrow securities = $exant")
 
 
+.. code-block:: julia 
+  :class: test 
 
-
-
-
+  @testset "Peace and War Debt Tests" begin 
+    @test c_bar ≈ 1.3116883116883118
+    @test G2 ≈ 2.9350649350649354
+    @test G1 ≈ 1.3116883116883118 
+    @test AS2 ≈ 0.9350649350649349
+    @test AS1 ≈ 0.3116883116883117
+  end 
 
 Explanation
 -----------
@@ -1110,6 +1134,15 @@ allows the consumer completely to smooth consumption across time and across stat
     ax[2][:axhline](0, color="k", ls="--")
     ax[2][:set_xlabel]("Periods")
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset "Final Plot Tests" begin 
+    @test y_hist_com[3] ≈ 102.50832541673434
+    @test c_hist_com[3] ≈ 101.50000000000003
+    @test b_hist_com[3] ≈ 0.4022442533400863
+    @test x_hist_com[3] ≈ 100.00000000000003
+  end 
 
 Interpretation of Graph
 -----------------------
