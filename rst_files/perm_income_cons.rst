@@ -353,11 +353,14 @@ The exogenous noinfinancial income process
 
 First we create the objects for the optimal linear regulator
 
+.. code-block:: julia 
+  :class: test 
 
+  using Test 
 
 .. code-block:: julia
 
-    using QuantEcon
+    using QuantEcon, LinearAlgebra
     using PyPlot
 
     # Set parameters
@@ -486,8 +489,8 @@ Now we'll apply the formulas in this system
 .. code-block:: julia
 
     # Use the above formulas to create the optimal policies for b_{t+1} and c_t
-    b_pol = G * (inv(eye(3, 3) - β * A)) * (A - eye(3, 3))
-    c_pol = (1 - β) * (G * inv(eye(3, 3) - β * A))
+    b_pol = G * (inv(I - β * A)) * (A - I)
+    c_pol = (1 - β) * (G * inv(I - β * A))
 
     # Create the A matrix for a LinearStateSpace instance
     A_LSS1 = vcat(A, b_pol)
@@ -616,9 +619,9 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         moment_generator = moment_sequence(lss)
 
         # Simulate various paths
-        bsim = Array{Float64}(npaths, T)
-        csim = Array{Float64}(npaths, T)
-        ysim = Array{Float64}(npaths, T)
+        bsim = zeros(Float64, npaths, T)
+        csim = zeros(Float64, npaths, T)
+        ysim = zeros(Float64, npaths, T)
 
         for i = 1:npaths
             sims = simulate(lss,T)
@@ -628,10 +631,10 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         end
 
         # Get the moments
-        cons_mean = Array{Float64}(T)
-        cons_var = Array{Float64}(T)
-        debt_mean = Array{Float64}(T)
-        debt_var = Array{Float64}(T)
+        cons_mean = zeros(Float64, T)
+        cons_var = zeros(Float64, T)
+        debt_mean = zeros(Float64, T)
+        debt_var = zeros(Float64, T)
         state = start(moment_generator)
         for t = 1:T
             (μ_x, μ_y, Σ_x, Σ_y), state = next(moment_generator, state)
