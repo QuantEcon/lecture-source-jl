@@ -14,14 +14,14 @@
 Overview
 ============
 
-We solved the stochastic optimal growth model using 
+We solved the stochastic optimal growth model using
 
-#. :doc:`value function iteration <optgrowth>` 
-#. :doc:`Euler equation based time iteration <coleman_policy_iter>` 
+#. :doc:`value function iteration <optgrowth>`
+#. :doc:`Euler equation based time iteration <coleman_policy_iter>`
 
 We found time iteration to be significantly more accurate at each step
 
-In this lecture we'll look at an ingenious twist on the time iteration technique called the **endogenous grid method** (EGM) 
+In this lecture we'll look at an ingenious twist on the time iteration technique called the **endogenous grid method** (EGM)
 
 EGM is a numerical method for implementing policy iteration invented by `Chris Carroll <http://www.econ2.jhu.edu/people/ccarroll/>`__
 
@@ -32,42 +32,37 @@ It is a good example of how a clever algorithm can save a massive amount of comp
 The original reference is :cite:`Carroll2006`
 
 
-
-
 Key Idea
 ==========================
 
 Let's start by reminding ourselves of the theory and then see how the numerics fit in
 
 
-
 Theory
 ------
 
-Take the model set out in :doc:`the time iteration lecture <coleman_policy_iter>`, following the same terminology and notation 
+Take the model set out in :doc:`the time iteration lecture <coleman_policy_iter>`, following the same terminology and notation
 
 The Euler equation is
 
 .. math::
     :label: egm_euler
 
-    (u'\circ c^*)(y) 
+    (u'\circ c^*)(y)
     = \beta \int (u'\circ c^*)(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)
 
 
 As we saw, the Coleman operator is a nonlinear operator :math:`K` engineered so that :math:`c^*` is a fixed point of :math:`K`
 
-It takes as its argument a continuous strictly increasing consumption policy :math:`g \in \Sigma` 
+It takes as its argument a continuous strictly increasing consumption policy :math:`g \in \Sigma`
 
 It returns a new function :math:`Kg`,  where :math:`(Kg)(y)` is the :math:`c \in (0, \infty)` that solves
 
 .. math::
     :label: egm_coledef
 
-    u'(c) 
+    u'(c)
     = \beta \int (u' \circ g) (f(y - c) z ) f'(y - c) z \phi(dz)
-
-
 
 
 Exogenous Grid
@@ -86,13 +81,11 @@ The function itself is reconstructed from this representation when necessary, us
 * calculated the consumption value :math:`c_i` corresponding to each
   :math:`y_i` using :eq:`egm_coledef` and a root finding routine
 
-Each :math:`c_i` is then interpreted as the value of the function :math:`K g` at :math:`y_i` 
+Each :math:`c_i` is then interpreted as the value of the function :math:`K g` at :math:`y_i`
 
-Thus, with the points :math:`\{y_i, c_i\}` in hand, we can reconstruct :math:`Kg` via approximation 
+Thus, with the points :math:`\{y_i, c_i\}` in hand, we can reconstruct :math:`Kg` via approximation
 
 Iteration then continues...
-
-
 
 
 Endogenous Grid
@@ -118,7 +111,7 @@ Then we obtain  :math:`c_i` via
 .. math::
     :label: egm_getc
 
-    c_i = 
+    c_i =
     (u')^{-1}
     \left\{
         \beta \int (u' \circ g) (f(k_i) z ) \, f'(k_i) \, z \, \phi(dz)
@@ -147,12 +140,12 @@ The Operator
 
 Here's an implementation of :math:`K` using EGM as described above
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
@@ -160,39 +153,7 @@ Here's an implementation of :math:`K` using EGM as described above
 
     =#
 
-    """
-    The approximate Coleman operator, updated using the endogenous grid
-    method.
-
-    Parameters
-    ----------
-    g : Function
-        The current guess of the policy function
-    k_grid : AbstractVector
-        The set of *exogenous* grid points, for capital k = y - c
-    β : AbstractFloat
-        The discount factor
-    u_prime : Function
-        The derivative u'(c) of the utility function
-    u_prime_inv : Function
-        The inverse of u' (which exists by assumption)
-    f : Function
-        The production function f(k)
-    f_prime : Function
-        The derivative f'(k)
-    shocks : AbstractVector
-        An array of draws from the shock, for Monte Carlo integration (to
-        compute expectations).
-    """
-
-    function coleman_egm(g::Function,
-                        k_grid::AbstractVector,
-                        β::AbstractFloat,
-                        u_prime::Function,
-                        u_prime_inv::Function,
-                        f::Function,
-                        f_prime::Function,
-                        shocks::AbstractVector)
+    function coleman_egm(g, k_grid, β, u_prime, u_prime_inv, f, f_prime, shocks)
 
         # Allocate memory for value of consumption on endogenous grid points
         c = similar(k_grid)
@@ -213,12 +174,12 @@ Here's an implementation of :math:`K` using EGM as described above
     end
 
 
-Note the lack of any root finding algorithm 
+Note the lack of any root finding algorithm
 
 We'll also run our original implementation, which uses an exogenous grid and requires root finding, so we can perform some comparisons
 
 
-.. code-block:: julia 
+.. code-block:: julia
     :class: collapse
 
     #=
@@ -229,24 +190,8 @@ We'll also run our original implementation, which uses an exogenous grid and req
 
     using QuantEcon
 
-    """
-    g: input policy function
-    grid: grid points
-    β: discount factor
-    u_prime: derivative of utility function
-    f: production function
-    f_prime: derivative of production function
-    shocks::shock draws, used for Monte Carlo integration to compute expectation
-    Kg: output value is stored
-    """
-    function coleman_operator!(g::AbstractVector,
-                            grid::AbstractVector,
-                            β::AbstractFloat,
-                            u_prime::Function,
-                            f::Function,
-                            f_prime::Function,
-                            shocks::AbstractVector,
-                            Kg::AbstractVector=similar(g))
+    function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
+                               Kg = similar(g))
 
         # This function requires the container of the output value as argument Kg
 
@@ -265,29 +210,19 @@ We'll also run our original implementation, which uses an exogenous grid and req
     end
 
     # The following function does NOT require the container of the output value as argument
-    function coleman_operator(g::AbstractVector,
-                            grid::AbstractVector,
-                            β::AbstractFloat,
-                            u_prime::Function,
-                            f::Function,
-                            f_prime::Function,
-                            shocks::AbstractVector)
+    function coleman_operator(g, grid, β, u_prime, f, f_prime, shocks)
 
-        return coleman_operator!(g, grid, β, u_prime,
-                                f, f_prime, shocks, similar(g))
+        return coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
+                                 similar(g))
     end
 
 Let's test out the code above on some example parameterizations, after the following imports
 
 
-
 .. code-block:: julia
 
-    using PyPlot
+    using PyPlot # Change to Plots
     using LaTeXStrings
-
-
-
 
 
 Testing on the Log / Cobb--Douglas case
@@ -297,11 +232,9 @@ Testing on the Log / Cobb--Douglas case
 As we :doc:`did for value function iteration <optgrowth>` and :doc:`time iteration <coleman_policy_iter>`, let's start by testing our method with the log-linear benchmark
 
 
-
-
 The first step is to bring in the model that we used in the :doc:`Coleman policy function iteration <coleman_policy_iter>`
 
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
@@ -325,25 +258,18 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
         grid::Vector{TR}   # grid
     end
 
-    """
-    construct Model instance using the information of parameters and functional form
-
-    arguments: see above
-
-    return: Model type instance
-    """
-    function Model(; α::Real=0.65,                      # Productivity parameter
-                    β::AbstractFloat=0.95,             # Discount factor
-                    γ::Real=1.0,                       # risk aversion
-                    μ::Real=0.0,                       # First parameter in lognorm(μ, σ)
-                    s::Real=0.1,                       # Second parameter in lognorm(μ, σ)
-                    grid_min::Real=1e-6,               # Smallest grid point
-                    grid_max::Real=4.0,                # Largest grid point
-                    grid_size::Integer=200,            # Number of grid points
-                    u::Function= c->(c^(1-γ)-1)/(1-γ), # utility function
-                    u_prime::Function = c-> c^(-γ),    # u'
-                    f::Function = k-> k^α,             # production function
-                    f_prime::Function = k -> α*k^(α-1) # f'
+    function Model(;α = 0.65,                      # Productivity parameter
+                    β = 0.95,                      # Discount factor
+                    γ = 1.0,                       # risk aversion
+                    μ = 0.0,                       # First parameter in lognorm(μ, σ)
+                    s = 0.1,                       # Second parameter in lognorm(μ, σ)
+                    grid_min = 1e-6,               # Smallest grid point
+                    grid_max = 4.0,                # Largest grid point
+                    grid_size = 200,               # Number of grid points
+                    u =  c->(c^(1-γ)-1)/(1-γ),     # utility function
+                    u_prime = c-> c^(-γ),          # u'
+                    f = k-> k^α,                   # production function
+                    f_prime = k -> α*k^(α-1)       # f'
                     )
 
         grid = collect(range(grid_min, stop = grid_max, length = grid_size))
@@ -360,12 +286,7 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
     end
 
 
-
-
 Next we generate an instance
-
-
-
 
 .. code-block:: julia
 
@@ -376,23 +297,20 @@ We also need some shock draws for Monte Carlo integration
 .. code-block:: julia
 
     using Random
-    Random.seed!(42) # For reproducible behavior. 
+    Random.seed!(42) # For reproducible behavior.
 
     shock_size = 250     # Number of shock draws in Monte Carlo integral
     shocks = exp.(mlog.μ .+ mlog.s * randn(shock_size))
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @testset "Shocks Test" begin
     @test shocks[3] ≈ 1.0027192242025453
     @test shocks[19] ≈ 1.041920180552774
-  end 
-
+  end
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theory
-
-
 
 .. code-block:: julia
 
@@ -407,19 +325,17 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
     v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Fixed-Point Tests" begin 
-    @test [c1, c2, c3, c4] ≈ [-19.22053251431091, -0.8952843908914377, 19.999999999999982, 2.61437908496732] 
-  end 
+  @testset "Fixed-Point Tests" begin
+    @test [c1, c2, c3, c4] ≈ [-19.22053251431091, -0.8952843908914377, 19.999999999999982, 2.61437908496732]
+  end
 
 .. code-block:: julia
 
-    function verify_true_policy(m::Model,
-                                shocks::AbstractVector,
-                                c_star::Function)
-	k_grid = m.grid
+    function verify_true_policy(m, shocks, c_star)
+	     k_grid = m.grid
         c_star_new = coleman_egm(c_star, k_grid, m.β, m.u_prime,
                                  m.u_prime, m.f, m.f_prime, shocks)
         fig, ax = subplots(figsize=(9, 6))
@@ -433,10 +349,10 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
     verify_true_policy(mlog,shocks,c_star)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  # This should look like a 45-degree line. 
+  # This should look like a 45-degree line.
 
 Notice that we're passing `u_prime` to `coleman_egm` twice
 
@@ -449,7 +365,6 @@ We can't really distinguish the two plots
 In fact it's easy to see that the difference is essentially zero:
 
 
-
 .. code-block:: julia
 
     c_star_new = coleman_egm(c_star, mlog.grid, mlog.β, mlog.u_prime,
@@ -457,13 +372,13 @@ In fact it's easy to see that the difference is essentially zero:
     maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid)))
 
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Discrepancy Test" begin 
-    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 2.369331983805674e-7 # Check that the error is the same as it was before. 
-    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) < 1e-5 # Test that the error is objectively very small. 
-  end 
+  @testset "Discrepancy Test" begin
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 2.369331983805674e-7 # Check that the error is the same as it was before.
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) < 1e-5 # Test that the error is objectively very small.
+  end
 
 
 
@@ -474,17 +389,12 @@ converge towards :math:`c^*`
 Let's start from the consumption policy that eats the whole pie: :math:`c(y) = y`
 
 
-
 .. code-block:: julia
 
     g_init(x) = x
     n = 15
-    function check_convergence(m::Model,
-                               shocks::AbstractVector,
-                               c_star::Function,
-                               g_init::Function,
-                               n_iter::Integer)
-	k_grid = m.grid
+    function check_convergence(m, shocks, c_star, g_init, n_iter)
+        k_grid = m.grid
         g = g_init
         fig, ax = subplots(figsize = (9, 6))
         jet = ColorMap("jet")
@@ -507,7 +417,6 @@ Let's start from the consumption policy that eats the whole pie: :math:`c(y) = y
     check_convergence(mlog, shocks, c_star, g_init, n)
 
 
-
 We see that the policy has converged nicely, in only a few steps
 
 
@@ -522,34 +431,30 @@ We'll do so using the CRRA model adopted in the exercises of the :doc:`Euler equ
 Here's the model and some convenient functions
 
 
-
 .. code-block:: julia
 
     mcrra = Model(α = 0.65, β = 0.95, γ = 1.5)
     u_prime_inv(c) = c^(-1/mcrra.γ)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @testset "U Prime Tests" begin
-    @test u_prime_inv(3) ≈ 0.4807498567691362 # Test that the behavior of this function is invariant. 
-  end 
+    @test u_prime_inv(3) ≈ 0.4807498567691362 # Test that the behavior of this function is invariant.
+  end
 
 
 Here's the result
 
 
-
 .. code-block:: julia
 
-    function compare_clock_time(m::Model,
-                                u_prime_inv::Function;
-                                sim_length::Integer=20)
+    function compare_clock_time(m, u_prime_inv; sim_length = 20)
         k_grid = m.grid
         crra_coleman(g) = coleman_operator(g, k_grid, m.β, m.u_prime,
                                            m.f, m.f_prime, shocks)
 
-        crra_coleman_egm(g) = coleman_egm(g, k_grid, m.β, m.u_prime, 
+        crra_coleman_egm(g) = coleman_egm(g, k_grid, m.β, m.u_prime,
                                           u_prime_inv, m.f, m.f_prime, shocks)
 
         print("Timing standard Coleman policy function iteration")
@@ -577,7 +482,6 @@ Here's the result
 
 
 We see that the EGM version is more than 9 times faster
-
 
 
 At the same time, the absence of numerical root finding means that it is
