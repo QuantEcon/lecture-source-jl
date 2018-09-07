@@ -26,9 +26,9 @@ Moreover, while the linear-quadratic structure is restrictive, it is in fact far
 
 These themes appear repeatedly below
 
-Mathematically, LQ control problems are closely related to :doc:`the Kalman filter <kalman>` 
-  
-* Recursive formulations of linear-quadratic control problems and Kalman filtering problems both involve matrix **Riccati equations** 
+Mathematically, LQ control problems are closely related to :doc:`the Kalman filter <kalman>`
+
+* Recursive formulations of linear-quadratic control problems and Kalman filtering problems both involve matrix **Riccati equations**
 
 * Classical formulations of linear control and linear filtering problems make use of similar matrix decompositions (see for example :doc:`this lecture <lu_tricks>` and :doc:`this lecture <classical_filtering>`)
 
@@ -52,15 +52,12 @@ For additional reading on LQ control, see, for example,
 In order to focus on computation, we leave longer proofs to these sources (while trying to provide as much intuition as possible)
 
 
-
-
 Introduction
 ====================
 
 The "linear" part of LQ is a linear law of motion for the state, while the "quadratic" part refers to preferences
 
 Let's begin with the former, move on to the latter, and then put them together into an optimization problem
-
 
 
 The Law of Motion
@@ -241,7 +238,6 @@ Moreover, the model is now linear, and can be written in the form of
 In effect, we've bought ourselves linearity by adding another state
 
 
-
 Preferences
 --------------
 
@@ -289,7 +285,6 @@ as
 The aim is to put the state close to the target, while using  controls parsimoniously
 
 
-
 Example 2
 ^^^^^^^^^
 
@@ -302,9 +297,6 @@ and :math:`Q=1` yields preferences
 
 
 Under this specification, the household's current loss is the squared deviation of consumption from the ideal level :math:`\bar c`
-
-
-
 
 
 Optimality -- Finite Horizon
@@ -585,11 +577,11 @@ for :math:`t = 0, \ldots, T-1` attains the minimum of :eq:`lq_object` subject to
 Implementation
 ====================
 
-We will use code from `lqcontrol.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lqcontrol.jl>`__ 
-in `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ 
+We will use code from `lqcontrol.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lqcontrol.jl>`__
+in `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
 to solve finite and infinite horizon linear quadratic control problems
 
-In the module, the various updating, simulation and fixed point methods  act on a type  called ``LQ``, which includes 
+In the module, the various updating, simulation and fixed point methods  act on a type  called ``LQ``, which includes
 
 * Instance data:
 
@@ -689,20 +681,16 @@ The following figure was computed using :math:`r = 0.05, \beta = 1 / (1
 
 The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using QuantEcon
-    using Plots
-    using Plots.PlotMeasures
-    using Random 
+    using QuantEcon, Plots, Plots.PlotMeasures, Random
 
     Random.seed!(42)
-    pyplot()
 
     # == Model parameters == #
     r = 0.05
@@ -733,19 +721,19 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
 
     # == Plot results == #
-    p=plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
-    lab=["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
-    color=[:blue :green :black :orange :red],
-    xaxis=("Time"), layout=(2, 1),
-    bottom_margin = 20mm, size=(600, 600))
+    p = plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
+             lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
+             color = [:blue :green :black :orange :red],
+             xaxis = ("Time"), layout = (2, 1),
+             bottom_margin = 20mm, size = (600, 600))
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "First Plots Tests" begin 
-    @test income[3] ≈ 0.9812822443525681 # Test determinism and intermediate calculations. 
-    @test up[4] ≈ -1.010200105783321 # Test downstream invariance. 
-  end 
+  @testset "First Plots Tests" begin
+    @test income[3] ≈ 0.9812822443525681 # Test determinism and intermediate calculations.
+    @test up[4] ≈ -1.010200105783321 # Test downstream invariance.
+  end
 
 The top panel shows the time path of consumption :math:`c_t` and income :math:`y_t` in the simulation
 
@@ -776,11 +764,10 @@ This consumer is slightly more patient than the last one, and hence puts
 relatively more weight on later consumption values
 
 
-
 .. code-block:: julia
   :class: collapse
 
-  Random.seed!(42) # For reproducible results. 
+  Random.seed!(42) # For reproducible results.
 
   # == Compute solutions and simulate == #
   lq = LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)
@@ -793,12 +780,12 @@ relatively more weight on later consumption values
   income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
 
   # == Plot results == #
-  p=plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
-         lab=["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
-         color=[:blue :green :black :orange :red],
-         xaxis=("Time"), layout=(2, 1),
-         bottom_margin=20mm, size=(600, 600))
-    
+  p = plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
+           lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
+           color = [:blue :green :black :orange :red],
+           xaxis = ("Time"), layout = (2, 1),
+           bottom_margin = 20mm, size = (600, 600))
+
 
 We now have a slowly rising consumption stream and a hump-shaped build
 up of assets in the middle periods to fund rising consumption
@@ -873,9 +860,6 @@ The policies in :eq:`lq_oc` are modified to
 The sequence :math:`\{d_t\}` is unchanged from :eq:`lq_dd`
 
 We leave interested readers to confirm these results (the calculations are long but not overly difficult)
-
-
-
 
 
 .. _lq_ih:
@@ -957,12 +941,11 @@ Certainty Equivalence
 
 Linear quadratic control problems of the class discussed above have the property of *certainty equivalence*
 
-By this we mean that the optimal policy :math:`F` is not affected by the parameters in :math:`C`, which specify the shock process 
+By this we mean that the optimal policy :math:`F` is not affected by the parameters in :math:`C`, which specify the shock process
 
 This can be confirmed by inspecting :eq:`lq_oc_ih` or :eq:`lq_oc_cp`
 
 It follows that we can ignore uncertainty when solving for optimal behavior, and plug it back in when examining optimal state dynamics
-
 
 
 Further Applications
@@ -1192,8 +1175,6 @@ in life followed by later saving
 Assets peak at retirement and subsequently decline
 
 
-
-
 .. _lqc_mwac:
 
 Application 3: Monopoly with Adjustment Costs
@@ -1315,7 +1296,6 @@ can be found by writing down the dynamics of each element of the state
 :ref:`Exercise 3 <lqc_ex3>` asks you to complete this process, and reproduce the preceding figures
 
 
-
 Exercises
 ====================
 
@@ -1327,9 +1307,6 @@ Exercise 1
 Replicate the figure with polynomial income :ref:`shown above <solution_lqc_ex1_fig>`
 
 The parameters are :math:`r = 0.05, \beta = 1 / (1 + r), \bar c = 1.5,  \mu = 2, \sigma = 0.15, T = 50` and :math:`q = 10^4`
-
-
-
 
 
 .. _lqc_ex2:
@@ -1365,7 +1342,6 @@ With some careful footwork, the simulation can be generated by patching
 together the simulations from these two separate models
 
 
-
 .. _lqc_ex3:
 
 Exercise 3
@@ -1378,11 +1354,8 @@ For parameters, use :math:`a_0 = 5, a_1 = 0.5, \sigma = 0.15, \rho = 0.9,
 (see figures)
 
 
-
-
 Solutions
 ==========
-
 
 
 Exercise 1
@@ -1396,7 +1369,7 @@ use simpler ones
 The model is an LQ permanent income / life-cycle model with hump-shaped
 income
 
-.. math::     y_t = m_1 t + m_2 t^2 + \sigma w_{t+1} 
+.. math::     y_t = m_1 t + m_2 t^2 + \sigma w_{t+1}
 
 where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
 :math:`m_1` and :math:`m_2` are chosen so that
@@ -1416,35 +1389,35 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     q = 1e4
     m1 = T * (μ/(T/2)^2)
     m2 = -(μ/(T/2)^2)
-    
+
     # == Formulate as an LQ problem == #
     Q = 1.0
     R = zeros(4, 4)
     Rf = zeros(4, 4); Rf[1, 1] = q
-    A = [1 + r -c_bar m1 m2; 
+    A = [1 + r -c_bar m1 m2;
          0     1      0  0;
          0     1      1  0;
          0     1      2  1]
     B = [-1.0; 0.0; 0.0; 0.0]
     C = [σ; 0.0; 0.0; 0.0]
-    
+
     # == Compute solutions and simulate == #
     lq = LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
     x0 = [0.0; 1.0; 0.0; 0.0]
     xp, up, wp = compute_sequence(lq, x0)
-    
+
     # == Convert results back to assets, consumption and income == #
     ap = vec(xp[1, 1:end])                                  # Assets
     c = vec(up .+ c_bar)                                     # Consumption
     time = 1:T
     income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2   # Income
-    
+
     # == Plot results == #
-    p1 = plot(Vector[income, ap, c, zeros(T + 1)], 
-              lab=["non-financial income" "assets" "consumption" ""], 
-              color=[:orange :blue :green :black],
-              xaxis=("Time"), layout=(2,1),
-              bottom_margin=20mm, size=(600, 600))
+    p1 = plot(Vector[income, ap, c, zeros(T + 1)],
+              lab = ["non-financial income" "assets" "consumption" ""],
+              color = [:orange :blue :green :black],
+              xaxis = ("Time"), layout = (2,1),
+              bottom_margin = 20mm, size = (600, 600))
 
 
 
@@ -1470,68 +1443,68 @@ the lecture.
     s = 1
     m1 = 2 * μ/K
     m2 = - μ/K^2
-    
+
     # == Formulate LQ problem 1 (retirement) == #
     Q = 1.0
     R = zeros(4, 4)
     Rf = zeros(4, 4); Rf[1, 1] = q
-    A = [1+r  s-c_bar 0 0; 
+    A = [1+r  s-c_bar 0 0;
          0     1      0 0;
          0     1      1 0;
          0     1      2 1]
     B = [-1.0; 0.0; 0.0; 0.0]
     C = [0.0; 0.0; 0.0; 0.0]
-    
+
     # == Initialize LQ instance for retired agent == #
     lq_retired = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
     lq_retired_proxy = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)                # since update_values!() changes its argument
                                                                                 # in place, we need another identical
                                                                                 # instance just to get the correct value
                                                                                 # function
-    
+
     # == Iterate back to start of retirement, record final value function == #
     for i in 1:(T-K)
         update_values!(lq_retired_proxy)
     end
     Rf2 = lq_retired_proxy.P
-        
+
     # == Formulate LQ problem 2 (working life) == #
     Q = 1.0
     R = zeros(4, 4)
-    A = [1 + r -c_bar m1 m2; 
+    A = [1 + r -c_bar m1 m2;
          0     1      0  0;
          0     1      1  0;
          0     1      2  1]
     B = [-1.0; 0.0; 0.0; 0.0]
     C = [σ; 0.0; 0.0; 0.0]
-        
+
     # == Set up working life LQ instance with terminal Rf from lq_retired == #
     lq_working = LQ(Q, R, A, B, C; bet=β, capT=K, rf=Rf2)
-    
+
     # == Simulate working state / control paths == #
     x0 = [0.0; 1.0; 0.0; 0.0]
     xp_w, up_w, wp_w = compute_sequence(lq_working, x0)
     # == Simulate retirement paths (note the initial condition) == #
-    xp_r, up_r, wp_r = compute_sequence(lq_retired, xp_w[:, end]) 
-    
+    xp_r, up_r, wp_r = compute_sequence(lq_retired, xp_w[:, end])
+
     # == Convert results back to assets, consumption and income == #
     xp = [xp_w xp_r[:, 2:end]]
     assets = vec(xp[1, :])               # Assets
-    
+
     up = [up_w up_r]
     c = vec(up .+ c_bar)                  # Consumption
-    
+
     time = 1:K
     income_w = σ * vec(wp_w[1, 2:K+1]) + m1 .* time + m2 .* time.^2   # Income
     income_r = ones(T-K) * s
     income = [income_w; income_r]
-    
+
     # == Plot results == #
-    p2 = plot(Vector[income, assets, c, zeros(T + 1)], 
-              lab=["non-financial income" "assets" "consumption" ""], 
-              color=[:orange :blue :green :black],
-              xaxis=("Time"), layout=(2, 1),
-              bottom_margin=20mm, size=(600, 600))
+    p2 = plot(Vector[income, assets, c, zeros(T + 1)],
+              lab = ["non-financial income" "assets" "consumption" ""],
+              color = [:orange :blue :green :black],
+              xaxis = ("Time"), layout = (2, 1),
+              bottom_margin = 20mm, size = (600, 600))
 
 
 Exercise 3
@@ -1567,8 +1540,8 @@ function, which we repeat here for convenience:
 
        \min
        \mathbb E \,
-       \left\{ 
-           \sum_{t=0}^{\infty} \beta^t 
+       \left\{
+           \sum_{t=0}^{\infty} \beta^t
            a_1 ( q_t - \bar q_t)^2 + \gamma u_t^2
        \right\}
 
@@ -1585,11 +1558,11 @@ Our solution code is
     β = 0.95
     c = 2.0
     T = 120
-    
+
     # == Useful constants == #
     m0 = (a0-c)/(2 * a1)
     m1 = 1/(2 * a1)
-    
+
     # == Formulate LQ problem == #
     Q = γ
     R = [a1 -a1 0;
@@ -1598,24 +1571,22 @@ Our solution code is
     A = [ρ 0 m0*(1-ρ);
          0 1 0;
          0 0 1]
-    
+
     B = [0.0; 1.0; 0.0]
     C = [m1 * σ; 0.0; 0.0]
-    
+
     lq = LQ(Q, R, A, B, C; bet=β)
-    
+
     # == Simulate state / control paths == #
     x0 = [m0; 2.0; 1.0]
     xp, up, wp = compute_sequence(lq, x0, 150)
     q_bar = vec(xp[1, :])
     q = vec(xp[2, :])
-    
+
     # == Plot simulation results == #
-    p3 = plot(1:length(q), [q_bar q], 
-              lab=["q bar" "q"], 
-              color=[:black :blue],
-              xaxis=("Time"), title="Dynamics with γ = $γ", 
-              bottom_margin=20mm, top_margin=10mm,
-              size=(700, 500))
-
-
+    p3 = plot(1:length(q), [q_bar q],
+              lab = ["q bar" "q"],
+              color = [:black :blue],
+              xaxis = ("Time"), title = "Dynamics with γ = $γ",
+              bottom_margin = 20mm, top_margin = 10mm,
+              size = (700, 500))
