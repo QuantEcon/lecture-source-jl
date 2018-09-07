@@ -379,8 +379,13 @@ Here's some code that, among other things, contains a function called `consumpti
 This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes given a set of parameters, under the assumption of complete markets
 
 .. code-block:: julia 
+  :class: test 
 
-    using QuantEcon
+  using Test 
+
+.. code-block:: julia 
+
+    using QuantEcon, LinearAlgebra
 
     """
     The data for a consumption problem, including some default values.
@@ -467,7 +472,7 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
 
         # Useful variables
         y = y''
-        v = inv(eye(2) - β * P) * y
+        v = inv(I - β * P) * y
 
         # Simulat state path
         s_path = simulate(mc, N_simul, init=1)
@@ -670,9 +675,9 @@ Let's try this, using the same parameters in both complete and incomplete market
 
 .. code-block:: julia 
 
-    using PyPlot
+    using PyPlot, Random
 
-    srand(1)
+    Random.seed!(42)
     N_simul = 150
     cp = ConsumptionProblem()
 
@@ -1050,15 +1055,15 @@ allows the consumer completely to smooth consumption across time and across stat
         # x0 = hcat(x0, 0)
 
         # Compute the (I - β*A)^{-1}
-        rm = inv(eye(size(A, 1)) - β * A)
+        rm = inv(I - β * A)
 
         # Constant level of consumption
-        cbar = (1 - β) * (S_y * rm * x0 - b0)
+        cbar = (1 - β) * (S_y * rm * x0 .- b0)
         c_hist = ones(T) * cbar[1]
 
         # Debt
         x_hist, y_hist = simulate(lss, T)
-        b_hist = (S_y * rm * x_hist - cbar[1] / (1.0 - β))
+        b_hist = (S_y * rm * x_hist .- cbar[1] / (1.0 - β))
 
 
         return c_hist, vec(b_hist), vec(y_hist), x_hist
@@ -1080,8 +1085,7 @@ allows the consumer completely to smooth consumption across time and across stat
     x0 = [1.0, α / (1 - ρ1), α / (1 - ρ1)]
 
     # Do simulation for complete markets
-    s = rand(1:10000)
-    srand(s)  # Seeds get set the same for both economies
+    Random.seed!(42)
     out = complete_ss(β, b0, x0, A, C, S_y, 150)
     c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
 
