@@ -528,30 +528,34 @@ Note:
 The following code sets up these objects for us 
 
 .. code-block:: julia 
+  :class: test 
 
-    struct SimpleOG{TI <: Integer, T <: Real,
-                    TR <: AbstractArray{T}, TQ <: AbstractArray{T}}
-        B :: TI
-        M :: TI
-        α :: T
-        β :: T
-        R :: TR
-        Q :: TQ
+  using Test 
+
+.. code-block:: julia 
+
+    struct SimpleOG
+        B :: Integer
+        M :: Integer
+        α :: Real
+        β :: Real
+        R :: AbstractArray
+        Q :: AbstractArray
     end
 
-    function SimpleOG{T <: Real}(;B::Integer=10, M::Integer=5, α::T=0.5, β::T=0.9)
+    function SimpleOG(;B::Integer=10, M::Integer=5, α::Real=0.5, β::Real=0.9)
 
         u(c) = c^α
         n = B + M + 1
         m = M + 1
 
-        R = Matrix{T}(n, m)
+        R = zeros(Float64, n, m)
         Q = zeros(Float64,n,m,n)
 
         for a in 0:M
-            Q[:, a + 1, (a:(a + B)) + 1] = 1 / (B + 1)
+            Q[:, a + 1, (a:(a + B)) .+ 1] .= 1 / (B + 1)
             for s in 0:(B + M)
-                R[s + 1, a + 1] = a<=s ? u(s - a) : -Inf
+                R[s + 1, a + 1] = (a<=s ? u(s - a) : -Inf)
             end
         end
 
@@ -606,7 +610,7 @@ Let's see what we've got here
 
 .. code-block:: julia
 
-    fieldnames(results)
+    fieldnames(typeof(results))
 
 
 
@@ -622,13 +626,25 @@ The most important attributes are ``v``, the value function, and ``σ``, the opt
 
     results.v
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Value Function Tests" begin 
+    @test results.v[2] ≈ 20.017402216959912
+    @test results.v[4] ≈ 20.749453024528794
+    @test results.v[end] ≈ 23.277617618874903 # Also an implicit length check
+  end 
 
 .. code-block:: julia
 
-    results.sigma - 1
+    results.sigma .- 1
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Optimal Policy Tests" begin 
+    @test results.sigma .- 1 == [0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 5, 5, 5, 5]
+  end 
 
 Here 1 is subtracted from `results.sigma` because we added 1 to each state and action to create valid indices
 
@@ -644,7 +660,12 @@ Let's make sure this didn't happen
 
     results.num_iter
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Iteration Tests" begin 
+    @test results.num_iter <= 3 # Make sure we didn't take more cycles, compared to v0.6 
+  end 
 
 In this case we converged in only 3 iterations
 
@@ -663,7 +684,13 @@ can easily simulate it, compute its stationary distribution and so on
 
     stationary_distributions(results.mc)[1]
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Stationary Distributions Test" begins
+    @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
+    @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 # Only one element of this `mc` field.
+  end 
 
 
 
@@ -688,7 +715,12 @@ What happens if the agent is more patient?
 
     std_2 = stationary_distributions(results_2.mc)[1]
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Patience Shock Tests" begin
+    @test std_2[3] 0.03147788040836169
+  end 
 
 .. code-block:: julia
 
@@ -726,7 +758,7 @@ Here's how we could set up these objects for the preceding example
 
 .. code-block:: julia 
 
-    using QuantEcon 
+using QuantEcon
 
     B = 10
     M = 5
@@ -738,7 +770,7 @@ Here's how we could set up these objects for the preceding example
 
     s_indices = Int64[]
     a_indices = Int64[]
-    Q = Array{Float64}(0, n)
+    Q = zeros(Float64, 0, n)
     R = Float64[]
 
     b = 1.0 / (B + 1)
@@ -748,7 +780,7 @@ Here's how we could set up these objects for the preceding example
             s_indices = [s_indices; s + 1]
             a_indices = [a_indices; a + 1]
             q = zeros(Float64, 1, n)
-            q[(a + 1):((a + B) + 1)] = b 
+            q[(a + 1):((a + B) + 1)] .= b
             Q = [Q; q]
             R = [R; u(s-a)]
         end
@@ -757,7 +789,13 @@ Here's how we could set up these objects for the preceding example
     ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
     results = solve(ddp, PFI)
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "State-Action Pair Tests" begin 
+    @test results.v[4] ≈ 20.749453024528794 # Some checks on the returned solutions. 
+    @test results.sigma == [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 6]
+  end 
 
 
 
@@ -809,7 +847,7 @@ model above. We discretize the state space into a grid of size
 
     grid_max = 2
     grid_size = 500
-    grid = linspace(1e-6, grid_max, grid_size)
+    grid = range(1e-6, stop = grid_max, length = grid_size)
 
 
 
@@ -840,12 +878,18 @@ We first construct indices for state-action pairs:
 .. code-block:: julia
 
     C = f.(grid) .- grid'
-    coord = repmat(collect(1:grid_size), 1, grid_size) #coordinate matrix
+    coord = repeat(collect(1:grid_size), 1, grid_size) #coordinate matrix
     s_indices = coord[C.>0]
     a_indices = transpose(coord)[C.>0]
     L = length(a_indices)
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "SAP Tests 2" begin 
+    @test L == 118841
+    @test a_indices[14] == 1 
+  end 
 
 .. code-block:: julia
 
@@ -859,13 +903,26 @@ Now let's set up :math:`R` and :math:`Q`
 
     R = u_log.(C[C.>0])
 
+.. code-block:: julia 
+  :class: test 
+
+  @test "R Tests" begin 
+    @test R[4] -2.873514275079717
+    @test length(R) == 118841
+  end 
+
 .. code-block:: julia
 
-    Q = spzeros(L, grid_size)
+    using SparseArrays
+
+    Q = spzeros(L, grid_size) # Formerly spzeros
 
     for i in 1:L
       Q[i, a_indices[i]] = 1
     end
+
+.. code-block:: julia 
+
 
 We're now in a position to create an instance of ``DiscreteDP``
 corresponding to the growth model.
@@ -883,7 +940,14 @@ Solving the Model
     v, σ, num_iter = results.v, results.sigma, results.num_iter
     num_iter
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Results Test" begin
+    @test v[4] -42.301381867365954
+    @test σ[4] == 10 
+    @test num_iter <= 10
+  end 
 
 Let us compare the solution of the discrete model with the exact
 solution of the original continuous model. Here's the exact solution:
@@ -900,15 +964,20 @@ solution of the original continuous model. Here's the exact solution:
     c_star(k) = (1 - α * β) * k.^α
 
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Comparison Tests" begin 
+    @test c2 ≈ 1.699346405228758
+    @test c_star(c2) ≈ 0.5399016884304844
+    @test ab ≈ 0.6174999999999999
+  end 
 
 Let's plot the value functions.
 
 .. code-block:: julia
 
     plot(grid, [v v_star.(grid)], ylim=(-40, -32), lw=2, label=["discrete" "continuous"])
-
-
 
 They are barely distinguishable (although you can see the difference if
 you zoom).
@@ -930,8 +999,12 @@ becomes more obvious as you zoom. Here are some statistics:
 
     maximum(abs, v - v_star.(grid))
 
+.. code-block:: julia 
+  :class: test 
 
-
+  @testset "Error Tests" begin
+    @test maximum(abs, v - v_star.(grid)) ≈ 121.49819147053378
+  end 
 
 This is a big error, but most of the error occurs at the lowest
 gridpoint. Otherwise the fit is reasonable:
@@ -940,9 +1013,12 @@ gridpoint. Otherwise the fit is reasonable:
 
     maximum(abs, (v - v_star.(grid))[2:end])
 
+.. code-block:: julia 
+  :class: test 
 
-
-
+  @test "Truncated Error Tests" begin 
+    @test maximum(abs, (v - v_star.(grid))[2:end]) ≈ 0.012681735127500815
+  end 
 
 The value function is monotone, as expected:
 
@@ -950,9 +1026,12 @@ The value function is monotone, as expected:
 
     all(diff(v).>=0)
 
+.. code-block:: julia 
+  :class: test 
 
-
-
+  @testset "Monotonicity Test" begin 
+    @test all(diff(v).>=0)
+  end 
 
 Comparison of the solution methods
 ----------------------------------
@@ -987,7 +1066,12 @@ faster that value function iteration.
 
     σ == res1.sigma
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Equivalence Test" begin 
+    @test σ == res1.sigma
+  end 
 
 .. code-block:: julia
 
@@ -1007,7 +1091,12 @@ faster that value function iteration.
 
     σ == res2.sigma
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Other Equivalence Test" begin 
+    @test σ == res2.sigma
+  end 
 
 Replication of the figures
 --------------------------
@@ -1017,7 +1106,7 @@ lecture.
 
 .. code-block:: julia
 
-    w_init = 5 * log.(grid) - 25  # Initial condition
+    w_init = 5 * log.(grid) .- 25  # Initial condition
     n = 50
 
     ws = []
@@ -1039,7 +1128,13 @@ lecture.
     plot!(grid, ws,  label="", color=reshape(colors, 1, length(colors)), lw=2)
     plot!(grid, v_star.(grid), label="true value function", color=:red, lw=2)
 
+.. code-block:: julia
+  :class: test 
 
+  @testset "Plots Test" begin 
+    @test ws[4][5] ≈ -37.93858578025213
+    @test v_star.(grid)[4] ≈ -42.29801689484901 
+  end 
 
 
 We next plot the consumption policies along the value iteration. First
@@ -1088,7 +1183,15 @@ Now let's generate the plots.
         title=["2 iterations" "4 iterations" "6 iterations"])
 
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "New Tests" begin 
+    @test true_c[5] ≈ 0.026055057901168556
+    @test c_policies[1][5] ≈ 0.016012616069698123
+    @test c_policies[2][5] ≈ 0.02402864412581035
+    @test c_policies[3][5] ≈ 0.02402864412581035
+  end 
 
 
 Dynamics of the capital stock
@@ -1105,7 +1208,7 @@ condition :math:`k_0 = 0.1`.
     discount_factors = (0.9, 0.94, 0.98)
     k_init = 0.1
 
-    k_init_ind = findfirst(collect(grid) .>= k_init, true)
+    k_init_ind = findfirst(collect(grid) .>= k_init)
 
     sample_size = 25
 
@@ -1130,9 +1233,15 @@ condition :math:`k_0 = 0.1`.
         markershape=:circle,
         label=reshape(labels, 1, length(labels)))
 
+.. code-block:: julia 
+  :class: test 
 
-
-
+  @testset "Final Tests" begin 
+    @test k_init_ind == 26 
+    @test k_paths[3][2] ≈ 0.14829751903807614
+    @test k_paths[2][5] ≈ 0.21242574348697396
+    @test k_patsh[1][7] ≈ 0.20841772945891784
+  end 
 
 .. _ddp_algorithms:
 
