@@ -33,10 +33,7 @@ We use the model as a vehicle for illustrating
 
 * the idea that changes in consumption are useful as predictors of movements in income
 
-
-
 Background readings on the linear-quadratic-Gaussian permanent income model are Hall's  :cite:`Hall1978`  and chapter 2 of  :cite:`Ljungqvist2012`
-
 
 
 The Savings Problem
@@ -292,10 +289,6 @@ These last two equations assert that consumption equals *economic income*
   * the amount the consumer can consume while leaving its wealth intact
 
 
-
-
-
-
 Responding to the State
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -509,23 +502,21 @@ Defining assets as :math:`-b_t`, we see that assets are just the cumulative sum 
 The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 1`, and :math:`\sigma = 0.15`
 
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
   #=
-  
   @author : Spencer Lyon
             Victoria Gregory
-            
   =#
 
-  using Plots, Random 
-  pyplot()
-  Random.seed!(42) 
+  using Plots, Random
+
+  Random.seed!(42)
 
   const r = 0.05
   const β = 1.0 / (1.0 + r)
@@ -544,27 +535,27 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
       c = μ .+ (1.0 - β) .* (σ .* w .- b)
       return w, b, c
   end
-  
-  w, b, c = time_path2()
-  p = plot(0:T, μ .+ σ .* w, color=:green, label="non-financial income")
-  plot!(c, color=:black, label="consumption")
-  plot!(b, color=:blue, label="debt")
-  plot!(xlabel="Time", linewidth=2, alpha=0.7, xlims=(0, T))
-  
-.. code-block:: julia 
-  :class: test 
 
-  @testset "First Plots Test" begin 
+  w, b, c = time_path2()
+  p = plot(0:T, μ .+ σ .* w, color = :green, label = "non-financial income")
+  plot!(c, color = :black, label = "consumption")
+  plot!(b, color = :blue, label = "debt")
+  plot!(xlabel = "Time", linewidth = 2, alpha = 0.7,
+        xlims = (0, T), legend = :bottom)
+
+.. code-block:: julia
+  :class: test
+
+  @testset "First Plots Test" begin
     @test w[3] ≈ 0.027155338009193845
     @test c[4] ≈ 0.9927414557155834
     @test b[5] ≈ -0.1591723482896868
-  end 
+  end
 
 
 Observe that consumption is considerably smoother than income
 
 The figure below shows the consumption paths of 250 consumers with independent income streams
-
 
 
 .. code-block:: julia
@@ -574,20 +565,20 @@ The figure below shows the consumption paths of 250 consumers with independent i
   time_paths = []
   n = 250
 
-  for i=1:n
+  for i in 1:n
       push!(time_paths, time_path2()[3])
   end
 
-  p = plot(time_paths, linewidth=0.8, alpha=0.7, legend=:none)
-  plot!(xlabel="Time", ylabel="Consumption", xlims=(0, T))
-  
-.. code-block:: julia 
-  :class: test 
+  p = plot(time_paths, linewidth = 0.8, alpha=0.7, legend = :none)
+  plot!(xlabel = "Time", ylabel = "Consumption", xlims = (0, T))
 
-  @testset "Second Plot Tests" begin 
+.. code-block:: julia
+  :class: test
+
+  @testset "Second Plot Tests" begin
     @test time_paths[12][14] ≈ 0.9970822013087883
     @test time_paths[4][20] ≈ 1.0405721547541182
-  end 
+  end
 
 Alternative Representations
 ================================
@@ -713,7 +704,6 @@ Equation :eq:`pi_spr` can be rearranged to take the form
 Equation :eq:`sprob77`  asserts that the *cointegrating residual*  on the left side equals the conditional expectation of the geometric sum of future incomes on the right [#f8]_
 
 
-
 Cross-Sectional Implications
 -----------------------------------
 
@@ -776,7 +766,6 @@ The impulse response function of :math:`\{c_t\}` to the innovation :math:`\{w_t\
 In particular, the response of :math:`c_{t+j}` to a unit increase in the innovation :math:`w_{t+1}` is :math:`(1-\beta) U (I -\beta A)^{-1} C` for all :math:`j \geq 1`
 
 
-
 Moving Average Representation
 --------------------------------
 
@@ -820,11 +809,6 @@ Using :eq:`sprob120` in :eq:`sprob11` gives
 
 
 The object :math:`d(\beta)` is the **present value of the moving average coefficients** in the representation for the endowment process :math:`y_t`
-
-
-
-
-
 
 
 .. _sub_classic_consumption:
@@ -907,21 +891,21 @@ The next figure illustrates these very different reactions to transitory and
 permanent income shocks using impulse-response functions
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     const r = 0.05
     const β = 1.0 / (1.0 + r)
-    const T = 20  # Time horizon
+    const T2 = 20  # Time horizon
     const S = 5   # Impulse date
     const σ1 = 0.15
     const σ2 = 0.15
 
 
-    function time_path(permanent=false)
-        w1 = zeros(T+1)
-        w2 = zeros(T+1)
-        b = zeros(T+1)
-        c = zeros(T+1)
+    function time_path(permanent = false)
+        w1 = zeros(T2+1)
+        w2 = similar(w1)
+        b = similar(w1)
+        c = similar(w1)
 
         if permanent === false
             w2[S+2] = 1.0
@@ -929,7 +913,7 @@ permanent income shocks using impulse-response functions
             w1[S+2] = 1.0
         end
 
-        for t=2:T
+        for t=2:T2
             b[t+1] = b[t] - σ2 * w2[t]
             c[t+1] = c[t] + σ1 * w1[t+1] + (1 - β) * σ2 * w2[t+1]
         end
@@ -937,26 +921,26 @@ permanent income shocks using impulse-response functions
         return b, c
     end
 
-
     L = 0.175
 
     b1, c1 = time_path(false)
     b2, c2 = time_path(true)
-    p = plot(0:T, [c1 c2 b1 b2], layout=(2, 1),
-            color=[:green :green :blue :blue],
-            label=["consumption" "consumption" "debt" "debt"])
+    p = plot(0:T2, [c1 c2 b1 b2], layout = (2, 1),
+            color = [:green :green :blue :blue],
+            label = ["consumption" "consumption" "debt" "debt"])
     t = ["impulse-response, transitory income shock"
-        "impulse-response, permanent income shock"]
-    plot!(title=reshape(t,1,length(t)), xlabel="Time", ylims=(-L, L), legend=[:topright :bottomright])
-    vline!([S S], color=:black, layout=(2, 1), label="")
+         "impulse-response, permanent income shock"]
+    plot!(title = reshape(t, 1, length(t)), xlabel = "Time", ylims = (-L, L),
+          legend = [:topright :bottomright])
+    vline!([S S], color = :black, layout = (2, 1), label = "")
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @testset "Third Plot Tests" begin
     @test c1[14] ≈ 0.0071428571428571504
     @test c2[13] == 0.15
-  end 
+  end
 
 Example 2
 ------------
@@ -1057,9 +1041,6 @@ Application of formula to this example shows that
 This indicates how the fraction :math:`K` of the innovation to :math:`y_t` that is regarded as permanent influences the fraction of the innovation that is saved
 
 
-
-
-
 Further Reading
 ==================
 
@@ -1117,9 +1098,6 @@ You will be able to verify that the first order condition is
 Using :math:`\beta R = 1` gives :eq:`sprob4` in the two period case
 
 The proof for the general case is similar
-
-
-
 
 
 .. rubric:: Footnotes
