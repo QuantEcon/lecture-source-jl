@@ -17,13 +17,13 @@ In this lecture we discuss a family of dynamic programming problems with the fol
 
 #. a discrete state space and discrete choices (actions)
 
-#. an infinite horizon 
+#. an infinite horizon
 
 #. discounted rewards
 
-#. Markov state transitions 
+#. Markov state transitions
 
-We call such problems discrete dynamic programs, or discrete DPs 
+We call such problems discrete dynamic programs, or discrete DPs
 
 Discrete DPs are the workhorses in much of modern quantitative economics, including
 
@@ -46,15 +46,15 @@ This lecture covers
 
 * the theory of dynamic programming in a discrete setting, plus examples and
   applications
-  
-* a powerful set of routines for solving discrete DPs from the `QuantEcon code libary <http://quantecon.org/julia_index.html>`_ 
+
+* a powerful set of routines for solving discrete DPs from the `QuantEcon code libary <http://quantecon.org/julia_index.html>`_
 
 
 
 How to Read this Lecture
 ---------------------------
 
-We use dynamic programming many applied lectures, such as 
+We use dynamic programming many applied lectures, such as
 
 * The :doc:`shortest path lecture <short_path>`
 
@@ -65,10 +65,7 @@ We use dynamic programming many applied lectures, such as
 The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case
 
 
-
-
 The code discussed below was authored primarily by `Daisuke Oyama <https://github.com/oyamad>`_
-
 
 
 References
@@ -89,9 +86,6 @@ For background reading on dynamic programming and additional applications, see, 
 * :cite:`MirandaFackler2002`
 
 * `EDTC <http://johnstachurski.net/edtc.html>`_, chapter 5
-
-
-
 
 
 .. _discrete_dps:
@@ -132,7 +126,7 @@ Examples:
 
 * accepting a job offer today vs seeking a better one in the future
 
-* exercising an option now vs waiting 
+* exercising an option now vs waiting
 
 
 Policies
@@ -168,7 +162,7 @@ Formally, a discrete dynamic program consists of the following components:
 #. A finite set of *states* :math:`S = \{0, \ldots, n-1\}`
 
 #. A finite set of *feasible actions* :math:`A(s)` for each state :math:`s \in S`, and a corresponding set of *feasible state-action pairs*
-   
+
     .. math::
 
             \mathit{SA} := \{(s, a) \mid s \in S, \; a \in A(s)\}
@@ -189,14 +183,14 @@ A policy is called *feasible* if it satisfies :math:`\sigma(s) \in A(s)` for all
 
 Denote the set of all feasible policies by :math:`\Sigma`
 
-If a decision maker uses  a policy :math:`\sigma \in \Sigma`, then 
+If a decision maker uses  a policy :math:`\sigma \in \Sigma`, then
 
 * the current reward at time :math:`t` is :math:`r(s_t, \sigma(s_t))`
 
 * the probability that :math:`s_{t+1} = s'` is :math:`Q(s_t, \sigma(s_t), s')`
 
 
-For each :math:`\sigma \in \Sigma`, define 
+For each :math:`\sigma \in \Sigma`, define
 
 * :math:`r_{\sigma}` by :math:`r_{\sigma}(s) := r(s, \sigma(s))`)
 
@@ -232,9 +226,9 @@ Value and Optimality
 ----------------------
 
 Let :math:`v_{\sigma}(s)` denote the discounted sum of expected reward flows from policy :math:`\sigma`
-when the initial state is :math:`s` 
+when the initial state is :math:`s`
 
-To calculate this quantity we pass the expectation through the sum in 
+To calculate this quantity we pass the expectation through the sum in
 :eq:`dp_objective` and use :eq:`ddp_expec` to get
 
 .. math::
@@ -249,7 +243,7 @@ The *optimal value function*, or simply *value function*, is the function :math:
 
 .. math::
 
-    v^*(s) = \max_{\sigma \in \Sigma} v_{\sigma}(s) 
+    v^*(s) = \max_{\sigma \in \Sigma} v_{\sigma}(s)
     \qquad (s \in S)
 
 
@@ -263,10 +257,10 @@ Given any :math:`w \colon S \to \mathbb R`, a policy :math:`\sigma \in \Sigma` i
 
 .. math::
 
-    \sigma(s) \in \operatorname*{arg\,max}_{a \in A(s)} 
+    \sigma(s) \in \operatorname*{arg\,max}_{a \in A(s)}
     \left\{
         r(s, a) +
-        \beta \sum_{s' \in S} w(s') Q(s, a, s') 
+        \beta \sum_{s' \in S} w(s') Q(s, a, s')
     \right\}
     \qquad (s \in S)
 
@@ -287,9 +281,9 @@ It is useful to define the following operators:
 
 .. math::
 
-    (T v)(s) = \max_{a \in A(s)} 
+    (T v)(s) = \max_{a \in A(s)}
     \left\{
-        r(s, a) + \beta \sum_{s' \in S} v(s') Q(s, a, s') 
+        r(s, a) + \beta \sum_{s' \in S} v(s') Q(s, a, s')
     \right\}
     \qquad (s \in S)
 
@@ -298,25 +292,25 @@ It is useful to define the following operators:
 
 .. math::
 
-    (T_{\sigma} v)(s) = r(s, \sigma(s)) + 
-        \beta \sum_{s' \in S} v(s') Q(s, \sigma(s), s') 
+    (T_{\sigma} v)(s) = r(s, \sigma(s)) +
+        \beta \sum_{s' \in S} v(s') Q(s, \sigma(s), s')
     \qquad (s \in S)
 
 
-This can be written more succinctly in operator notation as 
+This can be written more succinctly in operator notation as
 
 .. math::
 
     T_{\sigma} v = r_{\sigma} + \beta Q_{\sigma} v
 
 
-The two operators are both monotone 
+The two operators are both monotone
 
 * :math:`v \leq w`  implies :math:`Tv \leq Tw` pointwise on :math:`S`, and
   similarly for :math:`T_\sigma`
 
 
-They are also contraction mappings with modulus :math:`\beta` 
+They are also contraction mappings with modulus :math:`\beta`
 
 
 * :math:`\lVert Tv - Tw \rVert \leq \beta \lVert v - w \rVert` and similarly for :math:`T_\sigma`, where :math:`\lVert \cdot\rVert` is the max norm
@@ -338,23 +332,23 @@ The main principle of the theory of dynamic programming is that
 
     .. math::
 
-        v(s) = \max_{a \in A(s)} 
+        v(s) = \max_{a \in A(s)}
          \left\{
-             r(s, a) + \beta \sum_{s' \in S} v(s') Q(s, a, s') 
+             r(s, a) + \beta \sum_{s' \in S} v(s') Q(s, a, s')
          \right\}
         \qquad (s \in S),
 
    or in other words, :math:`v^*` is the unique fixed point of :math:`T`, and
-   
+
 -  :math:`\sigma^*` is an optimal policy function if and only if it is :math:`v^*`-greedy
-  
-By the definition of greedy policies given above, this means that 
+
+By the definition of greedy policies given above, this means that
 
 .. math::
 
-    \sigma^*(s) \in \operatorname*{arg\,max}_{a \in A(s)} 
+    \sigma^*(s) \in \operatorname*{arg\,max}_{a \in A(s)}
         \left\{
-        r(s, a) + \beta \sum_{s' \in S} v^*(s') Q(s, \sigma(s), s') 
+        r(s, a) + \beta \sum_{s' \in S} v^*(s') Q(s, \sigma(s), s')
         \right\}
     \qquad (s \in S)
 
@@ -370,11 +364,11 @@ It implements the three most important solution methods for discrete dynamic pro
 
 -  value function iteration
 
--  policy function iteration 
+-  policy function iteration
 
 -  modified policy function iteration
 
-Let's briefly review these algorithms and their implementation 
+Let's briefly review these algorithms and their implementation
 
 
 
@@ -401,10 +395,10 @@ Policy Function Iteration
 
 This routine, also known as Howard's policy improvement algorithm, exploits more closely the particular structure of a discrete DP problem
 
-Each iteration consists of 
+Each iteration consists of
 
 #. A policy evaluation step that computes the value :math:`v_{\sigma}` of a policy :math:`\sigma` by solving the linear equation :math:`v = T_{\sigma} v`
-   
+
 #. A policy improvement step that computes a :math:`v_{\sigma}`-greedy policy
 
 In the current setting policy iteration computes an exact optimal policy in finitely many iterations
@@ -420,7 +414,7 @@ Modified Policy Function Iteration
 ----------------------------------
 
 
-Modified policy iteration replaces the policy evaluation step in policy iteration with "partial policy evaluation" 
+Modified policy iteration replaces the policy evaluation step in policy iteration with "partial policy evaluation"
 
 
 The latter computes an approximation to the value of a policy :math:`\sigma` by iterating :math:`T_{\sigma}` for a specified number of times
@@ -439,7 +433,7 @@ The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>
 Example: A Growth Model
 =============================
 
-Let's consider a simple consumption-saving model 
+Let's consider a simple consumption-saving model
 
 A single household either consumes or stores its own output of a single consumption good
 
@@ -449,11 +443,11 @@ Next, the household chooses a quantity :math:`a` to store and consumes :math:`c 
 
 * Storage is limited by a global upper bound :math:`M`
 
-* Flow utility is :math:`u(c) = c^{\alpha}` 
+* Flow utility is :math:`u(c) = c^{\alpha}`
 
 Output is drawn from a discrete uniform distribution on :math:`\{0, \ldots, B\}`
 
-The next period stock is therefore 
+The next period stock is therefore
 
 .. math::
 
@@ -471,16 +465,16 @@ Discrete DP Representation
 
 We want to represent this model in the format of a discrete dynamic program
 
-To this end, we take 
+To this end, we take
 
-* the state variable to be the stock :math:`s` 
+* the state variable to be the stock :math:`s`
 
 * the state space to be :math:`S = \{0, \ldots, M + B\}`
-  
+
     * hence :math:`n = M + B + 1`
-  
+
 * the action to be the storage quantity :math:`a`
-  
+
 
 * the set of feasible actions at :math:`s` to be :math:`A(s) = \{0, \ldots, \min\{s, M\}\}`
 
@@ -493,8 +487,8 @@ To this end, we take
 .. math::
     :label: ddp_def_ogq
 
-    Q(s, a, s') 
-    := 
+    Q(s, a, s')
+    :=
     \begin{cases}
         \frac{1}{B + 1} & \text{if } a \leq s' \leq a + B
         \\
@@ -508,15 +502,15 @@ Defining a DiscreteDP Instance
 This information will be used to create an instance of `DiscreteDP` by passing
 the following information
 
-#.  An :math:`n \times m` reward array :math:`R` 
-    
+#.  An :math:`n \times m` reward array :math:`R`
+
 #. An :math:`n \times m \times n` transition probability array :math:`Q`
-   
+
 #. A discount factor :math:`\beta`
 
 
 For :math:`R` we set :math:`R[s, a] = u(s - a)` if :math:`a \leq s` and :math:`-\infty` otherwise
-      
+
 For :math:`Q` we follow the rule in :eq:`ddp_def_ogq`
 
 Note:
@@ -525,33 +519,37 @@ Note:
 
 * Probability distributions for :math:`(s, a)` with :math:`a \notin A(s)` can be arbitrary
 
-The following code sets up these objects for us 
+The following code sets up these objects for us
 
-.. code-block:: julia 
+.. code-block:: julia
+  :class: test
 
-    struct SimpleOG{TI <: Integer, T <: Real,
-                    TR <: AbstractArray{T}, TQ <: AbstractArray{T}}
-        B :: TI
-        M :: TI
-        α :: T
-        β :: T
-        R :: TR
-        Q :: TQ
+  using Test
+
+.. code-block:: julia
+
+    struct SimpleOG
+        B :: Integer
+        M :: Integer
+        α :: Real
+        β :: Real
+        R :: AbstractArray
+        Q :: AbstractArray
     end
 
-    function SimpleOG{T <: Real}(;B::Integer=10, M::Integer=5, α::T=0.5, β::T=0.9)
+    function SimpleOG(;B = 10, M = 5, α = 0.5, β = 0.9)
 
         u(c) = c^α
         n = B + M + 1
         m = M + 1
 
-        R = Matrix{T}(n, m)
-        Q = zeros(Float64,n,m,n)
+        R = zeros(n, m)
+        Q = zeros(n, m, n)
 
         for a in 0:M
-            Q[:, a + 1, (a:(a + B)) + 1] = 1 / (B + 1)
+            Q[:, a + 1, (a:(a + B)) .+ 1] .= 1 / (B + 1)
             for s in 0:(B + M)
-                R[s + 1, a + 1] = a<=s ? u(s - a) : -Inf
+                R[s + 1, a + 1] = (a≤s ? u(s - a) : -Inf)
             end
         end
 
@@ -562,20 +560,14 @@ The following code sets up these objects for us
 Let's run this code and create an instance of ``SimpleOG``
 
 
-
-
 .. code-block:: julia
 
     g = SimpleOG()
 
 
-
-
-
 Instances of ``DiscreteDP`` are created using the signature ``DiscreteDP(R, Q, β)``
 
-Let's create an instance using the objects stored in ``g`` 
-
+Let's create an instance using the objects stored in ``g``
 
 
 .. code-block:: julia
@@ -585,70 +577,66 @@ Let's create an instance using the objects stored in ``g``
     ddp = DiscreteDP(g.R, g.Q, g.β)
 
 
-
-
 Now that we have an instance ``ddp`` of ``DiscreteDP`` we can solve it as follows
-
-
 
 .. code-block:: julia
 
     results = solve(ddp, PFI)
 
 
-
-
-
 Let's see what we've got here
-
-
-
 
 .. code-block:: julia
 
-    fieldnames(results)
-
-
-
-
+    fieldnames(typeof(results))
 
 
 The most important attributes are ``v``, the value function, and ``σ``, the optimal policy
-
-
 
 
 .. code-block:: julia
 
     results.v
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Value Function Tests" begin
+    @test results.v[2] ≈ 20.017402216959912
+    @test results.v[4] ≈ 20.749453024528794
+    @test results.v[end] ≈ 23.277617618874903 # Also an implicit length check
+  end
 
 .. code-block:: julia
 
-    results.sigma - 1
+    results.sigma .- 1
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Optimal Policy Tests" begin
+    @test results.sigma .- 1 == [0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 5, 5, 5, 5]
+  end
 
 Here 1 is subtracted from `results.sigma` because we added 1 to each state and action to create valid indices
-
-
 
 Since we've used policy iteration, these results will be exact unless we hit the iteration bound ``max_iter``
 
 Let's make sure this didn't happen
 
 
-
 .. code-block:: julia
 
     results.num_iter
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Iteration Tests" begin
+    @test results.num_iter ≤ 3 # Make sure we didn't take more cycles, compared to v0.6
+  end
 
 In this case we converged in only 3 iterations
-
-
 
 Another interesting object is ``results.mc``, which is the controlled chain defined by :math:`Q_{\sigma^*}`, where :math:`\sigma^*` is the optimal policy
 
@@ -657,14 +645,17 @@ In other words, it gives the dynamics of the state when the agent follows the op
 Since this object is an instance of `MarkovChain` from  `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ (see :doc:`this lecture <finite_markov>` for more discussion), we
 can easily simulate it, compute its stationary distribution and so on
 
-
-
 .. code-block:: julia
 
     stationary_distributions(results.mc)[1]
 
+.. code-block:: julia
+  :class: test
 
-
+  @testset "Stationary Distributions Test" begin
+    @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
+    @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 # Only one element of this `mc` field.
+  end
 
 
 Here's the same information in a bar graph
@@ -673,9 +664,6 @@ Here's the same information in a bar graph
    :scale: 80%
 
 What happens if the agent is more patient?
-
-
-
 
 
 .. code-block:: julia
@@ -688,15 +676,17 @@ What happens if the agent is more patient?
 
     std_2 = stationary_distributions(results_2.mc)[1]
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Patience Shock Tests" begin
+    @test std_2[3] ≈ 0.03147788040836169
+  end
 
 .. code-block:: julia
 
     using Plots
-    pyplot()
     bar(std_2, label="stationary dist")
-
-
 
 
 If we look at the bar graph we can see the rightward shift in probability mass
@@ -724,9 +714,7 @@ The call signature of the second formulation is ``DiscreteDP(R, Q, β, s_indices
 
 Here's how we could set up these objects for the preceding example
 
-.. code-block:: julia 
-
-    using QuantEcon 
+.. code-block:: julia
 
     B = 10
     M = 5
@@ -738,7 +726,7 @@ Here's how we could set up these objects for the preceding example
 
     s_indices = Int64[]
     a_indices = Int64[]
-    Q = Array{Float64}(0, n)
+    Q = zeros(0, n)
     R = Float64[]
 
     b = 1.0 / (B + 1)
@@ -748,7 +736,7 @@ Here's how we could set up these objects for the preceding example
             s_indices = [s_indices; s + 1]
             a_indices = [a_indices; a + 1]
             q = zeros(Float64, 1, n)
-            q[(a + 1):((a + B) + 1)] = b 
+            q[(a + 1):((a + B) + 1)] .= b
             Q = [Q; q]
             R = [R; u(s-a)]
         end
@@ -757,9 +745,13 @@ Here's how we could set up these objects for the preceding example
     ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
     results = solve(ddp, PFI)
 
+.. code-block:: julia
+  :class: test
 
-
-
+  @testset "State-Action Pair Tests" begin
+    @test results.v[4] ≈ 20.749453024528794 # Some checks on the returned solutions.
+    @test results.sigma == [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 6]
+  end
 
 
 Exercises
@@ -768,13 +760,11 @@ Exercises
 In the stochastic optimal growth lecture :doc:`dynamic programming lecture <optgrowth>`, we solve a
 :ref:`benchmark model <benchmark_growth_mod>` that has an analytical solution to check we could replicate it numerically
 
-The exercise is to replicate this solution using ``DiscreteDP`` 
+The exercise is to replicate this solution using ``DiscreteDP``
 
 
 Solutions
 ==========
-
-
 
 Written jointly with `Diasuke Oyama <https://github.com/oyamad>`__ and
 `Max Huber <https://github.com/MaximilianJHuber>`__
@@ -795,12 +785,6 @@ we let :math:`f(k) = k^{\alpha}` with :math:`\alpha = 0.65`,
     β = 0.95
 
 
-
-
-
-
-
-
 Here we want to solve a finite state version of the continuous state
 model above. We discretize the state space into a grid of size
 ``grid_size=500``, from :math:`10^{-6}` to ``grid_max=2``.
@@ -809,10 +793,7 @@ model above. We discretize the state space into a grid of size
 
     grid_max = 2
     grid_size = 500
-    grid = linspace(1e-6, grid_max, grid_size)
-
-
-
+    grid = range(1e-6, stop = grid_max, length = grid_size)
 
 
 We choose the action to be the amount of capital to save for the next
@@ -840,17 +821,22 @@ We first construct indices for state-action pairs:
 .. code-block:: julia
 
     C = f.(grid) .- grid'
-    coord = repmat(collect(1:grid_size), 1, grid_size) #coordinate matrix
+    coord = repeat(collect(1:grid_size), 1, grid_size) #coordinate matrix
     s_indices = coord[C.>0]
     a_indices = transpose(coord)[C.>0]
     L = length(a_indices)
 
+.. code-block:: julia
+  :class: test
 
+  @testset "SAP Tests 2" begin
+    @test L == 118841
+    @test a_indices[14] == 1
+  end
 
 .. code-block:: julia
 
     s_indices
-
 
 
 Now let's set up :math:`R` and :math:`Q`
@@ -860,8 +846,18 @@ Now let's set up :math:`R` and :math:`Q`
     R = u_log.(C[C.>0])
 
 .. code-block:: julia
+  :class: test
 
-    Q = spzeros(L, grid_size)
+  @testset "R Tests" begin
+    @test R[4] ≈ -2.873514275079717
+    @test length(R) == 118841
+  end
+
+.. code-block:: julia
+
+    using SparseArrays
+
+    Q = spzeros(L, grid_size) # Formerly spzeros
 
     for i in 1:L
       Q[i, a_indices[i]] = 1
@@ -883,7 +879,14 @@ Solving the Model
     v, σ, num_iter = results.v, results.sigma, results.num_iter
     num_iter
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Results Test" begin
+    @test v[4] ≈ -42.301381867365954
+    @test σ[4] == 10
+    @test num_iter ≤ 10
+  end
 
 Let us compare the solution of the discrete model with the exact
 solution of the original continuous model. Here's the exact solution:
@@ -900,15 +903,20 @@ solution of the original continuous model. Here's the exact solution:
     c_star(k) = (1 - α * β) * k.^α
 
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Comparison Tests" begin
+    @test c2 ≈ 1.699346405228758
+    @test c_star(c2) ≈ 0.5399016884304844
+    @test ab ≈ 0.6174999999999999
+  end
 
 Let's plot the value functions.
 
 .. code-block:: julia
 
     plot(grid, [v v_star.(grid)], ylim=(-40, -32), lw=2, label=["discrete" "continuous"])
-
-
 
 They are barely distinguishable (although you can see the difference if
 you zoom).
@@ -921,8 +929,6 @@ consumption.
     plot(grid, [c c_star.(grid)], lw=2, label=["discrete" "continuous"])
 
 
-
-
 These functions are again close, although some difference is visible and
 becomes more obvious as you zoom. Here are some statistics:
 
@@ -930,8 +936,12 @@ becomes more obvious as you zoom. Here are some statistics:
 
     maximum(abs, v - v_star.(grid))
 
+.. code-block:: julia
+  :class: test
 
-
+  @testset "Error Tests" begin
+    @test maximum(abs, v - v_star.(grid)) ≈ 121.49819147053378
+  end
 
 This is a big error, but most of the error occurs at the lowest
 gridpoint. Otherwise the fit is reasonable:
@@ -940,19 +950,25 @@ gridpoint. Otherwise the fit is reasonable:
 
     maximum(abs, (v - v_star.(grid))[2:end])
 
+.. code-block:: julia
+  :class: test
 
-
-
+  @testset "Truncated Error Tests" begin
+    @test maximum(abs, (v - v_star.(grid))[2:end]) ≈ 0.012681735127500815
+  end
 
 The value function is monotone, as expected:
 
 .. code-block:: julia
 
-    all(diff(v).>=0)
+    all(x -> x ≥ 0, diff(v))
 
+.. code-block:: julia
+  :class: test
 
-
-
+  @testset "Monotonicity Test" begin
+    @test all(x -> x ≥ 0, diff(v))
+  end
 
 Comparison of the solution methods
 ----------------------------------
@@ -966,15 +982,9 @@ faster that value function iteration.
     @time results = solve(ddp, PFI)
 
 
-
-
-
 .. code-block:: julia
 
     @time res1 = solve(ddp, VFI, max_iter=500, epsilon=1e-4)
-
-
-
 
 
 .. code-block:: julia
@@ -982,18 +992,20 @@ faster that value function iteration.
     res1.num_iter
 
 
-
 .. code-block:: julia
 
     σ == res1.sigma
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Equivalence Test" begin
+    @test σ == res1.sigma
+  end
 
 .. code-block:: julia
 
     @time res2 = solve(ddp, MPFI, max_iter=500, epsilon=1e-4)
-
-
 
 
 .. code-block:: julia
@@ -1001,13 +1013,16 @@ faster that value function iteration.
     res2.num_iter
 
 
-
-
 .. code-block:: julia
 
     σ == res2.sigma
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Other Equivalence Test" begin
+    @test σ == res2.sigma
+  end
 
 Replication of the figures
 --------------------------
@@ -1017,7 +1032,7 @@ lecture.
 
 .. code-block:: julia
 
-    w_init = 5 * log.(grid) - 25  # Initial condition
+    w_init = 5 * log.(grid) .- 25  # Initial condition
     n = 50
 
     ws = []
@@ -1039,7 +1054,13 @@ lecture.
     plot!(grid, ws,  label="", color=reshape(colors, 1, length(colors)), lw=2)
     plot!(grid, v_star.(grid), label="true value function", color=:red, lw=2)
 
+.. code-block:: julia
+  :class: test
 
+  @testset "Plots Test" begin
+    @test ws[4][5] ≈ -37.93858578025213
+    @test v_star.(grid)[4] ≈ -42.29801689484901
+  end
 
 
 We next plot the consumption policies along the value iteration. First
@@ -1064,9 +1085,6 @@ stages of iteration.
     end
 
 
-
-
-
 Now let's generate the plots.
 
 .. code-block:: julia
@@ -1088,7 +1106,15 @@ Now let's generate the plots.
         title=["2 iterations" "4 iterations" "6 iterations"])
 
 
+.. code-block:: julia
+  :class: test
 
+  @testset "New Tests" begin
+    @test true_c[5] ≈ 0.026055057901168556
+    @test c_policies[1][5] ≈ 0.016012616069698123
+    @test c_policies[2][5] ≈ 0.02402864412581035
+    @test c_policies[3][5] ≈ 0.02402864412581035
+  end
 
 
 Dynamics of the capital stock
@@ -1105,7 +1131,7 @@ condition :math:`k_0 = 0.1`.
     discount_factors = (0.9, 0.94, 0.98)
     k_init = 0.1
 
-    k_init_ind = findfirst(collect(grid) .>= k_init, true)
+    k_init_ind = findfirst(collect(grid) .≥ k_init)
 
     sample_size = 25
 
@@ -1130,24 +1156,28 @@ condition :math:`k_0 = 0.1`.
         markershape=:circle,
         label=reshape(labels, 1, length(labels)))
 
+.. code-block:: julia
+  :class: test
 
-
-
+  @testset "Final Tests" begin
+    @test k_init_ind == 26
+    @test k_paths[3][2] ≈ 0.14829751903807614
+    @test k_paths[2][5] ≈ 0.21242574348697396
+    @test k_paths[1][7] ≈ 0.20841772945891784
+  end
 
 .. _ddp_algorithms:
 
 Appendix: Algorithms
 ==========================
 
-This appendix covers the details of the solution algorithms implemented for ``DiscreteDP`` 
+This appendix covers the details of the solution algorithms implemented for ``DiscreteDP``
 
 We will make use of the following notions of approximate optimality:
 
 * For :math:`\varepsilon > 0`, :math:`v` is called an  :math:`\varepsilon`-approximation of :math:`v^*` if :math:`\lVert v - v^*\rVert < \varepsilon`
 
 * A policy :math:`\sigma \in \Sigma` is called :math:`\varepsilon`-optimal if :math:`v_{\sigma}` is an :math:`\varepsilon`-approximation of :math:`v^*`
-
-
 
 Value Iteration
 ------------------
@@ -1164,10 +1194,10 @@ follows
 
 4. Compute a :math:`v^{i+1}`-greedy policy :math:`\sigma`, and return :math:`v^{i+1}` and :math:`\sigma`
 
-Given :math:`\varepsilon > 0`, the value iteration algorithm 
+Given :math:`\varepsilon > 0`, the value iteration algorithm
 
 * terminates in a finite number of iterations
-  
+
 * returns an :math:`\varepsilon/2`-approximation of the optimal value function and an :math:`\varepsilon`-optimal policy function (unless ``iter_max`` is reached)
 
 (While not explicit, in the actual implementation each algorithm is
@@ -1223,5 +1253,3 @@ terminates in a finite number of iterations
 It returns an :math:`\varepsilon/2`-approximation of the optimal value function and an :math:`\varepsilon`-optimal policy function (unless ``iter_max`` is reached).
 
 See also the documentation for ``DiscreteDP``
-
-
