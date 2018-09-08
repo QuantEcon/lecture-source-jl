@@ -687,7 +687,7 @@ can easily simulate it, compute its stationary distribution and so on
 .. code-block:: julia 
   :class: test 
 
-  @testset "Stationary Distributions Test" begins
+  @testset "Stationary Distributions Test" begin
     @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
     @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 # Only one element of this `mc` field.
   end 
@@ -719,7 +719,7 @@ What happens if the agent is more patient?
   :class: test 
 
   @testset "Patience Shock Tests" begin
-    @test std_2[3] 0.03147788040836169
+    @test std_2[3] ≈ 0.03147788040836169
   end 
 
 .. code-block:: julia
@@ -758,7 +758,7 @@ Here's how we could set up these objects for the preceding example
 
 .. code-block:: julia 
 
-using QuantEcon
+  using QuantEcon
 
     B = 10
     M = 5
@@ -906,8 +906,8 @@ Now let's set up :math:`R` and :math:`Q`
 .. code-block:: julia 
   :class: test 
 
-  @test "R Tests" begin 
-    @test R[4] -2.873514275079717
+  @testset "R Tests" begin 
+    @test R[4] ≈ -2.873514275079717
     @test length(R) == 118841
   end 
 
@@ -920,9 +920,6 @@ Now let's set up :math:`R` and :math:`Q`
     for i in 1:L
       Q[i, a_indices[i]] = 1
     end
-
-.. code-block:: julia 
-
 
 We're now in a position to create an instance of ``DiscreteDP``
 corresponding to the growth model.
@@ -944,7 +941,7 @@ Solving the Model
   :class: test 
 
   @testset "Results Test" begin
-    @test v[4] -42.301381867365954
+    @test v[4] ≈ -42.301381867365954
     @test σ[4] == 10 
     @test num_iter <= 10
   end 
@@ -1016,7 +1013,7 @@ gridpoint. Otherwise the fit is reasonable:
 .. code-block:: julia 
   :class: test 
 
-  @test "Truncated Error Tests" begin 
+  @testset "Truncated Error Tests" begin 
     @test maximum(abs, (v - v_star.(grid))[2:end]) ≈ 0.012681735127500815
   end 
 
@@ -1240,7 +1237,7 @@ condition :math:`k_0 = 0.1`.
     @test k_init_ind == 26 
     @test k_paths[3][2] ≈ 0.14829751903807614
     @test k_paths[2][5] ≈ 0.21242574348697396
-    @test k_patsh[1][7] ≈ 0.20841772945891784
+    @test k_paths[1][7] ≈ 0.20841772945891784
   end 
 
 .. _ddp_algorithms:
