@@ -668,7 +668,13 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 .. code-block:: julia 
   :class: test 
 
-  
+  @testset "Second Tests" begin 
+    @test R == 1.03 # R Test 
+    @test a[1] == 0.0 && a[end] == 4.0 && length(a) == 50 && a[5] ≈ 0.32653061224489793 # a test 
+    @test c[2] ≈ 0.5840816184991617 # Another c test. 
+    @test z_vals == [0.5, 1.0] # z test. 
+  end 
+
 
 
 The blue line and orange line represent the function
@@ -772,7 +778,16 @@ Exercise 1
     plot!(cp.asset_grid, c2[:, 1], label="policy function iteration")
     plot!(xlabel="asset level", ylabel="Consumption (low income)")
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Solution 1 Test" begin
+    @test V2[4] ≈ 9.959128322441863
+    @test c2[4] ≈ 0.9228628558005412
+    @test V[4]  ≈ -0.29934184664826585
+    @test c[4] ≈ 0.6831426324947134
+    @test c[4] ≈ 0.6831426324947134
+  end 
 
 
 Exercise 2
@@ -798,7 +813,17 @@ Exercise 2
     plot(traces, label=reshape(legends, 1, length(legends)))
     plot!(xlabel="asset level", ylabel="Consumption (low income)")
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Solution 2 Tests" begin 
+    @test traces[4][4] ≈ 0.8384185293892902
+    @test traces[3][4] ≈ 0.8870096400611711
+    @test traces[2][4] ≈ 0.9169316983006888
+    @test traces[1][4] ≈ 0.9392079210876051
+    @test length(r_vals) == 4 && r_vals[1] == 0.0 && r_vals[end] == 0.04
+
+  end 
 
 
 Exercise 3
@@ -828,7 +853,13 @@ Exercise 3
     a = compute_asset_series(cp)
     histogram(a, nbins=20, leg=false, normed=true, xlabel="assets")
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset "Solution 3 Tests" begin 
+    @test a[4] ≈ 0.08346318000026565
+    @test length(a) == 500001
+  end 
 
 
 Exercise 4
@@ -857,6 +888,11 @@ Exercise 4
     plot(xs, ys, label=reshape(legends, 1, length(legends)))
     plot!(xlabel="capital", ylabel="interest rate", yticks=([0, 0.045]))
 
+.. code-block:: julia 
+  :class: test 
 
-
-
+  @testset "Solution 4 Tests" begin 
+    @test xs[2][4] ≈ -2.876896970031859
+    @test xs[1][4] ≈ -0.8912726049467036
+    @test ys[2][4] ≈ 0.005
+  end 
