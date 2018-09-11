@@ -369,6 +369,15 @@ As a first example of what we can do, let's compute and plot an optimal accumula
     plot!(a_vals, a_vals, label="", color=:black, linestyle=:dash)
     plot!(xlabel="current assets", ylabel="next period assets", grid=false)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test a_vals[4] ≈ 0.3015075377869347
+    @test a_star[4] ≈ 0.2010050252246231
+    @test results.v[4] ≈ -27.48291672016239
+    @test z_vals == [0.1, 1.0]
+  end 
 
 The plot shows asset accumulation policies at different values of the exogenous state
 
@@ -435,4 +444,12 @@ The intersection gives equilibrium interest rates and capital
     plot(k_vals, [demand r_vals], label=labels, lw=2, alpha=0.6)
     plot!(xlabel="capital", ylabel="interest rate", xlim=(2, 14), ylim=(0.0, 0.1))
 
-
+.. code-block:: julia 
+  :class: test 
+  
+  @testset begin 
+    @test k_vals[4] ≈ 3.920775511050653
+    @test demand[4] ≈ 0.08211578674946372
+    @test r_vals[4] ≈ 0.010526315789473684
+    @test num_points == 20 
+  end 
