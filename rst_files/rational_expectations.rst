@@ -677,8 +677,13 @@ Exercise 1
 ----------
 
 .. code-block:: julia
+    :class: test
 
-    using QuantEcon
+    using Test
+
+.. code-block:: julia
+
+    using QuantEcon, Printf, LinearAlgebra
 
 To map a problem into a `discounted optimal linear control
 problem <http://quant-econ.net/jl/lqcontrol.html>`__, we need to define
@@ -702,20 +707,20 @@ For :math:`, B, Q, R` we set
 .. math::
 
 
-       A = 
-       \begin{bmatrix} 
+       A =
+       \begin{bmatrix}
            1 & 0 & 0 \\
-           0 & \kappa_1 & \kappa_0 \\ 
-           0 & 0 & 1 
+           0 & \kappa_1 & \kappa_0 \\
+           0 & 0 & 1
        \end{bmatrix},
        \quad
        B = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} ,
        \quad
-       R = 
-       \begin{bmatrix} 
-           0 & a_1/2 & -a_0/2 \\ 
-           a_1/2 & 0 & 0 \\ 
-           -a_0/2 & 0 & 0 
+       R =
+       \begin{bmatrix}
+           0 & a_1/2 & -a_0/2 \\
+           a_1/2 & 0 & 0 \\
+           -a_0/2 & 0 & 0
        \end{bmatrix},
        \quad
        Q = \gamma / 2
@@ -754,11 +759,11 @@ Here's our solution
     a1 = 0.05
     β = 0.95
     γ = 10.0
-    
+
     # == Beliefs == #
     κ0 = 95.5
     κ1 = 0.95
-    
+
     # == Formulate the LQ problem == #
     A = [1  0  0
          0 κ1 κ0
@@ -771,13 +776,13 @@ Here's our solution
          -a0/2      0     0]
 
     Q = 0.5 * γ
-    
+
     # == Solve for the optimal policy == #
-    lq = LQ(Q, R, A, B; bet=β)
+    lq = QuantEcon.LQ(Q, R, A, B; bet = β)
     P, F, d = stationary_values(lq)
-    
+
     hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
-    
+
     @printf("F = [%.3f, %.3f, %.3f]\n", F[1], F[2], F[3])
     @printf("(h0, h1, h2) = [%.3f, %.3f, %.3f]\n", h0, h1, h2)
 
@@ -795,9 +800,9 @@ combined with the previous equation, yields
 .. math::
 
 
-       Y_{t+1} 
-       = n \left( 96.949 + y_t - 0.046 \, Y_t \right)  
-       = n 96.949 + (1 - n 0.046) Y_t 
+       Y_{t+1}
+       = n \left( 96.949 + y_t - 0.046 \, Y_t \right)
+       = n 96.949 + (1 - n 0.046) Y_t
 
 Exercise 2
 ----------
@@ -831,21 +836,20 @@ The following code implements this test
     candidates = ([94.0886298678, 0.923409232937],
                   [93.2119845412, 0.984323478873],
                   [95.0818452486, 0.952459076301])
-    
+
     for (k0, k1) in candidates
         A = [1  0  0
              0 k1 k0
              0  0  1]
-        lq = LQ(Q, R, A, B; bet=β)
+        lq = QuantEcon.LQ(Q, R, A, B; bet=β)
         P, F, d = stationary_values(lq)
         hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
-        
+
         if isapprox(k0, h0; atol = 1e-4) && isapprox(k1, h1 + h2; atol = 1e-4)
             @printf("Equilibrium pair = (%.6f, %.6f)\n", k0, k1)
             @printf("(h0, h1, h2) = [%.6f, %.6f, %.6f]\n", h0, h1, h2)
         end
     end
-
 
 
 The output tells us that the answer is pair (iii), which implies
@@ -902,32 +906,38 @@ By obtaining the optimal policy and using :math:`u_t = - F x_t` or
 .. math::
 
 
-       Y_{t+1} - Y_t = -F_0 Y_t - F_1 
+       Y_{t+1} - Y_t = -F_0 Y_t - F_1
 
 we can obtain the implied aggregate law of motion via
 :math:`\kappa_0 = -F_1` and :math:`\kappa_1 = 1-F_0`
 
-The Python code to solve this problem is below:
-
 .. code-block:: julia
 
     # == Formulate the planner's LQ problem == #
-    A = eye(2)
+    A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
     R = [ a1 / 2.0  -a0 / 2.0
          -a0 / 2.0        0.0]
 
     Q = γ / 2.0
-    
+
     # == Solve for the optimal policy == #
-    lq = LQ(Q, R, A, B; bet=β)
+    lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
-    
+
     # == Print the results == #
     κ0, κ1 = -F[2], 1 - F[1]
     println("κ0=$κ0\tκ1=$κ1")
 
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test κ0 ≈ 95.081845248600 rtol = 4
+      @test κ1 ≈ 0.952459076301 rtol = 4
+  end
 
 
 The output yields the same :math:`(\kappa_0, \kappa_1)` pair obtained as
@@ -942,28 +952,28 @@ from the previous exercise, except that
 .. math::
 
 
-       R = \begin{bmatrix} 
-           a_1 & -a_0/2 \\ 
-           -a_0/2 & 0 
-       \end{bmatrix} 
+       R = \begin{bmatrix}
+           a_1 & -a_0/2 \\
+           -a_0/2 & 0
+       \end{bmatrix}
 
 The problem can be solved as follows
 
 .. code-block:: julia
 
     # == Formulate the monopolist's LQ problem == #
-    A = eye(2)
+    A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
     R = [       a1   -a0 / 2.0
          -a0 / 2.0         0.0]
 
     Q = γ / 2.0
-    
+
     # == Solve for the optimal policy == #
-    lq = LQ(Q, R, A, B; bet=β)
+    lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
-    
+
     # == Print the results == #
     m0, m1 = -F[2], 1 - F[1]
     println("m0=$m0\tm1=$m1")
@@ -987,8 +997,6 @@ lower long run quantity than obtained by the competitive market,
 implying a higher market price
 
 This is analogous to the elementary static-case results
-
-
 
 
 .. rubric:: Footnotes
