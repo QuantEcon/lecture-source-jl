@@ -267,7 +267,7 @@ The type also includes a default set of parameters that we'll adopt unless other
                         a_size::Integer=200)
 
         # set up grids
-        a_vals = linspace(a_min, a_max, a_size)
+        a_vals = range(a_min, stop = a_max, length = a_size)
         z_size = length(z_chain.state_values)
         n = a_size*z_size
         s_vals = gridmake(a_vals, z_chain.state_values)
@@ -417,7 +417,7 @@ The intersection gives equilibrium interest rates and capital
 
     # Create a grid of r values at which to compute demand and supply of capital
     num_points = 20
-    r_vals = linspace(0.005, 0.04, num_points)
+    r_vals = range(0.005, stop = 0.04, length = num_points)
 
     # Compute supply of capital
     k_vals = prices_to_capital_stock.(am, r_vals)
