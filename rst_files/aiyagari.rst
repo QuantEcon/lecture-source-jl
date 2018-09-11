@@ -21,15 +21,15 @@ In this lecture we describe the structure of a class of models that build on wor
 
 .. only:: latex
 
-    We begin by discussing an example of a Bewley model due to `Rao Aiyagari <https://lectures.quantecon.org/_downloads/aiyagari_obit.pdf>`__    
+    We begin by discussing an example of a Bewley model due to `Rao Aiyagari <https://lectures.quantecon.org/_downloads/aiyagari_obit.pdf>`__
 
-The model features 
+The model features
 
-* Heterogeneous agents 
+* Heterogeneous agents
 
 * A single exogenous vehicle for borrowing and lending
 
-* Limits on amounts individual agents may borrow 
+* Limits on amounts individual agents may borrow
 
 
 The Aiyagari model has been used to investigate many topics, including
@@ -66,11 +66,11 @@ Households
 ---------------
 
 
-Infinitely lived households / consumers face idiosyncratic income shocks 
+Infinitely lived households / consumers face idiosyncratic income shocks
 
 A unit interval of  *ex ante* identical households face a common borrowing constraint
 
-The savings problem faced by a typical  household is 
+The savings problem faced by a typical  household is
 
 .. math::
 
@@ -82,8 +82,8 @@ subject to
 .. math::
 
     a_{t+1} + c_t \leq w z_t + (1 + r) a_t
-    \quad 
-    c_t \geq 0, 
+    \quad
+    c_t \geq 0,
     \quad \text{and} \quad
     a_t \geq -B
 
@@ -92,7 +92,7 @@ where
 
 * :math:`c_t` is current consumption
 
-* :math:`a_t` is assets 
+* :math:`a_t` is assets
 
 * :math:`z_t` is an exogenous component of labor income capturing stochastic unemployment risk, etc.
 
@@ -104,9 +104,9 @@ where
 
 The exogenous process :math:`\{z_t\}` follows a finite state Markov chain with given stochastic matrix :math:`P`
 
-The wage and interest rate are fixed over time 
+The wage and interest rate are fixed over time
 
-In this simple version of the model, households supply labor  inelastically because they do not value leisure  
+In this simple version of the model, households supply labor  inelastically because they do not value leisure
 
 
 
@@ -118,7 +118,7 @@ Firms produce output by hiring capital and labor
 
 Firms act competitively and face constant returns to scale
 
-Since returns to scale are constant the number of firms does not matter 
+Since returns to scale are constant the number of firms does not matter
 
 Hence we can consider a single (but nonetheless competitive) representative firm
 
@@ -129,7 +129,7 @@ The firm's output is
     Y_t = A K_t^{\alpha} N^{1 - \alpha}
 
 
-where 
+where
 
 * :math:`A` and :math:`\alpha` are parameters with :math:`A > 0` and :math:`\alpha \in (0, 1)`
 
@@ -170,7 +170,7 @@ Equilibrium
 
 We construct  a *stationary rational expectations equilibrium* (SREE)
 
-In such an equilibrium 
+In such an equilibrium
 
 * prices induce behavior that generates aggregate quantities consistent with the prices
 
@@ -185,7 +185,7 @@ In more detail, an SREE lists a set of prices, savings and production policies s
 
 * the resulting aggregate quantities are consistent with the prices; in particular, the demand for capital equals the supply
 
-* aggregate quantities (defined as cross-sectional averages) are constant 
+* aggregate quantities (defined as cross-sectional averages) are constant
 
 
 In practice, once parameter values are set, we can check for an SREE by the following steps
@@ -197,7 +197,7 @@ In practice, once parameter values are set, we can check for an SREE by the foll
 #. determine the common optimal savings policy of the households given these prices
 
 #. compute aggregate capital as the mean of steady state capital given this savings policy
-   
+
 If this final quantity agrees with :math:`K` then we have a SREE
 
 
@@ -217,7 +217,7 @@ In reading the code, the following information will be helpful
 
 * ``R`` needs to be a matrix where ``R[s, a]`` is the reward at state ``s`` under action ``a``
 
-* ``Q`` needs to be a three dimensional array where ``Q[s, a, s']`` is the probability of transitioning to state ``s'`` when the current state is ``s`` and the current action is ``a`` 
+* ``Q`` needs to be a three dimensional array where ``Q[s, a, s']`` is the probability of transitioning to state ``s'`` when the current state is ``s`` and the current action is ``a``
 
 (For a detailed discussion of ``DiscreteDP`` see :doc:`this lecture <discrete_dp>`)
 
@@ -231,32 +231,32 @@ The action is the choice of next period asset level :math:`a_{t+1}`
 
 The type also includes a default set of parameters that we'll adopt unless otherwise specified
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using QuantEcon, Random, LinearAlgebra
 
-    mutable struct Household
-        r
-        w
-        σ
-        β
-        z_chain
-        a_min
-        a_max
-        a_size
-        a_vals
-        z_size
-        n
-        s_vals
-        s_i_vals
-        R
-        Q
-        u
+    mutable struct Household{TR<:Real, TF<:AbstractFloat, TI<:Integer, VF <: AbstractVector{TF}}
+        r::TR
+        w::TR
+        σ::TR
+        β::TF
+        z_chain::MarkovChain{TF, Matrix{TF}, Vector{TF}}
+        a_min::TR
+        a_max::TR
+        a_size::TI
+        a_vals::VF
+        z_size::TI
+        n::TI
+        s_vals::Matrix{TF}
+        s_i_vals::Matrix{TI}
+        R::Matrix{TR}
+        Q::Array{TR,3}
+        u::Function
     end
 
 
@@ -279,7 +279,7 @@ The type also includes a default set of parameters that we'll adopt unless other
         s_i_vals = gridmake(1:a_size, 1:z_size)
 
         # set up Q
-        Q = zeros(Float64, n, a_size, n)
+        Q = zeros(n, a_size, n)
         for next_s_i in 1:n
             for a_i in 1:a_size
                 for s_i in 1:n
@@ -336,11 +336,10 @@ The type also includes a default set of parameters that we'll adopt unless other
 
 As a first example of what we can do, let's compute and plot an optimal accumulation policy at fixed prices
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using Plots, Random
-    pyplot()
-    Random.seed!(42) 
+    Random.seed!(42)
 
     # Example prices
     r = 0.03
@@ -369,15 +368,15 @@ As a first example of what we can do, let's compute and plot an optimal accumula
     plot!(a_vals, a_vals, label="", color=:black, linestyle=:dash)
     plot!(xlabel="current assets", ylabel="next period assets", grid=false)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test a_vals[4] ≈ 0.3015075377869347
     @test a_star[4] ≈ 0.2010050252246231
     @test results.v[4] ≈ -27.48291672016239
     @test z_vals == [0.1, 1.0]
-  end 
+  end
 
 The plot shows asset accumulation policies at different values of the exogenous state
 
@@ -392,7 +391,7 @@ The following code draws aggregate supply and demand curves
 The intersection gives equilibrium interest rates and capital
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     Random.seed!(42)
 
@@ -444,12 +443,12 @@ The intersection gives equilibrium interest rates and capital
     plot(k_vals, [demand r_vals], label=labels, lw=2, alpha=0.6)
     plot!(xlabel="capital", ylabel="interest rate", xlim=(2, 14), ylim=(0.0, 0.1))
 
-.. code-block:: julia 
-  :class: test 
-  
-  @testset begin 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
     @test k_vals[4] ≈ 3.920775511050653
     @test demand[4] ≈ 0.08211578674946372
     @test r_vals[4] ≈ 0.010526315789473684
-    @test num_points == 20 
-  end 
+    @test num_points == 20
+  end
