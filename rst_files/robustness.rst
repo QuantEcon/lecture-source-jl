@@ -143,6 +143,9 @@ Our discussion in this lecture is based on
 * :cite:`HansenSargent2008`
 
 
+
+
+
 The Model
 ================
 
@@ -494,7 +497,7 @@ This inequality in turn implies the inequality
 .. math::
     :label: rob_bound
 
-    R_\theta(x_0, F) - \theta \ {\rm ent}
+    R_\theta(x_0, F) - \theta \ {\rm ent} 
     \leq \sum_{t=0}^\infty \beta^t \left\{  - x_t' (R + F' Q F) x_t \right\}
 
 
@@ -912,7 +915,7 @@ Here is a brief description of the methods of the type
 
     * ``robust_rule_simple()`` is more transparent and easier to follow
 
-* ``K_to_F()`` and ``F_to_K()`` solve the decision problems
+* ``K_to_F()`` and ``F_to_K()`` solve the decision problems 
   of :ref:`agent 1 <rb_a1>` and :ref:`agent 2 <rb_a2>` respectively
 
 * ``compute_deterministic_entropy()`` computes the left-hand side of :eq:`rb_pdt`
@@ -1022,18 +1025,16 @@ We compute value-entropy correspondences for two policies
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
-.. code-block:: julia
-  :class: test
-
-  using Test
-
-.. code-block:: julia
+.. code-block:: julia 
 
     #=
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-    =#
 
-    using QuantEcon, Plots, LinearAlgebra
+    @author : Spencer Lyon <spencer.lyon@nyu.edu>
+
+    =#
+    using QuantEcon
+    using Plots
+    pyplot()
 
     # model parameters
     a_0 = 100
@@ -1060,27 +1061,31 @@ The code for producing the graph shown above, with blue being for the robust pol
 
     ## Functions
 
-    function evaluate_policy(θ, F)
+    function evaluate_policy(θ::AbstractFloat, F::AbstractArray)
         rlq = RBLQ(Q, R, A, B, C, β, θ)
         K_F, P_F, d_F, O_F, o_F = evaluate_F(rlq, F)
         x0 = [1.0 0.0 0.0]'
-        value = - x0' * P_F * x0 .- d_F
-        entropy = x0' * O_F * x0 .+ o_F
+        value = - x0' * P_F * x0 - d_F
+        entropy = x0' * O_F * x0 + o_F
         return value[1], entropy[1]    # return scalars
     end
 
-    function value_and_entropy(emax, F, bw, grid_size = 1000)
+
+    function value_and_entropy{TF<:AbstractFloat}(emax::AbstractFloat,
+                                                F::AbstractArray{TF},
+                                                bw::String,
+                                                grid_size::Integer=1000)
         if lowercase(bw) == "worst"
-            θs = 1 ./ range(1e-8, stop = 1000, length = grid_size)
+            θs = 1 ./ linspace(1e-8, 1000, grid_size)
         else
-            θs = -1 ./ range(1e-8, stop = 1000, length = grid_size)
+            θs = -1 ./ linspace(1e-8, 1000, grid_size)
         end
 
-        data = zeros(grid_size, 2)
+        data = Array{TF}(grid_size, 2)
 
         for (i, θ) in enumerate(θs)
             data[i, :] = collect(evaluate_policy(θ, F))
-            if data[i, 2] ≥ emax      # stop at this entropy level
+            if data[i, 2] >= emax      # stop at this entropy level
                 data = data[1:i, :]
                 break
             end
@@ -1091,7 +1096,7 @@ The code for producing the graph shown above, with blue being for the robust pol
     ## Main
 
     # compute optimal rule
-    optimal_lq = QuantEcon.LQ(Q, R, A, B, C, zero(B'A), bet=β)
+    optimal_lq = LQ(Q, R, A, B, C, zero(B'A), bet=β)
     Po, Fo, Do = stationary_values(optimal_lq)
 
     # compute robust rule for our θ
@@ -1100,9 +1105,9 @@ The code for producing the graph shown above, with blue being for the robust pol
 
     # Check the positive definiteness of worst-case covariance matrix to
     # ensure that θ exceeds the breakdown point
-    test_matrix = I - (C' * Pb * C ./ θ)[1]
-    eigenvals, eigenvecs = eigen(test_matrix)
-    @assert all(eigenvals .≥ 0)
+    test_matrix = eye(size(Pb, 1)) - (C' * Pb * C ./ θ)[1]
+    eigenvals, eigenvecs = eig(test_matrix)
+    @assert all(eigenvals .>= 0)
 
     emax = 1.6e6
 
@@ -1114,10 +1119,10 @@ The code for producing the graph shown above, with blue being for the robust pol
 
     # we reverse order of "worst_case"s so values are ascending
     data_pairs = ((optimal_best_case, optimal_worst_case),
-                  (robust_best_case, robust_worst_case))
+                (robust_best_case, robust_worst_case))
 
-    egrid = range(0, stop = emax, length = 100)
-    egrid_data = Vector{Vector{Float64}}()
+    egrid = linspace(0, emax, 100)
+    egrid_data = Array{Float64}[]
     for data_pair in data_pairs
         for data in data_pair
             x, y = data[:, 2], data[:, 1]
@@ -1133,22 +1138,14 @@ The code for producing the graph shown above, with blue being for the robust pol
     plot!(xlabel="Entropy", ylabel="Value")
 
 
-.. code-block:: julia
-  :class: test
-
-  @testset begin
-      @test egrid_data[1][5] ≈ 80419.75094815007
-      @test egrid_data[2][5] ≈ 49167.71218127703
-      @test egrid_data[3][5] ≈ 24507.292661112777
-      @test egrid_data[4][5] ≈ 16270.141967201153
-  end
-
 Here's another such figure, with :math:`\theta = 0.002` instead of :math:`0.02`
 
 .. figure:: /_static/figures/kg_small_theta.png
    :scale: 70%
 
 Can you explain the different shape of the value-entropy correspondence for the robust policy?
+
+
 
 
 .. _rb_appendix:
