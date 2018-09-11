@@ -914,7 +914,7 @@ we can obtain the implied aggregate law of motion via
 .. code-block:: julia
 
     # == Formulate the planner's LQ problem == #
-    A = diagm(0 => ones(2))
+    A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
     R = [ a1 / 2.0  -a0 / 2.0
@@ -962,7 +962,7 @@ The problem can be solved as follows
 .. code-block:: julia
 
     # == Formulate the monopolist's LQ problem == #
-    A = diagm(0 => ones(2))
+    A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
     R = [       a1   -a0 / 2.0
