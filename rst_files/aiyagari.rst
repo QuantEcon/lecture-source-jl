@@ -232,39 +232,44 @@ The action is the choice of next period asset level :math:`a_{t+1}`
 The type also includes a default set of parameters that we'll adopt unless otherwise specified
 
 .. code-block:: julia 
+  :class: test 
 
-    using QuantEcon
+  using Test 
 
-    mutable struct Household{TR<:Real, TF<:AbstractFloat, TI<:Integer}
-        r::TR
-        w::TR
-        σ::TR
-        β::TF
-        z_chain::MarkovChain{TF, Array{TF, 2}, Array{TF, 1}}
-        a_min::TR
-        a_max::TR
-        a_size::TI
-        a_vals::AbstractVector{TF}
-        z_size::TI
-        n::TI
-        s_vals::Array{TF}
-        s_i_vals::Array{TI}
-        R::Array{TR}
-        Q::Array{TR}
-        u::Function
+.. code-block:: julia 
+
+    using QuantEcon, Random, LinearAlgebra
+
+    mutable struct Household
+        r
+        w
+        σ
+        β
+        z_chain
+        a_min
+        a_max
+        a_size
+        a_vals
+        z_size
+        n
+        s_vals
+        s_i_vals
+        R
+        Q
+        u
     end
 
 
-    function Household{TF<:AbstractFloat}(;
-                        r::Real=0.01,
-                        w::Real=1.0,
-                        σ::Real=1.0,
-                        β::TF=0.96,
-                        z_chain::MarkovChain{TF,Array{TF,2},Array{TF,1}}
+    function Household(;
+                        r=0.01,
+                        w=1.0,
+                        σ=1.0,
+                        β=0.96,
+                        z_chain
                             =MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
-                        a_min::Real=1e-10,
-                        a_max::Real=18.0,
-                        a_size::Integer=200)
+                        a_min=1e-10,
+                        a_max=18.0,
+                        a_size=200)
 
         # set up grids
         a_vals = range(a_min, stop = a_max, length = a_size)
@@ -274,7 +279,7 @@ The type also includes a default set of parameters that we'll adopt unless other
         s_i_vals = gridmake(1:a_size, 1:z_size)
 
         # set up Q
-        Q = zeros(TF, n, a_size, n)
+        Q = zeros(Float64, n, a_size, n)
         for next_s_i in 1:n
             for a_i in 1:a_size
                 for s_i in 1:n
@@ -305,7 +310,7 @@ The type also includes a default set of parameters that we'll adopt unless other
 
     end
 
-    function setup_R!(h::Household, r::Real, w::Real)
+    function setup_R!(h, r, w)
 
         # set up R
         R = h.R
@@ -333,9 +338,9 @@ As a first example of what we can do, let's compute and plot an optimal accumula
 
 .. code-block:: julia 
 
-    using LaTeXStrings
-    using Plots
+    using Plots, Random
     pyplot()
+    Random.seed!(42) 
 
     # Example prices
     r = 0.03
@@ -359,7 +364,7 @@ As a first example of what we can do, let's compute and plot an optimal accumula
     # a indices with z fixed in each column
     a_star = reshape([a_vals[results.sigma[s_i]] for s_i in 1:n], a_size, z_size)
 
-    labels = [latexstring("\z = $(z_vals[1])") latexstring("\z = $(z_vals[2])")]
+    labels = ["z = z_vals[1]", "z = z_vals[2]"]
     plot(a_vals, a_star, label=labels, lw=2, alpha=0.6)
     plot!(a_vals, a_vals, label="", color=:black, linestyle=:dash)
     plot!(xlabel="current assets", ylabel="next period assets", grid=false)
@@ -380,6 +385,8 @@ The intersection gives equilibrium interest rates and capital
 
 .. code-block:: julia 
 
+    Random.seed!(42)
+
     # Firms' parameters
     const A = 1
     const N = 1
@@ -387,15 +394,15 @@ The intersection gives equilibrium interest rates and capital
     const β = 0.96
     const δ = 0.05
 
-    function r_to_w(r::Real)
+    function r_to_w(r)
         return A * (1 - α) * (A * α / (r + δ)) ^ (α / (1 - α))
     end
 
-    function rd(K::Real)
+    function rd(K)
         return A * α * (N / K) ^ (1 - α) - δ
     end
 
-    function prices_to_capital_stock(am::Household, r::Real)
+    function prices_to_capital_stock(am, r)
 
         # Set up problem
         w = r_to_w(r)
@@ -420,7 +427,7 @@ The intersection gives equilibrium interest rates and capital
     r_vals = range(0.005, stop = 0.04, length = num_points)
 
     # Compute supply of capital
-    k_vals = prices_to_capital_stock.(am, r_vals)
+    k_vals = prices_to_capital_stock.(Ref(am), r_vals)
 
     # Plot against demand for capital by firms
     demand = rd.(k_vals)
