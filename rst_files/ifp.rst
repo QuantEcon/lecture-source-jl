@@ -98,7 +98,7 @@ Here
 * :math:`R := 1 + r`, where :math:`r > 0` is the interest rate on savings
 
 
-Non-capital income :math:`\{z_t\}` is assumed to be a Markov process taking values in :math:`Z\subset (0,\infty)` with stochastic kernel :math:`\Pi` 
+Non-capital income :math:`\{z_t\}` is assumed to be a Markov process taking values in :math:`Z\subset (0,\infty)` with stochastic kernel :math:`\Pi`
 
 This means that :math:`\Pi(z, B)` is the probability that :math:`z_{t+1} \in
 B` given :math:`z_t = z`
@@ -157,14 +157,14 @@ To pin down such paths we can use a version of the Euler equation, which in the 
     :label: ee00
 
     u' (c_t)
-    \geq \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ] 
+    \geq \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]
 
 and
 
 .. math::
     :label: ee01
 
-    u' (c_t) = \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ] 
+    u' (c_t) = \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]
     \quad \text{whenever }
     c_t < Ra_t + z_t + b
 
@@ -175,7 +175,7 @@ Interiority means that :math:`c_t` is strictly less than its upper bound :math:`
 (The lower boundary case :math:`c_t = 0` never arises at the optimum because
 :math:`u'(0) = \infty`)
 
-When :math:`c_t` does hit the upper bound :math:`Ra_t + z_t + b`, the 
+When :math:`c_t` does hit the upper bound :math:`Ra_t + z_t + b`, the
 strict inequality :math:`u' (c_t) > \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]`
 can occur because :math:`c_t` cannot increase sufficiently to attain equality
 
@@ -245,7 +245,7 @@ Computation
 
 There are two standard ways to solve for :math:`c^*`
 
-#. Time iteration (TI) using the Euler equality 
+#. Time iteration (TI) using the Euler equality
 
 #. Value function iteration (VFI)
 
@@ -391,141 +391,135 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
 * an ``initialize``, which generates suitable initial conditions for iteration
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+    :class: test
 
-  using Test 
+    using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
-  using QuantEcon, Optim, LinearAlgebra
+    using QuantEcon, Optim, LinearAlgebra, Random
 
-  # utility and marginal utility functions
-  u(x) = log(x)
-  du(x) = 1 / x
+    # utility and marginal utility functions
+    u(x) = log(x)
+    du(x) = 1 / x
 
-  struct ConsumerProblem
-      r
-      R
-      β
-      b
-      Π
-      z_vals
-      asset_grid
-  end
+    struct ConsumerProblem
+        r::Float64
+        R::Float64
+        β::Float64
+        b::Float64
+        Π::Matrix{Float64}
+        z_vals::Vector{Float64}
+        asset_grid::Vector{Float64}
+    end
 
-  function ConsumerProblem(;r=0.01,
-                          β=0.96,
-                          Π=[0.6 0.4; 0.05 0.95],
-                          z_vals=[0.5, 1.0],
-                          b=0.0,
-                          grid_max=16,
-                          grid_size=50)
-      R = 1 + r
-      asset_grid = range(-b, stop = grid_max, length = grid_size)
+    function ConsumerProblem(;r=0.01,
+                            β=0.96,
+                            Π=[0.6 0.4; 0.05 0.95],
+                            z_vals=[0.5, 1.0],
+                            b=0.0,
+                            grid_max=16,
+                            grid_size=50)
+        R = 1 + r
+        asset_grid = range(-b, stop = grid_max, length = grid_size)
 
-      ConsumerProblem(r, R, β, b, Π, z_vals, asset_grid)
-  end
-
-
-  function bellman_operator!(cp::ConsumerProblem,
-                          V::Matrix,
-                          out::Matrix;
-                          ret_policy::Bool=false)
-
-      # simplify names, set up arrays
-      R, Π, β, b = cp.R, cp.Π, cp.β, cp.b
-      asset_grid, z_vals = cp.asset_grid, cp.z_vals
-      z_idx = 1:length(z_vals)
-
-      # value function when the shock index is z_i
-      vf = interp(asset_grid, V)
-
-      opt_lb = 1e-8
-
-      # solve for RHS of Bellman equation
-      for (i_z, z) in enumerate(z_vals)
-          for (i_a, a) in enumerate(asset_grid)
-
-              function obj(c)
-                  EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
-                  return -u(c)  - β * EV
-              end
-              res = optimize(obj, opt_lb, R .* a .+ z .+ b)
-              c_star = Optim.minimizer(res)
-
-              if ret_policy
-                  out[i_a, i_z] = c_star
-              else
-              out[i_a, i_z] = - Optim.minimum(res)
-              end
-
-          end
-      end
-      out
-  end
-
-  bellman_operator(cp::ConsumerProblem, V::Matrix; ret_policy=false) =
-      bellman_operator!(cp, V, similar(V); ret_policy=ret_policy)
-
-  get_greedy!(cp::ConsumerProblem, V::Matrix, out::Matrix) =
-      update_bellman!(cp, V, out, ret_policy=true)
-
-  get_greedy(cp::ConsumerProblem, V::Matrix) =
-      update_bellman(cp, V, ret_policy=true)
+        ConsumerProblem(r, R, β, b, Π, z_vals, asset_grid)
+    end
 
 
-  function coleman_operator!(cp::ConsumerProblem, c::Matrix, out::Matrix)
-      # simplify names, set up arrays
-      R, Π, β, b = cp.R, cp.Π, cp.β, cp.b
-      asset_grid, z_vals = cp.asset_grid, cp.z_vals
-      z_idx = 1:length(z_vals)
-      gam = R * β
+    function bellman_operator!(cp, V, out; ret_policy = false)
 
-      # policy function when the shock index is z_i
-      cf = interp(asset_grid, c)
+        # simplify names, set up arrays
+        R, Π, β, b = cp.R, cp.Π, cp.β, cp.b
+        asset_grid, z_vals = cp.asset_grid, cp.z_vals
+        z_idx = 1:length(z_vals)
 
-      # compute lower_bound for optimization
-      opt_lb = 1e-8
+        # value function when the shock index is z_i
+        vf = interp(asset_grid, V)
 
-      for (i_z, z) in enumerate(z_vals)
-          for (i_a, a) in enumerate(asset_grid)
-              function h(t)
-                  cps = cf.(R * a + z - t, z_idx) # c' for each z'
-                  expectation = dot(du.(cps), Π[i_z, :])
-                  return abs(du(t) - max(gam * expectation, du(R * a + z + b)))
-              end
-              opt_ub = R*a + z + b  # addresses issue #8 on github
-              res = optimize(h, min(opt_lb, opt_ub - 1e-2), opt_ub,
-                          method=Optim.Brent())
-              out[i_a, i_z] = Optim.minimizer(res)
-          end
-      end
-      out
-  end
+        opt_lb = 1e-8
 
+        # solve for RHS of Bellman equation
+        for (i_z, z) in enumerate(z_vals)
+            for (i_a, a) in enumerate(asset_grid)
 
-  coleman_operator(cp::ConsumerProblem, c::Matrix) =
-      coleman_operator!(cp, c, similar(c))
+                function obj(c)
+                    EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
+                    return -u(c)  - β * EV
+                end
+                res = optimize(obj, opt_lb, R .* a .+ z .+ b)
+                c_star = Optim.minimizer(res)
 
-  function initialize(cp::ConsumerProblem)
-      # simplify names, set up arrays
-      R, β, b = cp.R, cp.β, cp.b
-      asset_grid, z_vals = cp.asset_grid, cp.z_vals
-      shape = length(asset_grid), length(z_vals)
-      V, c = zeros(Float64, shape...), zeros(Float64, shape...)
+                if ret_policy
+                    out[i_a, i_z] = c_star
+                else
+                out[i_a, i_z] = - Optim.minimum(res)
+                end
 
-      # Populate V and c
-      for (i_z, z) in enumerate(z_vals)
-          for (i_a, a) in enumerate(asset_grid)
-              c_max = R * a + z + b
-              c[i_a, i_z] = c_max
-              V[i_a, i_z] = u(c_max) ./ (1 - β)
-          end
-      end
+            end
+        end
+        out
+    end
 
-      return V, c
-  end
+    bellman_operator(cp, V; ret_policy  =false) =
+        bellman_operator!(cp, V, similar(V); ret_policy = ret_policy)
+
+    get_greedy!(cp, V, out) =
+        update_bellman!(cp, V, out, ret_policy = true)
+
+    get_greedy(cp, V) =
+        update_bellman(cp, V, ret_policy = true)
+
+    function coleman_operator!(cp, c, out)
+        # simplify names, set up arrays
+        R, Π, β, b = cp.R, cp.Π, cp.β, cp.b
+        asset_grid, z_vals = cp.asset_grid, cp.z_vals
+        z_idx = 1:length(z_vals)
+        gam = R * β
+
+        # policy function when the shock index is z_i
+        cf = interp(asset_grid, c)
+
+        # compute lower_bound for optimization
+        opt_lb = 1e-8
+
+        for (i_z, z) in enumerate(z_vals)
+            for (i_a, a) in enumerate(asset_grid)
+                function h(t)
+                    cps = cf.(R * a + z - t, z_idx) # c' for each z'
+                    expectation = dot(du.(cps), Π[i_z, :])
+                    return abs(du(t) - max(gam * expectation, du(R * a + z + b)))
+                end
+                opt_ub = R*a + z + b  # addresses issue #8 on github
+                res = optimize(h, min(opt_lb, opt_ub - 1e-2), opt_ub,
+                               method = Optim.Brent())
+                out[i_a, i_z] = Optim.minimizer(res)
+            end
+        end
+        out
+    end
+
+    coleman_operator(cp, c) = coleman_operator!(cp, c, similar(c))
+
+    function initialize(cp::ConsumerProblem)
+        # simplify names, set up arrays
+        R, β, b = cp.R, cp.β, cp.b
+        asset_grid, z_vals = cp.asset_grid, cp.z_vals
+        shape = length(asset_grid), length(z_vals)
+        V, c = zeros(shape...), zeros(shape...)
+
+        # Populate V and c
+        for (i_z, z) in enumerate(z_vals)
+            for (i_a, a) in enumerate(asset_grid)
+                c_max = R * a + z + b
+                c[i_a, i_z] = c_max
+                V[i_a, i_z] = u(c_max) ./ (1 - β)
+            end
+        end
+
+        return V, c
+    end
 
 
 Both ``bellman_operator`` and ``coleman_operator`` use linear interpolation along the asset grid to approximate the value and consumption functions
@@ -569,21 +563,18 @@ faster than iteration with :math:`T`
 In the Julia console, a comparison of the operators can be made as follows
 
 
-
 .. code-block:: julia
 
     cp = ConsumerProblem()
     v, c, = initialize(cp)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "First Tests" begin 
-    @test v[4] ≈ 9.959128322441863
-    @test v[end] ≈ 71.06452735149534
-    @test c[4] ≈ 0.8384185293892902
-    @test size(c) == (50, 2)
-  end 
+  @testset begin
+      @test c[5,1] ≈ 1.8191836734693876
+      @test v[3,2] ≈ 12.66429226623797
+  end
 
 .. code-block:: julia
 
@@ -593,13 +584,6 @@ In the Julia console, a comparison of the operators can be made as follows
 .. code-block:: julia
 
     @time coleman_operator(cp, c);
-
-
-
-
-
-
-
 
 
 .. _ifp_ex2:
@@ -615,14 +599,10 @@ Reproduce the following figure, which shows (approximately) optimal consumption 
    :scale: 100%
 
 * Other than `r`, all parameters are at their default values
-* `r` steps through `linspace(0, 0.04, 4)`
+* `r` steps through `range(0, stop = 0.04, length = 4)`
 * Consumption is plotted against assets for income shock fixed at the smallest value
 
 The figure shows that higher interest rates boost savings and hence suppress consumption
-
-
-
-
 
 
 .. _ifp_ex3:
@@ -637,44 +617,39 @@ We'll take `r = 0.03` and otherwise use default parameters
 The following figure is a 45 degree diagram showing the law of motion for assets when consumption is optimal
 
 
-
 .. code-block:: julia
 
     using Plots
-    pyplot()
-
 
     # === solve for optimal consumption === #
 
     m = ConsumerProblem(r=0.03, grid_max=4)
     v_init, c_init = initialize(m)
 
-    c = compute_fixed_point(c -> coleman_operator(m, c), 
-                            c_init, 
-                            max_iter=150, 
-                            verbose=false)
+    c = compute_fixed_point(c -> coleman_operator(m, c),
+                            c_init,
+                            max_iter = 150,
+                            verbose = false)
     a = m.asset_grid
     R, z_vals = m.R, m.z_vals
 
     # === generate savings plot === #
 
-    plot(a, R * a + z_vals[1] - c[:, 1], label="Low income")
+    plot(a, R * a .+ z_vals[1] - c[:, 1], label="Low income")
     plot!(xlabel="Current assets", ylabel="Next period assets")
-    plot!(a, R * a + z_vals[2] - c[:, 2], label="High income")
+    plot!(a, R * a .+ z_vals[2] - c[:, 2], label="High income")
     plot!(xlabel="Current assets", ylabel="Next period assets")
     plot!(a, a, linestyle=:dash, color="black", label="")
     plot!(xlabel="Current assets", ylabel="Next period assets")
 
-.. code-block:: julia 
-  :class: test 
 
-  @testset "Second Tests" begin 
-    @test R == 1.03 # R Test 
-    @test a[1] == 0.0 && a[end] == 4.0 && length(a) == 50 && a[5] ≈ 0.32653061224489793 # a test 
-    @test c[2] ≈ 0.5840816184991617 # Another c test. 
-    @test z_vals == [0.5, 1.0] # z test. 
-  end 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+      @test c[3,1] ≈ 0.6425652598985643
+      @test c[end,end] ≈ 1.283999183488841
+  end
 
 
 The blue line and orange line represent the function
@@ -716,7 +691,6 @@ Your task is to replicate the figure
 * You might find it helpful to use the ``MarkovChain`` type from ``quantecon``
 
 
-
 .. _ifp_ex4:
 
 Exercise 4
@@ -749,9 +723,6 @@ when :math:`r=0` for both cases shown here
 Solutions
 ==========
 
-
-
-
 Exercise 1
 ----------
 
@@ -764,30 +735,28 @@ Exercise 1
     V, c = initialize(cp)
     println("Starting value function iteration")
     for i=1:K
-        V = bellman_operator(cp, V)  
+        V = bellman_operator(cp, V)
     end
-    c1 = bellman_operator(cp, V, ret_policy=true) 
+    c1 = bellman_operator(cp, V, ret_policy=true)
 
     V2, c2 = initialize(cp)
     println("Starting policy function iteration")
-    for i=1:K
+    for i in 1:K
         c2 = coleman_operator(cp, c2)
     end
-    
+
     plot(cp.asset_grid, c1[:, 1], label="value function iteration")
     plot!(cp.asset_grid, c2[:, 1], label="policy function iteration")
     plot!(xlabel="asset level", ylabel="Consumption (low income)")
 
-.. code-block:: julia 
-  :class: test 
 
-  @testset "Solution 1 Test" begin
-    @test V2[4] ≈ 9.959128322441863
-    @test c2[4] ≈ 0.9228628558005412
-    @test V[4]  ≈ -0.29934184664826585
-    @test c[4] ≈ 0.6831426324947134
-    @test c[4] ≈ 0.6831426324947134
-  end 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test c2[3,1] ≈ 0.8371006275720512
+      @test c2[15,2] ≈ 1.5155277331860886
+  end
 
 
 Exercise 2
@@ -795,35 +764,32 @@ Exercise 2
 
 .. code-block:: julia
 
-    r_vals = linspace(0, 0.04, 4)  
+    r_vals = range(0, stop = 0.04, length = 4)
     traces = []
     legends = []
-    
+
     for r_val in r_vals
         cp = ConsumerProblem(r=r_val)
         v_init, c_init = initialize(cp)
-        c = compute_fixed_point(x -> coleman_operator(cp, x), 
-                                c_init, 
-                                max_iter=150, 
-                                verbose=false)
+        c = compute_fixed_point(x -> coleman_operator(cp, x),
+                                c_init,
+                                max_iter = 150,
+                                verbose = false)
         traces = push!(traces, c[:, 1])
-        legends = push!(legends, "r = $(round(r_val, 3))")
+        legends = push!(legends, "r = $(round(r_val, digits = 3))")
     end
-    
+
     plot(traces, label=reshape(legends, 1, length(legends)))
-    plot!(xlabel="asset level", ylabel="Consumption (low income)")
+    plot!(xlabel = "asset level", ylabel = "Consumption (low income)")
 
-.. code-block:: julia 
-  :class: test 
 
-  @testset "Solution 2 Tests" begin 
-    @test traces[4][4] ≈ 0.8384185293892902
-    @test traces[3][4] ≈ 0.8870096400611711
-    @test traces[2][4] ≈ 0.9169316983006888
-    @test traces[1][4] ≈ 0.9392079210876051
-    @test length(r_vals) == 4 && r_vals[1] == 0.0 && r_vals[end] == 0.04
+.. code-block:: julia
+  :class: test
 
-  end 
+  @testset begin
+      @test traces[2][5] ≈ 0.9859378883165114
+      @test traces[3][10] ≈ 1.1440806582742995
+  end
 
 
 Exercise 3
@@ -836,10 +802,10 @@ Exercise 3
         z_idx = 1:length(z_vals)
         v_init, c_init = initialize(cp)
         c = compute_fixed_point(x -> coleman_operator(cp, x), c_init,
-                                max_iter=150, verbose=false)
-        
+                                max_iter = 150, verbose = false)
+
         cf = interp(cp.asset_grid, c)
-    
+
         a = zeros(T+1)
         z_seq = simulate(MarkovChain(Π), T)
         for t=1:T
@@ -848,18 +814,19 @@ Exercise 3
         end
         return a
     end
-    
-    cp = ConsumerProblem(r=0.03, grid_max=4)
+
+    cp = ConsumerProblem(r = 0.03, grid_max = 4)
+    Random.seed!(42) # For reproducibility
     a = compute_asset_series(cp)
     histogram(a, nbins=20, leg=false, normed=true, xlabel="assets")
 
-.. code-block:: julia 
-  :class: test 
 
-  @testset "Solution 3 Tests" begin 
-    @test a[4] ≈ 0.08346318000026565
-    @test length(a) == 500001
-  end 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test a[105] ≈ 0.006474493581506313
+  end
 
 
 Exercise 4
@@ -868,11 +835,12 @@ Exercise 4
 .. code-block:: julia
 
     M = 25
-    r_vals = linspace(0, 0.04, M)  
+    r_vals = range(0, stop = 0.04, length = M)
 
     xs = []
     ys = []
     legends = []
+    Random.seed!(42) # For reproducibility
     for b in [1.0, 3.0]
         asset_mean = zeros(M)
         for (i, r_val) in enumerate(r_vals)
@@ -882,17 +850,18 @@ Exercise 4
         end
         xs = push!(xs, asset_mean)
         ys = push!(ys, r_vals)
-        legends = push!(legends, "b= $b")
-        println("Finished iteration b=$b")
+        legends = push!(legends, "b = $b")
+        println("Finished iteration b = $b")
     end
     plot(xs, ys, label=reshape(legends, 1, length(legends)))
-    plot!(xlabel="capital", ylabel="interest rate", yticks=([0, 0.045]))
+    plot!(xlabel = "capital", ylabel = "interest rate", yticks = ([0, 0.045]))
 
-.. code-block:: julia 
-  :class: test 
 
-  @testset "Solution 4 Tests" begin 
-    @test xs[2][4] ≈ -2.876896970031859
-    @test xs[1][4] ≈ -0.8912726049467036
-    @test ys[2][4] ≈ 0.005
-  end 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test xs[1][10] ≈ -0.7842525469134315
+      @test xs[2][5] ≈ -2.857179797124988
+      @test ys[1] == 0.0:0.0016666666666666668:0.04
+  end
