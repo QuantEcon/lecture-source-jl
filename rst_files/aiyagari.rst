@@ -235,28 +235,6 @@ The type also includes a default set of parameters that we'll adopt unless other
 
     using QuantEcon
 
-    """
-    Stores all the parameters that define the household's
-    problem.
-
-    ##### Fields
-
-    - `r::Real` : interest rate
-    - `w::Real` : wage
-    - `σ::Real` : risk aversion
-    - `β::AbstractFloat` : discount factor
-    - `z_chain::MarkovChain` : MarkovChain for income
-    - `a_min::Real` : minimum on asset grid
-    - `a_max::Real` : maximum on asset grid
-    - `a_size::Integer` : number of points on asset grid
-    - `z_size::Integer` : number of points on income grid
-    - `n::Integer` : number of points in state space: (a, z)
-    - `s_vals::Array{TF} where TF<:AbstractFloat` : stores all the possible (a, z) combinations
-    - `s_i_vals::Array{TI} where TI<:Integer` : stores indices of all the possible (a, z) combinations
-    - `R::Array{TF} where TF<:AbstractFloat` : reward array
-    - `Q::Array{TF} where TF<:AbstractFloat` : transition probability array
-    - `u::Function` : utility function
-    """
     mutable struct Household{TR<:Real, TF<:AbstractFloat, TI<:Integer}
         r::TR
         w::TR
@@ -276,19 +254,7 @@ The type also includes a default set of parameters that we'll adopt unless other
         u::Function
     end
 
-    """
-    Constructor for `Household`
 
-    ##### Arguments
-    - `r::Real(0.01)` : interest rate
-    - `w::Real(1.0)` : wage
-    - `β::AbstractFloat(0.96)` : discount factor
-    - `z_chain::MarkovChain` : MarkovChain for income
-    - `a_min::Real(1e-10)` : minimum on asset grid
-    - `a_max::Real(18.0)` : maximum on asset grid
-    - `a_size::TI(200)` : number of points on asset grid
-
-    """
     function Household{TF<:AbstractFloat}(;
                         r::Real=0.01,
                         w::Real=1.0,
@@ -339,15 +305,6 @@ The type also includes a default set of parameters that we'll adopt unless other
 
     end
 
-    """
-    Update the reward array of a Household object, given
-    a new interest rate and wage.
-
-    ##### Arguments
-    - `h::Household` : instance of Household type
-    - `r::Real(0.01)`: interest rate
-    - `w::Real(1.0)` : wage
-    """
     function setup_R!(h::Household, r::Real, w::Real)
 
         # set up R
@@ -430,31 +387,14 @@ The intersection gives equilibrium interest rates and capital
     const β = 0.96
     const δ = 0.05
 
-    """
-    Compute wage rate given an interest rate, r
-    """
     function r_to_w(r::Real)
         return A * (1 - α) * (A * α / (r + δ)) ^ (α / (1 - α))
     end
 
-    """
-    Inverse demand curve for capital. The interest rate
-    associated with a given demand for capital K.
-    """
     function rd(K::Real)
         return A * α * (N / K) ^ (1 - α) - δ
     end
 
-    """
-    Map prices to the induced level of capital stock.
-
-    ##### Arguments
-    - `am::Household` : Household instance for problem we want to solve
-    - `r::Real` : interest rate
-
-    ##### Returns
-    - The implied level of aggregate capital
-    """
     function prices_to_capital_stock(am::Household, r::Real)
 
         # Set up problem
