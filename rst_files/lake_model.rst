@@ -203,19 +203,17 @@ You can check that :math:`e_t + u_t = 1` implies that :math:`e_{t+1}+u_{t+1} = 1
 
 This follows from the fact that the columns of :math:`\hat A` sum to 1
 
-
 Implementation
 ================
 
-
 Let's code up these equations
-
-
-
-
 
 Here's the code:
 
+.. code-block:: julia
+  :class: test
+
+  using Test
 
 .. code-block:: julia
 
@@ -236,24 +234,10 @@ Here's the code:
         A_hat::Matrix{TF}
     end
 
-    """
-    Constructor with default values for `LakeModel`
-
-    ##### Fields of `LakeModel`
-
-    - λ : job finding rate
-    - α : dismissal rate
-    - b : entry rate into labor force
-    - d : exit rate from labor force
-    - g : net entry rate
-    - A : updates stock
-    - A_hat : updates rate
-
-    """
-    function LakeModel(;λ::AbstractFloat=0.283,
-                        α::AbstractFloat=0.013,
-                        b::AbstractFloat=0.0124,
-                        d::AbstractFloat=0.00822)
+    function LakeModel(;λ = 0.283,
+                        α = 0.013,
+                        b = 0.0124,
+                        d = 0.00822)
 
         g = b - d
         A = [(1-λ) * (1-d) + b  (1-d) * α + b;
@@ -263,21 +247,7 @@ Here's the code:
         return LakeModel(λ, α, b, d, g, A, A_hat)
     end
 
-    """
-    Finds the steady state of the system :math:`x_{t+1} = \hat A x_{t}`
-
-    ##### Arguments
-
-    - lm : instance of `LakeModel`
-    - tol: convergence tolerance
-
-    ##### Returns
-
-    - x : steady state vector of employment and unemployment rates
-
-    """
-
-    function rate_steady_state(lm::LakeModel, tol::AbstractFloat=1e-6)
+    function rate_steady_state(lm, tol = 1e-6)
         x = 0.5 * ones(2)
         error = tol + 1
         while (error > tol)
@@ -288,24 +258,8 @@ Here's the code:
         return x
     end
 
-    """
-    Simulates the the sequence of Employment and Unemployent stocks
-
-    ##### Arguments
-
-    - X0 : contains initial values (E0, U0)
-    - T : number of periods to simulate
-
-    ##### Returns
-
-    - X_path : contains sequence of employment and unemployment stocks
-
-    """
-
-    function simulate_stock_path{TF<:AbstractFloat}(lm::LakeModel,
-                                                    X0::AbstractVector{TF},
-                                                    T::Integer)
-        X_path = Array{TF}(2, T)
+    function simulate_stock_path(lm, X0, T)
+        X_path = zeros(eltype(X0), 2, T)
         X = copy(X0)
         for t in 1:T
             X_path[:, t] = X
@@ -314,23 +268,8 @@ Here's the code:
         return X_path
     end
 
-    """
-    Simulates the the sequence of employment and unemployent rates.
-
-    ##### Arguments
-
-    - X0 : contains initial values (E0, U0)
-    - T : number of periods to simulate
-
-    ##### Returns
-
-    - X_path : contains sequence of employment and unemployment rates
-
-    """
-    function simulate_rate_path{TF<:AbstractFloat}(lm::LakeModel,
-                                                x0::Vector{TF},
-                                                T::Integer)
-        x_path = Array{TF}(2, T)
+    function simulate_rate_path(lm, x0, T)
+        x_path = zeros(eltype(x0), 2, T)
         x = copy(x0)
         for t in 1:T
             x_path[:, t] = x
@@ -339,29 +278,19 @@ Here's the code:
         return x_path
     end
 
-
-
-
 .. code-block:: julia
 
     lm = LakeModel()
     lm.α
 
-
 .. code-block:: julia
 
     lm.A
-
 
 .. code-block:: julia
 
     lm = LakeModel(α = 2.0)
     lm.A
-
-
-
-
-
 
 Aggregate Dynamics
 --------------------
@@ -369,15 +298,9 @@ Aggregate Dynamics
 
 Let's run a simulation under the default parameters (see above) starting from :math:`X_0 = (12, 138)`
 
-
-.. code-block:: julia
-  :class: test
-
-  using Test
-
 .. code-block:: julia
 
-    using Plots
+    using PyPlot
 
     lm = LakeModel()
     N_0 = 150      # Population
@@ -394,9 +317,9 @@ Let's run a simulation under the default parameters (see above) starting from :m
     titles = ["Unemployment" "Employment" "Labor force"]
     x1 = X_path[1, :]
     x2 = X_path[2, :]
-    x3 = squeeze(sum(X_path, 1), 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    fig, axes = subplots(3, 1, figsize=(10, 8))
+    fig, axes = subplots(3, 1, figsize = (10, 8))
 
     for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
         ax[:plot](1:T, x, c="blue")
@@ -406,6 +329,15 @@ Let's run a simulation under the default parameters (see above) starting from :m
 
     fig[:tight_layout]()
 
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x1[1] ≈ 11.999999999999995
+      @test x2[2] ≈ 138.45447156
+      @test x3[3] ≈ 151.25662086
+  end
 
 The aggregates :math:`E_t` and :math:`U_t` don't converge because  their sum :math:`E_t + U_t` grows at rate :math:`g`
 
@@ -456,6 +388,14 @@ Let's look at the convergence of the unemployment and employment rate to steady 
         ax[:set](title=titles[i])
         ax[:grid]("on")
     end
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x_path[1,3] ≈ 0.08137725667264473
+      @test x_path[2,7] ≈ 0.9176350068305223
+  end
 
 
 Dynamics of an Individual Worker
@@ -574,14 +514,14 @@ Let's plot the path of the sample averages over 5,000 periods
 
     α, λ = lm.α, lm.λ
     P = [(1 - λ)     λ;
-        α       (1 - α)]
+         α      (1 - α)]
 
     mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
     xbar = rate_steady_state(lm)
 
     s_path = simulate(mc, T; init=2)
     s_bar_e = cumsum(s_path) ./ (1:T)
-    s_bar_u = 1 - s_bar_e
+    s_bar_u = 1 .- s_bar_e
     s_bars = [s_bar_u s_bar_e]
 
     titles = ["Percent of time unemployed" "Percent of time employed"]
@@ -595,6 +535,13 @@ Let's plot the path of the sample averages over 5,000 periods
         ax[:grid]("on")
     end
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test xbar[1] ≈ 0.043921027960428106
+      @test s_bars[end,end] ≈ 0.957
+  end
 
 The stationary probabilities are given by the dashed red line
 
@@ -720,7 +667,6 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 Fiscal Policy Code
 -----------------------
 
-
 We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
 
 The first piece of code, repeated below, implements value function iteration
@@ -751,9 +697,9 @@ function of the unemployment compensation rate
 
     # The default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
-    w_vec = linspace(1e-3, max_wage, wage_grid_size + 1)
+    w_vec = range(1e-3, stop = max_wage, length = wage_grid_size + 1)
     logw_dist = Normal(log(log_wage_mean), 1)
-    cdf_logw = cdf.(logw_dist, log.(w_vec))
+    cdf_logw = cdf.(Ref(logw_dist), log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
@@ -764,12 +710,12 @@ function of the unemployment compensation rate
                           γ,
                           c-τ,                # post-tax compensation
                           σ,
-                          collect(w_vec-τ),   # post-tax wages
+                          collect(w_vec .- τ),   # post-tax wages
                           p_vec)
 
 
         w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
-        λ = γ * sum(p_vec[w_vec - τ .> w_bar])
+        λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
 
         return w_bar, λ, V, U
     end
@@ -783,7 +729,7 @@ function of the unemployment compensation rate
         u_rate, e_rate = x
 
         # Compute steady state welfare
-        w = sum(V .* p_vec .* (w_vec - τ .> w_bar)) / sum(p_vec .* (w_vec - τ .> w_bar))
+        w = sum(V .* p_vec .* (w_vec .- τ .> w_bar)) / sum(p_vec .* (w_vec .- τ .> w_bar))
         welfare = e_rate .* w + u_rate .* U
 
         return u_rate, e_rate, welfare
@@ -830,6 +776,14 @@ function of the unemployment compensation rate
     end
 
     fig[:tight_layout]()
+
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test c_vec == 5.0:2.288135593220339:140.0
+  end
 
 
 Welfare first increases and then decreases as unemployment benefits rise
@@ -927,7 +881,7 @@ Now plot stocks
 
     x1 = X_path[1, :]
     x2 = X_path[2, :]
-    x3 = squeeze(sum(X_path, 1), 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
     fig, axes = subplots(3, 1, figsize=(10, 8))
 
@@ -939,6 +893,15 @@ Now plot stocks
 
     fig[:tight_layout]()
 
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x1[1] ≈ 8.266806439740906
+      @test x2[2] ≈ 91.43618846013545
+      @test x3[3] ≈ 100.83774723999996
+  end
 
 And how the rates evolve
 
@@ -954,6 +917,14 @@ And how the rates evolve
         ax[:set](title=titles[i])
         ax[:grid]("on")
     end
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x_path[1,3] ≈ 0.09471123542018117
+      @test x_path[2,7] ≈ 0.893616705896849
+  end
 
 We see that it takes 20 periods for the economy to converge to it's new
 steady state levels
@@ -1016,18 +987,26 @@ Finally we combine these two paths and plot
 
     x1 = X_path[1,:]
     x2 = X_path[2,:]
-    x3 = squeeze(sum(X_path, 1), 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
     fig, axes = subplots(3, 1, figsize=(10, 9))
 
     for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
         ax[:plot](1:T, x, "b-", lw=2, alpha=0.7)
-        ax[:set](title=title, ylim=(minimum(x-1), maximum(x+1)))
+        ax[:set](title=title, ylim = extrema(x) .+ (-1, 1))
         ax[:grid]("on")
     end
 
     fig[:tight_layout]()
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x1[1] ≈ 8.266806439740906
+      @test x2[2] ≈ 92.11669328327237
+      @test x3[3] ≈ 98.95872483999996
+  end
 
 And the rates
 
@@ -1043,3 +1022,11 @@ And the rates
         ax[:set](title=titles[i])
         ax[:grid]("on")
     end
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x_path[1,3] ≈ 0.06791496880896275
+      @test x_path[2,7] ≈ 0.9429332289570732
+  end
