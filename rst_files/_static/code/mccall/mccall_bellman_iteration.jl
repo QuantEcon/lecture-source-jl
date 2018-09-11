@@ -1,8 +1,8 @@
-using Distributions
+using Distributions, LinearAlgebra
 
 # A default utility function
 
-function u(c::Real, σ::Real)
+function u(c, σ)
     if c > 0
         return (c^(1 - σ) - 1) / (1 - σ)
     else
@@ -12,11 +12,11 @@ end
 
 # default wage vector with probabilities
 
-const n = 60                                   # n possible outcomes for wage
-const default_w_vec = linspace(10, 20, n)      # wages between 10 and 20
-const a, b = 600, 400                          # shape parameters
+const n = 60                                           # n possible outcomes for wage
+const default_w_vec = range(10, stop = 20, length = n) # wages between 10 and 20
+const a, b = 600, 400                                  # shape parameters
 const dist = BetaBinomial(n-1, a, b)
-const default_p_vec = pdf.(dist, support(dist))
+const default_p_vec = pdf.(Ref(dist), support(dist))
 
 mutable struct McCallModel{TF <: AbstractFloat,
                            TAV <: AbstractVector{TF},
@@ -29,25 +29,17 @@ mutable struct McCallModel{TF <: AbstractFloat,
     w_vec::TAV    # Possible wage values
     p_vec::TAV2   # Probabilities over w_vec
 
-    McCallModel(α::TF=0.2,
-                β::TF=0.98,
-                γ::TF=0.7,
-                c::TF=6.0,
-                σ::TF=2.0,
-                w_vec::TAV=default_w_vec,
-                p_vec::TAV2=default_p_vec) where {TF, TAV, TAV2} =
+    McCallModel(α::TF = 0.2,
+                β::TF = 0.98,
+                γ::TF = 0.7,
+                c::TF = 6.0,
+                σ::TF = 2.0,
+                w_vec::TAV = default_w_vec,
+                p_vec::TAV2 = default_p_vec) where {TF, TAV, TAV2} =
         new{TF, TAV, TAV2}(α, β, γ, c, σ, w_vec, p_vec)
 end
 
-"""
-A function to update the Bellman equations.  Note that V_new is modified in
-place (i.e, modified by this function).  The new value of U is returned.
-
-"""
-function update_bellman!(mcm::McCallModel,
-                         V::AbstractVector,
-                         V_new::AbstractVector,
-                         U::Real)
+function update_bellman!(mcm, V, V_new, U)
     # Simplify notation
     α, β, σ, c, γ = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ
 
@@ -57,15 +49,12 @@ function update_bellman!(mcm::McCallModel,
     end
 
     U_new = u(c, σ) + β * (1 - γ) * U +
-                    β * γ * dot(max.(U, V), mcm.p_vec)
+            β * γ * dot(max.(U, V), mcm.p_vec)
 
     return U_new
 end
 
-
-function solve_mccall_model(mcm::McCallModel;
-                            tol::AbstractFloat=1e-5,
-                            max_iter::Integer=2000)
+function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
 
     V = ones(length(mcm.w_vec))    # Initial guess of V
     V_new = similar(V)             # To store updates to V
