@@ -497,7 +497,7 @@ This inequality in turn implies the inequality
 .. math::
     :label: rob_bound
 
-    R_\theta(x_0, F) - \theta \ {\rm ent} 
+    R_\theta(x_0, F) - \theta \ {\rm ent}
     \leq \sum_{t=0}^\infty \beta^t \left\{  - x_t' (R + F' Q F) x_t \right\}
 
 
@@ -915,7 +915,7 @@ Here is a brief description of the methods of the type
 
     * ``robust_rule_simple()`` is more transparent and easier to follow
 
-* ``K_to_F()`` and ``F_to_K()`` solve the decision problems 
+* ``K_to_F()`` and ``F_to_K()`` solve the decision problems
   of :ref:`agent 1 <rb_a1>` and :ref:`agent 2 <rb_a2>` respectively
 
 * ``compute_deterministic_entropy()`` computes the left-hand side of :eq:`rb_pdt`
@@ -1025,7 +1025,7 @@ We compute value-entropy correspondences for two policies
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
