@@ -30,9 +30,9 @@ It is a good model for interpreting monthly labor department reports on gross an
 
 The "lakes" in the model are the pools of employed and unemployed
 
-The "flows" between the lakes are caused by 
+The "flows" between the lakes are caused by
 
-* firing and hiring 
+* firing and hiring
 
 * entry and exit from the labor force
 
@@ -43,7 +43,7 @@ Later, we'll determine some of these transition rates endogenously using the :do
 
 We'll also use some nifty concepts like ergodicity, which provides a fundamental link between *cross-sectional* and *long run time series* distributions
 
-These concepts will help us build an equilibrium model of ex ante homogeneous workers whose different luck generates variations in their ex post experiences 
+These concepts will help us build an equilibrium model of ex ante homogeneous workers whose different luck generates variations in their ex post experiences
 
 
 Prerequisites
@@ -92,7 +92,7 @@ We also want to know the values of the following objects
 
 * The employment rate :math:`e_t := E_t/N_t`
 
-* The unemployment rate :math:`u_t := U_t/N_t` 
+* The unemployment rate :math:`u_t := U_t/N_t`
 
 
 (Here and below, capital letters represent stocks and lowercase letters represent flows)
@@ -104,13 +104,13 @@ Laws of Motion for Stock Variables
 
 We begin by constructing laws of motion for the aggregate variables :math:`E_t,U_t, N_t`
 
-Of the mass of workers :math:`E_t` who are employed at date :math:`t`, 
+Of the mass of workers :math:`E_t` who are employed at date :math:`t`,
 
 * :math:`(1-d)E_t` will remain in the labor force
 
 * of these, :math:`(1-\alpha)(1-d)E_t` will remain employed
 
-Of the mass of workers :math:`U_t` workers who are currently unemployed, 
+Of the mass of workers :math:`U_t` workers who are currently unemployed,
 
 * :math:`(1-d)U_t` will remain in the labor force
 
@@ -145,7 +145,7 @@ Letting :math:`X_t := \left(\begin{matrix}U_t\\E_t\end{matrix}\right)`, the law 
 
     X_{t+1} = A X_t
     \quad \text{where} \quad
-    A := 
+    A :=
     \begin{pmatrix}
         (1-d)(1-\lambda) + b & (1-d)\alpha + b  \\
         (1-d)\lambda & (1-d)(1-\alpha)
@@ -155,7 +155,7 @@ Letting :math:`X_t := \left(\begin{matrix}U_t\\E_t\end{matrix}\right)`, the law 
 This law tells us how total employment and unemployment evolve over time
 
 
-Laws of Motion for Rates 
+Laws of Motion for Rates
 --------------------------------------------------------
 
 Now let's derive the law of motion for rates
@@ -165,32 +165,32 @@ To get these we can divide both sides of :math:`X_{t+1} = A X_t` by  :math:`N_{t
 .. math::
 
     \begin{pmatrix}
-        U_{t+1}/N_{t+1} \\ 
+        U_{t+1}/N_{t+1} \\
         E_{t+1}/N_{t+1}
     \end{pmatrix}
-    = 
+    =
     \frac1{1+g} A
     \begin{pmatrix}
         U_{t}/N_{t}
-        \\ 
+        \\
         E_{t}/N_{t}
     \end{pmatrix}
 
 
-Letting 
+Letting
 
 .. math::
 
-    x_t := 
+    x_t :=
     \left(\begin{matrix}
         u_t\\ e_t
-    \end{matrix}\right) 
+    \end{matrix}\right)
     = \left(\begin{matrix}
         U_t/N_t\\ E_t/N_t
     \end{matrix}\right)
 
 
-we can also write this as 
+we can also write this as
 
 .. math::
 
@@ -203,21 +203,19 @@ You can check that :math:`e_t + u_t = 1` implies that :math:`e_{t+1}+u_{t+1} = 1
 
 This follows from the fact that the columns of :math:`\hat A` sum to 1
 
-
 Implementation
 ================
 
-
 Let's code up these equations
-
-
-
-
 
 Here's the code:
 
+.. code-block:: julia
+  :class: test
 
-.. code-block:: julia 
+  using Test
+
+.. code-block:: julia
 
     #=
 
@@ -236,24 +234,10 @@ Here's the code:
         A_hat::Matrix{TF}
     end
 
-    """
-    Constructor with default values for `LakeModel`
-
-    ##### Fields of `LakeModel`
-
-    - λ : job finding rate
-    - α : dismissal rate
-    - b : entry rate into labor force
-    - d : exit rate from labor force
-    - g : net entry rate
-    - A : updates stock
-    - A_hat : updates rate
-
-    """
-    function LakeModel(;λ::AbstractFloat=0.283,
-                        α::AbstractFloat=0.013,
-                        b::AbstractFloat=0.0124,
-                        d::AbstractFloat=0.00822)
+    function LakeModel(;λ = 0.283,
+                        α = 0.013,
+                        b = 0.0124,
+                        d = 0.00822)
 
         g = b - d
         A = [(1-λ) * (1-d) + b  (1-d) * α + b;
@@ -263,21 +247,7 @@ Here's the code:
         return LakeModel(λ, α, b, d, g, A, A_hat)
     end
 
-    """
-    Finds the steady state of the system :math:`x_{t+1} = \hat A x_{t}`
-
-    ##### Arguments
-
-    - lm : instance of `LakeModel`
-    - tol: convergence tolerance
-
-    ##### Returns
-
-    - x : steady state vector of employment and unemployment rates
-
-    """
-
-    function rate_steady_state(lm::LakeModel, tol::AbstractFloat=1e-6)
+    function rate_steady_state(lm, tol = 1e-6)
         x = 0.5 * ones(2)
         error = tol + 1
         while (error > tol)
@@ -288,24 +258,8 @@ Here's the code:
         return x
     end
 
-    """
-    Simulates the the sequence of Employment and Unemployent stocks
-
-    ##### Arguments
-
-    - X0 : contains initial values (E0, U0)
-    - T : number of periods to simulate
-
-    ##### Returns
-
-    - X_path : contains sequence of employment and unemployment stocks
-
-    """
-
-    function simulate_stock_path{TF<:AbstractFloat}(lm::LakeModel,
-                                                    X0::AbstractVector{TF},
-                                                    T::Integer)
-        X_path = Array{TF}(2, T)
+    function simulate_stock_path(lm, X0, T)
+        X_path = zeros(eltype(X0), 2, T)
         X = copy(X0)
         for t in 1:T
             X_path[:, t] = X
@@ -314,23 +268,8 @@ Here's the code:
         return X_path
     end
 
-    """
-    Simulates the the sequence of employment and unemployent rates.
-
-    ##### Arguments
-
-    - X0 : contains initial values (E0, U0)
-    - T : number of periods to simulate
-
-    ##### Returns
-
-    - X_path : contains sequence of employment and unemployment rates
-
-    """
-    function simulate_rate_path{TF<:AbstractFloat}(lm::LakeModel,
-                                                x0::Vector{TF},
-                                                T::Integer)
-        x_path = Array{TF}(2, T)
+    function simulate_rate_path(lm, x0, T)
+        x_path = zeros(eltype(x0), 2, T)
         x = copy(x0)
         for t in 1:T
             x_path[:, t] = x
@@ -339,37 +278,25 @@ Here's the code:
         return x_path
     end
 
-
-
-
 .. code-block:: julia
 
     lm = LakeModel()
     lm.α
 
-
 .. code-block:: julia
 
     lm.A
-
 
 .. code-block:: julia
 
     lm = LakeModel(α = 2.0)
     lm.A
 
-
-
-    
-
-
 Aggregate Dynamics
 --------------------
 
 
 Let's run a simulation under the default parameters (see above) starting from :math:`X_0 = (12, 138)`
-
-
 
 .. code-block:: julia
 
@@ -390,9 +317,9 @@ Let's run a simulation under the default parameters (see above) starting from :m
     titles = ["Unemployment" "Employment" "Labor force"]
     x1 = X_path[1, :]
     x2 = X_path[2, :]
-    x3 = squeeze(sum(X_path, 1), 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    fig, axes = subplots(3, 1, figsize=(10, 8))
+    fig, axes = subplots(3, 1, figsize = (10, 8))
 
     for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
         ax[:plot](1:T, x, c="blue")
@@ -403,15 +330,22 @@ Let's run a simulation under the default parameters (see above) starting from :m
     fig[:tight_layout]()
 
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+      @test x1[1] ≈ 11.999999999999995
+      @test x2[2] ≈ 138.45447156
+      @test x3[3] ≈ 151.25662086
+  end
 
 The aggregates :math:`E_t` and :math:`U_t` don't converge because  their sum :math:`E_t + U_t` grows at rate :math:`g`
 
 
-On the other hand, the vector of employment and unemployment rates :math:`x_t` can be in a steady state :math:`\bar x` if 
+On the other hand, the vector of employment and unemployment rates :math:`x_t` can be in a steady state :math:`\bar x` if
 there exists an :math:`\bar x`  such that
 
-* :math:`\bar x = \hat A \bar x` 
+* :math:`\bar x = \hat A \bar x`
 
 * the components satisfy :math:`\bar e + \bar u = 1`
 
@@ -422,21 +356,18 @@ We also have :math:`x_t \to \bar x` as :math:`t \to \infty` provided that the re
 This is the case for our default parameters:
 
 
-
 .. code-block:: julia
 
+    using LinearAlgebra
     lm = LakeModel()
     e, f = eigvals(lm.A_hat)
     abs(e), abs(f)
 
 
-    
-
-
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     lm = LakeModel()
     e_0 = 0.92     # Initial employment rate
@@ -458,6 +389,13 @@ Let's look at the convergence of the unemployment and employment rate to steady 
         ax[:grid]("on")
     end
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x_path[1,3] ≈ 0.08137725667264473
+      @test x_path[2,7] ≈ 0.9176350068305223
+  end
 
 
 Dynamics of an Individual Worker
@@ -479,9 +417,9 @@ The associated transition matrix is then
 .. math::
 
     P = \left(
-            \begin{matrix} 
-                1 - \lambda & \lambda \\ 
-                \alpha & 1 - \alpha  
+            \begin{matrix}
+                1 - \lambda & \lambda \\
+                \alpha & 1 - \alpha
             \end{matrix}
         \right)
 
@@ -505,14 +443,11 @@ The unique stationary distribution satisfies
 
 .. math::
 
-    \psi^*[0] = \frac{\alpha}{\alpha + \lambda}    
+    \psi^*[0] = \frac{\alpha}{\alpha + \lambda}
 
 
 Not surprisingly, probability mass on the unemployment state increases with
 the dismissal rate and falls with the job finding rate rate
-
-
-
 
 
 Ergodicity
@@ -539,7 +474,7 @@ and
 
 (As usual, :math:`\mathbb 1\{Q\} = 1` if statement :math:`Q` is true and 0 otherwise)
 
-These are the fraction of time a worker spends unemployed and employed, respectively, up until period :math:`T` 
+These are the fraction of time a worker spends unemployed and employed, respectively, up until period :math:`T`
 
 If :math:`\alpha \in (0, 1)` and :math:`\lambda \in (0, 1)`, then :math:`P` is :ref:`ergodic <ergodicity>`, and hence we have
 
@@ -563,30 +498,30 @@ Convergence rate
 
 How long does it take for time series sample averages to converge to cross sectional averages?
 
-We can use `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__ 
+We can use `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__
 `MarkovChain` type to investigate this
 
 Let's plot the path of the sample averages over 5,000 periods
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using QuantEcon
+    using QuantEcon, Random
 
-    srand(42)
+    Random.seed!(42)
     lm = LakeModel(d=0.0, b=0.0)
     T = 5000                        # Simulation length
 
     α, λ = lm.α, lm.λ
-    P = [(1 - λ)     λ; 
-        α       (1 - α)]
+    P = [(1 - λ)     λ;
+         α      (1 - α)]
 
     mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
     xbar = rate_steady_state(lm)
 
     s_path = simulate(mc, T; init=2)
     s_bar_e = cumsum(s_path) ./ (1:T)
-    s_bar_u = 1 - s_bar_e
+    s_bar_u = 1 .- s_bar_e
     s_bars = [s_bar_u s_bar_e]
 
     titles = ["Percent of time unemployed" "Percent of time employed"]
@@ -600,16 +535,19 @@ Let's plot the path of the sample averages over 5,000 periods
         ax[:grid]("on")
     end
 
+.. code-block:: julia
+  :class: test
 
-
+  @testset begin
+      @test xbar[1] ≈ 0.043921027960428106
+      @test s_bars[end,end] ≈ 0.957
+  end
 
 The stationary probabilities are given by the dashed red line
 
-In this case it takes much of the sample for these two objects to converge 
+In this case it takes much of the sample for these two objects to converge
 
-This is largely due to the high persistence in the Markov chain 
-
-
+This is largely due to the high persistence in the Markov chain
 
 
 Endogenous Job Finding Rate
@@ -644,23 +582,21 @@ As we saw in :doc:`our discussion of the model <mccall_model>`, the reservation 
 * :math:`c`, unemployment compensation
 
 
-
-
 Linking the McCall Search Model to the Lake Model
 --------------------------------------------------
 
-Suppose that  all workers inside a lake model behave according to the McCall search model 
+Suppose that  all workers inside a lake model behave according to the McCall search model
 
 The exogenous probability of leaving employment remains :math:`\alpha`
 
-But their optimal decision rules determine the probability :math:`\lambda` of leaving unemployment 
+But their optimal decision rules determine the probability :math:`\lambda` of leaving unemployment
 
-This is now 
+This is now
 
 .. math::
     :label: lake_lamda
 
-    \lambda 
+    \lambda
     = \gamma \mathbb P \{ w_t \geq \bar w\}
     = \gamma \sum_{w' \geq \bar w} p(w')
 
@@ -687,7 +623,7 @@ Thus, the post-tax income of an employed worker with wage :math:`w` is :math:`w 
 
 The post-tax income of an unemployed worker is :math:`c - \tau`
 
-For each specification :math:`(c, \tau)` of government policy, we can solve for the worker's optimal reservation wage  
+For each specification :math:`(c, \tau)` of government policy, we can solve for the worker's optimal reservation wage
 
 This determines :math:`\lambda` via :eq:`lake_lamda` evaluated at post tax wages, which in turn determines a steady state unemployment rate :math:`u(c, \tau)`
 
@@ -704,7 +640,7 @@ We use a steady state welfare criterion
 
 .. math::
 
-    W := e \,  {\mathbb E} [V \, | \,  \text{employed}] + u \,  U 
+    W := e \,  {\mathbb E} [V \, | \,  \text{employed}] + u \,  U
 
 
 where the notation :math:`V` and :math:`U` is as defined in the :doc:`McCall search model lecture <mccall_model>`
@@ -717,21 +653,19 @@ The wage offer distribution will be a discretized version of the lognormal distr
 
 We take a period to be a month
 
-We set :math:`b` and :math:`d` to match monthly `birth <http://www.cdc.gov/nchs/fastats/births.htm>`_ and `death rates <http://www.cdc.gov/nchs/fastats/deaths.htm>`_, respectively, in the U.S. population 
+We set :math:`b` and :math:`d` to match monthly `birth <http://www.cdc.gov/nchs/fastats/births.htm>`_ and `death rates <http://www.cdc.gov/nchs/fastats/deaths.htm>`_, respectively, in the U.S. population
 
 * :math:`b = 0.0124`
 
 * :math:`d = 0.00822`
 
-Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leaving employment, to   
+Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leaving employment, to
 
 * :math:`\alpha = 0.013`
 
 
-
 Fiscal Policy Code
 -----------------------
-
 
 We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
 
@@ -740,17 +674,17 @@ The first piece of code, repeated below, implements value function iteration
 .. literalinclude:: /_static/code/mccall/mccall_bellman_iteration.jl
     :class: collapse
 
-The second piece of code repeated from :doc:`the McCall model lecture <mccall_model>` is used to complete the reservation wage 
+The second piece of code repeated from :doc:`the McCall model lecture <mccall_model>` is used to complete the reservation wage
 
 
 .. literalinclude:: /_static/code/mccall/compute_reservation_wage.jl
     :class: collapse
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
-function of the unemployment compensation rate 
+function of the unemployment compensation rate
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     # Some global variables that will stay constant
     α = 0.013
@@ -763,41 +697,30 @@ function of the unemployment compensation rate
 
     # The default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
-    w_vec = linspace(1e-3, max_wage, wage_grid_size + 1)
+    w_vec = range(1e-3, stop = max_wage, length = wage_grid_size + 1)
     logw_dist = Normal(log(log_wage_mean), 1)
-    cdf_logw = cdf.(logw_dist, log.(w_vec))
+    cdf_logw = cdf.(Ref(logw_dist), log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
-    """
-    Compute the reservation wage, job finding rate and value functions of the
-    workers given c and τ.
-
-    """
-    function compute_optimal_quantities(c::AbstractFloat, τ::AbstractFloat)
+    function compute_optimal_quantities(c, τ)
         mcm = McCallModel(α_q,
-                        β,
-                        γ,
-                        c-τ,                # post-tax compensation
-                        σ,
-                        collect(w_vec-τ),   # post-tax wages
-                        p_vec)
+                          β,
+                          γ,
+                          c-τ,                # post-tax compensation
+                          σ,
+                          collect(w_vec .- τ),   # post-tax wages
+                          p_vec)
 
 
-        w_bar, V, U = compute_reservation_wage(mcm, return_values=true)
-        λ = γ * sum(p_vec[w_vec - τ .> w_bar])
+        w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
+        λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
 
         return w_bar, λ, V, U
     end
 
-    """
-    Compute the steady state unemployment rate given c and tau using optimal
-    quantities from the McCall model and computing corresponding steady state
-    quantities
-
-    """
-    function compute_steady_state_quantities(c::AbstractFloat, τ::AbstractFloat)
+    function compute_steady_state_quantities(c, τ)
         w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
 
         # Compute steady state employment and unemployment rates
@@ -806,20 +729,16 @@ function of the unemployment compensation rate
         u_rate, e_rate = x
 
         # Compute steady state welfare
-        w = sum(V .* p_vec .* (w_vec - τ .> w_bar)) / sum(p_vec .* (w_vec - τ .> w_bar))
+        w = sum(V .* p_vec .* (w_vec .- τ .> w_bar)) / sum(p_vec .* (w_vec .- τ .> w_bar))
         welfare = e_rate .* w + u_rate .* U
 
         return u_rate, e_rate, welfare
     end
 
-    """
-    Find tax level that will induce a balanced budget.
-
-    """
-    function find_balanced_budget_tax(c::Real)
-        function steady_state_budget(t::Real)
-        u_rate, e_rate, w = compute_steady_state_quantities(c, t)
-        return t - u_rate * c
+    function find_balanced_budget_tax(c)
+        function steady_state_budget(t)
+            u_rate, e_rate, w = compute_steady_state_quantities(c, t)
+            return t - u_rate * c
         end
 
         τ = brent(steady_state_budget, 0.0, 0.9 * c)
@@ -829,14 +748,14 @@ function of the unemployment compensation rate
 
     # Levels of unemployment insurance we wish to study
     Nc = 60
-    c_vec = linspace(5.0, 140.0, Nc)
+    c_vec = range(5.0, stop = 140.0, length = Nc)
 
-    tax_vec = Vector{Float64}(Nc)
-    unempl_vec = Vector{Float64}(Nc)
-    empl_vec = Vector{Float64}(Nc)
-    welfare_vec = Vector{Float64}(Nc)
+    tax_vec = zeros(Nc)
+    unempl_vec = similar(tax_vec)
+    empl_vec = similar(tax_vec)
+    welfare_vec = similar(tax_vec)
 
-    for i = 1:Nc
+    for i in 1:Nc
         t = find_balanced_budget_tax(c_vec[i])
         u_rate, e_rate, welfare = compute_steady_state_quantities(c_vec[i], t)
         tax_vec[i] = t
@@ -857,6 +776,14 @@ function of the unemployment compensation rate
     end
 
     fig[:tight_layout]()
+
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test c_vec == 5.0:2.288135593220339:140.0
+  end
 
 
 Welfare first increases and then decreases as unemployment benefits rise
@@ -889,11 +816,9 @@ Plot the transition dynamics of the unemployment and employment stocks for 50 pe
 
 Plot the transition dynamics for the rates
 
-How long does the economy take to converge to its new steady state?  
+How long does the economy take to converge to its new steady state?
 
 What is the new steady state level of employment?
-
-
 
 
 Exercise 2
@@ -911,12 +836,8 @@ Plot the transition dynamics for the rates
 How long does the economy take to return to its original steady state?
 
 
-
-
 Solutions
 ==========
-
-
 
 Exercise 1
 ----------
@@ -929,8 +850,6 @@ steady state values to `x0`
     lm = LakeModel()
     x0 = rate_steady_state(lm)
     println("Initial Steady State: $x0")
-
-
 
 Initialize the simulation values
 
@@ -954,7 +873,6 @@ New legislation changes :math:`\lambda` to :math:`0.2`
     println("New Steady State: $xbar")
 
 
-
 Now plot stocks
 
 .. code-block:: julia
@@ -963,7 +881,7 @@ Now plot stocks
 
     x1 = X_path[1, :]
     x2 = X_path[2, :]
-    x3 = squeeze(sum(X_path, 1), 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
     fig, axes = subplots(3, 1, figsize=(10, 8))
 
@@ -976,6 +894,14 @@ Now plot stocks
     fig[:tight_layout]()
 
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+      @test x1[1] ≈ 8.266806439740906
+      @test x2[2] ≈ 91.43618846013545
+      @test x3[3] ≈ 100.83774723999996
+  end
 
 And how the rates evolve
 
@@ -992,7 +918,13 @@ And how the rates evolve
         ax[:grid]("on")
     end
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+      @test x_path[1,3] ≈ 0.09471123542018117
+      @test x_path[2,7] ≈ 0.893616705896849
+  end
 
 We see that it takes 20 periods for the economy to converge to it's new
 steady state levels
@@ -1014,7 +946,6 @@ state
     x0 = rate_steady_state(lm)
 
 
-
 Here are the other parameters:
 
 .. code-block:: julia
@@ -1029,7 +960,6 @@ Let's increase :math:`b` to the new value and simulate for 20 periods
     lm = LakeModel(b=b_hat)
     X_path1 = simulate_stock_path(lm, x0 * N0, T_hat)   # simulate stocks
     x_path1 = simulate_rate_path(lm, x0, T_hat)         # simulate rates
-    
 
 
 Now we reset :math:`b` to the original value and then, using the state
@@ -1041,7 +971,6 @@ additional 30 periods
     lm = LakeModel(b=0.0124)
     X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T_hat+1)    # simulate stocks
     x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T_hat+1)     # simulate rates
-    
 
 
 Finally we combine these two paths and plot
@@ -1050,8 +979,7 @@ Finally we combine these two paths and plot
 
     x_path = hcat(x_path1, x_path2[:, 2:end])  # note [2:] to avoid doubling period 20
     X_path = hcat(X_path1, X_path2[:, 2:end])
-    
- 
+
 
 .. code-block:: julia
 
@@ -1059,19 +987,26 @@ Finally we combine these two paths and plot
 
     x1 = X_path[1,:]
     x2 = X_path[2,:]
-    x3 = squeeze(sum(X_path, 1), 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
     fig, axes = subplots(3, 1, figsize=(10, 9))
 
     for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
         ax[:plot](1:T, x, "b-", lw=2, alpha=0.7)
-        ax[:set](title=title, ylim=(minimum(x-1), maximum(x+1)))
+        ax[:set](title=title, ylim = extrema(x) .+ (-1, 1))
         ax[:grid]("on")
     end
 
     fig[:tight_layout]()
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+      @test x1[1] ≈ 8.266806439740906
+      @test x2[2] ≈ 92.11669328327237
+      @test x3[3] ≈ 98.95872483999996
+  end
 
 And the rates
 
@@ -1088,7 +1023,10 @@ And the rates
         ax[:grid]("on")
     end
 
+.. code-block:: julia
+  :class: test
 
-
-
- 
+  @testset begin
+      @test x_path[1,3] ≈ 0.06791496880896275
+      @test x_path[2,7] ≈ 0.9429332289570732
+  end

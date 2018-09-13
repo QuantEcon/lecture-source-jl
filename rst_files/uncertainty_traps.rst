@@ -234,10 +234,10 @@ The method to evaluate the number of active firms generates :math:`F_1,
 
 The function `UncertaintyTrapEcon` encodes as default values the parameters we'll use in the simulations below
 
-.. code-block:: julia
-    :class: test
+.. code-block:: julia 
+  :class: test 
 
-    using Test
+  using Test
 
 .. code-block:: julia
 
@@ -424,7 +424,7 @@ different values of :math:`M`
 
 .. code-block:: julia
 
-    using QuantEcon, Gadfly, DataFrames, LaTeXStrings
+    using QuantEcon, Plots, DataFrames
 
 .. code-block:: julia
 
@@ -448,7 +448,6 @@ different values of :math:`M`
       @test γp[2,2] ≈ 0.46450522950184053
       @test γp[3,3] ≈ 0.8323524432613787
       @test γp[5,5] ≈ 1.3779664509290432
-  end
 
 The points where the curves hit the 45 degree lines are the long run
 steady states corresponding to each :math:`M`, if that value of

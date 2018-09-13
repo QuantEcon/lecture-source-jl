@@ -51,7 +51,6 @@ These agents all live on a single unit square
 The location of an agent is just a point :math:`(x, y)`,  where :math:`0 < x, y < 1`
 
 
-
 Preferences
 -------------
 
@@ -123,7 +122,6 @@ Exercises
 ===============
 
 
-
 .. _schelling_ex1:
 
 Exercise 1
@@ -131,20 +129,10 @@ Exercise 1
 
 Implement and run this simulation for yourself
 
-
-
-
-
-
 Use 250 agents of each type
-
-
 
 Solutions
 ==========
-
-
-
 
 Exercise 1
 ----------
@@ -154,10 +142,14 @@ further exercise you can probably speed up some of the computations and
 then increase the number of agents.
 
 .. code-block:: julia
+  :class: test
 
-    using Plots
-    pyplot()
-    srand(42)  # set seed for random numbers. Reproducible output
+  using Test
+
+.. code-block:: julia
+
+    using Plots, Random, LinearAlgebra
+    Random.seed!(42)  # set seed for random numbers. Reproducible output
 
 
 .. code-block:: julia
@@ -167,24 +159,23 @@ then increase the number of agents.
         location::Vector{TF}
     end
 
-
     # constructor
-    Agent(k::Integer) = Agent(k, rand(2))
+    Agent(k) = Agent(k, rand(2))
 
 
-    function draw_location!(a::Agent)
+    function draw_location!(a)
         a.location = rand(2)
         nothing
     end
 
     # distance is just 2 norm: uses our subtraction function
-    get_distance(a::Agent, o::Agent) = norm(a.location - o.location)
+    get_distance(a, o) = norm(a.location - o.location)
 
-    function is_happy(a::Agent, others::Vector{Agent})
+    function is_happy(a, others)
         "True if sufficient number of nearest neighbors are of the same type."
         # distances is a list of pairs (d, agent), where d is distance from
         # agent to self
-        distances = Any[]
+        distances = Vector{Tuple{Float64, Agent}}()
 
         for agent in others
             if a != agent
@@ -200,12 +191,12 @@ then increase the number of agents.
         neighbors = [agent for (d, agent) in distances[1:num_neighbors]]
 
         # == Count how many neighbors have the same type as self == #
-        num_same_type = sum([a.kind == other.kind for other in neighbors])
+        num_same_type = sum(a.kind == other.kind for other in neighbors)
 
-        return num_same_type >= require_same_type
+        return num_same_type ≥ require_same_type
     end
 
-    function update!(a::Agent, others::Vector{Agent})
+    function update!(a, others)
         "If not happy, then randomly choose new locations until happy."
         while !is_happy(a, others)
             draw_location!(a)
@@ -213,8 +204,7 @@ then increase the number of agents.
         return nothing
     end
 
-
-    function plot_distribution(agents::Vector{Agent}, cycle_num)
+    function plot_distribution(agents, cycle_num)
         x_vals_0, y_vals_0 = Float64[], Float64[]
         x_vals_1, y_vals_1 = Float64[], Float64[]
 
@@ -275,4 +265,7 @@ then increase the number of agents.
     println("Converged, terminating")
 
 
+.. code-block:: julia
+  :class: test
 
+  @test sum(agent.kind for agent in agents) == 250
