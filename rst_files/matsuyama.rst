@@ -4,7 +4,6 @@
 
 .. highlight:: julia
 
-
 ****************************************
 Globalization and Cycles
 ****************************************
@@ -13,11 +12,8 @@ Globalization and Cycles
 
 This lecture is coauthored with `Chase Coleman <https://github.com/cc7768>`__
 
-
-
 Overview
 =====================================
-
 
 In this lecture, we review the paper `Globalization and Synchronization of Innovation Cycles <http://www.centreformacroeconomics.ac.uk/Discussion-Papers/2015/CFMDP2015-27-Paper.pdf>`__ by `Kiminori Matsuyama <http://faculty.wcas.northwestern.edu/~kmatsu/>`__, `Laura Gardini <http://www.mdef.it/index.php?id=32>`__ and `Iryna Sushko <http://irynasushko.altervista.org/>`__
 
@@ -33,8 +29,6 @@ By contrast, in the model we consider in this lecture, synchronization is both e
 
 In particular, as trade costs fall and international competition increases, innovation incentives become aligned and countries synchronize their innovation cycles
 
-
-
 Background
 -------------
 
@@ -46,13 +40,10 @@ As we will see, coupled oscillators arise endogenously within the model
 
 Below we review the model and replicate some of the results on synchronization of innovation across countries
 
-
-
 Key Ideas
 ==========================
 
 It is helpful to begin with an overview of the mechanism
-
 
 Innovation Cycles
 ---------------------
@@ -87,8 +78,6 @@ This will be the case when trade costs are prohibitively high
 If trade costs fall, then goods produced in each country penetrate each other's markets
 
 As illustrated below, this leads to synchonization of business cycles across the two countries
-
-
 
 Model
 =======
@@ -144,7 +133,6 @@ Demand for differentiated inputs is
 
     x_{k, t}(\nu) = \left( \frac{p_{k, t}(\nu)}{P_{k, t}} \right)^{-\sigma} \frac{\alpha  L_k}{P_{k, t}}
 
-
 Here
 
 * :math:`p_{k, t}(\nu)` is the price of the variety :math:`\nu` and
@@ -155,7 +143,6 @@ Here
 .. math::
 
     \left[ P_{k, t} \right]^{1 - \sigma} = \int_{\Omega_t} [p_{k, t}(\nu) ]^{1-\sigma} d\nu
-
 
 The price of a variety also depends on the origin, :math:`j`, and destination, :math:`k`, of the goods because shipping
 varieties between countries incurs an iceberg trade cost
@@ -170,7 +157,6 @@ which is
 
     D_{j, t}(\nu) = \sum_k \tau_{j, k} x_{k, t}(\nu) = \alpha A_{j, t}(p_{j, t}(\nu))^{-\sigma}
 
-
 where
 
 .. math::
@@ -179,13 +165,11 @@ where
     \quad \text{and} \quad
     \rho_{j, k} = (\tau_{j, k})^{1 - \sigma} \leq 1
 
-
 It is assumed that :math:`\tau_{1,1} = \tau_{2,2} = 1` and :math:`\tau_{1,2} = \tau_{2,1} = \tau` for some :math:`\tau > 1`, so that
 
 .. math::
 
     \rho_{1,2} = \rho_{2,1} = \rho := \tau^{1 - \sigma} < 1
-
 
 The value :math:`\rho \in [0, 1)` is a proxy for the degree of globalization
 
@@ -199,7 +183,6 @@ Additionally, all competitive varieties will have the same price (because of equ
     \quad \text{and} \quad
     D_{j, t} = y_{j, t}^c := \alpha A_{j, t} (p_{j, t}^c)^{-\sigma}
 
-
 Monopolists will have the same marked-up price, so, for all :math:`\nu \in \Omega^m` ,
 
 .. math::
@@ -207,7 +190,6 @@ Monopolists will have the same marked-up price, so, for all :math:`\nu \in \Omeg
     p_{j, t}(\nu) = p_{j, t}^m := \frac{\psi }{1 - \frac{1}{\sigma}}
     \quad \text{and} \quad
     D_{j, t} = y_{j, t}^m  := \alpha A_{j, t} (p_{j, t}^m)^{-\sigma}
-
 
 Define
 
@@ -217,7 +199,6 @@ Define
     := \frac{p_{j, t}^c}{p_{j, t}^m} \frac{y_{j, t}^c}{y_{j, t}^m}
     = \left(1 - \frac{1}{\sigma} \right)^{1-\sigma}
 
-
 Using the preceding definitions and some algebra, the price indices can now be rewritten as
 
 .. math::
@@ -226,10 +207,7 @@ Using the preceding definitions and some algebra, the price indices can now be r
     \quad \text{where} \quad
     M_{j,t} := N_{j,t}^c + \frac{N_{j,t}^m}{ \theta}
 
-
 The symbols :math:`N_{j, t}^c` and :math:`N_{j, t}^m` will denote the measures of :math:`\Omega^c` and :math:`\Omega^m` respectively
-
-
 
 New Varieties
 --------------
@@ -245,7 +223,6 @@ Monopolist profits must be less than or equal to zero in expectation, so
     \quad \text{and} \quad
     \pi_{j, t}^m N_{j,t}^m = 0
 
-
 With further manipulations, this becomes
 
 .. math::
@@ -259,7 +236,6 @@ With further manipulations, this becomes
         \frac{\alpha L_k}{\theta(M_{j,t} + M_{k,t} / \rho)}
     \right]
     \leq f
-
 
 Law of Motion
 ---------------
@@ -282,7 +258,6 @@ We will work with a normalized measure of varieties
     \quad
     m_{j, t} := \frac{\theta \sigma f M_{j, t}}{\alpha (L_1 + L_2)} = n_{j, t} + \frac{i_{j, t}}{\theta}
 
-
 We also use :math:`s_j := \frac{L_j}{L_1 + L_2}` to be the share of labor employed in country :math:`j`
 
 We can use these definitions and the preceding expressions to obtain a law of
@@ -303,9 +278,7 @@ In particular, given an initial condition, :math:`n_0 = (n_{1, 0}, n_{2, 0}) \in
       \end{cases}
     \end{aligned}
 
-
 Here
-
 
 .. math::
 
@@ -316,7 +289,6 @@ Here
           D_{LH} & :=  \{ (n_1, n_2) \in \mathbb{R}_{+}^{2} | n_1 \leq h_1(n_2) \text{ and } n_2 \geq s_2(\rho) \}
     \end{aligned}
 
-
 while
 
 .. math::
@@ -324,13 +296,11 @@ while
     s_1(\rho) = 1 - s_2(\rho)
     = \min \left\{ \frac{s_1 - \rho s_2}{1 - \rho}, 1 \right\}
 
-
 and :math:`h_j(n_k)` is defined implicitly by the equation
 
 .. math::
 
     1 = \frac{s_j}{h_j(n_k) + \rho n_k} + \frac{s_k}{h_j(n_k) + n_k / \rho}
-
 
 Rewriting the equation above gives us a quadratic equation in terms of :math:`h_j(n_k)`
 
@@ -342,10 +312,8 @@ This gives us
 
     h_j(n_k)^2 + \left( (\rho + \frac{1}{\rho}) n_k - s_j - s_k \right) h_j(n_k) + (n_k^2 - \frac{s_j n_k}{\rho} - s_k n_k \rho) = 0
 
-
 Simulation
 ===============
-
 
 Let's try simulating some of these trajectories
 
@@ -356,14 +324,9 @@ As we will see, this depends on initial conditions
 
 For some parameterizations, synchronization will occur for "most" initial conditions, while for others synchronization will be rare
 
-
-
-
-
 Here's the main body of code
 
-
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
@@ -373,14 +336,7 @@ Here's the main body of code
 
     using PyPlot
 
-    """
-    If we expand the implicit function for h_j(n_k) then we find that
-    it is a quadratic. We know that h_j(n_k) > 0 so we can get its
-    value by using the quadratic form
-    """
-
-    function h_j(j::Integer, nk::Real, s1::Real, s2::Real,
-                θ::Real, δ::Real, ρ::Real)
+    function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
         if j == 1
             sj = s1
@@ -401,50 +357,19 @@ Here's the main body of code
         return root
     end
 
-    """
-    Determine whether (n1, n2) is in the set DLL
-    """
-    DLL(n1::Real, n2::Real,
-        s1_ρ::Real, s2_ρ::Real,
-        s1::Real, s2::Real,
-        θ::Real, δ::Real, ρ::Real) =
-            (n1 <= s1_ρ) && (n2 <= s2_ρ)
+    DLL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+        (n1 ≤ s1_ρ) && (n2 ≤ s2_ρ)
 
-    """
-    Determine whether (n1, n2) is in the set DHH
-    """
-    DHH(n1::Real, n2::Real,
-        s1_ρ::Real, s2_ρ::Real,
-        s1::Real, s2::Real,
-        θ::Real, δ::Real, ρ::Real) =
-            (n1 >= h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 >= h_j(2, n1, s1, s2, θ, δ, ρ))
+    DHH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+        (n1 ≥ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ h_j(2, n1, s1, s2, θ, δ, ρ))
 
-    """
-    Determine whether (n1, n2) is in the set DHL
-    """
-    DHL(n1::Real, n2::Real,
-        s1_ρ::Real, s2_ρ::Real,
-        s1::Real, s2::Real,
-        θ::Real, δ::Real, ρ::Real) =
-            (n1 >= s1_ρ) && (n2 <= h_j(2, n1, s1, s2, θ, δ, ρ))
+    DHL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+        (n1 ≥ s1_ρ) && (n2 ≤ h_j(2, n1, s1, s2, θ, δ, ρ))
 
-    """
-    Determine whether (n1, n2) is in the set DLH
-    """
-    DLH(n1::Real, n2::Real,
-        s1_ρ::Real, s2_ρ::Real,
-        s1::Real, s2::Real,
-        θ::Real, δ::Real, ρ::Real) =
-            (n1 <= h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 >= s2_ρ)
+    DLH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+        (n1 ≤ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ s2_ρ)
 
-    """
-    Takes a current value for (n_{1, t}, n_{2, t}) and returns the
-    values (n_{1, t+1}, n_{2, t+1}) according to the law of motion.
-    """
-    function one_step(n1::Real, n2::Real,
-                    s1_ρ::Real, s2_ρ::Real,
-                    s1::Real, s2::Real,
-                    θ::Real, δ::Real, ρ::Real)
+    function one_step(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
         # Depending on where we are, evaluate the right branch
         if DLL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
             n1_tp1 = δ * (θ * s1_ρ + (1 - θ) * n1)
@@ -463,48 +388,11 @@ Here's the main body of code
         return n1_tp1, n2_tp1
     end
 
-    """
-    Given an initial condition, continues to yield new values of `n1` and `n2`
-    """
-    new_n1n2(n1_0::Real, n2_0::Real,
-            s1_ρ::Real, s2_ρ::Real,
-            s1::Real, s2::Real,
-            θ::Real, δ::Real, ρ::Real) =
-                one_step(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
+    new_n1n2(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+        one_step(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
 
-    """
-    Takes initial values and iterates forward to see whether
-    the histories eventually end up in sync.
-
-    If countries are symmetric then as soon as the two countries have the
-    same measure of firms then they will by synchronized -- However, if
-    they are not symmetric then it is possible they have the same measure
-    of firms but are not yet synchronized. To address this, we check whether
-    firms stay synchronized for `npers` periods with Euclidean norm
-
-    ##### Parameters
-    ----------
-    - `n1_0` : `Real`,
-    Initial normalized measure of firms in country one
-    - `n2_0` : `Real`,
-    Initial normalized measure of firms in country two
-    - `maxiter` : `Integer`,
-    Maximum number of periods to simulate
-    - `npers` : `Integer`,
-    Number of periods we would like the countries to have the same measure for
-
-    ##### Returns
-    -------
-    - `synchronized` : `Bool`,
-    Did they two economies end up synchronized
-    - `pers_2_sync` : `Integer`,
-    The number of periods required until they synchronized
-    """
-    function pers_till_sync(n1_0::Real, n2_0::Real,
-                            s1_ρ::Real, s2_ρ::Real,
-                            s1::Real, s2::Real,
-                            θ::Real, δ::Real, ρ::Real,
-                            maxiter::Integer, npers::Integer)
+    function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
+                            maxiter, npers)
 
         # Initialize the status of synchronization
         synchronized = false
@@ -538,15 +426,14 @@ Here's the main body of code
         return synchronized, pers_2_sync
     end
 
-    function create_attraction_basis{TR <: Real}(s1_ρ::TR, s2_ρ::TR,
-                                    s1::TR, s2::TR, θ::TR, δ::TR, ρ::TR,
-                                    maxiter::Integer, npers::Integer, npts::Integer)
+    function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
+                                     maxiter, npers, npts)
         # Create unit range with npts
         synchronized, pers_2_sync = false, 0
-        unit_range = linspace(0.0, 1.0, npts)
+        unit_range = range(0.0, stop = 1.0, length = npts)
 
         # Allocate space to store time to sync
-        time_2_sync = Matrix{TR}(npts, npts)
+        time_2_sync = zeros(npts, npts)
         # Iterate over initial conditions
         for (i, n1_0) in enumerate(unit_range)
             for (j, n2_0) in enumerate(unit_range)
@@ -563,48 +450,23 @@ Here's the main body of code
 
     # == Now we define a type for the model == #
 
-    """
-    The paper "Globalization and Synchronization of Innovation Cycles" presents
-    a two country model with endogenous innovation cycles. Combines elements
-    from Deneckere Judd (1985) and Helpman Krugman (1985) to allow for a
-    model with trade that has firms who can introduce new varieties into
-    the economy.
-
-    We focus on being able to determine whether two countries eventually
-    synchronize their innovation cycles. To do this, we only need a few
-    of the many parameters. In particular, we need the parameters listed
-    below
-
-    ##### Parameters
-    ----------
-    - `s1` : `Real`,
-    Amount of total labor in country 1 relative to total worldwide labor
-    - `θ` : `Real`,
-    A measure of how mcuh more of the competitive variety is used in
-    production of final goods
-    - `δ` : `Real`,
-    Percentage of firms that are not exogenously destroyed every period
-    - `ρ` : `Real`,
-    Measure of how expensive it is to trade between countries
-    """
-    struct MSGSync{TR <: Real}
-        s1::TR
-        s2::TR
-        s1_ρ::TR
-        s2_ρ::TR
-        θ::TR
-        δ::TR
-        ρ::TR
+    struct MSGSync
+        s1::Float64
+        s2::Float64
+        s1_ρ::Float64
+        s2_ρ::Float64
+        θ::Float64
+        δ::Float64
+        ρ::Float64
     end
 
-    function MSGSync(s1::Real=0.5, θ::Real=2.5,
-                    δ::Real=0.7, ρ::Real=0.2)
+    function MSGSync(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
         # Store other cutoffs and parameters we use
         s2 = 1 - s1
         s1_ρ = min((s1 - ρ * s2) / (1 - ρ), 1)
         s2_ρ = 1 - s1_ρ
 
-        model=MSGSync(s1, s2, s1_ρ, s2_ρ, θ, δ, ρ)
+        model = MSGSync(s1, s2, s1_ρ, s2_ρ, θ, δ, ρ)
 
         return model
     end
@@ -612,29 +474,13 @@ Here's the main body of code
     unpack_params(model::MSGSync) =
         model.s1, model.s2, model.θ, model.δ, model.ρ, model.s1_ρ, model.s2_ρ
 
-    """
-    Simulates the values of `n1` and `n2` for `T` periods
-
-    ##### Parameters
-    ----------
-    - `n1_0` : `Real`, Initial normalized measure of firms in country one
-    - `n2_0` : `Real`, Initial normalized measure of firms in country two
-    - `T` : `Integer`, Number of periods to simulate
-
-    ##### Returns
-    -------
-    - `n1` : `Vector{TR}(ndim=1) where TR <: Real`,
-    A history of normalized measures of firms in country one
-    - `n2` : `Vector{TR}(ndim=1) where TR <: Real`,
-    A history of normalized measures of firms in country two
-    """
-    function simulate_n{TR <: Real}(model::MSGSync, n1_0::TR, n2_0::TR, T::Integer)
+    function simulate_n(model::MSGSync, n1_0, n2_0, T)
         # Unpack parameters
         s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
 
         # Allocate space
-        n1 = Vector{TR}(T)
-        n2 = Vector{TR}(T)
+        n1 = zeros(T)
+        n2 = zeros(T)
 
         # Simulate for T periods
         for t in 1:T
@@ -646,36 +492,8 @@ Here's the main body of code
         return n1, n2
     end
 
-    """
-    Takes initial values and iterates forward to see whether
-    the histories eventually end up in sync.
-
-    If countries are symmetric then as soon as the two countries have the
-    same measure of firms then they will by synchronized -- However, if
-    they are not symmetric then it is possible they have the same measure
-    of firms but are not yet synchronized. To address this, we check whether
-    firms stay synchronized for `npers` periods with Euclidean norm
-
-    ##### Parameters
-    ----------
-    - `n1_0` : `Real`,
-    Initial normalized measure of firms in country one
-    - `n2_0` : `Real`,
-    Initial normalized measure of firms in country two
-    - `maxiter` : `Integer`,
-    Maximum number of periods to simulate
-    - `npers` : `Integer`,
-    Number of periods we would like the countries to have the same measure for
-
-    ##### Returns
-    -------
-    - `synchronized` : `Bool`,
-    Did they two economies end up synchronized
-    - `pers_2_sync` : `Integer`,
-    The number of periods required until they synchronized
-    """
-    function pers_till_sync(model::MSGSync, n1_0::Real, n2_0::Real,
-                            maxiter::Integer=500, npers::Integer=3)
+    function pers_till_sync(model::MSGSync, n1_0, n2_0,
+                            maxiter = 500, npers = 3)
         # Unpack parameters
         s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
 
@@ -683,13 +501,10 @@ Here's the main body of code
                             θ, δ, ρ, maxiter, npers)
     end
 
-    """
-    Creates an attraction basis for values of n on [0, 1] X [0, 1] with npts in each dimension
-    """
     function create_attraction_basis(model::MSGSync;
-                                    maxiter::Integer=250,
-                                    npers::Integer=3,
-                                    npts::Integer=50)
+                                     maxiter=250,
+                                     npers=3,
+                                     npts=50)
         # Unpack parameters
         s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
 
@@ -697,9 +512,6 @@ Here's the main body of code
                                     ρ, maxiter, npers, npts)
         return ab
     end
-
-
-
 
 Time Series of Firm Measures
 ----------------------------
@@ -712,11 +524,11 @@ The time series share parameters but differ in their initial condition
 
 Here's the function
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    function plot_timeseries(n1_0::Real, n2_0::Real,
-                            s1::Real=0.5, θ::Real=2.5,
-                            δ::Real=0.7, ρ::Real=0.2;
+    function plot_timeseries(n1_0, n2_0,
+                            s1=0.5, θ=2.5,
+                            δ=0.7, ρ=0.2;
                             ax::PyCall.PyObject=subplots()[2])
         """
         Plot a single time series with initial conditions
@@ -748,14 +560,12 @@ Here's the function
 
     show()
 
-
 In the first case, innovation in the two countries does not synchronize
 
 In the second case different initial conditions are chosen, and the cycles
 become synchronized
 
-
-Basin of Attraction 
+Basin of Attraction
 -----------------------
 
 Next let's study the initial conditions that lead to synchronized cycles more
@@ -786,40 +596,33 @@ Here's one snapshot from the interactive figure
 .. figure:: /_static/figures/matsuyama_18.png
    :scale: 80%
 
-
 Exercises
 ==============
-
 
 Exercise 1
 ------------
 
 Replicate the figure :ref:`shown above <matsrep>` by coloring initial conditions according to whether or not synchronization occurs from those conditions
 
-
-
 Solutions
 ==========
-
-
 
 Exercise 1
 ----------
 
-
 .. code-block:: julia
 
-    function plot_attraction_basis(s1::Real=0.5,
-                                   θ::Real=2.5,
-                                   δ::Real=0.7,
-                                   ρ::Real=0.2;
-                                   npts::Integer=250,
+    function plot_attraction_basis(s1=0.5,
+                                   θ=2.5,
+                                   δ=0.7,
+                                   ρ=0.2;
+                                   npts=250,
                                    ax=nothing)
-        if ax == nothing
+        if ax === nothing
             fig, ax = subplots()
         end
         # Create attraction basis
-        unitrange = linspace(0, 1, npts)
+        unitrange = range(0, stop = 1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
         ab = create_attraction_basis(model,npts=npts)
         cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
@@ -865,7 +668,6 @@ Exercise 1
     fig[:suptitle]("Synchronized versus Asynchronized 2-cycles",
                  x=0.475, y=0.915, size=26)
 
-
 Exercise 2
 ----------
 
@@ -873,9 +675,9 @@ Exercise 2
 
     using Interact
     function interact_attraction_basis(
-            ρ_min::Real, ρ_step::Real, ρ_max::Real,
-            maxiter_min::Integer, maxiter_step::Integer, maxiter_max::Integer,
-            npts_min::Integer, npts_step::Integer, npts_max::Integer)
+            ρ_min, ρ_step, ρ_max,
+            maxiter_min, maxiter_step, maxiter_max,
+            npts_min, npts_step, npts_max)
 
         # Create the figure and axis that we will plot on
         fig, ax = subplots(figsize=(12, 10))
@@ -891,7 +693,7 @@ Exercise 2
                 ab = create_attraction_basis(model, maxiter=maxiter, npts=npts)
 
                 # Color map with colormesh
-                unitrange = linspace(0, 1, npts)
+                unitrange = range(0, stop = 1, length = npts)
                 cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
                 cbar_ax = fig[:add_axes]([0.95, 0.15, 0.05, 0.7])
                 colorbar(cf, cax=cbar_ax)
@@ -899,14 +701,6 @@ Exercise 2
         end
     end
 
-
-
-
 .. code-block:: julia
 
-    interact_attraction_basis(
-                    0.00, 0.05, 1.0,
-                    50, 50, 5000,
-                    25, 25, 750)
-
-
+    interact_attraction_basis( 0.00, 0.05, 1.0, 50, 50, 5000, 25, 25, 750)
