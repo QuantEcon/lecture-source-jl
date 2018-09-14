@@ -53,8 +53,6 @@ Because the Lucas and Stokey model features state-contingent government debt, th
 
 We cover only the key features of the problem in this lecture, leaving you to refer to that source for additional results and intuition
 
-
-
 Model Features
 ---------------
 
@@ -62,7 +60,6 @@ Model Features
 * Representative household
 * Stochastic dynamic programming over an infinite horizon
 * Distortionary taxation
-
 
 The Ramsey Problem
 =====================
@@ -80,7 +77,6 @@ This is unrealistic, but helpful when it comes to solving the model
 
 Realistic labor supply can be induced by suitable parameter values
 
-
 Households
 ----------
 
@@ -95,7 +91,6 @@ for labor and consumption to maximize
        (c_t - b_t)^2 + \ell_t^2
     \right]
 
-
 subject to the budget constraint
 
 .. math::
@@ -106,7 +101,6 @@ subject to the budget constraint
         d_t + (1 - \tau_t) \ell_t + s_t - c_t
     \right] = 0
 
-
 Here
 
 * :math:`\beta` is a discount factor in :math:`(0, 1)`
@@ -116,7 +110,7 @@ Here
 * :math:`\tau_t` is a flat tax rate on labor income
 * :math:`s_t` is a promised time-:math:`t` coupon payment on debt issued by the government
 
-The scaled Arrow-Debreu price :math:`p^0_t` is related to the unscaled Arrow-Debreu price as follows.  
+The scaled Arrow-Debreu price :math:`p^0_t` is related to the unscaled Arrow-Debreu price as follows.
 
 If we let :math:`\pi^0_t(x^t)`
 denote the probability (density) of a history :math:`x^t = [x_t, x_{t-1}, \ldots, x_0]` of the state :math:`x^t`, then
@@ -126,14 +120,10 @@ the Arrow-Debreu time :math:`0` price of a claim on one unit of consumption at d
 
     \frac{\beta^t p^0_t} {\pi_t^0(x^t)}
 
-
 Thus, our scaled Arrow-Debreu price is the ordinary Arrow-Debreu price multiplied by the discount factor :math:`\beta^t` and divided
 by an appropriate probability.
 
-
 The budget constraint :eq:`lq_hc` requires that the present value of consumption be restricted to equal the present value of endowments, labor income and coupon payments on bond holdings
-
-
 
 Government
 ----------
@@ -145,7 +135,6 @@ The government also issues state-contingent debt
 Given government tax and borrowing plans, we can construct a competitive equilibrium with distorting government taxes
 
 Among all such competitive equilibria, the Ramsey plan is the one that maximizes the welfare of the representative consumer
-
 
 Exogenous Variables
 ----------------------
@@ -169,7 +158,6 @@ We consider two specifications for :math:`\{x_t\}`
 
 #. VAR case: :math:`\{x_t\}` obeys :math:`x_{t+1} = A x_t + C w_{t+1}` where :math:`\{w_t\}` is independent zero mean Gaussian with identify covariance matrix
 
-
 Feasibility
 -----------
 
@@ -180,9 +168,7 @@ The period-by-period feasibility restriction for this economy is
 
     c_t + g_t = d_t + \ell_t
 
-
 A labor-consumption process :math:`\{\ell_t, c_t\}` is called *feasible* if :eq:`lq_feasible` holds for all :math:`t`
-
 
 Government budget constraint
 ----------------------------------
@@ -194,7 +180,6 @@ Where :math:`p_t^0` is again a scaled Arrow-Debreu price, the time zero governme
 
     \mathbb E \sum_{t=0}^{\infty} \beta^t p^0_t
     (s_t + g_t - \tau_t \ell_t ) = 0
-
 
 Equilibrium
 --------------
@@ -226,7 +211,6 @@ The solution procedure we adopt is
 
 The solution to this maximization problem pins down all quantities of interest
 
-
 Solution
 ----------
 
@@ -247,17 +231,14 @@ conditions as
     \quad \text{and} \quad
     \tau_t = 1 - \frac{\ell_t}{b_t - c_t}
 
-
 Substituting :eq:`lq_hfoc` into the government's budget constraint :eq:`lq_gc`
 yields
-
 
 .. math::
     :label: lq_gc2
 
     \mathbb E \sum_{t=0}^{\infty} \beta^t
     \left[ (b_t - c_t)(s_t + g_t - \ell_t) + \ell_t^2 \right] = 0
-
 
 The Ramsey problem now amounts to maximizing :eq:`lq_hu` subject to
 :eq:`lq_gc2` and :eq:`lq_feasible`
@@ -278,20 +259,17 @@ The associated Lagrangian is
     [d_t + \ell_t - c_t - g_t]
     \right\}
 
-
 The first order conditions associated with :math:`c_t` and :math:`\ell_t` are
 
 .. math::
 
     - (c_t - b_t ) + \lambda [- \ell_t + (g_t + s_t )] = \mu_t
 
-
 and
 
 .. math::
 
     \ell_t - \lambda [(b_t - c_t) - 2 \ell_t ] = \mu_t
-
 
 Combining these last two equalities with :eq:`lq_feasible` and working
 through the algebra, one can show that
@@ -302,7 +280,6 @@ through the algebra, one can show that
     \ell_t = \bar \ell_t - \nu m_t
     \quad \text{and} \quad
     c_t = \bar c_t - \nu m_t
-
 
 where
 
@@ -324,7 +301,6 @@ Using :eq:`lq_lcex`, the definitions above and the fact that :math:`\bar \ell
 
     (b_t - \bar c_t) (g_t + s_t ) + 2 m_t^2 ( \nu^2 - \nu)
 
-
 Reinserting into :eq:`lq_gc2`, we get
 
 .. math::
@@ -342,7 +318,6 @@ Reinserting into :eq:`lq_gc2`, we get
     \right\}
     = 0
 
-
 Although it might not be clear yet, we are nearly there because:
 
 * The two expectations terms in :eq:`lq_gc22` can be solved for in terms of model primitives
@@ -353,7 +328,6 @@ Although it might not be clear yet, we are nearly there because:
 
 * Once we have the allocations, prices and the tax system can be derived from
   :eq:`lq_hfoc`
-
 
 Computing the Quadratic Term
 -------------------------------
@@ -376,13 +350,11 @@ If we can compute the two expected geometric sums
     \sum_{t=0}^{\infty} \beta^t 2 m_t^2
     \right\}
 
-
 then the problem reduces to solving
 
 .. math::
 
     b_0 + a_0 (\nu^2 - \nu) = 0
-
 
 for :math:`\nu`
 
@@ -397,13 +369,11 @@ For the first one, the random variable :math:`(b_t - \bar c_t) (g_t + s_t )` ins
 
     \frac{1}{2} x_t' (S_b - S_d + S_g)' (S_g + S_s) x_t
 
-
 For the second expectation in :eq:`lq_gc3`, the random variable :math:`2 m_t^2` can be written as
 
 .. math::
 
     \frac{1}{2} x_t' (S_b - S_d - S_s)' (S_b - S_d - S_s) x_t
-
 
 It follows that both objects of interest are special cases of the expression
 
@@ -411,7 +381,6 @@ It follows that both objects of interest are special cases of the expression
     :label: lq_eqs
 
     q(x_0) = \mathbb E \sum_{t=0}^{\infty} \beta^t x_t' H x_t
-
 
 where :math:`H` is a matrix conformable to :math:`x_t` and :math:`x_t'` is the transpose of column vector :math:`x_t`
 
@@ -440,7 +409,6 @@ wish to evaluate
     q(x_0) = \mathbb E \sum_{t=0}^{\infty} \beta^t h(x_t)
     \quad \text{given} \quad x_0 = x^j
 
-
 For example, in the discussion above, :math:`h(x_t) = x_t' H x_t`
 
 It is legitimate to pass the expectation through the sum, leading to
@@ -449,7 +417,6 @@ It is legitimate to pass the expectation through the sum, leading to
     :label: lq_ise
 
     q(x_0) = \sum_{t=0}^{\infty} \beta^t (P^t h)[j]
-
 
 Here
 
@@ -462,13 +429,11 @@ the vector :math:`(I - \beta P)^{-1} h`
 
 This last fact is applied in the calculations below
 
-
-
 Other Variables
 -------------------
 
 We are interested in tracking several other variables besides the ones
-described above.  
+described above.
 
 To prepare the way for this, we define
 
@@ -476,10 +441,9 @@ To prepare the way for this, we define
 
     p^t_{t+j} = \frac{b_{t+j}- c_{t+j}}{b_t - c_t}
 
-
 as the scaled Arrow-Debreu time :math:`t` price of a history contingent claim on one unit of consumption at time :math:`t+j`
 
-These are prices that would prevail at time :math:`t` if market were reopened at time :math:`t`   
+These are prices that would prevail at time :math:`t` if market were reopened at time :math:`t`
 
 These prices are constituents of the present value of government obligations outstanding at time :math:`t`, which can be expressed as
 
@@ -489,7 +453,6 @@ These prices are constituents of the present value of government obligations out
     B_t :=
     \mathbb E_t \sum_{j=0}^{\infty} \beta^j p^t_{t+j}
     (\tau_{t+j} \ell_{t+j} - g_{t+j})
-
 
 Using our expression for prices and the Ramsey plan, we can also write
 :math:`B_t` as
@@ -501,7 +464,6 @@ Using our expression for prices and the Ramsey plan, we can also write
     \frac{ (b_{t+j} - c_{t+j})(\ell_{t+j} - g_{t+j}) - \ell^2_{t+j} }
     { b_t - c_t }
 
-
 This version is more convenient for computation
 
 Using the equation
@@ -510,44 +472,37 @@ Using the equation
 
     p^t_{t+j} = p^t_{t+1} p^{t+1}_{t+j}
 
-
-it is possible to verity that :eq:`lq_cb` implies that 
-
+it is possible to verity that :eq:`lq_cb` implies that
 
 .. math::
 
     B_t = (\tau_t \ell_t - g_t) + E_t \sum_{j=1}^\infty p^t_{t+j} (\tau_{t+j} \ell_{t+j} - g_{t+j})
-
 
 and
 
 .. math::
     :label: lq_cb22
 
-    B_t =   (\tau_t \ell_t - g_t) + \beta E_t p^t_{t+1} B_{t+1}   
+    B_t =   (\tau_t \ell_t - g_t) + \beta E_t p^t_{t+1} B_{t+1}
 
-
-Define 
+Define
 
 .. math::
     :label: lq_rfr
 
     R^{-1}_{t} := \mathbb E_t \beta^j p^t_{t+1}
 
-
-:math:`R_{t}` is the gross :math:`1`-period risk-free rate for loans 
+:math:`R_{t}` is the gross :math:`1`-period risk-free rate for loans
 between :math:`t` and :math:`t+1`
-
 
 A Martingale
 -------------
 
-We now want to study the following two objects, namely,  
+We now want to study the following two objects, namely,
 
 .. math::
 
     \pi_{t+1} := B_{t+1} - R_t [B_t - (\tau_t \ell_t - g_t)]
-
 
 and the cumulation of :math:`\pi_t`
 
@@ -555,12 +510,11 @@ and the cumulation of :math:`\pi_t`
 
     \Pi_t := \sum_{s=0}^t \pi_t
 
-
 The term :math:`\pi_{t+1}` is the difference between two quantities:
 
   * :math:`B_{t+1}`, the value of government debt at the start of period :math:`t+1`
 
-  * :math:`R_t [B_t + g_t - \tau_t ]`, which is what the government would have owed at the beginning of 
+  * :math:`R_t [B_t + g_t - \tau_t ]`, which is what the government would have owed at the beginning of
     period :math:`t+1` if it had simply borrowed at the one-period risk-free rate rather than selling state-contingent securities
 
 Thus, :math:`\pi_{t+1}` is the excess payout on the actual portfolio of state contingent government debt  relative to an alternative
@@ -572,7 +526,6 @@ Use expressions :eq:`lq_cb22` and :eq:`lq_rfr` to obtain
 
     \pi_{t+1} = B_{t+1} - \frac{1}{\beta E_t p^t_{t+1}} \left[\beta E_t p^t_{t+1} B_{t+1} \right]
 
-
 or
 
 .. math::
@@ -580,14 +533,12 @@ or
 
     \pi_{t+1} = B_{t+1} - \tilde E_t B_{t+1}
 
-
-where :math:`\tilde E_t` is the conditional mathematical expectation taken with respect to a one-step transition density 
+where :math:`\tilde E_t` is the conditional mathematical expectation taken with respect to a one-step transition density
 that has been formed by multiplying the original transition density with the likelihood ratio
 
 .. math::
 
-    m^t_{t+1} = \frac{p^t_{t+1}}{E_t p^t_{t+1}} 
-
+    m^t_{t+1} = \frac{p^t_{t+1}}{E_t p^t_{t+1}}
 
 It follows from equation :eq:`lq_pidist` that
 
@@ -595,14 +546,12 @@ It follows from equation :eq:`lq_pidist` that
 
     \tilde E_t \pi_{t+1} = \tilde E_t B_{t+1} - \tilde E_t B_{t+1} = 0
 
-
-which asserts that :math:`\{\pi_{t+1}\}` is a martingale difference sequence under the distorted probability measure, and 
+which asserts that :math:`\{\pi_{t+1}\}` is a martingale difference sequence under the distorted probability measure, and
 that  :math:`\{\Pi_t\}` is a martingale under the distorted probability measure
 
 In the tax-smoothing model of Robert Barro :cite:`Barro1979`, government debt is a random walk
 
 In the current model, government debt :math:`\{B_t\}` is not a random walk, but the ``excess payoff`` :math:`\{\Pi_t\}` on it  is
-
 
 Implementation
 ================
@@ -615,31 +564,26 @@ The following code provides functions for
 
 Description and clarifications are given below
 
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
     @author : Spencer Lyon <spencer.lyon@nyu.edu>
 
     =#
-    using QuantEcon
-    using PyPlot
-    using LaTeXStrings
+    using QuantEcon, PyPlot, LaTeXStrings, LinearAlgebra
 
     abstract type AbstractStochProcess end
-
 
     struct ContStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
         A::Matrix{TF}
         C::Matrix{TF}
     end
 
-
     struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
         P::Matrix{TF}
         x_vals::Matrix{TF}
     end
-
 
     struct Economy{TF <: AbstractFloat, SP <: AbstractStochProcess}
         β::TF
@@ -650,7 +594,6 @@ Description and clarifications are given below
         is_discrete::Bool
         proc::SP
     end
-
 
     struct Path{TF <: AbstractFloat}
         g::Vector{TF}
@@ -669,11 +612,10 @@ Description and clarifications are given below
         ξ::Vector{TF}
     end
 
-
-    function compute_exog_sequences(econ::Economy, x)
+    function compute_exog_sequences(econ, x)
         # Compute exogenous variable sequences
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
-        g, d, b, s = [squeeze(S * x, 1) for S in (Sg, Sd, Sb, Ss)]
+        g, d, b, s = [dropdims(S * x, dims = 1) for S in (Sg, Sd, Sb, Ss)]
 
         #= Solve for Lagrange multiplier in the govt budget constraint
         In fact we solve for ν = λ / (1 + 2*λ).  Here ν is the
@@ -685,16 +627,15 @@ Description and clarifications are given below
     end
 
 
-    function compute_allocation(econ::Economy, Sm::Array, ν::AbstractFloat,
-                                x::Array, b::Array)
+    function compute_allocation(econ, Sm, ν, x, b)
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
 
         # Solve for the allocation given ν and x
         Sc = 0.5 .* (Sb + Sd - Sg - ν .* Sm)
         Sl = 0.5 .* (Sb - Sd + Sg - ν .* Sm)
-        c = squeeze(Sc * x, 1)
-        l = squeeze(Sl * x, 1)
-        p = squeeze((Sb - Sc) * x, 1)  # Price without normalization
+        c = dropdims(Sc * x, dims = 1)
+        l = dropdims(Sl * x, dims = 1)
+        p = dropdims((Sb - Sc) * x, dims = 1)  # Price without normalization
         τ = 1 .- l ./ (b .- c)
         rvn = l .* τ
 
@@ -702,10 +643,10 @@ Description and clarifications are given below
     end
 
 
-    function compute_ν(a0::AbstractFloat, b0::AbstractFloat)
+    function compute_ν(a0, b0)
         disc = a0^2 - 4a0 * b0
 
-        if disc >= 0
+        if disc ≥ 0
             ν = 0.5 *(a0 - sqrt(disc)) / a0
         else
             println("There is no Ramsey equilibrium for these parameters.")
@@ -722,15 +663,15 @@ Description and clarifications are given below
     end
 
 
-    function compute_Π(B::Vector, R::Vector, rvn::Vector, g::Vector, ξ::Vector)
+    function compute_Π(B, R, rvn, g, ξ)
         π = B[2:end] - R[1:end-1] .* B[1:end-1] - rvn[1:end-1] + g[1:end-1]
         Π = cumsum(π .* ξ)
         return π, Π
     end
 
 
-    function compute_paths{TF <: AbstractFloat}(econ::Economy{TF, DiscreteStochProcess{TF}},
-                                                T::Integer)
+    function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess},
+                           T)
         # simplify notation
         β, Sg, Sd, Sb, Ss = econ.β, econ.Sg, econ.Sd, econ.Sb, econ.Ss
         P, x_vals = econ.proc.P, econ.proc.x_vals
@@ -744,7 +685,7 @@ Description and clarifications are given below
 
         # compute a0, b0
         ns = size(P, 1)
-        F = eye(ns) - β.*P
+        F = I - β.*P
         a0 = (F \ ((Sm * x_vals)'.^2))[1] ./ 2
         H = ((Sb - Sd + Sg) * x_vals) .* ((Sg - Ss)*x_vals)
         b0 = (F \ H')[1] ./ 2
@@ -757,11 +698,11 @@ Description and clarifications are given below
 
         # compute remaining variables
         H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals).^2
-        temp = squeeze(F * H', 2)
+        temp = dropdims(F * H', dims = 2)
         B = temp[state] ./ p
-        H = squeeze(P[state, :] * ((Sb - Sc) * x_vals)', 2)
+        H = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
         R = p ./ (β .* H)
-        temp = squeeze(P[state, :] *((Sb - Sc) * x_vals)', 2)
+        temp = dropdims(P[state, :] *((Sb - Sc) * x_vals)', dims = 2)
         ξ = p[2:end] ./ temp[1:end-1]
 
         # compute π
@@ -770,26 +711,24 @@ Description and clarifications are given below
         Path(g, d, b, s, c, l, p, τ, rvn, B, R, π, Π, ξ)
     end
 
-
-    function compute_paths{TF<:AbstractFloat}(econ::Economy{TF, ContStochProcess{TF}}, 
-                                            T::Integer)
+    function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
         # Simplify notation
         β, Sg, Sd, Sb, Ss = econ.β, econ.Sg, econ.Sd, econ.Sb, econ.Ss
         A, C = econ.proc.A, econ.proc.C
 
         # Generate an initial condition x0 satisfying x0 = A x0
         nx, nx = size(A)
-        x0 = nullspace((eye(nx) - A))
+        x0 = nullspace(I - A)
         x0 = x0[end] < 0 ? -x0 : x0
         x0 = x0 ./ x0[end]
-        x0 = squeeze(x0, 2)
+        x0 = dropdims(x0, dims = 2)
 
         # Generate a time series x of length T starting from x0
         nx, nw = size(C)
-        x = Matrix{TF}(nx, T)
+        x = zeros(nx, T)
         w = randn(nw, T)
         x[:, 1] = x0
-        for t=2:T
+        for t in 2:T
             x[:, t] = A *x[:, t-1] + C * w[:, t]
         end
 
@@ -810,17 +749,17 @@ Description and clarifications are given below
 
         # compute remaining variables
         H = Sl'Sl - (Sb - Sc)' *(Sl - Sg)
-        L = Vector{TF}(T)
-        for t=1:T
+        L = zeros(T)
+        for t in eachindex(L)
             L[t] = var_quadratic_sum(A, C, H, β, x[:, t])
         end
         B = L ./ p
-        Rinv = squeeze(β .* (Sb- Sc)*A*x, 1) ./ p
+        Rinv = dropdims(β .* (Sb- Sc)*A*x, dims = 1) ./ p
         R = 1 ./ Rinv
         AF1 = (Sb - Sc) * x[:, 2:end]
         AF2 = (Sb - Sc) * A * x[:, 1:end-1]
         ξ =  AF1 ./ AF2
-        ξ = squeeze(ξ, 1)
+        ξ = dropdims(ξ, dims = 1)
 
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
@@ -848,7 +787,7 @@ Description and clarifications are given below
         ax2[:legend]([L"$\tau_t \ell_t$",L"$g_t$",L"$B_{t+1}$"])
 
         ax3=subplot(2, 2, 3)
-        ax3[:plot](path.R-1)
+        ax3[:plot](path.R .- 1)
         ax3[:set_xlabel]("Time")
         ax3[:legend]([L"$R_{t - 1}$"])
 
@@ -865,18 +804,16 @@ Description and clarifications are given below
         T = length(path.c)
 
         fig, axes = plt[:subplots](2, 1, figsize=(8, 7))
-        
+
         plots = [path.ξ, path.Π]
         labels = [L"$\xi_t$", L"$\Pi_t$"]
-        
+
         for (ax, plot, label) in zip(axes, plots, labels)
             ax[:plot](2:T, plot, label=label)
             ax[:set_xlabel]("Time")
             ax[:legend]
         end
     end
-
-
 
 Comments on the Code
 ------------------------
@@ -888,8 +825,6 @@ This code defines two Types: ``Economy`` and ``Path``
 
 The first is used to collect all the parameters and primitives of a given LQ
 economy, while the second collects output of the computations
-
-
 
 Examples
 ================
@@ -914,17 +849,16 @@ Government spending evolves according to
 
     g_{t+1} - \mu_g = \rho (g_t - \mu_g) + C_g w_{g, t+1}
 
-
 with :math:`\rho = 0.7`, :math:`\mu_g = 0.35` and :math:`C_g = \mu_g \sqrt{1 - \rho^2} / 10`
 
 Here's the code
 
-.. code-block:: julia 
+.. code-block:: julia
 
     # == Parameters == #
     β = 1 / 1.05
     ρ, mg = .7, .35
-    A = eye(2)
+    A = Matrix{Float64}(I, 2, 2)
     A = [ρ mg*(1 - ρ); 0.0 1.0]
     C = [sqrt(1 - ρ^2) * mg / 10 0.0; 0 0]
     Sg = [1.0 0.0]
@@ -945,13 +879,9 @@ The legends on the figures indicate the variables being tracked
 Most obvious from the figure is tax smoothing in the sense that tax revenue is
 much less variable than government expenditure
 
-
-
 .. code-block:: julia
 
     gen_fig_2(path)
-    
-
 
 .. only:: html
 
@@ -966,7 +896,7 @@ The Discrete Case
 
 Our second example adopts a discrete Markov specification for the exogenous process
 
-.. code-block:: julia 
+.. code-block:: julia
 
     # Parameters
     β = 1 / 1.05
@@ -996,13 +926,9 @@ Our second example adopts a discrete Markov specification for the exogenous proc
 
 The call ``gen_fig_2(path)`` generates
 
-
-
 .. code-block:: julia
 
     gen_fig_2(path)
-
-
 
 .. only:: html
 
@@ -1015,12 +941,10 @@ The call ``gen_fig_2(path)`` generates
 Exercises
 ================
 
-
 .. _lqramsey_ex1:
 
 Exercise 1
 ------------
-
 
 Modify the VAR example :ref:`given above <lq_cc>`, setting
 
@@ -1028,17 +952,12 @@ Modify the VAR example :ref:`given above <lq_cc>`, setting
 
     g_{t+1} - \mu_g = \rho (g_{t-3} - \mu_g) + C_g w_{g, t+1}
 
-
 with :math:`\rho = 0.95` and :math:`C_g = 0.7 \sqrt{1 - \rho^2}`
 
 Produce the corresponding figures
 
-
-
 Solutions
 ==========
-
-
 
 .. code-block:: julia
 
@@ -1067,10 +986,6 @@ Solutions
 
     gen_fig_1(path)
 
-
 .. code-block:: julia
 
     gen_fig_2(path)
-
-
-
