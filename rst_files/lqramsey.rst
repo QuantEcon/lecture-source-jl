@@ -854,6 +854,10 @@ with :math:`\rho = 0.7`, :math:`\mu_g = 0.35` and :math:`C_g = \mu_g \sqrt{1 - \
 Here's the code
 
 .. code-block:: julia
+    
+    # For reproducible results 
+    using Random 
+    Random.seed!(42)
 
     # == Parameters == #
     β = 1 / 1.05
@@ -898,6 +902,7 @@ Our second example adopts a discrete Markov specification for the exogenous proc
 
 .. code-block:: julia
 
+    Random.seed!(42)
     # Parameters
     β = 1 / 1.05
     P = [0.8 0.2 0.0
@@ -961,6 +966,7 @@ Solutions
 
 .. code-block:: julia
 
+    Random.seed!(42)
     # Parameters
     β = 1 / 1.05
     ρ, mg = .95, .35
