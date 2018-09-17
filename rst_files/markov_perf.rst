@@ -509,7 +509,7 @@ We hope that the resulting policy will agree with `F1` as computed above
 .. code-block:: julia
 
     Λ1 = A - (B2 * F2)
-    lq1 = LQ(Q1, R1, Λ1, B1, bet=β)
+    lq1 = QuantEcon.LQ(Q1, R1, Λ1, B1, bet=β)
     P1_ih, F1_ih, d = stationary_values(lq1)
     F1_ih
 
@@ -520,7 +520,7 @@ Indeed, `isapprox` agrees with our assessment
 
 .. code-block:: julia
 
-    isapprox(F1, F1_ih, atol=1e-8, rtol=1e-8)
+    isapprox(F1, F1_ih, atol=1e-7)
 
 
 Dynamics
@@ -552,7 +552,7 @@ The following program
     q1 = x[2, :]
     q2 = x[3, :]
     q = q1 + q2         # Total output, MPE
-    p = a0 - a1 * q     # Price, MPE
+    p = a0 .- a1 * q     # Price, MPE
 
     fig, ax = subplots(figsize=(9, 5.8))
     ax[:plot](q, "b-", lw=2, alpha=0.75, label="total output")
@@ -750,7 +750,7 @@ initial condition :math:`q_{10} = q_{20} = 1`
     q1 = x[2, :]
     q2 = x[3, :]
     q = q1 + q2       # Total output, MPE
-    p = a0 - a1 * q   # Price, MPE
+    p = a0 .- a1 * q   # Price, MPE
 
 Next let's have a look at the monopoly solution
 
@@ -799,7 +799,7 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
         x = A * x - B * F[1] * x
         qm[i] = float(x) + q_bar
     end
-    pm = a0 - a1 * qm
+    pm = a0 .- a1 * qm
 
 Let's have a look at the different time paths
 
