@@ -221,7 +221,7 @@ Let's test out the code above on some example parameterizations, after the follo
 
 .. code-block:: julia
 
-    using PyPlot # Change to Plots
+    using Plots
     using LaTeXStrings
 
 
@@ -338,11 +338,11 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 	     k_grid = m.grid
         c_star_new = coleman_egm(c_star, k_grid, m.β, m.u_prime,
                                  m.u_prime, m.f, m.f_prime, shocks)
-        fig, ax = subplots(figsize=(9, 6))
 
-        ax[:plot](k_grid, c_star.(k_grid), label=L"optimal policy $c^*$")
-        ax[:plot](k_grid, c_star_new.(k_grid), label=L"$Kc^*$")
-        ax[:legend](loc="upper left")
+        plt = plot()
+        plot!(plt, k_grid, c_star.(k_grid), lw=2, label="optimal policy c*")
+        plot!(plt, k_grid, c_star_new.(k_grid), lw=2, label="Kc*")
+        plot!(plt, legend=:topleft)
     end
 
 .. code-block:: julia
@@ -396,20 +396,19 @@ Let's start from the consumption policy that eats the whole pie: :math:`c(y) = y
     function check_convergence(m, shocks, c_star, g_init, n_iter)
         k_grid = m.grid
         g = g_init
-        fig, ax = subplots(figsize = (9, 6))
-        jet = ColorMap("jet")
-        plot(m.grid, g.(m.grid),
-             color=jet(0), lw=2, alpha=0.6, label=L"initial condition $c(y) = y$")
+        plt = plot()
+        plot!(plt, m.grid, g.(m.grid),
+             color=RGBA(0,0,0,1), lw=2, alpha=0.6, label="initial condition c(y) = y")
         for i in 1:n_iter
             new_g = coleman_egm(g, k_grid,
                                 m.β, m.u_prime, m.u_prime, m.f, m.f_prime, shocks)
             g = new_g
-            ax[:plot](k_grid,new_g.(k_grid), alpha=0.6, color=jet(i / n_iter), lw=2)
+            plot!(plt, k_grid,new_g.(k_grid), alpha=0.6, color=RGBA(0,0,(i / n_iter), 1), lw=2, label="")
         end
 
-        ax[:plot](k_grid, c_star.(k_grid),
-                  "k-", lw=2, alpha=0.8, label= L"true policy function $c^*$")
-        ax[:legend](loc="upper left")
+        plot!(plt, k_grid, c_star.(k_grid),
+                  color=:black, lw=2, alpha=0.8, label= "true policy function c*")
+        plot!(plt, legend=:topleft)
     end
 
 .. code-block:: julia
