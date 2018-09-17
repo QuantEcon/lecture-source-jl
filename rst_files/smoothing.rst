@@ -693,7 +693,7 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
     plot!(plt_gov, 1:N_simul, debt_path, label="incomplete market", lw=2)
     plot!(plt_gov, 1:N_simul, debt_complete[s_path], label="complete market", lw=2)
     plot!(plt_gov, 1:N_simul, y_path, label="govt expenditures", alpha=.6, linestyle=:dash, lw=2)
-    plot!(plt_gov, [0], linetype=:hline, linestyle=:dash, color=:black, lw=2)
+    plot!(plt_gov, [0], linetype=:hline, linestyle=:dash, color=:black, lw=2, label="")
 
     plot(plt_tax, plt_gov, layout = (1,2), size=(800,400))
 
@@ -1050,7 +1050,7 @@ allows the consumer completely to smooth consumption across time and across stat
     plot!(plt_debt, 1:N_simul, b_hist_com, label="debt", lw=2)
     plot!(plt_debt, 1:N_simul, y_hist_com, label="Income",
                 lw=2, alpha=0.6, linestyle=:dash)
-    plot!(plt_debt, [0], linetype=:hline, color=:black, linestyle=:dash,lw=2)
+    plot!(plt_debt, [0], linetype=:hline, color=:black, linestyle=:dash,lw=2, label="")
 
     plot(plt_cons, plt_debt, layout = (1,2), size = (800,400))
 
