@@ -659,11 +659,11 @@ Let's confirm this
     is_irreducible(mc)
 
 .. code-block:: julia
-:class: test
+    :class: test
 
-@testset "Checking reducibility" begin
-    @test is_irreducible(mc) == false
-end
+    @testset "Checking reducibility" begin
+        @test is_irreducible(mc) == false
+    end
 
 
 
@@ -758,10 +758,10 @@ We can confirm that the stochastic matrix is periodic as follows
 .. code-block:: julia
     :class: test
 
-@testset "checking period" begin
-    @test P[2,1] == 0.5
-    @test period(mc) == 2
-end
+    @testset "checking period" begin
+        @test P[2,1] == 0.5
+        @test period(mc) == 2
+    end
 
 .. code-block:: julia
 
@@ -769,9 +769,10 @@ end
 
 .. code-block:: julia
 :class: test
-@testset "check if aperiodic" begin
-   @test is_aperiodic(mc) == false
-end
+
+    @testset "check if aperiodic" begin
+        @test is_aperiodic(mc) == false
+    end
 
 :index:`Stationary Distributions`
 =================================
@@ -952,13 +953,13 @@ The convergence in the theorem is illustrated in the next figure
     plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
 
 ..code-block:: julia
-:class: test
-@testset "testing convergence to stationary" begin
-@test x_vals[12] == 0.6401278316658368
-@test y_vals[7] == 0.4773682392284884
-end
+    :class: test
 
-..code-block:: julia
+    @testset "testing convergence to stationary" begin
+        @test x_vals[12] == 0.6401278316658368
+        @test y_vals[7] == 0.4773682392284884
+    end
+
 Here
 
 * :math:`P` is the stochastic matrix for recession and growth :ref:`considered above <mc_eg2>`
