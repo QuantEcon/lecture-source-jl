@@ -756,10 +756,11 @@ We can confirm that the stochastic matrix is periodic as follows
     period(mc)
 
 .. code-block:: julia
-:class: test
+    :class: test
+
 @testset "checking period" begin
-@test P[2,1] == 0.5
-@test period(mc) == 2
+    @test P[2,1] == 0.5
+    @test period(mc) == 2
 end
 
 .. code-block:: julia
