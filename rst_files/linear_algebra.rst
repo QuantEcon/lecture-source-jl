@@ -81,10 +81,10 @@ the point
 
 The following figure represents three vectors in this manner
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    using Test # Should put this near the top of every notebook. 
+    using Test # Should put this near the top of every notebook.
 
 .. code-block:: julia
 
@@ -115,13 +115,13 @@ The following figure represents three vectors in this manner
             annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
             framestyle = :origin)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "First Block" begin
         @test labels[2][1] ≈ -3.3
         @test y_vals[2, :] == [4.0, 3.0, -3.5]
-    end 
+    end
 
 
 Vector Operations
@@ -217,6 +217,15 @@ Scalar multiplication is illustrated in the next figure
             framestyle = :origin)
 
 
+            .. code-block:: julia
+                :class: test
+            @testset "second block" begin
+
+@test y_vals[2,:] == [-4.0,4.0,2.0]
+@test labels[2,1] == (-3.6,-4.2,"-2x")
+end
+
+
 In Julia, a vector can be represented as a one dimensional `Array`
 
 Julia `Arrays` allow us to express scalar multiplication and addition with a very natural syntax
@@ -295,8 +304,8 @@ follows
 
     sqrt(sum(abs2, x))         # Gives the same result
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @test norm(x) ≈ 1.7320508075688772 atol = 1e-10
 
@@ -386,13 +395,13 @@ The span is a 2 dimensional plane passing through these two points and the origi
             zticks = [0])
 
 .. code-block:: julia
-    :class: test 
+    :class: test
 
     @testset "Surface Plot Test" begin
         @test z2[2, 2] ≈ -1.342105263157895
         @test x_vec[2, 2] == 3.0
         @test xr2[2] ≈ -4.473684210526316
-    end 
+    end
 
 
 Examples
@@ -853,14 +862,14 @@ The answer to both these questions is negative, as the next figure shows
 
     plot(p1, p2, layout = (2, 1), size = (600, 700))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Sinusoid Plot Test" begin
-        @test ybar == 2.6 
+        @test ybar == 2.6
         @test y[4] - 0.8439924889513749 ≈ 0.0 atol = 1e-10
         @test y_vals[2, 3] - 1.4019802857401447 ≈ 0.0 atol = 1e-10
-    end 
+    end
 
 In the first plot there are multiple solutions, as the function is not one-to-one, while
 in the second there are no solutions, since :math:`y` lies outside the range of :math:`f`
@@ -1133,6 +1142,13 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
     plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
     plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 
+.. code-block:: julia
+ :class: test
+
+ @testset "eigvals" begin
+@test eig_1[2,2] ≈ 0.7071067811865475
+@test eig_2[2,2] ≈ 0.7071067811865475
+end
 
 The eigenvalue equation is equivalent to :math:`(A - \lambda I) v = 0`, and
 this has a nonzero solution :math:`v` only when the columns of :math:`A -

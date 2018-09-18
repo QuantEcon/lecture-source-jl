@@ -239,13 +239,13 @@ In order to implement this simulation procedure, we need a method for generating
 For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
 
 .. code-block:: julia
-    :class: test 
+    :class: test
 
-    using Test 
+    using Test
 
 .. code-block:: julia
 
-    using QuantEcon, Random 
+    using QuantEcon, Random
 
     Random.seed!(42)
 
@@ -254,12 +254,12 @@ For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/b
     init = rand(d, 5)             # Generate 5 independent draws from ψ
 
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Initial Block" begin
-        @test init == [2, 2, 1, 2, 2] # Mainly to check seeding invariance. 
-    end 
+        @test init == [2, 2, 1, 2, 2] # Mainly to check seeding invariance.
+    end
 
 
 
@@ -318,13 +318,13 @@ If you run the following code you should get roughly that answer
     μ_1 = mean(X .== 1)
 
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Sample Path Test" begin
-        @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change. 
+        @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
         @test X[1:5] == [1, 2, 2, 1, 1]
-    end 
+    end
 
 
 Using QuantEcon's Routines
@@ -344,14 +344,14 @@ Here's an illustration using the same `P` as the preceding example
     X = simulate(mc, 100000);
     μ_2 = mean(X .== 1)             # Should be close to 0.25
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "QE Sample Path Test" begin
         @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
         @test X[1:5] == [2, 2, 1, 1, 2]
         @test μ_1 ≈ μ_2 atol = 1e-4
-    end 
+    end
 
 Adding state values and initial conditions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -632,12 +632,12 @@ We can also test this using `QuantEcon.jl <http://quantecon.org/julia_index.html
     mc = MarkovChain(P)
     is_irreducible(mc)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Irreducibility Check" begin
         @test is_irreducible(mc) == true
-    end 
+    end
 
 
 
@@ -658,7 +658,12 @@ Let's confirm this
     mc = MarkovChain(P);
     is_irreducible(mc)
 
+.. code-block:: julia
+:class: test
 
+@testset "Checking reducibility" begin
+    @test is_irreducible(mc) == false
+end
 
 
 
@@ -704,12 +709,12 @@ The chain cycles with period 3:
     mc = MarkovChain(P);
     period(mc)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Periodicity Check" begin
-        @test period(mc) == 3 # Confirm that everything is behaving as expected. 
-    end 
+        @test period(mc) == 3 # Confirm that everything is behaving as expected.
+    end
 
 
 
@@ -750,12 +755,22 @@ We can confirm that the stochastic matrix is periodic as follows
     mc = MarkovChain(P);
     period(mc)
 
-
+.. code-block:: julia
+:class: test
+@testset "checking period" begin
+@test P[2,1] == 0.5
+@test period(mc) == 2
+end
 
 .. code-block:: julia
 
     is_aperiodic(mc)
 
+.. code-block:: julia
+:class: test
+@testset "check if aperiodic" begin
+   @test is_aperiodic(mc) == false
+end
 
 :index:`Stationary Distributions`
 =================================
@@ -935,7 +950,14 @@ The convergence in the theorem is illustrated in the next figure
     scatter(x_vals, y_vals, z_vals, color = colors)
     plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
 
+..code-block:: julia
+:class: test
+@testset "testing convergence to stationary" begin
+@test x_vals[12] == 0.6401278316658368
+@test y_vals[7] == 0.4773682392284884
+end
 
+..code-block:: julia
 Here
 
 * :math:`P` is the stochastic matrix for recession and growth :ref:`considered above <mc_eg2>`
@@ -1420,14 +1442,14 @@ compare it to the stationary probability.
     plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
             ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Exercise 1 Tests" begin
-        @test y_vals[2][5] == -0.5 
+        @test y_vals[2][5] == -0.5
         @test X[1:5] == [2, 2, 2, 2, 2]
         @test labels == Any[L"$X_0 = 1$", L"$X_0 = 2$"]
-    end 
+    end
 
 Exercise 2
 ----------
@@ -1525,13 +1547,13 @@ executing the next cell
         @printf("%s: %.4f\n", the_keys[i], the_vals[i])
     end
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Exercise 2 Tests" begin
         @test ranked_pages['g'] == 0.16070778858515053
         @test ranked_pages['l'] == 0.032017852378295776
-    end 
+    end
 
 Exercise 3
 ----------
