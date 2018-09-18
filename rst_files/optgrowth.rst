@@ -515,8 +515,9 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 
 .. code-block:: julia
 
-  using Plotly # change to Plots
-  using QuantEcon
+    using Plots, QuantEcon, LaTeXStrings
+
+.. code-block:: julia
 
   f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
   c_grid = 0:.2:1
@@ -524,13 +525,11 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 
   Af = LinInterp(c_grid, f(c_grid))
 
-  fig, ax = plt[:subplots](figsize=(10, 6))
-  ax[:set](xlim=(0, 1), ylim=(0, 6))
-  ax[:plot](f_grid, f(f_grid), "b-", lw=2, alpha=0.8, label="true function")
-  ax[:plot](f_grid, Af.(f_grid), "g-", lw=2, alpha=0.8,
-           label="linear approximation")
-  ax[:vlines](c_grid, c_grid * 0, f(c_grid), linestyle="dashed", alpha=0.5)
-  ax[:legend](loc="upper center")
+  plt = plot(xlim = (0,1), ylim = (0,6))
+  plot!(plt, f_grid, f(f_grid), color = :blue, lw = 2, alpha = 0.8, label = "true function")
+  plot!(plt, f_grid, Af.(f_grid), color = :green, lw = 2, alpha = 0.8, label = "linear approximation")
+  plot!(plt, c_grid, f(c_grid), seriestype = :sticks, linestyle = :dash, linewidth = 2, alpha = 0.5, label = "")
+  plot!(plt, legend = :top)
 
 Another advantage of piecewise linear interpolation is that it preserves useful shape properties such as monotonicity and concavity / convexity
 
@@ -714,21 +713,17 @@ In practice we expect some small numerical error
 
 .. code-block:: julia
 
-    w = bellman_operator(v_star.(grid_y),
-                         grid_y,
-                         β,
-                         log,
-                         k -> k^α,
-                         shocks)
+  w = bellman_operator(v_star.(grid_y),
+                       grid_y,
+                       β,
+                       log,
+                       k -> k^α,
+                       shocks)
 
-    fig, ax = subplots(figsize=(9, 5))
-
-    ax[:set_ylim](-35, -24)
-    ax[:plot](grid_y, w, lw=2, alpha=0.6, label=L"$Tv^*$")
-    ax[:plot](grid_y, v_star.(grid_y), lw=2, alpha=0.6, label=L"$v^*$")
-    ax[:legend](loc="lower right")
-
-    show()
+  plt = plot(ylim = (-35,-24))
+  plot!(plt, grid_y, w, linewidth = 2, alpha = 0.6, label=L"$Tv^*$")
+  plot!(plt, grid_y, v_star.(grid_y), linewidth = 2, alpha=0.6, label=L"v^*")
+  plot!(plt, legend=:bottomright)
 
 .. code-block:: julia
   :class: test
@@ -748,31 +743,25 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
 
 .. code-block:: julia
 
-    w = 5 * log.(grid_y)  # An initial condition -- fairly arbitrary
-    n = 35
-    fig, ax = subplots(figsize=(9, 6))
+  w = 5 * log.(grid_y)  # An initial condition -- fairly arbitrary
+  n = 35
 
-    ax[:set_ylim](-50, 10)
-    ax[:set_xlim](minimum(grid_y), maximum(grid_y))
-    lb = "initial condition"
-    jet = ColorMap("jet")
-    ax[:plot](grid_y, w, color=jet(0), lw=2, alpha=0.6, label=lb)
-    for i in 1:n
-        w = bellman_operator(w,
-                             grid_y,
-                             β,
-                             log,
-                             k -> k^α,
-                             shocks)
-
-        ax[:plot](grid_y, w, color=jet(i / n), lw=2, alpha=0.6)
+  plot(xlim=(minimum(grid_y), maximum(grid_y)),ylim=(-50,10))
+  lb = "initial condition"
+  plt = plot(grid_y, w, color=:black, linewidth=2, alpha=0.8, label=lb)
+  for i in 1:n
+    w = bellman_operator(w,
+                      grid_y,
+                      β,
+                      log,
+                      k -> k^α,
+                      shocks)
+    plot!(grid_y, w, color=RGBA(i/n,0,1-i/n,0.8), linewidth=2, alpha=0.6, label="")
     end
 
-    lb = "true value function"
-    ax[:plot](grid_y, v_star.(grid_y), "k-", lw=2, alpha=0.8, label=lb)
-    ax[:legend](loc="lower right")
-
-    show()
+  lb = "true value function"
+  plot!(plt, grid_y, v_star.(grid_y), color=:black, linewidth=2, alpha=0.8, label=lb)
+  plot!(plt, legend=:bottomright)
 
 
 The figure shows
@@ -827,12 +816,10 @@ We can check our result by plotting it against the true value
     initial_w = 5 * log.(grid_y)
     v_star_approx = solve_optgrowth(initial_w)
 
-    fig, ax = subplots(figsize=(9, 5))
-    ax[:set_ylim](-35, -24)
-    ax[:plot](grid_y, v_star_approx, lw=2, alpha=0.6, label="approximate value function")
-    ax[:plot](grid_y, v_star.(grid_y), lw=2, alpha=0.6, label="true value function")
-    ax[:legend](loc="lower right")
-    show()
+    plt = plot(ylim=(-35,-24))
+    plot!(plt, grid_y, v_star_approx, linewidth=2, alpha=0.6, label="approximate value function")
+    plot!(plt, grid_y, v_star.(grid_y), linewidth=2, alpha=0.6, label="true value function")
+    plot!(plt, legend=:bottomright)
 
 .. code-block:: julia
   :class: test
@@ -871,12 +858,10 @@ Let's have a look at the result
 
 .. code-block:: julia
 
-    fig, ax = subplots(figsize=(9, 5))
-    ax[:set_ylim](-35, -24)
-    ax[:plot](grid_y, v_star_approx, lw=2, alpha=0.6, label="approximate value function")
-    ax[:plot](grid_y, v_star.(grid_y), lw=2, alpha=0.6, label="true value function")
-    ax[:legend](loc="lower right")
-    show()
+    plt = plot(ylim=(-35,-24))
+    plot!(plt, grid_y, v_star_approx, lw=2,alpha=0.6, label="approximate value function")
+    plot!(plt, grid_y, v_star.(grid_y), lw=2, alpha=0.6, label="true value function")
+    plot!(plt, legend=:bottomright)
 
 .. code-block:: julia
   :class: test
@@ -914,11 +899,10 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
 
     cstar = (1 - α * β) * grid_y
 
-    fig, ax = subplots(figsize=(9, 5))
-    ax[:plot](grid_y, σ, lw=2, alpha=0.6, label="approximate policy function")
-    ax[:plot](grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
-    ax[:legend](loc="lower right")
-    show()
+
+    plt = plot(grid_y, σ, lw=2, alpha=0.6, label="approximate policy function")
+    plot!(plt, grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
+    plot!(plt, legend=:bottomright)
 
 
 The figure shows that we've done a good job in this instance of approximating
@@ -984,7 +968,7 @@ Here's one solution (assuming as usual that you've executed everything above)
         return y
     end
 
-    fig, ax = subplots(figsize=(9, 6))
+    plt = plot()
 
     for β in (0.9, 0.94, 0.98)
 
@@ -1008,8 +992,7 @@ Here's one solution (assuming as usual that you've executed everything above)
 
         σ_func = LinInterp(grid_y, σ)
         y = simulate_og(σ_func)
-        ax[:plot](y, lw=2, alpha=0.6, label="β = $β" )
+        plot!(plt, y, lw=2, alpha=0.6, label=latexstring("\$\\beta=" * string(β) * "\$"))
     end
 
-    ax[:legend](loc="lower right")
-    show()
+    plot!(plt, legend=:bottomright)

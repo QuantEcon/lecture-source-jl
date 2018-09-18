@@ -627,7 +627,7 @@ Let's try this, using the same parameters in both complete and incomplete market
 
 .. code-block:: julia
 
-    using PyPlot, Random # Change to Plots
+    using Plots, Random
 
     Random.seed!(42)
     N_simul = 150
@@ -638,24 +638,20 @@ Let's try this, using the same parameters in both complete and incomplete market
 
     c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul=N_simul)
 
-    fig, ax = subplots(1, 2, figsize=(15, 5))
 
-    ax[1][:set_title]("Consumption paths")
-    ax[1][:plot](1:N_simul, c_path, label="incomplete market")
-    ax[1][:plot](1:N_simul, c_bar * ones(N_simul), label="complete market")
-    ax[1][:plot](1:N_simul, y_path, label="income", lw=2, alpha=.6, ls="--")
-    ax[1][:legend]()
-    ax[1][:set_xlabel]("Periods")
-    ax[1][:set_ylim]([1.4, 2.1])
+    plt_cons = plot(title = "Consumption paths", xlabel="Periods", ylim=[1.4,2.1])
+    plot!(plt_cons, 1:N_simul, c_path, label="incomplete market", lw=2)
+    plot!(plt_cons, 1:N_simul, c_bar * ones(N_simul), label="complete market", lw=2)
+    plot!(plt_cons, 1:N_simul, y_path, label = "income", lw=2, alpha=0.6, linestyle =:dash)
+    plot!(plt_cons, legend=:bottom)
 
-    ax[2][:set_title]("Debt paths")
-    ax[2][:plot](1:N_simul, debt_path, label="incomplete market")
+    plt_debt = plot(title = "Debt paths", xlabel="Periods")
+    plot!(plt_debt, 1:N_simul, debt_path, label="incomplete market")
+    plot!(plt_debt, 1:N_simul, debt_complete[s_path], label="complete market", lw=2)
+    plot!(plt_debt, 1:N_simul, y_path, label = "income", lw=2, alpha=0.6, linestyle =:dash)
+    plot!(plt_debt, legend=:bottomleft)
 
-    ax[2][:plot](1:N_simul, debt_complete[s_path], label="complete market")
-    ax[2][:plot](1:N_simul, y_path, label="income", alpha=.6, ls="--")
-    ax[2][:legend]()
-    ax[2][:axhline](0, color="k", ls="--")
-    ax[2][:set_xlabel]("Periods")
+    plot(plt_cons, plt_debt, layout=(1,2), size=(800,400))
 
 .. code-block:: julia
   :class: test
@@ -686,23 +682,21 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
 
 .. code-block:: julia
 
-    fig, ax = subplots(1, 2, figsize=(15, 5))
+    #fig, ax = subplots(1, 2, figsize=(15, 5))
 
-    ax[1][:set_title]("Tax collection paths")
-    ax[1][:plot](1:N_simul, c_path, label="incomplete market")
-    ax[1][:plot](1:N_simul, c_bar * ones(N_simul), label="complete market")
-    ax[1][:plot](1:N_simul, y_path, label="govt expenditures", alpha=.6, ls="--")
-    ax[1][:legend]()
-    ax[1][:set_xlabel]("Periods")
-    ax[1][:set_ylim]([1.4, 2.1])
+    plt_tax = plot(title="Tax collection paths", x_label = "Periods", ylim=[1.4,2.1])
+    plot!(plt_tax, 1:N_simul, c_path, label="incomplete market", lw=2)
+    plot!(plt_tax, 1:N_simul, c_bar * ones(N_simul), label="complete market", lw=2)
+    plot!(plt_tax, 1:N_simul, y_path, label="govt expenditures", alpha=.6, linestyle=:dash, lw=2)
 
-    ax[2][:set_title]("Government assets paths")
-    ax[2][:plot](1:N_simul, debt_path, label="incomplete market")
-    ax[2][:plot](1:N_simul, debt_complete[s_path], label="complete market")
-    ax[2][:plot](1:N_simul, y_path, label="govt expenditures", alpha=.6, ls="--")
-    ax[2][:legend]()
-    ax[2][:axhline](0, color="k", ls="--")
-    ax[2][:set_xlabel]("Periods")
+    plt_gov = plot(title="Government assets paths", x_label = "Periods")
+    plot!(plt_gov, 1:N_simul, debt_path, label="incomplete market", lw=2)
+    plot!(plt_gov, 1:N_simul, debt_complete[s_path], label="complete market", lw=2)
+    plot!(plt_gov, 1:N_simul, y_path, label="govt expenditures", alpha=.6, linestyle=:dash, lw=2)
+    plot!(plt_gov, [0], linetype=:hline, linestyle=:dash, color=:black, lw=2, label="")
+
+    plot(plt_tax, plt_gov, layout = (1,2), size=(800,400))
+
 
 
 .. code-block:: julia
@@ -1043,25 +1037,22 @@ allows the consumer completely to smooth consumption across time and across stat
     c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
 
 
-    fig, ax = subplots(1, 2, figsize=(15, 5))
+
 
     # Consumption plots
-    ax[1][:set_title]("Cons and income")
-    ax[1][:plot](1:N_simul, c_hist_com, label="consumption")
-    ax[1][:plot](1:N_simul, y_hist_com, label="income",
-                lw=2, alpha=0.6, ls="--")
-    ax[1][:legend]()
-    ax[1][:set_xlabel]("Periods")
-    ax[1][:set_ylim]([-5.0, 110])
+    plt_cons = plot(title="Cons and income", xlabel = "Periods", ylim =[-5.0, 110])
+    plot!(plt_cons, 1:N_simul, c_hist_com, label="consumption",lw=2)
+    plot!(plt_cons, 1:N_simul, y_hist_com, label="income",
+                lw=2, alpha=0.6, linestyle=:dash)
 
     # Debt plots
-    ax[2][:set_title]("Debt and income")
-    ax[2][:plot](1:N_simul, b_hist_com, label="debt")
-    ax[2][:plot](1:N_simul, y_hist_com, label="Income",
-                lw=2, alpha=0.6, ls="--")
-    ax[2][:legend]()
-    ax[2][:axhline](0, color="k", ls="--")
-    ax[2][:set_xlabel]("Periods")
+    plt_debt = plot(title = "Debt and income", xlabel="Periods")
+    plot!(plt_debt, 1:N_simul, b_hist_com, label="debt", lw=2)
+    plot!(plt_debt, 1:N_simul, y_hist_com, label="Income",
+                lw=2, alpha=0.6, linestyle=:dash)
+    plot!(plt_debt, [0], linetype=:hline, color=:black, linestyle=:dash,lw=2, label="")
+
+    plot(plt_cons, plt_debt, layout = (1,2), size = (800,400))
 
 .. code-block:: julia
   :class: test
