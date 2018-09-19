@@ -4,45 +4,23 @@ Author: Shunsuke Hori
 
 =#
 
-using Polynomials
+using Polynomials, LinearAlgebra
 
-struct LQFilter{TR<:Real, TI<:Integer, TF<:AbstractFloat}
-    d::Vector{TF}
-    h::TR
-    y_m::Vector{TF}
-    m::TI
-    ϕ::Vector{TF}
-    β::TR
-    ϕ_r::Union{Vector{TF},Void}
-    k::Union{TI,Void}
+struct LQFilter{TF_ <: Union{Vector{Float64},Nothing}, TI_ <: Union{Int,Nothing}}
+    d::Vector{Float64}
+    h::Float64
+    y_m::Vector{Float64}
+    m::Int
+    ϕ::Vector{Float64}
+    β::Float64
+    ϕ_r::TF_
+    k::TI_
 end
 
-
-"""
-Parameters
-----------
-d : Vector
-        The order of the coefficients: [d_0, d_1, ..., d_m]
-h : Real
-        Parameter of the objective function (corresponding to the
-        quadratic term)
-y_m : Vector
-        Initial conditions for y
-r : Vector
-        The order of the coefficients: [r_0, r_1, ..., r_k]
-        (optional, if not defined -> deterministic problem)
-β : Real or nothing
-        Discount factor (optional, default value is one)
-h_eps : 
-"""
-function LQFilter{TR<:Real}(d::Vector{TR},
-                   h::TR,
-                   y_m::Vector{TR};
-                   r::Union{Vector{TR},Void}=nothing,
-                   β::Union{TR,Void}=nothing,
-                   h_eps::Union{TR,Void}=nothing,
-                   )
-
+function LQFilter(d, h, y_m;
+                  r = nothing,
+                  β = nothing,
+                  h_eps = nothing)
 
     m = length(d) - 1
 
@@ -53,7 +31,7 @@ function LQFilter{TR<:Real}(d::Vector{TR},
     # Define the coefficients of ϕ up front
     #---------------------------------------------
 
-    ϕ = Vector{TR}(2m + 1)
+    ϕ = zeros(2m + 1)
     for i in -m:m
         ϕ[m-i+1] = sum(diag(d*d', -i))
     end
@@ -62,19 +40,19 @@ function LQFilter{TR<:Real}(d::Vector{TR},
     #-----------------------------------------------------
     # If r is given calculate the vector ϕ_r
     #-----------------------------------------------------
-    
-    if r == nothing
-        k=nothing
+
+    if r === nothing
+        k = nothing
         ϕ_r = nothing
     else
         k = size(r, 1) - 1
-        ϕ_r = Vector{TR}(2k + 1)
+        ϕ_r = zeros(2k + 1)
 
         for i = -k:k
             ϕ_r[k-i+1] = sum(diag(r*r', -i))
         end
 
-        if h_eps != nothing
+        if h_eps !== nothing
             ϕ_r[k+1] = ϕ_r[k+1] + h_eps
         end
     end
@@ -82,7 +60,7 @@ function LQFilter{TR<:Real}(d::Vector{TR},
     #-----------------------------------------------------
     # If β is given, define the transformed variables
     #-----------------------------------------------------
-    if β == nothing
+    if β === nothing
         β = 1.0
     else
         d = β.^(collect(0:m)/2) * d
@@ -92,10 +70,7 @@ function LQFilter{TR<:Real}(d::Vector{TR},
     return LQFilter(d, h, y_m, m, ϕ, β, ϕ_r, k)
 end
 
-"""
-This constructs the matrices W and W_m for a given number of periods N
-"""
-function construct_W_and_Wm(lqf::LQFilter, N::Integer)
+function construct_W_and_Wm(lqf, N)
 
     d, m = lqf.d, lqf.m
 
@@ -118,7 +93,7 @@ function construct_W_and_Wm(lqf::LQFilter, N::Integer)
     end
 
     # Make the matrix symmetric
-    D_m1 = D_m1 + D_m1' - diagm(diag(D_m1))
+    D_m1 = D_m1 + D_m1' - Diagonal(diag(D_m1))
 
     # (2) Construct the M matrix using the entries of D_m1
 
@@ -134,7 +109,7 @@ function construct_W_and_Wm(lqf::LQFilter, N::Integer)
     #----------------------------------------------
     ϕ, h = lqf.ϕ, lqf.h
 
-    W[1:(m + 1), 1:(m + 1)] = D_m1 + h * eye(m + 1)
+    W[1:(m + 1), 1:(m + 1)] = D_m1 + h * I
     W[1:(m + 1), (m + 2):(2m + 1)] = M
 
     for (i, row) in enumerate((m + 2):(N + 1 - m))
@@ -152,21 +127,11 @@ function construct_W_and_Wm(lqf::LQFilter, N::Integer)
     return W, W_m
 end
 
-
-"""
-This function calculates z_0 and the 2m roots of the characteristic equation
-associated with the Euler equation (1.7)
-Note:
-------
-`poly(roots)` from Polynomial.jll defines a polynomial using its roots that can be
-evaluated at any point by `polyval(Poly,x)`. If x_1, x_2, ... , x_m are the roots then
-    polyval(poly(roots),x) = (x - x_1)(x - x_2)...(x - x_m)
-"""
-function roots_of_characteristic(lqf::LQFilter)
+function roots_of_characteristic(lqf)
     m, ϕ = lqf.m, lqf.ϕ
-    
+
     # Calculate the roots of the 2m-polynomial
-    ϕ_poly=Poly(ϕ[end:-1:1])
+    ϕ_poly = Poly(ϕ[end:-1:1])
     proots = roots(ϕ_poly)
     # sort the roots according to their length (in descending order)
     roots_sorted = sort(proots, by=abs)[end:-1:1]
@@ -176,13 +141,7 @@ function roots_of_characteristic(lqf::LQFilter)
     return z_1_to_m, z_0, λ
 end
 
-"""
-This function computes the coefficients {c_j, j = 0, 1, ..., m} for
-    c(z) = sum_{j = 0}^{m} c_j z^j
-Based on the expression (1.9). The order is
-    c_coeffs = [c_0, c_1, ..., c_{m-1}, c_m]
-"""
-function coeffs_of_c(lqf::LQFilter)
+function coeffs_of_c(lqf)
     m = lqf.m
     z_1_to_m, z_0, λ = roots_of_characteristic(lqf)
     c_0 = (z_0 * prod(z_1_to_m) * (-1.0)^m)^(0.5)
@@ -190,11 +149,7 @@ function coeffs_of_c(lqf::LQFilter)
     return c_coeffs
 end
 
-"""
-This function calculates {λ_j, j=1,...,m} and {A_j, j=1,...,m}
-of the expression (1.15)
-"""
-function solution(lqf::LQFilter)
+function solution(lqf)
     z_1_to_m, z_0, λ = roots_of_characteristic(lqf)
     c_0 = coeffs_of_c(lqf)[end]
     A = zeros(lqf.m)
@@ -205,23 +160,19 @@ function solution(lqf::LQFilter)
     return λ, A
 end
 
-"""
-This function constructs the covariance matrix for x^N (see section 6)
-for a given period N
-"""
-function construct_V(lqf::LQFilter; N::Integer=nothing)
-    if N == nothing
+function construct_V(lqf; N = nothing)
+    if N === nothing
         error("N must be provided!!")
     end
-    if !(typeof(N) <: Integer)
+    if !(N isa Integer)
         throw(ArgumentError("N must be Integer!"))
     end
-        
+
     ϕ_r, k = lqf.ϕ_r, lqf.k
     V = zeros(N, N)
     for i in 1:N
         for j in 1:N
-            if abs(i-j) <= k
+            if abs(i-j) ≤ k
                 V[i, j] = ϕ_r[k + abs(i-j)+1]
             end
         end
@@ -229,66 +180,40 @@ function construct_V(lqf::LQFilter; N::Integer=nothing)
     return V
 end
 
-"""
-Assuming that the u's are normal, this method draws a random path
-for x^N
-"""
-function simulate_a(lqf::LQFilter, N::Integer)
+function simulate_a(lqf, N)
     V = construct_V(N + 1)
     d = MVNSampler(zeros(N + 1), V)
     return rand(d)
 end
 
-"""
-This function implements the prediction formula discussed is section 6 (1.59)
-It takes a realization for a^N, and the period in which the prediciton is formed
-
-Output:  E[abar | a_t, a_{t-1}, ..., a_1, a_0]
-"""
-function predict(lqf::LQFilter, a_hist::Vector, t::Integer)
+function predict(lqf, a_hist, t)
     N = length(a_hist) - 1
     V = construct_V(N + 1)
 
     aux_matrix = zeros(N + 1, N + 1)
-    aux_matrix[1:t+1 , 1:t+1 ] = eye(t + 1)
-    L = chol(V)'
+    aux_matrix[1:t+1 , 1:t+1 ] = Matrix(I, t + 1, t + 1)
+    L = cholesky(V).U'
     Ea_hist = inv(L) * aux_matrix * L * a_hist
 
     return Ea_hist
 end
 
-
-"""
-- if t is NOT given it takes a_hist (Vector or Array) as a deterministic a_t
-- if t is given, it solves the combined control prediction problem (section 7)
-　(by default, t == nothing -> deterministic)
-
-for a given sequence of a_t (either determinstic or a particular realization),
-it calculates the optimal y_t sequence using the method of the lecture
-
-Note:
-------
-lufact normalizes L, U so that L has unit diagonal elements
-To make things cosistent with the lecture, we need an auxiliary diagonal
-matrix D which renormalizes L and U
-"""
-
-function optimal_y(lqf::LQFilter, a_hist::Vector, t = nothing)
+function optimal_y(lqf, a_hist, t = nothing)
     β, y_m, m = lqf.β, lqf.y_m, lqf.m
 
     N = length(a_hist) - 1
     W, W_m = construct_W_and_Wm(lqf, N)
 
-    F = lufact(W, Val{true})
+    F = lu(W, Val(true))
 
-    L, U = F[:L], F[:U]
-    D = diagm(1.0./diag(U))
+    L, U = F
+    D = diagm(0 => 1.0 ./ diag(U))
     U = D * U
-    L = L * diagm(1.0./diag(D))
+    L = L * diagm(0 => 1.0 ./ diag(D))
 
-    J = flipdim(eye(N + 1), 2)
+    J = reverse(Matrix(I, N + 1, N + 1), dims = 2)
 
-    if t == nothing                      # if the problem is deterministic
+    if t === nothing                      # if the problem is deterministic
         a_hist = J * a_hist
 
         #--------------------------------------------
@@ -302,7 +227,7 @@ function optimal_y(lqf::LQFilter, a_hist::Vector, t = nothing)
         Uy = \(L, a_bar)                  # U @ y_bar = L^{-1}a_bar from the lecture
         y_bar = \(U, Uy)                  # y_bar = U^{-1}L^{-1}a_bar
         # Reverse the order of y_bar with the matrix J
-        J = flipdim(eye(N + m + 1), 2)
+        J = reverse(Matrix(I, N + m + 1, N + m + 1), dims = 2)
         y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
         #--------------------------------------------
         # Transform the optimal sequence back if β is given
@@ -320,7 +245,7 @@ function optimal_y(lqf::LQFilter, a_hist::Vector, t = nothing)
         y_bar = \(U, Uy)                  # y_bar = U^{-1}L^{-1}a_bar
 
         # Reverse the order of y_bar with the matrix J
-        J = flipdim(eye(N + m + 1), 2)
+        J = reverse(Matrix(I, N + m + 1, N + m + 1), dims = 2)
         y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
     end
     return y_hist, L, U, y_bar
