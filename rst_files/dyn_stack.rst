@@ -61,8 +61,6 @@ This lecture displays these principles within the tractable framework of linear 
 
 It is based on chapter 19 of :cite:`Ljungqvist2012`
 
-
-
 The Stackelberg Problem
 =======================
 
@@ -93,14 +91,12 @@ Define the government's one-period loss function [#f1]_
 
     r(y, u)  =  y' R y  + u' Q u
 
-
 Subject to an initial condition for :math:`z_0`, but not for :math:`x_0`, a government wants to maximize
 
 .. math::
     :label: new1_dyn_stack
 
     -  \sum_{t=0}^\infty \beta^t r(y_t, u_t)
-
 
 The government makes policy in light of the model
 
@@ -123,15 +119,12 @@ We assume that the matrix on the left is invertible, so that we can multiply bot
     = \begin{bmatrix}  A_{11}  &   A_{12} \\ A_{21} &  A_{22}  \end{bmatrix}
     \begin{bmatrix}  z_t \\ x_t \end{bmatrix} +  B u_t
 
-
 or
 
 .. math::
     :label: new30
 
     y_{t+1} = A y_t + B u_t
-
-
 
 The private sector's behavior is summarized by the second block of equations of :eq:`new3` or :eq:`new30`
 
@@ -150,7 +143,6 @@ Note that we have an initial condition for :math:`z_0` but  not for :math:`x_0`
 
 :math:`x_0` is among the variables to be chosen at time :math:`0` by the Stackelberg leader
 
-
 The government uses its understanding of the responses restricted by :eq:`new30` to manipulate private sector actions
 
 To indicate the features of the Stackelberg leader's problem that make :math:`x_t` a vector of forward-looking
@@ -162,17 +154,13 @@ as
 
     x_t =  \phi_1 z_t + \phi_2 z_{t+1} +  \phi_3 u_t + \phi_0 x_{t+1} ,
 
-
 where :math:`\phi_0 = \hat A_{22}^{-1} G_{22}`.
 
 The models we study in this chapter typically satisfy
 
-
 *Forward-Looking Stability Condition*
 The eigenvalues of :math:`\phi_0`
 are bounded in modulus by :math:`\beta^{-.5}`.
-
-
 
 This stability condition  makes equation  :eq:`eqn:xlawforward` explosive if solved 'backwards' but stable if solved 'forwards'.
 
@@ -185,13 +173,11 @@ So we solve equation :eq:`eqn:xlawforward` forward to get
 
     x_t = \sum_{j=0}^\infty \phi_0^j \left[ \phi_1 z_{t+j} + \phi_2 z_{t+j+1} + \phi_3 u_{t+j} \right] .
 
-
 In choosing :math:`u_t` for :math:`t \geq 1` at time :math:`0`, the government  takes into account how future :math:`z` and :math:`u` affect earlier
 :math:`x` through equation :eq:`bell101`.
 
 The lecture on :doc:`history dependent policies <hist_dep_policies>` analyzes an example about *Ramsey taxation* in which, as is typical in such problems, the last :math:`n_x` equations of :eq:`new3` or :eq:`new30` constitute
 *implementability constraints* that are formed by the Euler equations of a competitive fringe or private sector
-
 
 A :ref:`certainty equivalence principle <lq_cert_eq>` allows us to work with a nonstochastic model (see :doc:`LQ dynamic programming <lqcontrol>`)
 
@@ -217,14 +203,11 @@ The optimal decision rule is history dependent, meaning that :math:`u_t` depends
 
 History dependence has two sources: (a) the government's ability to commit [#f2]_ to a sequence of rules at time :math:`0` as in the lecture on :doc:`history dependent policies <hist_dep_policies>`, and (b) the forward-looking behavior of the private sector embedded in the second block of equations :eq:`new3` as exhibited by :eq:`bell101`
 
-
-
 Solving the Stackelberg Problem
 ===============================
 
 Some Basic Notation
 --------------------
-
 
 For any vector :math:`a_t`, define :math:`\vec a_t = [a_t, a_{t+1}, \ldots]`.
 
@@ -233,7 +216,6 @@ Define a feasible set of :math:`(\vec y_1, \vec u_0)` sequences
 .. math::
 
     \Omega(y_0) = \left\{ (\vec y_1, \vec u_0) :  y_{t+1} = A y_t + B u_t, \forall t \geq 0 \right\}
-
 
 Note that in the definition of :math:`\Omega(y_0)`, :math:`y_0` is taken as given.
 
@@ -258,7 +240,6 @@ Subproblem 1
 
     v(y_0) = \max_{(\vec y_1, \vec u_0) \in \Omega(y_0)} - \sum_{t=0}^\infty \beta^t r(y_t, u_t)
 
-
 Subproblem 2
 ^^^^^^^^^^^^^
 
@@ -267,7 +248,6 @@ Subproblem 2
 
     w(z_0) = \max_{x_0} v(y_0)
 
-
 Subproblem 1 takes the vector of forward-looking variables  :math:`x_0` as given
 
 Subproblem 2 optimizes over  :math:`x_0`
@@ -275,10 +255,8 @@ Subproblem 2 optimizes over  :math:`x_0`
 The value function :math:`w(z_0)` tells the value of the Stackelberg plan as a function of the vector of natural state variables at time :math:`0`,
 :math:`z_0`
 
-
 Two Bellman equations
 ----------------------
-
 
 We now describe Bellman equations for :math:`v(y)` and :math:`w(z_0)`
 
@@ -292,14 +270,12 @@ The value function :math:`v(y)` in  subproblem 1 satisfies the Bellman equation
 
     v(y) = \max_{u, y^*}  \left\{ - r(y,u) + \beta v(y^*) \right\}
 
-
 where the maximization is subject to
 
 .. math::
     :label: bell2_dyn_stack
 
     y^* = A y + B u
-
 
 and  :math:`y^*` denotes next period's value.
 
@@ -309,14 +285,12 @@ Substituting :math:`v(y) = - y'P y` into  Bellman equation :eq:`bell1_dyn_stack`
 
     - y' P y = {\rm max}_{  u, y^*} \left\{ -  y' R y -   u'Q     u - \beta y^{* \prime} P y^* \right\}
 
-
 which as in  lecture :doc:`linear regulator <lqcontrol>` gives rise to the algebraic matrix Riccati equation
 
 .. math::
     :label: bell3_dyn_stack
 
     P = R + \beta A' P A - \beta^2 A' P   B (  Q  + \beta   B' P   B)^{-1}   B' P A
-
 
 and the optimal decision rule coefficient vector
 
@@ -325,14 +299,12 @@ and the optimal decision rule coefficient vector
 
     F = \beta(   Q + \beta   B' P   B)^{-1}  B' P A ,
 
-
 where the optimal decision rule is
 
 .. math::
     :label: bell5_dyn_stack
 
     u_t = - F y_t.
-
 
 Subproblem 2
 --------------
@@ -343,7 +315,6 @@ The value function :math:`v(y_0)` satisfies
     :label: valuefny
 
     v(y_0) = - z_0 ' P_{11} z_0 - 2 x_0' P_{21} z_0 - x_0' P_{22} x_0
-
 
 where
 
@@ -358,13 +329,11 @@ where
     \end{array}
     \right]
 
-
 We find an optimal :math:`x_0` by equating to zero the gradient of :math:`v(y_0)` with respect to  :math:`x_0`:
 
 .. math::
 
     - 2 P_{21} z_0 - 2 P_{22} x_0 =0,
-
 
 which implies that
 
@@ -372,7 +341,6 @@ which implies that
     :label:  king6x0
 
     x_0 = - P_{22}^{-1} P_{21} z_0.
-
 
 Summary
 -------
@@ -387,8 +355,6 @@ We solve the Stackelberg problem by
 
 * then partitioning :math:`P` to obtain representation :eq:`king6x0`
 
-
-
 Manifestation of time inconsistency
 ------------------------------------
 
@@ -398,18 +364,15 @@ We have seen that for :math:`t \geq 0` the optimal decision rule for the Stackel
 
     u_t = - F y_t
 
-
 or
 
 .. math::
 
     u_t  = f_{11}  z_{t} + f_{12} x_{t}
 
-
 where for :math:`t \geq 1`, :math:`x_t` is effectively a state variable, albeit not a *natural* one,  inherited from the past
 
 The means that for :math:`t \geq 1`, :math:`x_t` is  *not* a  function of :math:`z_t` only (though it is at :math:`t=0`) and that :math:`x_t` exerts an independent influence on :math:`u_t`
-
 
 The situation is different at :math:`t=0`
 
@@ -419,7 +382,6 @@ For :math:`t=0`, the optimal choice of :math:`x_0 = - P_{22}^{-1} P_{21} z_0` de
     :label: vonzer3c
 
     u_0 = (f_{11} - f_{12}P_{22}^{-1} P_{2,1})  z_0
-
 
 So for :math:`t=0`, :math:`u_0` is a linear function of the natural state variable :math:`z_0` only
 
@@ -432,7 +394,6 @@ This means that :math:`x_t` has an independent role in shaping :math:`u_t` for :
 All of this means that  the Stackelberg leader's decision rule at :math:`t \geq 1` differs from its decision rule at :math:`t =0`
 
 As indicated at the beginning of this lecture, this difference is a symptom of the *time inconsistency* of the optimal Stackelberg plan
-
 
 Shadow prices
 ==============
@@ -448,7 +409,6 @@ This is true because at :math:`t=0`, there are no past promises about :math:`u` 
 But the multipliers :math:`\mu_x` take nonzero values thereafter, reflecting future costs to the government of confirming the private sector's
 earlier expectations about its time :math:`t` actions
 
-
 From  the :doc:`linear regulator <lqcontrol>` lecture, the formula :math:`\mu_t = P y_t` for the vector of
 shadow prices on the transition equations is
 
@@ -462,7 +422,6 @@ shadow prices on the transition equations is
     \end{array}
     \right]
 
-
 The shadow price :math:`\mu_{xt}` on the forward-looking variables :math:`x_t` evidently equals
 
 .. math::
@@ -470,14 +429,12 @@ The shadow price :math:`\mu_{xt}` on the forward-looking variables :math:`x_t` e
 
     \mu_{xt} = P_{21} z_t + P_{22} x_t.
 
-
 So  :eq:`king6x0` is equivalent with
 
 .. math::
     :label: mu0condition
 
     \mu_{x0} = 0 .
-
 
 A Large Firm With a Competitive Fringe
 ======================================
@@ -503,14 +460,12 @@ There is a linear inverse demand curve
 
     p_t = A_0 - A_1 (Q_t + \overline q_t) + v_t,
 
-
 where :math:`A_0, A_1` are both positive and :math:`v_t` is a disturbance to demand governed by
 
 .. math::
     :label: oli2
 
     v_{t+1}= \rho v_t + C_\epsilon \check \epsilon_{t+1}
-
 
 where :math:`| \rho | < 1` and :math:`\check \epsilon_{t+1}` is an IID sequence of random variables with mean zero and variance :math:`1`
 
@@ -528,7 +483,6 @@ The representative competitive firm regards :math:`\{p_t\}_{t=0}^\infty` as an e
 
     E_0 \sum_{t=0}^\infty \beta^t \left\{ p_t q_t - \sigma_t \right\}, \quad \beta \in(0,1)
 
-
 subject to :math:`q_0` given, where :math:`E_t` is the mathematical expectation based on time :math:`t` information
 
 Let :math:`i_t = q_{t+1} - q_t`
@@ -542,7 +496,6 @@ The first-order conditions for maximizing :eq:`oli3` are
 
     i_t =  E_t  \beta i_{t+1} -c^{-1} \beta h  q_{t+1} + c^{-1} \beta  E_t( p_{t+1} -d)
 
-
 for :math:`t \geq 0`
 
 We appeal to a :ref:`certainty equivalence principle <lq_cert_eq>` to justify working with a non-stochastic version of :eq:`oli4` formed by dropping the expectation operator and the random term :math:`\check \epsilon_{t+1}` from :eq:`oli2`
@@ -551,12 +504,10 @@ We use a method of :cite:`Sargent1979` and :cite:`Townsend1983` [#f9]_
 
 We shift :eq:`oli1` forward one period, replace conditional expectations with realized values, use :eq:`oli1` to substitute for :math:`p_{t+1}` in :eq:`oli4`, and set :math:`q_t = \overline q_t` and :math:`i_t = \overline i_t` for all :math:`t\geq 0` to get
 
-
 .. math::
     :label: oli5
 
     \overline i_t = \beta \overline i_{t+1}  - c^{-1} \beta h \overline q_{t+1} + c^{-1} \beta (A_0-d) - c^{-1} \beta    A_1 \overline q_{t+1} -  c^{-1} \beta    A_1 Q_{t+1} + c^{-1} \beta    v_{t+1}
-
 
 Given sufficiently stable sequences :math:`\{Q_t, v_t\}`, we could solve :eq:`oli5` and :math:`\overline i_t = \overline q_{t+1} - \overline q_t` to express the competitive fringe's output sequence as a function of the (tail of the) monopolist's output sequence
 
@@ -596,7 +547,6 @@ Including the implementability constraints, we can represent the constraints in 
     + \begin{bmatrix}  0 \\ 0 \\ 1 \\ 0 \\ 0  \end{bmatrix} u_t
     \end{aligned}
 
-
 where :math:`u_t = Q_{t+1} - Q_t` is the control of the monopolist at time :math:`t`
 
 The last row portrays the implementability constraints :eq:`oli5`
@@ -607,7 +557,6 @@ Represent :eq:`oli6` as
     :label: oli6a
 
     y_{t+1} = A y_t + B u_t
-
 
 Although we have included the competitive fringe's choice variable :math:`\overline i_t` as a component of the "state" :math:`y_t` in the monopolist's transition law :eq:`oli6a`, :math:`\overline i_t` is actually a "jump" variable
 
@@ -624,7 +573,6 @@ The monopolist's problem is
     \max_{\{u_t, p_{t+1}, Q_{t+1}, \overline q_{t+1}, \overline i_t\}}
     \sum_{t=0}^\infty \beta^t \left\{ p_t Q_t  - {\cal C}_t \right\}
 
-
 subject to the given initial condition for :math:`z_0`, equations :eq:`oli1` and :eq:`oli5` and :math:`\overline i_t = \overline q_{t+1} - \overline q_t`, as well as the laws of motion of the natural state variables :math:`z`
 
 Notice that the monopolist in effect chooses the price sequence, as well as the quantity sequence of the competitive fringe, albeit subject to the restrictions imposed by the behavior of consumers, as summarized by the demand curve :eq:`oli1` and the implementability constraint :eq:`oli5` that describes the best responses  of firms in  the competitive fringe
@@ -636,7 +584,6 @@ By substituting :eq:`oli1` into the above objective function, the monopolist's p
 
     \max_{\{u_t\}} \sum_{t=0}^\infty \beta^t \left\{ (A_0 - A_1 (\overline q_t + Q_t) + v_t) Q_t - eQ_t - .5gQ_t^2 - .5 c u_t^2 \right\}
 
-
 subject to :eq:`oli6a`
 
 This can be written
@@ -645,7 +592,6 @@ This can be written
     :label: oli9
 
     \max_{\{u_t\}} - \sum_{t=0}^\infty \beta^t \left\{ y_t' R y_t +   u_t' Q u_t \right\}
-
 
 subject to :eq:`oli6a` where
 
@@ -659,7 +605,6 @@ subject to :eq:`oli6a` where
     0 & 0 & -{A_1 \over 2} & 0 & 0 \\
     0 & 0 & 0 & 0 & 0 \end{bmatrix}
 
-
 and :math:`Q= {c \over 2}`
 
 Under the Stackelberg plan, :math:`u_t = - F y_t`, which implies that
@@ -670,15 +615,12 @@ the evolution of :math:`y`  under the Stackelberg plan as
 
     \overline y_{t+1} = (A - BF) \overline y_t
 
-
 where :math:`\overline y_t = \begin{bmatrix}  1 & v_t & Q_t & \overline q_t & \overline i_t  \end{bmatrix}'`
-
 
 Recursive formulation of a follower's problem
 ----------------------------------------------
 
 We now make use of a "Big :math:`K`, little :math:`k`" trick (see  :doc:`rational expectations equilibrium <rational_expectations>`)  to formulate a recursive version of a follower's problem cast in terms of an ordinary Bellman equation
-
 
 The individual firm faces :math:`\{p_t\}` as a price taker and believes
 
@@ -689,7 +631,6 @@ The individual firm faces :math:`\{p_t\}` as a price taker and believes
     p_t & = a_0 - a_1 Q_t -a_1 \overline q_t + v_t \\
         &  \equiv E_p \begin{bmatrix} \overline y_t  \end{bmatrix}
     \end{aligned}
-
 
 (Please remember that :math:`\overline q_t` is a component of :math:`\overline y_t`)
 
@@ -719,7 +660,6 @@ The follower faces law of motion
     0  & 1 \end{bmatrix}  \begin{bmatrix} \overline y_{t} \\
     q_{t} \end{bmatrix} + \begin{bmatrix} 0 \cr 1 \end{bmatrix} i_t
 
-
 We calculated :math:`F` and therefore :math:`A - B F` earlier
 
 We can restate the optimization problem of the representative competitive firm
@@ -748,7 +688,6 @@ The representative firm's decision rule can be represented as
                                 \overline i_t \\
                                 q_t \end{bmatrix}
 
-
 Now let's stare at the decision rule :eq:`oli23` for :math:`i_t`, apply "Big :math:`K`, little :math:`k`" logic again, and ask what we want in order to  verify a recursive representation of a representative follower's choice problem
 
 * We want decision rule :eq:`oli23` to have the property that :math:`i_t = \overline i_t` when we evaluate it at :math:`q_t = \overline q_t`
@@ -761,11 +700,6 @@ representative firm's optimization problem
     * We want :math:`q_t = \overline q_t`
 
     * We want :math:`i_t = \overline i_t`
-
-
-
-
-
 
 Numerical example
 -----------------
@@ -786,7 +720,6 @@ For these parameter values the monopolist's decision rule is
                                  \overline i_t
                                  \end{bmatrix}
 
-
 for :math:`t \geq 0`
 
 and
@@ -799,7 +732,6 @@ and
                                 \overline q_0
                                 \end{bmatrix}
 
-
 For this example, starting from :math:`z_0 =\begin{bmatrix} 1 & v_0 & Q_0 & \overline q_0\end{bmatrix}  = \begin{bmatrix} 1& 0 & 25 & 46 \end{bmatrix}`,  the monopolist chooses to set :math:`i_0=1.43`
 
 That choice implies that
@@ -810,9 +742,7 @@ That choice implies that
 
 A monopolist who started from the initial conditions :math:`\tilde z_0= z_1` would set :math:`i_0=1.10` instead of :math:`.25` as called for under the original optimal plan
 
-
 The preceding little calculation reflects the time inconsistency of the monopolist's optimal plan
-
 
 The recursive representation of the decision rule for a representative fringe firm  is
 
@@ -825,13 +755,9 @@ The recursive representation of the decision rule for a representative fringe fi
                                 \overline i_t \\
                                 q_t \end{bmatrix} ,
 
-
 which we have computed by solving the appropriate  linear-quadratic dynamic programming problem described above
 
 Notice that, as expected, :math:`i_t = \overline i_t` when we evaluate this decision rule at :math:`q_t = \overline q_t`
-
-
- 
 
 Concluding Remarks
 ==================
@@ -841,11 +767,7 @@ This lecture is our first encounter with a class of problems in which optimal de
 We shall encounter other examples in lectures :doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
 and :doc:`optimal taxation without state-contingent debt <amss>`
 
-
-
-
 Many more examples of  such problems are described in chapters 20-24 of :cite:`Ljungqvist2012`
-
 
 Exercises
 =========
@@ -862,7 +784,6 @@ For :math:`t \geq 0`, a monetary authority sets the growth of (the log of) money
 
     m_{t+1} = m_t + u_t
 
-
 subject to the initial condition :math:`m_0>0` given
 
 The demand for money is
@@ -871,7 +792,6 @@ The demand for money is
     :label: ex1b
 
     m_t - p_t = - \alpha (p_{t+1} - p_t)
-
 
 where :math:`\alpha > 0` and :math:`p_t` is the log of the price level
 
@@ -889,7 +809,6 @@ The monetary authority orders sequences :math:`\{m_t, p_t\}_{t=0}^\infty` accord
     - \sum_{t=0}^\infty .95^t \left[  (p_t - \overline p)^2 +
     u_t^2 + .00001 m_t^2  \right]
 
-
 Assume that :math:`m_0=10, \alpha=5, \bar p=1`
 
 **b.** Please briefly interpret this problem as one where the monetary authority wants to stabilize the price level, subject to costs of adjusting the money supply and some implementability constraints. (We include the term :math:`.00001m_t^2` for purely technical reasons that you need not discuss.)
@@ -906,7 +825,6 @@ Assume that :math:`m_0=10, \alpha=5, \bar p=1`
 
 * Code can be found in the file `lqcontrol.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lqcontrol.jl>`_ from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package that implements the optimal linear regulator
 
-
 Exercise 2
 ----------
 
@@ -917,7 +835,6 @@ A representative consumer has quadratic utility functional
 
     \sum_{t=0}^\infty \beta^t \left\{ -.5 (b -c_t)^2 \right\}
 
-
 where :math:`\beta \in (0,1)`, :math:`b = 30`, and :math:`c_t` is time :math:`t` consumption
 
 The consumer faces a sequence of budget constraints
@@ -926,7 +843,6 @@ The consumer faces a sequence of budget constraints
     :label: ex2b
 
     c_t + a_{t+1} = (1+r)a_t + y_t - \tau_t
-
 
 where
 
@@ -945,7 +861,6 @@ Assume that :math:`y_0, a_0` are given initial conditions and that :math:`y_t` o
 
     y_t = \rho y_{t-1}, \quad t \geq 1,
 
-
 where :math:`|\rho| <1`. Assume that :math:`a_0=0`, :math:`y_0=3`, and :math:`\rho=.9`
 
 At time :math:`0`, a planner commits to a plan for taxes :math:`\{\tau_t\}_{t=0}^\infty`
@@ -957,14 +872,12 @@ The planner designs the plan to maximize
 
     \sum_{t=0}^\infty \beta^t \left\{ -.5 (c_t-b)^2 -   \tau_t^2\right\}
 
-
 over :math:`\{c_t, \tau_t\}_{t=0}^\infty` subject to the implementability constraints in :eq:`ex2b` for :math:`t \geq 0` and
 
 .. math::
     :label: ex2e
 
     \lambda_t =  \beta (1+r) \lambda_{t+1}
-
 
 for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
@@ -975,7 +888,6 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 **c.** For :math:`\beta=.95, b=30, \beta(1+r)=.95`, formulate an artificial optimal linear regulator problem and use it to solve the Stackelberg problem
 
 **d.** Give a recursive representation of the Stackelberg plan for :math:`\tau_t`
-
 
 .. rubric:: Footnotes
 
@@ -989,7 +901,7 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
 .. [#f10] These calculations were performed by these functions:
 
-.. code-block:: julia 
+.. code-block:: julia
 
     #=
 
@@ -997,13 +909,8 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
     =#
 
-    using QuantEcon
-    using Roots
+    using QuantEcon, Roots, LinearAlgebra
 
-    """
-    This type contains all the parameters and
-    matrices that describe the oligopoly problem.
-    """
     struct Oligopoly{TF<:AbstractFloat}
         a0 :: TF
         a1 :: TF
@@ -1022,41 +929,25 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
         Rf :: Matrix{TF}
     end
 
-    """
-    Constructor for building all the elements of the oligopoly
-    problem.
-
-    ### Arguments:
-    * `;a0::AbstractFloat(100)`: Intercept of demand curve
-    * `;a1::AbstractFloat(1)`: Slope of demand curve
-    * `;rho::AbstractFloat(0.8)`: Autocorrelation of demand disturbances
-    * `;c_eps::AbstractFloat(0.2)`: Variance of demand disturbances
-    * `;c::AbstractFloat(1)`: Cost parameter
-    * `;d::AbstractFloat(20)`: Cost parameter
-    * `;e::AbstractFloat(20)`: Cost parameter
-    * `;g::AbstractFloat(0.2)`: Cost parameter
-    * `;h::AbstractFloat(0.2)`: Cost parameter
-    * `;beta::AbstractFloat(0.95)`: Discount rate
-    """
-    function Oligopoly(;a0::AbstractFloat=100.0,
-                        a1::AbstractFloat=1.0,
-                        rho::AbstractFloat=0.8,
-                        c_eps::AbstractFloat=0.2,
-                        c::AbstractFloat=1.0,
-                        d::AbstractFloat=20.0,
-                        e::AbstractFloat=20.0,
-                        g::AbstractFloat=0.2,
-                        h::AbstractFloat=0.2,
-                        beta::AbstractFloat=0.95)
+    function Oligopoly(;a0 = 100.0,
+                        a1 = 1.0,
+                        rho = 0.8,
+                        c_eps = 0.2,
+                        c = 1.0,
+                        d = 20.0,
+                        e = 20.0,
+                        g = 0.2,
+                        h = 0.2,
+                        beta = 0.95)
 
         # Left-hand side of (37)
-        Alhs = eye(5)
+        Alhs = Matrix{Float64}(I, 5, 5)
         Alhs[5, :] = [a0-d 1 -a1 -a1-h c]
         Alhsinv = inv(Alhs)
 
         # Right-hand side of (37)
         Brhs = [0; 0; 1; 0; 0]
-        Arhs = eye(5)
+        Arhs = Matrix{Float64}(I, 5, 5)
         Arhs[2, 2] = rho
         Arhs[4, 5] = 1
         Arhs[5, 5] = c / beta
@@ -1084,53 +975,27 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
     end
 
-    """
-    Find the value function of the optimal linear regulator problem.
-    This is steps 2 and 3 in the lecture notes.
-
-    ### Arguments:
-    * `olig::Oligopoly`: The oligopoly problem we would like
-    to find the value function for
-
-    ### Returns:
-    * (P, F, d)::Matrix{TF} where TF<:AbstractFloat : Matrices that describe the value
-    function of the optimal linear regulator problem
-    """
-    function find_PFd(olig::Oligopoly)
-        lq = LQ(olig.Q, -olig.R, olig.A, olig.B; bet=olig.beta)
+    function find_PFd(olig)
+        lq = QuantEcon.LQ(olig.Q, -olig.R, olig.A, olig.B; bet=olig.beta)
         P, F, d = stationary_values(lq)
 
         Af = vcat(hcat(olig.A-olig.B*F, [0; 0; 0; 0; 0]), [0 0 0 0 0 1])
         Bf = [0; 0; 0; 0; 0; 1]
 
-        lqf = LQ(olig.Q, -olig.Rf, Af, Bf; bet=olig.beta)
+        lqf = QuantEcon.LQ(olig.Q, -olig.Rf, Af, Bf; bet=olig.beta)
         Pf, Ff, df = stationary_values(lqf)
 
         return P, F, d, Pf, Ff, df
     end
 
-    """
-    Taking the parameters as given, solve for the optimal decision rules
-    for the firm.
-
-    ### Arguments:
-    * `olig::Oligopoly`: The oligopoly problem we would like
-    to find the decision rules for
-    * `(eta0, Q0, q0)::AbstractFloat`: Initial conditions
-
-    ### Returns:
-    * (P, -F, D0, Pf, -Ff)::Matrix{Float64}: Matrices that describe the
-    decision rule of the optimal linear regulator problem
-    """
-    function solve_for_opt_policy(olig::Oligopoly, eta0::AbstractFloat=0.0,
-                                Q0::AbstractFloat=0.0, q0::AbstractFloat=0.0)
+    function solve_for_opt_policy(olig, eta0 = 0.0, Q0 = 0.0, q0 = 0.0)
 
         # Step 1/2: Formulate/solve the optimal linear regulator
         P, F, d, Pf, Ff, df = find_PFd(olig)
 
         # Step 3: Convert implementation into state variables (find coeffs)
         P22 = P[end, end]
-        P21 = P[end, 1:end-1]'
+        P21 = transpose(P[end, 1:end-1])
         P22inv = P22^(-1)
 
         # Step 4: Find optimal x_0 and \mu_{x, 0}
@@ -1161,11 +1026,8 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
     # (1, v_1, Q_1, \bar{q}_1)
     i1_1 = D0*y1[1:end-1, 1]
 
-
 .. [#f12] For another application of the techniques in this lecture and how they related to the method recommended by :cite:`KydlandPrescott1980`, please see :doc:`this lecture <hist_dep_policies>` .
 
 .. TODO: Is the reference to KydlandPrescott to the correct paper?  When I think Kydland Prescott 1980, this is the paper I think of.  Does Evans Sargent refer to your paper with David Evans on History Dependent Public Policy?  I couldn't find the journal or other information on this paper.
-
-
 
 .. TODO: in f4, f13 we need to fill in section link given placeholder XXXXXX (CC: What links?)
