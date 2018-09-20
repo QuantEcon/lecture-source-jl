@@ -334,7 +334,7 @@ Here's the main body of code
 
     =#
 
-    using PyPlot
+    using PyPlot, PyCall
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
