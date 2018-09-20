@@ -8,7 +8,7 @@
 Estimation of :index:`Spectra`
 ******************************************
 
-.. index:: 
+.. index::
     single: Spectra; Estimation
 
 .. contents:: :depth: 2
@@ -22,7 +22,7 @@ One objective for that lecture was to introduce spectral densities --- a standar
 
 In this lecture we turn to the problem of estimating spectral densities and other related quantities from data
 
-.. index:: 
+.. index::
     single: Spectra, Estimation; Fast Fourier Transform
 
 Estimates of the spectral density are computed using what is known as a periodogram --- which in
@@ -32,15 +32,13 @@ Once the basic technique has been explained, we will apply it to the analysis of
 
 For supplementary reading, see :cite:`Sargent1987` or :cite:`CryerChan2008`.
 
-
-
 .. _periodograms:
 
 :index:`Periodograms`
 =====================
 
 :ref:`Recall that <arma_specd>` the spectral density :math:`f` of a covariance stationary process with
-autocorrelation function :math:`\gamma` can be written 
+autocorrelation function :math:`\gamma` can be written
 
 .. math::
 
@@ -87,11 +85,10 @@ From these two results, you will be able to verify that the values of
 
 The next section helps to explain the connection between the periodogram and the spectral density
 
-
 Interpretation
 ----------------
 
-.. index:: 
+.. index::
     single: Periodograms; Interpretation
 
 To interpret the periodogram, it is convenient to focus on its values at the *Fourier frequencies*
@@ -133,7 +130,6 @@ By carefully working through the sums, one can transform this to
     + 2 \sum_{k=1}^{n-1} \sum_{t=k}^{n-1} (X_t - \bar X)(X_{t-k} - \bar X)
     \cos(\omega_j k)
 
-
 Now let
 
 .. math::
@@ -163,7 +159,7 @@ we see that :math:`I(\omega_j)` is just a sample analog of :math:`f(\omega_j)`
 Calculation
 --------------
 
-.. index:: 
+.. index::
     single: Periodograms; Computation
 
 Let's now consider how to compute the periodogram as defined in :eq:`estspec_p`
@@ -183,7 +179,6 @@ Fourier transform computes the sequence
 
     A_j := \sum_{t=0}^{n-1} a_t \exp \left\{ i 2 \pi \frac{tj}{n} \right\},
     \qquad j = 0, \ldots, n-1
-
 
 With  :math:`a_0, \ldots, a_{n-1}` stored in Julia array ``a``, the function call ``fft(a)`` returns the values :math:`A_0, \ldots, A_{n-1}` as a Julia array
 
@@ -210,34 +205,24 @@ Here's a code snippet that, once the preceding code has been run, generates data
 
     X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}
 
-
 where :math:`\{ \epsilon_t \}` is white noise with unit variance, and compares the periodogram to the actual spectral density
-
-
-
 
 .. code-block:: julia
 
-    using QuantEcon
-    using Plots
-    pyplot()
-    
+    using QuantEcon, Plots
+
     n = 40              # Data size
     ϕ = 0.5             # AR parameter
     θ = [0, -0.8]       # MA parameter
     σ = 1.0
     lp = ARMA(ϕ, θ, σ)
-    X = simulation(lp, ts_length=n)
-    
+    X = simulation(lp, ts_length = n)
+
     x, y = periodogram(X)
     x_sd, y_sd = spectral_density(lp, two_pi=false, res=120)
-    
+
     plot(x, y,linecolor="blue", linewidth=2, linealpha=0.5, lab="periodogram")
     plot!(x_sd, y_sd, linecolor="red", linewidth=2, linealpha=0.8, lab="spectral density")
-
-
-
-
 
 This estimate looks rather disappointing, but the data size is only 40, so
 perhaps it's not surprising that the estimate is poor
@@ -250,11 +235,10 @@ The periodogram is far too irregular relative to the underlying spectral density
 
 This brings us to our next topic
 
-
 :index:`Smoothing`
 ==================
 
-.. index:: 
+.. index::
     single: Spectra, Estimation; Smoothing
 
 There are two related issues here
@@ -268,11 +252,10 @@ In other words, although we have more data, we are also using it to estimate mor
 A second issue is that densities of all types are fundamentally hard to
 estimate without parametric assumptions
 
-.. index:: 
+.. index::
     single: Nonparametric Estimation
 
 Typically, nonparametric estimation of densities requires some degree of smoothing
-
 
 The standard way that smoothing is applied to periodograms is by taking local averages
 
@@ -283,14 +266,12 @@ average of the adjacent values
 
     I(\omega_{j-p}), I(\omega_{j-p+1}), \ldots, I(\omega_j), \ldots, I(\omega_{j+p})
 
-
 This weighted average can be written as
 
 .. math::
     :label: estspec_ws
 
     I_S(\omega_j) := \sum_{\ell = -p}^{p} w(\ell) I(\omega_{j+\ell})
-
 
 where the weights :math:`w(-p), \ldots, w(p)` are a sequence of :math:`2p + 1` nonnegative
 values summing to one
@@ -302,8 +283,6 @@ The next figure shows the kind of sequence typically used
 
 Note the smaller weights towards the edges and larger weights in the center, so that more distant values from :math:`I(\omega_j)` have less weight than closer ones in the sum :eq:`estspec_ws`
 
-
-
 .. code-block:: julia
 
     function hanning_window(M)
@@ -312,18 +291,14 @@ Note the smaller weights towards the edges and larger weights in the center, so 
     end
 
     window = hanning_window(25) / sum(hanning_window(25))
-    x = linspace(-12, 12, 25)
-    plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights", 
+    x = range(-12, stop = 12, length = 25)
+    plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights",
         xlabel="Position in sequence of weights", legend=false, grid=false)
-
-
-
-
 
 Estimation with Smoothing
 ------------------------------
 
-.. index:: 
+.. index::
     single: Spectra, Estimation; Smoothing
 
 Our next step is to provide code that will not only estimate the periodogram but also provide smoothing as required
@@ -348,7 +323,6 @@ From top figure to bottom, the window length is varied from small to large
 
 .. figure:: /_static/figures/window_smoothing.png
 
-
 In looking at the figure, we can see that for this model and data size, the
 window length chosen in the middle figure provides the best fit
 
@@ -359,16 +333,15 @@ Of course in real estimation problems the true spectral density is not visible
 and the choice of appropriate smoothing will have to be made based on
 judgement/priors or some other theory
 
-
 .. _estspec_pfas:
 
 Pre-Filtering and Smoothing
 ------------------------------
 
-.. index:: 
+.. index::
     single: Spectra, Estimation; Pre-Filtering
 
-.. index:: 
+.. index::
     single: Spectra, Estimation; Smoothing
 
 In the `code listing <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/estspec.jl>`__ we showed three functions from the file ``estspec.jl``
@@ -412,12 +385,11 @@ Another way to put this is that if :math:`I` is relatively constant, then we can
 The AR(1) Setting
 -------------------
 
-.. index:: 
+.. index::
     single: Spectra, Estimation; AR(1) Setting
 
 Let's examine this idea more carefully in a particular setting --- where
 the data are assumed to be generated by an  AR(1) process
-
 
 (More general ARMA settings can be handled using similar techniques to those described below)
 
@@ -428,7 +400,6 @@ with
     :label: estspec_ar_dgp
 
     X_{t+1} = \mu + \phi X_t + \epsilon_{t+1}
-
 
 where :math:`\mu` and :math:`\phi \in (-1, 1)` are unknown parameters and :math:`\{ \epsilon_t \}` is white noise
 
@@ -450,13 +421,11 @@ In view of :ref:`an earlier result <arma_spec_den>` we obtained while discussing
 
     f(\omega) = \left| \frac{1}{1 - \phi e^{i\omega}} \right|^2 g(\omega)
 
-
 This suggests that the recoloring step, which constructs an estimate :math:`I` of :math:`f` from :math:`I_0`, should set
 
 .. math::
 
     I(\omega) = \left| \frac{1}{1 - \hat \phi e^{i\omega}} \right|^2 I_0(\omega)
-
 
 where :math:`\hat \phi` is the OLS estimate of :math:`\phi`
 
@@ -482,12 +451,8 @@ In all cases, periodograms are fit with the "hamming" window and window length o
 Overall, the fit of the AR smoothed periodogram is much better, in the sense
 of being closer to the true spectral density
 
-
-
-
 Exercises
 =============
-
 
 .. _estspec_ex1:
 
@@ -499,8 +464,6 @@ Replicate :ref:`this figure <fig_window_smoothing>` (modulo randomness)
 The model is as in equation :eq:`esp_arma` and there are 400 observations
 
 For the smoothed periodogram, the window type is "hamming"
-
-
 
 .. _estspec_ex2:
 
@@ -514,27 +477,18 @@ and 150 observations in each time series
 
 All periodograms are fit with the "hamming" window and window length of 65
 
-
-
-
-.. The exercise 2 and 3 are not solvable in Julia because function `ar_periodgram` is broken. 
-
-
+.. The exercise 2 and 3 are not solvable in Julia because function `ar_periodgram` is broken.
 
 Solutions
 ============
-
-
-
 
 Exercise 1
 ----------
 
 .. code-block:: julia
 
-    srand(42)  # reproducible results
-
-
+    using Random
+    Random.seed!(42)  # reproducible results
 
 .. code-block:: julia
 
@@ -543,8 +497,8 @@ Exercise 1
     θ = [0, -0.8]
     σ = 1.0
     lp = ARMA(ϕ, θ, 1.0)
-    X = simulation(lp, ts_length=n)
-    
+    X = simulation(lp, ts_length = n)
+
     xs = []
     x_sds = []
     x_sms = []
@@ -552,35 +506,33 @@ Exercise 1
     y_sds = []
     y_sms = []
     titles = []
-    
+
     for (i, wl) in enumerate([15, 55, 175])  # window lengths
         x, y = periodogram(X)
         push!(xs, x)
         push!(ys, y)
-    
+
         x_sd, y_sd = spectral_density(lp, two_pi=false, res=120)
         push!(x_sds, x_sd)
         push!(y_sds, y_sd)
-    
+
         x, y_smoothed = periodogram(X, "hamming", wl)
         push!(x_sms, x)
         push!(y_sms, y_smoothed)
-    
+
         t = "window length = $wl"
         push!(titles, t)
     end
 
 .. code-block:: julia
 
-    plot(xs, ys, layout=(3,1), color=:blue, alpha=0.5, 
+    plot(xs, ys, layout=(3,1), color=:blue, alpha=0.5,
         linewidth=2, label=["periodogram" "" ""])
-    plot!(x_sds, y_sds, layout=(3,1), color=:red, alpha=0.8, 
+    plot!(x_sds, y_sds, layout=(3,1), color=:red, alpha=0.8,
         linewidth=2, label=["spectral density" "" ""])
-    plot!(x_sms, y_sms, layout=(3,1), color=:black, 
+    plot!(x_sms, y_sms, layout=(3,1), color=:black,
         linewidth=2, label=["smoothed periodogram" "" ""])
     plot!(title=reshape(titles,1,length(titles)))
-
-
 
 Exercise 2
 ----------
@@ -589,30 +541,25 @@ Exercise 2
 
     lp2 = ARMA(-0.9, 0.0, 1.0)
     wl = 65
-    p=plot(layout=(3,1))
-    
+    p = plot(layout=(3,1))
+
     for i in 1:3
         X = simulation(lp2,ts_length=150)
         plot!(p[i],xlims = (0,pi))
-    
+
         x_sd, y_sd = spectral_density(lp2,two_pi=false, res=180)
-        plot!(p[i],x_sd, y_sd, linecolor=:red, linestyle=:solid, 
-            yscale=:log10, linewidth=2, linealpha=0.75, 
+        plot!(p[i],x_sd, y_sd, linecolor=:red, linestyle=:solid,
+            yscale=:log10, linewidth=2, linealpha=0.75,
             label="spectral density",legend=:topleft)
-    
+
         x, y_smoothed = periodogram(X, "hamming", wl)
-        plot!(p[i],x, y_smoothed, linecolor=:black, linestyle=:solid, 
-            yscale=:log10, linewidth=2, linealpha=0.75, 
+        plot!(p[i],x, y_smoothed, linecolor=:black, linestyle=:solid,
+            yscale=:log10, linewidth=2, linealpha=0.75,
             label="standard smoothed periodogram",legend=:topleft)
-    
+
         x, y_ar = ar_periodogram(X, "hamming", wl)
-        plot!(p[i],x, y_ar, linecolor=:blue, linestyle=:solid, 
-            yscale=:log10, linewidth=2, linealpha=0.75, 
+        plot!(p[i],x, y_ar, linecolor=:blue, linestyle=:solid,
+            yscale=:log10, linewidth=2, linealpha=0.75,
             label="AR smoothed periodogram",legend=:topleft)
-    
     end
     p
-
-
-
-
