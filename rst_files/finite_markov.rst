@@ -768,7 +768,7 @@ We can confirm that the stochastic matrix is periodic as follows
     is_aperiodic(mc)
 
 .. code-block:: julia
-:class: test
+    :class: test
 
     @testset "check if aperiodic" begin
         @test is_aperiodic(mc) == false
@@ -952,7 +952,7 @@ The convergence in the theorem is illustrated in the next figure
     scatter(x_vals, y_vals, z_vals, color = colors)
     plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
 
-..code-block:: julia
+.. code-block:: julia
     :class: test
 
     @testset "testing convergence to stationary" begin
