@@ -49,8 +49,6 @@ This can lead to
 
 Such dynamics are consistent with experiences of many countries
 
-
-
 Structure
 ===============
 
@@ -58,7 +56,6 @@ In this section we describe the main features of the model
 
 Output, Consumption and Debt
 -----------------------------
-
 
 A small open economy is endowed with an exogenous stochastically fluctuating potential output stream :math:`\{y_t\}`
 
@@ -75,7 +72,6 @@ Households within the country are identical and rank stochastic consumption stre
 
     \mathbb E \sum_{t=0}^{\infty} \beta^t u(c_t)
 
-
 Here
 
 * :math:`0 < \beta < 1` is a time discount factor
@@ -89,10 +85,6 @@ The government is benevolent in the sense that its aim is to maximize :eq:`utili
 The government is the only domestic actor with access to foreign credit
 
 Because household are averse to consumption fluctuations, the government will try to smooth consumption by borrowing from (and lending to) foreign creditors
-
-
-
-
 
 Asset Markets
 ---------------
@@ -110,14 +102,11 @@ The bond market has the following features
 
 * For selling :math:`-B'` units of next period goods the seller earns :math:`- q B'` of today's goods
 
-
     * if :math:`B' < 0`, then :math:`-q B'` units of the good are received in the current period, for a promise to repay :math:`-B'` units next period
 
     * there is an equilibrium  price function :math:`q(B', y)` that makes :math:`q` depend on both :math:`B'` and :math:`y`
 
-
 Earnings on the government portfolio are distributed (or, if negative, taxed) lump sum to households
-
 
 When the government is not excluded from financial markets, the one-period national budget constraint is
 
@@ -126,13 +115,11 @@ When the government is not excluded from financial markets, the one-period natio
 
     c = y + B - q(B', y) B'
 
-
 Here and below, a prime denotes a next period value or a claim maturing next period
 
 To rule out Ponzi schemes, we also require that :math:`B \geq -Z` in every period
 
 * :math:`Z` is chosen to be sufficiently large that the constraint never binds in equilibrium
-
 
 Financial Markets
 -------------------
@@ -151,20 +138,17 @@ Foreign creditors
 
 When a government is expected to default next period with  probability :math:`\delta`,  the expected value of a promise to pay one unit of consumption next period is :math:`1 - \delta`.
 
-Therefore, the discounted expected value of a promise to pay :math:`B` next period is 
+Therefore, the discounted expected value of a promise to pay :math:`B` next period is
 
 .. math::
     :label: epc
 
-    q = \frac{1 - \delta}{1 + r} 
+    q = \frac{1 - \delta}{1 + r}
 
-
-Next we turn to how the government in effect chooses the default probability :math:`\delta`    
-
+Next we turn to how the government in effect chooses the default probability :math:`\delta`
 
 Government's decisions
 -----------------------
-
 
 At each point in time :math:`t`, the government chooses between
 
@@ -191,11 +175,8 @@ While in a state of default, the economy regains access to
 foreign credit in each subsequent period with probability
 :math:`\theta`
 
-
-
 Equilibrium
 ===============
-
 
 Informally, an equilibrium is a sequence of interest rates on its sovereign debt, a stochastic sequence of government default decisions  and an implied flow of household consumption such that
 
@@ -219,7 +200,7 @@ government, which
 
 #. observes current output :math:`y`, and
 
-#. chooses either 
+#. chooses either
 
     #. to default, or
 
@@ -237,7 +218,6 @@ In a  recursive formulation,
 
 :math:`v_d(y)` does not depend on :math:`B` because, when access to credit is eventually regained, net foreign assets equal :math:`0`
 
-
 Expressed recursively, the value of defaulting is
 
 .. math::
@@ -247,7 +227,6 @@ Expressed recursively, the value of defaulting is
                 \theta v(0, y') + (1 - \theta) v_d(y')
                 \right\}
                 p(y, y') dy'
-
 
 The value of paying is
 
@@ -259,13 +238,11 @@ The value of paying is
                 + \beta \int v(B', y') p(y, y') dy'
           \right\}
 
-
 The three value functions are linked by
 
 .. math::
 
     v(B, y) = \max\{ v_c(B, y), v_d(y) \}
-
 
 The government chooses to default when
 
@@ -273,14 +250,12 @@ The government chooses to default when
 
     v_c(B, y) < v_d(y)
 
-
 and hence given :math:`B'` the probability of default next period  is
 
 .. math::
     :label: delta
 
     \delta(B', y) := \int \mathbb 1\{v_c(B', y') < v_d(y') \} p(y, y') dy'
-
 
 Given zero profits for foreign creditors in equilibrium, we can combine :eq:`epc` and :eq:`delta` to pin down
 the bond price function:
@@ -290,19 +265,18 @@ the bond price function:
 
     q(B', y) = \frac{1 - \delta(B', y)}{1 + r}
 
-
 Definition of equilibrium
 ---------------------------
 
-An *equilibrium* is 
+An *equilibrium* is
 
-* a  pricing function :math:`q(B',y)`,  
+* a  pricing function :math:`q(B',y)`,
 
 * a triple of value functions :math:`(v_c(B, y), v_d(y), v(B,y))`,
 
 * a decision rule telling the government when to default and when to pay as a function of the state  :math:`(B, y)`, and
 
-* an asset accumulation rule that, conditional on choosing not to  default,  maps :math:`(B,y)` into :math:`B'` 
+* an asset accumulation rule that, conditional on choosing not to  default,  maps :math:`(B,y)` into :math:`B'`
 
 such that
 
@@ -311,9 +285,6 @@ such that
 * Given the price function :math:`q(B',y)`, the default decision rule and the asset accumulation decision rule attain the optimal value function  :math:`v(B,y)`, and
 
 * The price function :math:`q(B',y)` satisfies equation :eq:`bondprice`
-    
-
-
 
 Computation
 ===============
@@ -337,7 +308,6 @@ It uses a slightly modified version of the algorithm recommended by Arellano
 
 The second approach is faster and the two different procedures deliver very similar results
 
-
 Here is a more detailed description of our algorithm:
 
 1. Guess a value function :math:`v(B, y)` and price function :math:`q(B', y)`
@@ -358,51 +328,19 @@ We use simple discretization on a grid of asset holdings and income levels
 
 The output process is discretized using `Tauchen's quadrature method <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`_
 
-
-
 The code can be found below:
 
 (Results and discussion follow the code)
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: test
 
-    using QuantEcon: tauchen, MarkovChain, simulate
+    using Test
 
+.. code-block:: julia
 
-    # ------------------------------------------------------------------- #
-    # Define the main Arellano Economy type
-    # ------------------------------------------------------------------- #
+    using QuantEcon
 
-    """
-    Arellano 2008 deals with a small open economy whose government
-    invests in foreign assets in order to smooth the consumption of
-    domestic households. Domestic households receive a stochastic
-    path of income.
-
-    ##### Fields
-    * `β::AbstractFloat`: Time discounting parameter
-    * `γ::AbstractFloat`: Risk aversion parameter
-    * `r::AbstractFloat`: World interest rate
-    * `ρ::AbstractFloat`: Autoregressive coefficient on income process
-    * `η::AbstractFloat`: Standard deviation of noise in income process
-    * `θ::AbstractFloat`: Probability of re-entering the world financial sector after default
-    * `ny::Integer`: Number of points to use in approximation of income process
-    * `nB::Integer`: Number of points to use in approximation of asset holdings
-    * `ygrid::Vector{AbstractFloat}`: This is the grid used to approximate income process
-    * `ydefgrid::Vector{AbstractFloat}`: When in default get less income than process
-    would otherwise dictate
-    * `Bgrid::Vector{AbstractFloat}`: This is grid used to approximate choices of asset
-    holdings
-    * `Π::Matrix{AbstractFloat}`: Transition probabilities between income levels
-    * `vf::Matrix{AbstractFloat}`: Place to hold value function
-    * `vd::Matrix{AbstractFloat}`: Place to hold value function when in default
-    * `vc::Matrix{AbstractFloat}`: Place to hold value function when choosing to
-    continue
-    * `policy::Matrix{AbstractFloat}`: Place to hold asset policy function
-    * `q::Matrix{AbstractFloat}`: Place to hold prices at different pairs of (y, B')
-    * `defprob::Matrix{AbstractFloat}`: Place to hold the default probabilities for
-    pairs of (y, B')
-    """
     struct ArellanoEconomy{TF<:AbstractFloat, TI<:Integer}
         # Model Parameters
         β::TF
@@ -429,27 +367,17 @@ The code can be found below:
         defprob::Matrix{TF}
     end
 
-    """
-    This is the default constructor for building an economy as presented
-    in Arellano 2008.
-
-    ##### Arguments
-    * `;β::AbstractFloat(0.953)`: Time discounting parameter
-    * `;γ::AbstractFloat(2.0)`: Risk aversion parameter
-    * `;r::AbstractFloat(0.017)`: World interest rate
-    * `;ρ::AbstractFloat(0.945)`: Autoregressive coefficient on income process
-    * `;η::AbstractFloat(0.025)`: Standard deviation of noise in income process
-    * `;θ::AbstractFloat(0.282)`: Probability of re-entering the world financial sector
-    after default
-    * `;ny::Integer(21)`: Number of points to use in approximation of income process
-    * `;nB::Integer(251)`: Number of points to use in approximation of asset holdings
-    """
-    function ArellanoEconomy{TF<:AbstractFloat}(;β::TF=.953, γ::TF=2., r::TF=0.017, 
-                            ρ::TF=0.945, η::TF=0.025, θ::TF=0.282,
-                            ny::Integer=21, nB::Integer=251)
+    function ArellanoEconomy(;β::TF = .953,
+                              γ::TF = 2.,
+                              r::TF = 0.017,
+                              ρ::TF = 0.945,
+                              η::TF = 0.025,
+                              θ::TF = 0.282,
+                              ny::Integer = 21,
+                              nB::Integer = 251) where TF<:AbstractFloat
 
         # Create grids
-        Bgrid = collect(linspace(-.4, .4, nB))
+        Bgrid = collect(range(-.4, stop = .4, length = nB))
         mc = tauchen(ny, ρ, η)
         Π = mc.p
         ygrid = exp.(mc.state_values)
@@ -460,9 +388,9 @@ The code can be found below:
         vf = zeros(nB, ny)
         vd = zeros(1, ny)
         vc = zeros(nB, ny)
-        policy = Array{TF}(nB, ny)
+        policy = zeros(TF, nB, ny)
         q = ones(nB, ny) .* (1 / (1 + r))
-        defprob = Array{TF}(nB, ny)
+        defprob = zeros(TF, nB, ny)
 
         return ArellanoEconomy(β, γ, r, ρ, η, θ, ny, nB, ygrid, ydefgrid, Bgrid, Π,
                                 vf, vd, vc, policy, q, defprob)
@@ -475,36 +403,17 @@ The code can be found below:
         ae.ygrid, ae.ydefgrid, ae.Bgrid, ae.Π, ae.vf, ae.vd, ae.vc, ae.policy, ae.q, ae.defprob
 
 
-    # ------------------------------------------------------------------- #
-    # Write the value function iteration
-    # ------------------------------------------------------------------- #
-    """
-    This function performs the one step update of the value function for the
-    Arellano model-- Using current value functions and their expected value,
-    it updates the value function at every state by solving for the optimal
-    choice of savings
-
-    ##### Arguments
-
-    * `ae::ArellanoEconomy`: This is the economy we would like to update the
-    value functions for
-    * `EV::Matrix{TF}`: Expected value function at each state
-    * `EVd::Matrix{TF}`: Expected value function of default at each state
-    * `EVc::Matrix{TF}`: Expected value function of continuing at each state
-
-    ##### Notes
-
-    * This function updates value functions and policy functions in place.
-    """
-    function one_step_update!{TF<:AbstractFloat}(ae::ArellanoEconomy, EV::Matrix{TF},
-                            EVd::Matrix{TF}, EVc::Matrix{TF})
+    function one_step_update!(ae::ArellanoEconomy,
+                              EV::Matrix{TF},
+                              EVd::Matrix{TF},
+                              EVc::Matrix{TF}) where TF<:AbstractFloat
 
         # Unpack stuff
         β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
         ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = _unpackgrids(ae)
         zero_ind = searchsortedfirst(Bgrid, 0.)
 
-        for iy=1:ny
+        for iy in 1:ny
             y = ae.ygrid[iy]
             ydef = ae.ydefgrid[iy]
 
@@ -512,7 +421,7 @@ The code can be found below:
             defval = u(ae, ydef) + β*(θ*EVc[zero_ind, iy] + (1-θ)*EVd[1, iy])
             ae.vd[1, iy] = defval
 
-            for ib=1:nB
+            for ib in 1:nB
                 B = ae.Bgrid[ib]
 
                 current_max = -1e14
@@ -531,57 +440,26 @@ The code can be found below:
                 # Update value and policy functions
                 ae.vc[ib, iy] = current_max
                 ae.policy[ib, iy] = pol_ind
-                ae.vf[ib, iy] = defval > current_max ? defval: current_max
+                ae.vf[ib, iy] = defval > current_max ? defval : current_max
             end
         end
-
-        Void
     end
 
-    """
-    This function takes the Arellano economy and its value functions and
-    policy functions and then updates the prices for each (y, B') pair
-
-    ##### Arguments
-
-    * `ae::ArellanoEconomy`: This is the economy we would like to update the
-    prices for
-
-    ##### Notes
-
-    * This function updates the prices and default probabilities in place
-    """
-    function compute_prices!(ae::ArellanoEconomy)
+    function compute_prices!(ae)
         # Unpack parameters
         β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
 
         # Create default values with a matching size
-        vd_compat = repmat(ae.vd, nB)
+        vd_compat = repeat(ae.vd, nB)
         default_states = vd_compat .> ae.vc
 
         # Update default probabilities and prices
-        copy!(ae.defprob, default_states * ae.Π')
-        copy!(ae.q, (1 - ae.defprob) / (1 + r))
-
-        Void
+        copyto!(ae.defprob, default_states * ae.Π')
+        copyto!(ae.q, (1 .- ae.defprob) / (1 + r))
+        return
     end
 
-    """
-    This performs value function iteration and stores all of the data inside
-    the ArellanoEconomy type.
-
-    ##### Arguments
-
-    * `ae::ArellanoEconomy`: This is the economy we would like to solve
-    * `;tol::Float64(1e-8)`: Level of tolerance we would like to achieve
-    * `;maxit::Int(10000)`: Maximum number of iterations
-
-    ##### Notes
-
-    * This updates all value functions, policy functions, and prices in place.
-
-    """
-    function vfi!(ae::ArellanoEconomy; tol=1e-8, maxit=10000)
+    function vfi!(ae; tol = 1e-8, maxit = 10000)
 
         # Unpack stuff
         β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
@@ -593,14 +471,14 @@ The code can be found below:
         dist = 10.
 
         # Allocate memory for update
-        V_upd = zeros(ae.vf)
+        V_upd = similar(ae.vf)
 
         while dist > tol && it < maxit
             it += 1
 
             # Compute expectations for this iterations
             # (We need Π' because of order value function dimensions)
-            copy!(V_upd, ae.vf)
+            copyto!(V_upd, ae.vf)
             EV = ae.vf * Πt
             EVd = ae.vd * Πt
             EVc = ae.vc * Πt
@@ -617,39 +495,13 @@ The code can be found below:
                 println("Finished iteration $(it) with dist of $(dist)")
             end
         end
-
-        Void
     end
 
-    """
-    This function simulates the Arellano economy
-
-    ##### Arguments
-
-    * `ae::ArellanoEconomy`: This is the economy we would like to solve
-    * `capT::Integer`: Number of periods to simulate
-    * `;y_init::AbstratFloat(mean(ae.ygrid)`: The level of income we would like to
-    start with
-    * `;B_init::AbstratFloat(mean(ae.Bgrid)`: The level of asset holdings we would like
-    to start with
-
-    ##### Returns
-
-    * `B_sim_val::Vector{TI}`: Simulated values of assets
-    * `y_sim_val::Vector{TF}`: Simulated values of income
-    * `q_sim_val::Vector{TF}`: Simulated values of prices
-    * `default_status::Vector{Bool}`: Simulated default status
-    (true if in default)
-
-    ##### Notes
-
-    * This updates all value functions, policy functions, and prices in place.
-
-    """
-    function QuantEcon.simulate{TI<:Integer, TF<:AbstractFloat}(ae::ArellanoEconomy, 
-                                capT::TI=5000;
-                                y_init::TF=mean(ae.ygrid), 
-                                B_init::TF=mean(ae.Bgrid))
+    function QuantEcon.simulate(ae,
+                                capT::TI = 5000;
+                                y_init::TF = mean(ae.ygrid),
+                                B_init::TF = mean(ae.Bgrid)
+                                ) where {TI<:Integer, TF<:AbstractFloat}
 
         # Get initial indices
         zero_index = searchsortedfirst(ae.Bgrid, 0.)
@@ -661,21 +513,21 @@ The code can be found below:
         y_sim_indices = simulate(mc, capT+1; init=y_init_ind)
 
         # Allocate and Fill output
-        y_sim_val = Vector{TF}(capT+1)
+        y_sim_val = zeros(TF, capT+1)
         B_sim_val, q_sim_val = similar(y_sim_val), similar(y_sim_val)
-        B_sim_indices = Vector{TI}(capT+1)
+        B_sim_indices = zeros(TI, capT+1)
         default_status = fill(false, capT+1)
         B_sim_indices[1], default_status[1] = B_init_ind, false
         y_sim_val[1], B_sim_val[1] = ae.ygrid[y_init_ind], ae.Bgrid[B_init_ind]
 
-        for t=1:capT
+        for t in 1:capT
             # Get today's indexes
             yi, Bi = y_sim_indices[t], B_sim_indices[t]
             defstat = default_status[t]
 
             # If you are not in default
             if !defstat
-                default_today = ae.vc[Bi, yi] < ae.vd[yi] ? true: false
+                default_today = ae.vc[Bi, yi] < ae.vd[yi] ? true : false
 
                 if default_today
                     # Default values
@@ -713,9 +565,6 @@ The code can be found below:
                 default_status[1:capT])
     end
 
-
-
-
 Results
 ===============
 
@@ -729,7 +578,6 @@ The values can be seen in the function `ArellanoEconomy` shown above
   over the period 1983--2001
 
 Details on how to compute the figures are reported as solutions to the exercises
-
 
 The first figure shows the bond price schedule and replicates Figure 3 of Arellano, where :math:`y_L` and :math:`Y_H` are particular below average and above average values of output :math:`y`
 
@@ -751,11 +599,9 @@ In either case, the figure shows that
 
 * Lower income also causes more discounting, as foreign creditors anticipate greater likelihood of default
 
-
 The next figure plots value functions and replicates the right hand panel of Figure 4 of :cite:`arellano2008default`
 
 .. figure:: /_static/figures/arellano_value_funcs.png
-
 
 We can use the results of the computation to study the default probability
 :math:`\delta(B', y)` defined in :eq:`delta`
@@ -778,7 +624,6 @@ One notable feature of the simulated data is the nonlinear response of interest 
 
 Periods of relative stability are followed by sharp spikes in the discount rate on government debt
 
-
 Exercises
 ==============
 
@@ -793,11 +638,8 @@ To the extent that you can, replicate the figures shown above
 
 * The time series will of course vary depending on the shock draws
 
-
 Solutions
 ==========
-
-
 
 .. code-block:: julia
 
@@ -805,23 +647,27 @@ Solutions
 
 Compute the value function, policy and equilibrium prices
 
-
 .. code-block:: julia
 
-    ae = ArellanoEconomy(β=.953,     # time discount rate
-                         γ=2.,       # risk aversion
-                         r=0.017,    # international interest rate
-                         ρ=.945,     # persistence in output 
-                         η=0.025,    # st dev of output shock
-                         θ=0.282,    # prob of regaining access 
-                         ny=21,      # number of points in y grid
-                         nB=251)     # number of points in B grid
-    
-    # now solve the model on the grid. 
+    ae = ArellanoEconomy(β = .953,     # time discount rate
+                         γ = 2.,       # risk aversion
+                         r = 0.017,    # international interest rate
+                         ρ = .945,     # persistence in output
+                         η = 0.025,    # st dev of output shock
+                         θ = 0.282,    # prob of regaining access
+                         ny = 21,      # number of points in y grid
+                         nB = 251)     # number of points in B grid
+
+    # now solve the model on the grid.
     vfi!(ae)
 
+.. code-block:: julia
+  :class: test
 
-
+  @testset begin
+      @test ae.ygrid[5] ≈ 0.871460195968125
+      @test ae.Bgrid[5] ≈ -0.3872
+  end
 
 Compute the bond price schedule as seen in figure 3 of Arellano (2008)
 
@@ -830,47 +676,39 @@ Compute the bond price schedule as seen in figure 3 of Arellano (2008)
     # Create "Y High" and "Y Low" values as 5% devs from mean
     high, low = mean(ae.ygrid)*1.05, mean(ae.ygrid)*.95
     iy_high, iy_low = map(x->searchsortedfirst(ae.ygrid, x), (high, low))
-    
+
     # Extract a suitable plot grid
     x = Float64[]
     q_low = Float64[]
     q_high = Float64[]
-    for i=1:ae.nB
+    for i in 1:ae.nB
         b = ae.Bgrid[i]
-        if -0.35 <= b <= 0  # To match fig 3 of Arellano
+        if -0.35 ≤ b ≤ 0  # To match fig 3 of Arellano
             push!(x, b)
             push!(q_low, ae.q[i, iy_low])
             push!(q_high, ae.q[i, iy_high])
         end
     end
-    
+
     # generate plot
-    p1=plot(x=repeat(x, outer=[2]), y=[q_low; q_high], 
+    p1=plot(x=repeat(x, outer=[2]), y=[q_low; q_high],
          color=repeat([:Low, :High], inner=[length(x)]),
          Guide.title("Bond price schedule q(y, B')"),
          Guide.xlabel("B'"), Guide.ylabel("q"),
-         Guide.colorkey(title="y"), Geom.line)
+         Guide.colorkey(title = "y"), Geom.line)
 
-
-
-            
-Draw a plot of the value functions 
-
+Draw a plot of the value functions
 
 .. code-block:: julia
 
-    p2=plot(x=repeat(ae.Bgrid, outer=[2]), 
+    p2=plot(x=repeat(ae.Bgrid, outer=[2]),
          y=vec(ae.vf[:, [iy_low, iy_high]]),
          color=repeat([:Low, :High], inner=[length(ae.Bgrid)]),
          Guide.title("Value functions"),
          Guide.xlabel("B"), Guide.ylabel("V(y,B)"),
-         Guide.colorkey(title="y"), Geom.line)
+         Guide.colorkey(title = "y"), Geom.line)
 
-
-            
-            
 Draw a heat map for default probability
-
 
 .. code-block:: julia
 
@@ -880,55 +718,48 @@ Draw a heat map for default probability
          y_max=repeat(ae.ygrid[2:end], outer=[ae.nB-1]),
          x=(repeat(ae.Bgrid[1:end-1], inner=[ae.ny-1]) + repeat(ae.Bgrid[2:end], inner=[ae.ny-1]))/2,
          y=(repeat(ae.ygrid[1:end-1], outer=[ae.nB-1]) + repeat(ae.ygrid[2:end], outer=[ae.nB-1]))/2,
-         color=clamp.(vec(ae.defprob[1:end-1, 1:end-1]'), 0, 1), 
+         color=clamp.(vec(ae.defprob[1:end-1, 1:end-1]'), 0, 1),
          Geom.rectbin,
-         Guide.xlabel("B'"), Guide.ylabel("y"), 
+         Guide.xlabel("B'"), Guide.ylabel("y"),
          Guide.title("Probability of default"), Geom.rectbin,
          Scale.y_continuous(minvalue=0.8, maxvalue=1.2),
          Scale.x_continuous(minvalue=minimum(ae.Bgrid), maxvalue=0.0),
          Scale.color_continuous(minvalue=0, maxvalue=1))
 
-
-
 Plot a time series of major variables simulated from the model
-
 
 .. code-block:: julia
 
+    using Random
     # set random seed for consistent result
-    srand(348938)
+    Random.seed!(348938)
 
     # simulate
     T = 250
     y_vec, B_vec, q_vec, default_vec = simulate(ae, T)
-    
+
     # find starting and ending periods of recessions
-    defs = find(default_vec)
+    defs = findall(default_vec)
     def_breaks = diff(defs) .> 1
     def_start = defs[[true; def_breaks]]
     def_end = defs[[def_breaks; true]]
-    
+
     # construct boxes that shade periods of default
-    def_box = Guide.annotation(compose(context(), 
-                                       [rectangle(i[1], 0h, i[2]-i[1], 1h) 
+    def_box = Guide.annotation(compose(context(),
+                                       [rectangle(i[1], 0h, i[2]-i[1], 1h)
                                         for i=zip(def_start, def_end)]...,
                                       fill(RGBA(0.5, 0.5, 0.5, 0.2))))
-    
+
     # xy labels are common for all plots
     xy_lab = [Guide.xlabel("time"), Guide.ylabel("")]
-    
+
     # now iterate over three variables and put them into an array
     p4 = Gadfly.Plot[]
     for (vec, name) in [(y_vec, "Output"), (B_vec, "Foreign assets"), (q_vec, "Bond price")]
-        push!(p4, 
+        push!(p4,
               plot(x=1:T, y=vec, Geom.line, def_box, Guide.title(name), xy_lab...))
     end
-    
+
     # set final plot height and vertically stack the above three plots
     set_default_plot_size(6inch, 8inch)
     vstack(p4...)
-
-
-
-
-
