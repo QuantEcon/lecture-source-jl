@@ -217,13 +217,13 @@ Scalar multiplication is illustrated in the next figure
             framestyle = :origin)
 
 
-            .. code-block:: julia
-                :class: test
-            @testset "second block" begin
-
-@test y_vals[2,:] == [-4.0,4.0,2.0]
-@test labels[2,1] == (-3.6,-4.2,"-2x")
-end
+.. code-block:: julia
+   :class: test
+            
+   @testset "second block" begin
+        @test y_vals[2,:] == [-4.0,4.0,2.0]
+        @test labels[2,1] == (-3.6,-4.2,"-2x")
+    end
 
 
 In Julia, a vector can be represented as a one dimensional `Array`
