@@ -1408,11 +1408,12 @@ Exercise 1
     plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
 
 .. code-block:: julia
-:class: test
-@testset "Testing Exercice 1" begin
-@test x[10] == 1
-@test y[13] == 1.0889186488319997
-end
+    :class: test
+
+    @testset "Testing Exercice 1" begin
+        @test x[10] == 1
+        @test y[13] == 1.0889186488319997
+    end
 
 Exercise 2
 ----------
