@@ -212,6 +212,11 @@ Applying :eq:`ma_inf_ac` to the previous expression for :math:`X_t`, we get the 
 The next figure plots an example of this function for :math:`\phi = 0.8` and :math:`\phi = -0.8` with :math:`\sigma = 1`
 
 .. code-block:: julia
+  :class: test 
+
+  using Test 
+
+.. code-block:: julia
 
     using PyPlot
 
@@ -228,6 +233,17 @@ The next figure plots an example of this function for :math:`\phi = 0.8` and :ma
         ax[:set](xlabel="time", xlim=(0, 15))
         ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
     end
+
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    ϕ = 0.8
+    times = 0:16
+    acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
+    @test acov[4] ≈ 1.422222222222223 # Can't access acov directly because of scoping. 
+    @test acov[1] ≈ 2.7777777777777786
+  end 
 
 Another very simple process is the MA(1) process (here MA means "moving average")
 
@@ -467,6 +483,15 @@ Plotting :eq:`ar1_sd_ed` reveals the shape of the spectral density for the AR(1)
         ax[:set](xlabel="frequency", xlim=(0, π))
     end
 
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test ar1_sd(0.8, ω_s)[18] ≈ 9.034248169239635
+    @test ar1_sd(-0.8, ω_s)[18] ≈ 0.3155260821833043
+    @test ω_s[1] == 0.0 && ω_s[end] ≈ π && length(ω_s) == 180 # Grid invariant. 
+  end 
+
 These spectral densities correspond to the autocovariance functions for the
 AR(1) process :ref:`shown above <ar1_acov>`
 
@@ -525,6 +550,15 @@ These ideas are illustrated in the next figure, which has :math:`k` on the horiz
     ax[:set](xlim=(0, 15), ylim=(-3, 3), yticks=(-1, 0, 1, 2, 3))
     ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
 
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test y1[4] ≈ -1.422222222222223
+    @test y2 == [1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0]
+    @test y3[15] ≈ 0.12216795864177792
+  end 
+
 On the other hand, if we evaluate :math:`f(\omega)` at :math:`\omega = \pi / 3`, then the cycles are
 not matched, the sequence :math:`\gamma(k) \cos(\omega k)` contains
 both positive and negative terms, and hence the sum of these terms is much smaller
@@ -560,6 +594,15 @@ both positive and negative terms, and hence the sum of these terms is much small
     ax[:legend](loc="upper right")
     ax[:set](xlim=(0, 15), ylim=(-3, 3), yticks=(-1, 0, 1, 2, 3))
     ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test y1[4] ≈ -1.422222222222223
+    @test y2 ≈ [1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5]
+    @test y3[15] ≈ -0.06108397932088883
+  end 
 
 In summary, the spectral density is large at frequencies :math:`\omega` where the autocovariance function exhibits damped cycles
 
@@ -691,7 +734,7 @@ Here are some functions to generate the plots
 
 .. code-block:: julia
 
-    using QuantEcon
+    using QuantEcon, Random
 
     # == Plot functions == #
 
@@ -775,10 +818,22 @@ We'll use the model :math:`X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}`
 
 .. code-block:: julia
 
+    Random.seed!(42) # For reproducible results. 
     ϕ = 0.5;
     θ = [0, -0.8];
     arma = ARMA(ϕ, θ, 1.0)
     quad_plot(arma)
+
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555 # As before, we need to repeat the calculations, since we don't have access to the results. 
+    @test (autocovariance(arma))[3] ≈ -0.5886222919837174
+    @test (impulse_response(arma))[10] == -0.004296875
+    Random.seed!(42)
+    @test (simulation(arma))[20] ≈ -1.1975340216436439
+  end 
 
 Explanation
 --------------------
