@@ -16,7 +16,7 @@ In this lecture we study a simplified version of an uncertainty traps model of F
 
 The model features self-reinforcing uncertainty that has big impacts on economic activity
 
-In the model, 
+In the model,
 
 * Fundamentals  vary stochastically and are not fully observable
 
@@ -30,7 +30,7 @@ In the model,
 
 * The output of active entrepreneurs is observable, supplying a noisy signal that helps everyone inside the model infer fundamentals
 
-* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via :doc:`Kalman filtering <kalman>` 
+* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via :doc:`Kalman filtering <kalman>`
 
 
 Uncertainty traps emerge because:
@@ -43,19 +43,12 @@ Uncertainty traps emerge because:
 
 Uncertainty traps stem from a positive externality: high aggregate economic activity levels generates valuable information
 
-
-
-
-
 The Model
 ===============
 
-
-The original model described in :cite:`fun` has many interesting moving parts 
+The original model described in :cite:`fun` has many interesting moving parts
 
 Here we examine a simplified version that nonetheless captures many of the key ideas
-
-
 
 Fundamentals
 --------------
@@ -66,8 +59,7 @@ The evolution of the fundamental process :math:`\{\theta_t\}` is given by
 
     \theta_{t+1} = \rho \theta_t + \sigma_{\theta} w_{t+1}
 
-
-where 
+where
 
 * :math:`\sigma_\theta > 0` and :math:`0 < \rho < 1`
 
@@ -75,20 +67,18 @@ where
 
 The random variable :math:`\theta_t` is not observable at any time
 
-
-
 Output
 -----------
 
 There is a total :math:`\bar M` of risk averse entrepreneurs
 
 Output of the :math:`m`-th entrepreneur, conditional on being active in the market at
-time :math:`t`, is equal to 
+time :math:`t`, is equal to
 
 .. math::
     :label: xgt
 
-    x_m = \theta + \epsilon_m 
+    x_m = \theta + \epsilon_m
     \quad \text{where} \quad
     \epsilon_m \sim N \left(0, \gamma_x^{-1} \right)
 
@@ -100,10 +90,6 @@ The inverse of the shock variance, :math:`\gamma_x`, is called the shock's **pre
 The higher is the precision, the more informative :math:`x_m` is about the fundamental
 
 Output shocks are independent across time and firms
-
-
-
-
 
 Information and Beliefs
 ----------------------------
@@ -117,13 +103,13 @@ distribution :math:`N(\mu, \gamma^{-1})`
 
 Here :math:`\gamma` is the precision of beliefs; its inverse is the degree of uncertainty
 
-These parameters are updated by Kalman filtering 
+These parameters are updated by Kalman filtering
 
 Let
 
-* :math:`\mathbb M \subset \{1, \ldots, \bar M\}` denote the set of currently active firms 
+* :math:`\mathbb M \subset \{1, \ldots, \bar M\}` denote the set of currently active firms
 
-* :math:`M := |\mathbb M|` denote the number of currently active firms 
+* :math:`M := |\mathbb M|` denote the number of currently active firms
 
 * :math:`X` be the average output :math:`\frac{1}{M} \sum_{m \in \mathbb M} x_m` of the active firms
 
@@ -139,7 +125,7 @@ With this notation and primes for next period values, we can write the updating 
 .. math::
     :label: update_prec
 
-    \gamma' = 
+    \gamma' =
         \left(
         \frac{\rho^2}{\gamma + M \gamma_x} + \sigma_\theta^2
         \right)^{-1}
@@ -157,7 +143,6 @@ The other parameter values are :math:`\rho = 0.99, \gamma_x = 0.5, \sigma_\theta
 .. figure:: /_static/figures/uncertainty_traps_45.png
    :scale: 100%
 
-
 Points where the curves hit the 45 degree lines are  long run steady
 states for precision for different values of :math:`M`
 
@@ -170,7 +155,6 @@ Thus, if one of these values for :math:`M` remains fixed, a corresponding steady
 
 In practice, as we'll see, the number of active firms fluctuates stochastically
 
-
 Participation
 ----------------
 
@@ -181,7 +165,6 @@ Omitting time subscripts once more, entrepreneurs enter the market in the curren
 
     \mathbb E [ u(x_m - F_m) ] > c
 
-
 Here
 
 * the mathematical expectation of :math:`x_m` is based on :eq:`xgt` and beliefs :math:`N(\mu, \gamma^{-1})` for :math:`\theta`
@@ -191,8 +174,6 @@ Here
 * :math:`c` is a constant reflecting opportunity costs
 
 The statement that :math:`F_m` is previsible means that it is realized at the start of the period and treated as a constant in :eq:`pref1`
-
-
 
 The utility function has the constant absolute risk aversion form
 
@@ -206,10 +187,9 @@ where :math:`a` is a positive parameter
 
 Combining :eq:`pref1` and :eq:`pref2`, entrepreneur :math:`m` participates in the market (or is said to be active) when
 
-
 .. math::
 
-    \frac{1}{a} 
+    \frac{1}{a}
         \left\{
             1 - \mathbb E [ \exp \left(
                 -a (\theta + \epsilon_m -  F_m)
@@ -224,28 +204,26 @@ Using standard formulas for expectations of `lognormal <https://en.wikipedia.org
     :label: firm_test
 
     \psi(\mu, \gamma, F_m)
-    := 
-    \frac{1}{a} 
+    :=
+    \frac{1}{a}
         \left(
             1 - \exp \left(
                 -a \mu + a F_m
                 + \frac{a^2 \left( \frac{1}{\gamma} + \frac{1}{\gamma_x} \right)}{2}
-                    \right) 
+                    \right)
         \right)
             - c
             > 0
 
-
 Implementation
 ===============
 
-
 We want to simulate this economy
 
-As a first step, let's put together a type that bundles 
+As a first step, let's put together a type that bundles
 
 * the parameters, the current value of :math:`\theta` and the current values of the
-  two belief parameters :math:`\mu` and :math:`\gamma` 
+  two belief parameters :math:`\mu` and :math:`\gamma`
 
 * methods to update :math:`\theta`, :math:`\mu` and :math:`\gamma`, as well as to determine the number of active firms and their outputs
 
@@ -259,10 +237,9 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
 .. code-block:: julia 
   :class: test 
 
-  using Test 
+  using Test
 
-
-.. code-block:: julia 
+.. code-block:: julia
 
     mutable struct UncertaintyTrapEcon{TF<:AbstractFloat, TI<:Integer}
         a::TF          # Risk aversion
@@ -278,25 +255,29 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
         σ_x::TF        # Standard deviation of shock
     end
 
-    function UncertaintyTrapEcon(;a::AbstractFloat=1.5, γ_x::AbstractFloat=0.5,
-                                ρ::AbstractFloat=0.99, σ_θ::AbstractFloat=0.5,
-                                num_firms::Integer=100, σ_F::AbstractFloat=1.5,
-                                c::AbstractFloat=-420.0, μ_init::AbstractFloat=0.0,
-                                γ_init::AbstractFloat=4.0,
-                                θ_init::AbstractFloat=0.0)
+    function UncertaintyTrapEcon(;a = 1.5,
+                                  γ_x = 0.5,
+                                  ρ = 0.99,
+                                  σ_θ = 0.5,
+                                  num_firms = 100,
+                                  σ_F = 1.5,
+                                  c = -420.0,
+                                  μ_init = 0.0,
+                                  γ_init = 4.0,
+                                  θ_init = 0.0)
         σ_x = sqrt(a / γ_x)
         UncertaintyTrapEcon(a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init,
                             γ_init, θ_init, σ_x)
 
     end
 
-    function ψ(uc::UncertaintyTrapEcon, F::Real)
+    function ψ(uc, F)
         temp1 = -uc.a * (uc.μ - F)
         temp2 = 0.5 * uc.a^2 * (1 / uc.γ + 1 / uc.γ_x)
         return (1 / uc.a) * (1 - exp(temp1 + temp2)) - uc.c
     end
 
-    function update_beliefs!(uc::UncertaintyTrapEcon, X::Real, M::Real)
+    function update_beliefs!(uc, X, M)
         # Simplify names
         γ_x, ρ, σ_θ = uc.γ_x, uc.ρ, uc.σ_θ
 
@@ -309,10 +290,10 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
         uc.γ = 1 / (ρ^2 / (uc.γ + M * γ_x) + σ_θ^2)
     end
 
-    update_θ!(uc::UncertaintyTrapEcon, w::Real) =
+    update_θ!(uc, w) =
         (uc.θ = uc.ρ * uc.θ + uc.σ_θ * w)
 
-    function gen_aggregates(uc::UncertaintyTrapEcon)
+    function gen_aggregates(uc)
         F_vals = uc.σ_F * randn(uc.num_firms)
 
         M = sum(ψ.(Ref(uc), F_vals) .> 0)  # Counts number of active firms
@@ -325,9 +306,7 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
         return X, M
     end
 
-
 In the results below we use this code to simulate time series for the major variables
-
 
 Results
 ===============
@@ -350,25 +329,20 @@ During these episodes
 
 * few firms are in the market
 
-
 To get a clearer idea of the dynamics, let's look at all the main time series
 at once, for a given set of shocks
 
 .. figure:: /_static/figures/uncertainty_traps_sim.png
    :scale: 100%
 
-
 Notice how the traps only take hold after a sequence of bad draws for the fundamental
 
 Thus, the model gives us a *propagation mechanism* that maps bad random draws into long downturns in economic activity
-
-
 
 Exercises
 ==============
 
 .. _uncertainty_traps_ex1:
-
 
 Exercise 1
 ------------
@@ -380,12 +354,11 @@ the following standard result (see, e.g., p. 24 of :cite:`young2005`)
 from common distribution :math:`N(\theta, 1/\gamma_x)`
 and let :math:`\bar x` be the sample mean.  If :math:`\gamma_x`
 is known and the prior for :math:`\theta` is :math:`N(\mu, 1/\gamma)`, then the posterior
-distribution of :math:`\theta` given :math:`\mathbf x` is 
+distribution of :math:`\theta` given :math:`\mathbf x` is
 
 .. math::
 
     \pi(\theta \,|\, \mathbf x) = N(\mu_0, 1/\gamma_0)
-
 
 where
 
@@ -395,17 +368,12 @@ where
     \quad \text{and} \quad
     \gamma_0 = \gamma + M \gamma_x
 
-
 Exercise 2
 ------------
 
 Modulo randomness, replicate the simulation figures shown above
 
 * Use the parameter values listed as defaults in the function `UncertaintyTrapEcon`
-
-
-
-
 
 Solutions
 =========
@@ -422,13 +390,11 @@ The stated result tells us that after observing average output :math:`X` of the
 
 .. math::
 
-
        N(\mu_0, 1/\gamma_0)
 
 where
 
 .. math::
-
 
        \mu_0 = \frac{\mu \gamma + M X \gamma_x}{\gamma + M \gamma_x}
        \quad \text{and} \quad
@@ -446,7 +412,6 @@ First let's replicate the plot that illustrates the law of motion for
 precision, which is
 
 .. math::
-
 
        \gamma_{t+1} =
            \left(
@@ -476,13 +441,13 @@ different values of :math:`M`
          color=repeat(["45 Degree"; map(string, M_range)], inner=[length(γ)]),
          Geom.line, Guide.colorkey(title="M"), Guide.xlabel("γ"), Guide.ylabel("γ'"))
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset "Exercise 2 Tests" begin 
-    @test γp[17] ≈ 0.2318393701756972
-    @test γp[end] ≈ 2.41925728801258
-  end
+  @testset begin
+      @test γp[2,2] ≈ 0.46450522950184053
+      @test γp[3,3] ≈ 0.8323524432613787
+      @test γp[5,5] ≈ 1.3779664509290432
 
 The points where the curves hit the 45 degree lines are the long run
 steady states corresponding to each :math:`M`, if that value of
@@ -494,16 +459,16 @@ is, the number of active firms and average output.
 
 .. code-block:: julia
 
-    function QuantEcon.simulate(uc::UncertaintyTrapEcon{TF, TI}, capT::TI=2000) where {TF <: AbstractFloat, TI <: Integer}
+    function QuantEcon.simulate(uc::UncertaintyTrapEcon{TF, TI},
+                                capT::TI = 2000
+                                ) where {TF <: AbstractFloat, TI <: Integer}
 
         # allocate memory
-        μ_vec = Vector{TF}(undef, capT)
-        θ_vec = Vector{TF}(undef, capT)
-        γ_vec = Vector{TF}(undef, capT)
-        X_vec = Vector{TF}(undef, capT)
-        M_vec = Vector{TI}(undef, capT)
-
-
+        μ_vec = zeros(TF, capT)
+        θ_vec = zeros(TF, capT)
+        γ_vec = zeros(TF, capT)
+        X_vec = zeros(TF, capT)
+        M_vec = zeros(TI, capT)
 
         # set initial using fields from object
         μ_vec[1] = uc.μ
@@ -513,7 +478,7 @@ is, the number of active firms and average output.
         # draw standard normal shocks
         w_shocks = randn(capT)
 
-        for t=1:capT-1
+        for t in 1:capT-1
             X, M = gen_aggregates(uc)
             X_vec[t] = X
             M_vec[t] = M
@@ -539,7 +504,7 @@ simulations
 
 .. code-block:: julia
 
-    using Random 
+    using Random
     Random.seed!(42)  # set random seed for reproducible results
     μ_vec, γ_vec, θ_vec, X_vec, M_vec = simulate(econ)
 
@@ -549,13 +514,13 @@ simulations
          Geom.line, Guide.colorkey(title="Variable"))
 
 .. code-block:: julia
-  :class: test 
+  :class: test
 
-  @testset "More Tests" begin 
-    @test μ_vec[4] ≈ -0.7836499172068696
-    @test θ_vec[4] ≈ -0.4788730634202391
-    @test γ_vec[4] ≈ 3.7130070822303263
-  end 
+  @testset begin
+      @test θ_vec[1000] ≈ -7.122237942560729 rtol = 1e-4
+      @test θ_vec[1500] ≈ 0.9768886175345713 rtol = 1e-4
+      @test θ_vec[1750] ≈ 3.8193327654508775 rtol = 1e-4
+  end
 
 Now let's plot the whole thing together
 
@@ -567,6 +532,10 @@ Now let's plot the whole thing together
          y="value",
          Geom.subplot_grid(Geom.line, free_y_axis=true))
 
+.. code-block:: julia
+  :class: test
 
-
-
+  @testset begin
+      @test stack(mdf, collect(2:5))[:value][3] ≈ -0.49742498224730913
+      @test stack(mdf, collect(2:5))[:value][30] ≈ -3.674770452701049
+  end

@@ -452,7 +452,12 @@ Consider the previously presented duopoly model with parameter values of:
 
 From these we compute the infinite horizon MPE using the preceding code
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: test
+
+    using Test
+
+.. code-block:: julia
 
     #=
 
@@ -460,7 +465,7 @@ From these we compute the infinite horizon MPE using the preceding code
 
     =#
 
-    using QuantEcon
+    using QuantEcon, LinearAlgebra
 
     # == Parameters == #
     a0 = 10.0
@@ -470,7 +475,7 @@ From these we compute the infinite horizon MPE using the preceding code
 
     # == In LQ form == #
 
-    A  = eye(3)
+    A  = Matrix{Float64}(I, 3, 3)
     B1 = [0.0, 1.0, 0.0]
     B2 = [0.0, 0.0, 1.0]
 
@@ -486,22 +491,14 @@ From these we compute the infinite horizon MPE using the preceding code
     S1 = S2 = W1 = W2 = M1 = M2 = 0.0
     # == Solve using QE's nnash function == #
     F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
-                            beta=β)
+                           beta=β)
 
     # == Display policies == #
     println("Computed policies for firm 1 and firm 2:")
     println("F1 = $F1")
     println("F2 = $F2")
 
-
-
 Running the code produces the following output
-
-
-
-
-
-
 
 One way to see that :math:`F_i` is indeed optimal for firm :math:`i` taking :math:`F_2` as given is to use `QuantEcon.jl <http://quantecon.org/julia_index.html>`__'s `LQ` type
 
@@ -509,30 +506,21 @@ In particular, let's take `F2` as computed above, plug it into :eq:`eq_mpe_p1p` 
 
 We hope that the resulting policy will agree with `F1` as computed above
 
-
-
 .. code-block:: julia
 
     Λ1 = A - (B2 * F2)
-    lq1 = LQ(Q1, R1, Λ1, B1, bet=β)
+    lq1 = QuantEcon.LQ(Q1, R1, Λ1, B1, bet=β)
     P1_ih, F1_ih, d = stationary_values(lq1)
     F1_ih
-
-
 
 
 This is close enough for rock and roll, as they say in the trade
 
 Indeed, `isapprox` agrees with our assessment
 
-
-
 .. code-block:: julia
 
-    isapprox(F1, F1_ih, atol=1e-8, rtol=1e-8)
-
-
-
+    isapprox(F1, F1_ih, atol=1e-7)
 
 
 Dynamics
@@ -550,13 +538,13 @@ The following program
 
 * extracts and plots industry output :math:`q_t = q_{1t} + q_{2t}` and price :math:`p_t = a_0 - a_1 q_t`
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using PyPlot
+    using Plots
 
     AF = A - B1 * F1 - B2 * F2
     n = 20
-    x = Array{Float64}(3, n)
+    x = zeros(3, n)
     x[:, 1] = [1 1 1]
     for t in 1:n-1
         x[:, t+1] = AF * x[:, t]
@@ -564,7 +552,7 @@ The following program
     q1 = x[2, :]
     q2 = x[3, :]
     q = q1 + q2         # Total output, MPE
-    p = a0 - a1 * q     # Price, MPE
+    p = a0 .- a1 * q     # Price, MPE
 
     fig, ax = subplots(figsize=(9, 5.8))
     ax[:plot](q, "b-", lw=2, alpha=0.75, label="total output")
@@ -593,7 +581,6 @@ As expected, output is higher and prices are lower under duopoly than monopoly
 
 Exercises
 ===========
-
 
 Exercise 1
 ---------------
@@ -648,7 +635,6 @@ Demand is governed by the linear schedule
 
     S_t = D p_{it} + b
 
-
 where
 
 * :math:`S_t = \begin{bmatrix} S_{1t} & S_{2t} \end{bmatrix}'`
@@ -691,7 +677,6 @@ The exercise is to calculate these matrices and compute the following figures
 The first figure shows the dynamics of inventories for each firm when the parameters are
 
 
-
 .. code-block:: julia
 
     δ = 0.02
@@ -700,8 +685,6 @@ The first figure shows the dynamics of inventories for each firm when the parame
     b = [25, 25]
     c1 = c2 = [1, -2, 1]
     e1 = e2 = [10, 10, 3]
-
-
 
 .. figure:: /_static/figures/judd_fig2.png
     :scale: 70
@@ -716,7 +699,6 @@ This is indeed the case, as the next figure shows
 .. figure:: /_static/figures/judd_fig1.png
     :scale: 70
 
-
 Solutions
 ==========
 
@@ -725,48 +707,42 @@ Exercise 1
 
 First let's compute the duopoly MPE under the stated parameters
 
-
-
 .. code-block:: julia
-    
+
     # == Parameters == #
     a0 = 10.0
     a1 = 2.0
     β = 0.96
     γ = 12.0
-    
-    # == In LQ form == #  
-    A = eye(3) 
+
+    # == In LQ form == #
+    A = Matrix{Float64}(I, 3, 3)
     B1 = [0.0, 1.0, 0.0]
-    B2 = [0.0, 0.0, 1.0] 
-    
+    B2 = [0.0, 0.0, 1.0]
+
     R1 = [      0.0   -a0 / 2.0         0.0;
           -a0 / 2.0          a1    a1 / 2.0;
                 0.0    a1 / 2.0         0.0]
-    
+
     R2 = [      0.0        0.0    -a0 / 2.0;
                 0.0        0.0     a1 / 2.0;
           -a0 / 2.0   a1 / 2.0           a1]
-    
+
     Q1 = Q2 = γ
     S1 = S2 = W1 = W2 = M1 = M2 = 0.0
-    
+
     # == Solve using QE's nnash function == #
     F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
                            beta=β)
 
-
-
 Now we evaluate the time path of industry output and prices given
 initial condition :math:`q_{10} = q_{20} = 1`
-
-
 
 .. code-block:: julia
 
     AF = A - B1 * F1 - B2 * F2
     n = 20
-    x = Array{Float64}(3, n)
+    x = zeros(3, n)
     x[:, 1] = [1  1  1]
     for t in 1:(n-1)
         x[:, t+1] = AF * x[:, t]
@@ -774,9 +750,7 @@ initial condition :math:`q_{10} = q_{20} = 1`
     q1 = x[2, :]
     q2 = x[3, :]
     q = q1 + q2       # Total output, MPE
-    p = a0 - a1 * q   # Price, MPE
-
-
+    p = a0 .- a1 * q   # Price, MPE
 
 Next let's have a look at the monopoly solution
 
@@ -814,10 +788,10 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
     R = a1
     Q = γ
     A = B = 1
-    lq_alt = LQ(Q, R, A, B, bet=β)
+    lq_alt = QuantEcon.LQ(Q, R, A, B, bet=β)
     P, F, d = stationary_values(lq_alt)
     q_bar = a0 / (2.0 * a1)
-    qm = Array{Float64}(n)
+    qm = zeros(n)
     qm[1] = 2
     x0 = qm[1]-q_bar
     x = x0
@@ -825,18 +799,14 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
         x = A * x - B * F[1] * x
         qm[i] = float(x) + q_bar
     end
-    pm = a0 - a1 * qm
-
-
+    pm = a0 .- a1 * qm
 
 Let's have a look at the different time paths
-
-
 
 .. code-block:: julia
 
     fig, axes = subplots(2, 1, figsize=(9, 9))
-    
+
     ax = axes[1]
     ax[:plot](qm, "b-", lw=2, alpha=0.75, label="monopolist output")
     ax[:plot](q, "g-", lw=2, alpha=0.75, label="MPE total output")
@@ -844,7 +814,7 @@ Let's have a look at the different time paths
     ax[:set_xlabel]("time")
     ax[:set_ylim](2, 4)
     ax[:legend](loc="upper left", frameon=0)
-    
+
     ax = axes[2]
     ax[:plot](pm, "b-", lw=2, alpha=0.75, label="monopolist price")
     ax[:plot](p, "g-", lw=2, alpha=0.75, label="MPE price")
@@ -852,16 +822,10 @@ Let's have a look at the different time paths
     ax[:set_xlabel]("time")
     ax[:legend](loc="upper right", frameon=0)
 
-
-
-
-
 Exercise 2
 -------------
 
 We treat the case :math:`\delta = 0.02`
-
-
 
 .. code-block:: julia
 
@@ -871,15 +835,11 @@ We treat the case :math:`\delta = 0.02`
     b = [25, 25]
     c1 = c2 = [1, -2, 1]
     e1 = e2 = [10, 10, 3]
-    
     δ_1 = 1-δ
-
-
 
 Recalling that the control and state are
 
 .. math::
-
 
        u_{it} =
        \begin{bmatrix}
@@ -896,79 +856,69 @@ Recalling that the control and state are
 
 we set up the matrices as follows:
 
-
-
 .. code-block:: julia
 
     # ==  Create matrices needed to compute the Nash feedback equilibrium == #
-    
+
     A = [δ_1     0   -δ_1 * b[1];
            0   δ_1   -δ_1 * b[2];
            0     0             1]
-    
+
     B1 = δ_1 * [1 -D[1, 1];
                 0 -D[2, 1];
                 0        0]
     B2 = δ_1 * [0 -D[1, 2];
                 1 -D[2, 2];
                 0        0]
-    
+
     R1 = -[0.5 * c1[3]   0    0.5 * c1[2];
                      0   0              0;
            0.5 * c1[2]   0          c1[1]]
-    
+
     R2 = -[0             0              0;
            0   0.5 * c2[3]      0.5*c2[2];
            0   0.5 * c2[2]          c2[1]]
-    
+
     Q1 = [-0.5*e1[3]          0;
                    0    D[1, 1]]
     Q2 = [-0.5*e2[3]          0;
                    0    D[2, 2]]
-    
+
     S1 = zeros(2, 2)
     S2 = copy(S1)
-    
+
     W1 = [         0.0           0.0;
                    0.0           0.0;
           -0.5 * e1[2]    b[1] / 2.0]
     W2 = [         0.0           0.0;
                    0.0           0.0;
           -0.5 * e2[2]    b[2] / 2.0]
-    
+
     M1 = [0.0            0.0;
           0.0  D[1, 2] / 2.0]
     M2 = copy(M1)
-    
-
 
 We can now compute the equilibrium using ``qe.nnash``
-
-
 
 .. code-block:: julia
 
     F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2)
-    
+
     println("\nFirm 1's feedback rule:\n")
     println(F1)
-    
+
     println("\nFirm 2's feedback rule:\n")
     println(F2)
-
-
 
 
 Now let's look at the dynamics of inventories, and reproduce the graph
 corresponding to :math:`\delta = 0.02`
 
-
-
 .. code-block:: julia
 
     AF = A - B1 * F1 - B2 * F2
     n = 25
-    x = Array{Float64}(3, n)
+    x = zeros(3, n)
     x[:, 1] = [2  0  1]
     for t in 1:(n-1)
         x[:, t+1] = AF * x[:, t]
@@ -980,5 +930,3 @@ corresponding to :math:`\delta = 0.02`
     ax[:plot](I2, "g-", lw=2, alpha=0.75, label="inventories, firm 2")
     ax[:set_title](latexstring("\\delta", "= $δ"))
     ax[:legend]()
-
-
