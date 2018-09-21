@@ -600,15 +600,15 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         # Plot consumption and income
         ax[1][:plot](csim[1, :], label="c", color="b")
         ax[1][:plot](ysim[1, :], label="y", color="g")
-        ax[1][:plot](csim', alpha=.1, color="b")
-        ax[1][:plot](ysim', alpha=.1, color="g")
+        ax[1][:plot](Array(csim'), alpha=.1, color="b")
+        ax[1][:plot](Array(ysim'), alpha=.1, color="g")
         ax[1][:legend](loc=4)
         ax[1][:set](title="Nonfinancial Income, Consumption, and Debt",
                     xlabel="t", ylabel="y and c")
 
         # Plot debt
         ax[2][:plot](bsim[1, :], label="b", color="r")
-        ax[2][:plot](bsim', alpha=.1, color="r")
+        ax[2][:plot](Array(bsim'), alpha=.1, color="r")
         ax[2][:legend](loc=4)
         ax[2][:set](xlabel="t", ylabel="debt")
 
@@ -642,7 +642,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 
         # Consumption fan
         ax[1][:plot](xvals, cons_mean, color="k")
-        ax[1][:plot](xvals, csim', color="k", alpha=.25)
+        ax[1][:plot](xvals, Array(csim'), color="k", alpha=.25)
         ax[1][:fill_between](xvals, c_perc_95m, c_perc_95p, alpha=.25, color="b")
         ax[1][:fill_between](xvals, c_perc_90m, c_perc_90p, alpha=.25, color="r")
         ax[1][:set](title="Consumption/Debt over time",
@@ -650,7 +650,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 
         # Debt fan
         ax[2][:plot](xvals, debt_mean, color="k")
-        ax[2][:plot](xvals, bsim', color="k", alpha=.25)
+        ax[2][:plot](xvals, Array(bsim'), color="k", alpha=.25)
         ax[2][:fill_between](xvals, d_perc_95m, d_perc_95p, alpha=.25, color="b")
         ax[2][:fill_between](xvals, d_perc_90m, d_perc_90p, alpha=.25, color="r")
         ax[2][:set](ylabel="debt", xlabel="t")
