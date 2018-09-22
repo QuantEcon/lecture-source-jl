@@ -812,7 +812,7 @@ Let's have a look at the different time paths
     plot!(plt_p, p, color=:green, lw=2, alpha=0.75, label="MPE price")
     plot!(plt_p, xlabel="time", ylabel="price",legend=:topright)
 
-    plot(plt_qm, plt_pm, layout=(2,1), size=(700,500))
+    plot(plt_q, plt_p, layout=(2,1), size=(700,600))
 
 Exercise 2
 -------------
