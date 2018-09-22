@@ -554,11 +554,10 @@ The following program
     q = q1 + q2         # Total output, MPE
     p = a0 .- a1 * q     # Price, MPE
 
-    fig, ax = subplots(figsize=(9, 5.8))
-    ax[:plot](q, "b-", lw=2, alpha=0.75, label="total output")
-    ax[:plot](p, "g-", lw=2, alpha=0.75, label="price")
-    ax[:set_title]("Output and prices, duopoly MPE")
-    ax[:legend](frameon=false)
+    plt = plot(q, color=:blue, lw=2, alpha=0.75, label="total output")
+    plot!(plt, p, color=:green, lw=2, alpha=0.75, label="price")
+    plot!(plt, title="Output and prices, duopoly MPE")
+
 
 
 Note that the initial condition has been set to :math:`q_{10} = q_{20} = 1.0`
@@ -805,22 +804,15 @@ Let's have a look at the different time paths
 
 .. code-block:: julia
 
-    fig, axes = subplots(2, 1, figsize=(9, 9))
+    plt_q = plot(qm, color=:blue, lw=2, alpha=0.75, label="monopolist output")
+    plot!(plt_q, q, color=:green, lw=2, alpha=0.75, label="MPE total output")
+    plot!(plt_q, xlabel="time", ylabel="output", ylim=(2,4),legend=:topright)
 
-    ax = axes[1]
-    ax[:plot](qm, "b-", lw=2, alpha=0.75, label="monopolist output")
-    ax[:plot](q, "g-", lw=2, alpha=0.75, label="MPE total output")
-    ax[:set_ylabel]("output")
-    ax[:set_xlabel]("time")
-    ax[:set_ylim](2, 4)
-    ax[:legend](loc="upper left", frameon=0)
+    plt_p = plot(pm, color=:blue, lw=2, alpha=0.75, label="monopolist price")
+    plot!(plt_p, p, color=:green, lw=2, alpha=0.75, label="MPE price")
+    plot!(plt_p, xlabel="time", ylabel="price",legend=:topright)
 
-    ax = axes[2]
-    ax[:plot](pm, "b-", lw=2, alpha=0.75, label="monopolist price")
-    ax[:plot](p, "g-", lw=2, alpha=0.75, label="MPE price")
-    ax[:set_ylabel]("price")
-    ax[:set_xlabel]("time")
-    ax[:legend](loc="upper right", frameon=0)
+    plot(plt_qm, plt_pm, layout=(2,1), size=(700,500))
 
 Exercise 2
 -------------
@@ -925,8 +917,7 @@ corresponding to :math:`\delta = 0.02`
     end
     I1 = x[1, :]
     I2 = x[2, :]
-    fig, ax = subplots(figsize=(9, 5))
-    ax[:plot](I1, "b-", lw=2, alpha=0.75, label="inventories, firm 1")
-    ax[:plot](I2, "g-", lw=2, alpha=0.75, label="inventories, firm 2")
-    ax[:set_title](latexstring("\\delta", "= $δ"))
-    ax[:legend]()
+
+    plot(I1, color=:blue, lw=2, alpha=0.75, label="inventories, firm 1")
+    plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
+    plot!(title="delta = delta_var")
