@@ -154,8 +154,8 @@ y = Array{Float64}(undef, N)
 A = Array{Float64}(undef, N, N)
 
 # Better
-y = ones(N) #If we want the default, floats
-A = ones(N,N)
+y = zeros(N) #If we want the default, floats
+A = zeros(N,N)
 
 # Best (if a candidate `x` exists)
 y = similar(x, N) #Keeps things generic.  The `N` here is not required if the same size
@@ -172,7 +172,7 @@ end
 x
 
 # Better!
-x = ones(N)
+x = zeros(N)
 for i = 1:N
     x[i] = 2.0 * i^2
 end
