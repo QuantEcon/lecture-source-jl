@@ -111,7 +111,10 @@ Investors of  type :math:`b` think the transition matrix is
 
 The stationary (i.e., invariant) distributions of these two matrices can be calculated as follows:
 
+.. code-block:: julia 
+  :class: test 
 
+  using Test 
 
 .. code-block:: julia
 
@@ -121,14 +124,20 @@ The stationary (i.e., invariant) distributions of these two matrices can be calc
     qb = [2/3 1/3; 1/4 3/4]
     mcA = MarkovChain(qa)
     mcB = MarkovChain(qb)
-    stationary_distributions(mcA)
+    stA = stationary_distributions(mcA)
 
 
 .. code-block:: julia
 
-    stationary_distributions(mcB)
+    stB = stationary_distributions(mcB)
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset begin 
+    @test stA ≈ [0.5714285714285715, 0.4285714285714286]
+    @test stB ≈ [0.42857142857142855, 0.5714285714285714]
+  end
 
 
 
@@ -629,7 +638,16 @@ investors are optimistic or pessimistic
         println(repeat("-", 20))
     end
         
+.. code-block:: julia 
+  :class: test 
 
+  price_valsA = price_single_beliefs(qa, dividendreturn)
+  price_valsB = price_single_beliefs(qb, dividendreturn)
+
+  @testset begin 
+    @test price_valsA ≈ [1.3333333333333335, 1.2222222222222223] 
+    @test price_valsB ≈ [1.4545454545454544, 1.9090909090909092]
+  end 
     
 We will use the `price_optimistic_beliefs` function to find the price under 
 heterogeneous beliefs
@@ -650,7 +668,17 @@ heterogeneous beliefs
         println(repeat("-", 20))
     end
         
+.. code-block:: julia 
+  :class: test 
 
+  opt_vals = price_optimistic_beliefs([qa, qb], dividendreturn)
+
+  @testset begin 
+    @test opt_vals[1] ≈ [1.846153846151143, 2.076923076920374]
+    @test opt_vals[2] ≈ [1.846153846151143, 1.6923076923049891]
+    @test opt_vals[3] ≈ [1.6923076923049891, 2.076923076920374] 
+  end 
+    
 
     
 Notice that the equilibrium price with heterogeneous beliefs is equal to the price under single beliefs
