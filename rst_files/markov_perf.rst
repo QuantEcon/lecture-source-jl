@@ -920,4 +920,4 @@ corresponding to :math:`\delta = 0.02`
 
     plot(I1, color=:blue, lw=2, alpha=0.75, label="inventories, firm 1")
     plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
-    plot!(title="delta = delta_var")
+    plot!(title="delta = 0.02")
