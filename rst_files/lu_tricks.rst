@@ -905,6 +905,11 @@ The :math:`\{a_t\}` sequence we'll choose as a stationary cyclic process plus so
 
 Here's some code that generates a plot when :math:`\gamma = 0.8`
 
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia
 
   using PyPlot, Random
@@ -950,6 +955,20 @@ And here's :math:`\gamma = 10`
 .. code-block:: julia
 
   plot_simulation(γ=10.0)
+
+.. code-block:: julia 
+  :class: test 
+
+  γ = 10.0
+  d = γ*[-1, 1]
+  y_hist, L, U, y = optimal_y(LQFilter(d , 1., [2.]), a_seq)
+
+  @testset begin 
+    @test a_seq[4] ≈ 2.5041680837681186
+    @test y_hist[4] ≈ 2.1262941143293763
+    @test L[2, 2] ≈ 101.990099009901
+    @test y[79] ≈ 1.931812149101077
+  end 
 
 Exercises
 =================
