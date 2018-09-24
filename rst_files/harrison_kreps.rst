@@ -134,9 +134,9 @@ The stationary (i.e., invariant) distributions of these two matrices can be calc
 .. code-block:: julia 
   :class: test 
 
-  @testset begin 
-    @test stA ≈ [0.5714285714285715, 0.4285714285714286]
-    @test stB ≈ [0.42857142857142855, 0.5714285714285714]
+  @testset begin
+    @test stA ≈ [[0.5714285714285715, 0.4285714285714286]]
+    @test stB ≈ [[0.42857142857142855, 0.5714285714285714]]
   end
 
 
