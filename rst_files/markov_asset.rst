@@ -345,12 +345,12 @@ The next figure shows a simulation, where
 .. code-block:: julia 
   :class: test 
 
-  @testset begin 
-    @test x_series[4] ≈ -0.44642857142857134
-    @test g_series[5] ≈ 0.5118913634883988
-    @test d_series[9] ≈ 0.0019304541362277126 # Near the inflection point. 
-    @test log.(d_series)[72] ≈ -33.70535714285713 # Something near the end. 
-  end 
+  @testset begin
+    @test x_series[4] ≈ -0.669642857142857
+    @test g_series[5] ≈ 0.4094841251523643
+    @test d_series[9] ≈ 0.03514706070454392 # Near the inflection point.
+    @test log.(d_series)[72] ≈ -29.24107142857142 # Something near the end.
+  end
 
 Pricing
 ^^^^^^^^^^^^
