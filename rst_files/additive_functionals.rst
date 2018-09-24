@@ -692,8 +692,8 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
   :class: test 
 
   @testset begin 
-    @test y[79] 0.04028720145299237
-    @test y[amf.nx+1, :][19] 0.10909484755048182
+    @test y[79] ≈ -0.07268127992877046
+    @test y[amf.nx+1, :][19] ≈ 0.09115348523102862
     @test F == 0.01 && T == 150 # A few constants.  
   end 
 
