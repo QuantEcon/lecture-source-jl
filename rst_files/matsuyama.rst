@@ -326,6 +326,11 @@ For some parameterizations, synchronization will occur for "most" initial condit
 
 Here's the main body of code
 
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia
 
     #=
@@ -667,6 +672,17 @@ Exercise 1
 
     fig[:suptitle]("Synchronized versus Asynchronized 2-cycles",
                  x=0.475, y=0.915, size=26)
+
+.. code-block:: julia 
+  :class: julia 
+
+  @testset begin 
+    @test ab1[1:10, 1:4] == [0.0 163.0 189.0 250.0; 163.0 0.0 215.0 250.0; 189.0 215.0 0.0 188.0; 250.0 250.0 188.0 0.0; 250.0 250.0 182.0 164.0; 250.0 198.0 166.0 162.0; 250.0 188.0 170.0 156.0; 220.0 166.0 166.0 158.0; 196.0 150.0 160.0 154.0; 184.0 168.0 156.0 148.0]
+    @test ab2[1:4, 1:4] == [0.0 165.0 181.0 225.0; 165.0 0.0 203.0 250.0; 181.0 203.0 0.0 174.0; 225.0 250.0 174.0 0.0]
+    @test ab3[1:4, 1:4] == [0.0 167.0 183.0 201.0; 167.0 0.0 201.0 230.0; 183.0 201.0 0.0 172.0; 201.0 230.0 172.0 0.0]
+    @test ab4[1:4, 1:4] == [0.0 161.0 169.0 193.0; 161.0 0.0 193.0 210.0; 169.0 193.0 0.0 186.0; 193.0 210.0 186.0 0.0]
+  end 
+
 
 Exercise 2
 ----------
