@@ -300,7 +300,7 @@ Let's run a simulation under the default parameters (see above) starting from :m
 
 .. code-block:: julia
 
-    using PyPlot
+    using Plots
 
     lm = LakeModel()
     N_0 = 150      # Population
@@ -314,20 +314,15 @@ Let's run a simulation under the default parameters (see above) starting from :m
 
     X_path = simulate_stock_path(lm, X_0, T)
 
-    titles = ["Unemployment" "Employment" "Labor force"]
     x1 = X_path[1, :]
     x2 = X_path[2, :]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    fig, axes = subplots(3, 1, figsize = (10, 8))
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, grid = true, label="")
+    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, grid=true, label="")
+    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, lw=2, grid=true,label="")
 
-    for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
-        ax[:plot](1:T, x, c="blue")
-        ax[:set](title=title)
-        ax[:grid]("on")
-    end
-
-    fig[:tight_layout]()
+    plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
 
 
 .. code-block:: julia
@@ -378,16 +373,14 @@ Let's look at the convergence of the unemployment and employment rate to steady 
     x_0 = [u_0; e_0]
     x_path = simulate_rate_path(lm, x_0, T)
 
-    titles = ["Unmployment rate" "Employment rate"]
 
-    fig, axes = subplots(2, 1, figsize=(10, 8))
+    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color=:blue, lw=2, alpha=0.5, grid=true, label="")
+    plot!(plt_unemp, [xbar[1]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
 
-    for (i, ax) in enumerate(axes)
-        ax[:plot](1:T, x_path[i, :], c="blue", lw=2, alpha=0.5)
-        ax[:hlines](xbar[i], 0, T, "r", "--")
-        ax[:set](title=titles[i])
-        ax[:grid]("on")
-    end
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color=:blue, lw=2, alpha=0.5, grid=true, label="")
+    plot!(plt_emp, [xbar[2]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
+
+    plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
 
 .. code-block:: julia
   :class: test
@@ -524,16 +517,17 @@ Let's plot the path of the sample averages over 5,000 periods
     s_bar_u = 1 .- s_bar_e
     s_bars = [s_bar_u s_bar_e]
 
-    titles = ["Percent of time unemployed" "Percent of time employed"]
 
-    fig, axes = subplots(2, 1, figsize=(10, 8))
 
-    for (i, ax) in enumerate(axes)
-        ax[:plot](1:T, s_bars[:, i], c="blue", lw=2, alpha=0.5)
-        ax[:hlines](xbar[i], 0, T, "r", "--")
-        ax[:set](title=titles[i])
-        ax[:grid]("on")
-    end
+
+
+    plt_unemp = plot(title="Percent of time unemployed", 1:T, s_bars[:,1],color=:blue, lw=2,alpha=0.5,label="", grid=true)
+    plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle=:dash, color=:red, lw=2, label="")
+
+    plt_emp = plot(title="Percent of time employed", 1:T, s_bars[:,2],color=:blue, lw=2,alpha=0.5,label="", grid=true)
+    plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle=:dash, color=:red, lw=2,label="")
+
+    plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
 
 .. code-block:: julia
   :class: test
@@ -764,18 +758,14 @@ function of the unemployment compensation rate
         welfare_vec[i] = welfare
     end
 
-    fig, axes = subplots(2, 2, figsize=(15, 10))
+    plt_unemp = plot(title="Unemployment", c_vec, unempl_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
+    plt_tax = plot(title="Tax", c_vec, tax_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
+    plt_emp = plot(title="Employment", c_vec, empl_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
+    plt_welf = plot(title="Welfare", c_vec, welfare_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
 
-    plots = [unempl_vec, tax_vec, empl_vec, welfare_vec]
-    titles = ["Unemployment", "Tax", "Employment", "Welfare"]
+    plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800,700))
 
-    for (ax, plot, title) in zip(axes, plots, titles)
-        ax[:plot](c_vec, plot, "b-", lw=2, alpha=0.7)
-        ax[:set](title=title)
-        ax[:grid]("on")
-    end
 
-    fig[:tight_layout]()
 
 
 .. code-block:: julia
@@ -877,21 +867,16 @@ Now plot stocks
 
 .. code-block:: julia
 
-    titles = ["Unemployment" "Employment" "Labor force"]
-
     x1 = X_path[1, :]
     x2 = X_path[2, :]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    fig, axes = subplots(3, 1, figsize=(10, 8))
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, grid = true, label="",bg_inside=:lightgrey)
+    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, grid=true, label="",bg_inside=:lightgrey)
+    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, grid=true,label="",bg_inside=:lightgrey)
 
-    for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
-        ax[:plot](1:T, x, c="blue")
-        ax[:set](title=title)
-        ax[:grid]("on")
-    end
+    plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
 
-    fig[:tight_layout]()
 
 
 .. code-block:: julia
@@ -907,16 +892,13 @@ And how the rates evolve
 
 .. code-block:: julia
 
-    titles = ["Unemployment rate" "Employment rate"]
+    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color=:blue, grid = true, label="",bg_inside=:lightgrey)
+    plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle = :dash, color =:red, label = "")
 
-    fig, axes = subplots(2, 1, figsize=(10, 8))
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color=:blue, grid=true, label="",bg_inside=:lightgrey)
+    plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle = :dash, color =:red, label ="")
 
-    for (i, ax) in enumerate(axes)
-        ax[:plot](1:T, x_path[i, :], c="blue", lw=2, alpha=0.5)
-        ax[:hlines](xbar[i], 0, T, "r", "--")
-        ax[:set](title=titles[i])
-        ax[:grid]("on")
-    end
+    plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
 
 .. code-block:: julia
   :class: test
@@ -983,21 +965,24 @@ Finally we combine these two paths and plot
 
 .. code-block:: julia
 
-    titles = ["Unemployment" "Employment" "Labor force"]
-
     x1 = X_path[1,:]
     x2 = X_path[2,:]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    fig, axes = subplots(3, 1, figsize=(10, 9))
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, alpha = 0.7, grid = true, label="",bg_inside=:lightgrey)
+    plot!(plt_unemp, ylims=extrema(x1).+(-1,1))
 
-    for (ax, x, title) in zip(axes, [x1, x2, x3], titles)
-        ax[:plot](1:T, x, "b-", lw=2, alpha=0.7)
-        ax[:set](title=title, ylim = extrema(x) .+ (-1, 1))
-        ax[:grid]("on")
-    end
+    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, alpha = 0.7, grid=true, label="",bg_inside=:lightgrey)
+    plot!(plt_emp, ylims=extrema(x2).+(-1,1))
 
-    fig[:tight_layout]()
+    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, alpha = 0.7, grid=true,label="",bg_inside=:lightgrey)
+    plot!(plt_labor, ylims=extrema(x3).+(-1,1))
+    plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
+
+
+
+
+
 
 .. code-block:: julia
   :class: test
@@ -1012,16 +997,13 @@ And the rates
 
 .. code-block:: julia
 
-    titles = ["Unemployment Rate" "Employment Rate"]
+    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color=:blue, grid = true, label="",bg_inside=:lightgrey, lw=2)
+    plot!(plt_unemp, [x0[1]], linetype=:hline, linestyle = :dash, color =:red, label = "", lw=2)
 
-    fig, axes = subplots(2, 1, figsize=(10, 8))
+    plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color=:blue, grid=true, label="",bg_inside=:lightgrey, lw=2)
+    plot!(plt_emp, [x0[2]], linetype=:hline, linestyle = :dash, color =:red, label ="", lw=2)
 
-    for (i, ax) in enumerate(axes)
-        ax[:plot](1:T, x_path[i, :], "-b", lw=2, alpha=0.7)
-        ax[:hlines](x0[i], 0, T, "r", "--")
-        ax[:set](title=titles[i])
-        ax[:grid]("on")
-    end
+    plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
 
 .. code-block:: julia
   :class: test
