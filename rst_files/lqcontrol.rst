@@ -1379,6 +1379,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
 -  :math:`p(T) = 0`.
 
 .. code-block:: julia
+
     # == Model parameters == #
     r = 0.05
     β = 1/(1 + r)
