@@ -905,14 +905,14 @@ The :math:`\{a_t\}` sequence we'll choose as a stationary cyclic process plus so
 
 Here's some code that generates a plot when :math:`\gamma = 0.8`
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
-  using PyPlot, Random
+  using Plots, Random
 
   # == Set seed and generate a_t sequence == #
   Random.seed!(123)
@@ -928,18 +928,11 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
     y = y[end:-1:1]  # reverse y
 
     # == Plot simulation results == #
-    fig, ax = subplots(figsize=(10, 6))
-    ax[:set_xlabel]("Time")
-
-    # == Some fancy plotting stuff -- simplify if you prefer == #
-    bbox = (0., 1.01, 1., .101)
 
     time = 1:length(y)
-    ax[:set_xlim](0, maximum(time))
-    ax[:plot](time, a_seq / h, "k-o", ms=4, lw=2, alpha=0.6, label=L"$a_t$")
-    ax[:plot](time, y, "b-o", ms=4, lw=2, alpha=0.6, label=L"$y_t$")
-    ax[:grid]()
-    ax[:legend](ncol=2, bbox_to_anchor= bbox, loc=3, mode = "expand", fontsize= 16)
+    plt = plot(time, a_seq / h, lw=2, linestyle=:dash, color=:black, alpha=0.8, label="a_t")
+    plot!(plt, time, y, lw=2, linestyle=:dash, color=:blue, alpha=0.8, label="y_t")
+    plot!(plt, xlabel="Time", grid=true, xlim=(0,maximum(time)), legend=:bottomleft)
   end
 
   plot_simulation()
@@ -956,19 +949,19 @@ And here's :math:`\gamma = 10`
 
   plot_simulation(γ=10.0)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   γ = 10.0
   d = γ*[-1, 1]
   y_hist, L, U, y = optimal_y(LQFilter(d , 1., [2.]), a_seq)
 
-  @testset begin 
+  @testset begin
     @test a_seq[4] ≈ 2.5041680837681186
     @test y_hist[4] ≈ 2.1262941143293763
     @test L[2, 2] ≈ 101.990099009901
     @test y[79] ≈ 1.931812149101077
-  end 
+  end
 
 Exercises
 =================
