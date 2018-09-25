@@ -207,15 +207,15 @@ Here's a code snippet that, once the preceding code has been run, generates data
 
 where :math:`\{ \epsilon_t \}` is white noise with unit variance, and compares the periodogram to the actual spectral density
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, Random 
-    Random.seed!(42) # For reproducible results. 
+    using QuantEcon, Plots, Random
+    Random.seed!(42) # For reproducible results.
 
     n = 40              # Data size
     ϕ = 0.5             # AR parameter
@@ -230,14 +230,14 @@ where :math:`\{ \epsilon_t \}` is white noise with unit variance, and compares t
     plot(x, y,linecolor="blue", linewidth=2, linealpha=0.5, lab="periodogram")
     plot!(x_sd, y_sd, linecolor="red", linewidth=2, linealpha=0.8, lab="spectral density")
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test y[17] ≈ 0.034025657896215554
     @test x[17] ≈ 2.5132741228718345
     @test y_sd[76] ≈ 1.6587587789586284
-  end 
+  end
 
 This estimate looks rather disappointing, but the data size is only 40, so
 perhaps it's not surprising that the estimate is poor
@@ -310,13 +310,13 @@ Note the smaller weights towards the edges and larger weights in the center, so 
     plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights",
         xlabel="Position in sequence of weights", legend=false, grid=false)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test window[7] ≈ 0.04166666666666666
     @test window[12] ≈ 0.08191357609537783
-  end 
+  end
 
 
 Estimation with Smoothing
@@ -512,7 +512,7 @@ Exercise 1
 .. code-block:: julia
 
     using Random
-    Random.seed!(42)  # reproducible results
+    Random.seed!(42);  # reproducible results
 
 .. code-block:: julia
 
@@ -548,14 +548,14 @@ Exercise 1
         push!(titles, t)
     end
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test y_sds[2][12] ≈ 1.0359408815913638
     @test y_sms[3][45] ≈ 2.7396611185705604
     @test ys[1][50] ≈ 4.245609056262289
-  end 
+  end
 
 .. code-block:: julia
 
@@ -572,7 +572,7 @@ Exercise 2
 
 .. code-block:: julia
 
-    Random.seed!(42) # For reproducible results. 
+    Random.seed!(42) # For reproducible results.
     lp2 = ARMA(-0.9, 0.0, 1.0)
     wl = 65
     p = plot(layout=(3,1))
@@ -598,13 +598,13 @@ Exercise 2
     end
     p
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   Random.seed!(42)
   y_sd = spectral_density(lp2,two_pi=false, res=180)
 
-  @testset begin 
+  @testset begin
     @test y_sd[2][100] ≈ 0.6616951403067453
     @test y_sd[1][100] ≈ 1.7375288977954721
-  end 
+  end
