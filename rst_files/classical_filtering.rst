@@ -843,6 +843,14 @@ Let's check that it "flips roots" as required
 
     roots_of_characteristic(example)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test coeffs_of_c(example) == [2.0, -1.0]
+    @test roots_of_characteristic(example) == ([2.0], -2.0, [0.5])
+  end 
+
 Now let's form the covariance matrix of a time series vector of length :math:`N`
 and put it in :math:`V`
 
@@ -864,6 +872,14 @@ Notice how the lower rows of the "autoregressive representations" are converging
 .. code-block:: julia
 
     L = inv(Li)
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test L[2, 1] \approx 0.1951800145897066
+    @test L[3, 3] \approx 0.4970501217477084
+  end 
 
 **Remark** Let :math:`\pi (z) = \sum^m_{j=0} \pi_j z^j` and let :math:`z_1, \ldots,
 z_k` be the zeros of :math:`\pi (z)` that are inside the unit circle, :math:`k < m`
@@ -936,6 +952,14 @@ We proceed in the same way as example 1
 .. code-block:: julia
 
     L = inv(Li)
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test L[3, 1] \approx 0.30860669992418377 
+    @test L[2, 2] \approx 0.5773502691896257
+  end 
 
 Prediction
 -------------
