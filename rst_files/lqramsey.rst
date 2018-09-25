@@ -571,7 +571,7 @@ Description and clarifications are given below
     @author : Spencer Lyon <spencer.lyon@nyu.edu>
 
     =#
-    using QuantEcon, PyPlot, LaTeXStrings, LinearAlgebra
+    using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
 
     abstract type AbstractStochProcess end
 
@@ -770,49 +770,41 @@ Description and clarifications are given below
     function gen_fig_1(path::Path)
         T = length(path.c)
 
-        figure(figsize=(12,8))
+        plt_1 = plot(path.rvn, lw=2, label = "tau_t")
+        plot!(plt_1, path.g, lw=2, label= "g_t")
+        plot!(plt_1, path.c, lw=2, label= "c_t")
+        plot!(xlabel="Time", grid=true)
 
-        ax1=subplot(2, 2, 1)
-        ax1[:plot](path.rvn)
-        ax1[:plot](path.g)
-        ax1[:plot](path.c)
-        ax1[:set_xlabel]("Time")
-        ax1[:legend]([L"$\tau_t \ell_t$",L"$g_t$",L"$c_t$"])
+        plt_2 = plot(path.rvn, lw=2, label="tau_t")
+        plot!(plt_2, path.g, lw=2, label="g_t")
+        plot!(plt_2, path.B[2:end], lw=2, label="B_(t+1)")
+        plot!(xlabel="Time", grid=true)
 
-        ax2=subplot(2, 2, 2)
-        ax2[:plot](path.rvn)
-        ax2[:plot](path.g)
-        ax2[:plot](path.B[2:end])
-        ax2[:set_xlabel]("Time")
-        ax2[:legend]([L"$\tau_t \ell_t$",L"$g_t$",L"$B_{t+1}$"])
+        plt_3 = plot(path.R, lw=2, label="R_(t-1)")
+        plot!(plt_3, xlabel="Time", grid=true)
 
-        ax3=subplot(2, 2, 3)
-        ax3[:plot](path.R .- 1)
-        ax3[:set_xlabel]("Time")
-        ax3[:legend]([L"$R_{t - 1}$"])
+        plt_4 = plot(path.rvn, lw=2, label="tau_t")
+        plot!(plt_4, path.g, lw=2, label="g_t")
+        plot!(plt_4, path.π, lw=2, label="pi_t")
+        plot!(plt_4, xlabel="Time", grid=true)
 
-        ax4=subplot(2, 2, 4)
-        ax4[:plot](path.rvn)
-        ax4[:plot](path.g)
-        ax4[:plot](path.π)
-        ax4[:set_xlabel]("Time")
-        ax4[:legend]([L"$\tau_t \ell_t$",L"$g_t$",L"$\pi_{t+1}$"])
+        plot(plt_1, plt_2, plt_3, plt_4, layout=(2,2), size = (800,600))
     end
 
     function gen_fig_2(path::Path)
 
         T = length(path.c)
 
-        fig, axes = plt[:subplots](2, 1, figsize=(8, 7))
+        paths = [path.ξ, path.Π]
+        labels = ["xi_t", "Pi_t"]
+        plt_1 = plot()
+        plt_2 = plot()
+        plots = [plt_1, plt_2]
 
-        plots = [path.ξ, path.Π]
-        labels = [L"$\xi_t$", L"$\Pi_t$"]
-
-        for (ax, plot, label) in zip(axes, plots, labels)
-            ax[:plot](2:T, plot, label=label)
-            ax[:set_xlabel]("Time")
-            ax[:legend]
+        for (plot, path, label) in zip(plots, paths, labels)
+            plot!(plot, 2:T, path, lw=2, label=label, xlabel="Time", grid=true)
         end
+        plot(plt_1, plt_2, layout=(2,1), size = (600,500))
     end
 
 Comments on the Code
@@ -854,9 +846,9 @@ with :math:`\rho = 0.7`, :math:`\mu_g = 0.35` and :math:`C_g = \mu_g \sqrt{1 - \
 Here's the code
 
 .. code-block:: julia
-    
-    # For reproducible results 
-    using Random 
+
+    # For reproducible results
+    using Random
     Random.seed!(42)
 
     # == Parameters == #
