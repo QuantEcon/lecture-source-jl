@@ -683,6 +683,11 @@ Sequence Implementation
 
 The above steps are implemented in a type called `SequentialAllocation`
 
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia
   :class: collapse
 
@@ -1498,6 +1503,9 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
 .. code-block:: julia
 
+    using Random 
+    Random.seed!(42) # For reproducible results. 
+
     M_time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
                                   Θ=ones(6))            # Θ can in principle be random
 
@@ -1539,6 +1547,16 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     end
 
     plt[:tight_layout]()
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
+    @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
+    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
+  end 
 
 **Tax smoothing**
 
@@ -1651,6 +1669,8 @@ above)
 
 .. code-block:: julia
 
+    Random.seed!(42) # For reproducible results. 
+
     M2 = crra_utility(G=[0.15], Π=ones(1, 1), Θ=[1.0])
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
@@ -1674,7 +1694,14 @@ above)
     plt[:xlabel]("Initial Government Debt")
     plt[:tight_layout]()
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset begin 
+    @test B_vec[3] ≈ -1.4494949494949494
+    @test taxpolicy[2, 2] ≈ 0.0020700125847712414
+    @test interest_rate[3, 1] ≈ 1.113064964490116
+  end 
 
 The figure indicates  that if the government enters with  positive debt, it sets
 a tax rate at :math:`t=0` that is less than all later tax rates
@@ -1796,6 +1823,8 @@ The figure below plots a sample path of the Ramsey tax rate
 
 .. code-block:: julia
 
+    Random.seed!(42) # For reproducible results. 
+
     M1 = log_utility()
     μ_grid = range(-0.6, stop = 0.0, length = 200)
     PP_seq = SequentialAllocation(M1)         # Solve sequential problem
@@ -1831,6 +1860,21 @@ The figure below plots a sample path of the Ramsey tax rate
     plt[:legend](("Sequential", "Recursive"), loc="best")
 
     plt[:tight_layout]()
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test sim_seq_plot[1][14] ≈ 0.38396935397869975
+    @test sim_seq_plot[2][14] ≈ 0.5839693539786998
+    @test sim_seq_plot[3][14] ≈ 0.3951985593686047
+    @test sim_seq_plot[4][14] ≈ 0.3631746680706347
+    @test sim_seq_plot[5][14] == 0.2
+    @test sim_seq_plot[6][14] ≈ 0.5839693539786998
+    @test sim_bel_plot[3][5] ≈ 0.5230199651195195
+    @test sim_bel_plot[5][7] == 0.1
+    @test sim_bel_plot[2][3] ≈ 0.5402865605930799
+  end 
 
 As should be expected, the recursive and sequential solutions produce almost
 identical allocations
