@@ -1,6 +1,6 @@
 #!/bin/bash
 
-redln() { echo -n "$(tput setaf 1)$*$(tput setaf 9)"; } # Prints in red. For error messages. 
+redln() { echo "$(tput setaf 1)$*$(tput setaf 9)"; } # Prints in red. For error messages. 
 if [ $# -eq 0 ]; then
     redln "No arguments supplied. Will exit now."
     exit 1
