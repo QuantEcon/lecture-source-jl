@@ -551,6 +551,11 @@ Code that computes solutions to  LQ control and filtering problems  using the me
 Here's how it looks
 
 .. code-block:: julia 
+  :class: test 
+
+  using Test 
+
+.. code-block:: julia 
 
   #=
 
@@ -877,8 +882,8 @@ Notice how the lower rows of the "autoregressive representations" are converging
   :class: test 
 
   @testset begin 
-    @test L[2, 1] \approx 0.1951800145897066
-    @test L[3, 3] \approx 0.4970501217477084
+    @test L[2, 1] ≈ 0.1951800145897066
+    @test L[3, 3] ≈ 0.4970501217477084
   end 
 
 **Remark** Let :math:`\pi (z) = \sum^m_{j=0} \pi_j z^j` and let :math:`z_1, \ldots,
@@ -957,8 +962,8 @@ We proceed in the same way as example 1
   :class: test 
 
   @testset begin 
-    @test L[3, 1] \approx 0.30860669992418377 
-    @test L[2, 2] \approx 0.5773502691896257
+    @test L[3, 1] ≈ 0.30860669992418377 
+    @test L[2, 2] ≈ 0.5773502691896257
   end 
 
 Prediction
