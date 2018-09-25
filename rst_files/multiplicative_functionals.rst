@@ -94,6 +94,11 @@ Let's write a program to simulate sample paths of :math:`\{ x_t, y_{t} \}_{t=0}^
 
 We'll do this by formulating the additive functional as a linear state space model and putting the `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ struct to work
 
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia
 
     #=
@@ -242,7 +247,8 @@ Here goes
 
 .. code-block:: julia
 
-    using PyPlot
+    using PyPlot, Random
+    Random.seed!(42)
 
     A, B, D, F = 0.8, 1.0, 0.5, 0.2
     amf = AMF_LSS_VAR(A, B, D, F)
@@ -277,6 +283,14 @@ Here goes
     ax[2][:set_xlim]((0, T))
     ax[2][:legend](loc=0)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc. 
+    @test Ymean_t'[100] ≈ -0.3351148038056963
+  end 
+
 Simulating log-likelihoods
 ---------------------------
 
@@ -295,6 +309,9 @@ Then we to compare these objects
 Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i = 1, \ldots, 5000`
 
 .. code-block:: julia
+
+    # For reproducibility. 
+    Random.seed!(42)
 
     function simulate_likelihood(amf, Xit, Yit)
         # Get size
@@ -324,6 +341,15 @@ Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i 
             color="k", linestyle="--", alpha=0.6)
     fig[:suptitle](L"Distribution of $\frac{1}{T} \log L_{T}  \mid \theta_0$", fontsize=14)
 
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test LLT[100] ≈ 0.237835678897198
+    @test LLmean_t ≈ 0.18834771174533427
+  end 
+
 Notice that the log likelihood is almost always nonnegative, implying that :math:`L_t` is typically bigger than 1
 
 Recall that the likelihood function is a pdf (probability density function) and **not** a probability measure, so it can take values larger than 1
@@ -346,6 +372,14 @@ Let's see this in a simulation
     r,c = size(L_increment)
     frac_nonegative = sum(L_increment.>=0)/(c*r)
     print("Fraction of dlogL being nonnegative in the sample is: $(frac_nonegative)")
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test pdf(normdist,mult*F) ≈ 1.0001868966924388 
+    @test pdf(normdist, F) ≈ 1.2098536225957168 
+  end 
 
 Let's also plot the conditional pdf of :math:`\Delta y_{t+1}`
 
@@ -395,6 +429,9 @@ Here's the code
 
 .. code-block:: julia
 
+    # For reproducibility. 
+    Random.seed!(42) 
+
     # Create the second (wrong) alternative model
     A2, B2, D2, F2 = [0.9, 1.0, 0.55, 0.25]   #  parameters for θ_1 closer to θ_0
     amf2 = AMF_LSS_VAR(A2, B2, D2, F2)
@@ -412,6 +449,14 @@ Here's the code
         color="k", linestyle="--", alpha=0.6)
 
     fig[:suptitle](L"Distribution of $\frac{1}{T} \log L_{T}  \mid \theta_1$", fontsize=14)
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test LLT2[1] ≈ 0.08791248248646343
+    @test LLmean_t2 ≈ 0.09210776227743879
+  end 
 
 Let's see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)
 
@@ -562,6 +607,9 @@ Here is code that accomplishes these tasks
         return add_mart_comp, mul_mart_comp
     end
 
+    # Seed RNG. 
+    Random.seed!(42)
+
     # Build model
     amf_2 = AMF_LSS_VAR(0.8, 0.001, 1.0, 0.01,.005)
 
@@ -576,6 +624,15 @@ Here is code that accomplishes these tasks
 
     println("The (min, mean, max) of multiplicative Martingale component in period T is")
     println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test amcT[20] ≈ -0.5863300446739321
+    @test amc[14, 38] ≈ -0.07979871433963322
+    @test mmcT[250] ≈ 0.7443371221714455
+  end 
 
 Comments
 ^^^^^^^^^^^^^^
@@ -789,5 +846,10 @@ Let's compute this
 
     perc_reduct = 100 * (1 - exp(logVC_r - logVC_d))
     perc_reduct
+
+.. code-block:: julia 
+  :class: test 
+
+  @test perc_reduct ≈ 1.0809878812017448
 
 We find that the consumer would be willing to take a percentage reduction of initial consumption equal to around 1.081
