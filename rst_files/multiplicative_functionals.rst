@@ -454,7 +454,7 @@ Here's the code
   :class: test 
 
   @testset begin 
-    @test LLT[2] ≈ 0.12600870885152676
+    @test LLT2[1] ≈ 0.08791248248646343
     @test LLmean_t2 ≈ 0.09210776227743879
   end 
 
