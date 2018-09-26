@@ -13,3 +13,15 @@
     "γ̃" # gamma-tilde
     "α̂" # alpha-hat
     "π̲" # pi-underbar
+
+# Git
+    "⋅" # cdot
+    "⊗" # otimes
+    "∂" # partial
+    "ℒ" # scrL
+    "𝒟" # scrD
+    "∈" # in
+    "∉" # notin
+    "⊆" # subseteq
+    "≠" # ne
+    "≈" # approx 
