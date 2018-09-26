@@ -9,11 +9,6 @@
 # Ordinary unicode characters
     println("π, α, ζ, ξ, δ, ρ, γ, β, χ, ω, θ, υ, ν, Γ, Δ")
 
-# Combining.
-    "γ̃" # gamma-tilde
-    "α̂" # alpha-hat
-    "π̲" # pi-underbar
-
 # Git
     "⋅" # cdot
     "⊗" # otimes
@@ -24,4 +19,11 @@
     "∉" # notin
     "⊆" # subseteq
     "≠" # ne
-    "≈" # approx 
+    "≈" # approx
+
+# Ones to avoid!
+# Combining characters don't show on Windows Atom/vscode/jupyter
+    γ̃  = 1 # gamma-tilde
+    α̂ = 1 # alpha-hat
+    π̲ = 1 # pi-underbar
+    π̄ = 1 # pi-bar
