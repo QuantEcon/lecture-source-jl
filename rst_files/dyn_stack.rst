@@ -813,7 +813,7 @@ Assume that :math:`m_0=10, \alpha=5, \bar p=1`
 
 **b.** Please briefly interpret this problem as one where the monetary authority wants to stabilize the price level, subject to costs of adjusting the money supply and some implementability constraints. (We include the term :math:`.00001m_t^2` for purely technical reasons that you need not discuss.)
 
-**c.** Please write and run a Python program to find the optimal sequence :math:`\{u_t\}_{t=0}^\infty`
+**c.** Please write and run a Julia program to find the optimal sequence :math:`\{u_t\}_{t=0}^\infty`
 
 **d.** Display the optimal decision rule for :math:`u_t` as a function of :math:`u_{t-1},  m_t, m_{t-1}`
 
