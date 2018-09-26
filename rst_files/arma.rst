@@ -228,7 +228,7 @@ The next figure plots an example of this function for :math:`\phi = 0.8` and :ma
         times = 0:16
         acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
         label = "autocovariance, phi = phi_var"
-        plot!(plots[i], times, acov, color=:blue, lw=2, marker=:circle, markersize=2,
+        plot!(plots[i], times, acov, color=:blue, lw=2, marker=:circle, markersize=3,
               alpha=0.6, label=label)
         plot!(plots[i], legend=:topright, xlabel="time", xlim=(0,15))
         plot!(plots[i], seriestype=:hline, [0], linestyle=:dash, alpha=0.5, lw=2, label="")
@@ -527,46 +527,27 @@ These ideas are illustrated in the next figure, which has :math:`k` on the horiz
     y2 = [cos.(π * k) for k in times]
     y3 = [a * b for (a, b) in zip(y1, y2)]
 
-    num_rows, num_cols = 3, 1
-    #fig, axes = subplots(num_rows, num_cols, figsize=(10, 8))
-
     # Autocovariance when ϕ = -0.8
-    plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=2,
+    plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
                 alpha=0.6, label="gamma(k)")
     plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
-    plot!(plt_1, legend=:topright, xlim=(0,15), ticks=[-2, 0, 2])
-    #ax = axes[1]
-    #ax[:plot](times, y1, "o-", alpha=0.6, label=L"\gamma(k)")
-    #ax[:legend](loc="upper right")
-    #ax[:set](xlim=(0, 15), yticks=(-2, 0, 2))
-    #ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
     # Cycles at frequence π
-    plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=2,
+    plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
                 alpha=0.6, label="cos(pi k)")
     plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
-    plot!(plt_2, legend=:topright, xlim=(0,15), ticks=[-1, 0, 1])
-    #ax = axes[2]
-    #ax[:plot](times, y2, "o-", alpha=0.6, label=L"$\cos(\pi k)$")
-    #ax[:legend](loc="upper right")
-    #ax[:set](xlim=(0, 15), yticks=(-1, 0, 1))
-    #ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
     # Product
-
-    plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=2,
+    plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
                 lw=2, label="gamma(k) cos(pi k)")
     plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
     plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3),
-          ticks=[-1, 0, 1, 2, 3])
-    #ax = axes[3]
-    #ax[:stem](times, y3, label=L"$\gamma(k) \cos(\pi k)$")
-    #ax[:legend](loc="upper right")
-    #ax[:set](xlim=(0, 15), ylim=(-3, 3), yticks=(-1, 0, 1, 2, 3))
-    #ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+          yticks=[-1, 0, 1, 2, 3])
 
     plot(plt_1, plt_2, plt_3, layout=(3,1), size=(800,600))
 
@@ -591,52 +572,29 @@ both positive and negative terms, and hence the sum of these terms is much small
     y2 = [cos.(π * k/3) for k in times]
     y3 = [a * b for (a, b) in zip(y1, y2)]
 
-    num_rows, num_cols = 3, 1
-    #fig, axes = subplots(num_rows, num_cols, figsize=(10, 8))
-
     # Autocovariance when ϕ = -0.8
-    plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=2,
+    plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
                 alpha=0.6, label="gamma(k)")
     plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
-    plot!(plt_1, legend=:topright, xlim=(0,15), ticks=[-2, 0, 2])
-
-    #ax = axes[1]
-    #ax[:plot](times, y1, "o-", alpha=0.6, label=L"\gamma(k)")
-    #ax[:legend](loc="upper right")
-    #ax[:set](xlim=(0, 15), yticks=(-2, 0, 2))
-    #ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
     # Cycles at frequence π
-
-    plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=2,
+    plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
                 alpha=0.6, label="cos(pi k/3)")
     plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
-    plot!(plt_2, legend=:topright, xlim=(0,15), ticks=[-1, 0, 1])
-
-    #ax = axes[2]
-    #ax[:plot](times, y2, "o-", alpha=0.6, label=L"$\cos(\pi k/3)$")
-    #ax[:legend](loc="upper right")
-    #ax[:set](xlim=(0, 15), yticks=(-1, 0, 1))
-    #ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
     # Product
-
-    plt_3 = plot(times, y3, seriestype=:sticks, marker=:cicle, markersize=2,
+    plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
                 lw=2, label="gamma(k) cos(pi k/3)")
     plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
     plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3),
-          ticks=[-1, 0, 1, 2, 3])
+          yticks=[-1, 0, 1, 2, 3])
 
-    #ax = axes[3]
-    #ax[:stem](times, y3, label=L"$\gamma(k) \cos(\pi k/3)$")
-    #ax[:legend](loc="upper right")
-    #ax[:set](xlim=(0, 15), ylim=(-3, 3), yticks=(-1, 0, 1, 2, 3))
-    #ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
-
-    plot(plt_1, plt_2, plt_3, layout=(3,1), size=(800,600))
+    plot(plt_1, plt_2, plt_3, layout=(3,1), size=(600,600))
 
 
 .. code-block:: julia
@@ -784,19 +742,13 @@ Here are some functions to generate the plots
 
     function plot_spectral_density(arma, plt)
         (w, spect) = spectral_density(arma, two_pi=false)
-
         plot!(plt, w, spect, lw=2, alpha=0.7,label="")
         plot!(plt, title="Spectral density", xlim=(0,π),
               xlabel="frequency", ylabel="spectrum", yscale=:log)
-
-        #ax[:plot](w, spect, lw=2, alpha=0.7)
-        #ax[:set](title="Spectral density", xlim=(0, π),
-        #         xlabel="frequency", ylabel="spectrum", yscale="log")
         return plt
     end
 
     function plot_spectral_density(arma)
-        #fig, ax = subplots()
         plt = plot()
         plot_spectral_density(arma, plt=plt)
         return plt
@@ -805,21 +757,15 @@ Here are some functions to generate the plots
     function plot_autocovariance(arma, plt)
         acov = autocovariance(arma)
         n = length(acov)
-
         plot!(plt, 0:(n-1), acov, seriestype=:sticks, marker=:circle,
               markersize=2,label="")
         plot!(plt, seriestype=:hline, [0], color=:red, label="")
         plot!(plt, title="Autocovariance", xlim=(-0.5, n-0.5),
               xlabel="time", ylabel="autocovariance")
-        #ax[:stem](0:(n - 1), acov)
-        #ax[:axhline](y=0, c="red", lw=0.5)
-        #ax[:set](title="Autocovariance", xlim=(-0.5, n - 0.5),
-        #         xlabel="time", ylabel="autocovariance")
         return plt
     end
 
     function plot_autocovariance(arma)
-        #fig, ax = subplots()
         plt = plot()
         plot_spectral_density(arma, plt=plt)
         return plt
@@ -828,21 +774,15 @@ Here are some functions to generate the plots
     function plot_impulse_response(arma, plt)
         psi = impulse_response(arma)
         n = length(psi)
-
         plot!(plt, 0:(n-1), psi, seriestype=:sticks, marker=:circle,
               markersize=2, label="")
         plot!(plt, seriestype=:hline, [0], color=:red, label="")
         plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5),
               xlabel="time", ylabel="response")
-        #ax[:stem](0:(n - 1), psi)
-        #ax[:axhline](y=0, c="red", lw=0.5)
-        #ax[:set](title="Impulse response", xlim=(-0.5, n - 0.5),
-        #         xlabel="time", ylabel="response")
         return plt
     end
 
     function plot_impulse_response(arma)
-        #fig, ax = subplots()
         plt = plot()
         plot_spectral_density(arma, plt=plt)
         return plt
@@ -851,35 +791,27 @@ Here are some functions to generate the plots
     function plot_simulation(arma, plt)
         X = simulation(arma)
         n = length(X)
-
         plot!(plt, 0:(n-1), X, lw=2, alpha=0.7, label="")
         plot!(plt, title="Sample path", xlim=(0,0,n),
               xlabel="time", ylabel="state space")
-
-        #ax[:plot](0:(n - 1), X, lw=2, alpha=0.7)
-        #ax[:set](title="Sample path", xlim=(0.0, n),
-        #         xlabel="time", ylabel="state space")
         return plt
     end
 
     function plot_simulation(arma)
-        #fig, ax = subplots()
         plt = plot()
         plot_spectral_density(arma, plt=plt)
         return plt
     end
 
     function quad_plot(arma)
-        ##fig, axes = subplots(2, 2, figsize=(12, 8))
+        plt_1 = plot()
+        plt_2 = plot()
+        plt_3 = plot()
+        plt_4 = plot()
+        plots = [plt_1, plt_2, plt_3, plt_4]
 
-        plt_ir = plot()
-        plt_sd = plot()
-        plt_av = plot()
-        plt_sim = plot()
-        plots = [plt_ir, plt_sd, plt_av, plt_sim]
-
-        plot_functions = [plot_impulse_response,
-                          plot_spectral_density,
+        plot_functions = [plot_spectral_density,
+                          plot_impulse_response,
                           plot_autocovariance,
                           plot_simulation]
         for (i, plt, plot_func) in zip(1:1:4, plots, plot_functions)
