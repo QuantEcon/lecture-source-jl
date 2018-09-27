@@ -463,9 +463,9 @@ version = "0.9.1"
 
 [[IterableTables]]
 deps = ["DataValues", "IteratorInterfaceExtensions", "Requires", "TableTraits", "TableTraitsUtils", "Test"]
-git-tree-sha1 = "6390a469cf0c28d475fdd43c6496a8c8614ef530"
+git-tree-sha1 = "486612943cd16ebb7fcc5b0a4dc2c80e8b9c7dbc"
 uuid = "1c8ee90f-4401-5389-894e-7a04a3dc0f4d"
-version = "0.8.3"
+version = "0.9.0"
 
 [[IteratorInterfaceExtensions]]
 deps = ["Test"]
@@ -657,9 +657,9 @@ version = "2.0.0"
 
 [[OrderedCollections]]
 deps = ["Pkg", "Random", "Serialization", "Test"]
-git-tree-sha1 = "41da1edba028376b58520ca01d9a41e29f855d55"
+git-tree-sha1 = "85619a3f3e17bb4761fe1b1fd47f0e979f964d5b"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-version = "1.0.1"
+version = "1.0.2"
 
 [[OrdinaryDiffEq]]
 deps = ["DataStructures", "DiffEqBase", "DiffEqDiffTools", "DiffEqOperators", "ExponentialUtilities", "ForwardDiff", "GenericSVD", "InteractiveUtils", "LinearAlgebra", "Logging", "MuladdMacro", "NLsolve", "Parameters", "Printf", "Random", "RecursiveArrayTools", "Reexport", "Roots", "SparseArrays", "StaticArrays", "Statistics", "Test"]
@@ -942,9 +942,9 @@ version = "0.3.1"
 
 [[Tables]]
 deps = ["Pkg", "Requires", "Test"]
-git-tree-sha1 = "510c65522779874803798e7cb9a03c9c2f886cef"
+git-tree-sha1 = "277464179bc7cfb1b4d5a4f3ccde0fc75792157f"
 uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
-version = "0.1.7"
+version = "0.1.8"
 
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
