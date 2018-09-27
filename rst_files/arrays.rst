@@ -1,4 +1,4 @@
-.. _julia_arrays:
+.. _arrays:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 

@@ -1,4 +1,4 @@
-.. _julia_libraries:
+.. _packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 

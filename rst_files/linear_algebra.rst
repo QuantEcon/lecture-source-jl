@@ -54,7 +54,7 @@ These are the kinds of topics addressed by linear algebra
 
 In this lecture we will cover the basics of linear and matrix algebra, treating both theory and computation
 
-We admit some overlap with :doc:`this lecture <julia_arrays>`, where operations on Julia arrays were first explained
+We admit some overlap with :doc:`this lecture <arrays>`, where operations on Julia arrays were first explained
 
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along

@@ -396,7 +396,7 @@ Plots
 
 Let's generate some plots
 
-There are several options we'll :doc:`discuss in detail later <julia_plots>` 
+There are several options we'll :doc:`discuss in detail later <plots>` 
 
 For now lets start with ``Plots.jl``
 
