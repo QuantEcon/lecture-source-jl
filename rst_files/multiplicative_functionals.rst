@@ -94,10 +94,10 @@ Let's write a program to simulate sample paths of :math:`\{ x_t, y_{t} \}_{t=0}^
 
 We'll do this by formulating the additive functional as a linear state space model and putting the `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ struct to work
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
@@ -247,7 +247,7 @@ Here goes
 
 .. code-block:: julia
 
-    using PyPlot, Random
+    using Plots, Random
     Random.seed!(42)
 
     A, B, D, F = 0.8, 1.0, 0.5, 0.2
@@ -265,31 +265,23 @@ Here goes
     Xmean_pop, Ymean_pop = population_means(amf, T)
 
     # Plot sample means vs population means
-    fig, ax = subplots(2, figsize=(14, 8))
+    plt_1 = plot(Matrix(Xmean_t'), color=:blue, label="1/I sum_i x_t^i")
+    plot!(plt_1, Xmean_pop, color=:black, label="E x_t")
+    plot!(plt_1, title="x_t", xlim=(0,T), legend=:bottomleft)
 
-    ax[1][:plot](Matrix(Xmean_t'),
-        label=L"$\frac{1}{I}\sum_i x_t^i$", color="b")
-    ax[1][:plot](Xmean_pop,
-        label=L"$\mathbb{E} x_t$", color="k")
-    ax[1][:set_title](L"$x_t$")
-    ax[1][:set_xlim]((0, T))
-    ax[1][:legend](loc=0)
+    plt_2 = plot(Matrix(Ymean_t'), color=:blue, label="1/I sum_i x_t^i")
+    plot!(plt_2, Ymean_pop, color=:black, label="E y_t")
+    plot!(plt_2, title="y_t", xlim=(0,T), legend=:bottomleft)
 
-    ax[2][:plot](Matrix(Ymean_t'),
-        label=L"$\frac{1}{I}\sum_i y_t^i$", color="b")
-    ax[2][:plot](Ymean_pop,
-        label=L"$\mathbb{E} y_t$", color="k")
-    ax[2][:set_title](L"$y_t$")
-    ax[2][:set_xlim]((0, T))
-    ax[2][:legend](loc=0)
+    plot(plt_1, plt_2, layout=(2,1), size=(800,500))
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
-    @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc. 
+  @testset begin
+    @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc.
     @test Ymean_t'[100] ≈ -0.3351148038056963
-  end 
+  end
 
 Simulating log-likelihoods
 ---------------------------
@@ -310,7 +302,7 @@ Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i 
 
 .. code-block:: julia
 
-    # For reproducibility. 
+    # For reproducibility.
     Random.seed!(42)
 
     function simulate_likelihood(amf, Xit, Yit)
@@ -334,21 +326,18 @@ Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i 
     LLT = 1/T * LLit[:, end]
     LLmean_t = mean(LLT)
 
-    fig, ax = subplots()
-
-    ax[:hist](LLT)
-    ax[:vlines](LLmean_t, ymin=0, ymax=I//3,
-            color="k", linestyle="--", alpha=0.6)
-    fig[:suptitle](L"Distribution of $\frac{1}{T} \log L_{T}  \mid \theta_0$", fontsize=14)
+    plot(seriestype=:histogram, LLT, label="")
+    plot!(title="Distribution of (I/T)log(L_T)|theta_0")
+    plot!(seriestype=:vline, [LLmean_t], linestyle=:dash, color=:black, lw=2, alpha=0.6, label="")
 
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test LLT[100] ≈ 0.237835678897198
     @test LLmean_t ≈ 0.18834771174533427
-  end 
+  end
 
 Notice that the log likelihood is almost always nonnegative, implying that :math:`L_t` is typically bigger than 1
 
@@ -373,22 +362,22 @@ Let's see this in a simulation
     frac_nonegative = sum(L_increment.>=0)/(c*r)
     print("Fraction of dlogL being nonnegative in the sample is: $(frac_nonegative)")
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
-    @test pdf(normdist,mult*F) ≈ 1.0001868966924388 
-    @test pdf(normdist, F) ≈ 1.2098536225957168 
-  end 
+  @testset begin
+    @test pdf(normdist,mult*F) ≈ 1.0001868966924388
+    @test pdf(normdist, F) ≈ 1.2098536225957168
+  end
 
 Let's also plot the conditional pdf of :math:`\Delta y_{t+1}`
 
 .. code-block:: julia
 
     xgrid = range(-1, stop = 1, length = 100)
-    plot(xgrid, pdf.(normdist, xgrid))
-    title(L"Conditional pdf $f(\Delta y_{t+1}  \mid x_t)$")
     println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
+    plot(xgrid, pdf.(normdist, xgrid), label="")
+    plot!(title="Conditional pdf f(Delta y_(t+1) | x_t)")
 
 An alternative parameter vector
 -----------------------------------
@@ -429,8 +418,8 @@ Here's the code
 
 .. code-block:: julia
 
-    # For reproducibility. 
-    Random.seed!(42) 
+    # For reproducibility.
+    Random.seed!(42)
 
     # Create the second (wrong) alternative model
     A2, B2, D2, F2 = [0.9, 1.0, 0.55, 0.25]   #  parameters for θ_1 closer to θ_0
@@ -442,33 +431,27 @@ Here's the code
     LLT2 = 1/(T-1) * LLit2[:, end]
     LLmean_t2 = mean(LLT2)
 
-    fig, ax = subplots()
+    plot(seriestype=:histogram, LLT2, label="")
+    plot!(seriestype=:vline, [LLmean_t2], color=:black,
+          lw=2, linestyle=:dash, alpha=0.6, label="")
+    plot!(title="Distribution of (1/T)log(L_T) | theta_1)")
 
-    ax[:hist](LLT2)
-    ax[:vlines](LLmean_t2, ymin=0, ymax=1400,
-        color="k", linestyle="--", alpha=0.6)
+.. code-block:: julia
+  :class: test
 
-    fig[:suptitle](L"Distribution of $\frac{1}{T} \log L_{T}  \mid \theta_1$", fontsize=14)
-
-.. code-block:: julia 
-  :class: test 
-
-  @testset begin 
+  @testset begin
     @test LLT2[1] ≈ 0.08791248248646343
     @test LLmean_t2 ≈ 0.09210776227743879
-  end 
+  end
 
 Let's see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)
 
 .. code-block:: julia
 
-    fig, ax = subplots(figsize=(8, 6))
-
-    plt[:hist](LLT, bins=50, alpha=0.5, label="True", normed=true)
-    plt[:hist](LLT2, bins=50, alpha=0.5, label="Alternative", normed=true)
-    plt[:vlines](mean(LLT), 0, 10, color="k", linestyle="--", linewidth= 4)
-    plt[:vlines](mean(LLT2), 0, 10, color="k", linestyle="--", linewidth= 4)
-    plt[:legend](loc="best")
+    plot(seriestype=:histogram, LLT, bin=50, alpha=0.5, label="True", normed=true)
+    plot!(seriestype=:histogram, LLT2, bin=50, alpha=0.5, label="Alternative", normed=true)
+    plot!(seriestype=:vline, [mean(LLT)], color=:black, lw=2, linestyle=:dash, label="")
+    plot!(seriestype=:vline, [mean(LLT2)], color=:black, lw=2, linestyle=:dash, label="")
 
 Now we'll plot the histogram of the difference in log likelihood ratio
 
@@ -476,10 +459,8 @@ Now we'll plot the histogram of the difference in log likelihood ratio
 
     LLT_diff = LLT - LLT2
 
-    fig, ax = subplots(figsize=(8, 6))
-
-    ax[:hist](LLT_diff, bins=50)
-    fig[:suptitle](L"$\frac{1}{T}\left[\log (L_T^i  \mid \theta_0) - \log (L_T^i  \mid \theta_1)\right]$", fontsize=15)
+    plot(seriestype=:histogram, LLT_diff, bin=50, label="")
+    plot!(title="(1/T)[log(L_T^i | theta_0) - log(L_T^i |theta_1)]")
 
 Interpretation
 -------------------
@@ -607,7 +588,7 @@ Here is code that accomplishes these tasks
         return add_mart_comp, mul_mart_comp
     end
 
-    # Seed RNG. 
+    # Seed RNG.
     Random.seed!(42)
 
     # Build model
@@ -625,14 +606,14 @@ Here is code that accomplishes these tasks
     println("The (min, mean, max) of multiplicative Martingale component in period T is")
     println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test amcT[20] ≈ -0.5863300446739321
     @test amc[14, 38] ≈ -0.07979871433963322
     @test mmcT[250] ≈ 0.7443371221714455
-  end 
+  end
 
 Comments
 ^^^^^^^^^^^^^^
@@ -656,19 +637,15 @@ Here's a histogram of the additive martingale component
 
 .. code-block:: julia
 
-    fig, ax = subplots(figsize=(8, 6))
-
-    ax[:hist](amcT, bins=25, normed=true)
-    fig[:suptitle]("Histogram of Additive Martingale Component", fontsize=14)
+    plot(seriestype=:histogram, amcT, bin=25, normed=true, label="")
+    plot!(title="Histogram of Additive Martingale Component")
 
 Here's a histogram of the multiplicative martingale component
 
 .. code-block:: julia
 
-    fig, ax = subplots(figsize=(8, 6))
-
-    ax[:hist](mmcT, bins=25, normed=true)
-    fig[:suptitle]("Histogram of Multiplicative Martingale Component", fontsize=14)
+    plot(seriestype=:histogram, mmcT, bin=25, normed=true, label="")
+    plot!(title="Histogram of Multiplicative Martingale Component")
 
 Representing the likelihood ratio process
 -------------------------------------------
@@ -740,18 +717,15 @@ Here is some code that tackles these tasks
     ldens_to_plot =
         [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
 
-    fig, ax = subplots(3, 2, figsize=(8, 14))
+    # plot_title="Densities of M_t^tilda" is required, however, plot_title is not yet supported in Plots
+    plots = plot(layout = (3,2), size=(600,800))
 
-    ax = vec(ax)
-
-    fig[:suptitle](L"Densities of $\tilde{M}_t$", fontsize=18, y=1.02)
     for (it, dens_t) in enumerate(dens_to_plot)
         x, pdf = dens_t
-        ax[it][:set_title]("Density for time $(times_to_plot[it])")
-        ax[it][:fill_between](x, fill!(similar(pdf), 0), pdf)
+        plot!(plots[it], title="Density for time (time_to_plot[it])")
+        plot!(plots[it], pdf, fill_between=([0], pdf), label="")
     end
-
-    fig[:tight_layout]()
+    plot(plots)
 
 These probability density functions illustrate a **peculiar property** of log likelihood ratio processes:
 
@@ -847,8 +821,8 @@ Let's compute this
     perc_reduct = 100 * (1 - exp(logVC_r - logVC_d))
     perc_reduct
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @test perc_reduct ≈ 1.0809878812017448
 
