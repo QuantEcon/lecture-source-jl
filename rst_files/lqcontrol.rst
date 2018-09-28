@@ -786,6 +786,14 @@ relatively more weight on later consumption values
            xaxis = ("Time"), layout = (2, 1),
            bottom_margin = 20mm, size = (600, 600))
 
+.. code-block:: julia
+ :class: test
+
+ @testset "First Plots Tests" begin
+    @test income[10] == 1.0676488253505267.
+
+  end
+
 
 We now have a slowly rising consumption stream and a hump-shaped build
 up of assets in the middle periods to fund rising consumption
@@ -1506,6 +1514,13 @@ the lecture.
               xaxis = ("Time"), layout = (2, 1),
               bottom_margin = 20mm, size = (600, 600))
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test income[20] == 2.7556426556865405
+    @test income_w[10]  == 1.7793292671917649
+  end
 
 Exercise 3
 ----------

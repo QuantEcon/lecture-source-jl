@@ -853,6 +853,13 @@ to converge to :math:`v^*`
                                         print_skip = 10,
                                         err_tol = 1e-5)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v_star_approx[51] == -23.832011948592076
+  end
+
 
 Let's have a look at the result
 
@@ -904,6 +911,12 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     plot!(plt, grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
     plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test cstar[102] == 1.2505758978894472
+  end
 
 The figure shows that we've done a good job in this instance of approximating
 the true policy
@@ -937,6 +950,12 @@ We have also dialed down the shocks a bit
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
 
+
+.. code-block:: julia
+  :class: test
+  @testset begin
+    @test shocks[25] == 0.8050318706532391
+  end
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
 

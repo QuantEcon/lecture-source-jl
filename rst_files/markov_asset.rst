@@ -321,6 +321,9 @@ The next figure shows a simulation, where
 * :math:`g_t = \exp(X_t)`, so that :math:`\ln g_t = X_t` is the growth rate
 
 
+.. code-block:: julia
+
+    using Test
 
 .. code-block:: julia
 
@@ -436,6 +439,13 @@ Here's the code, including a test of the spectral radius condition
         alpha = 0.7,
         label = L"$v$")
 
+..code-block:: julia
+  :class: test
+
+  @testset begin
+    @test    v[2] == 3.4594684257743284
+    @test v[1] == 3.2560393349907755
+  end
 
 Why does the price-dividend ratio increase with the state?
 
@@ -1057,6 +1067,12 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
     v = tree_price(ap)
     println("Lucas Tree Prices: $v\n")
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v[2] == 21.935706611219704
+  end
 
 .. code-block:: julia
 
@@ -1067,6 +1083,14 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
 .. code-block:: julia
 
     w = call_option(ap, ζ, p_s)
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v_consol[1] == 753.8710047641985
+    @test w[2][1] == 176.83933430191294
+  end
 
 
 Exercise 3
@@ -1100,6 +1124,13 @@ Here's a suitable function:
         return w
     end
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test p[3] == 70.00064625026326
+    @test w[2] == 176.83933430191294
+  end
 
 .. code-block:: julia
 

@@ -60,7 +60,7 @@ This makes it very easy to compute competitive equilibrium prices
 Basic Setup
 --------------------------
 
-Let's review the set up 
+Let's review the set up
 
 Assets
 ^^^^^^^^^^^^^^^
@@ -400,6 +400,9 @@ on the left hand side gives :eq:`ltbc` with :math:`\alpha := \beta`
 
 .. _lt_comp_eg:
 
+.. code-block:: julia
+  using Test
+
 Computation -- An Example
 ----------------------------
 
@@ -456,7 +459,7 @@ Some code to implement the iterative computational procedure can be found below:
         ssd = σ / sqrt(1 - α^2)
         grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
         grid = range(grid_min, stop = grid_max, length = grid_size)
-        
+
         # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
         h = similar(grid)
         for (i, y) in enumerate(grid)
@@ -495,26 +498,26 @@ Some code to implement the iterative computational procedure can be found below:
     Compute the equilibrium price function associated with Lucas tree `lt`
     """
     function solve_lucas_model(lt::LucasTree;
-                            tol::AbstractFloat=1e-6, 
+                            tol::AbstractFloat=1e-6,
                             max_iter::Integer=500)
-        
+
         # == simplify notation == #
         grid, γ = lt.grid, lt.γ
-        
+
         i = 0
         f = zero(grid)  # Initial guess of f
         error = tol + 1
-        
+
         while (error > tol) && (i < max_iter)
             f_new = lucas_operator(lt, f)
             error = maximum(abs, f_new - f)
             f = f_new
             i += 1
         end
-        
+
         # p(y) = f(y) * y ^ γ
         price = f .* grid.^γ
-        
+
         return price
     end
 
@@ -527,7 +530,7 @@ An example of usage is given in the docstring and repeated here
 
     tree = LucasTree(γ=2.0, β=0.95, α=0.90, σ=0.1)
     price_vals = solve_lucas_model(tree);
-    
+
 
 
 Here's the resulting price function
@@ -543,7 +546,7 @@ Here's the resulting price function
     plt[:xlabel](L"$y$")
     plt[:ylabel]("price")
     plt[:legend]()
-    
+
 
 
 The price is increasing, even if we remove all serial correlation from the endowment process
@@ -595,5 +598,3 @@ Solutions
     end
 
     plt[:legend]()
-
-
