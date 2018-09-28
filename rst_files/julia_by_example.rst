@@ -198,14 +198,13 @@ program, for the sake of learning syntax let's rewrite our program to use a
 
 .. code-block:: julia
 
-    let
         ts_length = 100
         ϵ_values = zeros(ts_length)
         for i ∈ eachindex(ϵ_values)
             ϵ_values[i] = randn()
         end
         plot(ϵ_values, color = "blue")
-    end
+    
 
 Here we first declared ``ϵ_values`` to be an empty array for storing 64 bit floating point numbers
 
@@ -226,12 +225,10 @@ In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-    let
         words = ["foo", "bar"]
         for word ∈ words
             println("Hello $word")
         end
-    end
 
 
 While Loops
@@ -242,7 +239,6 @@ The syntax for the while loop contains no surprises
 
 .. code-block:: julia
 
-    let
         ts_length = 100
         ϵ_values = zeros(ts_length)
         i = 1
@@ -251,7 +247,6 @@ The syntax for the while loop contains no surprises
             i += 1
         end
         plot(ϵ_values, color = "blue")
-    end
 
 
 The next example does the same thing with a condition and the ``break``
@@ -259,7 +254,6 @@ statement
 
 .. code-block:: julia
 
-    let
         ts_length = 100
         ϵ_values = Vector(undef, ts_length)
         i = 1
@@ -271,7 +265,6 @@ statement
             end
         end
         return plot(ϵ_values, color = "blue")
-    end
 
 
 .. _user_defined_functions:
@@ -311,10 +304,8 @@ We could just write the following and be done
 
 .. code-block:: julia
 
-    let
         data = randn(100)
         plot(data, color = "blue")
-    end
 
 
 Let's make a slightly more useful function
@@ -342,10 +333,8 @@ Here's the code
         histogram(ϵ_values)
     end
 
-    let
         lp = Laplace()
         plot_histogram(lp, 500)
-    end
 
 The resulting figure looks like this
 
@@ -532,12 +521,10 @@ Exercise 2
         return count
     end
 
-    let
         for j ∈ 1:25
             b = binomial_rv(10, 0.5)
             print("$b, ")
         end
-    end
 
 Exercise 3
 ----------
@@ -560,7 +547,6 @@ fraction that fall into the unit circle
 
 .. code-block:: julia
 
-    let
         n = 1000000
         count = 0
         for i ∈ 1:n
@@ -574,7 +560,6 @@ fraction that fall into the unit circle
         area_estimate = count / n
 
         print(area_estimate * 4)  # dividing by radius**2
-    end
 
 
 Exercise 4
@@ -582,7 +567,6 @@ Exercise 4
 
 .. code-block:: julia
 
-    let
         payoff = 0
         count = 0
 
@@ -601,7 +585,6 @@ Exercise 4
             end
         end
         println("\npayoff = $payoff")
-    end
 
 
 We can simplify this somewhat using the **ternary operator**. Here's
@@ -609,22 +592,17 @@ some examples
 
 .. code-block:: julia
 
-    let
         a = 1  < 2 ? "foo" : "bar"
-    end
 
 .. code-block:: julia
 
-    let
         a = 1 > 2 ? "foo" : "bar"
-    end
 
 
 Using this construction:
 
 .. code-block:: julia
 
-    let
         payoff = 0
         count = 0
 
@@ -639,7 +617,6 @@ Using this construction:
             end
         end
         println("\npayoff = $payoff")
-    end
 
 
 Exercise 5
@@ -649,7 +626,6 @@ Here's one solution
 
 .. code-block:: julia
 
-    let
         α = 0.9
         T = 200
         x = zeros(T + 1)
@@ -658,7 +634,6 @@ Here's one solution
             x[t+1] = α * x[t] + randn()
         end
         return plot(x, color = "blue")
-    end
 
 
 Exercise 6
@@ -666,7 +641,6 @@ Exercise 6
 
 .. code-block:: julia
 
-    let
         αs = [0.0, 0.8, 0.98]
         T = 200
 
@@ -684,4 +658,3 @@ Exercise 6
         end
 
         plot(series, label = reshape(labels, 1, length(labels)))
-    end
