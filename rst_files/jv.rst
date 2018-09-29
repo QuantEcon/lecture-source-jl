@@ -472,6 +472,11 @@ large number :math:`K` of realizations of :math:`x_{t+1}` given :math:`x_t =
 x`.  Plot this with one dot for each realization, in the form of a 45 degree
 diagram.  Set
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: no-execute

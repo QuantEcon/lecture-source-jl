@@ -162,6 +162,12 @@ Following  section 6.6 of :cite:`Ljungqvist2012`, our baseline parameterization 
 
 With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following shape
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 

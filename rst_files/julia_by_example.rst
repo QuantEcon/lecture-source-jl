@@ -72,6 +72,12 @@ This is straightforward using `Plots.jl`, which was discussed in our :doc:`set u
 
 Fire up a :ref:`Jupyter notebook <jl_jupyter>` and enter the following in a cell
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
 
     using Plots
