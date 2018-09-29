@@ -901,6 +901,12 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
 .. [#f10] These calculations were performed by these functions:
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia 
   :class: test 
 

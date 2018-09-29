@@ -212,6 +212,11 @@ The dots represent the underlying observations :math:`X_i` for :math:`i = 1, \ld
 
 In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occurs as predicted
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
     :class: test 

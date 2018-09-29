@@ -416,6 +416,12 @@ Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, wh
 
 Some code to implement the iterative computational procedure can be found below:
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia 
   :class: test 
 

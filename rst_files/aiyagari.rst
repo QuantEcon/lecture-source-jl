@@ -231,6 +231,12 @@ The action is the choice of next period asset level :math:`a_{t+1}`
 
 The type also includes a default set of parameters that we'll adopt unless otherwise specified
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 

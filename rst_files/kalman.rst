@@ -88,6 +88,12 @@ where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
 
 This density :math:`p(x)` is shown below as a contour map, with the center of the red ellipse being equal to :math:`\hat x`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia 
     :class: test 
 
