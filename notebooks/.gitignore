@@ -1,0 +1,6 @@
+.DS_Store
+**/.ipynb_checkpoints/
+**/*.ipynb
+newfile.txt
+us_cities.txt
+graph.txt
