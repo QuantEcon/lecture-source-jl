@@ -683,6 +683,12 @@ Sequence Implementation
 
 The above steps are implemented in a type called `SequentialAllocation`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia 
   :class: test 
 
@@ -1524,7 +1530,7 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     sim_seq_h = simulate(PP_seq_time, 1.0, 1, 7, sHist_h)
     sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
 
-    using PyPlot
+    using Plots
     titles = hcat("Consumption",
                   "Labor Supply",
                   "Government Debt",
@@ -1537,16 +1543,15 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     sim_seq_h_plot = [sim_seq_h[1:4]..., M_time_example.G[sHist_h],
                       M_time_example.Θ[sHist_h].*sim_seq_h[2]]
 
-    plt[:figure](figsize=[14, 10])
+    plots = plot(layout=(3,2), size=(800,600))
     for i = 1:6
-        plt[:subplot](3, 2, i)
-        plt[:title](titles[i])
-        plt[:plot](sim_seq_l_plot[i], "-ok")
-        plt[:plot](sim_seq_h_plot[i], "-or")
-	grid("on")
+        plot!(plots[i], sim_seq_l_plot[i], color=:black, lw=2,
+              marker=:circle, markersize=2, label="")
+        plot!(plots[i], sim_seq_h_plot[i], color=:red, lw=2,
+              marker=:circle, markersize=2, label="")
+        plot!(plots[i], title=titles[i], grid=true)
     end
-
-    plt[:tight_layout]()
+    plot(plots)
 
 .. code-block:: julia 
   :class: test 
@@ -1602,12 +1607,11 @@ time 0 by raising consumption
 
 .. code-block:: julia
 
-    plt[:figure](figsize=[8, 5])
-    plt[:title]("Gross Interest Rate")
-    plt[:plot](sim_seq_l[end], "-ok")
-    plt[:plot](sim_seq_h[end], "-or")
-    plt[:tight_layout]()
-    grid("on")
+    plot(sim_seq_l[end], color=:black, lw=2,
+            marker=:circle, markersize=2, label="")
+    plot!(sim_seq_h[end], color=:red, lw=2,
+            marker=:circle, markersize=2, label="")
+    plot!(title="Gross Interest Rate", grid=true)
 
 Government Saving
 ^^^^^^^^^^^^^^^^^^
@@ -1680,19 +1684,13 @@ above)
     interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
 
     titles = ["Tax Rate" "Gross Interest Rate"]
-    plt[:figure](figsize=(10, 8))
+    labels = [["Time , t = 0", "Time , t >= 0"], ""]
+    plots = plot(layout=(2,1), size =(700,600))
     for (i, series) in enumerate((taxpolicy, interest_rate))
-        plt[:subplot](2, 1, i)
-        plt[:plot](B_vec, series, linewidth = 2.0)
-        plt[:title](titles[i])
-	grid("on")
+        plot!(plots[i], B_vec, series, linewidth=2, label=labels[i])
+        plot!(plots[i], title=titles[i], grid=true, legend=:topleft)
     end
-    plt[:subplot](2, 1, 1)
-    plt[:legend]((latexstring("Time ", "t=0"),
-            latexstring("Time ", L"t \geq 1")), loc=2, shadow=true)
-    plt[:subplot](2, 1, 2)
-    plt[:xlabel]("Initial Government Debt")
-    plt[:tight_layout]()
+    plot(plots)
 
 .. code-block:: julia 
   :class: test 
@@ -1753,14 +1751,9 @@ time :math:`t=0` tax rate
     # Compute the optimal policy if the government could reset
     tau1_reset = Matrix(hcat([simulate(PP_seq_time0, B1, 1, 1)[4] for B1 in B1_vec]...)')
 
-    plt[:figure](figsize=[10, 6])
-    plt[:plot](B_vec, taxpolicy[:, 2], linewidth=2.)
-    plt[:plot](B_vec, tau1_reset, linewidth=2.)
-    plt[:xlabel]("Initial Government Debt")
-    plt[:title]("Tax Rate")
-    plt[:legend]((L"\tau_1", L"\tau_1^R"), loc=2, shadow=true)
-    plt[:tight_layout]()
-    grid("on")
+    plot(B_vec, taxpolicy[:, 2], linewidth=2, label="tau_1")
+    plot!(B_vec, tau1_reset, linewidth=2, label="tau_1^R")
+    plot!(title="Tax Rate", xlabel="Initial Government Debt", legend=:topleft, grid=true)
 
 The tax rates in the figure are equal  for only two values of initial government debt
 
@@ -1847,19 +1840,17 @@ The figure below plots a sample path of the Ramsey tax rate
                   "Tax Rate",
                   "Government Spending",
                   "Output")
-    plt[:figure](figsize=[14, 10])
+    labels = [["Sequential", "Recursive"], ["",""], ["",""], ["",""], ["",""], ["",""]]
+    plots=plot(layout=(3,2), size=(850,780))
 
     for i = 1:6
-        plt[:subplot](3, 2, i)
-        plt[:title](titles[i])
-        plt[:plot](sim_seq_plot[i], "-ok")
-        plt[:plot](sim_bel_plot[i], "-xb")
-	      grid("on")
+        plot!(plots[i], sim_seq_plot[i], color=:black, lw=2, marker=:circle,
+              markersize=2, label=labels[i][1])
+        plot!(plots[i], sim_bel_plot[i], color=:blue, lw=2, marker=:xcross,
+              markersize=2, label=labels[i][2])
+        plot!(plots[i], title=titles[i], grid=true, legend=:topright)
     end
-    plt[:subplot](3, 2, 1)
-    plt[:legend](("Sequential", "Recursive"), loc="best")
-
-    plt[:tight_layout]()
+    plot(plots)
 
 .. code-block:: julia 
   :class: test 

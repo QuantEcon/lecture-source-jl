@@ -111,6 +111,12 @@ Investors of  type :math:`b` think the transition matrix is
 
 The stationary (i.e., invariant) distributions of these two matrices can be calculated as follows:
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia 
   :class: test 
 

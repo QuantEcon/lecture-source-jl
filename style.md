@@ -101,6 +101,23 @@ f(param)
 ```
 
 ## General Control Structures and Code Organization
+- **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
+```julia
+# BAD! (unless out is a preallocated and very large vector)
+function f(out, x)
+    out .= 2 * x
+end
+
+#GOOD
+function f(x)
+   return 2 * x
+end
+
+#BEST
+f(x) = 2 * x
+```
+  - The main problem is that the semantics of variable bindings are subtle in julia.  They are likely to accidentally go `out = 2 * x` and it would silently fail because it renames the `out` variable, and doesn't rewrite the contents.
+  - The two other reasons are performance:  the compiler can often compile and inline better with out-of-place, and it becomes possible to use `StaticArrays` and other packages which use immutable data-structures.
 
 - **Avoid declaring variable scope** such as `local` and `global` in order to allow copy/paste in different contexts
     - A key requirement is that the source-code we write can be copied directly _inside_ a function and have it work.  Variable scoping breaks this.

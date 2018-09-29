@@ -94,6 +94,12 @@ Let's write a program to simulate sample paths of :math:`\{ x_t, y_{t} \}_{t=0}^
 
 We'll do this by formulating the additive functional as a linear state space model and putting the `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ struct to work
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 
