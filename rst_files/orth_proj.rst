@@ -942,6 +942,7 @@ basis by QR decomposition and project once more.
 
 .. code-block:: julia 
     :class: test 
+    
     @testset "Test Py3" begin 
         @test norm(Py3-Py1) ≈ 0 
     end 

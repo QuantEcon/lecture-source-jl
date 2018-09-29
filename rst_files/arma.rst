@@ -212,22 +212,38 @@ Applying :eq:`ma_inf_ac` to the previous expression for :math:`X_t`, we get the 
 The next figure plots an example of this function for :math:`\phi = 0.8` and :math:`\phi = -0.8` with :math:`\sigma = 1`
 
 .. code-block:: julia
+  :class: test
 
-    using PyPlot
+  using Test
 
-    num_rows, num_cols = 2, 1
-    fig, axes = subplots(num_rows, num_cols, figsize=(10, 8))
+.. code-block:: julia
+
+    using Plots
+
+    plt_1=plot()
+    plt_2=plot()
+    plots = [plt_1, plt_2]
 
     for (i, ϕ) in enumerate((0.8, -0.8))
-        ax = axes[i]
         times = 0:16
         acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
-        label = latexstring("autocovariance, \\phi = $ϕ")
-        ax[:plot](times, acov, "bo-", alpha=0.6, label=label)
-        ax[:legend](loc="upper right")
-        ax[:set](xlabel="time", xlim=(0, 15))
-        ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+        label = "autocovariance, phi = phi_var"
+        plot!(plots[i], times, acov, color=:blue, lw=2, marker=:circle, markersize=3,
+              alpha=0.6, label=label)
+        plot!(plots[i], legend=:topright, xlabel="time", xlim=(0,15))
+        plot!(plots[i], seriestype=:hline, [0], linestyle=:dash, alpha=0.5, lw=2, label="")
     end
+    plot(plots[1], plots[2], layout=(2,1), size=(700,500))
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    ϕ = 0.8
+    times = 0:16
+    acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
+    @test acov[4] ≈ 1.422222222222223 # Can't access acov directly because of scoping.
+    @test acov[1] ≈ 2.7777777777777786
+  end
 
 Another very simple process is the MA(1) process (here MA means "moving average")
 
@@ -455,17 +471,27 @@ Plotting :eq:`ar1_sd_ed` reveals the shape of the spectral density for the AR(1)
     ar1_sd(ϕ, ω) = 1 ./ (1 .- 2 * ϕ * cos.(ω) .+ ϕ.^2)
 
     ω_s = range(0, stop = π, length = 180)
-    num_rows, num_cols = 2, 1
-    fig, axes = subplots(num_rows, num_cols, figsize=(10, 8))
+
+    plt_1=plot()
+    plt_2=plot()
+    plots=[plt_1, plt_2]
 
     for (i, ϕ) in enumerate((0.8, -0.8))
-        ax = axes[i]
         sd = ar1_sd(ϕ, ω_s)
-        label = latexstring("spectral \\ density, \\phi = $ϕ")
-        ax[:plot](ω_s, sd, "b-", alpha=0.6, lw=2, label=label)
-        ax[:legend](loc="upper center")
-        ax[:set](xlabel="frequency", xlim=(0, π))
+        label = "spectral density, phi = phi_var"
+        plot!(plots[i], ω_s, sd, color=:blue, alpha=0.6, lw=2, label=label)
+        plot!(plots[i], legend=:top, xlabel="frequency", xlim=(0,π))
     end
+    plot(plots[1], plots[2], layout=(2,1), size=(700,500))
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test ar1_sd(0.8, ω_s)[18] ≈ 9.034248169239635
+    @test ar1_sd(-0.8, ω_s)[18] ≈ 0.3155260821833043
+    @test ω_s[1] == 0.0 && ω_s[end] ≈ π && length(ω_s) == 180 # Grid invariant.
+  end
 
 These spectral densities correspond to the autocovariance functions for the
 AR(1) process :ref:`shown above <ar1_acov>`
@@ -501,29 +527,38 @@ These ideas are illustrated in the next figure, which has :math:`k` on the horiz
     y2 = [cos.(π * k) for k in times]
     y3 = [a * b for (a, b) in zip(y1, y2)]
 
-    num_rows, num_cols = 3, 1
-    fig, axes = subplots(num_rows, num_cols, figsize=(10, 8))
-
     # Autocovariance when ϕ = -0.8
-    ax = axes[1]
-    ax[:plot](times, y1, "o-", alpha=0.6, label=L"\gamma(k)")
-    ax[:legend](loc="upper right")
-    ax[:set](xlim=(0, 15), yticks=(-2, 0, 2))
-    ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
+                alpha=0.6, label="gamma(k)")
+    plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
+          lw=2, label="")
+    plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
     # Cycles at frequence π
-    ax = axes[2]
-    ax[:plot](times, y2, "o-", alpha=0.6, label=L"$\cos(\pi k)$")
-    ax[:legend](loc="upper right")
-    ax[:set](xlim=(0, 15), yticks=(-1, 0, 1))
-    ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
+                alpha=0.6, label="cos(pi k)")
+    plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
+          lw=2, label="")
+    plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
     # Product
-    ax = axes[3]
-    ax[:stem](times, y3, label=L"$\gamma(k) \cos(\pi k)$")
-    ax[:legend](loc="upper right")
-    ax[:set](xlim=(0, 15), ylim=(-3, 3), yticks=(-1, 0, 1, 2, 3))
-    ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
+                lw=2, label="gamma(k) cos(pi k)")
+    plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
+          lw=2, label="")
+    plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3),
+          yticks=[-1, 0, 1, 2, 3])
+
+    plot(plt_1, plt_2, plt_3, layout=(3,1), size=(800,600))
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test y1[4] ≈ -1.422222222222223
+    @test y2 == [1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0]
+    @test y3[15] ≈ 0.12216795864177792
+  end
 
 On the other hand, if we evaluate :math:`f(\omega)` at :math:`\omega = \pi / 3`, then the cycles are
 not matched, the sequence :math:`\gamma(k) \cos(\omega k)` contains
@@ -537,29 +572,39 @@ both positive and negative terms, and hence the sum of these terms is much small
     y2 = [cos.(π * k/3) for k in times]
     y3 = [a * b for (a, b) in zip(y1, y2)]
 
-    num_rows, num_cols = 3, 1
-    fig, axes = subplots(num_rows, num_cols, figsize=(10, 8))
-
     # Autocovariance when ϕ = -0.8
-    ax = axes[1]
-    ax[:plot](times, y1, "o-", alpha=0.6, label=L"\gamma(k)")
-    ax[:legend](loc="upper right")
-    ax[:set](xlim=(0, 15), yticks=(-2, 0, 2))
-    ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
+                alpha=0.6, label="gamma(k)")
+    plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
+          lw=2, label="")
+    plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
     # Cycles at frequence π
-    ax = axes[2]
-    ax[:plot](times, y2, "o-", alpha=0.6, label=L"$\cos(\pi k/3)$")
-    ax[:legend](loc="upper right")
-    ax[:set](xlim=(0, 15), yticks=(-1, 0, 1))
-    ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
+                alpha=0.6, label="cos(pi k/3)")
+    plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
+          lw=2, label="")
+    plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
     # Product
-    ax = axes[3]
-    ax[:stem](times, y3, label=L"$\gamma(k) \cos(\pi k/3)$")
-    ax[:legend](loc="upper right")
-    ax[:set](xlim=(0, 15), ylim=(-3, 3), yticks=(-1, 0, 1, 2, 3))
-    ax[:hlines](0, 0, 15, linestyle="--", alpha=0.5)
+    plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
+                lw=2, label="gamma(k) cos(pi k/3)")
+    plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
+          lw=2, label="")
+    plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3),
+          yticks=[-1, 0, 1, 2, 3])
+
+    plot(plt_1, plt_2, plt_3, layout=(3,1), size=(600,600))
+
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test y1[4] ≈ -1.422222222222223
+    @test y2 ≈ [1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5]
+    @test y3[15] ≈ -0.06108397932088883
+  end
 
 In summary, the spectral density is large at frequencies :math:`\omega` where the autocovariance function exhibits damped cycles
 
@@ -691,82 +736,89 @@ Here are some functions to generate the plots
 
 .. code-block:: julia
 
-    using QuantEcon
+    using QuantEcon, Random
 
     # == Plot functions == #
 
-    function plot_spectral_density(arma, ax)
+    function plot_spectral_density(arma, plt)
         (w, spect) = spectral_density(arma, two_pi=false)
-        ax[:plot](w, spect, lw=2, alpha=0.7)
-        ax[:set](title="Spectral density", xlim=(0, π),
-                 xlabel="frequency", ylabel="spectrum", yscale="log")
-        return ax
+        plot!(plt, w, spect, lw=2, alpha=0.7,label="")
+        plot!(plt, title="Spectral density", xlim=(0,π),
+              xlabel="frequency", ylabel="spectrum", yscale=:log)
+        return plt
     end
 
     function plot_spectral_density(arma)
-        fig, ax = subplots()
-        plot_spectral_density(arma, ax=ax)
-        return ax
+        plt = plot()
+        plot_spectral_density(arma, plt=plt)
+        return plt
     end
 
-    function plot_autocovariance(arma, ax)
+    function plot_autocovariance(arma, plt)
         acov = autocovariance(arma)
         n = length(acov)
-        ax[:stem](0:(n - 1), acov)
-        ax[:axhline](y=0, c="red", lw=0.5)
-        ax[:set](title="Autocovariance", xlim=(-0.5, n - 0.5),
-                 xlabel="time", ylabel="autocovariance")
-        return ax
+        plot!(plt, 0:(n-1), acov, seriestype=:sticks, marker=:circle,
+              markersize=2,label="")
+        plot!(plt, seriestype=:hline, [0], color=:red, label="")
+        plot!(plt, title="Autocovariance", xlim=(-0.5, n-0.5),
+              xlabel="time", ylabel="autocovariance")
+        return plt
     end
 
     function plot_autocovariance(arma)
-        fig, ax = subplots()
-        plot_spectral_density(arma, ax=ax)
-        return ax
+        plt = plot()
+        plot_spectral_density(arma, plt=plt)
+        return plt
     end
 
-    function plot_impulse_response(arma, ax)
+    function plot_impulse_response(arma, plt)
         psi = impulse_response(arma)
         n = length(psi)
-        ax[:stem](0:(n - 1), psi)
-        ax[:axhline](y=0, c="red", lw=0.5)
-        ax[:set](title="Impulse response", xlim=(-0.5, n - 0.5),
-                 xlabel="time", ylabel="response")
-        return ax
+        plot!(plt, 0:(n-1), psi, seriestype=:sticks, marker=:circle,
+              markersize=2, label="")
+        plot!(plt, seriestype=:hline, [0], color=:red, label="")
+        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5),
+              xlabel="time", ylabel="response")
+        return plt
     end
 
     function plot_impulse_response(arma)
-        fig, ax = subplots()
-        plot_spectral_density(arma, ax=ax)
-        return ax
+        plt = plot()
+        plot_spectral_density(arma, plt=plt)
+        return plt
     end
 
-    function plot_simulation(arma, ax)
+    function plot_simulation(arma, plt)
         X = simulation(arma)
         n = length(X)
-        ax[:plot](0:(n - 1), X, lw=2, alpha=0.7)
-        ax[:set](title="Sample path", xlim=(0.0, n),
-                 xlabel="time", ylabel="state space")
-        return ax
+        plot!(plt, 0:(n-1), X, lw=2, alpha=0.7, label="")
+        plot!(plt, title="Sample path", xlim=(0,0,n),
+              xlabel="time", ylabel="state space")
+        return plt
     end
 
     function plot_simulation(arma)
-        fig, ax = subplots()
-        plot_spectral_density(arma, ax=ax)
-        return ax
+        plt = plot()
+        plot_spectral_density(arma, plt=plt)
+        return plt
     end
 
     function quad_plot(arma)
-        fig, axes = subplots(2, 2, figsize=(12, 8))
-        plot_functions = [plot_impulse_response,
+        plt_1 = plot()
+        plt_2 = plot()
+        plt_3 = plot()
+        plt_4 = plot()
+        plots = [plt_1, plt_2, plt_3, plt_4]
+
+        plot_functions = [plot_spectral_density,
+                          plot_impulse_response,
                           plot_autocovariance,
-                          plot_spectral_density,
                           plot_simulation]
-        for (plot_func, ax) in zip(plot_functions, reshape(axes, prod(size(axes))))
-            plot_func(arma, ax)
+        for (i, plt, plot_func) in zip(1:1:4, plots, plot_functions)
+            plots[i] = plot_func(arma, plt)
         end
-        fig[:tight_layout]()
-        return ax
+        return plot(plots[1], plots[2], plots[3], plots[4], layout=(2,2), size=(800,800))
+
     end
 
 Now let's call these functions to generate the plots
@@ -775,10 +827,22 @@ We'll use the model :math:`X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}`
 
 .. code-block:: julia
 
+    Random.seed!(42) # For reproducible results.
     ϕ = 0.5;
     θ = [0, -0.8];
     arma = ARMA(ϕ, θ, 1.0)
     quad_plot(arma)
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555 # As before, we need to repeat the calculations, since we don't have access to the results.
+    @test (autocovariance(arma))[3] ≈ -0.5886222919837174
+    @test (impulse_response(arma))[10] == -0.004296875
+    Random.seed!(42)
+    @test (simulation(arma))[20] ≈ -1.1975340216436439
+  end
 
 Explanation
 --------------------

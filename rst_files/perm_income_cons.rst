@@ -345,7 +345,7 @@ First we create the objects for the optimal linear regulator
 .. code-block:: julia
 
     using QuantEcon, LinearAlgebra
-    using PyPlot # Change to Plots
+    using Plots
 
     # Set parameters
     α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0
@@ -594,25 +594,22 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         T =  size(bsim, 2)
 
         # Create first figure
-        fig, ax = subplots(2, 1, figsize=(10, 8))
         xvals = 1:T
 
         # Plot consumption and income
-        ax[1][:plot](csim[1, :], label="c", color="b")
-        ax[1][:plot](ysim[1, :], label="y", color="g")
-        ax[1][:plot](Array(csim'), alpha=.1, color="b")
-        ax[1][:plot](Array(ysim'), alpha=.1, color="g")
-        ax[1][:legend](loc=4)
-        ax[1][:set](title="Nonfinancial Income, Consumption, and Debt",
-                    xlabel="t", ylabel="y and c")
+        plt_1 = plot(csim[1,:], label="c", color=:blue, lw=2)
+        plot!(plt_1, ysim[1, :], label="y", color=:green, lw=2)
+        plot!(plt_1, csim', alpha=0.1, color=:blue, label="")
+        plot!(plt_1, ysim', alpha=0.1, color=:green, label="")
+        plot!(plt_1, title="Nonfinancial Income, Consumption, and Debt",
+              xlabel="t", ylabel="y and c",legend=:bottomright)
 
         # Plot debt
-        ax[2][:plot](bsim[1, :], label="b", color="r")
-        ax[2][:plot](Array(bsim'), alpha=.1, color="r")
-        ax[2][:legend](loc=4)
-        ax[2][:set](xlabel="t", ylabel="debt")
+        plt_2 = plot(bsim[1,: ], label="b", color=:red, lw=2)
+        plot!(plt_2, bsim', alpha=0.1, color=:red,label="")
+        plot!(plt_2, xlabel="t", ylabel="debt",legend=:bottomright)
 
-        fig[:tight_layout]
+        plot(plt_1, plt_2, layout=(2,1), size=(800,600))
     end
 
     function consumption_debt_fanchart(csim, cons_mean, cons_var,
@@ -635,27 +632,27 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         d_perc_90p, d_perc_90m = debt_mean + d90, debt_mean - d90
 
         # Create second figure
-        fig, ax = subplots(2, 1, figsize=(10, 8))
+
         xvals = 1:T
 
-        fig[:suptitle]("Consumption/Debt over time")
+        #fig[:suptitle]("Consumption/Debt over time")
 
         # Consumption fan
-        ax[1][:plot](xvals, cons_mean, color="k")
-        ax[1][:plot](xvals, Array(csim'), color="k", alpha=.25)
-        ax[1][:fill_between](xvals, c_perc_95m, c_perc_95p, alpha=.25, color="b")
-        ax[1][:fill_between](xvals, c_perc_90m, c_perc_90p, alpha=.25, color="r")
-        ax[1][:set](title="Consumption/Debt over time",
-                    ylim=(cmean-15, cmean+15), ylabel="consumption")
+        plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
+        plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
+        plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
+        plot!(xvals, fill_between=(c_perc_90m, c_perc_90p), alpha=0.25, color=:red, label="")
+        plot!(plt_1, title="Consumption/Debt over time",
+              ylim=(cmean-15, cmean+15), ylabel="consumption")
 
         # Debt fan
-        ax[2][:plot](xvals, debt_mean, color="k")
-        ax[2][:plot](xvals, Array(bsim'), color="k", alpha=.25)
-        ax[2][:fill_between](xvals, d_perc_95m, d_perc_95p, alpha=.25, color="b")
-        ax[2][:fill_between](xvals, d_perc_90m, d_perc_90p, alpha=.25, color="r")
-        ax[2][:set](ylabel="debt", xlabel="t")
+        plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
+        plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
+        plot!(xvals, fill_between=(d_perc_95m, d_perc_95p), alpha=0.25, color=:blue,label="")
+        plot!(xvals, fill_between=(d_perc_90m, d_perc_90p), alpha=0.25, color=:red,label="")
+        plot!(plt_2, ylabel="debt", xlabel="t")
 
-        fig[:tight_layout]
+        plot(plt_1, plt_2, layout=(2,1), size=(800,600))
     end
 
 Now let's create figures with initial conditions of zero for :math:`y_0` and :math:`b_0`
@@ -740,10 +737,9 @@ By altering initial conditions, we shall remove this transient in our second exa
 
     function cointegration_figure(bsim, csim)
         # Create figure
-        fig, ax = subplots(figsize=(10, 8))
-        ax[:plot]((1 - β) * bsim[1, :] + csim[1, :], color="k")
-        ax[:plot]((1 - β) * bsim' + csim', color="k", alpha=.1)
-        ax[:set](title="Cointegration of Assets and Consumption", xlabel="t")
+        plot((1 - β) * bsim[1, :] + csim[1, :], color=:black,lw=2,label="")
+        plot!((1 - β) * bsim' + csim', color=:black, alpha=.1,label="")
+        plot!(title="Cointegration of Assets and Consumption", xlabel="t")
     end
 
     cointegration_figure(bsim0, csim0)

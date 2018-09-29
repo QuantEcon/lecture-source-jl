@@ -450,7 +450,7 @@ Consider the previously presented duopoly model with parameter values of:
 * :math:`\beta = 0.96`
 * :math:`\gamma = 12`
 
-From these we compute the infinite horizon MPE using the preceding code
+From these we compute the infinite horizon MPE using the following code
 
 .. code-block:: julia
     :class: test
@@ -498,6 +498,14 @@ From these we compute the infinite horizon MPE using the preceding code
     println("F1 = $F1")
     println("F2 = $F2")
 
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test F1 ≈ [-0.6684661455442794 0.295124817744414 0.07584666305807419]
+    @test F2 ≈ [-0.6684661455442794 0.07584666305807419 0.295124817744414]
+  end 
+
 Running the code produces the following output
 
 One way to see that :math:`F_i` is indeed optimal for firm :math:`i` taking :math:`F_2` as given is to use `QuantEcon.jl <http://quantecon.org/julia_index.html>`__'s `LQ` type
@@ -513,6 +521,16 @@ We hope that the resulting policy will agree with `F1` as computed above
     P1_ih, F1_ih, d = stationary_values(lq1)
     F1_ih
 
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test P1_ih[2, 2] ≈ 5.441368459897164
+    @test d == 0.0 
+    @test Λ1[1, 1] == 1.0 && Λ1[3, 2] ≈ -0.07584666305807419
+    @test F1_ih ≈ [-0.6684661291052371 0.29512481789806305 0.07584666292394007]
+    @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true. 
+  end 
 
 This is close enough for rock and roll, as they say in the trade
 
@@ -521,7 +539,6 @@ Indeed, `isapprox` agrees with our assessment
 .. code-block:: julia
 
     isapprox(F1, F1_ih, atol=1e-7)
-
 
 Dynamics
 -----------------------
@@ -554,12 +571,17 @@ The following program
     q = q1 + q2         # Total output, MPE
     p = a0 .- a1 * q     # Price, MPE
 
-    fig, ax = subplots(figsize=(9, 5.8))
-    ax[:plot](q, "b-", lw=2, alpha=0.75, label="total output")
-    ax[:plot](p, "g-", lw=2, alpha=0.75, label="price")
-    ax[:set_title]("Output and prices, duopoly MPE")
-    ax[:legend](frameon=false)
+    plt = plot(q, color=:blue, lw=2, alpha=0.75, label="total output")
+    plot!(plt, p, color=:green, lw=2, alpha=0.75, label="price")
+    plot!(plt, title="Output and prices, duopoly MPE")
 
+.. code-block:: julia
+  :class: test 
+
+  @testset begin 
+    @test p[4] ≈ 3.590643786682385 # Near the intersection. 
+    @test q[4] ≈ 3.2046781066588075
+  end 
 
 Note that the initial condition has been set to :math:`q_{10} = q_{20} = 1.0`
 
@@ -735,6 +757,16 @@ First let's compute the duopoly MPE under the stated parameters
     F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
                            beta=β)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test F1[2] ≈ 0.295124817744414
+    @test F2[1] ≈ -0.6684661455442794 
+    @test P1[1, 2] ≈ -13.28370101134053
+    @test P2[2, 1] ≈ 2.435873888234417
+  end 
+
 Now we evaluate the time path of industry output and prices given
 initial condition :math:`q_{10} = q_{20} = 1`
 
@@ -751,6 +783,15 @@ initial condition :math:`q_{10} = q_{20} = 1`
     q2 = x[3, :]
     q = q1 + q2       # Total output, MPE
     p = a0 .- a1 * q   # Price, MPE
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test p[3] ≈ 4.061490827306079
+    @test q[3] ≈ 2.9692545863469606
+  end 
+
 
 Next let's have a look at the monopoly solution
 
@@ -800,27 +841,30 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
         qm[i] = float(x) + q_bar
     end
     pm = a0 .- a1 * qm
+    
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin
+    @test pm[4] ≈ 5.318386130957389
+    @test pm[12] ≈ 5.015048683853457
+    @test pm[end] ≈ 5.000711283764278
+    @test length(pm) == 20 
+  end 
 
 Let's have a look at the different time paths
 
 .. code-block:: julia
 
-    fig, axes = subplots(2, 1, figsize=(9, 9))
+    plt_q = plot(qm, color=:blue, lw=2, alpha=0.75, label="monopolist output")
+    plot!(plt_q, q, color=:green, lw=2, alpha=0.75, label="MPE total output")
+    plot!(plt_q, xlabel="time", ylabel="output", ylim=(2,4),legend=:topright)
 
-    ax = axes[1]
-    ax[:plot](qm, "b-", lw=2, alpha=0.75, label="monopolist output")
-    ax[:plot](q, "g-", lw=2, alpha=0.75, label="MPE total output")
-    ax[:set_ylabel]("output")
-    ax[:set_xlabel]("time")
-    ax[:set_ylim](2, 4)
-    ax[:legend](loc="upper left", frameon=0)
+    plt_p = plot(pm, color=:blue, lw=2, alpha=0.75, label="monopolist price")
+    plot!(plt_p, p, color=:green, lw=2, alpha=0.75, label="MPE price")
+    plot!(plt_p, xlabel="time", ylabel="price",legend=:topright)
 
-    ax = axes[2]
-    ax[:plot](pm, "b-", lw=2, alpha=0.75, label="monopolist price")
-    ax[:plot](p, "g-", lw=2, alpha=0.75, label="MPE price")
-    ax[:set_ylabel]("price")
-    ax[:set_xlabel]("time")
-    ax[:legend](loc="upper right", frameon=0)
+    plot(plt_q, plt_p, layout=(2,1), size=(700,600))
 
 Exercise 2
 -------------
@@ -898,6 +942,16 @@ we set up the matrices as follows:
           0.0  D[1, 2] / 2.0]
     M2 = copy(M1)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin
+    @test M1 == [0.0 0.0; 0.0 0.25]
+    @test M2 == [0.0 0.0; 0.0 0.25]
+    @test Q1 == [-1.5 0.0; 0.0 -1.0]
+    @test Q2 == [-1.5 0.0; 0.0 -1.0]
+  end 
+
 We can now compute the equilibrium using ``qe.nnash``
 
 .. code-block:: julia
@@ -910,6 +964,16 @@ We can now compute the equilibrium using ``qe.nnash``
     println("\nFirm 2's feedback rule:\n")
     println(F2)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test F1[3] ≈ 0.02723606266195122
+    @test F2[1] ≈ 0.027236062661951208
+    @test P1[1, 2] ≈ -0.03907919510094898
+    @test P2[2, 1] ≈ -0.03907919510094898
+    @test P2[2, 3] ≈ 16.175157671662866
+  end 
 
 Now let's look at the dynamics of inventories, and reproduce the graph
 corresponding to :math:`\delta = 0.02`
@@ -925,8 +989,16 @@ corresponding to :math:`\delta = 0.02`
     end
     I1 = x[1, :]
     I2 = x[2, :]
-    fig, ax = subplots(figsize=(9, 5))
-    ax[:plot](I1, "b-", lw=2, alpha=0.75, label="inventories, firm 1")
-    ax[:plot](I2, "g-", lw=2, alpha=0.75, label="inventories, firm 2")
-    ax[:set_title](latexstring("\\delta", "= $δ"))
-    ax[:legend]()
+
+    plot(I1, color=:blue, lw=2, alpha=0.75, label="inventories, firm 1")
+    plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
+    plot!(title="delta = 0.02")
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test I1[10] ≈ 1.2469115281955268
+    @test I2[5] ≈ 1.2116937821313627
+    @test AF[1, 2] ≈ 0.028667796322072864
+  end 

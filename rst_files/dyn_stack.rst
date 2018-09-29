@@ -813,7 +813,7 @@ Assume that :math:`m_0=10, \alpha=5, \bar p=1`
 
 **b.** Please briefly interpret this problem as one where the monetary authority wants to stabilize the price level, subject to costs of adjusting the money supply and some implementability constraints. (We include the term :math:`.00001m_t^2` for purely technical reasons that you need not discuss.)
 
-**c.** Please write and run a Python program to find the optimal sequence :math:`\{u_t\}_{t=0}^\infty`
+**c.** Please write and run a Julia program to find the optimal sequence :math:`\{u_t\}_{t=0}^\infty`
 
 **d.** Display the optimal decision rule for :math:`u_t` as a function of :math:`u_{t-1},  m_t, m_{t-1}`
 
@@ -900,6 +900,11 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 .. [#f9] They used this method to compute a rational expectations competitive equilibrium.  Their key step was to eliminate price and output by substituting from the inverse demand curve and the production function into the firm's first-order conditions to get a difference equation in capital.
 
 .. [#f10] These calculations were performed by these functions:
+
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
 
 .. code-block:: julia
 
@@ -1025,6 +1030,16 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
     # in period 1. if in period 1 the leader could choose i1 given
     # (1, v_1, Q_1, \bar{q}_1)
     i1_1 = D0*y1[1:end-1, 1]
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test i1_1 ≈ 1.1038392392871046 # Think this is the most important value. 
+    @test i1_0 ≈ 0.24833302229796866
+    @test i0 ≈ 1.4288731635600485
+    @test y1[3] ≈ 21.829608211752173
+  end 
 
 .. [#f12] For another application of the techniques in this lecture and how they related to the method recommended by :cite:`KydlandPrescott1980`, please see :doc:`this lecture <hist_dep_policies>` .
 
