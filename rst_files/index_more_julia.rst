@@ -19,7 +19,8 @@ This part of the course provides a more details on the Julia programming languag
     :maxdepth: 2
 
     tools_editors
-    types_methods
+    generic_functional_programming
+    more_types
+    packages
     need_for_speed
     plots
-    packages

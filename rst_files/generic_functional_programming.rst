@@ -1,9 +1,9 @@
-.. _types_methods:
+.. _generic_functional_programming:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ******************************************
-Types, Methods and Dispatch
+Generic and Functional Programming
 ******************************************
 
 .. TODO: Add some discussion about names and scope?  Or to julia_essentials?
@@ -33,7 +33,7 @@ Understanding them will help you
 * Read Julia code written by other programmers
 
 
-.. _julia_types:
+.. _generic_functional_programming:
 
 
 

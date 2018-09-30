@@ -1,9 +1,9 @@
-.. _arrays:
+.. _fundamental_types:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 *********************************
-Vectors, Arrays and Matrices
+Arrays, Tuples, and Fundamental Types
 *********************************
 
 .. contents:: :depth: 2
@@ -30,7 +30,7 @@ In this lecture we give more details on
 * basic matrix algebra
 
 
-.. _julia_array:
+.. _fundamental_types:
 
 Array Basics
 ================

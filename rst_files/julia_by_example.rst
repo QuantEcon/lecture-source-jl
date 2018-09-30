@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ******************************************
-An Introductory Example
+Introductory Examples
 ******************************************
 
 .. contents:: :depth: 2
@@ -39,6 +39,9 @@ Deeper concepts---how things work---will be covered in later lectures
 
 Since we are looking for simplicity the examples are a little contrived
 
+Finally, we will often start with **poor code style** as a direct comparison to Matlab, but then move towards more **elegant code** which is tightly connected to the mathematics
+
+
 Set Up
 --------
 
@@ -63,20 +66,36 @@ Example: Plotting a White Noise Process
 To begin, let's suppose that we want to simulate and plot the white noise
 process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal
 
-In other words, we want to generate figures that look something like this:
-
+.. In other words, we want to generate figures that look something like this:
+.. commenting out 
 .. figure:: /_static/figures/test_program_1.png
    :scale: 100%
 
-This is straightforward using `Plots.jl`, which was discussed in our :doc:`set up lecture <getting_started>`
+Fire up a :ref:`Jupyter notebook <jl_jupyter>`
 
-Fire up a :ref:`Jupyter notebook <jl_jupyter>` and enter the following in a cell
+
+
+Introduction to Packages
+--------------------------
+
+The first step is to activate the project environment
 
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
 
 .. code-block:: julia
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+
+Julia code will often be created from a variety of packages, such at ``Plots.jl`` in this case
+
+A project is defined by a ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument)
+
+We will discuss it more in :ref:`Julia Packages <jl_packages>`, but these files ensure that the code will use a complete snapshot of the graph of dependencies
+
+This ensures that an environment for running code is **reproducible**
+
 
 .. code-block:: julia
 
@@ -388,6 +407,37 @@ Hence in Julia we can take an existing function and give it a new behavior by de
 The interpreter knows which function definition to apply in a given setting by looking at the types of the objects the function is called on
 
 In Julia these alternative versions of a function are called **methods**
+
+Example: Variations on Fixed-Points
+================================================
+
+For our second example, we will start with a simple example of solving a fixed-points
+
+The goal is to start with code in a matlab style, and move towards a more **Julian** style with high mathematical clarity
+
+Fixed-Point Maps
+----------------------------
+
+Consider the simple equation, where the scalars :math:`p,\beta` are given, and  :math:`v` is the scalar we wish to solve for
+
+.. math::
+    :label: fixed_point_equation
+
+    \begin{equation}
+        v = p + \beta v
+    \end{equation}
+
+Of course, in this simple example, we have begun with a simple linear equation, which can be solved as :math:`v = p/(1 - \beta)`
+
+Rearrange the equation in terms of a map :math:`f(x)`
+
+.. math::
+    :label: fixed_point_map
+
+    \begin{array}{c}
+        v = f(v)\\
+        f(x) \equiv p + \beta v
+    \end{array}
 
 
 Exercises

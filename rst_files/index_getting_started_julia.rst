@@ -21,5 +21,5 @@ This first part of the course provides a relatively fast-paced introduction to e
     getting_started
     julia_by_example
     julia_essentials
-    arrays
+    fundamental_types
 
