@@ -332,10 +332,10 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
@@ -345,7 +345,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     =#
 
-    using PyPlot, PyCall
+    using Plots, PyCall
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
@@ -540,7 +540,7 @@ Here's the function
     function plot_timeseries(n1_0, n2_0,
                             s1=0.5, θ=2.5,
                             δ=0.7, ρ=0.2;
-                            ax::PyCall.PyObject=subplots()[2])
+                            plt::Plots.Subplot{Plots.GRBackend})
         """
         Plot a single time series with initial conditions
         """
@@ -549,27 +549,22 @@ Here's the function
         model = MSGSync(s1, θ, δ, ρ)
         n1, n2 = simulate_n(model, n1_0, n2_0, 25)
 
-        ax[:plot](0:24, n1, label=L"$n_1$", lw=2)
-        ax[:plot](0:24, n2, label=L"$n_2$", lw=2)
+        plot!(plt, 0:24, n1, label="n_1", lw=2)
+        plot!(plt, 0:24, n2, label="n_2", lw=2, ylim=(0.15,0.8))
 
-        ax[:legend]()
-        ax[:set_ylim](0.15, 0.8)
-
-        return ax
+        return plt
     end
 
     # Create figure
-    fig, ax = subplots(2, 1, figsize=(10, 8))
+    plots = plot(layout=(2,1), size=(600,600))
 
-    plot_timeseries(0.15, 0.35, ax=ax[1])
-    plot_timeseries(0.4, 0.3, ax=ax[2])
+    plot_timeseries(0.15, 0.35, plt=plots[1])
+    plot_timeseries(0.4, 0.3, plt=plots[2])
 
-    ax[1][:set_title]("Not Synchronized")
-    ax[2][:set_title]("Synchronized")
+    plot!(plots[1], title="Not Synchronized")
+    plot!(plots[2], title="Synchronized")
 
-    tight_layout()
-
-    show()
+    plot(plots)
 
 In the first case, innovation in the two countries does not synchronize
 
@@ -628,15 +623,15 @@ Exercise 1
                                    δ=0.7,
                                    ρ=0.2;
                                    npts=250,
-                                   ax=nothing)
-        if ax === nothing
-            fig, ax = subplots()
+                                   plt=nothing)
+        if plt === nothing
+            plt = plot()
         end
         # Create attraction basis
         unitrange = range(0, stop = 1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
         ab = create_attraction_basis(model,npts=npts)
-        cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
+        cf = plot!(plt, seriestype=:heatmap, unitrange, unitrange, ab, color=:viridis)
 
         return ab, cf
     end
@@ -644,13 +639,7 @@ Exercise 1
 
 .. code-block:: julia
 
-    fig = figure(figsize=(14, 12))
-
-    # Left - Bottom - Width - Height
-    ax1 = fig[:add_axes]((0.05, 0.475, 0.38, 0.35), label="axes0")
-    ax2 = fig[:add_axes]((0.5, 0.475, 0.38, 0.35), label="axes1")
-    ax3 = fig[:add_axes]((0.05, 0.05, 0.38, 0.35), label="axes2")
-    ax4 = fig[:add_axes]((0.5, 0.05, 0.38, 0.35), label="axes3")
+    plots = plot(layout=(2,2), size=(900,900))
 
     params = [[0.5, 2.5, 0.7, 0.2],
               [0.5, 2.5, 0.7, 0.4],
@@ -658,36 +647,27 @@ Exercise 1
               [0.5, 2.5, 0.7, 0.8]]
 
 
-    ab1, cf1 = plot_attraction_basis.(params[1][1],params[1][2],params[1][3],params[1][4], npts=500, ax=ax1)
-    ab2, cf2 = plot_attraction_basis.(params[2][1],params[2][2],params[2][3],params[2][4], npts=500, ax=ax2)
-    ab3, cf3 = plot_attraction_basis.(params[3][1],params[3][2],params[3][3],params[3][4], npts=500, ax=ax3)
-    ab4, cf4 = plot_attraction_basis.(params[4][1],params[4][2],params[4][3],params[4][4], npts=500, ax=ax4)
+    ab1, cf1 = plot_attraction_basis.(params[1][1],params[1][2],params[1][3],params[1][4], npts=500, plt=plots[1])
+    ab2, cf2 = plot_attraction_basis.(params[2][1],params[2][2],params[2][3],params[2][4], npts=500, plt=plots[2])
+    ab3, cf3 = plot_attraction_basis.(params[3][1],params[3][2],params[3][3],params[3][4], npts=500, plt=plots[3])
+    ab4, cf4 = plot_attraction_basis.(params[4][1],params[4][2],params[4][3],params[4][4], npts=500, plt=plots[4])
 
+    plot!(plots[1], title="s_1=0.5, theta=2.5, delta=0.7, rho=0.2", titlefont=12)
+    plot!(plots[2], title="s_1=0.5, theta=2.5, delta=0.7, rho=0.4", totlefont=12)
+    plot!(plots[3], title="s_1=0.5, theta=2.5, delta=0.7, rho=0.6", totlefont=12)
+    plot!(plots[4], title="s_1=0.5, theta=2.5, delta=0.7, rho=0.8", totlefont=12)
 
-    cbar_ax = fig[:add_axes]([0.9, 0.075, 0.03, 0.725])
-    colorbar(cf1, cax=cbar_ax)
+    plot(plots)
 
-    ax1[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.2$",
-                  fontsize=22)
-    ax2[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.4$",
-                  fontsize=22)
-    ax3[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.6$",
-                  fontsize=22)
-    ax4[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.8$",
-                  fontsize=22)
+.. code-block:: julia
+  :class: julia
 
-    fig[:suptitle]("Synchronized versus Asynchronized 2-cycles",
-                 x=0.475, y=0.915, size=26)
-
-.. code-block:: julia 
-  :class: julia 
-
-  @testset begin 
+  @testset begin
     @test ab1[1:10, 1:4] == [0.0 163.0 189.0 250.0; 163.0 0.0 215.0 250.0; 189.0 215.0 0.0 188.0; 250.0 250.0 188.0 0.0; 250.0 250.0 182.0 164.0; 250.0 198.0 166.0 162.0; 250.0 188.0 170.0 156.0; 220.0 166.0 166.0 158.0; 196.0 150.0 160.0 154.0; 184.0 168.0 156.0 148.0]
     @test ab2[1:4, 1:4] == [0.0 165.0 181.0 225.0; 165.0 0.0 203.0 250.0; 181.0 203.0 0.0 174.0; 225.0 250.0 174.0 0.0]
     @test ab3[1:4, 1:4] == [0.0 167.0 183.0 201.0; 167.0 0.0 201.0 230.0; 183.0 201.0 0.0 172.0; 201.0 230.0 172.0 0.0]
     @test ab4[1:4, 1:4] == [0.0 161.0 169.0 193.0; 161.0 0.0 193.0 210.0; 169.0 193.0 0.0 186.0; 193.0 210.0 186.0 0.0]
-  end 
+  end
 
 
 Exercise 2
