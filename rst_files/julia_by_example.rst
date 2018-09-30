@@ -18,11 +18,13 @@ We're now ready to start learning the Julia language itself
 Level
 -------
 
-Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, R, C or similar
+Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, Fortran, C or similar
 
 In particular, we assume you have some familiarity with fundamental programming concepts such as
 
 * variables
+
+* arrays or vectors
 
 * loops
 
@@ -39,7 +41,9 @@ Deeper concepts---how things work---will be covered in later lectures
 
 Since we are looking for simplicity the examples are a little contrived
 
-Finally, we will often start with **poor code style** as a direct comparison to Matlab, but then move towards more **elegant code** which is tightly connected to the mathematics
+.. add as a  note::?
+
+In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is **poor coding style** in Julia, but then move towards more **elegant code** which is tightly connected to the mathematics
 
 
 Set Up
@@ -66,10 +70,10 @@ Example: Plotting a White Noise Process
 To begin, let's suppose that we want to simulate and plot the white noise
 process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal
 
+.. Commenting out figure, at least while broken.
 .. In other words, we want to generate figures that look something like this:
-.. commenting out 
-.. figure:: /_static/figures/test_program_1.png
-   :scale: 100%
+.. .. figure:: /_static/figures/test_program_1.png
+..    :scale: 100%
 
 Fire up a :ref:`Jupyter notebook <jl_jupyter>`
 
@@ -78,9 +82,9 @@ Fire up a :ref:`Jupyter notebook <jl_jupyter>`
 Introduction to Packages
 --------------------------
 
-The first step is to activate the project environment
+The first step is to activate a project environment
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are **in the same location** as your notebook
 
 
 .. code-block:: julia
@@ -88,242 +92,247 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 
-Julia code will often be created from a variety of packages, such at ``Plots.jl`` in this case
+Julia code will often be created from a variety of packages, such as ``Plots.jl`` in this case
 
 A project is defined by a ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument)
 
-We will discuss it more in :ref:`Julia Packages <jl_packages>`, but these files ensure that the code will use a complete snapshot of the graph of dependencies
+We will discuss it more in :ref:`Julia Packages <jl_packages>`, but these files ensure that the code will use a complete snapshot of the graph of version dependencies
 
-This ensures that an environment for running code is **reproducible**
+This ensures that an environment for running code is **reproducible**, so that oneone else can replicate the precise set of package versions used in construction
 
+
+.. _import:
+
+Using Functions from a Package
+--------------------------------
+
+Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution mean 0 and variance 1 if given no parameters
+
+.. code-block:: julia
+
+    randn()
+
+
+Other functions require importing all of the names from an external library
 
 .. code-block:: julia
 
     using Plots
 
-    ts_length = 100
-    ϵ_values = randn(ts_length)
-    plot(ϵ_values, color = "blue")
+    n = 100
+    ϵ = randn(n)
+    plot(1:n, ϵ, color = "blue")
 
 
 Let's break this down and see how it works
 
-.. _import:
-
-Importing Functions
----------------------
-
-
 The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available in the global scope
 
-If you prefer to be more selective you can replace ``using Plots`` with ``using Plots: plot``
+Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files 
 
-Now only the ``plot`` function is accessible
+The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings
 
-If we wanted to have extended the functionality of ``Plots.plot`` we would have needed to specify this using ``import Plots: plot``
-
-Since our program uses only the plot function from this module, either would have worked in the previous example
+The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distibution mean 0 and variance 1
 
 Arrays
 --------
 
-The function call ``ϵ_values = randn(ts_length)`` creates one of the
-most fundamental Julia data types: an array
+
+As a language intended for mathematical and scientific computing, Julia has strong support for using symbols in the source code
+
+In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the latex and then hitting `<TAB>`, i.e. ``\epsilon<TAB>`` 
+
+The return type is one of the most fundamental Julia data types: an array
 
 
 .. code-block:: julia
 
-    typeof(ϵ_values)
+    typeof(ϵ)
 
 .. code-block:: julia
 
-    ϵ_values
+    ϵ[1:5]
 
-The information from ``typeof()`` tells us that ``ϵ_values`` is an array of 64 bit floating point values, of dimension 1
+The information from ``typeof()`` tells us that ``ϵ`` is an array of 64 bit floating point values, of dimension 1
 
-Julia arrays are quite flexible --- they can store heterogeneous data for example
+In Julia, one-dimesional arrays are interpreted as column vectors for purposes of linear algebra
 
-.. code-block:: julia
-
-    x = [10, "foo", false]
-
-Notice now that the data type is recorded as ``Any``, since the array contains mixed data
-
-The first element of ``x`` is an integer
-
-.. code-block:: julia
-
-    typeof(x[1])
-
-The second is a string
-
-.. code-block:: julia
-
-    typeof(x[2])
-
-The third is the boolean value ``false``
-
-.. code-block:: julia
-
-    typeof(x[3])
+The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ`` 
 
 Notice from the above that
 
-* array indices start at 1 (unlike Python, where arrays are zero-based)
+* array indices start at 1 (like MATLAB and Fortran, but unlike Python and C)
 
 * array elements are referenced using square brackets (unlike MATLAB and Fortran)
 
-Julia contains many functions for acting on arrays --- we'll review them later
-
-For now here's several examples, applied to the same list ``x = [10, "foo", false]``
-
+To get **help and examples** in Jupyter or other Julia editor, use the ``?`` before a function name or syntax
 
 .. code-block:: julia
-
-    length(x)
-
-.. code-block:: julia
-
-    pop!(x)
-
-.. code-block:: julia
-
-    x
-
-.. code-block:: julia
-
-    push!(x, "bar")
-
-
-.. code-block:: julia
-
-    x
-
-
-The first example just returns the length of the list
-
-The second, ``pop!()``, pops the last element off the list and returns it
-
-In doing so it changes the list (by dropping the last element)
-
-Because of this we call ``pop!`` a **mutating method**
-
-It's conventional in Julia that mutating methods end in ``!`` to remind the user that the function has other effects beyond just returning a value
-
-The function ``push!()`` is similar, except that it appends its second argument to the array
-
+ 
+    ?typeof
 
 For Loops
 ---------------
 
 Although there's no need in terms of what we wanted to achieve with our
 program, for the sake of learning syntax let's rewrite our program to use a
-``for`` loop
+``for`` loop for generating the data
 
+.. note::
+    
+    In the current version of Julia v1.0, the scoping rules for variables accessed in ``for`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` loops outside of Jupyter notebooks.  This issue does not apply to ``for`` loops within functions
+
+Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
 
 .. code-block:: julia
 
-        ts_length = 100
-        ϵ_values = zeros(ts_length)
-        for i ∈ eachindex(ϵ_values)
-            ϵ_values[i] = randn()
+        # Poor Julia style 
+        n = 100
+        ϵ = zeros(n)
+        for i in 1:n
+            ϵ[i] = randn()
         end
-        plot(ϵ_values, color = "blue")
-    
 
-Here we first declared ``ϵ_values`` to be an empty array for storing 64 bit floating point numbers
+
+Here we first declared ``ϵ`` to be a vector of ``n`` numbers, initialized by the floating point ``0.0``
 
 The ``for`` loop then populates this array by successive calls to ``randn()``
-
-* Called without an argument, ``randn()`` returns a single float
-
 
 Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``
 
 The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
 
-The expression ``eachindex(ϵ_values)`` creates an **iterator** that is looped over --- in this case the integers from ``1`` to ``ts_length``
+The index variable is looped over for all integers from ``1:n``--but this does not actually create a vector of those indices
 
-Iterators are memory efficient because the elements are generated on the fly rather than stored in memory
+Instead, it creates an **iterator** that is looped over --- in this case the **range** of integers from ``1`` to ``n``
+
+While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear.
+
+To fix this, use ``eachindex``
+
+.. code-block:: julia
+
+        # Better Julia style 
+        n = 100
+        ϵ = zeros(n)
+        for i in eachindex(ϵ)
+            ϵ[i] = randn()
+        end
+     
+Here, ``eachindex(ϵ)`` returns an interator of indices which can be used to access ``ϵ``
+
+While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is more clear and prone to typos; and (2) it allows the compiler flexbility to creatively generate fast code 
 
 In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-        words = ["foo", "bar"]
-        for word ∈ words
-            println("Hello $word")
+        for ϵ_val in ϵ[1:5]
+            println("Hello $val")
         end
 
-
-While Loops
----------------------
-
-The syntax for the while loop contains no surprises
-
-
-.. code-block:: julia
-
-        ts_length = 100
-        ϵ_values = zeros(ts_length)
-        i = 1
-        while i ≤ ts_length
-            ϵ_values[i] = randn()
-            i += 1
-        end
-        plot(ϵ_values, color = "blue")
-
-
-The next example does the same thing with a condition and the ``break``
-statement
-
-.. code-block:: julia
-
-        ts_length = 100
-        ϵ_values = Vector(undef, ts_length)
-        i = 1
-        while true
-            ϵ_values[i] = randn()
-            i += 1
-            if i > ts_length
-                break
-            end
-        end
-        return plot(ϵ_values, color = "blue")
-
+where ``ϵ[1:5]`` returns the elements of the vector at indices ``1`` to ``5``
 
 .. _user_defined_functions:
 
 User-Defined Functions
 ----------------------------
 
-For the sake of the exercise, let's now go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+For the sake of the exercise, let's define  go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+
+To make things more interesting, instead of directly plotting the draws from the distribution, lets plot the square of the drawss
 
 .. code-block:: julia
 
-    function generate_data(n)
-        ϵ_values = zeros(n)
-        for i ∈ eachindex(ϵ_values)
-            ϵ_values[i] = randn()
+    # Terrible Julia Style
+    function generatedata(n)
+        ϵ = zeros(n)
+        for i in eachindex(ϵ)
+            ϵ[i] = (randn())^2 #Squaring the result
         end
-        return ϵ_values
+        return ϵ
     end
 
-    data = generate_data(100)
+    data = generatedata(10)
     plot(data, color = "blue")
 
 Here
 
 * ``function`` is a Julia keyword that indicates the start of a function definition
 
-* ``generate_data`` is an arbitrary name for the function
+* ``generatedata`` is an arbitrary name for the function
 
-* ``return`` is a keyword indicating the return value
+* ``return`` is a keyword indicating the return value, as is often unnecessary
+
+Let us make this example slightly better by "remembering" that ``randn`` can return a vectors
+
+.. code-block:: julia
+
+    # Still Poor Julia Style
+    function generatedata(n)
+        ϵ = randn(n) #Use built in function
+
+        for i in eachindex(ϵ)
+            ϵ[i] = ϵ[i]^2 #Squaring the result
+        end
+
+        return ϵ
+    end
+    data = generatedata(5)
+
+While better, the looping over the `i` index to square the results is difficult to read
+
+Instead of looping, we can instead **broadcast** the ``^2`` square function over a vector using a ``.``
+
+To be clear, unlike Python, R, and Matlab (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
+
+Loops of this sort are at least as efficient than vectorized approach in compiled languages like Julia, so feel free to use a for loop if you think it makes the code more clear
+
+Furthermore, we can just drop the ``return`` because functions return the last calculation by default, which leads to
+
+.. code-block:: julia
+
+    # Better Julia style
+    function generatedata(n)
+        ϵ = randn(n) #Use built in function
+        return ϵ.^2
+     end
+    data = generatedata(5)
+
+We can even drop the ``function`` if we define it on a single line
+.. code-block:: julia
+
+    # Good Julia style
+    generatedata(n) = randn(n).^2
+    data = generatedata(5)    
+
+Finally, we can broadcast any function, where squaring is only a special case
+    
+.. code-block:: julia
+
+    # Good Julia style
+    f(x) = x^2 #Simple square function 
+    generatedata(n) = f.(randn(n)) # Uses broadcast for some function `f`
+    data = generatedata(5)
+
+As a final--abstract--approach, we can make the ``generatedata`` function able to generically apply a function 
+    
+.. code-block:: julia
+
+    # Good Julia style, excessivly abstract?
+    generatedata(n, gen) = gen.(randn(n)) # Uses broadcast for some function `gen`
+    
+    f(x) = x^2 #Simple square function 
+    data = generatedata(5, f) #Applies f
+
+Whether this example is better or worse than the previous version depends on how it is used
+
+High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code clearer or confusing, but Julia enables you to use these techniques **with no performance penalty**
 
 A Slightly More Useful Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Of course the function ``generate_data`` is completely contrived
+Of course the function ``generatedata`` is completely contrived
 
 We could just write the following and be done
 
@@ -354,8 +363,8 @@ Here's the code
     using Distributions
 
     function plot_histogram(distribution, n)
-        ϵ_values = rand(distribution, n)  # n draws from distribution
-        histogram(ϵ_values)
+        ϵ = rand(distribution, n)  # n draws from distribution
+        histogram(ϵ)
     end
 
         lp = Laplace()
@@ -440,6 +449,45 @@ Rearrange the equation in terms of a map :math:`f(x)`
     \end{array}
 
 
+
+
+While Loops
+---------------------
+
+The syntax for the while loop contains no surprises
+
+
+.. code-block:: julia
+
+        n = 100
+        ϵ = zeros(n)
+        i = 1
+        while i ≤ n
+            ϵ[i] = randn()
+            i += 1
+        end
+        plot(ϵ, color = "blue")
+
+
+The next example does the same thing with a condition and the ``break``
+statement
+
+.. code-block:: julia
+
+        n = 100
+        ϵ = Vector(undef, n)
+        i = 1
+        while true
+            ϵ[i] = randn()
+            i += 1
+            if i > n
+                break
+            end
+        end
+        return plot(ϵ, color = "blue")
+
+
+
 Exercises
 ===============
 
@@ -517,12 +565,12 @@ Simulate and plot the correlated time series
     x_{t+1} = \alpha \, x_t + \epsilon_{t+1}
     \quad \text{where} \quad
     x_0 = 0
-    \quad \text{and} \quad t = 0,\ldots,T
+    \quad \text{and} \quad t = 0,\ldots,n
 
 
 The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
 
-Set :math:`T = 200` and :math:`\alpha = 0.9`
+Set :math:`n = 200` and :math:`\alpha = 0.9`
 
 
 .. _jbe_ex6:
@@ -548,7 +596,7 @@ Exercise 1
 
     function factorial2(n)
         k = 1
-        for i ∈ 1:n
+        for i in 1:n
             k *= i
         end
         return k
@@ -577,7 +625,7 @@ Exercise 2
         return count
     end
 
-        for j ∈ 1:25
+        for j in 1:25
             b = binomial_rv(10, 0.5)
             print("$b, ")
         end
@@ -605,7 +653,7 @@ fraction that fall into the unit circle
 
         n = 1000000
         count = 0
-        for i ∈ 1:n
+        for i in 1:n
             u, v = rand(2)
             d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # Distance from middle of square
             if d < 0.5
@@ -628,7 +676,7 @@ Exercise 4
 
         print("Count = ")
 
-        for i ∈ 1:10
+        for i in 1:10
             U = rand()
             if U < 0.5
                 count += 1
@@ -664,7 +712,7 @@ Using this construction:
 
         print("Count = ")
 
-        for i ∈ 1:10
+        for i in 1:10
             U = rand()
             count = U < 0.5 ? count + 1 : 0
             print(count)
@@ -683,10 +731,10 @@ Here's one solution
 .. code-block:: julia
 
         α = 0.9
-        T = 200
-        x = zeros(T + 1)
+        n = 200
+        x = zeros(n + 1)
 
-        for t ∈ 1:T
+        for t ∈ 1:n
             x[t+1] = α * x[t] + randn()
         end
         return plot(x, color = "blue")
@@ -698,15 +746,15 @@ Exercise 6
 .. code-block:: julia
 
         αs = [0.0, 0.8, 0.98]
-        T = 200
+        n = 200
 
         series = []
         labels = []
 
-        for α ∈ αs
-            x = zeros(T + 1)
+        for α in αs
+            x = zeros(n + 1)
             x[1] = 0
-            for t ∈ 1:T
+            for t in 1:n
                 x[t+1] = α * x[t] + randn()
             end
             push!(series, x)
