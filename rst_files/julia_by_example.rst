@@ -327,33 +327,27 @@ As a final--abstract--approach, we can make the ``generatedata`` function able t
 
 Whether this example is better or worse than the previous version depends on how it is used
 
-High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code clearer or confusing, but Julia enables you to use these techniques **with no performance penalty**
+High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or confusing, but Julia enables you to use these techniques **with no performance overhead**
 
-A Slightly More Useful Function
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Of course the function ``generatedata`` is completely contrived
-
-We could just write the following and be done
+For this particular case, the clearest and most general solution is probably the simplest
 
 .. code-block:: julia
 
-        data = randn(100)
-        plot(data, color = "blue")
+    # Direct solution with broadcasting, and no superfluous functions
+    n = 100
+    f(x) = x^2
+    plot(f.(randn(n)), color = "blue")
 
+
+
+A Slightly More Useful Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Let's make a slightly more useful function
 
 This function will be passed a choice of probability distribution and respond by plotting a histogram of observations
 
-In doing so we'll make use of the Distributions package
-
-The following code installs the Distributions package
-
-.. code-block:: julia
-
-    using Pkg
-    Pkg.add("Distributions")
+In doing so we'll make use of the Distributions package, which we assume was instantiated above with the project
 
 
 Here's the code
@@ -362,15 +356,13 @@ Here's the code
 
     using Distributions
 
-    function plot_histogram(distribution, n)
+    function plothistogram(distribution, n)
         ϵ = rand(distribution, n)  # n draws from distribution
         histogram(ϵ)
     end
 
-        lp = Laplace()
-        plot_histogram(lp, 500)
-
-The resulting figure looks like this
+    lp = Laplace()
+    plothistogram(lp, 500)
 
 
 Let's have a casual discussion of how all this works while leaving technical details for later in the lectures
@@ -380,8 +372,8 @@ in the Distributions module that represents the Laplace distribution
 
 The name ``lp`` is bound to this object
 
-When we make the function call ``plot_histogram(lp, 500)`` the code in the body
-of the function ``plot_histogram`` is run with
+When we make the function call ``plothistogram(lp, 500)`` the code in the body
+of the function ``plothistogram`` is run with
 
 * the name ``distribution`` bound to the same object as ``lp``
 
@@ -406,14 +398,14 @@ On the other hand, ``distribution`` points to a data type representing the Lapla
 So how can it be that ``rand()`` is able to take this kind of object as an
 argument and return the output that we want?
 
-The answer in a nutshell is **multiple dispatch**
+The answer in a nutshell is **multiple dispatch**, which it uses to implement **generic programming**
 
 This refers to the idea that functions in Julia can have different behavior
 depending on the particular arguments that they're passed
 
 Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of object
 
-The interpreter knows which function definition to apply in a given setting by looking at the types of the objects the function is called on
+The compiler knows which function definition to apply in a given setting by looking at the types of the objects the function is called on
 
 In Julia these alternative versions of a function are called **methods**
 
