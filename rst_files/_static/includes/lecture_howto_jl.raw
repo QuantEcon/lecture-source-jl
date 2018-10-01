@@ -1,12 +1,5 @@
-.. raw:: html
+How to read this lecture...
 
-			<div class="how-to">
-			<a href="#" class="toggle"><span class="icon icon-angle-double-down"></span>How to read this lecture...</a>
-			<div class="how-to-content">				
-				<ul>
-					<li>For some notebooks, enable content with "Trust" on the command tab of Jupyter lab</li>
-					<li>Code should execute sequentially if run in a Jupyter notebook</li>
-					<li>Please direct feedback to <a href="mailto:contact@quantecon.org">contact@quantecon.org</a> or the <a href="http://discourse.quantecon.org/">discourse forum</a></li>
-				</ul>
-			</div>
-		</div>
+* For some notebooks, enable content with "Trust" on the command tab of Jupyter lab
+* Code should execute sequentially if run in a Jupyter notebook
+* Please direct feedback to `contact@quantecon.org <mailto:contact@quantecon.org">`_ or `discourse forum <http://discourse.quantecon.org/>`_ 

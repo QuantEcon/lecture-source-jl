@@ -118,7 +118,7 @@ Other functions require importing all of the names from an external library
 .. code-block:: julia
 
     using Plots, LinearAlgebra, Statistics
-    gr(fmt=:png) # Optionally reduce the image quality
+    gr(fmt=:png) #Optional, store as png not svg
 
     n = 100
     ϵ = randn(n)
@@ -261,7 +261,7 @@ To make things more interesting, instead of directly plotting the draws from the
 
 .. code-block:: julia
 
-    # Terrible Julia Style
+    # Poor Julia Style
     function generatedata(n)
         ϵ = zeros(n)
         for i in eachindex(ϵ)
@@ -469,7 +469,7 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
 
 .. code-block:: julia
 
-    # Terrible Julia style
+    # Poor Julia style
     p = 1.0 #Note 1.0 rather than 1
     β = 0.9
     maxiter = 1000
@@ -503,7 +503,7 @@ The first problem with this setup is that it depends on being sequently run--whi
 
 .. code-block:: julia
 
-    # Better, but still bad Julia style
+    # Better, but still poor Julia style
     function v_fp(β, ρ, v_iv, tolerance, maxiter)
         #Setup the algorithm
         v_old = v_iv
@@ -629,13 +629,11 @@ But best of all is to avoid writing code altogether
 
 The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed-point iteration scheme above
 
-
 Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]]``
 
 While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements
 
 In particular, we can use the ``Anderson acceleration`` with a memory of 5 iterations, by changing a setting
-
 
 .. code-block:: julia
 
@@ -643,12 +641,55 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     using NLsolve
 
     p = 1.0
-    β = 0.9     
-    f(v) = p .+ β * v
-    sol = fixedpoint(f, [0.8], inplace = false, method = :anderson, m=5)
+    β = 0.9
+    iv = [0.8]
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
+
+The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
+
+Similar to anonymous functions in Matlab, and lambda functions in Python, Julia enables the creation of small functions without any names
+
+The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(x)``
+
+Composing Packages
+----------------------------
+
+A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source
+
+As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type,
+
+In Julia, this number can be calculated as
+
+.. code-block:: julia
+
+    eps()
+
+
+For many cases, this is sufficient precision--but consider that in iterative algorithms applied millions of times, those small differences can add up
+
+The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value
+
+.. code-block:: julia
+
+    # Composing Packages.  Using arbitrary precision floating points
+    p = 1.0
+    β = 0.9
+    iv = [BigFloat(0.8)] #Higher precision
+
+    #otherwise identical
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
+
+The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations
+
+
+.. Composing Packages : Later, add in a auto-differentiation example when working with NLsolve forwarddiff or capstan
+
 
 Exercises
 ===============
@@ -920,7 +961,7 @@ Exercise 6
                 x[t+1] = α * x[t] + randn()
             end
             push!(series, x)
-            push!(labels, "α = $α")
+            push!(labels, "alpha = $α")
         end
 
         plot(series, label = reshape(labels, 1, length(labels)))
