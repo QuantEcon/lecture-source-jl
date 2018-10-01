@@ -2,9 +2,9 @@
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
-*********************************
+***************************************
 Arrays, Tuples, and Fundamental Types
-*********************************
+***************************************
 
 .. contents:: :depth: 2
 
