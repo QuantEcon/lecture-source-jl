@@ -228,7 +228,7 @@ In Julia you can also loop directly over arrays themselves, like so
 .. code-block:: julia
 
         for ϵ_val in ϵ[1:5]
-            println("Hello $val")
+            println("Hello $ϵ_val")
         end
 
 where ``ϵ[1:5]`` returns the elements of the vector at indices ``1`` to ``5``
@@ -333,7 +333,7 @@ For this particular case, the clearest and most general solution is probably the
 
 .. code-block:: julia
 
-    # Direct solution with broadcasting, and no superfluous functions
+    # Direct solution with broadcasting, and small user-defined function
     n = 100
     f(x) = x^2
     plot(f.(randn(n)), color = "blue")
@@ -424,9 +424,7 @@ Consider the simple equation, where the scalars :math:`p,\beta` are given, and  
 .. math::
     :label: fixed_point_equation
 
-    \begin{equation}
-        v = p + \beta v
-    \end{equation}
+    v = p + \beta v
 
 Of course, in this simple example, we have begun with a simple linear equation, which can be solved as :math:`v = p/(1 - \beta)`
 
@@ -435,13 +433,14 @@ Rearrange the equation in terms of a map :math:`f(x)`
 .. math::
     :label: fixed_point_map
 
-    \begin{array}{c}
-        v = f(v)\\
-        f(x) \equiv p + \beta v
-    \end{array}
+    v = f(v)
 
+where
 
+.. math::
 
+    f(x) := p + \beta v
+ 
 
 While Loops
 ---------------------
