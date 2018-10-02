@@ -17,7 +17,6 @@ Overview
 Topics:
 
 * Common data types
-* Basic file I/O
 * Iteration
 * More on user-defined functions
 * Comparisons and logic
@@ -39,14 +38,16 @@ Let's learn a bit more about them
 Primitive Data Types
 -------------------------
 
-A particularly simple data type is a Boolean value, which can be either ``true`` or
-``false``
-
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
 .. code-block:: julia
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+
+A particularly simple data type is a Boolean value, which can be either ``true`` or
+``false``
+
 
 .. code-block:: julia
 
@@ -63,16 +64,16 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     y = 1 > 2  # Now y = false
 
 
-Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
-
-.. code-block:: julia
-
-    true + false
-
-
-.. code-block:: julia
-
-    sum([true, false, false, true])
+.. Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
+.. 
+.. .. code-block:: julia
+.. 
+..    true + false
+.. 
+.. 
+.. .. code-block:: julia
+.. 
+..    sum([true, false, false, true])
 
 
 The two most common data types used to represent numbers are integers and
@@ -98,7 +99,9 @@ Arithmetic operations are fairly standard
 
 .. code-block:: julia
 
-    x = 2; y = 1.0
+    x = 2; y = 1.0;
+
+The ``;`` can be used to supress  output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary
 
 
 .. code-block:: julia
@@ -124,16 +127,17 @@ Although the ``*`` can be omitted for multiplication between a numeric literal a
     2x - 3y
 
 
-Also, you can use function (instead of infix) notation if you so desire
-
-.. code-block:: julia
-
-    +(10, 20)
-
-
-.. code-block:: julia
-
-    *(10, 20)
+.. I don't think this is useful quite yet, though perhaps later with broadcasting
+.. Also, you can use function (instead of infix) notation if you so desire
+.. 
+.. .. code-block:: julia
+.. 
+..     +(10, 20)
+.. 
+.. 
+.. .. code-block:: julia
+.. 
+..     *(10, 20)
 
 
 Complex numbers are another primitive data type, with the imaginary part being specified by ``im``
@@ -179,11 +183,13 @@ You've already seen examples of Julia's simple string formatting operations
 
     x = 10; y = 20
 
+The ``$`` inside of a string is used to interpolate a variable
 
 .. code-block:: julia
 
     "x = $x"
 
+With brackets, you can splice the results of expressions into strings as well
 
 .. code-block:: julia
 
@@ -238,58 +244,59 @@ Julia has several basic types for storing collections of data
 
 We have already discussed arrays
 
-A related data type is **tuples**, which can act like "immutable" arrays
+A related data type is **tuples**, which are immutable and can contain different types
 
 .. code-block:: julia
 
     x = ("foo", "bar")
+    y = ("foo", 2)
 
 
 .. code-block:: julia
 
-    typeof(x)
+    typeof(x), typeof(y)
 
 
 An immutable object is one that cannot be altered once it resides in memory
 
-In particular, tuples do not support item assignment:
+In particular, tuples do not support item assignment (i.e. ``x[1] = "test"`` would fail)
 
-.. code-block:: julia
-    :class: no-execute
-
-    x[1] = 42
-
-
-This is similar to Python, as is the fact that the parenthesis can be omitted
+Tuples can be constructed with or without parenthesis, which is used for returning multiple values from a function
 
 
 .. code-block:: julia
 
-    x = "foo", "bar"
+    x = "foo", 1
+
+.. code-block:: julia
+
+    function f()
+        return "foo", 1
+    end
+    f()
 
 
-Another similarity with Python is tuple unpacking, which means that the
-following convenient syntax is valid
+Tuples can also be unpacked directly into variables
 
 
 .. code-block:: julia
 
-    x = ("foo", "bar")
+    x = ("foo", 1)
 
 
 .. code-block:: julia
 
-    word1, word2 = x
+    word, val = x
+    println("word = $word, val = $val")
 
 
-.. code-block:: julia
-
-    word1
-
+Tuples can be created with a hanging ``,``--which is used to create a tuple with one element
 
 .. code-block:: julia
 
-    word2
+    x = ("foo", 1,)
+    y = ("foo",)
+    typeof(x), typeof(y)
 
 
 Referencing Items
@@ -355,61 +362,6 @@ The objects that the keys are mapped to (``"Frodo"`` and ``33``) are called the 
 They can be accessed via ``keys(d)`` and ``values(d)`` respectively
 
 
-Input and Output
-====================
-
-
-Let's have a quick look at reading from and writing to text files
-
-We'll start with writing
-
-
-.. code-block:: julia
-
-    f = open("newfile.txt", "w")  # "w" for writing
-
-
-.. code-block:: julia
-
-    write(f, "testing\n")         # \n for newline
-
-
-.. code-block:: julia
-
-    write(f, "more testing\n")
-
-
-.. code-block:: julia
-
-    close(f)
-
-The effect of this is to create a file called ``newfile.txt`` in your present
-working directory with contents
-
-
-We can read the contents of ``newline.txt`` as follows
-
-.. code-block:: julia
-
-    f = open("newfile.txt", "r")  # Open for reading
-
-
-.. code-block:: julia
-
-    print(read(f, String))
-
-
-.. code-block:: julia
-
-    close(f)
-
-
-.. TODO Should we include an example of the ``open("newfile.txt", "r") do f`` syntax here?
-.. I personally like it because it manages closing the file for me and feels a
-.. lot like python context managers (which I also like)
-
-Often when reading from a file we want to step through the lines of a file, performing an action on each one
-
 There's a neat interface to this in Julia, which takes us to our next topic
 
 
@@ -432,11 +384,9 @@ These include sequence data types like arrays
 
 .. code-block:: julia
 
-    let
-        actions = ["surf", "ski"]
-        for action ∈ actions
-            println("Charlie don't $action")
-        end
+    actions = ["surf", "ski"]
+    for action in actions
+        println("Charlie don't $action")
     end
 
 
@@ -446,10 +396,8 @@ You've already come across these types of objects
 
 .. code-block:: julia
 
-    let
-        for i ∈ 1:3
-            print(i)
-        end
+    for i in 1:3
+        print(i)
     end
 
 
@@ -488,23 +436,23 @@ For example compare
 
 .. code-block:: julia
 
-    x_values = range(0, stop = 3, length = 10)
+    x_values = 1:5
 
 .. code-block:: julia
 
-    for x ∈ x_values
+    for x in x_values
         println(x * x)
     end
 
 
 .. code-block:: julia
 
-    for i ∈ eachindex(x_values)
+    for i in eachindex(x_values)
         println(x_values[i] * x_values[i])
     end
 
 
-Julia provides some functional-style helper functions (similar to Python) to facilitate looping without indices
+Julia provides some functional-style helper functions (similar to Python and R) to facilitate looping without indices
 
 One is ``zip()``, which is used for stepping through pairs from two sequences
 
@@ -512,12 +460,10 @@ For example, try running the following code
 
 .. code-block:: julia
 
-    let
-        countries = ("Japan", "Korea", "China")
-        cities = ("Tokyo", "Seoul", "Beijing")
-        for (country, city) ∈ zip(countries, cities)
-            println("The capital of $country is $city")
-        end
+    countries = ("Japan", "Korea", "China")
+    cities = ("Tokyo", "Seoul", "Beijing")
+    for (country, city) in zip(countries, cities)
+        println("The capital of $country is $city")
     end
 
 
@@ -527,13 +473,11 @@ The following snippet will give you the idea
 
 .. code-block:: julia
 
-    let
-        countries = ("Japan", "Korea", "China")
-        cities = ("Tokyo", "Seoul", "Beijing")
-        for (i, country) ∈ enumerate(countries)
-            city = cities[i]
-            println("The capital of $country is $city")
-        end
+    countries = ("Japan", "Korea", "China")
+    cities = ("Tokyo", "Seoul", "Beijing")
+    for (i, country) in enumerate(countries)
+        city = cities[i]
+        println("The capital of $country is $city")
     end
 
 
@@ -546,7 +490,7 @@ Here's some examples
 
 .. code-block:: julia
 
-    doubles = [ 2i for i ∈ 1:4 ]
+    doubles = [ 2i for i in 1:4 ]
 
 
 .. code-block:: julia
@@ -556,24 +500,24 @@ Here's some examples
 
 .. code-block:: julia
 
-    plurals = [ animal * "s" for animal ∈ animals ]
+    plurals = [ animal * "s" for animal in animals ]
 
 
 .. code-block:: julia
 
-    [ i + j for i ∈ 1:3, j ∈ 4:6 ]
+    [ i + j for i in 1:3, j in 4:6 ]
 
 
 .. code-block:: julia
 
-    [ i + j + k for i ∈ 1:3, j ∈ 4:6, k ∈ 7:9 ]
+    [ i + j + k for i in 1:3, j in 4:6, k in 7:9 ]
 
 
 The same kind of expression works for dictionaries
 
 .. code-block:: julia
 
-    Dict(string(i) => i for i ∈ 1:3)
+    Dict(string(i) => i for i in 1:3)
 
 
 Comparisons and Logical Operators
@@ -599,34 +543,34 @@ For "not equal" use ``!=`` or ``≠``
 
 .. code-block:: julia
 
-    x ≠ 3
+    x != 3
+
+.. I think this is a a bad practive
+.. We can chain inequalities:
+.. 
+.. 
+.. .. code-block:: julia
+.. 
+    .. 1 < 2 < 3
+.. 
+.. 
+.. .. code-block:: julia
+.. 
+..     1 ≤ 2 ≤ 3
 
 
-We can chain inequalities:
-
-
-.. code-block:: julia
-
-    1 < 2 < 3
-
-
-.. code-block:: julia
-
-    1 ≤ 2 ≤ 3
-
-
-In many languages you can use integers or other values when testing conditions but Julia is more fussy
-
-.. code-block:: julia
-    :class: no-execute
-
-    while 0 println("foo") end
-
-
-.. code-block:: julia
-    :class: no-execute
-
-    if 1 print("foo") end
+In many languages you can use integers or other values when testing conditions but Julia more rigorously enforces booleans
+.. This looked a little odd when reading
+.. .. code-block:: julia
+..     :class: no-execute
+.. 
+..     while 0 println("foo") end
+.. 
+.. 
+.. .. code-block:: julia
+..     :class: no-execute
+.. 
+..     if 1 print("foo") end
 
 
 Combining Expressions
@@ -728,7 +672,7 @@ without the ``function`` keyword or ``end``
 
 .. code-block:: julia
 
-    ff(x) = sin(1 / x)
+    f(x) = sin(1 / x)
 
 
 Let's check that it works
@@ -736,7 +680,7 @@ Let's check that it works
 
 .. code-block:: julia
 
-    ff(1 / pi)
+    f(1 / pi)
 
 
 Julia also allows for you to define anonymous functions
@@ -761,18 +705,18 @@ Function arguments can be given default values
 
 .. code-block:: julia
 
-    fff(x, a = 1) = exp(cos(a * x))
+    f(x, a = 1) = exp(cos(a * x))
 
 If the argument is not supplied the default value is substituted
 
 .. code-block:: julia
 
-    fff(pi)
+    f(pi)
 
 
 .. code-block:: julia
 
-    fff(pi, 2)
+    f(pi, 2)
 
 
 Another option is to use **keyword** arguments
@@ -783,26 +727,13 @@ they are parsed and bound by name rather than order in the function call
 For example, in the call
 
 .. code-block:: julia
-    :class: no-execute
 
-    simulate(param1, param2, max_iterations=100, error_tolerance=0.01)
+    f(x; a = 1) = exp(cos(a * x)) #Note the ; in the definition
 
-the last two arguments are keyword arguments and their order is irrelevant (as
-long as they come after the positional arguments)
-
-To define a function with keyword arguments you need to use ``;`` like so
-
-.. code-block:: julia
-    :class: no-execute
-
-    function simulate_kw(param1, param2;
-                         max_iterations = 100,
-                         error_tolerance = 0.01)
-        # Function body here
-    end
+    f(pi, a = 2) #Calling with ; is usually optional and generally discouraged
 
 
-Vectorized Functions
+Broadcasting
 ====================
 
 
@@ -810,7 +741,7 @@ A common scenario in computing is that
 
 * we have a function ``f`` such that ``f(x)`` returns a number for any number ``x``
 
-* we wish to apply ``f`` to every element of a vector ``x_vec`` to produce a new vector ``y_vec``
+* we wish to apply ``f`` to every element of an iterable ``x_vec`` to produce a new result ``y_vec``
 
 In Julia loops are fast and we can do this easily enough with a loop
 
@@ -822,7 +753,7 @@ The following code will do the job
 
     x_vec = [2.0, 4.0, 6.0, 8.0]
     y_vec = similar(x_vec)
-    for (i, x) ∈ enumerate(x_vec)
+    for (i, x) in enumerate(x_vec)
         y_vec[i] = sin(x)
     end
 
@@ -832,7 +763,7 @@ But this is a bit unwieldy so Julia offers the alternative syntax
 
     y_vec = sin.(x_vec)
 
-More generally, if ``f`` is any Julia function, then ``f.`` references the vectorized version
+More generally, if ``f`` is any Julia function, then ``f.`` references the broadcasted version
 
 Conveniently, this applies to user-defined functions as well
 
@@ -843,12 +774,13 @@ In doing this we'll exploit the fact that, if we take ``k`` independent standard
 
 .. code-block:: julia
 
-    function chisq(k::Integer)
-        k > 0 || throw(ArgumentError("$k must be a natural number"))
+    function chisq(k)
+        @assert k > 0
         z = randn(k)
-        return sum(z -> z^2, z) # same as `sum(x^2 for x ∈ z)`
+        return sum(z -> z^2, z) # same as `sum(x^2 for x in z)`
     end
 
+The macro ``@assert` will check that the next expression evaluates to ``true``, and will stop and display an error otherwise
 
 .. code-block:: julia
 
@@ -864,7 +796,7 @@ the function body
     chisq(-2)
 
 
-Let's try this out on an array of integers, adding the vectorized notation
+Let's try this out on an array of integers, adding the broadcast
 
 .. code-block:: julia
 
@@ -953,6 +885,8 @@ and returns the `piecewise linear interpolation <https://en.wikipedia.org/wiki/L
 
 Aim for clarity, not efficiency
 
+Hint: use the function ``range`` to linearly space numbers
+
 Exercise 6
 ---------------------------------
 
@@ -1003,7 +937,7 @@ Here's one possible solution
 
     x_vals = [1, 2, 3]
     y_vals = [1, 1, 1]
-    sum(x * y for (x, y) ∈ zip(x_vals, y_vals))
+    sum(x * y for (x, y) in zip(x_vals, y_vals))
 
 
 Part 2 solution:
@@ -1030,7 +964,7 @@ Exercise 2
 
 .. code-block:: julia
 
-    p(x, coeff) = sum(a * x^(i-1) for (i, a) ∈ enumerate(coeff))
+    p(x, coeff) = sum(a * x^(i-1) for (i, a) in enumerate(coeff))
 
 
 .. code-block:: julia
@@ -1047,7 +981,7 @@ Here's one solutions:
 
     function f_ex3(string)
         count = 0
-        for letter ∈ string
+        for letter in string
             if (letter == uppercase(letter)) && isletter(letter)
                 count += 1
             end
@@ -1067,7 +1001,7 @@ Here's one solutions:
 
     function f_ex4(seq_a, seq_b)
         is_subset = true
-        for a ∈ seq_a
+        for a in seq_a
             if a ∉ seq_b
                 is_subset = false
             end
@@ -1133,13 +1067,11 @@ Let's test it
 
 .. code-block:: julia
 
-    let
-        x_grid = range(-1, stop = 1, length = 100)
-        y_vals = f_ex5.(x_grid)
-        y_approx = g_ex5.(x_grid)
-        plot(x_grid, y_vals, label = "true")
-        plot!(x_grid, y_approx, label = "approximation")
-    end
+    x_grid = range(-1, stop = 1, length = 100)
+    y_vals = f_ex5.(x_grid)
+    y_approx = g_ex5.(x_grid)
+    plot(x_grid, y_vals, label = "true")
+    plot!(x_grid, y_approx, label = "approximation")
 
 
 Exercise 6
@@ -1147,13 +1079,11 @@ Exercise 6
 
 .. code-block:: julia
 
-    let
-        f_ex6 = open("us_cities.txt", "r")
-        total_pop = 0
-        for line ∈ eachline(f_ex6)
-            city, population = split(line, ':')            # Tuple unpacking
-            total_pop += parse(Int, population)
-        end
-        close(f_ex6)
-        println("Total population = $total_pop")
+    f_ex6 = open("us_cities.txt", "r")
+    total_pop = 0
+    for line in eachline(f_ex6)
+        city, population = split(line, ':')            # Tuple unpacking
+        total_pop += parse(Int, population)
     end
+    close(f_ex6)
+    println("Total population = $total_pop")

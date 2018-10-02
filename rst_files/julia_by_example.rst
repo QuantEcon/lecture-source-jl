@@ -475,9 +475,9 @@ For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\b
 
 .. math::
 
-    v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^n \beta^i  
+    v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^{n-1} \beta^i + \beta^n v_0
 
-To implement the iteration in :math:`fixed_point_naive`, we start by solving this problem with a ``while`` loop
+To implement the iteration in :eq:`fixed_point_naive`, we start by solving this problem with a ``while`` loop
 
 The syntax for the while loop contains no surprises, and looks nearly identical to a Matlab implementation
 
@@ -674,7 +674,7 @@ Note that this completes in ``3`` iterations vs ``177`` for the naive fixed poin
 
 Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function
 
-But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :ref:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
+But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
 
 The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
 

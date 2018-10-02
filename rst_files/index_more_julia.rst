@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 *********************************
-More Programming in Julia
+More Programming in Julia and Software Engineering Principles
 *********************************
 
 This part of the course provides a more details on the Julia programming language and its ecosystem
@@ -18,9 +18,12 @@ This part of the course provides a more details on the Julia programming languag
 .. toctree::
     :maxdepth: 2
 
-    tools_editors
-    generic_functional_programming
     more_types
+    generic_functional_programming
+    tools_editors
     packages
+    version_control
+    testing
     need_for_speed
     plots
+    file_io
