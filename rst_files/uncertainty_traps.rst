@@ -234,6 +234,12 @@ The method to evaluate the number of active firms generates :math:`F_1,
 
 The function `UncertaintyTrapEcon` encodes as default values the parameters we'll use in the simulations below
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia 
   :class: test 
 

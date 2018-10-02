@@ -208,8 +208,14 @@ This system also constructs the components of the decompositions of :math:`y_t` 
 
 All of these objects are computed using the code below
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
 .. code-block:: julia
-  :class: test
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+.. code-block:: julia 
+  :class: test 
 
   using Test
 

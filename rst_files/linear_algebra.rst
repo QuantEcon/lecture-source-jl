@@ -280,6 +280,12 @@ The expression :math:`\| x - y\|` is thought of as the distance between :math:`x
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
 
     using LinearAlgebra

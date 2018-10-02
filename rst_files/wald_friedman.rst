@@ -171,6 +171,13 @@ The next figure shows two discretized beta distributions in the top panel
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+
 .. code-block:: julia
     :class: test
 
