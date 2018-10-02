@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ***************************************
-Arrays, Tuples, and Fundamental Types
+Arrays, Tuples, Ranges, and Fundamental Types
 ***************************************
 
 .. contents:: :depth: 2
@@ -19,7 +19,7 @@ Arrays, Tuples, and Fundamental Types
 Overview
 ============================
 
-In Julia, arrays are the most important data type for working with collections of numerical data
+In Julia, arrays and tuples are the most important data type for working with numerical data
 
 In this lecture we give more details on
 
@@ -29,8 +29,13 @@ In this lecture we give more details on
 
 * basic matrix algebra
 
+* tuples and named tuples
+
+* ranges
+
 
 .. _fundamental_types:
+
 
 Array Basics
 ================
@@ -39,14 +44,16 @@ Array Basics
 Shape and Dimension
 ----------------------
 
-
-We've already seen some Julia arrays in action
-
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
 .. code-block:: julia
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+    using LinearAlgebra, Statistics
+
+
+We've already seen some Julia arrays in action
+
 
 .. code-block:: julia
 
@@ -55,12 +62,12 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    a = ["foo", "bar", 10]
+    a = [1.0, 2.0, 3.0]
 
 
-The REPL tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Any,1}`` respectively
+The REPL tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively
 
-Here ``Int64`` and ``Any`` are types for the elements inferred by the compiler
+Here ``Int64`` and ``Float64`` are types for the elements inferred by the compiler
 
 We'll talk more about types later on
 
@@ -74,130 +81,48 @@ This is the default for many Julia functions that create arrays
 
     typeof(randn(100))
 
+In Julia, one dimensional vectors are best interpreted as column vectors, which we will see when we take transposes.
 
-To say that an array is one dimensional is to say that it is flat --- neither a row nor a column vector
-
-We can also confirm that ``a`` is flat using the ``size()`` or ``ndims()``
+We can check the dimensions of ``a`` using ``size()`` and ``ndims()``
 functions
-
-.. code-block:: julia
-
-    size(a)
-
 
 .. code-block:: julia
 
     ndims(a)
 
 
+.. code-block:: julia
+
+    size(a)
+
+
 The syntax ``(3,)`` displays a tuple containing one element --- the size along the one dimension that exists
 
-Here are some functions that create two-dimensional arrays
-
-.. code-block:: julia
-
-    using LinearAlgebra, Statistics
-
-.. code-block:: julia
-
-    diagm(0 => [2, 4])
-
-
-.. code-block:: julia
-
-    size(diagm(0 => [2, 4]))
 
 
 Array vs Vector vs Matrix
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In Julia, in addition to arrays you will see the types ``Vector`` and ``Matrix``
-
-However, these are just aliases for one- and two-dimensional arrays
+In Julia, ``Vector`` and ``Matrix`` are just aliases for one- and two-dimensional arrays
 respectively
-
 
 .. code-block:: julia
 
     Array{Int64, 1} == Vector{Int64}
-
-
-.. code-block:: julia
-
     Array{Int64, 2} == Matrix{Int64}
 
 
-.. code-block:: julia
+Vector construction with ``,`` is then interpreted as a column vector
 
-    Array{Int64, 1} == Matrix{Int64}
-
-
-.. code-block:: julia
-
-    Array{Int64, 3} == Matrix{Int64}
-
-
-In particular, a ``Vector`` in Julia is a flat array
-
-
-Changing Dimensions
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-The primary function for changing the dimension of an array is ``reshape()``
-
+To see this, we can create a column vector and row vector more directly
 
 .. code-block:: julia
 
-    a = [10, 20, 30, 40]
-
-
-.. code-block:: julia
-
-    b = reshape(a, 2, 2)
-
+    [1, 2, 3] == [1; 2; 3] #both column vectors
 
 .. code-block:: julia
 
-    b
-
-
-Notice that this function returns a "view" on the existing array
-
-This means that changing the data in the new array will modify the data in the
-old one:
-
-.. code-block:: julia
-
-    b[1, 1] = 100  # Continuing the previous example
-
-
-.. code-block:: julia
-
-    b
-
-
-.. code-block:: julia
-
-    a
-
-
-To collapse an array along one dimension you can use ``dropdims()``
-
-.. code-block:: julia
-
-    a = [1 2 3 4]  # Two dimensional
-
-
-.. code-block:: julia
-
-    dropdims(a, dims = 1)
-
-
-The return value is an array with the specified dimension "flattened"
-
-
-Why Flat Arrays?
-^^^^^^^^^^^^^^^^^^^^^^^^
+    [1 2 3] #a row vector is 2-dimensional
 
 As we've seen, in Julia we have both
 
@@ -224,21 +149,28 @@ Creating Arrays
 ------------------
 
 
-Functions that Return Arrays
+Functions that Create Arrays
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We've already seen some functions for creating arrays
-
-.. code-block:: julia
-
-    Matrix{Float64}(I, 2, 2)
+We've already seen some functions for creating a vector filled with ``0.0``
 
 .. code-block:: julia
 
     zeros(3)
 
+This generalizes to matrices and higher dimensional arrays
 
-You can create an empty array using the ``Array()`` constructor
+.. code-block:: julia
+
+    zeros(2, 2)
+
+To return an array filled with a single value, use ``fill``
+
+.. code-block:: julia
+
+    fill(5.0, 2, 2)
+
+Finally, you can create an empty array using the ``Array()`` constructor
 
 .. code-block:: julia
 
@@ -249,17 +181,42 @@ The printed values you see here are just garbage values
 
 (the existing contents of the allocated memory slots being interpreted as 64 bit floats)
 
-Other important functions that return arrays are
+
+Creating Arrays from Existing Arrays
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own
+
+The reasons for this, discussed in more detail in :ref:`generic_functional_programming`, are to ensure both clarity and generality
+
+One place this can be inconvenient is when we need to create an array based on an existing array
+
+First, note that assignment in Julia binds a name to a value, but does not make a copy of that type
 
 .. code-block:: julia
 
-    ones(2, 2)
+    x = [1, 2, 3]
+    y = x
+    y[1] = 2
+    x
 
+In the above, the ``y = x`` simply create a new named binding called ``y`` which refers to whatever ``x`` currently binds to
 
+To copy the data, you need to be more explicit
 
 .. code-block:: julia
 
-    fill("foo", 2, 2)
+    x = [1, 2, 3]
+    y = copy(x)
+    y[1] = 2
+    x
+
+However, rather than making a copy of ``x``, you may want to just have a similarly sized array
+
+.. code-block:: julia
+    x = [1, 2, 3]
+    y = similar(x)
+    y
 
 
 Manual Array Definitions
@@ -779,6 +736,17 @@ Julia provides some a great deal of additional functionality related to linear o
 
 
 For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library
+
+
+
+Tuples and Named Tuples
+================
+
+
+Ranges
+================
+
+
 
 Exercises
 =============
