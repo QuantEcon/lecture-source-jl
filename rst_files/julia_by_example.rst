@@ -680,12 +680,63 @@ The only change we will need to our model in order to use a different floating p
     iv = [BigFloat(0.8)] #Higher precision
 
     #otherwise identical
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
 
 The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations
+
+
+Multivariate Fixed Point Maps
+------------------------------
+
+The above example can be extended to multivariate maps without any modifications to the fixed point iteration code
+
+Using our own, homegrown iteration and simple passing in a bivariate map,
+
+.. code-block:: julia
+
+    p = [1.0, 2.0]
+    β = 0.9
+    iv = [0.8, 2.0]
+    f(v) = p .+ β * v #Note that p and β are used in the function!
+
+    sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
+
+This also works without any modifications with the ``fixedpoint`` library function
+
+.. code-block:: julia
+
+    using NLsolve
+    p = [1.0, 2.0, 0.1]
+    β = 0.9
+    iv =[0.8, 2.0, 51.0]
+    f(v) = p .+ β * v
+
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an extremely efficient implementation for small arrays and matrices
+
+
+.. code-block:: julia
+
+    using NLsolve, StaticArrays
+    p = @SVector [1.0, 2.0, 0.1]
+    β = 0.9
+    iv = @SVector  [0.8, 2.0, 51.0]
+    f(v) = p .+ β * v
+
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
+
+All macros in Julia are prefixed by ``@`` in the name, and manipulate the code prior to compilation
+
+We will see a variety of macros, and discuss the "metaprogramming" behind them in a later lecture
 
 
 .. Composing Packages : Later, add in a auto-differentiation example when working with NLsolve forwarddiff or capstan
