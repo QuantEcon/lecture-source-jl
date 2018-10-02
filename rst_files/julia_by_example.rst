@@ -96,9 +96,9 @@ Julia code will often be created from a variety of packages, such as ``Plots.jl`
 
 A project is defined by a ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument)
 
-We will discuss it more in ``Julia Packages``, but these files ensure that the code will use a complete snapshot of the graph of version dependencies
+We will discuss it more in :ref:`Julia Packages <packages>`, but these files provide a listing of packages and versions used by the code
 
-This ensures that an environment for running code is **reproducible**, so that oneone else can replicate the precise set of package versions used in construction
+This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
 
 .. _import:
@@ -127,7 +127,7 @@ Other functions require importing all of the names from an external library
 
 Let's break this down and see how it works
 
-The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available in the global scope
+The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available
 
 Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files 
 
@@ -183,7 +183,7 @@ program, for the sake of learning syntax let's rewrite our program to use a
 
 .. note::
     
-    In the current version of Julia v1.0, the scoping rules for variables accessed in ``for`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` loops outside of Jupyter notebooks.  This issue does not apply to ``for`` loops within functions
+    In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
 
 Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
 
@@ -224,7 +224,7 @@ To fix this, use ``eachindex``
      
 Here, ``eachindex(ϵ)`` returns an interator of indices which can be used to access ``ϵ``
 
-While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is more clear and prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code 
+While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code 
 
 In Julia you can also loop directly over arrays themselves, like so
 
@@ -448,14 +448,15 @@ Of course, in this simple example, with parameter restrictions this can be solve
 Rearrange the equation in terms of a map :math:`f(x) : \mathbb R \to \mathbb R`
 
 .. math::
+    :label: fixed_point_map
 
-    v = f(v)
+    v = f(v)\quad
 
 where
 
 .. math::
 
-    f(v) := p + \beta v
+    f(v) := p + \beta v\quad
  
 
 Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem
@@ -463,9 +464,22 @@ Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the ab
 While Loops
 ---------------------
 
-We start by solving this problem with a ``while`` loop
+One approach to finding a fixed point of :eq:`fixed_point_map` is to start with an initial value, and iterate the map
 
-The syntax for the while loop contains no surprises, and looks nearly identical to a Matlab implementaiton
+.. math::
+    :label: fixed_point_naive
+
+    v^{n+1} = f(v^n)\quad
+
+For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\beta)` when :math:`\abs{\beta} < 1` by iterating backwards and taking :math:`n\to\infty`
+
+.. math::
+
+    v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^n \beta^i  
+
+To implement the iteration in :math:`fixed_point_naive`, we start by solving this problem with a ``while`` loop
+
+The syntax for the while loop contains no surprises, and looks nearly identical to a Matlab implementation
 
 .. code-block:: julia
 
@@ -608,6 +622,16 @@ Furthermore, a default value may be enabled--so the named parameter ``iv`` is re
 
 The return type of the function also has named fields, ``value, error,`` and ``iter``--all accessed intuitively using ``.``
 
+To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:``x = f(x)`` where :math:`f(x) := r x (1-x)`
+
+.. code-block:: julia
+
+    r = 0.1
+    f(x) = r * x * (1 - x)
+
+    sol = fixedpointmap(f, iv = 0.8)
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
+
 
 Using a Package
 ----------------------------
@@ -647,6 +671,10 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
+
+Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function
+
+But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :ref:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
 
 The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
 
