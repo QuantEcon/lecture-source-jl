@@ -540,26 +540,6 @@ We shall construct two types that
 
     =#
 
-    mutable struct WFSolution{TAV <: AbstractVector, TR<:Real}
-        J::TAV
-        lb::TR
-        ub::TR
-    end
-
-    struct WaldFriedman{TR <: Real,
-                        TI <: Integer,
-                        TAV1 <: AbstractVector,
-                        TAV2 <: AbstractVector}
-        c::TR
-        L0::TR
-        L1::TR
-        f0::TAV1
-        f1::TAV1
-        m::TI
-        pgrid::TAV2
-        sol::WFSolution
-    end
-
     function WaldFriedman(c, L0, L1, f0, f1; m = 25)
 
         pgrid = range(0.0, stop = 1.0, length = m)
@@ -573,7 +553,8 @@ We shall construct two types that
         lb = 0.
         ub = 0.
 
-        WaldFriedman(c, L0, L1, f0, f1, m, pgrid, WFSolution(J, lb, ub))
+        WFSolution = (J = J, lb = lb, ub = ub)
+        (c = c, L0 = L0, L1 = L1, f0 = f0, f1 = f1, m = m, pgrid = pgrid, WFSolution = WFSolution)
     end
 
     current_distribution(wf::WaldFriedman, p::Real) = p * wf.f0 + (1 - p) * wf.f1
