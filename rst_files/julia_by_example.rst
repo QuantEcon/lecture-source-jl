@@ -118,11 +118,11 @@ Other functions require importing all of the names from an external library
 .. code-block:: julia
 
     using Plots, LinearAlgebra, Statistics
-    gr(fmt=:png) #Optional, store as png not svg
+    gr(fmt = :png) # Optional, store as png not svg
 
     n = 100
     ϵ = randn(n)
-    plot(1:n, ϵ, color = "blue")
+    plot(1:n, ϵ)
 
 
 Let's break this down and see how it works
@@ -271,7 +271,7 @@ To make things more interesting, instead of directly plotting the draws from the
     end
 
     data = generatedata(10)
-    plot(data, color = "blue")
+    plot(data)
 
 Here
 
@@ -352,11 +352,18 @@ For this particular case, the clearest and most general solution is probably the
 .. code-block:: julia
 
     # Direct solution with broadcasting, and small user-defined function
-    n = 100
+    n = 100    
     f(x) = x^2
-    plot(f.(randn(n)), color = "blue")
+
+    x = randn(n)
+    plot(f.(x), label="x^2")
+    plot!(x, label = "x") # Layer on the same plot
 
 While broadcasting above superficially looks like vectorizing functions in Matlab, or Python ufuncs, it is much richer and built on core foundations of the language
+
+The other additional function ``plot!`` adds a graph to the existing plot
+
+This follows a general convention in Julia, where an function which modifies the arguments or a global state has a ``!`` at the end of it the name
 
 
 A Slightly More Useful Function
@@ -713,7 +720,7 @@ The only change we will need to our model in order to use a different floating p
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
 
-The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations
+The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations, and the solution has a finite-precision solution with those parameters
 
 
 Multivariate Fixed Point Maps
@@ -862,10 +869,29 @@ Exercise 6
 
 Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8` and :math:`\alpha = 0.98`
 
-In particular, you should produce (modulo randomness) a figure that looks as follows
+(The figure will illustrate how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
 
+.. _jbe_ex7:
 
-(The figure illustrates how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
+Exercise 7
+----------------------------------
+
+Take a random walk, starting from :math:`x_0 = 1`
+
+.. math::
+
+    x_{t+1} = \, \alpha \, x_t + \sigma\, \epsilon_{t+1}
+    \quad \text{where} \quad
+    x_0 = 1
+    \quad \text{and} \quad t = 0,\ldots,n
+
+The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+
+For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t | x_t < a\}`
+
+Let :math:`\sigma = 0.1, \alpha = 0.0`
+
+Simulate the first-passage time, :math:`T_0`, for 100 random walks and plot a histogram
 
 
 Solutions
@@ -879,7 +905,7 @@ Exercise 1
     function factorial2(n)
         k = 1
         for i in 1:n
-            k *= i
+            k *= i  # or k = k * i
         end
         return k
     end
@@ -899,7 +925,7 @@ Exercise 2
     function binomial_rv(n, p)
         count = 0
         U = rand(n)
-        for i ∈ 1:n
+        for i in 1:n
             if U[i] < p
                 count += 1    # Or count = count + 1
             end
@@ -907,10 +933,10 @@ Exercise 2
         return count
     end
 
-        for j in 1:25
-            b = binomial_rv(10, 0.5)
-            print("$b, ")
-        end
+    for j in 1:25
+        b = binomial_rv(10, 0.5)
+        print("$b, ")
+    end
 
 Exercise 3
 ----------
@@ -953,24 +979,24 @@ Exercise 4
 
 .. code-block:: julia
 
-        payoff = 0
-        count = 0
+    payoff = 0
+    count = 0
 
-        print("Count = ")
+    print("Count = ")
 
-        for i in 1:10
-            U = rand()
-            if U < 0.5
-                count += 1
-            else
-                count = 0
-            end
-            print(count)
-            if count == 3
-                payoff = 1
-            end
+    for i in 1:10
+        U = rand()
+        if U < 0.5
+            count += 1
+        else
+            count = 0
         end
-        println("\npayoff = $payoff")
+        print(count)
+        if count == 3
+            payoff = 1
+        end
+    end
+    println("\npayoff = $payoff")
 
 
 We can simplify this somewhat using the **ternary operator**. Here's
@@ -978,31 +1004,31 @@ some examples
 
 .. code-block:: julia
 
-        a = 1  < 2 ? "foo" : "bar"
+    a = 1  < 2 ? "foo" : "bar"
 
 .. code-block:: julia
 
-        a = 1 > 2 ? "foo" : "bar"
+    a = 1 > 2 ? "foo" : "bar"
 
 
 Using this construction:
 
 .. code-block:: julia
 
-        payoff = 0
-        count = 0
+    payoff = 0.0
+    count = 0.0
 
-        print("Count = ")
+    print("Count = ")
 
-        for i in 1:10
-            U = rand()
-            count = U < 0.5 ? count + 1 : 0
-            print(count)
-            if count == 3
-                payoff = 1
-            end
+    for i in 1:10
+        U = rand()
+        count = U < 0.5 ? count + 1 : 0
+        print(count)
+        if count == 3
+            payoff = 1
         end
-        println("\npayoff = $payoff")
+    end
+    println("\npayoff = $payoff")
 
 
 Exercise 5
@@ -1012,14 +1038,14 @@ Here's one solution
 
 .. code-block:: julia
 
-        α = 0.9
-        n = 200
-        x = zeros(n + 1)
+    α = 0.9
+    n = 200
+    x = zeros(n + 1)
 
-        for t ∈ 1:n
-            x[t+1] = α * x[t] + randn()
-        end
-        return plot(x, color = "blue")
+    for t in 1:n
+        x[t+1] = α * x[t] + randn()
+    end
+    plot(x)
 
 
 Exercise 6
@@ -1027,20 +1053,16 @@ Exercise 6
 
 .. code-block:: julia
 
-        αs = [0.0, 0.8, 0.98]
-        n = 200
+    αs = [0.0, 0.8, 0.98]
+    n = 200
+    p = plot() #Naming a plot to add to
 
-        series = []
-        labels = []
-
-        for α in αs
-            x = zeros(n + 1)
-            x[1] = 0
-            for t in 1:n
-                x[t+1] = α * x[t] + randn()
-            end
-            push!(series, x)
-            push!(labels, "alpha = $α")
+    for α in αs
+        x = zeros(n + 1)
+        x[1] = 0.0
+        for t in 1:n
+            x[t+1] = α * x[t] + randn()
         end
-
-        plot(series, label = reshape(labels, 1, length(labels)))
+        plot!(p, x, label = "alpha = $α") #Add to plot p
+    end
+    p # Display plot
