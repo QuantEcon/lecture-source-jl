@@ -471,7 +471,7 @@ One approach to finding a fixed point of :eq:`fixed_point_map` is to start with 
 
     v^{n+1} = f(v^n)\quad
 
-For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\beta)` when :math:`\abs{\beta} < 1` by iterating backwards and taking :math:`n\to\infty`
+For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\beta)` when :math:`|\beta| < 1` by iterating backwards and taking :math:`n\to\infty`
 
 .. math::
 
@@ -626,7 +626,7 @@ To show the flexibilty of this code, we can use it to find a fixed-point of the 
 
 .. code-block:: julia
 
-    r = 0.1
+    r = 2.0
     f(x) = r * x * (1 - x)
 
     sol = fixedpointmap(f, iv = 0.8)
