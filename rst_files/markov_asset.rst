@@ -320,14 +320,25 @@ The next figure shows a simulation, where
 
 * :math:`g_t = \exp(X_t)`, so that :math:`\ln g_t = X_t` is the growth rate
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
 .. code-block:: julia
 
+<<<<<<< HEAD
     using Test
+=======
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+.. code-block:: julia 
+  :class: test 
+
+  using Test
+>>>>>>> 749376730b852eddbc1e4af87c758d1bfd1d15c1
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LaTeXStrings
+    using QuantEcon, Plots, LaTeXStrings, Random 
+    Random.seed!(42) # For reproducible results. 
 
     n = 25
     mc = tauchen(n, 0.96, 0.25)
@@ -341,6 +352,15 @@ The next figure shows a simulation, where
     labels = [L"$X_t$" L"$g_t$" L"$d_t$" L"$log (d_t)$"]
     plot(series, layout = 4, labels = labels)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin
+    @test x_series[4] ≈ -0.669642857142857
+    @test g_series[5] ≈ 0.4094841251523643
+    @test d_series[9] ≈ 0.03514706070454392 # Near the inflection point.
+    @test log.(d_series)[72] ≈ -29.24107142857142 # Something near the end.
+  end
 
 Pricing
 ^^^^^^^^^^^^
@@ -439,6 +459,7 @@ Here's the code, including a test of the spectral radius condition
         alpha = 0.7,
         label = L"$v$")
 
+<<<<<<< HEAD
 ..code-block:: julia
   :class: test
 
@@ -446,6 +467,15 @@ Here's the code, including a test of the spectral radius condition
     @test    v[2] == 3.4594684257743284
     @test v[1] == 3.2560393349907755
   end
+=======
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test v[5] ≈ 4.526909446326235
+    @test K[8] ≈ 8.887213530262768e-10
+  end 
+>>>>>>> 749376730b852eddbc1e4af87c758d1bfd1d15c1
 
 Why does the price-dividend ratio increase with the state?
 
@@ -662,6 +692,16 @@ with a positively correlated Markov process and :math:`g(x) = \exp(x)`
          title = "Price-dividend ratio as a function of the state",
          ylabel = "price-dividend ratio",
          xlabel = "state")
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test lines[2][4] ≈ 33.36574362637905
+    @test lines[3][12] ≈ 28.52560591264372
+    @test lines[4][18] ≈ 22.38597470787489
+    @test lines[5][24] ≈ 15.81947255704859
+  end 
 
 
 Notice that :math:`v` is decreasing in each case
@@ -891,6 +931,13 @@ Here's a plot of :math:`w` compared to the consol price when :math:`P_S = 40`
     plot(x, p, color = "blue", lw = 2, xlabel = "state", label = "consol price")
     plot!(x, w, color = "green", lw = 2, label = "value of call option")
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test p[17] ≈ 9.302197030956606
+    @test w[20] ≈ 0.46101660813737866
+  end 
 
 In large states the value of the option is close to zero
 
@@ -1084,6 +1131,7 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
 
     w = call_option(ap, ζ, p_s)
 
+<<<<<<< HEAD
 .. code-block:: julia
   :class: test
 
@@ -1092,6 +1140,15 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
     @test w[2][1] == 176.83933430191294
   end
 
+=======
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test w[1] ≈ 603.8710047641985 
+    @test v_consol[3] ≈ 148.67554548466475
+  end 
+>>>>>>> 749376730b852eddbc1e4af87c758d1bfd1d15c1
 
 Exercise 3
 ----------
@@ -1143,6 +1200,13 @@ Here's a suitable function:
     end
     plot(lines, labels = reshape(labels, 1, length(labels)))
 
+.. code-block:: julia 
+  :class: test
+  
+  @testset begin 
+    @test lines[1][4] ≈ 29.859285398252347
+    @test lines[2][2] ≈ 147.00074548801277
+  end 
 
 Not surprisingly, the option has greater value with larger :math:`k`.
 This is because the owner has a longer time horizon over which he or she

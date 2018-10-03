@@ -85,6 +85,12 @@ This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) o
 
 Here's an example
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
 
     using DataFrames

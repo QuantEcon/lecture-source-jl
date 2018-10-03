@@ -508,6 +508,12 @@ What's important here is that the function approximation scheme must not only pr
 
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 

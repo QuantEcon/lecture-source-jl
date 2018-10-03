@@ -1025,6 +1025,12 @@ We compute value-entropy correspondences for two policies
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: test
 

@@ -208,6 +208,17 @@ This system also constructs the components of the decompositions of :math:`y_t` 
 
 All of these objects are computed using the code below
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia
 
     #=
@@ -650,6 +661,9 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
 .. _addfunc_egcode:
 
 .. code-block:: julia
+    
+    using Random 
+    Random.seed!(42) # For reproducible results. 
 
     ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
     σ = 0.01
@@ -679,6 +693,15 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
     ax[2][:plot](1:T, y[1, :], color="g")
     ax[2][:axhline](0, color="k", linestyle="-.")
     ax[2][:set_title]("Associated path of "*L"x_t")
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test y[79] ≈ -0.07268127992877046
+    @test y[amf.nx+1, :][19] ≈ 0.09115348523102862
+    @test F == 0.01 && T == 150 # A few constants.  
+  end 
 
 Notice the irregular but persistent growth in :math:`y_t`
 

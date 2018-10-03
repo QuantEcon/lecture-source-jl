@@ -372,6 +372,12 @@ Here's some code that, among other things, contains a function called `consumpti
 
 This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes given a set of parameters, under the assumption of complete markets
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 

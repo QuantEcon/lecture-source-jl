@@ -42,6 +42,12 @@ Primitive Data Types
 A particularly simple data type is a Boolean value, which can be either ``true`` or
 ``false``
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
 
     x = true

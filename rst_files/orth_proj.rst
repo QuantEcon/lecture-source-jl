@@ -847,6 +847,12 @@ Exercise 3
 Here's a function that computes the orthonormal vectors using the GS
 algorithm given in the lecture.
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: Test 
 
@@ -942,6 +948,7 @@ basis by QR decomposition and project once more.
 
 .. code-block:: julia 
     :class: test 
+    
     @testset "Test Py3" begin 
         @test norm(Py3-Py1) ≈ 0 
     end 

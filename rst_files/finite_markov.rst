@@ -238,6 +238,12 @@ In order to implement this simulation procedure, we need a method for generating
 
 For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: test
 

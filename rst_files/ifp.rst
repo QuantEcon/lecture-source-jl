@@ -391,6 +391,12 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
 * an ``initialize``, which generates suitable initial conditions for iteration
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: test
 

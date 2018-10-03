@@ -332,6 +332,12 @@ The code can be found below:
 
 (Results and discussion follow the code)
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: test
 
@@ -697,6 +703,15 @@ Compute the bond price schedule as seen in figure 3 of Arellano (2008)
          Guide.xlabel("B'"), Guide.ylabel("q"),
          Guide.colorkey(title = "y"), Geom.line)
 
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test q_high[4] ≈ 0.2664149144450229
+    @test q_low[20] ≈ 2.2418853380628388e-5
+    @test x[17] == -0.2976
+  end 
+
 Draw a plot of the value functions
 
 .. code-block:: julia
@@ -763,3 +778,17 @@ Plot a time series of major variables simulated from the model
     # set final plot height and vertically stack the above three plots
     set_default_plot_size(6inch, 8inch)
     vstack(p4...)
+
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test def_end == [62, 157, 198]
+    @test def_start == [60, 154, 196]
+    @test def_breaks == Bool[false, false, true, false, false, false, true, false, false]
+    @test defs == [60, 61, 62, 154, 155, 156, 157, 196, 197, 198]
+    @test y_vec[4] ≈ 1.0712139563752547
+    @test B_vec[40] == -0.0768
+    @test q_vec[140] ≈ 0.9738927780828847
+    @test default_vec[240] == false
+  end 

@@ -221,7 +221,11 @@ This helps to tidy up the code and provides an object that's easy to pass to fun
 
 The default utility function is a CRRA utility function
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test
