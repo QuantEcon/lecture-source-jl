@@ -649,7 +649,7 @@ Solutions
 
 .. code-block:: julia
 
-    using Gadfly, Compose, ColorTypes, DataFrames
+    using Plots, Compose, ColorTypes, DataFrames
 
 Compute the value function, policy and equilibrium prices
 
@@ -697,49 +697,36 @@ Compute the bond price schedule as seen in figure 3 of Arellano (2008)
     end
 
     # generate plot
-    p1=plot(x=repeat(x, outer=[2]), y=[q_low; q_high],
-         color=repeat([:Low, :High], inner=[length(x)]),
-         Guide.title("Bond price schedule q(y, B')"),
-         Guide.xlabel("B'"), Guide.ylabel("q"),
-         Guide.colorkey(title = "y"), Geom.line)
+    plot(x, q_low, label="Low")
+    plot!(x, q_high, label="High")
+    plot!(title="Bond price schedule q(y, B')",
+        xlabel="B'", ylabel="q", legend_title="y")
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test q_high[4] ≈ 0.2664149144450229
     @test q_low[20] ≈ 2.2418853380628388e-5
     @test x[17] == -0.2976
-  end 
+  end
 
 Draw a plot of the value functions
 
 .. code-block:: julia
 
-    p2=plot(x=repeat(ae.Bgrid, outer=[2]),
-         y=vec(ae.vf[:, [iy_low, iy_high]]),
-         color=repeat([:Low, :High], inner=[length(ae.Bgrid)]),
-         Guide.title("Value functions"),
-         Guide.xlabel("B"), Guide.ylabel("V(y,B)"),
-         Guide.colorkey(title = "y"), Geom.line)
+    plot(ae.Bgrid, ae.vf[:, iy_low], label="Low")
+    plot!(ae.Bgrid, ae.vf[:, iy_high], label="High")
+    plot!(xlabel="B", ylabel="V(y,B)", title="Value functions", legend_title="y")
 
 Draw a heat map for default probability
 
 .. code-block:: julia
 
-    p3=plot(x_min=repeat(ae.Bgrid[1:end-1], inner=[ae.ny-1]),
-         x_max=repeat(ae.Bgrid[2:end], inner=[ae.ny-1]),
-         y_min=repeat(ae.ygrid[1:end-1], outer=[ae.nB-1]),
-         y_max=repeat(ae.ygrid[2:end], outer=[ae.nB-1]),
-         x=(repeat(ae.Bgrid[1:end-1], inner=[ae.ny-1]) + repeat(ae.Bgrid[2:end], inner=[ae.ny-1]))/2,
-         y=(repeat(ae.ygrid[1:end-1], outer=[ae.nB-1]) + repeat(ae.ygrid[2:end], outer=[ae.nB-1]))/2,
-         color=clamp.(vec(ae.defprob[1:end-1, 1:end-1]'), 0, 1),
-         Geom.rectbin,
-         Guide.xlabel("B'"), Guide.ylabel("y"),
-         Guide.title("Probability of default"), Geom.rectbin,
-         Scale.y_continuous(minvalue=0.8, maxvalue=1.2),
-         Scale.x_continuous(minvalue=minimum(ae.Bgrid), maxvalue=0.0),
-         Scale.color_continuous(minvalue=0, maxvalue=1))
+    plot(seriestype=:heatmap, ae.Bgrid[1:end-1],
+          ae.ygrid[2:end],
+          clamp.(vec(ae.defprob[1:end-1, 1:end-1]), 0, 1))
+    plot!(xlabel="B'", ylabel="y", title="Probability of default")
 
 Plot a time series of major variables simulated from the model
 
@@ -759,30 +746,27 @@ Plot a time series of major variables simulated from the model
     def_start = defs[[true; def_breaks]]
     def_end = defs[[def_breaks; true]]
 
-    # construct boxes that shade periods of default
-    def_box = Guide.annotation(compose(context(),
-                                       [rectangle(i[1], 0h, i[2]-i[1], 1h)
-                                        for i=zip(def_start, def_end)]...,
-                                      fill(RGBA(0.5, 0.5, 0.5, 0.2))))
+    y_vals = [y_vec, B_vec, q_vec]
+    titles = ["Output", "Foreign assets", "Bond price"]
 
-    # xy labels are common for all plots
-    xy_lab = [Guide.xlabel("time"), Guide.ylabel("")]
+    plots = plot(layout=(3,1), size=(700,800))
 
-    # now iterate over three variables and put them into an array
-    p4 = Gadfly.Plot[]
-    for (vec, name) in [(y_vec, "Output"), (B_vec, "Foreign assets"), (q_vec, "Bond price")]
-        push!(p4,
-              plot(x=1:T, y=vec, Geom.line, def_box, Guide.title(name), xy_lab...))
+    # Plot the three variables, and for each each variable shading the period(s) of default in grey
+    for i in 1:3
+        plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel="time", label="", lw=2)
+        for j in 1:length(def_start)
+            plot!(plots[i], [def_start[j], def_end[j]], [maximum(y_vals[i]), maximum(y_vals[i])],
+                  fill_between=(minimum(y_vals[i]), maximum(y_vals[i])), fcolor=:grey, falpha=0.3,
+                  label = "")
+        end
     end
 
-    # set final plot height and vertically stack the above three plots
-    set_default_plot_size(6inch, 8inch)
-    vstack(p4...)
+    plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test def_end == [62, 157, 198]
     @test def_start == [60, 154, 196]
     @test def_breaks == Bool[false, false, true, false, false, false, true, false, false]
@@ -791,4 +775,4 @@ Plot a time series of major variables simulated from the model
     @test B_vec[40] == -0.0768
     @test q_vec[140] ≈ 0.9738927780828847
     @test default_vec[240] == false
-  end 
+  end
