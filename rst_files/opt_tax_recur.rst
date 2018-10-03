@@ -683,10 +683,21 @@ Sequence Implementation
 
 The above steps are implemented in a type called `SequentialAllocation`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+.. code-block:: julia 
+  :class: test 
+
+  using Test 
+
 .. code-block:: julia
   :class: collapse
 
-  using QuantEcon, NLsolve, NLopt, LinearAlgebra
+  using QuantEcon, NLsolve, NLopt, LinearAlgebra, Interpolations
 
   import QuantEcon: simulate
 
@@ -1297,16 +1308,16 @@ The above steps are implemented in a type called `RecursiveAllocation`
       for (i, μ) in enumerate(μgrid0)
           c[i, :], n[i, :], x[i, :], V[i, :] = time1_value(PP, μ)
       end
-      Vf = Vector{LinInterp}(undef, 2)
-      cf = Vector{LinInterp}(undef, 2)
-      nf = Vector{LinInterp}(undef, 2)
-      xprimef = Matrix{LinInterp}(undef, 2, S)
+      Vf = Vector{AbstractInterpolation}(undef, 2)
+      cf = Vector{AbstractInterpolation}(undef, 2)
+      nf = Vector{AbstractInterpolation}(undef, 2)
+      xprimef = Matrix{AbstractInterpolation}(undef, 2, S)
       for s in 1:2
-          cf[s] = LinInterp(x[:, s][end:-1:1], c[:, s][end:-1:1])
-          nf[s] = LinInterp(x[:, s][end:-1:1], n[:, s][end:-1:1])
-          Vf[s] = LinInterp(x[:, s][end:-1:1], V[:, s][end:-1:1])
+          cf[s] = LinearInterpolation(x[:, s][end:-1:1], c[:, s][end:-1:1])
+          nf[s] = LinearInterpolation(x[:, s][end:-1:1], n[:, s][end:-1:1])
+          Vf[s] = LinearInterpolation(x[:, s][end:-1:1], V[:, s][end:-1:1])
           for sprime in 1:S
-              xprimef[s, sprime] = LinInterp(x[:, s][end:-1:1], x[:, s][end:-1:1])
+              xprimef[s, sprime] = LinearInterpolation(x[:, s][end:-1:1], x[:, s][end:-1:1])
           end
       end
       policies = [cf, nf, xprimef]
@@ -1341,20 +1352,20 @@ The above steps are implemented in a type called `RecursiveAllocation`
 
   function fit_policy_function(PP, PF, xgrid)
       S = PP.S
-      Vf = Vector{LinInterp}(undef, S)
-      cf = Vector{LinInterp}(undef, S)
-      nf = Vector{LinInterp}(undef, S)
-      xprimef = Matrix{LinInterp}(undef, S, S)
+      Vf = Vector{AbstractInterpolation}(undef, S)
+      cf = Vector{AbstractInterpolation}(undef, S)
+      nf = Vector{AbstractInterpolation}(undef, S)
+      xprimef = Matrix{AbstractInterpolation}(undef, S, S)
       for s in 1:S
           PFvec = Matrix{typeof(PP.model).parameters[1]}(undef, length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
               PFvec[i_x, :] = PF(i_x, x, s)
           end
-          Vf[s] = LinInterp(xgrid, PFvec[:, 1])
-          cf[s] = LinInterp(xgrid, PFvec[:, 2])
-          nf[s] = LinInterp(xgrid, PFvec[:, 3])
+          Vf[s] = LinearInterpolation(xgrid, PFvec[:, 1])
+          cf[s] = LinearInterpolation(xgrid, PFvec[:, 2])
+          nf[s] = LinearInterpolation(xgrid, PFvec[:, 3])
           for sprime in 1:S
-              xprimef[s, sprime] = LinInterp(xgrid, PFvec[:, 3+sprime])
+              xprimef[s, sprime] = LinearInterpolation(xgrid, PFvec[:, 3+sprime])
           end
       end
       return Vf, [cf, nf, xprimef]
@@ -1498,6 +1509,9 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
 .. code-block:: julia
 
+    using Random 
+    Random.seed!(42) # For reproducible results. 
+
     M_time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
                                   Θ=ones(6))            # Θ can in principle be random
 
@@ -1516,7 +1530,7 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     sim_seq_h = simulate(PP_seq_time, 1.0, 1, 7, sHist_h)
     sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
 
-    using PyPlot
+    using Plots
     titles = hcat("Consumption",
                   "Labor Supply",
                   "Government Debt",
@@ -1529,16 +1543,25 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     sim_seq_h_plot = [sim_seq_h[1:4]..., M_time_example.G[sHist_h],
                       M_time_example.Θ[sHist_h].*sim_seq_h[2]]
 
-    plt[:figure](figsize=[14, 10])
+    plots = plot(layout=(3,2), size=(800,600))
     for i = 1:6
-        plt[:subplot](3, 2, i)
-        plt[:title](titles[i])
-        plt[:plot](sim_seq_l_plot[i], "-ok")
-        plt[:plot](sim_seq_h_plot[i], "-or")
-	grid("on")
+        plot!(plots[i], sim_seq_l_plot[i], color=:black, lw=2,
+              marker=:circle, markersize=2, label="")
+        plot!(plots[i], sim_seq_h_plot[i], color=:red, lw=2,
+              marker=:circle, markersize=2, label="")
+        plot!(plots[i], title=titles[i], grid=true)
     end
+    plot(plots)
 
-    plt[:tight_layout]()
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
+    @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
+    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
+  end 
 
 **Tax smoothing**
 
@@ -1584,12 +1607,11 @@ time 0 by raising consumption
 
 .. code-block:: julia
 
-    plt[:figure](figsize=[8, 5])
-    plt[:title]("Gross Interest Rate")
-    plt[:plot](sim_seq_l[end], "-ok")
-    plt[:plot](sim_seq_h[end], "-or")
-    plt[:tight_layout]()
-    grid("on")
+    plot(sim_seq_l[end], color=:black, lw=2,
+            marker=:circle, markersize=2, label="")
+    plot!(sim_seq_h[end], color=:red, lw=2,
+            marker=:circle, markersize=2, label="")
+    plot!(title="Gross Interest Rate", grid=true)
 
 Government Saving
 ^^^^^^^^^^^^^^^^^^
@@ -1651,6 +1673,8 @@ above)
 
 .. code-block:: julia
 
+    Random.seed!(42) # For reproducible results. 
+
     M2 = crra_utility(G=[0.15], Π=ones(1, 1), Θ=[1.0])
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
@@ -1660,21 +1684,22 @@ above)
     interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
 
     titles = ["Tax Rate" "Gross Interest Rate"]
-    plt[:figure](figsize=(10, 8))
+    labels = [["Time , t = 0", "Time , t >= 0"], ""]
+    plots = plot(layout=(2,1), size =(700,600))
     for (i, series) in enumerate((taxpolicy, interest_rate))
-        plt[:subplot](2, 1, i)
-        plt[:plot](B_vec, series, linewidth = 2.0)
-        plt[:title](titles[i])
-	grid("on")
+        plot!(plots[i], B_vec, series, linewidth=2, label=labels[i])
+        plot!(plots[i], title=titles[i], grid=true, legend=:topleft)
     end
-    plt[:subplot](2, 1, 1)
-    plt[:legend]((latexstring("Time ", "t=0"),
-            latexstring("Time ", L"t \geq 1")), loc=2, shadow=true)
-    plt[:subplot](2, 1, 2)
-    plt[:xlabel]("Initial Government Debt")
-    plt[:tight_layout]()
+    plot(plots)
 
+.. code-block:: julia 
+  :class: test 
 
+  @testset begin 
+    @test B_vec[3] ≈ -1.4494949494949494
+    @test taxpolicy[2, 2] ≈ 0.0020700125847712414
+    @test interest_rate[3, 1] ≈ 1.113064964490116
+  end 
 
 The figure indicates  that if the government enters with  positive debt, it sets
 a tax rate at :math:`t=0` that is less than all later tax rates
@@ -1726,14 +1751,9 @@ time :math:`t=0` tax rate
     # Compute the optimal policy if the government could reset
     tau1_reset = Matrix(hcat([simulate(PP_seq_time0, B1, 1, 1)[4] for B1 in B1_vec]...)')
 
-    plt[:figure](figsize=[10, 6])
-    plt[:plot](B_vec, taxpolicy[:, 2], linewidth=2.)
-    plt[:plot](B_vec, tau1_reset, linewidth=2.)
-    plt[:xlabel]("Initial Government Debt")
-    plt[:title]("Tax Rate")
-    plt[:legend]((L"\tau_1", L"\tau_1^R"), loc=2, shadow=true)
-    plt[:tight_layout]()
-    grid("on")
+    plot(B_vec, taxpolicy[:, 2], linewidth=2, label="tau_1")
+    plot!(B_vec, tau1_reset, linewidth=2, label="tau_1^R")
+    plot!(title="Tax Rate", xlabel="Initial Government Debt", legend=:topleft, grid=true)
 
 The tax rates in the figure are equal  for only two values of initial government debt
 
@@ -1796,6 +1816,8 @@ The figure below plots a sample path of the Ramsey tax rate
 
 .. code-block:: julia
 
+    Random.seed!(42) # For reproducible results. 
+
     M1 = log_utility()
     μ_grid = range(-0.6, stop = 0.0, length = 200)
     PP_seq = SequentialAllocation(M1)         # Solve sequential problem
@@ -1818,19 +1840,32 @@ The figure below plots a sample path of the Ramsey tax rate
                   "Tax Rate",
                   "Government Spending",
                   "Output")
-    plt[:figure](figsize=[14, 10])
+    labels = [["Sequential", "Recursive"], ["",""], ["",""], ["",""], ["",""], ["",""]]
+    plots=plot(layout=(3,2), size=(850,780))
 
     for i = 1:6
-        plt[:subplot](3, 2, i)
-        plt[:title](titles[i])
-        plt[:plot](sim_seq_plot[i], "-ok")
-        plt[:plot](sim_bel_plot[i], "-xb")
-	      grid("on")
+        plot!(plots[i], sim_seq_plot[i], color=:black, lw=2, marker=:circle,
+              markersize=2, label=labels[i][1])
+        plot!(plots[i], sim_bel_plot[i], color=:blue, lw=2, marker=:xcross,
+              markersize=2, label=labels[i][2])
+        plot!(plots[i], title=titles[i], grid=true, legend=:topright)
     end
-    plt[:subplot](3, 2, 1)
-    plt[:legend](("Sequential", "Recursive"), loc="best")
+    plot(plots)
 
-    plt[:tight_layout]()
+.. code-block:: julia 
+  :class: test 
+
+  @testset begin 
+    @test sim_seq_plot[1][14] ≈ 0.38396935397869975
+    @test sim_seq_plot[2][14] ≈ 0.5839693539786998
+    @test sim_seq_plot[3][14] ≈ 0.3951985593686047
+    @test sim_seq_plot[4][14] ≈ 0.3631746680706347
+    @test sim_seq_plot[5][14] == 0.2
+    @test sim_seq_plot[6][14] ≈ 0.5839693539786998
+    @test sim_bel_plot[3][5] ≈ 0.5230509296608254
+    @test sim_bel_plot[5][7] == 0.1
+    @test sim_bel_plot[2][3] ≈ 0.5402933557593538
+  end 
 
 As should be expected, the recursive and sequential solutions produce almost
 identical allocations

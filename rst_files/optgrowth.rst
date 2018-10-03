@@ -508,6 +508,12 @@ What's important here is that the function approximation scheme must not only pr
 
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 
@@ -515,7 +521,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 
 .. code-block:: julia
 
-    using Plots, QuantEcon, LaTeXStrings
+    using Plots, QuantEcon, LaTeXStrings, Interpolations
 
 .. code-block:: julia
 
@@ -523,7 +529,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
   c_grid = 0:.2:1
   f_grid = range(0, stop = 1, length = 150)
 
-  Af = LinInterp(c_grid, f(c_grid))
+  Af = LinearInterpolation(c_grid, f(c_grid))
 
   plt = plot(xlim = (0,1), ylim = (0,6))
   plot!(plt, f_grid, f(f_grid), color = :blue, lw = 2, alpha = 0.8, label = "true function")
@@ -555,7 +561,7 @@ Here's a function that implements the Bellman operator using linear interpolatio
                               compute_policy = false)
 
         # === Apply linear interpolation to w === #
-        w_func = LinInterp(grid, w)
+        w_func = LinearInterpolation(grid, w)
 
         if compute_policy
             σ = similar(w)
@@ -1002,7 +1008,7 @@ Here's one solution (assuming as usual that you've executed everything above)
                                  shocks,
                                  compute_policy = true)
 
-        σ_func = LinInterp(grid_y, σ)
+        σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
         plot!(plt, y, lw=2, alpha=0.6, label=latexstring("\$\\beta=" * string(β) * "\$"))
     end

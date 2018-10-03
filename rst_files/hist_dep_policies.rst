@@ -661,7 +661,11 @@ We'll discuss how to compute :math:`\mu` :ref:`below <sec:computing_mu>` but fir
 
 We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95, 100]` and compute the Ramsey plan with the following piece of code
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
 

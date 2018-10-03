@@ -1025,6 +1025,12 @@ We compute value-entropy correspondences for two policies
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: test
 
@@ -1038,7 +1044,7 @@ The code for producing the graph shown above, with blue being for the robust pol
     @author : Spencer Lyon <spencer.lyon@nyu.edu>
 
     =#
-    using QuantEcon, Plots, LinearAlgebra
+    using QuantEcon, Plots, LinearAlgebra, Interpolations
 
     # model parameters
     a_0 = 100
@@ -1126,7 +1132,7 @@ The code for producing the graph shown above, with blue being for the robust pol
     for data_pair in data_pairs
         for data in data_pair
             x, y = data[:, 2], data[:, 1]
-            curve = LinInterp(x, y)
+            curve = LinearInterpolation(x, y, extrapolation_bc = Line())
             push!(egrid_data, curve.(egrid))
         end
     end

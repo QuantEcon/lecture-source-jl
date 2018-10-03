@@ -280,6 +280,12 @@ The expression :math:`\| x - y\|` is thought of as the distance between :math:`x
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
 
     using LinearAlgebra
@@ -1145,10 +1151,10 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
 .. code-block:: julia
  :class: test
 
- @testset "eigvals" begin
-@test eig_1[2,2] ≈ 0.7071067811865475
-@test eig_2[2,2] ≈ 0.7071067811865475
-end
+  @testset "eigvals" begin
+    @test eig_1[2,2] ≈ 0.7071067811865475
+    @test eig_2[2,2] ≈ 0.7071067811865475
+  end
 
 The eigenvalue equation is equivalent to :math:`(A - \lambda I) v = 0`, and
 this has a nonzero solution :math:`v` only when the columns of :math:`A -

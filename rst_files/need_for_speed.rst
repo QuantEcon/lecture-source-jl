@@ -78,6 +78,7 @@ Typically this is done by writing `assembly <https://en.wikipedia.org/wiki/Assem
 
 Here's some assembly code implementing a function that takes arguments :math:`a, b` and returns :math:`2a + 8b`
 
+
 .. code-block:: asm
     :class: no-execute
 

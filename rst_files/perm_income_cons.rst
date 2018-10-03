@@ -61,7 +61,6 @@ The model will prove useful for illustrating concepts such as
 
 
 
-
 Setup
 ======================
 
@@ -115,8 +114,6 @@ The dynamics of :math:`\{y_t\}` again follow the linear state space model
 
 
 The restrictions on the shock process and parameters are the same as in our :doc:`previous lecture <perm_income>`
-
-
 
 
 Digression on a useful isomorphism
@@ -219,10 +216,8 @@ On the other hand, formulating the model in terms of an LQ dynamic programming p
 - iterations on a Bellman equation  implicitly jointly solve both a  forecasting problem and a control problem
 
 
-
 The LQ Problem
 ---------------------------
-
 
 Recall from our :doc:`lecture on LQ theory <lqcontrol>` that the optimal linear regulator problem is to choose
 a decision rule for :math:`u_t` to minimize
@@ -255,7 +250,6 @@ The value function for this problem is :math:`v(x) = - x'Px - d`, where
 The optimal policy is :math:`u_t = -Fx_t`, where :math:`F := \beta (Q+\beta \tilde B'P \tilde B)^{-1} \tilde B'P \tilde A`
 
 Under an optimal decision rule :math:`F`, the state vector :math:`x_t` evolves according to :math:`x_{t+1} = (\tilde A-\tilde BF) x_t + \tilde C w_{t+1}`
-
 
 
 Mapping into the LQ framework
@@ -328,9 +322,6 @@ That will induce a (hopefully) small approximation error in the decision rule
 We'll check whether it really is small numerically soon
 
 
-
-
-
 Implementation
 ====================
 
@@ -345,22 +336,29 @@ The reason is that it drops out of the Euler equation for consumption
 In what follows we set it equal to unity
 
 
-
-
 The exogenous noinfinancial income process
 -------------------------------------------
 
-
 First we create the objects for the optimal linear regulator
+
+.. code-block:: julia_arrays
+using Test
+
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
 .. code-block:: julia
 
-    using Test
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
+.. code-block:: julia
+  :class: test
+
+  using Test
 
 .. code-block:: julia
 
-    using QuantEcon
-    using PyPlot
+    using QuantEcon, LinearAlgebra
+    using Plots
 
     # Set parameters
     α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0
@@ -402,8 +400,6 @@ First we create the objects for the optimal linear regulator
 
 The next step is to create the matrices for the LQ system
 
-
-
 .. code-block:: julia
 
     A12 = zeros(3,1)
@@ -422,10 +418,7 @@ The next step is to create the matrices for the LQ system
     β_LQ = β
 
 
-
 Let's print these out and have a look at them
-
-
 
 .. code-block:: julia
 
@@ -435,22 +428,16 @@ Let's print these out and have a look at them
     println("Q = $QLQ")
 
 
-
-
 Now create the appropriate instance of an LQ model
-
-
 
 .. code-block:: julia
 
-    LQPI = LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet=β_LQ)
+    LQPI = QuantEcon.LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet=β_LQ);
 
 
 
 We'll save the implied optimal policy function soon compare them with what we get by
 employing an alternative solution method
-
-
 
 .. code-block:: julia
 
@@ -463,8 +450,6 @@ employing an alternative solution method
     @testset "First Plot Tests" begin
         @test ABF[4,2] == -0.6896550772889927
     end
-
-
 
 Comparison with the difference equation approach
 --------------------------------------------------------------
@@ -494,13 +479,11 @@ Expressed in state space notation, the solution took  the form
 
 Now we'll apply the formulas in this system
 
-
-
 .. code-block:: julia
 
     # Use the above formulas to create the optimal policies for b_{t+1} and c_t
-    b_pol = G * (inv(eye(3, 3) - β * A)) * (A - eye(3, 3))
-    c_pol = (1 - β) * (G * inv(eye(3, 3) - β * A))
+    b_pol = G * (inv(I - β * A)) * (A - I)
+    c_pol = (1 - β) * (G * inv(I - β * A))
 
     # Create the A matrix for a LinearStateSpace instance
     A_LSS1 = vcat(A, b_pol)
@@ -519,28 +502,18 @@ Now we'll apply the formulas in this system
     μ_0 = [1.0, 0.0, 0.0, 0.0]
     Σ_0 = zeros(4, 4)
 
-
-
 `A_LSS` calculated as we have here should equal `ABF` calculated above using the LQ model
-
-
 
 .. code-block:: julia
 
     ABF - A_LSS
 
 
-
-
 Now compare pertinent elements of `c_pol` and `F`
-
-
 
 .. code-block:: julia
 
     println(c_pol, -F)
-
-
 
 
 We have verified that the two methods give the same solution
@@ -548,7 +521,6 @@ We have verified that the two methods give the same solution
 Now let's create instances of the `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__ type and use it to do some interesting experiments
 
 To do this, we'll use the outcomes from our second method
-
 
 
 Two Example Economies
@@ -590,13 +562,9 @@ A second graph  plots a collection of simulations against the population distrib
 
 Comparing sample paths with population distributions at each date :math:`t` is a useful exercise---see :ref:`our discussion <lln_mr>` of the laws of large numbers
 
-
-
 .. code-block:: julia
 
     lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0)
-
-
 
 
 Population and sample panels
@@ -610,18 +578,9 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 -  simulate a group of 25 consumers and plot sample paths on the same
    graph as the population distribution
 
-
-
-
 .. code-block:: julia
 
-    """
-    This function takes initial conditions (μ_0, Σ_0) and uses the LSS
-    type from QuantEcon to  simulate an economy `npaths` times for `T` periods.
-    It then uses that information to generate some graphs related to the discussion
-    below.
-    """
-    function income_consumption_debt_series(A, C, G, μ_0, Σ_0, T=150, npaths=25)
+    function income_consumption_debt_series(A, C, G, μ_0, Σ_0, T = 150, npaths = 25)
 
         lss = LSS(A, C, G, mu_0=μ_0, Sigma_0=Σ_0)
 
@@ -629,11 +588,11 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         moment_generator = moment_sequence(lss)
 
         # Simulate various paths
-        bsim = Array{Float64}(npaths, T)
-        csim = Array{Float64}(npaths, T)
-        ysim = Array{Float64}(npaths, T)
+        bsim = zeros(Float64, npaths, T)
+        csim = zeros(Float64, npaths, T)
+        ysim = zeros(Float64, npaths, T)
 
-        for i = 1:npaths
+        for i in 1:npaths
             sims = simulate(lss,T)
             bsim[i, :] = sims[1][end, :]
             csim[i, :] = sims[2][2, :]
@@ -641,15 +600,15 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         end
 
         # Get the moments
-        cons_mean = Array{Float64}(T)
-        cons_var = Array{Float64}(T)
-        debt_mean = Array{Float64}(T)
-        debt_var = Array{Float64}(T)
-        state = start(moment_generator)
-        for t = 1:T
-            (μ_x, μ_y, Σ_x, Σ_y), state = next(moment_generator, state)
-            cons_mean[t], cons_var[t] = μ_y[2], Σ_y[2, 2]
-            debt_mean[t], debt_var[t] = μ_x[4], Σ_x[4, 4]
+        cons_mean = zeros(T)
+        cons_var = similar(cons_mean)
+        debt_mean = similar(cons_mean)
+        debt_var = similar(cons_mean)
+        for (idx, t) = enumerate(moment_generator)
+            (μ_x, μ_y, Σ_x, Σ_y) = t
+            cons_mean[idx], cons_var[idx] = μ_y[2], Σ_y[2, 2]
+            debt_mean[idx], debt_var[idx] = μ_x[4], Σ_x[4, 4]
+            idx == T && break
         end
         return bsim, csim, ysim, cons_mean, cons_var, debt_mean, debt_var
     end
@@ -660,7 +619,6 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         T =  size(bsim, 2)
 
         # Create first figure
-        fig, ax = subplots(2, 1, figsize=(10, 8))
         xvals = 1:T
 
         # Plot consumption and income
@@ -701,10 +659,10 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         d_perc_90p, d_perc_90m = debt_mean + d90, debt_mean - d90
 
         # Create second figure
-        fig, ax = subplots(2, 1, figsize=(10, 8))
+
         xvals = 1:T
 
-        fig[:suptitle]("Consumption/Debt over time")
+        #fig[:suptitle]("Consumption/Debt over time")
 
         # Consumption fan
         ax[1][:plot](xvals, cons_mean, color="k")
@@ -726,11 +684,10 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 
 
 
+        plot(plt_1, plt_2, layout=(2,1), size=(800,600))
+    end
 
 Now let's create figures with initial conditions of zero for :math:`y_0` and :math:`b_0`
-
-
-
 
 .. code-block:: julia
 
@@ -748,9 +705,6 @@ Now let's create figures with initial conditions of zero for :math:`y_0` and :ma
 
     consumption_debt_fanchart(csim0, cons_mean0, cons_var0,
                               bsim0, debt_mean0, debt_var0)
-
-
-
 
 Here is what is going on in the above graphs
 
@@ -792,8 +746,6 @@ They expect their nonfinancial income to rise toward the invariant distribution 
 Cointegration residual
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-
 The following figure plots realizations of the left side of :eq:`old12`, which,
 :ref:`as discussed in our last lecture <coint_pi>`, is called the **cointegrating residual**
 
@@ -818,27 +770,16 @@ behavior early in the sample.
 By altering initial conditions, we shall remove this transient in our second example to be presented below
 
 
-
-
 .. code-block:: julia
 
-    """
-    Plots the cointegration
-    """
     function cointegration_figure(bsim, csim)
         # Create figure
-        fig, ax = subplots(figsize=(10, 8))
-        ax[:plot]((1 - β) * bsim[1, :] + csim[1, :], color="k")
-        ax[:plot]((1 - β) * bsim' + csim', color="k", alpha=.1)
-        ax[:set](title="Cointegration of Assets and Consumption", xlabel="t")
+        plot((1 - β) * bsim[1, :] + csim[1, :], color=:black,lw=2,label="")
+        plot!((1 - β) * bsim' + csim', color=:black, alpha=.1,label="")
+        plot!(title="Cointegration of Assets and Consumption", xlabel="t")
     end
 
     cointegration_figure(bsim0, csim0)
-
-
-
-
-
 
 
 A "borrowers and lenders" closed economy
@@ -883,7 +824,6 @@ There is no need for foreigners to lend to our group
 Let's have a look at the corresponding figures
 
 
-
 .. code-block:: julia
 
     out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, mxbewley, sxbewley)
@@ -903,7 +843,6 @@ Let's have a look at the corresponding figures
                               bsimb, debt_meanb, debt_varb)
 
 
-
 The graphs confirm the following outcomes:
 
 -  As before, the consumption distribution spreads out over time
@@ -918,7 +857,6 @@ But now there is some initial dispersion because there is *ex ante* heterogeneit
 
 
 Let's have a look at the cointegration figure
-
 
 
 .. code-block:: julia

@@ -422,6 +422,17 @@ Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, wh
 
 Some code to implement the iterative computational procedure can be found below:
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+.. code-block:: julia
+  :class: test
+
+  using Test
+
 .. code-block:: julia
 
     #=
@@ -531,6 +542,9 @@ An example of usage is given in the docstring and repeated here
 
 .. code-block:: julia
 
+    using Random
+    Random.seed!(42) # For reproducible results.
+
     tree = LucasTree(γ=2.0, β=0.95, α=0.90, σ=0.1)
     price_vals = solve_lucas_model(tree);
 
@@ -601,6 +615,8 @@ Solutions
 
 .. code-block:: julia
 
+    Random.seed!(42)
+
     for β in (.95, 0.98)
         tree = LucasTree(;β=β)
         grid = tree.grid
@@ -609,3 +625,11 @@ Solutions
     end
 
     plt[:legend]()
+
+.. code-block:: julia 
+  :class: test
+
+  @testset begin # For the 0.98, since the other one is overwritten.
+    @test price_vals[20] ≈ 36.292037642169
+    @test price_vals[57] ≈ 129.1157997870433
+  end

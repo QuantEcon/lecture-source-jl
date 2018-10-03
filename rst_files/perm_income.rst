@@ -501,6 +501,12 @@ Defining assets as :math:`-b_t`, we see that assets are just the cumulative sum 
 
 The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 1`, and :math:`\sigma = 0.15`
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 
 .. code-block:: julia
   :class: test

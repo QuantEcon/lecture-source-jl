@@ -681,6 +681,12 @@ The following figure was computed using :math:`r = 0.05, \beta = 1 / (1
 
 The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 
@@ -1387,6 +1393,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
 -  :math:`p(T) = 0`.
 
 .. code-block:: julia
+
     # == Model parameters == #
     r = 0.05
     β = 1/(1 + r)

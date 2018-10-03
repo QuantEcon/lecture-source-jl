@@ -320,6 +320,7 @@ The next figure shows a simulation, where
 
 * :math:`g_t = \exp(X_t)`, so that :math:`\ln g_t = X_t` is the growth rate
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
 .. code-block:: julia
 
@@ -327,7 +328,8 @@ The next figure shows a simulation, where
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LaTeXStrings
+    using QuantEcon, Plots, LaTeXStrings, Random
+    Random.seed!(42) # For reproducible results.
 
     n = 25
     mc = tauchen(n, 0.96, 0.25)
@@ -341,6 +343,15 @@ The next figure shows a simulation, where
     labels = [L"$X_t$" L"$g_t$" L"$d_t$" L"$log (d_t)$"]
     plot(series, layout = 4, labels = labels)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test x_series[4] ≈ -0.669642857142857
+    @test g_series[5] ≈ 0.4094841251523643
+    @test d_series[9] ≈ 0.03514706070454392 # Near the inflection point.
+    @test log.(d_series)[72] ≈ -29.24107142857142 # Something near the end.
+  end
 
 Pricing
 ^^^^^^^^^^^^
@@ -663,6 +674,16 @@ with a positively correlated Markov process and :math:`g(x) = \exp(x)`
          ylabel = "price-dividend ratio",
          xlabel = "state")
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test lines[2][4] ≈ 33.36574362637905
+    @test lines[3][12] ≈ 28.52560591264372
+    @test lines[4][18] ≈ 22.38597470787489
+    @test lines[5][24] ≈ 15.81947255704859
+  end
+
 
 Notice that :math:`v` is decreasing in each case
 
@@ -891,6 +912,13 @@ Here's a plot of :math:`w` compared to the consol price when :math:`P_S = 40`
     plot(x, p, color = "blue", lw = 2, xlabel = "state", label = "consol price")
     plot!(x, w, color = "green", lw = 2, label = "value of call option")
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test p[17] ≈ 9.302197030956606
+    @test w[20] ≈ 0.46101660813737866
+  end
 
 In large states the value of the option is close to zero
 
@@ -901,7 +929,7 @@ The reason is that :math:`\beta=0.9`, so the future is discounted relatively rap
 
 .. code-block:: julia
   :class: test
-  
+
   @testset begin
     @test x[2] == -0.126178653628809
     @test w[4] == 72.31000385953138
@@ -1152,6 +1180,13 @@ Here's a suitable function:
     end
     plot(lines, labels = reshape(labels, 1, length(labels)))
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test lines[1][4] ≈ 29.859285398252347
+    @test lines[2][2] ≈ 147.00074548801277
+  end
 
 Not surprisingly, the option has greater value with larger :math:`k`.
 This is because the owner has a longer time horizon over which he or she

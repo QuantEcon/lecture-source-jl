@@ -141,6 +141,12 @@ Here's one solution that does the job we want. If you feel like a
 further exercise you can probably speed up some of the computations and
 then increase the number of agents.
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
   :class: test
 
