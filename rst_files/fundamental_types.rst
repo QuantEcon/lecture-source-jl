@@ -2,9 +2,9 @@
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
-***************************************
-Arrays, Tuples, Ranges, and Fundamental Types
-***************************************
+**********************************************
+Arrays, Tuples, and Ranges
+***********************************************
 
 .. contents:: :depth: 2
 
@@ -23,6 +23,8 @@ In Julia, arrays and tuples are the most important data type for working with nu
 
 In this lecture we give more details on
 
+* declaring types
+
 * creating and manipulating Julia arrays
 
 * fundamental array processing operations
@@ -32,10 +34,6 @@ In this lecture we give more details on
 * tuples and named tuples
 
 * ranges
-
-
-.. _fundamental_types:
-
 
 Array Basics
 ================
@@ -187,7 +185,7 @@ Creating Arrays from Existing Arrays
 
 For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own
 
-The reasons for this, discussed in more detail in :ref:`generic_functional_programming`, are to ensure both clarity and generality
+The reasons for this, discussed in more detail in :ref:`generic and functional programming <generic_functional_programming>`, are to ensure both clarity and generality
 
 One place this can be inconvenient is when we need to create an array based on an existing array
 
@@ -214,9 +212,26 @@ To copy the data, you need to be more explicit
 However, rather than making a copy of ``x``, you may want to just have a similarly sized array
 
 .. code-block:: julia
+
     x = [1, 2, 3]
     y = similar(x)
     y
+
+
+Similar can also be used to pre-allocate a vector with a different size, but the same shape
+
+.. code-block:: julia
+
+    x = [1, 2, 3]
+    y = similar(x, 4) #Make a vector of length 4
+
+Which generalized to higher dimensions
+
+.. code-block:: julia
+
+    x = [1, 2, 3]
+    y = similar(x, 2, 2) #Make 2x2 matrix
+
 
 
 Manual Array Definitions
@@ -702,6 +717,85 @@ In Julia loops are typically fast and hence the need for vectorized functions is
 
 Nonetheless the syntax is convenient
 
+Introduction to Types
+======================
+
+We will discuss this in detail in :ref:`generic and functional programming <generic_functional_programming>`, but much of its performance gains and generality of notation comes from Julia's type system
+
+For example, compare
+
+.. code-block:: julia
+
+    x = [1, 2, 3]
+
+Gives ``Array{Int64,1}`` as the type whereas
+
+.. code-block:: julia
+
+    x = [1.0, 2.0, 3.0]
+
+These return ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively, which the compiler is able to infer from the right hand side of the expressions
+
+Given the information on the type, the compiler can work through the sequence of expressions to infer other types
+
+.. code-block:: julia
+
+    #Define some function
+    f(y) = 2y
+
+    #Call with an integer array
+    x = [1, 2, 3]
+    z = f(x) #Compiler deduces type
+
+Good Practices for Functions and Variables
+--------------------------------------------
+
+In order to keep many of the benefits of Julia, you will sometimes want to help the compiler ensure that it can always deduce a single type from any function or expression
+
+As an example of bad practice, is to use an array to hold unrelated types
+
+.. code-block:: julia
+
+    x = [1.0, "test"] # Poor Style
+
+The type of this is ``Array{Any,1}``, where the ``Any`` means the compiler has determined that any valid Julia types can be added to the array
+
+While occasionally useful, this is to be avoided whenever possible in performance sensitive code
+
+The other place this can come up is in the declaration of functions,
+
+As an example, consider a function which returns different types depending on the arguments
+
+.. code-block:: julia
+
+    function f(x)
+        if x > 0
+            return 1.0
+        else 
+            return 0 # Probably meant 0.0
+        end
+    end
+    @show f(1)
+    @show f(-1)
+
+The issue here is relatively subtle:  ``1.0`` is a floating point, while ``0`` is an integer
+
+Consequently, given the type of ``x``, the compiler cannot in general determine what type the function will return
+
+This issue, called **type stability** is at the heart of most Julia performance considerations
+
+Luckily, the practice of trying to ensure that functions return the same types is also the most consistent with simple, clear code
+
+
+Manually Declaring Types
+-------------------------
+
+Does it ever help?  Rarely
+
+Almost never for variable and function declarations  **TODO**
+
+In fact, mistakes are so easy that it is more likely to make things worse
+
 
 Linear Algebra
 =======================
@@ -740,7 +834,7 @@ For more details see the `linear algebra section <https://docs.julialang.org/en/
 
 
 Tuples and Named Tuples
-================
+========================
 
 
 Ranges
