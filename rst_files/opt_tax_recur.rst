@@ -1862,9 +1862,9 @@ The figure below plots a sample path of the Ramsey tax rate
     @test sim_seq_plot[4][14] ≈ 0.3631746680706347
     @test sim_seq_plot[5][14] == 0.2
     @test sim_seq_plot[6][14] ≈ 0.5839693539786998
-    @test sim_bel_plot[3][5] ≈ 0.5230199651195195
+    @test sim_bel_plot[3][5] ≈ 0.5230509296608254
     @test sim_bel_plot[5][7] == 0.1
-    @test sim_bel_plot[2][3] ≈ 0.5402865605930799
+    @test sim_bel_plot[2][3] ≈ 0.5402933557593538
   end 
 
 As should be expected, the recursive and sequential solutions produce almost
