@@ -853,13 +853,6 @@ to converge to :math:`v^*`
                                         print_skip = 10,
                                         err_tol = 1e-5)
 
-.. code-block:: julia
-  :class: test
-
-  @testset begin
-    @test v_star_approx[51] == -23.832011948592076
-  end
-
 
 Let's have a look at the result
 

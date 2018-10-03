@@ -653,8 +653,4 @@ Here's one solution
 .. code-block:: julia
     :class: test
 
-    @testset "Solution 1 Tests" begin
         # Just eyeball the plot pending undeprecation and rewrite.
-        @test  c_vals[20] == 33.75
-        @test  stop_times[10] == 1
-    end

@@ -899,6 +899,15 @@ where the consol prices is high --- will eventually be visited
 
 The reason is that :math:`\beta=0.9`, so the future is discounted relatively rapidly
 
+.. code-block:: julia
+  :class: test
+  
+  @testset begin
+    @test x[2] == -0.126178653628809
+    @test w[4] == 72.31000385953138
+    @test p[5] == 52.85568616593254
+  end
+
 
 Risk Free Rates
 -----------------

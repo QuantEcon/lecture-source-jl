@@ -55,6 +55,9 @@ Either way, the assumption of a representative agent means that prices adjust to
 This makes it very easy to compute competitive equilibrium prices
 
 
+.. code-block:: julia
+
+    using Test
 
 
 Basic Setup
@@ -531,7 +534,15 @@ An example of usage is given in the docstring and repeated here
     tree = LucasTree(γ=2.0, β=0.95, α=0.90, σ=0.1)
     price_vals = solve_lucas_model(tree);
 
+.. code-block:: julia
 
+  :class: test
+
+  @testset begin
+
+    @test price_vals[5] == 13.404961524347728
+
+  end
 
 Here's the resulting price function
 

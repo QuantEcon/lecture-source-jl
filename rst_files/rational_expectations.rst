@@ -863,7 +863,6 @@ The following code implements this test
 
   @testset begin
     @test h0 == 96.94871794872053
-    @test P[2] == -417.3647201751417
   end
 
 The output tells us that the answer is pair (iii), which implies
