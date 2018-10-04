@@ -118,7 +118,6 @@ Other functions require importing all of the names from an external library
 .. code-block:: julia
 
     using Plots, LinearAlgebra, Statistics
-    gr(fmt = :png) # Optional, store as png not svg
 
     n = 100
     ϵ = randn(n)
@@ -753,8 +752,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
-Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an extremely efficient implementation for small arrays and matrices
-
+Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
 
 .. code-block:: julia
 
@@ -914,7 +912,29 @@ Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-de
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
-Use a variation of the ``fixedpointmap`` code to implement Newton's method, and test it with :math:`f(x) = (x-1)^3` and another function of your choice
+Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
+
+Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
+
+**BONUS:** For those impatient to use more advanced features of Julia, implement a version where ``f_prime`` is calculated with auto-differentiation
+
+.. code-block:: julia
+
+    using ForwardDiff
+
+    # operator to get the derivative of this function using AD
+    D(f) = x -> ForwardDiff.derivative(f, x)
+
+    # example usage: create a function and get the derivative
+    f(x) = x^2
+    f_prime = D(f)
+
+    f(0.1), f_prime(0.1))
+    
+Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative
+
+Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``
+
 
 Solutions
 =========
@@ -936,7 +956,7 @@ Exercise 1
 
 .. code-block:: julia
 
-    factorial2(4) == factorial(4)  # Built-in function
+    factorial2(4) == factorial(4) # built-in function
 
 
 Exercise 2
@@ -949,7 +969,7 @@ Exercise 2
         U = rand(n)
         for i in 1:n
             if U[i] < p
-                count += 1    # Or count = count + 1
+                count += 1 # or count = count + 1
             end
         end
         return count
@@ -985,7 +1005,7 @@ fraction that fall into the unit circle
         count = 0
         for i in 1:n
             u, v = rand(2)
-            d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # Distance from middle of square
+            d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # distance from middle of square
             if d < 0.5
                 count += 1
             end
@@ -1085,6 +1105,6 @@ Exercise 6
         for t in 1:n
             x[t+1] = α * x[t] + randn()
         end
-        plot!(p, x, label = "alpha = $α") #Add to plot p
+        plot!(p, x, label = "alpha = $α") # add to plot p
     end
-    p # Display plot
+    p # display plot
