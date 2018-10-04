@@ -60,7 +60,6 @@ The model will prove useful for illustrating concepts such as
 
 
 
-
 Setup
 ======================
 
@@ -341,10 +340,9 @@ The exogenous noinfinancial income process
 
 First we create the objects for the optimal linear regulator
 
-.. code-block:: julia_arrays
-using Test
-
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+    using Test
 
 .. code-block:: julia
 
@@ -397,6 +395,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   @testset begin
     @test sxbewley[6] == 5.263157894733971
   end
+
 
 The next step is to create the matrices for the LQ system
 
@@ -683,6 +682,19 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
     end
 
 
+        plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
+        plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
+        plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
+        plot!(xvals, fill_between=(c_perc_90m, c_perc_90p), alpha=0.25, color=:red, label="")
+        plot!(plt_1, title="Consumption/Debt over time",
+              ylim=(cmean-15, cmean+15), ylabel="consumption")
+
+        # Debt fan
+        plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
+        plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
+        plot!(xvals, fill_between=(d_perc_95m, d_perc_95p), alpha=0.25, color=:blue,label="")
+        plot!(xvals, fill_between=(d_perc_90m, d_perc_90p), alpha=0.25, color=:red,label="")
+        plot!(plt_2, ylabel="debt", xlabel="t")
 
         plot(plt_1, plt_2, layout=(2,1), size=(800,600))
     end
@@ -696,8 +708,6 @@ Now let's create figures with initial conditions of zero for :math:`y_0` and :ma
     cons_mean0, cons_var0, debt_mean0, debt_var0 = out[4:end]
 
     consumption_income_debt_figure(bsim0, csim0, ysim0)
-
-
 
 
 
@@ -831,9 +841,6 @@ Let's have a look at the corresponding figures
     cons_meanb, cons_varb, debt_meanb, debt_varb = out[4:end]
 
     consumption_income_debt_figure(bsimb, csimb, ysimb)
-
-
-
 
 
 

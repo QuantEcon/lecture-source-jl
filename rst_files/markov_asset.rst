@@ -326,7 +326,9 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     using Test
 
-.. code-block:: julia
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
+    .. code-block:: julia
 
     using QuantEcon, Plots, LaTeXStrings, Random
     Random.seed!(42) # For reproducible results.
@@ -456,6 +458,14 @@ Here's the code, including a test of the spectral radius condition
   @testset begin
     @test    v[2] == 3.4594684257743284
     @test v[1] == 3.2560393349907755
+  end
+=======
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v[5] ≈ 4.526909446326235
+    @test K[8] ≈ 8.887213530262768e-10
   end
 
 Why does the price-dividend ratio increase with the state?
@@ -1129,6 +1139,14 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
     @test w[2][1] == 176.83933430191294
   end
 
+=======
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test w[1] ≈ 603.8710047641985
+    @test v_consol[3] ≈ 148.67554548466475
+  end
 
 Exercise 3
 ----------

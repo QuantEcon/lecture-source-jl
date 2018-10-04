@@ -549,12 +549,13 @@ An example of usage is given in the docstring and repeated here
     price_vals = solve_lucas_model(tree);
 
 .. code-block:: julia
-
   :class: test
 
   @testset begin
-
-    @test price_vals[5] == 13.404961524347728
+    @test price_vals[57] ≈ 44.50662425412852
+    @test price_vals[78] ≈ 68.44204772922079
+    @test price_vals[13] ≈ 9.878515482070496
+  end
 
   end
 
@@ -626,7 +627,7 @@ Solutions
 
     plt[:legend]()
 
-.. code-block:: julia 
+.. code-block:: julia
   :class: test
 
   @testset begin # For the 0.98, since the other one is overwritten.
