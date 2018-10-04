@@ -898,6 +898,24 @@ Start :math:`\sigma = 0.1, \alpha = 1.0`
 
 #. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.25, 0.5, 0.75, 1.0, 1.25, 1.5\}`
 
+Exercise 8
+---------------
+
+This exercise is more challenging
+
+The root of a univariate function is :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
+
+One solution method to find local roots of smooth functions is called Newton's method
+
+Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
+
+.. :math:
+    x^{n+1} = x^n - \frac{f(x^n}{f'(x^n)}
+
+until :math:`| x^{n+1} - x^n|` is below a tolerance
+
+Use a variation of the ``fixedpointmap`` code to implement Newton's method, and test it with :math:`f(x) = (x-1)^3` and another function of your choice
+
 Solutions
 =========
 
