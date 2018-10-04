@@ -875,6 +875,7 @@ Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, 
 
 Exercise 7
 ----------------------------------
+This exercise is more challenging
 
 Take a random walk, starting from :math:`x_0 = 1`
 
@@ -887,12 +888,15 @@ Take a random walk, starting from :math:`x_0 = 1`
 
 The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
 
-For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t | x_t < a\}`
+For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`
 
-Let :math:`\sigma = 0.1, \alpha = 0.0`
+Start :math:`\sigma = 0.1, \alpha = 1.0`
 
-Simulate the first-passage time, :math:`T_0`, for 100 random walks and plot a histogram
+#. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 100` and plot a histogram
 
+ * since you will only be able to simulate a finite length, decide a reasonable convention (e.g. showing the first-passage distribution condition on passage, or choosing that all :math:`x_t` go to ``0`` at :math:`t_{\max}`
+
+#. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.25, 0.5, 0.75, 1.0, 1.25, 1.5\}`
 
 Solutions
 =========
