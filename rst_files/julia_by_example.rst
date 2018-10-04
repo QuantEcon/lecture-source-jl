@@ -89,7 +89,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+    using Pkg; Pkg.activate(@__DIR__); # activate environment in the notebook's location
 
 
 Julia code will often be created from a variety of packages, such as ``Plots.jl`` in this case
@@ -167,7 +167,7 @@ Notice from the above that
 
 * array elements are referenced using square brackets (unlike MATLAB and Fortran)
 
-To get **help and examples** in Jupyter or other Julia editor, use the ``?`` before a function name or syntax
+To get **help and examples** in Jupyter or other julia editor, use the ``?`` before a function name or syntax
 
 .. code-block:: julia
  
@@ -188,7 +188,7 @@ Starting with the most direct version, and pretending we are in a world where `r
 
 .. code-block:: julia
 
-        # Poor Julia style 
+        # poor style 
         n = 100
         ϵ = zeros(n)
         for i in 1:n
@@ -214,7 +214,7 @@ To fix this, use ``eachindex``
 
 .. code-block:: julia
 
-        # Better Julia style 
+        # better style 
         n = 100
         ϵ = zeros(n)
         for i in eachindex(ϵ)
@@ -229,7 +229,7 @@ In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-        ϵ_sum = 0.0 #Careful to use 0.0 here, instead of 0!
+        ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0!
         m = 5
         for ϵ_val in ϵ[1:m]
             ϵ_sum = ϵ_sum + ϵ_val
@@ -260,11 +260,11 @@ To make things more interesting, instead of directly plotting the draws from the
 
 .. code-block:: julia
 
-    # Poor Julia Style
+    # poor style
     function generatedata(n)
         ϵ = zeros(n)
         for i in eachindex(ϵ)
-            ϵ[i] = (randn())^2 #Squaring the result
+            ϵ[i] = (randn())^2 # squaring the result
         end
         return ϵ
     end
@@ -284,12 +284,12 @@ Let us make this example slightly better by "remembering" that ``randn`` can ret
 
 .. code-block:: julia
 
-    # Still Poor Julia Style
+    # still poor style
     function generatedata(n)
-        ϵ = randn(n) #Use built in function
+        ϵ = randn(n) # use built in function
 
         for i in eachindex(ϵ)
-            ϵ[i] = ϵ[i]^2 #Squaring the result
+            ϵ[i] = ϵ[i]^2 # squaring the result
         end
 
         return ϵ
@@ -308,9 +308,9 @@ Furthermore, we can just drop the ``return`` because functions return the last c
 
 .. code-block:: julia
 
-    # Better Julia style
+    # better style
     function generatedata(n)
-        ϵ = randn(n) #Use built in function
+        ϵ = randn(n) # use built in function
         return ϵ.^2
      end
     data = generatedata(5)
@@ -319,7 +319,7 @@ We can even drop the ``function`` if we define it on a single line
 
 .. code-block:: julia
 
-    # Good Julia style
+    # good style
     generatedata(n) = randn(n).^2
     data = generatedata(5)    
 
@@ -327,20 +327,20 @@ Finally, we can broadcast any function, where squaring is only a special case
     
 .. code-block:: julia
 
-    # Good Julia style
-    f(x) = x^2 #Simple square function 
-    generatedata(n) = f.(randn(n)) # Uses broadcast for some function `f`
+    # good style
+    f(x) = x^2 # simple square function 
+    generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
     data = generatedata(5)
 
 As a final--abstract--approach, we can make the ``generatedata`` function able to generically apply a function 
     
 .. code-block:: julia
 
-    # Too abstract?
+    # too abstract?
     generatedata(n, gen) = gen.(randn(n)) # Uses broadcast for some function `gen`
     
-    f(x) = x^2 #Simple square function 
-    data = generatedata(5, f) #Applies f
+    f(x) = x^2 # simple square function 
+    data = generatedata(5, f) # applies f
 
 Whether this example is better or worse than the previous version depends on how it is used
 
@@ -350,13 +350,13 @@ For this particular case, the clearest and most general solution is probably the
 
 .. code-block:: julia
 
-    # Direct solution with broadcasting, and small user-defined function
+    # direct solution with broadcasting, and small user-defined function
     n = 100    
     f(x) = x^2
 
     x = randn(n)
-    plot(f.(x), label="x^2")
-    plot!(x, label = "x") # Layer on the same plot
+    plot(f.(x), label = "x^2")
+    plot!(x, label = "x") # layer on the same plot
 
 While broadcasting above superficially looks like vectorizing functions in Matlab, or Python ufuncs, it is much richer and built on core foundations of the language
 
@@ -489,22 +489,22 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
 
 .. code-block:: julia
 
-    # Poor Julia style
-    p = 1.0 #Note 1.0 rather than 1
+    # poor style
+    p = 1.0 # note 1.0 rather than 1
     β = 0.9
     maxiter = 1000
     tolerance = 1.0E-7
-    v_iv = 0.8 #initial condition
+    v_iv = 0.8 # initial condition
 
-    #Setup the algorithm
+    # setup the algorithm
     v_old = v_iv
     error = Inf 
     iter = 1
     while error > tolerance && iter <= maxiter
-        v_new = p + β * v_old #The f(v) map
+        v_new = p + β * v_old # the f(v) map
         error = norm(v_new - v_old)
         
-        #Replace and continue
+        # replace and continue
         v_old = v_new
         iter = iter + 1
     end
@@ -523,29 +523,29 @@ The first problem with this setup is that it depends on being sequently run--whi
 
 .. code-block:: julia
 
-    # Better, but still poor Julia style
+    # better, but still poor style
     function v_fp(β, ρ, v_iv, tolerance, maxiter)
-        #Setup the algorithm
+        # setup the algorithm
         v_old = v_iv
         error = Inf 
         iter = 1
         while error > tolerance && iter <= maxiter
-            v_new = p + β * v_old #The f(v) map
+            v_new = p + β * v_old # the f(v) map
             error = norm(v_new - v_old)
             
             #Replace and continue
             v_old = v_new
             iter = iter + 1
         end
-        return (v_old, error, iter) #Returns a tuple
+        return (v_old, error, iter) # returns a tuple
     end    
 
-    #Some values
-    p = 1.0 #Note 1.0 rather than 1
+    # some values
+    p = 1.0 # note 1.0 rather than 1
     β = 0.9
     maxiter = 1000
     tolerance = 1.0E-7
-    v_initial = 0.8 #initial condition
+    v_initial = 0.8 # initial condition
 
     v_star, error, iter = v_fp(β, p, v_initial, tolerance, maxiter)
     println("Fixed point = $v_star, and |f(x) - x| = $error in $iter iterations")
@@ -562,14 +562,14 @@ A key feature of languages like Julia, is the ability to efficiently handle func
 
 .. code-block:: julia
 
-    # Better Julia style
+    # better style
     function fixedpointmap(f, iv, tolerance, maxiter)
-        #Setup the algorithm
+        # setup the algorithm
         x_old = iv
         error = Inf 
         iter = 1
         while error > tolerance && iter <= maxiter
-            x_new = f(x_old) #Use the passed in map
+            x_new = f(x_old) # use the passed in map
             error = norm(x_new - x_old)
             x_old = x_new
             iter = iter + 1
@@ -577,14 +577,14 @@ A key feature of languages like Julia, is the ability to efficiently handle func
         return (x_old, error, iter)
     end    
 
-    #Define a map and parameters
+    # define a map and parameters
     p = 1.0
     β = 0.9
-    f(v) = p + β * v #Note that p and β are used in the function!
+    f(v) = p + β * v # note that p and β are used in the function!
 
     maxiter = 1000
     tolerance = 1.0E-7
-    v_initial = 0.8 #initial condition
+    v_initial = 0.8 # initial condition
 
     v_star, error, iter = fixedpointmap(f, v_initial, tolerance, maxiter)
     println("Fixed point = $v_star, and |f(x) - x| = $error in $iter iterations")
@@ -599,14 +599,14 @@ To enable this, Julia has two features:  named function parameters, and named tu
 
 .. code-block:: julia
 
-     # Good Julia style
+     # good style
     function fixedpointmap(f; iv, tolerance = 1E-7, maxiter = 1000)
-        #Setup the algorithm
+        # setup the algorithm
         x_old = iv
         error = Inf
         iter = 1
         while error > tolerance && iter <= maxiter
-            x_new = f(x_old) #Use the passed in map
+            x_new = f(x_old) # use the passed in map
             error = norm(x_new - x_old)
             x_old = x_new
             iter = iter + 1
@@ -614,12 +614,12 @@ To enable this, Julia has two features:  named function parameters, and named tu
         return (value = x_old, error = error, iter = iter) # A named tuple
     end    
 
-    #Define a map and parameters
+    # define a map and parameters
     p = 1.0
     β = 0.9
-    f(v) = p + β * v #Note that p and β are used in the function!
+    f(v) = p + β * v # note that p and β are used in the function!
 
-    sol = fixedpointmap(f, iv = 0.8, tolerance = 1.0E-8) #Don't need to pass 
+    sol = fixedpointmap(f, iv = 0.8, tolerance = 1.0E-8) # don't need to pass 
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
 
 In this example, all function parameters after the ``;`` in the list, must be called by name
@@ -647,12 +647,12 @@ But best of all is to avoid writing code altogether
 
 .. code-block:: julia
 
-    # Best Julia style
+    # best style
     using NLsolve
 
     p = 1.0
     β = 0.9     
-    f(v) = p .+ β * v #Broadcast the +
+    f(v) = p .+ β * v # broadcast the +
     sol = fixedpoint(f, [0.8], inplace = false)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
@@ -667,7 +667,7 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
 
 .. code-block:: julia
 
-    # Best Julia style
+    # best style
     using NLsolve
 
     p = 1.0
@@ -708,12 +708,12 @@ The only change we will need to our model in order to use a different floating p
 
 .. code-block:: julia
 
-    # Composing Packages.  Using arbitrary precision floating points
+    # use arbitrary precision floating points
     p = 1.0
     β = 0.9
-    iv = [BigFloat(0.8)] #Higher precision
+    iv = [BigFloat(0.8)] # higher precision
 
-    #otherwise identical
+    # otherwise identical
     sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
@@ -734,7 +734,7 @@ Using our own, homegrown iteration and simple passing in a bivariate map,
     p = [1.0, 2.0]
     β = 0.9
     iv = [0.8, 2.0]
-    f(v) = p .+ β * v #Note that p and β are used in the function!
+    f(v) = p .+ β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
@@ -744,6 +744,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
 .. code-block:: julia
 
     using NLsolve
+    
     p = [1.0, 2.0, 0.1]
     β = 0.9
     iv =[0.8, 2.0, 51.0]
@@ -896,7 +897,7 @@ Start :math:`\sigma = 0.1, \alpha = 1.0`
 
 #. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.25, 0.5, 0.75, 1.0, 1.25, 1.5\}`
 
-Exercise 8
+Exercise 8(a)
 ---------------
 
 This exercise is more challenging
@@ -908,15 +909,19 @@ One solution method to find local roots of smooth functions is called Newton's m
 Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
 
 .. :math:
+
     x^{n+1} = x^n - \frac{f(x^n}{f'(x^n)}
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
-Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
+#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
 
-Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
+#.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
 
-**BONUS:** For those impatient to use more advanced features of Julia, implement a version where ``f_prime`` is calculated with auto-differentiation
+Exercise 8(b)
+---------------
+
+For those impatient to use more advanced features of Julia, implement a version where Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
 
 .. code-block:: julia
 
@@ -929,11 +934,11 @@ Test it with :math:`f(x) = (x-1)^3` and another function of your choice where yo
     f(x) = x^2
     f_prime = D(f)
 
-    f(0.1), f_prime(0.1))
+    f(0.1), f_prime(0.1)
     
-Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative
+#. Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative
 
-Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``
+#. Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``
 
 
 Solutions
