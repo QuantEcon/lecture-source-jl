@@ -142,7 +142,7 @@ Arrays
 
 As a language intended for mathematical and scientific computing, Julia has strong support for using symbols in the source code
 
-In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the latex and then hitting `<TAB>`, i.e. ``\epsilon<TAB>`` 
+In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>`` 
 
 The return type is one of the most fundamental Julia data types: an array
 
@@ -908,7 +908,7 @@ One solution method to find local roots of smooth functions is called Newton's m
 
 Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
 
-.. :math:
+.. math::
 
     x^{n+1} = x^n - \frac{f(x^n}{f'(x^n)}
 
