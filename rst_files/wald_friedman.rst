@@ -634,15 +634,9 @@ We shall construct two types that
     end
 
     function simulate(wf, f; p0 = 0.5)
-        # Check whether vf is computed
-        if sum(abs, wf.sol.J) < 1e-8
-            wf! = solve_model(wf)
-        else 
-            wf! = wf 
-        end
 
         # Unpack useful info
-        lb, ub = wf!.sol.lb, wf!.sol.ub
+        lb, ub = wf.sol.lb, wf.sol.ub
         drv = DiscreteRV(f)
 
         # Initialize a couple useful variables
@@ -655,7 +649,7 @@ We shall construct two types that
             # the draws come from the "right" distribution
             k = rand(drv)
             t = t + 1
-            p = bayes_update_k(wf!, p, k)
+            p = bayes_update_k(wf, p, k)
             if p < lb
                 decision = 1
                 break
@@ -692,11 +686,18 @@ We shall construct two types that
         # Allocate space
         tdist = fill(0, ndraws)
         cdist = fill(false, ndraws)
-
+        wf_old = wf 
+        
         for i in 1:ndraws
-            correct, p, t = simulate_tdgp(wf, f)
+            if sum(abs, wf_old.sol.J) < 1e-8
+                wf_new = solve_model(wf_old)
+            else 
+                wf_new = wf_old 
+            end
+            correct, p, t = simulate_tdgp(wf_new, f)
             tdist[i] = t
             cdist[i] = correct
+            wf_old = wf_new 
         end
 
         return cdist, tdist
