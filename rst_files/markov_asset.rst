@@ -1135,17 +1135,8 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
   :class: test
 
   @testset begin
-    @test v_consol[1] == 753.8710047641985
-    @test w[2][1] == 176.83933430191294
-  end
-
-=======
-.. code-block:: julia
-  :class: test
-
-  @testset begin
-    @test w[1] ≈ 603.8710047641985
-    @test v_consol[3] ≈ 148.67554548466475
+    @test v_consol[1] ≈ 753.8710047641985
+    @test w[2][1] ≈ 176.83933430191294
   end
 
 Exercise 3
