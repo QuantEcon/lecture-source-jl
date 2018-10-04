@@ -540,26 +540,6 @@ We shall construct two types that
 
     =#
 
-    mutable struct WFSolution{TAV <: AbstractVector, TR<:Real}
-        J::TAV
-        lb::TR
-        ub::TR
-    end
-
-    struct WaldFriedman{TR <: Real,
-                        TI <: Integer,
-                        TAV1 <: AbstractVector,
-                        TAV2 <: AbstractVector}
-        c::TR
-        L0::TR
-        L1::TR
-        f0::TAV1
-        f1::TAV1
-        m::TI
-        pgrid::TAV2
-        sol::WFSolution
-    end
-
     function WaldFriedman(c, L0, L1, f0, f1; m = 25)
 
         pgrid = range(0.0, stop = 1.0, length = m)
@@ -573,10 +553,11 @@ We shall construct two types that
         lb = 0.
         ub = 0.
 
-        WaldFriedman(c, L0, L1, f0, f1, m, pgrid, WFSolution(J, lb, ub))
+        WFSolution = (J = J, lb = lb, ub = ub)
+        (c = c, L0 = L0, L1 = L1, f0 = f0, f1 = f1, m = m, pgrid = pgrid, sol = WFSolution)
     end
 
-    current_distribution(wf::WaldFriedman, p::Real) = p * wf.f0 + (1 - p) * wf.f1
+    current_distribution(wf, p) = p * wf.f0 + (1 - p) * wf.f1
 
     function bayes_update_k(wf, p, k)
         f0_k = wf.f0[k]
@@ -644,20 +625,15 @@ We shall construct two types that
         return lb, ub
     end
 
-    function solve_model!(wf; tol = 1e-7)
+    function solve_model(wf; tol = 1e-7)
         bell_op(x) = bellman_operator(wf, x)
-        J =  compute_fixed_point(bell_op, zeros(wf.m), err_tol=tol, print_skip=5)
-
-        wf.sol.J = J
-        wf.sol.lb, wf.sol.ub = find_cutoff_rule(wf, J)
-        return J
+        J = compute_fixed_point(bell_op, zeros(wf.m), err_tol=tol, print_skip=5)
+        lb, ub = find_cutoff_rule(wf, J)
+        WFSolution = (J = J, lb = lb, ub = ub)
+        wf_new = (c = wf.c, L0 = wf.L0, L1 = wf.L1, f0 = wf.f0, f1 = wf.f1, m = wf.m, pgrid = wf.pgrid, sol = WFSolution)
     end
 
     function simulate(wf, f; p0 = 0.5)
-        # Check whether vf is computed
-        if sum(abs, wf.sol.J) < 1e-8
-            solve_model!(wf)
-        end
 
         # Unpack useful info
         lb, ub = wf.sol.lb, wf.sol.ub
@@ -690,7 +666,7 @@ We shall construct two types that
     struct F0 <: HiddenDistribution end
     struct F1 <: HiddenDistribution end
 
-    function simulate_tdgp(wf, f; p0 = 0.5)
+    function simulate_tdgp(wf, f::F0; p0 = 0.5)
         decision, p, t = simulate(wf, wf.f0; p0=p0)
 
         correct = (decision == 0)
@@ -698,7 +674,7 @@ We shall construct two types that
         return correct, p, t
     end
 
-    function simulate_tdgp(wf, f; p0 = 0.5)
+    function simulate_tdgp(wf, f::F1; p0 = 0.5)
         decision, p, t = simulate(wf, wf.f1; p0=p0)
 
         correct = (decision == 1)
@@ -710,11 +686,18 @@ We shall construct two types that
         # Allocate space
         tdist = fill(0, ndraws)
         cdist = fill(false, ndraws)
-
+        wf_old = wf 
+        
         for i in 1:ndraws
-            correct, p, t = simulate_tdgp(wf, f)
+            if sum(abs, wf_old.sol.J) < 1e-8
+                wf_new = solve_model(wf_old)
+            else 
+                wf_new = wf_old 
+            end
+            correct, p, t = simulate_tdgp(wf_new, f)
             tdist[i] = t
             cdist[i] = correct
+            wf_old = wf_new 
         end
 
         return cdist, tdist
@@ -777,7 +760,7 @@ We'll start with the following parameterization
       wf = WaldFriedman(c, L0, L1, f0, f1; m = m);
 
       # Solve and simulate the solution
-      cdist, tdist = stopping_dist(wf; ndraws = 5000)
+      cdist, tdist = stopping_dist(wf; ndraws = 500)
 
       a = plot([f0 f1],
           xlabel = L"$k$ Values",
