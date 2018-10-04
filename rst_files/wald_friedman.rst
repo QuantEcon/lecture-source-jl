@@ -655,7 +655,7 @@ We shall construct two types that
             # the draws come from the "right" distribution
             k = rand(drv)
             t = t + 1
-            p = bayes_update_k(wf, p, k)
+            p = bayes_update_k(wf!, p, k)
             if p < lb
                 decision = 1
                 break
@@ -759,7 +759,7 @@ We'll start with the following parameterization
       wf = WaldFriedman(c, L0, L1, f0, f1; m = m);
 
       # Solve and simulate the solution
-      cdist, tdist = stopping_dist(wf; ndraws = 5000)
+      cdist, tdist = stopping_dist(wf; ndraws = 500)
 
       a = plot([f0 f1],
           xlabel = L"$k$ Values",
