@@ -172,13 +172,14 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    plot(plot(reshape(Beta.(1:2:3, 1:2:3), 2, 1), labels = ["f_0", "f_1"], title = "Original Distributions"),
-         plot(reshape(MixtureModel.(Beta, Ref((p -> (p, p)).(1:2:3)), (p -> [p, one(p) - p]).(0.25:0.25:0.75)), 3, 1),
-              labels = string.(0.25:0.25:0.75," f0 + ",(p -> one(p) - p).(0.25:0.25:0.75), " f1")),
-         title = "Distribution Mixtures",
-         ylab = "Density",
-         ylim = (0, 2),
-         layout = (2, 1))
+    begin
+        base_dist = [Beta(1, 1), Beta(3, 3)]
+        mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
+        plot(plot(base_dist, labels = ["f_0", "f_1"], title = "Original Distributions"),
+             plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"], title = "Distribution Mixtures"),
+             ylab = "Density", ylim = (0, 2), layout = (2, 1) # Global settings across both plots
+             )
+    end
 
 Losses and costs
 -------------------
@@ -351,17 +352,29 @@ Implementation
 Let's code this problem up and solve it.
 
 We implement the cost functions for each choice considered in the
-Bellman equation :eq:`new3`. First consider the cost associated to accepting either
-distribution and compare the minimum of the two to the expected benefit of
-drawing again. Drawing again will only be worthwhile if the expected marginal
-benefit of learning from an additional draw is greater than the explicit cost.
+Bellman equation :eq:`new3`
+
+First, consider the cost associated to accepting either distribution and
+compare the minimum of the two to the expected benefit of drawing again
+
+Drawing again will only be worthwhile if the expected marginal benefit of
+learning from an additional draw is greater than the explicit cost
 
 For every belief :math:`p`, we can compute the difference between accepting a
-distribution and choosing to draw again. The solution :math:`\alpha` and :math:`\beta`
-occurs when the difference between the cost of drawing again and accepting a
-distribution are zero (i.e., the agent is indifferent). We can use any roots
-finding algorithm to solve for the solutions in the interval [0, 1]. Lastly,
-verify which indifference points correspond to the definition.
+distribution and choosing to draw again
+
+The solution :math:`\alpha`, :math:`\beta` occurs at indifference points
+
+Define the cost function be the minimum of the pairwise differences in cost among
+the choices
+
+Then we can find the indifference points when the cost function is zero
+
+We can use any roots finding algorithm to solve for the solutions in the
+interval [0, 1]
+
+Lastly, verify which indifference points correspond to the definition of a permanent
+transition between the accept and reject space for each choice
 
 Here's the code
 
@@ -377,7 +390,9 @@ Here's the code
             p = bayes_update(p, d0, d1)
             cost += c
             candidate = min(accept_x0(p, L0), accept_x1(p, L1)) + cost
-            candidate ≥ target && break
+            if candidate >= target
+                break
+            end
             target = candidate
         end
         return candidate
@@ -394,6 +409,8 @@ Here's the code
                 target, option = (candidate, 3)
             end
             output = (option, target)
+        else
+            throw(ArgumentError("p must be ∈ [0, 1]"))
         end
         return output
     end
@@ -404,27 +421,26 @@ Next we solve a problem by finding the α, β values for the decision rule
 
     function decision_rule(d0, d1, L0, L1, c)
         function cost(p, d0, d1, L0, L1, c)
-            c ≥ zero(c) || throw(ArgumentError("Cost must be non-negative"))
+            if c < zero(c)
+                throw(ArgumentError("Cost must be non-negative"))
+            end
             x0 = accept_x0(p, L0)
             x1 = accept_x1(p, L1)
             draw = draw_again(p, d0, d1, L0, L1, c, min(x0, x1))
             output = min(abs(draw - x0), abs(draw - x1), abs(x1 - x0))
             return output
         end
-        roots = find_zeros(p -> cost(p, d0, d1, L0, L1, c), 0, 1 - eps())
+        # Find the indifference points
+        roots = find_zeros(p -> cost(p, d0, d1, L0, L1, c), 0 + eps(), 1 - eps())
+        # Compute the choice at both sides
         left = first.(choice.(roots .- eps(), d0, d1, L0, L1, c))
         right = first.(choice.(roots .+ eps(), d0, d1, L0, L1, c))
-        β, α = (0.0, 1.0)
-        for (left, right, root) in zip(left, right, roots)
-            if left == 2 && right ≠ 2
-                β = root
-            end
-        end
-        for (left, right, root) in zip(reverse(left), reverse(right), reverse(roots))
-            if left ≠ 1 && right == 1
-                α = root
-            end
-        end
+        # Find β by checking for a permanent transition from the area accepting to
+        # x₁ to never again accepting x₁ at the various indifference points
+        # Find α by checking for a permanent transition from the area accepting of
+        # x₀ to never again accepting x₀ at the various indifference points
+        β = findlast((left .== 2) .& (right .≠ 2)) |> (x -> isa(x, Int) ? roots[x] : 0)
+        α = findfirst((left .≠ 1) .& (right .== 1)) |> (x -> isa(x, Int) ? roots[x] : 1)
         if β < α
             @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
         else
@@ -444,17 +460,6 @@ We can simulate an agent facing a problem and the outcome with the following fun
 
 .. code-block:: julia
 
-    @with_kw struct Problem
-        d0 = Beta(1,1)
-        d1 = Beta(9,9)
-        L0 = 2
-        L1 = 2
-        c = 0.2
-        p = 0.5
-        n = 100
-        return_output = false
-    end
-
     function simulation(problem)
         @unpack d0, d1, L0, L1, c, p, n, return_output = problem
         α, β = decision_rule(d0, d1, L0, L1, c)
@@ -462,7 +467,9 @@ We can simulate an agent facing a problem and the outcome with the following fun
         costs = fill(0.0, n)
         trials = fill(0, n)
         for trial in 1:n
+            # Nature chooses
             truth = rand(1:2)
+            # The true distribution and loss are defined based on the truth
             d = (d0, d1)[truth]
             l = (L0, L1)[truth]
             t = 0
@@ -471,9 +478,9 @@ We can simulate an agent facing a problem and the outcome with the following fun
                 t += 1
                 outcome = rand(d)
                 p = bayes_update(p, d0, d1)
-                if p ≤ β
+                if p <= β
                     choice = 1
-                elseif p ≥ α
+                elseif p >= α
                     choice = 2
                 end
             end
@@ -488,14 +495,18 @@ We can simulate an agent facing a problem and the outcome with the following fun
         return return_output ? (α, β, outcomes, costs, trials) : nothing
     end
 
+    Problem = @with_kw (d0 = Beta(1,1), d1 = Beta(9,9),
+                        L0 = 2, L1 = 2,
+                        c = 0.2, p = 0.5,
+                        n = 100, return_output = false);
+
 .. code-block:: julia
     :class: test
 
     @testset "Verifying Output" begin
         Random.seed!(0)
-        problem = Problem(return_output = true)
-        @unpack d0, d1, L0, L1, c, p, n, return_output = problem
-        α, β, outcomes, costs, trials = simulation(problem)
+        @unpack d0, d1, L0, L1, c = Problem()
+        α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
         @test α ≈ 0.57428237
         @test β ≈ 0.352510338
         @test mean(outcomes) ≈ 0.58
@@ -515,16 +526,15 @@ We can simulate an agent facing a problem and the outcome with the following fun
 .. code-block:: julia
 
     Random.seed!(0);
-    output = simulation(Problem());
+    simulation(Problem());
 
 .. code-block:: julia
     :class: test
 
     @testset "Comparative Statics" begin
         Random.seed!(0)
-        problem = Problem(c = 0.4, return_output = true)
-        @unpack d0, d1, L0, L1, c, p, n, return_output = problem
-        α, β, outcomes, costs, trials = simulation(problem)
+        @unpack d0, d1, L0, L1, c = Problem()
+        α, β, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
         @test α ≈ 0.53551172
         @test β ≈ 0.41244737
         @test mean(outcomes) ≈ 0.57
@@ -534,7 +544,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
                                   clamp(β + eps(), 0, 1),
                                   clamp(α - eps(), 0, 1),
                                   clamp(α + eps(), 0, 1)),
-                                  d0, d1, L0, L1, c))
+                                  d0, d1, L0, L1, 2c))
         @test choices[1] == 2
         @test choices[2] ≠ 2
         @test choices[3] ≠ 1
@@ -557,7 +567,7 @@ Before you look, think about what will happen:
 .. code-block:: julia
 
     Random.seed!(0);
-    output = simulation(Problem(c = 0.4));
+    simulation(Problem(c = 0.4));
 
 Notice what happens?
 
