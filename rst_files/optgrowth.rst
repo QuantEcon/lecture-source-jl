@@ -769,6 +769,12 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
   plot!(plt, grid_y, v_star.(grid_y), color=:black, linewidth=2, alpha=0.8, label=lb)
   plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v_star.(grid_y)[2] == -33.370496456772266
+  end
 
 The figure shows
 
@@ -910,6 +916,12 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     plot!(plt, grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
     plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test cstar[102] == 1.2505758978894472
+  end
 
 The figure shows that we've done a good job in this instance of approximating
 the true policy
@@ -943,6 +955,12 @@ We have also dialed down the shocks a bit
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
 
+
+.. code-block:: julia
+  :class: test
+  @testset begin
+    @test shocks[25] == 0.8050318706532391
+  end
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
 

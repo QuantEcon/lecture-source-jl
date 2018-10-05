@@ -299,6 +299,14 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     lm = LakeModel(α = 2.0)
     lm.A
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test lm.α == 2.0
+    @test lm.A[1][1] == 0.7235062600000001
+  end
+
 Aggregate Dynamics
 --------------------
 
@@ -365,6 +373,13 @@ This is the case for our default parameters:
     e, f = eigvals(lm.A_hat)
     abs(e), abs(f)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test abs(e) == 0.6953067378358462
+    @test abs(f) == 1.0
+  end
 
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
 
@@ -934,8 +949,15 @@ state
     lm = LakeModel()
     x0 = rate_steady_state(lm)
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+    @test x0[1] == 0.08266806439740906
+  end
+  
 Here are the other parameters:
+
 
 .. code-block:: julia
 
