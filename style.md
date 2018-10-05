@@ -56,8 +56,21 @@ A = [1 2;
 ```
 - **Do not** use docstrings in any lecture code - except when explaining packages and the `?` environment.
 - **Feel free** to use the `⋅` unicode symbol, i.e. `\cdot<TAB>` instead of `dot( , )`
-- **Use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
+- **Avoid the use of LaTeX** as it does not work well with most graphics backends
+  - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
 - **Prefer** `in` to `∈` 
+- Comment spacing
+  - Comments on their own lines, which are generally prefered
+```julia
+x = 1
+
+# Comment1
+x = 2
+```
+  - Comments on the same line of code
+```julia
+x = 1 # Comment2
+```
 
 ## Type Annotations, Parameters, and Generic Programming
 
@@ -175,14 +188,14 @@ y = zeros(N) #If we want the default, floats
 A = zeros(N,N)
 
 # Best (if a candidate `x` exists)
-y = similar(x, N) #Keeps things generic.  The `N` here is not required if the same size
-A = similar(x, N, N) #Same type but NxN size
+y = similar(x, N) # Keeps things generic.  The `N` here is not required if the same size
+A = similar(x, N, N) # Same type but NxN size
 ```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
 # Bad!
 N = 5
-x = [] #Really bad since it is an Any vector!
+x = [] # Really bad since it is an Any vector!
 for i in 1:N
     push!(x, 2.0 * i^2)
 end
@@ -221,7 +234,7 @@ y
 
 # GOOD! #No way to preallocate y (although easier ways to write)
 x = rand(10)
-y = similar(x, 0) #Empty of same type as x
+y = similar(x, 0) # Empty of same type as x
 for val in x
     if val < 0.5
         push!(y, val)
@@ -248,7 +261,7 @@ end
 n
 
 # BEST!
-sum(xval -> xval^2, x) #i.e. transform each x and then reduce
+sum(xval -> xval^2, x) # i.e. transform each x and then reduce
 ```
 
 - **Use `eachindex`** to iterate through matrices and arrays of dimension > 2 as long as you don't need the actual index.  Otherwise,   For example,
@@ -290,7 +303,7 @@ r = zmin:step:zstop
 # ...CAREFUL
 r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
-@assert maximum(r) == 0.88 #Use to get the maxium of the range, perhaps != 
+@assert maximum(r) == 0.88 # Use to get the maxium of the range, perhaps != 
 ```
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
