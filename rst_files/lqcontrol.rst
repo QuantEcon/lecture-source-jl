@@ -792,12 +792,6 @@ relatively more weight on later consumption values
            xaxis = ("Time"), layout = (2, 1),
            bottom_margin = 20mm, size = (600, 600))
 
-.. code-block:: julia
-  :class: test
-
-  @testset "First Plots Tests" begin
-    @test assets[5] == -7.420389543728023
-  end
 
 
 We now have a slowly rising consumption stream and a hump-shaped build
