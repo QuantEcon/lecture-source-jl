@@ -557,8 +557,6 @@ An example of usage is given in the docstring and repeated here
     @test price_vals[13] ≈ 9.878515482070496
   end
 
-  end
-
 Here's the resulting price function
 
 
