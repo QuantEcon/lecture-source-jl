@@ -51,9 +51,9 @@ version = "0.8.10"
 
 [[BinaryProvider]]
 deps = ["Libdl", "Pkg", "SHA", "Test"]
-git-tree-sha1 = "48c147e63431adbcee69bc40b04c3f0fec0a4982"
+git-tree-sha1 = "38be61810f280c3c478f5c38aaf387f8f9199275"
 uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
-version = "0.5.0"
+version = "0.5.1"
 
 [[BlackBoxOptim]]
 deps = ["CPUTime", "Compat", "Distributed", "Distributions", "LinearAlgebra", "Logging", "Pkg", "Printf", "Random", "SHA", "Serialization", "Statistics", "StatsBase", "Test"]
@@ -111,9 +111,9 @@ version = "0.1.1"
 
 [[Clustering]]
 deps = ["Dates", "Distances", "LinearAlgebra", "NearestNeighbors", "Pkg", "Printf", "Random", "SparseArrays", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "e5ab61505f044895bfe25ed034eba7639d8a4a5f"
+git-tree-sha1 = "282e5d488cfca89b78b28b9ef28a59898951a62f"
 uuid = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
-version = "0.12.0"
+version = "0.12.1"
 
 [[CodecZlib]]
 deps = ["BinaryProvider", "Libdl", "Pkg", "Test", "TranscodingStreams"]
@@ -199,9 +199,9 @@ uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[DelayDiffEq]]
 deps = ["DataStructures", "DiffEqBase", "DiffEqDiffTools", "ForwardDiff", "MuladdMacro", "NLSolversBase", "OrdinaryDiffEq", "RecursiveArrayTools", "Reexport", "Roots", "Test"]
-git-tree-sha1 = "6946b00a81393978a24ee946dde9badccf5719d1"
+git-tree-sha1 = "25999a297095f3be477ee1a7b70a0f8b7a08c929"
 uuid = "bcd4f6db-9728-5f36-b5f7-82caef46ccdb"
-version = "4.5.0"
+version = "4.5.1"
 
 [[DelimitedFiles]]
 deps = ["Mmap"]
@@ -221,9 +221,9 @@ version = "0.3.2"
 
 [[DiffEqBase]]
 deps = ["Compat", "IteratorInterfaceExtensions", "LinearAlgebra", "Pkg", "RecipesBase", "RecursiveArrayTools", "Requires", "StaticArrays", "Statistics", "TableTraits", "Test", "TreeViews"]
-git-tree-sha1 = "bc82bd3bc98020c3c515637450d6f6fda70ca2a5"
+git-tree-sha1 = "c814d0a4aecc2914f107e94d2c49be19623e161c"
 uuid = "2b5f629d-d688-5b77-993f-72d75c75574e"
-version = "4.26.1"
+version = "4.27.0"
 
 [[DiffEqBiological]]
 deps = ["Compat", "DataStructures", "DiffEqBase", "DiffEqJump", "MacroTools", "Random", "Reexport", "Statistics", "SymEngine", "Test"]
@@ -257,9 +257,9 @@ version = "2.1.0"
 
 [[DiffEqJump]]
 deps = ["Compat", "DataStructures", "DiffEqBase", "FunctionWrappers", "LinearAlgebra", "PoissonRandom", "Random", "RandomNumbers", "RecursiveArrayTools", "Statistics", "Test", "TreeViews"]
-git-tree-sha1 = "27f0bc8a4cc4495d5151324d7b31cd82f573b98a"
+git-tree-sha1 = "cc46da016ec879f0c28be535b183a45549a34f9f"
 uuid = "c894b116-72e5-5b58-be3c-e6d8d4ac2b12"
-version = "5.2.1"
+version = "5.4.1"
 
 [[DiffEqMonteCarlo]]
 deps = ["DiffEqBase", "Distributed", "Random", "RecursiveArrayTools", "StaticArrays", "Statistics", "Test"]
@@ -669,9 +669,9 @@ version = "1.0.2"
 
 [[OrdinaryDiffEq]]
 deps = ["DataStructures", "DiffEqBase", "DiffEqDiffTools", "DiffEqOperators", "ExponentialUtilities", "ForwardDiff", "GenericSVD", "InteractiveUtils", "LinearAlgebra", "Logging", "MuladdMacro", "NLsolve", "Parameters", "Printf", "Random", "RecursiveArrayTools", "Reexport", "Roots", "SparseArrays", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "6317da7d50f23905743b445fda093f4983d77c06"
+git-tree-sha1 = "00d9c41c703eeffc7c70277c1e6a0da0207dd77e"
 uuid = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
-version = "4.12.4"
+version = "4.13.0"
 
 [[PDMats]]
 deps = ["Arpack", "LinearAlgebra", "SparseArrays", "SuiteSparse", "Test"]
@@ -681,9 +681,9 @@ version = "0.9.5"
 
 [[ParameterizedFunctions]]
 deps = ["DataStructures", "DiffEqBase", "InteractiveUtils", "LinearAlgebra", "SimpleTraits", "SymEngine", "Test"]
-git-tree-sha1 = "deea68ae13f2f69011c09fa721ce03a4d4d35e55"
+git-tree-sha1 = "6949fb675cd36624581dd3c2487f1d61d019ace7"
 uuid = "65888b18-ceab-5e60-b2b9-181511a3b968"
-version = "3.12.0"
+version = "4.0.0"
 
 [[Parameters]]
 deps = ["Markdown", "OrderedCollections", "Pkg", "REPL", "Test"]
@@ -779,9 +779,9 @@ uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[RandomNumbers]]
 deps = ["InteractiveUtils", "Libdl", "Pkg", "Printf", "Random", "Test"]
-git-tree-sha1 = "292ba49037aea380eb102bb923b69bf17d16289b"
+git-tree-sha1 = "8f649d7f086942c5118c0591b5cfcda45b2b060f"
 uuid = "e6cf234a-135c-5ec9-84dd-332b85af5143"
-version = "1.0.1"
+version = "1.0.2"
 
 [[Ratios]]
 deps = ["Compat"]
@@ -954,9 +954,9 @@ version = "0.3.1"
 
 [[Tables]]
 deps = ["Pkg", "Requires", "Test"]
-git-tree-sha1 = "277464179bc7cfb1b4d5a4f3ccde0fc75792157f"
+git-tree-sha1 = "7b7e95a34c2c2504f1403aa9005399e239f461b9"
 uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
-version = "0.1.8"
+version = "0.1.9"
 
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]

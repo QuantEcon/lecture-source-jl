@@ -1,7 +1,7 @@
 name = "QuantEconLecturePackages"
 uuid = "e24db316-c288-11e8-0deb-55fe95db271c"
-authors = ["arnavs <soodarnav01@gmail.com>"]
-version = "0.1.0"
+authors = ["QuantEcon <contact@quantecon.org>"]
+version = "0.0.0"
 
 [deps]
 BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
