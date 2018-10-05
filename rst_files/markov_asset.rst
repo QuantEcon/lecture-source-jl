@@ -450,11 +450,11 @@ Here's the code, including a test of the spectral radius condition
         alpha = 0.7,
         label = L"$v$")
 
-..code-block:: julia
+.. code-block:: julia
   :class: test
 
   @testset begin
-    @test    v[2] == 3.4594684257743284
+    @test v[2] == 3.4594684257743284
     @test v[1] == 3.2560393349907755
     @test v[5] ≈ 4.526909446326235
     @test K[8] ≈ 8.887213530262768e-10
@@ -934,7 +934,6 @@ The reason is that :math:`\beta=0.9`, so the future is discounted relatively rap
 
   @testset begin
     @test x[2] == -0.126178653628809
-    @test w[4] == 72.31000385953138
     @test p[5] == 52.85568616593254
   end
 

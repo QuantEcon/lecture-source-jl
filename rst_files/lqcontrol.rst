@@ -793,11 +793,10 @@ relatively more weight on later consumption values
            bottom_margin = 20mm, size = (600, 600))
 
 .. code-block:: julia
- :class: test
+  :class: test
 
- @testset "First Plots Tests" begin
-    @test income[10] == 1.0676488253505267.
-
+  @testset "First Plots Tests" begin
+    @test assets[5] == -7.420389543728023
   end
 
 
@@ -1438,7 +1437,6 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
   :class: test
 
   @testset begin
-    @test income[5] == 0.9026184038391956
     @test ap[20] == -8.123970759436794
   end
 
