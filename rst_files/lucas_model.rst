@@ -629,6 +629,8 @@ Solutions
   :class: test
 
   @testset begin # For the 0.98, since the other one is overwritten.
-    @test price_vals[20] ≈ 36.292037642169
-    @test price_vals[57] ≈ 129.1157997870433
+    Random.seed!(42)
+    price_vals = solve_lucas_model(LucasTree(β = 0.98))
+    @test price_vals[20] ≈ 34.996401835558295
+    @test price_vals[57] ≈ 124.32043561450588
   end
