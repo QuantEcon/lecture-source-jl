@@ -1434,7 +1434,13 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
               xaxis = ("Time"), layout = (2,1),
               bottom_margin = 20mm, size = (600, 600))
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+    @test income[5] == 0.9026184038391956
+    @test ap[20] == -8.123970759436794
+  end
 
 Exercise 2
 ----------
@@ -1525,8 +1531,7 @@ the lecture.
   :class: test
 
   @testset begin
-    @test income[20] == 2.7556426556865405
-    @test income_w[10]  == 1.7793292671917649
+    @test income[20] == 3.0809720173965855
   end
 
 Exercise 3
@@ -1612,3 +1617,12 @@ Our solution code is
               xaxis = ("Time"), title = "Dynamics with γ = $γ",
               bottom_margin = 20mm, top_margin = 10mm,
               size = (700, 500))
+
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test xp[20] == 2.8378651501210808
+    @test q_bar[25] == 2.518687537862516
+  end

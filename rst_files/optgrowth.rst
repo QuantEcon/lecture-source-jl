@@ -769,6 +769,12 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
   plot!(plt, grid_y, v_star.(grid_y), color=:black, linewidth=2, alpha=0.8, label=lb)
   plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v_star.(grid_y)[2] == -33.370496456772266
+  end
 
 The figure shows
 
