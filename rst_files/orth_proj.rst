@@ -874,7 +874,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
             output = projection / norm(projection)
         end
 
-        for col ∈ 1:size(U, 2)
+        for col in 1:size(U, 2)
             # Set up
             b = view(X, :, col)     # The vector we're going to project
             Z = view(X, :, 1:col-1) # first i-1 columns of X
