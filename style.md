@@ -174,6 +174,21 @@ A + 2 * Ival
 A + I
 A + 2*I
 ```
+- **Slice with copy for clarity**, and if necessary use `@views`
+```julia
+
+# GOOD! (usually)
+A = [1 2; 3 4]
+A[:, 1]
+
+#GOOD when views necessary 
+A = [1 2; 3 4]
+@views A[:, 1]
+
+# BAD!
+A = [1 2; 3 4]
+view(A, :, 1)
+```
 - **Preallocate with `similar`** whenever possible, and avoid type annotations unless necessary.  The goal is to maintain code independent of types, which will aid later in generic programming.  Where you cannot, just allocate zeros, etc. instead 
 ```julia
 N = 5
@@ -287,9 +302,10 @@ N = 10
 zmin = 0.0
 zstop = 1.0
 
-# Old linspace(zmin, zstop, N) doesn't work
+# old linspace(zmin, zstop, N) doesn't work
+# See comment on new range
 # ACCEPTABLE!
-range(zmin, stop = zstop, length = N)
+range(zmin, stop, length = N)
 ```    
   - Furthermore, if you don't really care if if hits the `zstop` exactly and are willing to give a stepsize then, the following is the clearest
 ```julia
@@ -305,6 +321,16 @@ r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
 @assert maximum(r) == 0.88 # Use to get the maxium of the range, perhaps != 
 ```
+- **Use the new `range` from Compat.jl`
+```julia
+# BAD! But the only pure Julia 1.0 version
+range(0.0, stop=1.0, length = 10)
+
+# GOOD! But requires Julia 1.1 or COmpat
+using Compat
+range(0.0, 1.0, length=10)
+```
+
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 
