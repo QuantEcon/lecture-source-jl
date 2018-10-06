@@ -11,6 +11,8 @@ Linear Algebra
 
 .. contents:: :depth: 2
 
+Co-authors: `Spencer Lyon <https://github.com/sglyon>`__ and `Victoria Gregory <http://github.com/vgregory757>`__.
+
 Overview
 ===========
 
@@ -25,7 +27,6 @@ For example, many applied problems in economics and finance require the solution
         y_2 = c x_1 + d x_2
     \end{array}
 
-
 or, more generally,
 
 .. math::
@@ -36,7 +37,6 @@ or, more generally,
         \vdots  \\
         y_n = a_{n1} x_1 + a_{n2} x_2 + \cdots + a_{nk} x_k
     \end{array}
-
 
 The objective here is to solve for the "unknowns" :math:`x_1, \ldots, x_k` given :math:`a_{11}, \ldots, a_{nk}` and :math:`y_1, \ldots, y_n`
 
@@ -59,7 +59,6 @@ We admit some overlap with :doc:`this lecture <julia_arrays>`, where operations 
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
 
-
 :index:`Vectors`
 ================
 
@@ -67,10 +66,6 @@ material that will be used in applications as we go along
     single: Linear Algebra; Vectors
 
 A *vector* of length :math:`n` is just a sequence (or array, or tuple) of :math:`n` numbers, which we write as :math:`x = (x_1, \ldots, x_n)` or  :math:`x = [x_1, \ldots, x_n]`
-
-We will write these sequences either horizontally or vertically as we please
-
-(Later, when we wish to perform certain matrix operations, it will become necessary to distinguish between the two)
 
 The set of all :math:`n`-vectors is denoted by :math:`\mathbb R^n`
 
@@ -81,6 +76,12 @@ the point
 
 The following figure represents three vectors in this manner
 
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+
 .. code-block:: julia
     :class: test
 
@@ -88,14 +89,7 @@ The following figure represents three vectors in this manner
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-              Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
-
-    using Plots, LaTeXStrings
+    using Plots
 
     vecs = ([2, 4], [-3, 3], [-4, -3.5])
     x_vals = zeros(2, length(vecs))
@@ -185,8 +179,6 @@ vector :math:`x` and produces
 
 Scalar multiplication is illustrated in the next figure
 
-
-
 .. code-block:: julia
 
     # illustrate scalar multiplication
@@ -219,7 +211,7 @@ Scalar multiplication is illustrated in the next figure
 
 .. code-block:: julia
    :class: test
-            
+
    @testset "second block" begin
         @test y_vals[2,:] == [-4.0,4.0,2.0]
         @test labels[2,1] == (-3.6,-4.2,"-2x")
@@ -280,12 +272,6 @@ The expression :math:`\| x - y\|` is thought of as the distance between :math:`x
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
 
     using LinearAlgebra
@@ -343,7 +329,7 @@ The span is a 2 dimensional plane passing through these two points and the origi
 
 
 .. code-block:: julia
-  :class: collapse
+    :class: collapse
 
     x_min, x_max = -5, 5
     y_min, y_max = -5, 5
@@ -811,14 +797,7 @@ The answer to both these questions is negative, as the next figure shows
 
 
 .. code-block:: julia
-  :class: collapse
-
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-  =#
+    :class: collapse
 
     f(x) = 0.6 * cos(4.0 * x) + 1.3
 
@@ -828,11 +807,11 @@ The answer to both these questions is negative, as the next figure shows
     y = f.(x)
     ya, yb = extrema(y)
 
-    p1 = plot(x, y, color = :black, label = [L"$f$" ""], grid = false)
+    p1 = plot(x, y, color = :black, label = ["f" ""], grid = false)
     plot!(x, ya * ones(Nx, 1), fill_between = yb * ones(Nx, 1),
         fillalpha = 0.1, color = :blue, label = "", lw = 0)
-    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
-    annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
+    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = ["range of f" ""])
+    annotate!(0.04, -0.3, "0", ylims = (-0.6, 3.2))
     vline!([0], color = :black, label = "")
     hline!([0], color = :black, label = "")
     plot!(foreground_color_axis = :white, foreground_color_text = :white,
@@ -840,7 +819,7 @@ The answer to both these questions is negative, as the next figure shows
 
     ybar = 1.5
     plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, label = "")
-    annotate!(0.05, 0.8 * ybar, L"$y$")
+    annotate!(0.05, 0.8 * ybar, "y")
 
     x_vals = zeros(2, 4)
     y_vals = similar(x_vals)
@@ -848,15 +827,15 @@ The answer to both these questions is negative, as the next figure shows
     for (i, z) ∈ enumerate([-0.35, 0.35])
         x_vals[:, 2*i-1] = z * ones(2, 1)
         y_vals[2, 2*i-1] = f(z)
-        labels = [labels; (z, -0.2, LaTeXString("\$x_$i\$"))]
+        labels = [labels; (z, -0.2, "x_i")]
     end
     plot!(x_vals, y_vals, color = :black, linestyle = :dash, label = "", annotation = labels)
 
-    p2 = plot(x, y, color = :black, label = [L"$f$" ""], grid=false)
+    p2 = plot(x, y, color = :black, label = ["f" ""], grid=false)
     plot!(x, ya*ones(Nx, 1), fill_between = yb * ones(Nx, 1),
         fillalpha = 0.1, color = :blue, label = "", lw = 0)
-    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
-    annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
+    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = ["range of f" ""])
+    annotate!(0.04, -0.3, "0", ylims = (-0.6, 3.2))
     vline!([0], color = :black, label = "")
     hline!([0], color = :black, label = "")
     plot!(foreground_color_axis = :white, foreground_color_text = :white,
@@ -864,7 +843,7 @@ The answer to both these questions is negative, as the next figure shows
 
     ybar = 2.6
     plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, legend = :none)
-    annotate!(0.04, 0.91 * ybar, L"$y$")
+    annotate!(0.04, 0.91 * ybar, "y")
 
     plot(p1, p2, layout = (2, 1), size = (600, 700))
 
@@ -1050,8 +1029,6 @@ Linear Equations with Julia
 
 Here's an illustration of how to solve linear equations with Julia's built-in linear algebra facilities
 
-.. code-block:: jlcon
-
 .. code-block:: julia
 
     A = [1.0 2.0; 3.0 4.0];
@@ -1119,7 +1096,7 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
 
 
 .. code-block:: julia
-  :class: collapse
+    :class: collapse
 
     A = [1 2
         2 1]
@@ -1149,7 +1126,7 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
     plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 
 .. code-block:: julia
- :class: test
+   :class: test
 
   @testset "eigvals" begin
     @test eig_1[2,2] ≈ 0.7071067811865475
