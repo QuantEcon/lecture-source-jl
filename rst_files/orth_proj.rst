@@ -854,9 +854,9 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
-    :class: Test 
+    :class: Test
 
-    using Test # Put this before any code in the lecture. 
+    using Test # Put this before any code in the lecture.
 
 .. code-block:: julia
 
@@ -864,29 +864,25 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     function gram_schmidt(X)
 
-        n, k = size(X)
-        U = zeros(n, k)
+        U = similar(X, Float64)
 
-        # The first col of U is just the normalized first col of X
-        v1 = X[:,1]
-        U[:,1] = v1 / norm(v1)
-
-        for i ∈ 2:k
-            # Set up
-            b = X[:,i]        # The vector we're going to project
-            Z = X[:, 1:i-1]   # first i-1 columns of X
-
+        function normalized_orthogonal_projection(b, Z)
             # Project onto the orthogonal complement of the col span of Z
-            M = I - Z * inv(Z'Z) * Z'
-            u = M * b
-
+            orthogonal = I - Z * inv(Z'Z) * Z'
+            projection = orthogonal * b
             # Normalize
-            U[:,i] = u / norm(u)
+            output = projection / norm(projection)
+        end
+
+        for col ∈ 1:size(U, 2)
+            # Set up
+            b = view(X, :, col)     # The vector we're going to project
+            Z = view(X, :, 1:col-1) # first i-1 columns of X
+            U[:,col] = normalized_orthogonal_projection(b, Z)
         end
 
         return U
     end
-
 
 Here are the arrays we'll work with
 
@@ -902,14 +898,12 @@ by the columns of :math:`X`.
 
     Py1 = X * inv(X'X) * X' * y
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Test Py1" begin
-        @test Py1[1] ≈ -0.5652173913043479 
-        @test Py1[2] ≈ 3.2608695652173916 
-        @test Py1[3] ≈ -2.217391304347826 
-    end 
+        @test Py1 ≈ [-0.5652173913043479, 3.2608695652173916, -2.217391304347826]
+    end
 
 Now let's orthogonalize first, using Gram--Schmidt:
 
@@ -924,12 +918,12 @@ same thing:
 
     Py2 = U * U' * y
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Test Py2" begin
-        @test norm(Py2-Py1) ≈ 0 
-    end 
+        @test Py1 ≈ Py2
+    end
 
 
 The result is the same. To complete the exercise, we get an orthonormal
@@ -946,11 +940,11 @@ basis by QR decomposition and project once more.
 
     Py3 = Q * Q' * y
 
-.. code-block:: julia 
-    :class: test 
-    
-    @testset "Test Py3" begin 
-        @test norm(Py3-Py1) ≈ 0 
-    end 
+.. code-block:: julia
+    :class: test
+
+    @testset "Test Py3" begin
+        @test Py1 ≈ Py3
+    end
 
 Again, the result is the same
