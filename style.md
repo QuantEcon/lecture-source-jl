@@ -9,12 +9,13 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 1. Assume this may be the **first programming language** students learn
 2. Use **compact, script-style** code, organized into functions only when it is natural.  Best practices for writing packages and expository/exploratory/interactive code can be different.
 3. Keep things as **close to the whiteboard math** as possible, including in the code structure and notation
-4. Ensure that all **code can be copied and pasted without modification** into functions for performance and modification without changes to scoping (e.g. no `local` or `global` ever required)
-5. **Avoid type annotations** unless they are required for dispatching
-6. **Avoid creating custom types** unless it is absolutely necessary
-7. Beyond the [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/), avoid unnecessary whitespace lines and redundant comments
-8. Don't use fancy features and control flow from Julia - unless it makes the code look closer to the math
-9. Avoid both micro-optimizations and coding patterns that pessimize (i.e. poor performance with no benefit in code clarity)
+4. Maintain this **correspondence between math and code** even if the code is less efficient.  Only optimize if it is really necessary.
+5. Ensure that all **code can be copied and pasted without modification** into functions for performance and modification without changes to scoping (e.g. no `local` or `global` ever required)
+6. **Avoid type annotations** unless they are required for dispatching
+7. **Avoid creating custom types** unless it is absolutely necessary
+8. Beyond the [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/), avoid unnecessary whitespace lines and redundant comments
+9. Don't use fancy features and control flow from Julia - unless it makes the code look closer to the math
+10. Avoid both micro-optimizations and coding patterns that pessimize (i.e. poor performance with no benefit in code clarity)
 
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
