@@ -72,6 +72,12 @@ x = 2
 ```julia
 x = 1 # comment2
 ```
+- **Add comment for equation to code correspondence whenever possible**.  That is, if there was a formula in the document at some point, say `b = a x^2 (14)` where the `14` is the equation number when rendering, then the code which implements it should be
+```julia
+# GOOD!
+b = a * x^2 # (14)
+```
+  - The exception to this rule is if it is immediately clear that a line of code represents a formula due to immediate proximity in the document.  Always err on the side of extra equation numbers, and add it to the `rst` as required.
 
 ## Type Annotations, Parameters, and Generic Programming
 
