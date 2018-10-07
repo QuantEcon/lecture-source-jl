@@ -91,7 +91,7 @@ params = MyParams(2.0)
 params = (a = 2.0, b = [1.0 2.0 3.0])
 
 # BETTER!
-myparams = @with_kw (a = 10.0, b = [1 2 3]) #Generates new named tuples with defaults
+myparams = @with_kw (a = 10.0, b = [1 2 3]) # generates new named tuples with defaults
 params = myparams(a = 2.0) # -> (a=2.0, b=[1.0 2.0 3.0])
 myparamsdefaults = myparams() # -> (a = 10.0, b = [1.0 2.0 3.0])
 ```
@@ -157,7 +157,7 @@ vcat(a, b)
 
 # GOOD!
 [a b]
-[a; b] #or,
+[a; b] # or,
 [a;
  b]
 ```
@@ -195,21 +195,36 @@ view(A, :, 1)
 N = 5
 x = [1.0, 2.0, 3.0, 4.0, 5.0]
 
-# Bad!
+# BAD!
 y = Array{Float64}(undef, N)
 A = Array{Float64}(undef, N, N)
 
-# Better
+# BETTER!
 y = zeros(N) # if we want the default, floats
 A = zeros(N,N)
 
-# Best (if a candidate `x` exists)
+# BEST! (if a candidate `x` exists)
 y = similar(x, N) # keeps things generic.  The `N` here is not required if the same size
 A = similar(x, N, N) # same type but NxN size
 ```
+- **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
+```julia
+x = [1 0; 0 1]
+
+# note, typeof(Q) ==  LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}
+Q, R = qr(x)
+
+
+# BAD!
+Q = Matrix(Q)
+val = Q * Q' # some calculation using Q and other things
+
+# GOOD!
+val = Q * Q' # directly, without any conversion
+```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
-# Bad!
+# BAD!
 N = 5
 x = [] # really bad since it is an Any vector!
 for i in 1:N
@@ -229,7 +244,7 @@ x = [2.0 * i^2 for i in 1:N]
 
 # or
 f(i) = 2.0 * i^2
-x = f.(1:5) #Use broadcasting
+x = f.(1:5) # use broadcasting
 ```
 - Prefer `eachindex` to accessing the sizes of vectors.
 ```julia
@@ -311,9 +326,9 @@ step = 0.1
 r = zmin:step:zstop
 
 # CAREFUL!
-r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
+r = 0.0:0.22:1.0 # note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
-@assert maximum(r) == 0.88 # Use to get the maxium of the range, perhaps != 
+@assert maximum(r) == 0.88 # use to get the maxium of the range, perhaps != 
 ```
 - **Use the new `range` from Compat.jl**. This provides code compatible with Julia 1.1
 ```julia
