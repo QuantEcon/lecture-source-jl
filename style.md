@@ -38,7 +38,7 @@ bar = 2.0
 # GOOD!
 foo(a)
 
-# Parameters
+# parameters
 bar = 2.0
 ```
 - **Do not** align the `=` sign for construction of variables (though acceptable for matrices).  i.e.
@@ -61,16 +61,16 @@ A = [1 2;
   - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
 - **Prefer** `in` to `∈` 
 - Comment spacing
-  - Comments on their own lines, which are generally prefered
+  - Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
 ```julia
 x = 1
 
-# Comment1
+# comment1
 x = 2
 ```
   - Comments on the same line of code
 ```julia
-x = 1 # Comment2
+x = 1 # comment2
 ```
 
 ## Type Annotations, Parameters, and Generic Programming
@@ -200,18 +200,18 @@ y = Array{Float64}(undef, N)
 A = Array{Float64}(undef, N, N)
 
 # Better
-y = zeros(N) #If we want the default, floats
+y = zeros(N) # if we want the default, floats
 A = zeros(N,N)
 
 # Best (if a candidate `x` exists)
-y = similar(x, N) # Keeps things generic.  The `N` here is not required if the same size
-A = similar(x, N, N) # Same type but NxN size
+y = similar(x, N) # keeps things generic.  The `N` here is not required if the same size
+A = similar(x, N, N) # same type but NxN size
 ```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
 # Bad!
 N = 5
-x = [] # Really bad since it is an Any vector!
+x = [] # really bad since it is an Any vector!
 for i in 1:N
     push!(x, 2.0 * i^2)
 end
@@ -248,9 +248,9 @@ for i in eachindex(x)
 end
 y
 
-# GOOD! #No way to preallocate y (although easier ways to write)
+# GOOD! No way to preallocate y (although easier ways to write)
 x = rand(10)
-y = similar(x, 0) # Empty of same type as x
+y = similar(x, 0) # empty of same type as x
 for val in x
     if val < 0.5
         push!(y, val)
@@ -288,25 +288,18 @@ A = [1 2 3; 4 5 6]
 
 # BETTER!
 for i in eachindex(A)
-       B[i] = A[i]^2
+    B[i] = A[i]^2
 end
 ```
 TODO: when you need the `i` and `j` what do you do?  Just loop over both... 
 
-- **Avoid `range` when possible** and use the `1.0:0.1:1.0` style notation, etc.  Getting rid of the `linspace` is a pain, but use ranges if the exact top doesn't matter.
+- **Avoid `range` when possible** and use the `1.0:0.1:1.0` style notation, etc.
 ```julia
-range(1, stop=5) #BAD!
-1:5 #GOOD!
+ # BAD!
+ range(1, stop=5)
 
-
-N = 10
-zmin = 0.0
-zstop = 1.0
-
-# old linspace(zmin, zstop, N) doesn't work
-# See comment on new range
-# ACCEPTABLE!
-range(zmin, stop, length = N)
+# GOOD!
+1:5 
 ```    
   - Furthermore, if you don't really care if if hits the `zstop` exactly and are willing to give a stepsize then, the following is the clearest
 ```julia
@@ -317,32 +310,31 @@ step = 0.1
 # GOOD! But..
 r = zmin:step:zstop
 
-# ...CAREFUL
+# CAREFUL!
 r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
 @assert maximum(r) == 0.88 # Use to get the maxium of the range, perhaps != 
 ```
-- **Use the new `range` from Compat.jl`
+- **Use the new `range` from Compat.jl**. This provides code compatible with Julia 1.1
 ```julia
-# BAD! But the only pure Julia 1.0 version
+# BAD! but the only pure Julia 1.0 version
 range(0.0, stop=1.0, length = 10)
 
-# GOOD! But requires Julia 1.1 or COmpat
+# GOOD! but requires Julia 1.1 or Compat
 using Compat
 range(0.0, 1.0, length=10)
 ```
 
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
-
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
-- The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, LaTeXStrings, Plots, ....`
+- The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, Plots, Compat`
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
-- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, QuantEcon`)  but packages used only in a single place should have the `using` local to that use.
+- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single place should have the `using` local to that use.
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
-- **Always seed random numbers** in order for automated testing to function.
+- **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
