@@ -179,6 +179,18 @@ The printed values you see here are just garbage values
 
 (the existing contents of the allocated memory slots being interpreted as 64 bit floats)
 
+If you need more control over the types, fill with a non-floating point
+
+.. code-block:: julia
+
+    fill(0, 2, 2) # fills with 0, not 0.0
+    
+Or fill with a boolean type
+
+.. code-block:: julia
+
+    fill(false, 2, 2) # produces a boolean matrix
+
 
 Creating Arrays from Existing Arrays
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -223,14 +235,14 @@ Similar can also be used to pre-allocate a vector with a different size, but the
 .. code-block:: julia
 
     x = [1, 2, 3]
-    y = similar(x, 4) #Make a vector of length 4
+    y = similar(x, 4) # make a vector of length 4
 
 Which generalized to higher dimensions
 
 .. code-block:: julia
 
     x = [1, 2, 3]
-    y = similar(x, 2, 2) #Make 2x2 matrix
+    y = similar(x, 2, 2) # make 2x2 matrix
 
 
 
@@ -247,7 +259,7 @@ In two dimensions we can proceed as follows
 
 .. code-block:: julia
 
-    a = [10 20 30 40]  # Two dimensional, shape is 1 x n
+    a = [10 20 30 40]  # two dimensional, shape is 1 x n
 
 
 .. code-block:: julia
@@ -272,11 +284,11 @@ You might then assume that ``a = [10; 20; 30; 40]`` creates a two dimensional co
     ndims(a)
 
 
-Instead transpose the matrix
+Instead transpose the matrix (or adjoint if complex)
 
 .. code-block:: julia
 
-    a = transpose([10 20 30 40]) # [10 20 30 40]' yields the adjoint which is equivalent for real matrices
+    a = [10 20 30 40]' # for the transpose of a complex matrix, use transpose(...)
 
 
 .. code-block:: julia
@@ -291,11 +303,7 @@ We've already seen the basics of array indexing
 
 .. code-block:: julia
 
-    a = collect(10:10:40)
-
-
-.. code-block:: julia
-
+    a = [10 20 30 40]
     a[end-1]
 
 
@@ -309,10 +317,6 @@ For 2D arrays the index syntax is straightforward
 .. code-block:: julia
 
     a = randn(2, 2)
-
-
-.. code-block:: julia
-
     a[1, 1]
 
 
@@ -363,60 +367,41 @@ An aside: some or all elements of an array can be set equal to one number using 
     a
 
 
-Passing Arrays
---------------------
+Assignment and Passing Arrays
+-----------------------------
 
-As in Python, all arrays are passed by reference
+As discussed above, in Julia, the left hand side of an assignment is a "binding" to a name
+
+.. code-block:: julia
+
+    x = [1 2 3]
+    y = x # name y binds to whatever `x` bound to
+
+The consequence of this, is that you can re-bind that name 
+
+.. code-block:: julia
+
+    x = [1 2 3]
+    y = x # name y binds to whatever `x` bound to
+    z = [2 3 4]
+    y = z # just changes name binding, not value!
+    @show (x, y, z);
 
 What this means is that if ``a`` is an array and we set ``b = a`` then ``a`` and ``b`` point to exactly the same data
 
-Hence any change in ``b`` is reflected in ``a``
+In the above, suppose you had meant to change the value of ``x`` to the values of ``y``, you need to assign the values rather than the name
 
 .. code-block:: julia
 
-    a = ones(3)
+    x = [1 2 3]
+    y = x # name y binds to whatever `x` bound to
+    z = [2 3 4]
+    y .= z # Now dispatches the assignment of each element
+    @show (x, y, z);    
 
+Alternatively, you could have used ``y[:] = z``
 
-.. code-block:: julia
-
-    b = a
-
-
-.. code-block:: julia
-
-    b[3] = 44
-
-
-.. code-block:: julia
-
-    a
-
-
-If you are a MATLAB programmer perhaps you are recoiling in horror at this
-idea
-
-But this is actually the more sensible default -- after all, it's very inefficient to copy arrays unnecessarily
-
-If you do need an actual copy in Julia, just use ``copy()``
-
-.. code-block:: julia
-
-    a = ones(3)
-
-
-.. code-block:: julia
-
-    b = copy(a)
-
-
-.. code-block:: julia
-
-    b[3] = 44
-
-
-.. code-block:: julia
-
-    a
+This applies to in-place functions as well
 
 
 Operations on Arrays
@@ -470,17 +455,17 @@ already seen
 
 .. code-block:: julia
 
-    b = sort(a, rev = true)  # Returns new array, original not modified
+    b = sort(a, rev = true)  # returns new array, original not modified
 
 
 .. code-block:: julia
 
-    b === a  # === tests if arrays are identical (i.e share same memory)
+    b === a  # tests if arrays are identical (i.e share same memory)
 
 
 .. code-block:: julia
 
-    b = sort!(a, rev = true)  # Returns *modified original* array
+    b = sort!(a, rev = true)  # returns *modified original* array
 
 
 .. code-block:: julia
@@ -700,7 +685,7 @@ By default, these functions act *elementwise* on arrays
 
 .. code-block:: julia
 
-    log.(ones(4))
+    log.(1:4)
 
 
 Functions that act elementwise on arrays in this manner are called **vectorized functions**
@@ -710,7 +695,7 @@ Note that we can get the same result as with a comprehension or more explicit lo
 
 .. code-block:: julia
 
-    [ log(x) for x ∈ ones(4) ]
+    [ log(x) for x in 1:4 ]
 
 
 In Julia loops are typically fast and hence the need for vectorized functions is less intense than for some other high level languages
@@ -740,12 +725,12 @@ Given the information on the type, the compiler can work through the sequence of
 
 .. code-block:: julia
 
-    #Define some function
+    # define some function
     f(y) = 2y
 
-    #Call with an integer array
+    # call with an integer array
     x = [1, 2, 3]
-    z = f(x) #Compiler deduces type
+    z = f(x) # compiler deduces type
 
 Good Practices for Functions and Variables
 --------------------------------------------
@@ -756,7 +741,7 @@ As an example of bad practice, is to use an array to hold unrelated types
 
 .. code-block:: julia
 
-    x = [1.0, "test"] # Poor Style
+    x = [1.0, "test"] # poor style
 
 The type of this is ``Array{Any,1}``, where the ``Any`` means the compiler has determined that any valid Julia types can be added to the array
 

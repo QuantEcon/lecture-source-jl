@@ -905,19 +905,16 @@ Take a random walk, starting from :math:`x_0 = 1`
     x_{t+1} = \, \alpha \, x_t + \sigma\, \epsilon_{t+1}
     \quad \text{where} \quad
     x_0 = 1
-    \quad \text{and} \quad t = 0,\ldots,n
+    \quad \text{and} \quad t = 0,\ldots,t_{\max}
 
-The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+* Furthermore, assume that the :math:`x_{t_{\max}} = 0`  (i.e. at :math:`t_{\max}`, the value drops to zero, regardless of its current state)
+* The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+* For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`
 
-For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`
+Start :math:`\sigma = 0.2, \alpha = 1.0`
 
-Start :math:`\sigma = 0.1, \alpha = 1.0`
-
-1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 100` and plot a histogram
-
- * since you will only be able to simulate a finite length, decide a reasonable convention (e.g. showing the first-passage distribution condition on passage, or choosing that all :math:`x_t` go to :math:`0` at :math:`t_{\max}`
-
-2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{-0.1, 0.0, 0.1, 0.2\}`
+1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 200` and plot a histogram
+2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
 
 Exercise 8(a)
 ---------------
@@ -1143,7 +1140,7 @@ As a hint, notice the following pattern for finding the number of draws of a uni
 
 .. code-block:: julia
 
-    function drawsuntilthreshold2(threshold; maxdraws=100)
+    function drawsuntilthreshold(threshold; maxdraws=100)
         for i in 1:maxdraws
             val = rand()
             if val < threshold # checks threshold
@@ -1153,7 +1150,7 @@ As a hint, notice the following pattern for finding the number of draws of a uni
         return Inf # if here, reached maxdraws
     end
 
-    draws = drawsuntilthreshold2(0.2, maxdraws=100)
+    draws = drawsuntilthreshold(0.2, maxdraws=100)
 
 Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly
 
