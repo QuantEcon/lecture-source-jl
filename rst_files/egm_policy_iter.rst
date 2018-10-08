@@ -174,7 +174,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         y = k_grid + c  # y_i = k_i + c_i
 
         # Update policy function and return
-        Kg = LinInterp(y,c)
+        Kg = LinearInterpolation(y,c)
         Kg_f(x) = Kg(x)
         return Kg_f
     end
@@ -194,7 +194,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
 
     =#
 
-    using QuantEcon
+    using QuantEcon, Interpolations
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -202,7 +202,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
         # This function requires the container of the output value as argument Kg
 
         # Construct linear interpolation object #
-        g_func = LinInterp(grid, g)
+        g_func = LinearInterpolation(grid, g)
 
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
@@ -347,7 +347,7 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
         plt = plot()
         plot!(plt, k_grid, c_star.(k_grid), lw=2, label="optimal policy c*")
-        plot!(plt, k_grid, c_star_new.(k_grid), lw=2, label="Kc*")
+        plot!(plt, k_grid[2:200], c_star_new.(k_grid[2:200]), lw=2, label="Kc*")
         plot!(plt, legend=:topleft)
     end
 
