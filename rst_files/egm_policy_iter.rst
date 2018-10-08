@@ -174,7 +174,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         y = k_grid + c  # y_i = k_i + c_i
 
         # Update policy function and return
-        Kg = LinearInterpolation(y,c)
+        Kg = LinearInterpolation(y,c, extrapolation_bc=Line())
         Kg_f(x) = Kg(x)
         return Kg_f
     end
@@ -202,7 +202,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
         # This function requires the container of the output value as argument Kg
 
         # Construct linear interpolation object #
-        g_func = LinearInterpolation(grid, g)
+        g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
 
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
@@ -347,7 +347,7 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
         plt = plot()
         plot!(plt, k_grid, c_star.(k_grid), lw=2, label="optimal policy c*")
-        plot!(plt, k_grid[2:200], c_star_new.(k_grid[2:200]), lw=2, label="Kc*")
+        plot!(plt, k_grid, c_star_new.(k_grid), lw=2, label="Kc*")
         plot!(plt, legend=:topleft)
     end
 
@@ -382,7 +382,7 @@ In fact it's easy to see that the difference is essentially zero:
   :class: test
 
   @testset "Discrepancy Test" begin
-    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 2.369331983805674e-7 # Check that the error is the same as it was before.
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 4.440892098500626e-16 # Check that the error is the same as it was before.
     @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) < 1e-5 # Test that the error is objectively very small.
   end
 
