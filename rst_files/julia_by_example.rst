@@ -498,23 +498,45 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
 
     # setup the algorithm
     v_old = v_iv
-    error = Inf 
+    normdiff = Inf 
     iter = 1
-    while error > tolerance && iter <= maxiter
+    while normdiff > tolerance && iter <= maxiter
         v_new = p + β * v_old # the f(v) map
-        error = norm(v_new - v_old)
+        normdiff = norm(v_new - v_old)
         
         # replace and continue
         v_old = v_new
         iter = iter + 1
     end
-    println("Fixed point = $v_old, and |f(x) - x| = $error in $iter iterations")
+    println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
 
-The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or inside of a function.
+The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or inside of a function
 
 Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values
 
 The other new function is the ``println`` with the string interpolation, which splices a value of an expression or variable prefixed by ``$`` into a string
+
+An alternative approach is to use a ``for`` loop, and checking for convergence in each iteration
+
+.. code-block:: julia
+
+    # setup the algorithm
+    v_old = v_iv
+    normdiff = Inf 
+    iter = 1
+    for i in 1:maxiter
+        v_new = p + β * v_old # the f(v) map
+        normdiff = norm(v_new - v_old)
+        if normdiff < tolerance # check convergence
+            iter = i
+            break # converged, exit loop
+        end
+        # replace and continue
+        v_old = v_new
+    end
+    println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
+
+The new feature there is ``break`` , which leaves a ``for`` or ``while`` loop
 
 Using a Function
 ---------------------
@@ -527,17 +549,17 @@ The first problem with this setup is that it depends on being sequently run--whi
     function v_fp(β, ρ, v_iv, tolerance, maxiter)
         # setup the algorithm
         v_old = v_iv
-        error = Inf 
+        normdiff = Inf 
         iter = 1
-        while error > tolerance && iter <= maxiter
+        while normdiff > tolerance && iter <= maxiter
             v_new = p + β * v_old # the f(v) map
-            error = norm(v_new - v_old)
+            normdiff = norm(v_new - v_old)
             
             #Replace and continue
             v_old = v_new
             iter = iter + 1
         end
-        return (v_old, error, iter) # returns a tuple
+        return (v_old, normdiff, iter) # returns a tuple
     end    
 
     # some values
@@ -547,8 +569,8 @@ The first problem with this setup is that it depends on being sequently run--whi
     tolerance = 1.0E-7
     v_initial = 0.8 # initial condition
 
-    v_star, error, iter = v_fp(β, p, v_initial, tolerance, maxiter)
-    println("Fixed point = $v_star, and |f(x) - x| = $error in $iter iterations")
+    v_star, normdiff, iter = v_fp(β, p, v_initial, tolerance, maxiter)
+    println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
 While better, there are still improvements
@@ -566,15 +588,15 @@ A key feature of languages like Julia, is the ability to efficiently handle func
     function fixedpointmap(f, iv, tolerance, maxiter)
         # setup the algorithm
         x_old = iv
-        error = Inf 
+        normdiff = Inf 
         iter = 1
-        while error > tolerance && iter <= maxiter
+        while normdiff > tolerance && iter <= maxiter
             x_new = f(x_old) # use the passed in map
-            error = norm(x_new - x_old)
+            normdiff = norm(x_new - x_old)
             x_old = x_new
             iter = iter + 1
         end
-        return (x_old, error, iter)
+        return (x_old, normdiff, iter)
     end    
 
     # define a map and parameters
@@ -586,8 +608,8 @@ A key feature of languages like Julia, is the ability to efficiently handle func
     tolerance = 1.0E-7
     v_initial = 0.8 # initial condition
 
-    v_star, error, iter = fixedpointmap(f, v_initial, tolerance, maxiter)
-    println("Fixed point = $v_star, and |f(x) - x| = $error in $iter iterations")
+    v_star, normdiff, iter = fixedpointmap(f, v_initial, tolerance, maxiter)
+    println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
 Much closer, but there are still hidden bugs if the user orders the settings or return types wrong
@@ -603,15 +625,15 @@ To enable this, Julia has two features:  named function parameters, and named tu
     function fixedpointmap(f; iv, tolerance = 1E-7, maxiter = 1000)
         # setup the algorithm
         x_old = iv
-        error = Inf
+        normdiff = Inf
         iter = 1
-        while error > tolerance && iter <= maxiter
+        while normdiff > tolerance && iter <= maxiter
             x_new = f(x_old) # use the passed in map
-            error = norm(x_new - x_old)
+            normdiff = norm(x_new - x_old)
             x_old = x_new
             iter = iter + 1
         end
-        return (value = x_old, error = error, iter = iter) # A named tuple
+        return (value = x_old, normdiff = normdiff, iter = iter) # A named tuple
     end    
 
     # define a map and parameters
@@ -620,13 +642,13 @@ To enable this, Julia has two features:  named function parameters, and named tu
     f(v) = p + β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = 0.8, tolerance = 1.0E-8) # don't need to pass 
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 
 In this example, all function parameters after the ``;`` in the list, must be called by name
 
 Furthermore, a default value may be enabled--so the named parameter ``iv`` is required while ``tolerance`` and ``maxiter`` have default values
 
-The return type of the function also has named fields, ``value, error,`` and ``iter``--all accessed intuitively using ``.``
+The return type of the function also has named fields, ``value, normdiff,`` and ``iter``--all accessed intuitively using ``.``
 
 To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:``x = f(x)`` where :math:`f(x) := r x (1-x)`
 
@@ -636,7 +658,7 @@ To show the flexibilty of this code, we can use it to find a fixed-point of the 
     f(x) = r * x * (1 - x)
 
     sol = fixedpointmap(f, iv = 0.8)
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 
 
 Using a Package
@@ -737,7 +759,7 @@ Using our own, homegrown iteration and simple passing in a bivariate map,
     f(v) = p .+ β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.error) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 
 This also works without any modifications with the ``fixedpoint`` library function
 
@@ -891,11 +913,11 @@ For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a =
 
 Start :math:`\sigma = 0.1, \alpha = 1.0`
 
-#. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 100` and plot a histogram
+1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 100` and plot a histogram
 
- * since you will only be able to simulate a finite length, decide a reasonable convention (e.g. showing the first-passage distribution condition on passage, or choosing that all :math:`x_t` go to ``0`` at :math:`t_{\max}`
+ * since you will only be able to simulate a finite length, decide a reasonable convention (e.g. showing the first-passage distribution condition on passage, or choosing that all :math:`x_t` go to :math:`0` at :math:`t_{\max}`
 
-#. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.25, 0.5, 0.75, 1.0, 1.25, 1.5\}`
+2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{-0.1, 0.0, 0.1, 0.2\}`
 
 Exercise 8(a)
 ---------------
@@ -1113,3 +1135,36 @@ Exercise 6
         plot!(p, x, label = "alpha = $α") # add to plot p
     end
     p # display plot
+
+Exercise 7: Hint
+-----------------
+
+As a hint, notice the following pattern for finding the number of draws of a uniform random number until below a given threshold
+
+.. code-block:: julia
+
+    function drawsuntilthreshold2(threshold; maxdraws=100)
+        for i in 1:maxdraws
+            val = rand()
+            if val < threshold # checks threshold
+                return i # leaves function, returning draw number
+            end
+        end
+        return Inf # if here, reached maxdraws
+    end
+
+    draws = drawsuntilthreshold2(0.2, maxdraws=100)
+
+Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly
+
+.. code-block:: julia
+
+    vals = zeros(0) # empty vector
+
+    for i in 1:100
+        val = rand()
+        if val < 0.5
+            push!(vals, val)
+        end
+    end
+    println("There were $(length(vals)) below 0.5")
