@@ -1,8 +1,3 @@
-name = "QuantEconLecturePackages"
-uuid = "e24db316-c288-11e8-0deb-55fe95db271c"
-authors = ["arnavs <soodarnav01@gmail.com>"]
-version = "0.1.0"
-
 [deps]
 BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
