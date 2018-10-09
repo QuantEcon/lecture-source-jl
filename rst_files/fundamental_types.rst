@@ -79,7 +79,7 @@ This is the default for many Julia functions that create arrays
 
     typeof(randn(100))
 
-In Julia, one dimensional vectors are best interpreted as column vectors, which we will see when we take transposes.
+In Julia, one dimensional vectors are best interpreted as column vectors, which we will see when we take transposes
 
 We can check the dimensions of ``a`` using ``size()`` and ``ndims()``
 functions
@@ -288,7 +288,7 @@ Instead transpose the matrix (or adjoint if complex)
 
 .. code-block:: julia
 
-    a = [10 20 30 40]' # for the transpose of a complex matrix, use transpose(...)
+    a = [10 20 30 40]'
 
 
 .. code-block:: julia
@@ -366,6 +366,62 @@ An aside: some or all elements of an array can be set equal to one number using 
 
     a
 
+Views and Slices
+-----------------------------
+
+As we say, using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type 
+
+.. code-block:: julia
+
+    a = [1 2; 3 4]
+    b = a[:, 2] 
+    @show b
+    a[:, 2] = [4, 5] # modify a
+    @show a
+    @show b;
+
+A ``view`` on the other hand does not copy the value
+
+.. code-block:: julia
+
+    a = [1 2; 3 4]
+    @views b = a[:, 2] 
+    @show b
+    a[:, 2] = [4, 5]
+    @show a
+    @show b;
+
+Note that the only difference is the ``@views`` macro, which will replace any slices with views in the expression
+
+An alternative is to call the ``view`` fuction directly--though it is generally discouraged since it is a step away from the math
+
+.. code-block:: julia
+
+    view(a, :, 2) == @views b = a[:, 2] 
+
+As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a signiciant impact on performance, and stress code clarity above all else
+
+Another important lesson about views is that they **are not** concrete arrays types 
+
+.. code-block:: julia
+
+    a = [1 2; 3 4]
+    b_slice = a[:, 2]
+    @show typeof(b_slice)
+    @show typeof(a)
+    @views b = a[:, 2] 
+    @show typeof(b);
+
+The type of ``b`` is a good example of how types are not as they may sometimes
+
+Similarly
+
+.. code-block:: julia
+
+    a = [1 2; 3 4]
+    b = a' # transpose
+    typeof(b)
+
 
 Assignment and Passing Arrays
 -----------------------------
@@ -403,6 +459,48 @@ Alternatively, you could have used ``y[:] = z``
 
 This applies to in-place functions as well
 
+First, define a simple function for a linear map
+
+.. code-block:: julia
+
+    function f(x)
+        return [1 2; 3 4] * x # matrix * column vector
+    end
+    val = [1, 2]
+    f(val)
+
+In general, these "out-of-place" functions are preferred to "in-place" functions, which modify the arguments
+
+.. code-block:: julia
+
+    function f(x)
+        return [1 2; 3 4] * x # matrix * column vector
+    end
+    val = [1, 2]
+    out = similar(val)
+    function f!(out, x)
+        out .= [1 2; 3 4] * x
+    end
+    f!(out, val)
+    
+This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with ``!`` (e.g. ``push!``)
+
+We can also see a common mistake, where instead of modifying the arguments, the name binding is swapped
+
+.. code-block:: julia
+
+    function f(x)
+        return [1 2; 3 4] * x # matrix * column vector
+    end
+    val = [1, 2]
+    out = similar(val)
+
+    function f!(out, x)
+        out = [1 2; 3 4] * x # NOTE: mistake, should be .= or [:]
+    end
+    f!(out, val)
+    
+The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking 
 
 Operations on Arrays
 ================================
@@ -451,6 +549,10 @@ already seen
 .. code-block:: julia
 
     minimum(a)
+
+.. code-block :: julia
+
+    extrema(a) # (mimimum(a), maximum(a))
 
 
 .. code-block:: julia
@@ -530,7 +632,7 @@ Multiplying two **one** dimensional vectors gives an error --- which is reasonab
     ones(2) * ones(2)
 
 
-If you want an inner product in this setting use ``dot()``
+If you want an inner product in this setting use ``dot()`` or the `` ``unicode ``\dot<TAB>``
 
 .. code-block:: julia
 
@@ -554,9 +656,6 @@ Matrix multiplication using one dimensional vectors is a bit inconsistent --- pr
     :class: no-execute
 
     ones(2) * b
-
-
-It's probably best to give your vectors dimension before you multiply them against matrices
 
 
 Elementwise Operations
@@ -670,6 +769,61 @@ This is particularly useful for *conditional extraction* --- extracting the elem
 
     a[a .< 0]
 
+
+Changing Dimensions
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The primary function for changing the dimension of an array is ``reshape()``
+
+
+.. code-block:: julia
+
+    a = [10, 20, 30, 40]
+
+
+.. code-block:: julia
+
+    b = reshape(a, 2, 2)
+
+
+.. code-block:: julia
+
+    b
+
+
+Notice that this function returns a "view" on the existing array
+
+This means that changing the data in the new array will modify the data in the
+old one:
+
+.. code-block:: julia
+
+    b[1, 1] = 100  # Continuing the previous example
+
+
+.. code-block:: julia
+
+    b
+
+
+.. code-block:: julia
+
+    a
+
+
+To collapse an array along one dimension you can use ``dropdims()``
+
+.. code-block:: julia
+
+    a = [1 2 3 4]  # Two dimensional
+
+
+.. code-block:: julia
+
+    dropdims(a, dims = 1)
+
+
+The return value is an array with the specified dimension "flattened"
 
 Vectorized Functions
 --------------------------
