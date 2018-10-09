@@ -393,13 +393,14 @@ A ``view`` on the other hand does not copy the value
 
 Note that the only difference is the ``@views`` macro, which will replace any slices with views in the expression
 
-An alternative is to call the ``view`` fuction directly--though it is generally discouraged since it is a step away from the math
+An alternative is to call the ``view`` function directly--though it is generally discouraged since it is a step away from the math
 
 .. code-block:: julia
 
-    view(a, :, 2) == @views b = a[:, 2] 
+    @views b = a[:, 2] 
+    view(a, :, 2) == b
 
-As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a signiciant impact on performance, and stress code clarity above all else
+As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else
 
 Another important lesson about views is that they **are not** concrete arrays types 
 
@@ -423,8 +424,18 @@ Similarly
     typeof(b)
 
 
+To copy into a concrete array
+
+.. code-block:: julia
+
+    a = [1 2; 3 4]
+    b = a' # transpose
+    c = Matrix(b) # convert to matrix
+    d = collect(b) # also `collect` works on any iterable
+    c == d
+
 Assignment and Passing Arrays
------------------------------
+------------------------------
 
 As discussed above, in Julia, the left hand side of an assignment is a "binding" to a name
 
@@ -482,6 +493,7 @@ In general, these "out-of-place" functions are preferred to "in-place" functions
         out .= [1 2; 3 4] * x
     end
     f!(out, val)
+    out
     
 This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with ``!`` (e.g. ``push!``)
 
@@ -496,9 +508,10 @@ We can also see a common mistake, where instead of modifying the arguments, the 
     out = similar(val)
 
     function f!(out, x)
-        out = [1 2; 3 4] * x # NOTE: mistake, should be .= or [:]
+        out = [1 2; 3 4] * x # MISTAKE! should be .= or [:]
     end
     f!(out, val)
+    out
     
 The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking 
 
@@ -692,12 +705,11 @@ This is a general principle: ``.x`` means apply operator ``x`` elementwise
 
     A.^2  # Square every element
 
-
-However in practice some operations are unambiguous and hence the ``.`` can be omitted
+However in practice some operations are mathematically valid without broadcasting, and hence the ``.`` can be omitted
 
 .. code-block:: julia
 
-    ones(2, 2) + ones(2, 2)  # Same as ones(2, 2) .+ ones(2, 2)
+    ones(2, 2) + ones(2, 2)  # same as ones(2, 2) .+ ones(2, 2)
 
 
 Scalar multiplication is similar
@@ -709,10 +721,18 @@ Scalar multiplication is similar
 
 .. code-block:: julia
 
-    2 * A  # Same as 2 .* A
+    2 * A  # same as 2 .* A
 
 
 In fact you can omit the ``*`` altogether and just write ``2A``
+
+Unlike matlab and other languages, scalar addition requires the ``.+`` in order to correctly broadcast
+
+.. code-block:: julia
+
+    x = [1, 2]
+    x .+ 1 # i.e. not x + 1 
+    x .- 1 # i.e. not x - 1
 
 
 Elementwise Comparisons
@@ -825,7 +845,7 @@ To collapse an array along one dimension you can use ``dropdims()``
 
 The return value is an array with the specified dimension "flattened"
 
-Vectorized Functions
+Broadcasting Functions
 --------------------------
 
 Julia provides standard mathematical functions such as ``log``, ``exp``, ``sin``, etc.
@@ -841,9 +861,6 @@ By default, these functions act *elementwise* on arrays
 
     log.(1:4)
 
-
-Functions that act elementwise on arrays in this manner are called **vectorized functions**
-
 Note that we can get the same result as with a comprehension or more explicit loop
 
 
@@ -852,7 +869,7 @@ Note that we can get the same result as with a comprehension or more explicit lo
     [ log(x) for x in 1:4 ]
 
 
-In Julia loops are typically fast and hence the need for vectorized functions is less intense than for some other high level languages
+.. ACTUALLY, kind of the opposite, as in most languages.  "for" loops typically fastest when done correctly.  In Julia loops are typically fast and hence the need for vectorized functions is less intense than for some other high level languages
 
 Nonetheless the syntax is convenient
 
@@ -1117,7 +1134,5 @@ Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` functi
 .. code-block:: julia
 
     using QuantEcon
+    norm(our_solution - solve_discrete_lyapunov(A, Sigma * Sigma'))
 
-.. code-block:: julia
-
-    ≈(our_solution, solve_discrete_lyapunov(A, Sigma * Sigma'), atol = 1e-5)
