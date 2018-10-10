@@ -271,7 +271,7 @@ In two dimensions we can proceed as follows
     a = [10 20; 30 40]  # 2 x 2
 
 
-You might then assume that ``a = [10; 20; 30; 40]`` creates a two dimensional column vector but unfortunately this isn't the case
+You might then assume that ``a = [10; 20; 30; 40]`` creates a two dimensional column vector but this isn't the case
 
 .. code-block:: julia
 
@@ -368,7 +368,7 @@ An aside: some or all elements of an array can be set equal to one number using 
 Views and Slices
 -----------------------------
 
-As we say, using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type 
+Using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type 
 
 .. code-block:: julia
 
@@ -586,7 +586,7 @@ already seen
     @show extrema(a) # (mimimum(a), maximum(a))
 
 
-TO sort an array
+To sort an array
 
 .. code-block:: julia
 
@@ -1040,16 +1040,113 @@ Julia provides some a great deal of additional functionality related to linear o
 
 For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library
 
+Ranges
+================
 
+As with many other types, a ``Range`` can act as a vector
+
+.. code-block:: julia
+
+    a = 10:12 # a range, equivalent to 10:1:12
+    @show Vector(a) # can convert, but shouldn't
+
+    b = Diagonal([1.0, 2.0, 3.0])
+    b * a .- [1.0; 2.0; 3.0]
+
+Ranges can also be created with floating point numbers using the same notation
+
+:.. code-block:: julia
+
+    a = 0.0:0.1:1.0 # 0.0, 0.1, 0.2, ... 1.0
+
+But care should be taken if the terminal node is not a multiple of the set sizes
+
+:.. code-block:: julia
+
+    maxval = 1.0
+    minval = 0.0
+    stepsize = 0.15
+    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ... ??? Not 1.0
+    maximum(a) == maxval
+
+
+To evenly space points where the maximum value is important,
+
+:.. code-block:: julia
+
+    maxval = 1.0
+    minval = 0.0
+    numpoints = 10
+    a = range(minval, stop=maxval, length=numpoints)
+    # a = range(minval, maxval, length=numpoints) # supported soon...
+    maximum(a) == maxval
 
 Tuples and Named Tuples
 ========================
 
+We were introduced to Tuples earlier, which provide high-performance but immutable sets of distinct types
 
-Ranges
-================
+:.. code-block:: julia
+
+    t = (1.0, "test")
+    t[1] # access by index
+    a, b = t # unpack
+    # t[1] = 3.0 # would fail as tuples are immutable
+    println("a = $a and b = $b")
+
+As well as named tuples, which are tuples extended to have a list of names 
+
+:.. code-block:: julia
+
+    t = (val1 = 1.0, val2 = "test")
+    t.val1 # access by index
+    a, b = t # unpack
+    println("a = $a and b = $b") # access by index
+
+While immutable, it is possible to manipulate tuples and generate new ones
+
+:.. code-block:: julia
+
+    t2 = (val3 = 4, val4 = "test!!")
+    t3 = merge(t, t2) # new tuple
 
 
+Named tuples are a convenient and high-performance way to manage and unpack sets of parameters
+
+
+:.. code-block:: julia
+
+    function f(parameters)
+        α, β = parameters.α, parameters.β # poor style, error prone if adding parameters
+        return α + β
+    end 
+    paramvals = (α = 0.1, β = 0.2)
+    f(paramvals)
+
+
+This functionality is aided by the ``Parameters.jl`` package and the `@unpack` macro
+
+:.. code-block:: julia
+
+    using Parameters
+    function f(parameters)
+        @unpack α, β = parameters # good style, less sensitive to errors
+        return α + β
+    end 
+    paramvals = (α = 0.1, β = 0.2)
+    f(paramvals)
+
+In order to manage default values, use the ``@with_kw`` macro
+
+:.. code-block:: julia
+
+    using Parameters
+    paramgenerator = @with_kw (α = 0.1, β = 0.2) # creates named tuples with defaults
+
+    # creates named tuples, replacing defaults
+    @show paramgenerator()
+    @show paramgenerator(α = 0.2)
+    @show paramgenerator(α = 0.2, β = 0.5);
 
 Exercises
 =============
