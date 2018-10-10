@@ -534,12 +534,12 @@ In general, these "out-of-place" functions are preferred to "in-place" functions
         return [1 2; 3 4] * x # matrix * column vector
     end
     val = [1, 2]
-    out = similar(val)
+    y = similar(val)
     function f!(out, x)
         out .= [1 2; 3 4] * x
     end
-    f!(out, val)
-    out
+    f!(y, val)
+    y
     
 This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with ``!`` (e.g. ``push!``)
 
@@ -551,13 +551,13 @@ We can also see a common mistake, where instead of modifying the arguments, the 
         return [1 2; 3 4] * x # matrix * column vector
     end
     val = [1, 2]
-    out = similar(val)
+    y = similar(val)
 
     function f!(out, x)
         out = [1 2; 3 4] * x # MISTAKE! should be .= or [:]
     end
-    f!(out, val)
-    out
+    f!(y, val)
+    y
     
 The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking 
 
@@ -1141,12 +1141,12 @@ In order to manage default values, use the ``@with_kw`` macro
 :.. code-block:: julia
 
     using Parameters
-    paramgenerator = @with_kw (α = 0.1, β = 0.2) # creates named tuples with defaults
+    paramgen = @with_kw (α = 0.1, β = 0.2) # creates named tuples with defaults
 
     # creates named tuples, replacing defaults
-    @show paramgenerator()
-    @show paramgenerator(α = 0.2)
-    @show paramgenerator(α = 0.2, β = 0.5);
+    @show paramgen()
+    @show paramgen(α = 0.2)
+    @show paramgen(α = 0.2, β = 0.5);
 
 Exercises
 =============

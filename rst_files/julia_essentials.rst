@@ -812,6 +812,206 @@ Let's try this out on an array of integers, adding the broadcast
 
     chisq.([2, 4, 6])
 
+Scoping (and Closures)
+-----------------------
+
+
+Since global variables are usually a bad idea, we will concentrate on understanding the role of "good" local scoping practice
+
+That said, many of the variables in a Jupyter notebook are global, even the whole text could be copied into a function
+
+. note:: for/while loops and global variables in Jupyter vs. the REPL
+    - In the current version of Julia, there is a distinction between the use of scope in an interactive Jupyter environment
+    - The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
+    - In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
+
+For more information, see :`Julia Variable Scoping <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ :
+
+But, as discussed above, the rules for global scope in Jupyter notebooks are currently different
+
+Functions
+^^^^^^^^^^
+
+The scope of a variable name determines where it is valid to refer to it, and how clashes between names can occur
+
+Think of the scope as having a list of all of the name bindings that variables would be relevant, where different scopes could have the same name mean different things
+
+An obvious place to start is to notice that functions introduce there own local names
+
+.. code-block:: julia
+
+    f(x) = x^2 # local `x` in scope
+
+    # x is not bound to anything in this outer scope
+    y = 5
+    f(y)
+
+This would be roughly equivalent to 
+
+.. code-block:: julia
+
+    function g() # scope within the `g` function
+        
+        f(x) = x^2 # local `x` in scope
+
+        # x is not bound to anything in this outer scope
+        y = 5
+        f(y)
+    end
+    g() # run the function
+
+This is also equivalent if the ``y`` was changed to ``x``, since it is a different scope
+
+.. code-block:: julia
+
+    f(x) = x^2 # local `x` in scope
+
+    # x is not bound to anything in this outer scope
+    x = 5 # a different `x` than the local variable name
+    f(x) # calling `f` with `x`
+
+The scoping also applies to named arguments in functions
+
+.. code-block:: julia
+
+    f(x; y = 1) = x + y_approx # `x` and `y` are names local to the `f` function
+    xval = 0.1
+    yval = 2
+    f(xval; y = yval)
+
+
+Due to scoping, you could write this as 
+
+.. code-block:: julia
+
+    f(x; y = 1) = x + y_approx # `x` and `y` are names local to the `f` function
+    x = 0.1
+    y = 2
+    f(x; y = y) # the left hand `y` is the local name of the argument in the function
+
+Similarly to the named arguments, the local scope also works with named tuples
+
+.. code-block:: julia
+
+    xval = 0.1
+    yval = 2
+    @show (x = xval, y = yval) # named tuple with names `x` and `y`
+
+    x = 0.1
+    y = 2
+    (x = x, y = y) # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+
+As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
+
+In fact, it frequently leads to clear code closer to the math when you don't need to specify intermediaries.
+
+Another example is with broadcasting
+
+.. code-block:: julia
+
+    f(x) = x^2 # local `x` in scope
+
+    x = 1:5 # not an integer
+
+    f.(x) # i.e. broadcasts the x^2 function over the vector
+
+
+Closures
+^^^^^^^^^^
+
+Frequently, you will want to have a function that calculates a value given some fixed parameter
+
+.. code-block:: julia
+
+    f(x, a) = a * x^2
+
+    f(1, 0.2)
+
+While the above was convenient, there are other times when you want to simply fix a variable or refer to something already calculated
+
+.. code-block:: julia
+
+    a = 0.2
+    f(x) = a * x^2 # refers to the `a` in the outer scope
+    f(1) # univariate function
+
+When the function ``f`` is parsed in julia, it will look to see if any of the variables are already defined in the current scope
+
+In this case, it finds the ``a`` since it was defined previously, whereas if the code defined ``a = 0.2`` **after** the `f(x)` definition, it would fail
+
+This also works when embedded in other functions
+
+.. code-block:: julia
+
+    function g(a)
+        f(x) = a * x^2 # refers to the `a` passed in the function
+        f(1) # univariate function
+    end
+    g(0.2)
+
+Comparing the two:  the key here is not that ``a`` is a global variable, but rather that the ``f`` function is defined to capture a variable from an outer scope
+
+This is called a **closure**, and are used throughout the lectures
+
+It is generally bad practice to modify the closure variable in the function, but otherwise the code becomes very clear
+
+One place where this can be helpful is in a string of dependent calculations
+
+For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b = g(a), c = h(a, b)` where :math:`f(x) = x^2, g(a) = 2 a, h(a, b) = a + b`
+
+.. code-block:: julia
+
+    function solvemodel(x)
+        a = x^2
+        b = 2 * a
+        c = a + b
+        return (a = a, b = b, c = c) # note local scope of tuples!
+    end
+    solvemodel(0.1)
+
+
+Loops
+^^^^^^^^^
+
+The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about then the same way you would a function/closure
+
+In particular
+
+.. code-block:: julia
+
+    for i in 1:2 # introduces local i
+        d = i
+        println(i)
+    end
+
+    # @show (i, d) # would fail as neither exists in this scope
+
+    for i in 1:2 # introduces a different local i
+        println(i)
+    end
+
+On the other hand just as with closures, if a variable is already defined it will be available in the inner scope
+
+.. code-block:: julia
+
+    d = 0 # introduces variables
+    for i in 1:2 # introduces local i
+        d = i # refers to outer variable
+    end
+    d # still can't refer to `i`, though
+
+Similarly, for while loops
+
+.. code-block:: julia
+
+    val = 1.0
+    tol = 0.002
+    while val < tol
+        old = val
+        val = val / 2
+        difference = val - old
+    end
+    val # but `difference` is not in scope
 
 Exercises
 ============
