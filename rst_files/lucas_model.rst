@@ -441,7 +441,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     =#
 
-    using QuantEcon, Distributions
+    using QuantEcon, Distributions, Interpolations
 
     """
     The Lucas asset pricing model --- parameters and grid data
@@ -501,7 +501,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         grid, α, β, h = lt.grid, lt.α, lt.β, lt.h
         z = lt.shocks
 
-        Af = LinInterp(grid, f)
+        Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
 
         Tf = [h[i] + β * mean(Af.(grid[i]^α.*z)) for i ∈ 1:length(grid)]
         return Tf
@@ -552,9 +552,9 @@ An example of usage is given in the docstring and repeated here
   :class: test
 
   @testset begin
-    @test price_vals[57] ≈ 44.50662425412852
-    @test price_vals[78] ≈ 68.44204772922079
-    @test price_vals[13] ≈ 9.878515482070496
+    @test price_vals[57] ≈ 44.5077566916004
+    @test price_vals[78] ≈ 68.42956586308563
+    @test price_vals[13] ≈ 9.880376662058682
   end
 
 Here's the resulting price function
@@ -563,13 +563,11 @@ Here's the resulting price function
 
 .. code-block:: julia
 
-    using PyPlot
+    using Plots
 
-    plt[:plot](figsize=(12, 8))
-    plt[:plot](tree.grid, price_vals, label=L"$p*(y)$")
-    plt[:xlabel](L"$y$")
-    plt[:ylabel]("price")
-    plt[:legend]()
+    plot(tree.grid, price_vals, lw=2, label="p*(y)")
+    plot!(xlabel="y", ylabel="price", legend=:topleft)
+
 
 
 
@@ -616,14 +614,15 @@ Solutions
 
     Random.seed!(42)
 
+    plot()
     for β in (.95, 0.98)
         tree = LucasTree(;β=β)
         grid = tree.grid
         price_vals = solve_lucas_model(tree)
-        plt[:plot](grid, price_vals, label=latexstring("\$ \\beta = $β\$"))
+        plot!(grid, price_vals, lw=2, label="beta = beta_var")
     end
 
-    plt[:legend]()
+    plot!(xlabel="y", ylabel="price", legend=:topleft)
 
 .. code-block:: julia
   :class: test
@@ -631,6 +630,6 @@ Solutions
   @testset begin # For the 0.98, since the other one is overwritten.
     Random.seed!(42)
     price_vals = solve_lucas_model(LucasTree(β = 0.98))
-    @test price_vals[20] ≈ 34.996401835558295
-    @test price_vals[57] ≈ 124.32043561450588
+    @test price_vals[20] ≈ 35.00073581199659
+    @test price_vals[57] ≈ 124.32987344509688
   end
