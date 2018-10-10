@@ -127,6 +127,16 @@ Although the ``*`` can be omitted for multiplication between a numeric literal a
     2x - 3y
 
 
+A useful tool for displaying both expressions and code is to use the ``@show`` macro, which displays the text and the results
+
+.. code-block:: julia
+
+    @show 2x - 3y
+    @show x + y;
+
+Here we have used the ``;`` to supress the output on the last line, which otherwise returns the results of ``x + y``
+
+
 .. I don't think this is useful quite yet, though perhaps later with broadcasting
 .. Also, you can use function (instead of infix) notation if you so desire
 .. 

@@ -192,6 +192,7 @@ Or fill with a boolean type
     fill(false, 2, 2) # produces a boolean matrix
 
 
+
 Creating Arrays from Existing Arrays
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -243,8 +244,6 @@ Which generalized to higher dimensions
 
     x = [1, 2, 3]
     y = similar(x, 2, 2) # make 2x2 matrix
-
-
 
 Manual Array Definitions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -434,6 +433,53 @@ To copy into a concrete array
     d = collect(b) # also `collect` works on any iterable
     c == d
 
+Special Matrices
+-----------------
+
+As we saw with the ``transpose``, sometimes types that look like matrices are not stored as a dense array
+
+As an example, consider creating a diagonal matrix 
+
+.. code-block:: julia
+
+    using LinearAlgebra
+    d = [1.0, 2.0]
+    a = Diagonal(d)
+
+As you can see, the type is ``2×2 Diagonal{Float64,Array{Float64,1}}``, which is not a 2-dimensional array
+
+The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations
+
+For example, this both behaves (and is, in an important sense) like any other Matrix
+
+.. code-block:: julia
+
+    @show 2a
+    b = rand(2,2)
+    @show b * a;
+
+Another example is in the construction of an identity matrix, where a naive implementation is
+
+.. code-block:: julia
+
+    b = [1.0 2.0; 3.0 4.0]
+    b - Diagonal([1.0, 1.0]) # poor style, inefficient code
+
+Whereas you should instead use
+
+.. code-block:: julia
+
+    b = [1.0 2.0; 3.0 4.0]
+    b - I # good style, and note the lack of dimensions of I
+
+While the implementation of ``I`` is a little abstract to go into at this point, a hint is that 
+
+.. code-block:: julia
+
+    typeof(I)
+
+So that this is a ``UniformScaling`` type rather than an identity matrix, making it much more powerful and general
+
 Assignment and Passing Arrays
 ------------------------------
 
@@ -530,52 +576,21 @@ already seen
     a = [-1, 0, 1]
 
 
-.. code-block:: julia
-
-    length(a)
-
-
-.. code-block:: julia
-
-    sum(a)
-
-
-.. code-block:: julia
-
-    mean(a)
+    @show length(a)
+    @show sum(a)
+    @show mean(a)
+    @show std(a) #standard deviation
+    @show var(a) # variance
+    @show maximum(a)
+    @show minimum(a)
+    @show extrema(a) # (mimimum(a), maximum(a))
 
 
-.. code-block:: julia
-
-    std(a)
-
-.. code-block:: julia
-
-    var(a)
-
-
-.. code-block:: julia
-
-    maximum(a)
-
-
-.. code-block:: julia
-
-    minimum(a)
-
-.. code-block :: julia
-
-    extrema(a) # (mimimum(a), maximum(a))
-
+TO sort an array
 
 .. code-block:: julia
 
     b = sort(a, rev = true)  # returns new array, original not modified
-
-
-.. code-block:: julia
-
-    b === a  # tests if arrays are identical (i.e share same memory)
 
 
 .. code-block:: julia
@@ -585,7 +600,12 @@ already seen
 
 .. code-block:: julia
 
-    b === a
+    b == a  # tests if have the same values
+
+
+.. code-block:: julia
+
+    b === a  # tests if arrays are identical (i.e share same memory)
 
 
 Matrix Algebra
@@ -946,12 +966,45 @@ Luckily, the practice of trying to ensure that functions return the same types i
 Manually Declaring Types
 -------------------------
 
-Does it ever help?  Rarely
+While we keep talking about types, you will notice that we have never declared any types in the underlying code
 
-Almost never for variable and function declarations  **TODO**
+This is intentional for exposition and "user" code of packages, rather than the writing of those packages themselves
 
-In fact, mistakes are so easy that it is more likely to make things worse
+It is also in contrast to some of the sample code you will see
 
+To give an example of the declaration of types, the following are equivalent
+
+.. code-block:: julia
+
+    function f(x, A)
+        b = [5.0; 6.0]
+        return A * x .+ b
+    end
+    val = f([0.1, 2.0], [1.0 2.0; 3.0 4.0])
+
+.. code-block:: julia
+
+    function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64} # argument and return types
+        b::Vector{Float64} = [5.0; 6.0]
+        return A * x .+ b
+    end
+    val = f2([0.1; 2.0], [1.0 2.0; 3.0 4.0])
+
+While declaring the types may be verbose, would it ever generate faster code?
+
+The answer is: almost never
+
+Furthermore, it can lead to confusion and inefficiencies since many things that behave like vectors and matrices are not ``Matrix{Float64}`` and ``Vector{Float64}``
+
+To see a few examples where the first works and the second fails
+
+.. code-block:: julia
+
+    @show f([0.1; 2.0], [1 2; 3 4])
+    @show f([0.1; 2.0], Diagonal([1.0, 2.0]))
+
+    #f2([0.1; 2.0], [1 2; 3 4]) # not a Float64
+    #f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a Matrix{Float64}
 
 Linear Algebra
 =======================
