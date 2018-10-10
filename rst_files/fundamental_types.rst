@@ -1070,7 +1070,7 @@ But care should be taken if the terminal node is not a multiple of the set sizes
     maximum(a) == maxval
 
 
-To evenly space points where the maximum value is important,
+To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
 
 :.. code-block:: julia
 
