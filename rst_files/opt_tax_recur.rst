@@ -697,7 +697,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
   :class: collapse
 
-  using QuantEcon, NLsolve, NLopt, LinearAlgebra
+  using QuantEcon, NLsolve, NLopt, LinearAlgebra, Interpolations
 
   import QuantEcon: simulate
 
@@ -1308,16 +1308,16 @@ The above steps are implemented in a type called `RecursiveAllocation`
       for (i, μ) in enumerate(μgrid0)
           c[i, :], n[i, :], x[i, :], V[i, :] = time1_value(PP, μ)
       end
-      Vf = Vector{LinInterp}(undef, 2)
-      cf = Vector{LinInterp}(undef, 2)
-      nf = Vector{LinInterp}(undef, 2)
-      xprimef = Matrix{LinInterp}(undef, 2, S)
+      Vf = Vector{AbstractInterpolation}(undef, 2)
+      cf = Vector{AbstractInterpolation}(undef, 2)
+      nf = Vector{AbstractInterpolation}(undef, 2)
+      xprimef = Matrix{AbstractInterpolation}(undef, 2, S)
       for s in 1:2
-          cf[s] = LinInterp(x[:, s][end:-1:1], c[:, s][end:-1:1])
-          nf[s] = LinInterp(x[:, s][end:-1:1], n[:, s][end:-1:1])
-          Vf[s] = LinInterp(x[:, s][end:-1:1], V[:, s][end:-1:1])
+          cf[s] = LinearInterpolation(x[:, s][end:-1:1], c[:, s][end:-1:1])
+          nf[s] = LinearInterpolation(x[:, s][end:-1:1], n[:, s][end:-1:1])
+          Vf[s] = LinearInterpolation(x[:, s][end:-1:1], V[:, s][end:-1:1])
           for sprime in 1:S
-              xprimef[s, sprime] = LinInterp(x[:, s][end:-1:1], x[:, s][end:-1:1])
+              xprimef[s, sprime] = LinearInterpolation(x[:, s][end:-1:1], x[:, s][end:-1:1])
           end
       end
       policies = [cf, nf, xprimef]
@@ -1352,20 +1352,20 @@ The above steps are implemented in a type called `RecursiveAllocation`
 
   function fit_policy_function(PP, PF, xgrid)
       S = PP.S
-      Vf = Vector{LinInterp}(undef, S)
-      cf = Vector{LinInterp}(undef, S)
-      nf = Vector{LinInterp}(undef, S)
-      xprimef = Matrix{LinInterp}(undef, S, S)
+      Vf = Vector{AbstractInterpolation}(undef, S)
+      cf = Vector{AbstractInterpolation}(undef, S)
+      nf = Vector{AbstractInterpolation}(undef, S)
+      xprimef = Matrix{AbstractInterpolation}(undef, S, S)
       for s in 1:S
           PFvec = Matrix{typeof(PP.model).parameters[1]}(undef, length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
               PFvec[i_x, :] = PF(i_x, x, s)
           end
-          Vf[s] = LinInterp(xgrid, PFvec[:, 1])
-          cf[s] = LinInterp(xgrid, PFvec[:, 2])
-          nf[s] = LinInterp(xgrid, PFvec[:, 3])
+          Vf[s] = LinearInterpolation(xgrid, PFvec[:, 1])
+          cf[s] = LinearInterpolation(xgrid, PFvec[:, 2])
+          nf[s] = LinearInterpolation(xgrid, PFvec[:, 3])
           for sprime in 1:S
-              xprimef[s, sprime] = LinInterp(xgrid, PFvec[:, 3+sprime])
+              xprimef[s, sprime] = LinearInterpolation(xgrid, PFvec[:, 3+sprime])
           end
       end
       return Vf, [cf, nf, xprimef]
@@ -1862,9 +1862,9 @@ The figure below plots a sample path of the Ramsey tax rate
     @test sim_seq_plot[4][14] ≈ 0.3631746680706347
     @test sim_seq_plot[5][14] == 0.2
     @test sim_seq_plot[6][14] ≈ 0.5839693539786998
-    @test sim_bel_plot[3][5] ≈ 0.5230199651195195
+    @test sim_bel_plot[3][5] ≈ 0.5230509296608254
     @test sim_bel_plot[5][7] == 0.1
-    @test sim_bel_plot[2][3] ≈ 0.5402865605930799
+    @test sim_bel_plot[2][3] ≈ 0.5402933557593538
   end 
 
 As should be expected, the recursive and sequential solutions produce almost
