@@ -54,12 +54,6 @@ Either way, the assumption of a representative agent means that prices adjust to
 
 This makes it very easy to compute competitive equilibrium prices
 
-
-.. code-block:: julia
-
-    using Test
-
-
 Basic Setup
 --------------------------
 
@@ -402,9 +396,6 @@ on the left hand side gives :eq:`ltbc` with :math:`\alpha := \beta`
 
 
 .. _lt_comp_eg:
-
-.. code-block:: julia
-  using Test
 
 Computation -- An Example
 ----------------------------

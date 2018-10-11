@@ -958,6 +958,7 @@ We have also dialed down the shocks a bit
 
 .. code-block:: julia
   :class: test
+  
   @testset begin
     @test shocks[25] == 0.8050318706532391
   end
