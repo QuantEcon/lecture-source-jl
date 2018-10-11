@@ -2,13 +2,12 @@
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
-.. highlight:: julia
-
-.. contents:: :depth: 2
-
 ****************************************************
 Classical Control with Linear Algebra
 ****************************************************
+
+.. contents:: :depth: 2
+
 
 Overview
 ============
@@ -876,7 +875,8 @@ above can be found in file `control_and_filter.jl <https://github.com/QuantEcon/
 
 Here's how it looks
 
-.. literalinclude:: /_static/code/lu_tricks/control_and_filter.jl
+**TODO** Missing code
+.. .. literalinclude:: /_static/code/lu_tricks/control_and_filter.jl
 
 Example
 ---------

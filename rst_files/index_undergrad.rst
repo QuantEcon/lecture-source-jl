@@ -35,7 +35,8 @@
     :titlesonly:
 
 
-    index_learning_julia
+    index_getting_started_julia
+    index_more_julia
     index_tools_and_techniques_undergrad
     index_dynamic_programming_undergrad
     index_multi_agent_models_undergrad
