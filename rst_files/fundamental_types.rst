@@ -4,7 +4,7 @@
 
 **********************************************
 Arrays, Tuples, and Ranges
-***********************************************
+**********************************************
 
 .. contents:: :depth: 2
 
@@ -198,7 +198,7 @@ Creating Arrays from Existing Arrays
 
 For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own
 
-The reasons for this, discussed in more detail in :ref:`generic and functional programming <generic_functional_programming>`, are to ensure both clarity and generality
+The reasons for this, discussed in more detail in :doc:`this lecture <generic_functional_programming>`, are to ensure both clarity and generality
 
 One place this can be inconvenient is when we need to create an array based on an existing array
 
@@ -893,10 +893,46 @@ Note that we can get the same result as with a comprehension or more explicit lo
 
 Nonetheless the syntax is convenient
 
+Linear Algebra
+-------------------
+
+
+Julia provides some a great deal of additional functionality related to linear operations
+
+
+.. code-block:: julia
+
+    A = [1 2; 3 4]
+
+
+.. code-block:: julia
+
+    det(A)
+
+
+.. code-block:: julia
+
+    tr(A)
+
+
+.. code-block:: julia
+
+    eigvals(A)
+
+
+.. code-block:: julia
+
+    rank(A)
+
+
+For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library
+
+
+
 Introduction to Types
 ======================
 
-We will discuss this in detail in :ref:`generic and functional programming <generic_functional_programming>`, but much of its performance gains and generality of notation comes from Julia's type system
+We will discuss this in detail in :doc:`this lecture <generic_functional_programming>`, but much of its performance gains and generality of notation comes from Julia's type system
 
 For example, compare
 
@@ -1006,42 +1042,13 @@ To see a few examples where the first works and the second fails
     #f2([0.1; 2.0], [1 2; 3 4]) # not a Float64
     #f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a Matrix{Float64}
 
-Linear Algebra
-=======================
 
+Some Other Types
+==================
 
-Julia provides some a great deal of additional functionality related to linear operations
-
-
-.. code-block:: julia
-
-    A = [1 2; 3 4]
-
-
-.. code-block:: julia
-
-    det(A)
-
-
-.. code-block:: julia
-
-    tr(A)
-
-
-.. code-block:: julia
-
-    eigvals(A)
-
-
-.. code-block:: julia
-
-    rank(A)
-
-
-For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library
 
 Ranges
-================
+-----------
 
 As with many other types, a ``Range`` can act as a vector
 
@@ -1055,13 +1062,13 @@ As with many other types, a ``Range`` can act as a vector
 
 Ranges can also be created with floating point numbers using the same notation
 
-:.. code-block:: julia
+.. code-block:: julia
 
     a = 0.0:0.1:1.0 # 0.0, 0.1, 0.2, ... 1.0
 
 But care should be taken if the terminal node is not a multiple of the set sizes
 
-:.. code-block:: julia
+.. code-block:: julia
 
     maxval = 1.0
     minval = 0.0
@@ -1072,7 +1079,7 @@ But care should be taken if the terminal node is not a multiple of the set sizes
 
 To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
 
-:.. code-block:: julia
+.. code-block:: julia
 
     maxval = 1.0
     minval = 0.0
@@ -1082,11 +1089,11 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maximum(a) == maxval
 
 Tuples and Named Tuples
-========================
+---------------------------------
 
 We were introduced to Tuples earlier, which provide high-performance but immutable sets of distinct types
 
-:.. code-block:: julia
+.. code-block:: julia
 
     t = (1.0, "test")
     t[1] # access by index
@@ -1096,7 +1103,7 @@ We were introduced to Tuples earlier, which provide high-performance but immutab
 
 As well as named tuples, which are tuples extended to have a list of names 
 
-:.. code-block:: julia
+.. code-block:: julia
 
     t = (val1 = 1.0, val2 = "test")
     t.val1 # access by index
@@ -1105,7 +1112,7 @@ As well as named tuples, which are tuples extended to have a list of names
 
 While immutable, it is possible to manipulate tuples and generate new ones
 
-:.. code-block:: julia
+.. code-block:: julia
 
     t2 = (val3 = 4, val4 = "test!!")
     t3 = merge(t, t2) # new tuple
@@ -1114,31 +1121,31 @@ While immutable, it is possible to manipulate tuples and generate new ones
 Named tuples are a convenient and high-performance way to manage and unpack sets of parameters
 
 
-:.. code-block:: julia
+.. code-block:: julia
 
     function f(parameters)
         α, β = parameters.α, parameters.β # poor style, error prone if adding parameters
         return α + β
     end 
-    paramvals = (α = 0.1, β = 0.2)
-    f(paramvals)
+    parameters = (α = 0.1, β = 0.2)
+    f(parameters)
 
 
 This functionality is aided by the ``Parameters.jl`` package and the `@unpack` macro
 
-:.. code-block:: julia
+.. code-block:: julia
 
     using Parameters
     function f(parameters)
         @unpack α, β = parameters # good style, less sensitive to errors
         return α + β
     end 
-    paramvals = (α = 0.1, β = 0.2)
-    f(paramvals)
+    parameters = (α = 0.1, β = 0.2)
+    f(parameters)
 
 In order to manage default values, use the ``@with_kw`` macro
 
-:.. code-block:: julia
+.. code-block:: julia
 
     using Parameters
     paramgen = @with_kw (α = 0.1, β = 0.2) # creates named tuples with defaults

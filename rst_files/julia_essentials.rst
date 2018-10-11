@@ -812,22 +812,21 @@ Let's try this out on an array of integers, adding the broadcast
 
     chisq.([2, 4, 6])
 
-Scoping (and Closures)
+Scoping and Closures
 -----------------------
-
 
 Since global variables are usually a bad idea, we will concentrate on understanding the role of "good" local scoping practice
 
 That said, many of the variables in a Jupyter notebook are global, even the whole text could be copied into a function
 
-. note:: for/while loops and global variables in Jupyter vs. the REPL
-    - In the current version of Julia, there is a distinction between the use of scope in an interactive Jupyter environment
-    - The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
-    - In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
+**Warning**
+For/while loops and global variables in Jupyter vs. the REPL
+* In the current version of Julia, there is a distinction between the use of scope in an interactive Jupyter environment
+* The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
+* In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information, see :`Julia Variable Scoping <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ :
+For more information on using globals outside of Jupyter, see :`Julia Variable Scoping <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ :
 
-But, as discussed above, the rules for global scope in Jupyter notebooks are currently different
 
 Functions
 ^^^^^^^^^^
@@ -874,7 +873,7 @@ The scoping also applies to named arguments in functions
 
 .. code-block:: julia
 
-    f(x; y = 1) = x + y_approx # `x` and `y` are names local to the `f` function
+    f(x; y = 1) = x + y # `x` and `y` are names local to the `f` function
     xval = 0.1
     yval = 2
     f(xval; y = yval)
@@ -884,7 +883,7 @@ Due to scoping, you could write this as
 
 .. code-block:: julia
 
-    f(x; y = 1) = x + y_approx # `x` and `y` are names local to the `f` function
+    f(x; y = 1) = x + y # `x` and `y` are names local to the `f` function
     x = 0.1
     y = 2
     f(x; y = y) # the left hand `y` is the local name of the argument in the function
@@ -1279,9 +1278,9 @@ Let's test it
 
     x_grid = range(-1, stop = 1, length = 100)
     y_vals = f_ex5.(x_grid)
-    y_approx = g_ex5.(x_grid)
+    y = g_ex5.(x_grid)
     plot(x_grid, y_vals, label = "true")
-    plot!(x_grid, y_approx, label = "approximation")
+    plot!(x_grid, y, label = "approximation")
 
 
 Exercise 6

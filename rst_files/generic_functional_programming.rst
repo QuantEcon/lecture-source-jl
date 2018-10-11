@@ -6,8 +6,6 @@
 Generic and Functional Programming
 ******************************************
 
-.. TODO: Add some discussion about names and scope?  Or to julia_essentials?
-
 .. contents:: :depth: 2
 
 Overview
@@ -31,10 +29,6 @@ Understanding them will help you
 * Improve the speed at which your code runs
 
 * Read Julia code written by other programmers
-
-
-.. _generic_functional_programming:
-
 
 
 Types and Multiple Dispatch

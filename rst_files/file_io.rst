@@ -22,7 +22,7 @@ Topics:
 
 
 File Input and Output
-====================
+======================
 
 Let's have a quick look at reading from and writing to text files
 
