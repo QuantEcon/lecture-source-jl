@@ -11,7 +11,7 @@ Introduction to Testing and Continuous Integration
 All source, 
 
 Overview
-============
+======================
 
 Topics:
 
@@ -22,12 +22,12 @@ Topics:
 
 
 Unit Testing Frameworks
-======================
+====================================
 
 TODO
 
 Continuous Integration with Travis
-===============
+==========================================
 
 TODO
 
