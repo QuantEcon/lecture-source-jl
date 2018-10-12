@@ -18,12 +18,13 @@ This part of the course provides a more details on the Julia programming languag
 .. toctree::
     :maxdepth: 2
 
-    more_types
     generic_functional_programming
-    tools_editors
-    packages
-    version_control
-    testing
     need_for_speed
     plots
-    file_io
+
+..    more_types
+..    tools_editors
+..    packages
+..    version_control
+..    testing
+..    file_io

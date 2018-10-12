@@ -1043,12 +1043,9 @@ To see a few examples where the first works and the second fails
     #f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a Matrix{Float64}
 
 
-Some Other Types
+Ranges
 ==================
 
-
-Ranges
------------
 
 As with many other types, a ``Range`` can act as a vector
 
@@ -1089,9 +1086,9 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maximum(a) == maxval
 
 Tuples and Named Tuples
----------------------------------
+=========================
 
-We were introduced to Tuples earlier, which provide high-performance but immutable sets of distinct types
+We were introduced to Tuples earlier, which provide high-performance immutable sets of distinct types
 
 .. code-block:: julia
 
@@ -1101,14 +1098,14 @@ We were introduced to Tuples earlier, which provide high-performance but immutab
     # t[1] = 3.0 # would fail as tuples are immutable
     println("a = $a and b = $b")
 
-As well as named tuples, which are tuples extended to have a list of names 
+As well as Named Tuples, which extend tuples with names for each argument
 
 .. code-block:: julia
 
     t = (val1 = 1.0, val2 = "test")
     t.val1 # access by index
-    a, b = t # unpack
-    println("a = $a and b = $b") # access by index
+    #a, b = t # bad style  better to unpack by name with @unpack
+    println("val1 = $(t.val1) and val1 = $(t.val1)") # access by name
 
 While immutable, it is possible to manipulate tuples and generate new ones
 
@@ -1131,7 +1128,7 @@ Named tuples are a convenient and high-performance way to manage and unpack sets
     f(parameters)
 
 
-This functionality is aided by the ``Parameters.jl`` package and the `@unpack` macro
+This functionality is aided by the ``Parameters.jl`` package and the ``@unpack`` macro
 
 .. code-block:: julia
 
@@ -1151,9 +1148,13 @@ In order to manage default values, use the ``@with_kw`` macro
     paramgen = @with_kw (α = 0.1, β = 0.2) # creates named tuples with defaults
 
     # creates named tuples, replacing defaults
-    @show paramgen()
+    @show paramgen() # calling without arguments gives all defaults
     @show paramgen(α = 0.2)
     @show paramgen(α = 0.2, β = 0.5);
+
+An alternative approach, defining a new type using ``struct`` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code
+
+For that, and other reasons of generality, we will use named tuples for collections of parameters where possible
 
 Exercises
 =============

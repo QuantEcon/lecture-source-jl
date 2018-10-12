@@ -569,7 +569,7 @@ For "not equal" use ``!=`` or ``≠``
 ..     1 ≤ 2 ≤ 3
 
 
-In many languages you can use integers or other values when testing conditions but Julia more rigorously enforces booleans
+.. In many languages you can use integers or other values when testing conditions but Julia more rigorously enforces booleans
 .. This looked a little odd when reading
 .. .. code-block:: julia
 ..     :class: no-execute
