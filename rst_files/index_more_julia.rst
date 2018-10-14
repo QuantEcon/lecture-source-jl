@@ -18,7 +18,7 @@ This part of the course provides a more details on the Julia programming languag
 .. toctree::
     :maxdepth: 2
 
-    generic_functional_programming
+    generic_programming
     need_for_speed
     plots
 

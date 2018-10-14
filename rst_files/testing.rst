@@ -2,9 +2,9 @@
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
-******************************************
+***************************************************
 Introduction to Testing and Continuous Integration
-******************************************
+***************************************************
 
 .. contents:: :depth: 2
 

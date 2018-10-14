@@ -13,8 +13,6 @@ This first part of the course provides a relatively fast-paced introduction to e
 
     Lectures
     ********
-
-
 .. toctree::
     :maxdepth: 2
 
@@ -22,4 +20,5 @@ This first part of the course provides a relatively fast-paced introduction to e
     julia_by_example
     julia_essentials
     fundamental_types
+    introduction_to_types
 

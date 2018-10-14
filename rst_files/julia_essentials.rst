@@ -267,7 +267,7 @@ A related data type is **tuples**, which are immutable and can contain different
     typeof(x), typeof(y)
 
 
-An immutable object is one that cannot be altered once it resides in memory
+An immutable value is one that cannot be altered once it resides in memory
 
 In particular, tuples do not support item assignment (i.e. ``x[1] = "test"`` would fail)
 
@@ -367,7 +367,7 @@ Dictionaries are like arrays except that the items are named instead of numbered
 
 The strings ``name`` and ``age`` are called the **keys**
 
-The objects that the keys are mapped to (``"Frodo"`` and ``33``) are called the **values**
+The values that the keys are mapped to (``"Frodo"`` and ``33``) are called the **values**
 
 They can be accessed via ``keys(d)`` and ``values(d)`` respectively
 
@@ -402,7 +402,7 @@ These include sequence data types like arrays
 
 They also include so-called **iterators**
 
-You've already come across these types of objects
+You've already come across these types of values
 
 .. code-block:: julia
 
@@ -1127,7 +1127,7 @@ Write a program to calculate total population across these cities
 
 Hints:
 
-* If ``f`` is a file object then ``eachline(f)`` provides an iterable that steps you through the lines in the file
+* If ``f`` is a file type then ``eachline(f)`` provides an iterable that steps you through the lines in the file
 
 * ``parse(Int, "100")`` converts the string ``"100"`` into an integer
 

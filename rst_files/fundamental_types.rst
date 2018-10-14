@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 **********************************************
-Arrays, Tuples, and Ranges
+Arrays, Tuples, Ranges, and Other Types
 **********************************************
 
 .. contents:: :depth: 2
@@ -19,11 +19,9 @@ Arrays, Tuples, and Ranges
 Overview
 ============================
 
-In Julia, arrays and tuples are the most important data type for working with numerical data
+In Julia, arrays and tuples are the most important data type sfor working with numerical data
 
 In this lecture we give more details on
-
-* declaring types
 
 * creating and manipulating Julia arrays
 
@@ -35,20 +33,19 @@ In this lecture we give more details on
 
 * ranges
 
+* nothing, missing, and unions
+
 Array Basics
 ================
 
+Since it is one of the most important types, we will start with arrays
+
+Later, we will see how arrays (and all other types in Julia) are handled in a generic and extensible way
+
+See the `multi-dimensional arrays <https://docs.julialang.org/en/v1/manual/arrays/>`_ section of the standard library 
 
 Shape and Dimension
 ----------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-    using LinearAlgebra, Statistics
-
 
 We've already seen some Julia arrays in action
 
@@ -67,13 +64,12 @@ The REPL tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Fl
 
 Here ``Int64`` and ``Float64`` are types for the elements inferred by the compiler
 
-We'll talk more about types later on
+We'll talk more about types later 
 
 The ``1`` in ``Array{Int64,1}`` and ``Array{Any,1}`` indicates that the array is
 one dimensional (i.e., a ``Vector``)
 
 This is the default for many Julia functions that create arrays
-
 
 .. code-block:: julia
 
@@ -95,8 +91,6 @@ functions
 
 
 The syntax ``(3,)`` displays a tuple containing one element --- the size along the one dimension that exists
-
-
 
 Array vs Vector vs Matrix
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +192,7 @@ Creating Arrays from Existing Arrays
 
 For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own
 
-The reasons for this, discussed in more detail in :doc:`this lecture <generic_functional_programming>`, are to ensure both clarity and generality
+The reasons for this, discussed in more detail in :doc:`this lecture <generic_programming>`, are to ensure both clarity and generality
 
 One place this can be inconvenient is when we need to create an array based on an existing array
 
@@ -483,12 +477,12 @@ So that this is a ``UniformScaling`` type rather than an identity matrix, making
 Assignment and Passing Arrays
 ------------------------------
 
-As discussed above, in Julia, the left hand side of an assignment is a "binding" to a name
+As discussed above, in Julia, the left hand side of an assignment is a "binding" or a label to a value
 
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x # name y binds to whatever `x` bound to
+    y = x # name y binds to whatever value `x` bound to
 
 The consequence of this, is that you can re-bind that name 
 
@@ -561,9 +555,19 @@ We can also see a common mistake, where instead of modifying the arguments, the 
     
 The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking 
 
+Note that scalars are always immutable, such that
+
+.. code-block:: julia
+
+    y = [1 2]
+    y .-= 2 # ie. y .= y .- 2, no problem
+
+    x = 5
+    # x .-= 2 # fails!
+    x = x - 2 # subtle difference: creates a new value and rebinds the variable
+
 Operations on Arrays
 ================================
-
 
 Array Methods
 ------------------
@@ -925,127 +929,10 @@ Julia provides some a great deal of additional functionality related to linear o
     rank(A)
 
 
-For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library
-
-
-
-Introduction to Types
-======================
-
-We will discuss this in detail in :doc:`this lecture <generic_functional_programming>`, but much of its performance gains and generality of notation comes from Julia's type system
-
-For example, compare
-
-.. code-block:: julia
-
-    x = [1, 2, 3]
-
-Gives ``Array{Int64,1}`` as the type whereas
-
-.. code-block:: julia
-
-    x = [1.0, 2.0, 3.0]
-
-These return ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively, which the compiler is able to infer from the right hand side of the expressions
-
-Given the information on the type, the compiler can work through the sequence of expressions to infer other types
-
-.. code-block:: julia
-
-    # define some function
-    f(y) = 2y
-
-    # call with an integer array
-    x = [1, 2, 3]
-    z = f(x) # compiler deduces type
-
-Good Practices for Functions and Variables
---------------------------------------------
-
-In order to keep many of the benefits of Julia, you will sometimes want to help the compiler ensure that it can always deduce a single type from any function or expression
-
-As an example of bad practice, is to use an array to hold unrelated types
-
-.. code-block:: julia
-
-    x = [1.0, "test"] # poor style
-
-The type of this is ``Array{Any,1}``, where the ``Any`` means the compiler has determined that any valid Julia types can be added to the array
-
-While occasionally useful, this is to be avoided whenever possible in performance sensitive code
-
-The other place this can come up is in the declaration of functions,
-
-As an example, consider a function which returns different types depending on the arguments
-
-.. code-block:: julia
-
-    function f(x)
-        if x > 0
-            return 1.0
-        else 
-            return 0 # Probably meant 0.0
-        end
-    end
-    @show f(1)
-    @show f(-1)
-
-The issue here is relatively subtle:  ``1.0`` is a floating point, while ``0`` is an integer
-
-Consequently, given the type of ``x``, the compiler cannot in general determine what type the function will return
-
-This issue, called **type stability** is at the heart of most Julia performance considerations
-
-Luckily, the practice of trying to ensure that functions return the same types is also the most consistent with simple, clear code
-
-
-Manually Declaring Types
--------------------------
-
-While we keep talking about types, you will notice that we have never declared any types in the underlying code
-
-This is intentional for exposition and "user" code of packages, rather than the writing of those packages themselves
-
-It is also in contrast to some of the sample code you will see
-
-To give an example of the declaration of types, the following are equivalent
-
-.. code-block:: julia
-
-    function f(x, A)
-        b = [5.0; 6.0]
-        return A * x .+ b
-    end
-    val = f([0.1, 2.0], [1.0 2.0; 3.0 4.0])
-
-.. code-block:: julia
-
-    function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64} # argument and return types
-        b::Vector{Float64} = [5.0; 6.0]
-        return A * x .+ b
-    end
-    val = f2([0.1; 2.0], [1.0 2.0; 3.0 4.0])
-
-While declaring the types may be verbose, would it ever generate faster code?
-
-The answer is: almost never
-
-Furthermore, it can lead to confusion and inefficiencies since many things that behave like vectors and matrices are not ``Matrix{Float64}`` and ``Vector{Float64}``
-
-To see a few examples where the first works and the second fails
-
-.. code-block:: julia
-
-    @show f([0.1; 2.0], [1 2; 3 4])
-    @show f([0.1; 2.0], Diagonal([1.0, 2.0]))
-
-    #f2([0.1; 2.0], [1 2; 3 4]) # not a Float64
-    #f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a Matrix{Float64}
-
+For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library 
 
 Ranges
 ==================
-
 
 As with many other types, a ``Range`` can act as a vector
 
@@ -1072,7 +959,6 @@ But care should be taken if the terminal node is not a multiple of the set sizes
     stepsize = 0.15
     a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ... ??? Not 1.0
     maximum(a) == maxval
-
 
 To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
 
@@ -1155,6 +1041,30 @@ In order to manage default values, use the ``@with_kw`` macro
 An alternative approach, defining a new type using ``struct`` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code
 
 For that, and other reasons of generality, we will use named tuples for collections of parameters where possible
+
+Nothing, Missing, and Unions
+==============================
+
+By convention, use ``nothing`` when there is no value to return from a function, or when a variable holds no value
+
+``missing`` is used to represent missing data in a statistical sense (i.e., there could be data, but we do not have it)
+
+``missing`` is of type ``Missing`` 
+``nothing`` is of type ``Nothing``
+
+See `julia documentation <https://docs.julialang.org/en/v1/manual/missing/>`_ for more on ``missing``
+
+ ``skipmissing``!!! but sorted
+
+ propogation of missing
+
+ Example returning a failure, typeof funciton is a value or nothing if failure.
+
+ Example of a vector with some missing
+
+
+
+
 
 Exercises
 =============

@@ -395,12 +395,12 @@ Let's have a casual discussion of how all this works while leaving technical det
 First, ``lp = Laplace()`` creates an instance of a data type defined
 in the Distributions module that represents the Laplace distribution
 
-The name ``lp`` is bound to this object
+The name ``lp`` is bound to this value
 
 When we make the function call ``plothistogram(lp, 500)`` the code in the body
 of the function ``plothistogram`` is run with
 
-* the name ``distribution`` bound to the same object as ``lp``
+* the name ``distribution`` bound to the same value as ``lp``
 
 * the name ``n`` bound to the integer ``500``
 
@@ -419,7 +419,7 @@ The function ``rand()`` is defined in the base library such that ``rand(n)`` ret
 
 On the other hand, ``distribution`` points to a data type representing the Laplace distribution that has been defined in a third party package
 
-So how can it be that ``rand()`` is able to take this kind of object as an
+So how can it be that ``rand()`` is able to take this kind of value as an
 argument and return the output that we want?
 
 The answer in a nutshell is **multiple dispatch**, which Julia uses to implement **generic programming**
@@ -427,9 +427,9 @@ The answer in a nutshell is **multiple dispatch**, which Julia uses to implement
 This refers to the idea that functions in Julia can have different behavior
 depending on the particular arguments that they're passed
 
-Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of object
+Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value
 
-The compiler knows which function definition to apply in a given setting by looking at the types of the objects the function is called on
+The compiler knows which function definition to apply in a given setting by looking at the types of the values the function is called on
 
 In Julia these alternative versions of a function are called **methods**
 
