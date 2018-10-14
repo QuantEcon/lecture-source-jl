@@ -395,7 +395,7 @@ An alternative is to call the ``view`` function directly--though it is generally
 
 As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else
 
-Another important lesson about views is that they **are not** concrete arrays types 
+Another important lesson about views is that they **are not** normal, dense arrays 
 
 .. code-block:: julia
 
@@ -406,7 +406,7 @@ Another important lesson about views is that they **are not** concrete arrays ty
     @views b = a[:, 2] 
     @show typeof(b);
 
-The type of ``b`` is a good example of how types are not as they may sometimes
+The type of ``b`` is a good example of how types are not as they may seem 
 
 Similarly
 
@@ -417,7 +417,7 @@ Similarly
     typeof(b)
 
 
-To copy into a concrete array
+To copy into a dense array
 
 .. code-block:: julia
 
@@ -1045,7 +1045,112 @@ For that, and other reasons of generality, we will use named tuples for collecti
 Nothing, Missing, and Unions
 ==============================
 
-By convention, use ``nothing`` when there is no value to return from a function, or when a variable holds no value
+Sometimes a variable, return type from a function, or value in an array needs to represent the absence of a value rather than a particular value
+
+There are two distinct use cases for this
+
+#. ``nothing`` ("software engineers null"): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.
+#. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available 
+
+Nothing and Basic Error Handling
+----------------------------------
+
+The value ``nothing`` is a single value of type ``Nothing``
+
+.. code-block:: julia
+
+    typeof(nothing)
+
+
+An example of a reasonable use of ``nothing`` is if you need to have a variable defined in an outer scope, which may or may not be set in an inner one
+
+.. code-block:: julia
+
+    function f(y)
+        x = nothing
+        if y > 0.0
+            # calculations to set x
+            x = y
+        end
+
+        # later, can do differnt e
+        if x == nothing
+            println("x was not set")
+        else
+            println("x = $x")
+        end
+        x
+    end
+    @show f(1.0)
+    @show f(-1.0);
+
+While in general you want to keep a variable name bound to a single type in Julia, this is a notable exception
+
+Similarly, while it should not be abused, you can return a ``nothing`` from a function to indicate that it did not calculate as expected
+
+.. code-block:: julia
+
+    function f(x)
+        if x > 0.0
+            return sqrt(x)
+        else
+            return nothing
+        end
+    end
+    x1 = 1.0
+    x2 = -1.0
+    y1 = f(x1)
+    y2 = f(x2)
+
+    # check results with == nothing
+    if y1 == nothing
+        println("f($x2) successful")
+    else
+        println("f($x2) failed");
+    end
+
+As an aside, an equivalent way to write the above function, which you will sometimes see if code, is to use the terse `ternary operator <https://docs.julialang.org/en/v1/manual/control-flow/index.html#man-conditional-evaluation-1>`_, which gives a compact if/then/else structure
+
+.. code-block:: julia
+
+    function f(x)
+        x > 0.0 ? sqrt(x) : nothing # the "a ? b : c" pattern is the ternary 
+    end
+    f(1.0)
+
+We will sometimes use this form when it makes the code more clear (and it will occasionally make the code higher performance)
+
+Regardless of how ``f(x)`` is written,  the return type is an example of a union, where a could be one of multiple types
+
+In this case, the compiler would deduce that the type would be a ``Union{Nothing,Float64}`` -- that is, it returns either a floating point or a ``nothing``
+
+You will see this type directly if you use an array containing both types
+
+.. code-block:: julia
+
+    x = [1.0, nothing]
+
+When considering error handling, whether you want a function to return ``nothing`` or simply fail depends on whether the code calling ``f(x)`` is carefully checking the results such that it should recover and fail gracefully
+
+For example, if you were calling on an array of parameters where a-priori you were not sure which ones will succeed, then
+
+.. code-block:: julia
+
+    x = [0.1, -1.0, 2.0, -2.0]
+    f.(x)
+
+On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate
+
+.. code-block:: julia
+
+    function f(x)
+        @assert x > 0.0
+        sqrt(x)
+    end
+    f(1.0)
+
+Missing
+----------------------------------
 
 ``missing`` is used to represent missing data in a statistical sense (i.e., there could be data, but we do not have it)
 
@@ -1061,9 +1166,6 @@ See `julia documentation <https://docs.julialang.org/en/v1/manual/missing/>`_ fo
  Example returning a failure, typeof funciton is a value or nothing if failure.
 
  Example of a vector with some missing
-
-
-
 
 
 Exercises
