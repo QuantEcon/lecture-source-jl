@@ -1217,11 +1217,14 @@ In the case where you would like to calculate a value without the missing values
 
 .. code-block:: julia
 
-    x = [1.0 missing 2.0 missing missing 5.0]
+    x = [1.0, missing, 2.0, missing, missing, 5.0]
     @show mean(x)
-    @show mean(skipmissing(x));
+    @show mean(skipmissing(x))
+    @show coalesce.(x, 0.0); # replace missing with 0.0;
 
-As this is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``
+As ``missing`` is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``
+
+
 
 Exercises
 =============
