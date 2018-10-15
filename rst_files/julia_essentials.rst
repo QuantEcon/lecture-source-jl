@@ -240,7 +240,7 @@ Julia provides many functions for working with strings
     strip(" foobar ")  # Remove whitespace
 
 
-Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see the documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ on regular expressions for more info)
+Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info)
 
 .. code-block:: julia
 
@@ -493,7 +493,7 @@ The following snippet will give you the idea
 
 Comprehensions
 ------------------
-(`See the documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_ on comprehensions for more info)
+(`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_)
 
 Comprehensions are an elegant tool for creating new arrays or dictionaries from iterables
 
@@ -712,7 +712,7 @@ Typically it's as an argument to another function
 Optional and Keyword Arguments
 ------------------------------------
 
-(`See the documentation <https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments-1>`_ on keyword arguments for more info)
+(`See keyword arguments documentation <https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments-1>`_)
 
 Function arguments can be given default values
 
@@ -749,7 +749,7 @@ For example, in the call
 Broadcasting
 ====================
 
-(`See the documentation <https://docs.julialang.org/en/v1/manual/arrays/#Broadcasting-1>`_ on broadcasting for more info)
+(`See broadcasting documentation <https://docs.julialang.org/en/v1/manual/arrays/#Broadcasting-1>`_)
 
 A common scenario in computing is that
 
@@ -844,10 +844,10 @@ For/while loops and global variables in Jupyter vs. the REPL
 * The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information on using globals outside of Jupyter, `see the documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ on variable scoping, though these rules are likely to change in interactive modes in Julia 1.1
+For more information on using globals outside of Jupyter, `see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ , though these rules are likely to change in interactive modes in Julia 1.1
 
 Functions
-^^^^^^^^^^
+---------------
 
 The scope of a variable name determines where it is valid to refer to it, and how clashes between names can occur
 
@@ -934,7 +934,7 @@ Another example is with broadcasting
 
 
 Closures
-^^^^^^^^^^
+---------------
 
 Frequently, you will want to have a function that calculates a value given some fixed parameter
 
@@ -988,7 +988,7 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
 
 
 Loops
-^^^^^^^^^
+---------------
 
 The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about then the same way you would a function/closure
 
@@ -1031,7 +1031,7 @@ Similarly, for while loops
     val # but `difference` is not in scope
 
 A Quick Check for Scoping Design
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------------
 
 While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout
 
