@@ -1068,8 +1068,7 @@ However, you can simply wrap the entire code in a function
 
 Now, there are no global variables
 
-For convenience of usage, we will tend not to wrap this sort of code in a function and call it,  but in general you will not want to call performance sensitive code without having it wrapped in functions
-
+While it is convenient to skip wrapping our code throughout, in general you will want to wrap any performance sensitive code in this way
 
 Exercises
 ============

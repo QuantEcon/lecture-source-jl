@@ -2,9 +2,9 @@
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
-**********************************************
-Arrays, Tuples, Ranges, and Other Types
-**********************************************
+*****************************************************
+Arrays, Tuples, Ranges, and Other Fundamental Types
+*****************************************************
 
 .. contents:: :depth: 2
 
@@ -38,14 +38,22 @@ In this lecture we give more details on
 Array Basics
 ================
 
+(`See multi-dimensional arrays documentation <https://docs.julialang.org/en/v1/manual/arrays/>`_)
+
 Since it is one of the most important types, we will start with arrays
 
 Later, we will see how arrays (and all other types in Julia) are handled in a generic and extensible way
 
-See the `multi-dimensional arrays <https://docs.julialang.org/en/v1/manual/arrays/>`_ section of the standard library 
-
 Shape and Dimension
 ----------------------
+
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+    using LinearAlgebra, Statistics
+
 
 We've already seen some Julia arrays in action
 
@@ -900,6 +908,8 @@ Nonetheless the syntax is convenient
 Linear Algebra
 -------------------
 
+(`See linear algebra documentation <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_)
+
 
 Julia provides some a great deal of additional functionality related to linear operations
 
@@ -928,8 +938,6 @@ Julia provides some a great deal of additional functionality related to linear o
 
     rank(A)
 
-
-For more details see the `linear algebra section <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_ of the standard library 
 
 Ranges
 ==================
@@ -973,6 +981,8 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
 
 Tuples and Named Tuples
 =========================
+
+(`See tuples <https://docs.julialang.org/en/v1/manual/functions/#Tuples-1>`_ and `named tuples documentation <https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1>`_)
 
 We were introduced to Tuples earlier, which provide high-performance immutable sets of distinct types
 
@@ -1073,7 +1083,7 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
             x = y
         end
 
-        # later, can do differnt e
+        # later, can do check `x`
         if x == nothing
             println("x was not set")
         else
@@ -1086,7 +1096,7 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
 
 While in general you want to keep a variable name bound to a single type in Julia, this is a notable exception
 
-Similarly, while it should not be abused, you can return a ``nothing`` from a function to indicate that it did not calculate as expected
+Similarly, if need-be, you can return a ``nothing`` from a function to indicate that it did not calculate as expected
 
 .. code-block:: julia
 
@@ -1120,9 +1130,9 @@ As an aside, an equivalent way to write the above function, which you will somet
 
 We will sometimes use this form when it makes the code more clear (and it will occasionally make the code higher performance)
 
-Regardless of how ``f(x)`` is written,  the return type is an example of a union, where a could be one of multiple types
+Regardless of how ``f(x)`` is written,  the return type is an example of a union, where the result could be one of an explicit set of types
 
-In this case, the compiler would deduce that the type would be a ``Union{Nothing,Float64}`` -- that is, it returns either a floating point or a ``nothing``
+In this particular case, the compiler would deduce that the type would be a ``Union{Nothing,Float64}`` -- that is, it returns either a floating point or a ``nothing``
 
 You will see this type directly if you use an array containing both types
 
@@ -1130,14 +1140,16 @@ You will see this type directly if you use an array containing both types
 
     x = [1.0, nothing]
 
-When considering error handling, whether you want a function to return ``nothing`` or simply fail depends on whether the code calling ``f(x)`` is carefully checking the results such that it should recover and fail gracefully
+When considering error handling, whether you want a function to return ``nothing`` or simply fail depends on whether the code calling ``f(x)`` is carefully checking the results
 
 For example, if you were calling on an array of parameters where a-priori you were not sure which ones will succeed, then
 
 .. code-block:: julia
 
     x = [0.1, -1.0, 2.0, -2.0]
-    f.(x)
+    y = f.(x)
+
+    # presumably check `y`
 
 On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate
 
@@ -1149,24 +1161,67 @@ On the other hand, if the parameter passed is invalid and you would prefer not t
     end
     f(1.0)
 
+Finally, ``nothing`` is a good way to indicate an optional parameter in a function
+
+.. code-block:: julia
+
+    function f(x; z = nothing)
+
+        if(z == nothing)
+            println("No z given with $x")
+        else
+            println("z = $z given with $x")
+        end
+    end
+    f(1.0)
+    f(1.0, z=3.0)
+
 Missing
 ----------------------------------
 
-``missing`` is used to represent missing data in a statistical sense (i.e., there could be data, but we do not have it)
+(see `"missing" documentation <https://docs.julialang.org/en/v1/manual/missing/>`_)
 
-``missing`` is of type ``Missing`` 
-``nothing`` is of type ``Nothing``
+The value ``missing`` of type ``Missing`` is used to represent missing value in a statistical sense
 
-See `julia documentation <https://docs.julialang.org/en/v1/manual/missing/>`_ for more on ``missing``
+For example, if you loaded data from a panel, and gaps existed
 
- ``skipmissing``!!! but sorted
+.. code-block:: julia
 
- propogation of missing
+    x = [3.0, missing, 5.0, missing, missing]
 
- Example returning a failure, typeof funciton is a value or nothing if failure.
+A key feature of ``missing`` is that it propagates through other function calls 
 
- Example of a vector with some missing
+.. code-block:: julia
 
+    f(x) = x^2
+    @show missing + 1.0
+    @show missing * 2
+    @show missing * "test"
+    @show f(missing); # even user-defined functions
+    @show mean(x); # the vector
+
+The purpose of this is to ensure that failures do not silently fail and provide meaningless numerical results
+
+This even applies for the comparison of values, which
+
+.. code-block:: julia
+
+    x = missing
+    @show x == missing
+    @show x === missing # an exception 
+    @show ismissing(x);
+
+Where ``ismissing`` is the canonical way to test the value
+
+In the case where you would like to calculate a value without the missing values, you can use ``skipmissing``
+
+.. code-block:: julia
+
+    x = [1.0 missing 2.0 missing missing 5.0]
+    @show mean(x)
+    @show mean(skipmissing(x));
+
+As this is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``
 
 Exercises
 =============
