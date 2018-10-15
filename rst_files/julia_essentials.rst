@@ -493,6 +493,7 @@ The following snippet will give you the idea
 
 Comprehensions
 ------------------
+(`See the documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_ on comprehensions for more info)
 
 Comprehensions are an elegant tool for creating new arrays or dictionaries from iterables
 
@@ -711,6 +712,8 @@ Typically it's as an argument to another function
 Optional and Keyword Arguments
 ------------------------------------
 
+(`See the documentation <https://docs.julialang.org/en/v1/manual/functions/#Keyword-Arguments-1>`_ on keyword arguments for more info)
+
 Function arguments can be given default values
 
 .. code-block:: julia
@@ -746,6 +749,7 @@ For example, in the call
 Broadcasting
 ====================
 
+(`See the documentation <https://docs.julialang.org/en/v1/manual/arrays/#Broadcasting-1>`_ on broadcasting for more info)
 
 A common scenario in computing is that
 
@@ -790,7 +794,7 @@ In doing this we'll exploit the fact that, if we take ``k`` independent standard
         return sum(z -> z^2, z) # same as `sum(x^2 for x in z)`
     end
 
-The macro ``@assert` will check that the next expression evaluates to ``true``, and will stop and display an error otherwise
+The macro ``@assert`` will check that the next expression evaluates to ``true``, and will stop and display an error otherwise
 
 .. code-block:: julia
 
@@ -812,10 +816,25 @@ Let's try this out on an array of integers, adding the broadcast
 
     chisq.([2, 4, 6])
 
-Scoping and Closures
------------------------
+The broadcasting notation is not simply vectorization, as it is able to "fuse" multiple broadcasts together to generate efficient code
 
-Since global variables are usually a bad idea, we will concentrate on understanding the role of "good" local scoping practice
+.. code-block:: julia
+
+    x = 1.0:1.0:5.0
+    y = [2.0, 4.0, 5.0, 6.0, 8.0]
+    z = similar(y)
+    z .= x .+ y .- sin.(x) # generates efficient code instead of many temporaries
+
+A convenience macro for adding broadcasting on every function call is `@.`
+
+.. code-block:: julia
+
+    @. z = x + y - sin(x)
+
+Scoping and Closures
+=====================
+
+Since global variables are usually a bad idea, we will concentrate on understanding the role of good local scoping practice
 
 That said, many of the variables in a Jupyter notebook are global, even the whole text could be copied into a function
 
@@ -825,8 +844,7 @@ For/while loops and global variables in Jupyter vs. the REPL
 * The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information on using globals outside of Jupyter, see :`Julia Variable Scoping <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ :
-
+For more information on using globals outside of Jupyter, `see the documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ on variable scoping, though these rules are likely to change in interactive modes in Julia 1.1
 
 Functions
 ^^^^^^^^^^
@@ -1011,6 +1029,47 @@ Similarly, for while loops
         difference = val - old
     end
     val # but `difference` is not in scope
+
+A Quick Check for Scoping Design
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout
+
+Here, the global variable are used in an interactive editor because they are convenient, and not because they are essential to the design of the functions
+
+A simple test of the difference is to take a segment of code and wrap it in a function, for example
+
+.. code-block:: julia
+
+    x = 2.0
+    f(y) = x + y
+    z = f(4.0)
+    for i in 1:3
+        z += i
+    end        
+    println("z = $z")
+
+Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``y``, and the global variable ``z`` is modified in the ``for`` loop
+
+However, you can simply wrap the entire code in a function
+
+.. code-block:: julia
+
+    function wrapped()
+        x = 2.0
+        f(y) = x + y
+        z = f(4.0)
+        for i in 1:3
+            z += i
+        end        
+        println("z = $z")
+    end
+    wrapped()
+
+Now, there are no global variables
+
+For convenience of usage, we will tend not to wrap this sort of code in a function and call it,  but in general you will not want to call performance sensitive code without having it wrapped in functions
+
 
 Exercises
 ============
@@ -1240,22 +1299,19 @@ Exercise 5
 .. code-block:: julia
 
     function linapprox(f, a, b, n, x)
-        #=
-        Evaluates the piecewise linear interpolant of f at x on the interval
-        [a, b], with n evenly spaced grid points.
+        # evaluates the piecewise linear interpolant of f at x on the interval [a, b], with n evenly spaced grid points.
 
-        =#
         length_of_interval = b - a
         num_subintervals = n - 1
         step = length_of_interval / num_subintervals
 
-        # === find first grid point larger than x === #
+        # find first grid point larger than x === #
         point = a
         while point ≤ x
             point += step
         end
 
-        # === x must lie between the gridpoints (point - step) and point === #
+        # x must lie between the gridpoints (point - step) and point === #
         u, v = point - step, point
 
         return f(u) + (x - u) * (f(v) - f(u)) / (v - u)
@@ -1291,7 +1347,7 @@ Exercise 6
     f_ex6 = open("us_cities.txt", "r")
     total_pop = 0
     for line in eachline(f_ex6)
-        city, population = split(line, ':')            # Tuple unpacking
+        city, population = split(line, ':') # tuple unpacking
         total_pop += parse(Int, population)
     end
     close(f_ex6)
