@@ -948,6 +948,7 @@ While the above was convenient, there are other times when you want to simply fi
 
 .. code-block:: julia
 
+    # f2(x) = q * x^2 # fails during compilation.  `q` is not defined
     a = 0.2
     f(x) = a * x^2 # refers to the `a` in the outer scope
     f(1) # univariate function
@@ -997,11 +998,11 @@ In particular
 .. code-block:: julia
 
     for i in 1:2 # introduces local i
-        d = i
+        dval1 = i
         println(i)
     end
 
-    # @show (i, d) # would fail as neither exists in this scope
+    # @show (i, dval1) # would fail as neither exists in this scope
 
     for i in 1:2 # introduces a different local i
         println(i)
@@ -1011,11 +1012,11 @@ On the other hand just as with closures, if a variable is already defined it wil
 
 .. code-block:: julia
 
-    d = 0 # introduces variables
+    dval2 = 0 # introduces variables
     for i in 1:2 # introduces local i
-        d = i # refers to outer variable
+        dval2= i # refers to outer variable
     end
-    d # still can't refer to `i`, though
+    dval2 # still can't refer to `i`, though
 
 Similarly, for while loops
 
