@@ -14,7 +14,7 @@ Additive Functionals
 .. contents:: :depth: 2
 
 
-**Co-authors: Chase Coleman and Balint Szoke**
+Co-authored with Chase Coleman and Balint Szoke. 
 
 Overview
 =============
@@ -217,16 +217,11 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia 
   :class: test 
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-    using QuantEcon, PyPlot, Distributions, LinearAlgebra
+    using QuantEcon, Plots, Distributions, LinearAlgebra
 
     struct AMF_LSS_VAR
         A::Matrix{Float64}
@@ -439,8 +434,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                 plot_given_paths(T, ypath[li+1:ui, :], mpath[li+1:ui, :], spath[li+1:ui, :],
                                 tpath[li+1:ui, :], mbounds[LI+1:UI, :], sbounds[LI+1:UI, :],
                                 show_trend=show_trend)
-
-            add_figs[ii+1][:suptitle]( L"Additive decomposition of $y_{$(ii+1)}$", fontsize=14 )
         end
 
         return add_figs
@@ -520,8 +513,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                                 spath_mult[li+1:ui, :], tpath_mult[li+1:ui, :],
                                 mbounds_mult[LI+1:UI, :], sbounds_mult[LI+1:UI, :],
                                 horline = 1.0, show_trend=show_trend)
-            mult_figs[ii+1][:suptitle]( L"Multiplicative decomposition of $y_{$(ii+1)}$",
-                                        fontsize=14)
         end
 
         return mult_figs
@@ -579,8 +570,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
             LI, UI = 2*(ii), 2*(ii+1)
             mart_figs[ii+1] = plot_martingale_paths(T, mpath_mult[li+1:ui, :],
                                                         mbounds_mult[LI+1:UI, :], horline=1)
-            mart_figs[ii+1][:suptitle](L"Martingale components for many paths of $y_{ii+1}$",
-                                    fontsize=14)
+            plot!(mart_figs[ii+1], title="Martingale components for many paths of y_(ii+1)")
         end
 
         return mart_figs
@@ -596,63 +586,65 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         mpathᵀ = Matrix(mpath')
 
         # Create figure
-        fig, ax = subplots(2, 2, sharey=true, figsize=(15, 8))
+        plots=plot(layout=(2,2), size=(800,800))
 
         # Plot all paths together
-        ax[1, 1][:plot](trange, ypath[1, :], label=L"$y_t$", color="k")
-        ax[1, 1][:plot](trange, mpath[1, :], label=L"$m_t$", color="m")
-        ax[1, 1][:plot](trange, spath[1, :], label=L"$s_t$", color="g")
+
+        plot!(plots[1], trange, ypath[1, :], label="y_t", color=:black)
+        plot!(plots[1], trange, mpath[1, :], label="m_t", color=:magenta)
+        plot!(plots[1], trange, spath[1, :], label="s_t", color=:green)
         if show_trend == true
-            ax[1, 1][:plot](trange, tpath[1, :], label=L"t_t", color="r")
+            plot!(plots[1], trange, tpath[1, :], label="t_t", color=:red)
         end
-        ax[1, 1][:axhline](horline, color="k", linestyle = "-.")
-        ax[1, 1][:set_title]("One Path of All Variables")
-        ax[1, 1][:legend](loc="top left")
+        plot!(plots[1], seriestype=:hline, [horline], color=:black, linestyle=:dash, label="")
+        plot!(plots[1], title = "One Path of All Variables", legend=:topleft)
+
 
         # Plot Martingale Component
-        ax[1, 2][:plot](trange, mpath[1, :], "m")
-        ax[1, 2][:plot](trange, mpathᵀ, alpha=0.45, color="m")
+        plot!(plots[2], trange, mpath[1, :], color=:magenta, label="")
+        plot!(plots[2], trange, mpathᵀ, alpha=0.45, color=:magenta, label="")
         ub = mbounds[2, :]
         lb = mbounds[1, :]
-        ax[1, 2][:fill_between](trange, lb, ub, alpha=0.25, color="m")
-        ax[1, 2][:set_title]("Martingale Components for Many Paths")
-        ax[1, 2][:axhline](horline, color="k", linestyle = "-.")
+        plot!(plots[2], ub, fill_between=(lb,ub), alpha=0.25, color=:magenta, label="")
+        plot!(plots[2], seriestype=:hline, [horline], color=:black, linestyle =:dash, label="")
+        plot!(plots[2], title="Martingale Components for Many Paths")
+
 
         # Plot Stationary Component
-        ax[2, 1][:plot](spath[1, :], color="g")
-        ax[2, 1][:plot](Matrix(spath'), alpha=0.25, color="g")
+        plot!(plots[3], spath[1, :], color=:green, label="")
+        plot!(plots[3], Matrix(spath'), alpha=0.25, color=:green, label="")
         ub = sbounds[2, :]
         lb = sbounds[1, :]
-        ax[2, 1][:fill_between](trange, lb, ub, alpha=0.25, color="g")
-        ax[2, 1][:axhline](horline, color="k", linestyle = "-.")
-        ax[2, 1][:set_title]("Stationary Components for Many Paths")
+        plot!(plots[3], ub, fill_between=(lb, ub), alpha=0.25, color=:green, label="")
+        plot!(plots[3], seriestype=:hline, [horline], color=:black, linestyle=:dash, label="")
+        plot!(plots[3], title="Stationary Components for Many Paths")
 
         # Plot Trend Component
         if show_trend == true
-            ax[2, 2][:plot](Matrix(tpath'), color="r")
+            plot!(plots[4], Matrix(tpath'), color=:red, label="")
         end
-        ax[2, 2][:set_title]("Trend Components for Many Paths")
-        ax[2, 2][:axhline](horline, color="k", linestyle = "-.")
+        plot!(plots[4], seriestype=:hline, [horline], color=:black, linestyle =:dash, label="")
+        plot!(plots[4], title="Trend Components for Many Paths")
 
-        return fig
+        return plots
     end
 
     function plot_martingale_paths(T, mpath, mbounds;
-                                   horline = 1, show_trend = false)
+                               horline = 1, show_trend = false)
         # Allocate space
         trange = 1:T
 
-        # Create figure
-        fig, ax = subplots(1, 1, figsize=(10, 6))
+        # Create the plot
+        plt = plot()
 
         # Plot Martingale Component
         ub = mbounds[2, :]
         lb = mbounds[1, :]
-        ax[:fill_between](trange, lb, ub, color="#ffccff")
-        ax[:axhline](horline, color="k", linestyle = "-.")
-        ax[:plot](trange, Matrix(mpath'), linewidth=0.25, color="#4c4c4c")
+        plot!(plt, lb, fill_between=(lb, ub), alpha = 0.25, color=:magenta, label="")
+        plot!(plt, seriestype=:hline, [horline], color=:black, linestyle =:dash, label="")
+        plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color=:black, label="")#, color="#4c4c4c")
 
-        return fig
+        return plt
     end
 
 
@@ -661,9 +653,9 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
 .. _addfunc_egcode:
 
 .. code-block:: julia
-    
-    using Random 
-    Random.seed!(42) # For reproducible results. 
+
+    using Random
+    Random.seed!(42) # For reproducible results.
 
     ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
     σ = 0.01
@@ -686,22 +678,24 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
     T = 150
     x, y = simulate(amf.lss, T)
 
-    fig, ax = subplots(2, 1, figsize = (10, 9))
+    plots=plot(layout=(2,1))
 
-    ax[1][:plot](1:T, y[amf.nx+1, :], color="k")
-    ax[1][:set_title]("A particular path of "*L"$y_t$")
-    ax[2][:plot](1:T, y[1, :], color="g")
-    ax[2][:axhline](0, color="k", linestyle="-.")
-    ax[2][:set_title]("Associated path of "*L"x_t")
+    plot!(plots[1], 1:T, y[amf.nx+1, :], color=:black, lw=2, label="")
+    plot!(plots[1], title= "A particular path of y_t")
+    plot!(plots[2], 1:T, y[1, :], color=:green, lw=2, label="")
+    plot!(plots[2], seriestype=:hline, [0], color=:black, lw=2, linestyle=:dashdot, label="")
+    plot!(plots[2], title="Associated path of x_t")
 
-.. code-block:: julia 
-  :class: test 
+    plot(plots)
 
-  @testset begin 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
     @test y[79] ≈ -0.07268127992877046
     @test y[amf.nx+1, :][19] ≈ 0.09115348523102862
-    @test F == 0.01 && T == 150 # A few constants.  
-  end 
+    @test F == 0.01 && T == 150 # A few constants.
+  end
 
 Notice the irregular but persistent growth in :math:`y_t`
 
@@ -860,7 +854,8 @@ you will generate (modulo randomness) the plot
 
 .. code-block:: julia
 
-    plot_additive(amf, T)
+    plt = plot_additive(amf, T)
+    plt[1]
 
 When we plot multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plot population 95% probability coverage sets computed using the LSS type
 
@@ -916,7 +911,8 @@ If you run :ref:`the code that first simulated that example <addfunc_egcode>` ag
 
 .. code-block:: julia
 
-    plot_multiplicative(amf, T)
+    plt = plot_multiplicative(amf, T)
+    plt[1]
 
 As before, when we plotted multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plotted population 95% confidence bands computed using the LSS type
 
@@ -941,4 +937,5 @@ The following simulation of many paths of :math:`\widetilde M_t` illustrates thi
 
     using Random
     Random.seed!(10021987)
-    plot_martingales(amf, 12000)
+    plt = plot_martingales(amf, 12000)
+    plt[1]

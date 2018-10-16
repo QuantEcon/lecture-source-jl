@@ -10,7 +10,7 @@ Globalization and Cycles
 
 .. contents:: :depth: 2
 
-This lecture is coauthored with `Chase Coleman <https://github.com/cc7768>`__
+Co-authored with Chase Coleman.
 
 Overview
 =====================================
@@ -339,13 +339,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
-    using Plots, PyCall
+    using PyPlot, PyCall
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating

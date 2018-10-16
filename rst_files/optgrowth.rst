@@ -521,7 +521,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    using Plots, QuantEcon, LaTeXStrings
+    using Plots, QuantEcon, LaTeXStrings, Interpolations
 
 .. code-block:: julia
 
@@ -529,7 +529,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   c_grid = 0:.2:1
   f_grid = range(0, stop = 1, length = 150)
 
-  Af = LinInterp(c_grid, f(c_grid))
+  Af = LinearInterpolation(c_grid, f(c_grid))
 
   plt = plot(xlim = (0,1), ylim = (0,6))
   plot!(plt, f_grid, f(f_grid), color = :blue, lw = 2, alpha = 0.8, label = "true function")
@@ -548,12 +548,6 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
 .. code-block:: julia
 
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
-
     using Optim
 
 
@@ -561,7 +555,7 @@ Here's a function that implements the Bellman operator using linear interpolatio
                               compute_policy = false)
 
         # === Apply linear interpolation to w === #
-        w_func = LinInterp(grid, w)
+        w_func = LinearInterpolation(grid, w)
 
         if compute_policy
             σ = similar(w)
@@ -769,6 +763,12 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
   plot!(plt, grid_y, v_star.(grid_y), color=:black, linewidth=2, alpha=0.8, label=lb)
   plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v_star.(grid_y)[2] == -33.370496456772266
+  end
 
 The figure shows
 
@@ -910,6 +910,12 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     plot!(plt, grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
     plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test cstar[102] == 1.2505758978894472
+  end
 
 The figure shows that we've done a good job in this instance of approximating
 the true policy
@@ -943,6 +949,13 @@ We have also dialed down the shocks a bit
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
 
+
+.. code-block:: julia
+  :class: test
+  
+  @testset begin
+    @test shocks[25] == 0.8050318706532391
+  end
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
 
@@ -996,7 +1009,7 @@ Here's one solution (assuming as usual that you've executed everything above)
                                  shocks,
                                  compute_policy = true)
 
-        σ_func = LinInterp(grid_y, σ)
+        σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
         plot!(plt, y, lw=2, alpha=0.6, label=latexstring("\$\\beta=" * string(β) * "\$"))
     end

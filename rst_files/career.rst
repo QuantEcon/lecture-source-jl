@@ -453,6 +453,14 @@ Exercise 1
         ax[:legend](loc="lower right")
     end
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v[10] == 160.0457666508633
+    @test optimal_policy[30] == 3.0
+  end
+
 
 Exercise 2
 ----------

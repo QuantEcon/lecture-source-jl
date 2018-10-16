@@ -1039,12 +1039,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-    =#
-    using QuantEcon, Plots, LinearAlgebra
+    using QuantEcon, Plots, LinearAlgebra, Interpolations
 
     # model parameters
     a_0 = 100
@@ -1132,7 +1127,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     for data_pair in data_pairs
         for data in data_pair
             x, y = data[:, 2], data[:, 1]
-            curve = LinInterp(x, y)
+            curve = LinearInterpolation(x, y, extrapolation_bc = Line())
             push!(egrid_data, curve.(egrid))
         end
     end

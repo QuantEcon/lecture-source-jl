@@ -54,7 +54,7 @@ These are the kinds of topics addressed by linear algebra
 
 In this lecture we will cover the basics of linear and matrix algebra, treating both theory and computation
 
-We admit some overlap with :doc:`this lecture <julia_arrays>`, where operations on Julia arrays were first explained
+We admit some overlap with :doc:`this lecture <fundamental_types>`, where operations on Julia arrays were first explained
 
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
@@ -87,13 +87,6 @@ The following figure represents three vectors in this manner
     using Test # Should put this near the top of every notebook.
 
 .. code-block:: julia
-
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-              Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
 
     using Plots, LaTeXStrings
 
@@ -813,13 +806,6 @@ The answer to both these questions is negative, as the next figure shows
 .. code-block:: julia
   :class: collapse
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-  =#
-
     f(x) = 0.6 * cos(4.0 * x) + 1.3
 
     xmin, xmax = -1.0, 1.0
@@ -1438,10 +1424,6 @@ As we will see, in economic contexts Lagrange multipliers often are shadow price
 
 Solutions
 ===========
-
-
-Thanks to `Willem Hekman <https://qutech.nl/person/willem-hekman/>`__ and Guanlong Ren
-for providing this solution.
 
 Exercise 1
 ----------

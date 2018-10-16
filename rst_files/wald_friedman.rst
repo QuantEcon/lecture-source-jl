@@ -17,9 +17,7 @@
 .. contents:: :depth: 2
 
 
-Co-authors: `Chase Coleman <https://github.com/cc7768>`__
-
-
+Co-authored with Chase Coleman.
 
 Overview
 =========
@@ -185,7 +183,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-  using Distributions, Plots, LaTeXStrings, LinearAlgebra, QuantEcon, Printf
+  using Distributions, Plots, LaTeXStrings, LinearAlgebra, QuantEcon, Printf, Interpolations
 
 
   f0 = pdf.(Ref(Beta(1, 1)), range(0, stop = 1, length = 50))
@@ -459,7 +457,7 @@ Here's the code
         @assert m == length(J)
 
         J_out = zeros(m)
-        J_interp = LinInterp(pgrid, J)
+        J_interp = LinearInterpolation(pgrid, J) # The method from Interpolations.jl
 
         for (p_ind, p) in enumerate(pgrid)
             # Payoff of choosing model 0
@@ -533,12 +531,6 @@ We shall construct two types that
 
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     mutable struct WFSolution{TAV <: AbstractVector, TR<:Real}
         J::TAV
@@ -615,7 +607,7 @@ We shall construct two types that
         m, pgrid = wf.m, wf.pgrid
 
         J_out = similar(J)
-        J_interp = LinInterp(pgrid, J)
+        J_interp = LinearInterpolation(pgrid, J)
 
         for (p_ind, p) in enumerate(pgrid)
             # Payoff of choosing model 0

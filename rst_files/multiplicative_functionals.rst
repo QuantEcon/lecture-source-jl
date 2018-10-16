@@ -13,7 +13,7 @@ Multiplicative Functionals
 
 .. contents:: :depth: 2
 
-**Co-authors: Chase Coleman and Balint Szoke**
+Co-authored with Chase Coleman and Balint Szoke.
 
 Overview
 =========
@@ -106,12 +106,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     using QuantEcon, Distributions
     import Distributions: loglikelihood

@@ -515,11 +515,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-  #=
-  @author : Spencer Lyon
-            Victoria Gregory
-  =#
-
   using Plots, Random
 
   Random.seed!(42)

@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ******************************************
-An Introductory Example
+Introductory Examples
 ******************************************
 
 .. contents:: :depth: 2
@@ -18,11 +18,13 @@ We're now ready to start learning the Julia language itself
 Level
 -------
 
-Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, R, C or similar
+Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, Fortran, C or similar
 
 In particular, we assume you have some familiarity with fundamental programming concepts such as
 
 * variables
+
+* arrays or vectors
 
 * loops
 
@@ -38,6 +40,11 @@ At this stage the objective is to introduce you to basic syntax and data structu
 Deeper concepts---how things work---will be covered in later lectures
 
 Since we are looking for simplicity the examples are a little contrived
+
+.. add as a  note::?
+
+In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is **poor coding style** in Julia, but then move towards more **elegant code** which is tightly connected to the mathematics
+
 
 Set Up
 --------
@@ -63,269 +70,309 @@ Example: Plotting a White Noise Process
 To begin, let's suppose that we want to simulate and plot the white noise
 process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal
 
-In other words, we want to generate figures that look something like this:
+.. Commenting out figure, at least while broken.
+.. In other words, we want to generate figures that look something like this:
+.. .. figure:: /_static/figures/test_program_1.png
+..    :scale: 100%
 
-.. figure:: /_static/figures/test_program_1.png
-   :scale: 100%
+Fire up a :ref:`Jupyter notebook <jl_jupyter>`
 
-This is straightforward using `Plots.jl`, which was discussed in our :doc:`set up lecture <getting_started>`
 
-Fire up a :ref:`Jupyter notebook <jl_jupyter>` and enter the following in a cell
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+Introduction to Packages
+--------------------------
+
+The first step is to activate a project environment
+
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are **in the same location** as your notebook
+
 
 .. code-block:: julia
 
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+    using Pkg; Pkg.activate(@__DIR__); # activate environment in the notebook's location
+
+
+Julia code will often be created from a variety of packages, such as ``Plots.jl`` in this case
+
+A project is defined by a ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument)
+
+We will discuss it more in :ref:`Julia Packages <packages>`, but these files provide a listing of packages and versions used by the code
+
+This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
+
+
+.. _import:
+
+Using Functions from a Package
+--------------------------------
+
+Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution mean 0 and variance 1 if given no parameters
 
 .. code-block:: julia
 
-    using Plots
+    randn()
 
-    ts_length = 100
-    ϵ_values = randn(ts_length)
-    plot(ϵ_values, color = "blue")
+
+Other functions require importing all of the names from an external library
+
+.. code-block:: julia
+
+    using Plots, LinearAlgebra, Statistics
+
+    n = 100
+    ϵ = randn(n)
+    plot(1:n, ϵ)
 
 
 Let's break this down and see how it works
 
-.. _import:
+The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available
 
-Importing Functions
----------------------
+Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files 
 
+The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries, but require an explicit using
 
-The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available in the global scope
+The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings
 
-If you prefer to be more selective you can replace ``using Plots`` with ``using Plots: plot``
-
-Now only the ``plot`` function is accessible
-
-If we wanted to have extended the functionality of ``Plots.plot`` we would have needed to specify this using ``import Plots: plot``
-
-Since our program uses only the plot function from this module, either would have worked in the previous example
+The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution mean 0 and variance 1
 
 Arrays
 --------
 
-The function call ``ϵ_values = randn(ts_length)`` creates one of the
-most fundamental Julia data types: an array
+
+As a language intended for mathematical and scientific computing, Julia has strong support for using symbols in the source code
+
+In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>`` 
+
+The return type is one of the most fundamental Julia data types: an array
 
 
 .. code-block:: julia
 
-    typeof(ϵ_values)
+    typeof(ϵ)
 
 .. code-block:: julia
 
-    ϵ_values
+    ϵ[1:5]
 
-The information from ``typeof()`` tells us that ``ϵ_values`` is an array of 64 bit floating point values, of dimension 1
+The information from ``typeof()`` tells us that ``ϵ`` is an array of 64 bit floating point values, of dimension 1
 
-Julia arrays are quite flexible --- they can store heterogeneous data for example
+In Julia, one-dimensional arrays are interpreted as column vectors for purposes of linear algebra
 
-.. code-block:: julia
-
-    x = [10, "foo", false]
-
-Notice now that the data type is recorded as ``Any``, since the array contains mixed data
-
-The first element of ``x`` is an integer
-
-.. code-block:: julia
-
-    typeof(x[1])
-
-The second is a string
-
-.. code-block:: julia
-
-    typeof(x[2])
-
-The third is the boolean value ``false``
-
-.. code-block:: julia
-
-    typeof(x[3])
+The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ`` 
 
 Notice from the above that
 
-* array indices start at 1 (unlike Python, where arrays are zero-based)
+* array indices start at 1 (like MATLAB and Fortran, but unlike Python and C)
 
 * array elements are referenced using square brackets (unlike MATLAB and Fortran)
 
-Julia contains many functions for acting on arrays --- we'll review them later
-
-For now here's several examples, applied to the same list ``x = [10, "foo", false]``
-
+To get **help and examples** in Jupyter or other julia editor, use the ``?`` before a function name or syntax
 
 .. code-block:: julia
-
-    length(x)
-
-.. code-block:: julia
-
-    pop!(x)
-
-.. code-block:: julia
-
-    x
-
-.. code-block:: julia
-
-    push!(x, "bar")
-
-
-.. code-block:: julia
-
-    x
-
-
-The first example just returns the length of the list
-
-The second, ``pop!()``, pops the last element off the list and returns it
-
-In doing so it changes the list (by dropping the last element)
-
-Because of this we call ``pop!`` a **mutating method**
-
-It's conventional in Julia that mutating methods end in ``!`` to remind the user that the function has other effects beyond just returning a value
-
-The function ``push!()`` is similar, except that it appends its second argument to the array
-
+ 
+    ?typeof
 
 For Loops
 ---------------
 
 Although there's no need in terms of what we wanted to achieve with our
 program, for the sake of learning syntax let's rewrite our program to use a
-``for`` loop
+``for`` loop for generating the data
 
+.. note::
+    
+    In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
+
+Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
 
 .. code-block:: julia
 
-        ts_length = 100
-        ϵ_values = zeros(ts_length)
-        for i ∈ eachindex(ϵ_values)
-            ϵ_values[i] = randn()
+        # poor style 
+        n = 100
+        ϵ = zeros(n)
+        for i in 1:n
+            ϵ[i] = randn()
         end
-        plot(ϵ_values, color = "blue")
-    
 
-Here we first declared ``ϵ_values`` to be an empty array for storing 64 bit floating point numbers
+
+Here we first declared ``ϵ`` to be a vector of ``n`` numbers, initialized by the floating point ``0.0``
 
 The ``for`` loop then populates this array by successive calls to ``randn()``
-
-* Called without an argument, ``randn()`` returns a single float
-
 
 Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``
 
 The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
 
-The expression ``eachindex(ϵ_values)`` creates an **iterator** that is looped over --- in this case the integers from ``1`` to ``ts_length``
+The index variable is looped over for all integers from ``1:n``--but this does not actually create a vector of those indices
 
-Iterators are memory efficient because the elements are generated on the fly rather than stored in memory
+Instead, it creates an **iterator** that is looped over --- in this case the **range** of integers from ``1`` to ``n``
+
+While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear.
+
+To fix this, use ``eachindex``
+
+.. code-block:: julia
+
+        # better style 
+        n = 100
+        ϵ = zeros(n)
+        for i in eachindex(ϵ)
+            ϵ[i] = randn()
+        end
+     
+Here, ``eachindex(ϵ)`` returns an interator of indices which can be used to access ``ϵ``
+
+While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code 
 
 In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-        words = ["foo", "bar"]
-        for word ∈ words
-            println("Hello $word")
+        ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0!
+        m = 5
+        for ϵ_val in ϵ[1:m]
+            ϵ_sum = ϵ_sum + ϵ_val
         end
+        ϵ_mean = ϵ_sum / m
 
+where ``ϵ[1:m]`` returns the elements of the vector at indices ``1`` to ``m``
 
-While Loops
----------------------
-
-The syntax for the while loop contains no surprises
-
+Of course, in Julia there are built in functions to perform this calculation which we can compare against
 
 .. code-block:: julia
 
-        ts_length = 100
-        ϵ_values = zeros(ts_length)
-        i = 1
-        while i ≤ ts_length
-            ϵ_values[i] = randn()
-            i += 1
-        end
-        plot(ϵ_values, color = "blue")
+        ϵ_mean ≈ mean(ϵ[1:m])
+        ϵ_mean ≈ sum(ϵ[1:m])/m
 
+In these examples, note the use of ``≈`` to test equality, rather than ``==``, which is appropriate for integers and other types
 
-The next example does the same thing with a condition and the ``break``
-statement
-
-.. code-block:: julia
-
-        ts_length = 100
-        ϵ_values = Vector(undef, ts_length)
-        i = 1
-        while true
-            ϵ_values[i] = randn()
-            i += 1
-            if i > ts_length
-                break
-            end
-        end
-        return plot(ϵ_values, color = "blue")
-
+Approximately equal, typed with ``\approx<TAB>``, is the appropriate way to compare any floating point numbers due to the standard issues of `floating point math <https://floating-point-gui.de/>`_
 
 .. _user_defined_functions:
 
 User-Defined Functions
 ----------------------------
 
-For the sake of the exercise, let's now go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+For the sake of the exercise, let's define  go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+
+To make things more interesting, instead of directly plotting the draws from the distribution, lets plot the square of the draws
 
 .. code-block:: julia
 
-    function generate_data(n)
-        ϵ_values = zeros(n)
-        for i ∈ eachindex(ϵ_values)
-            ϵ_values[i] = randn()
+    # poor style
+    function generatedata(n)
+        ϵ = zeros(n)
+        for i in eachindex(ϵ)
+            ϵ[i] = (randn())^2 # squaring the result
         end
-        return ϵ_values
+        return ϵ
     end
 
-    data = generate_data(100)
-    plot(data, color = "blue")
+    data = generatedata(10)
+    plot(data)
 
 Here
 
 * ``function`` is a Julia keyword that indicates the start of a function definition
 
-* ``generate_data`` is an arbitrary name for the function
+* ``generatedata`` is an arbitrary name for the function
 
-* ``return`` is a keyword indicating the return value
+* ``return`` is a keyword indicating the return value, as is often unnecessary
 
-A Slightly More Useful Function
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Of course the function ``generate_data`` is completely contrived
-
-We could just write the following and be done
+Let us make this example slightly better by "remembering" that ``randn`` can return a vectors
 
 .. code-block:: julia
 
-        data = randn(100)
-        plot(data, color = "blue")
+    # still poor style
+    function generatedata(n)
+        ϵ = randn(n) # use built in function
 
+        for i in eachindex(ϵ)
+            ϵ[i] = ϵ[i]^2 # squaring the result
+        end
+
+        return ϵ
+    end
+    data = generatedata(5)
+
+While better, the looping over the `i` index to square the results is difficult to read
+
+Instead of looping, we can instead **broadcast** the ``^2`` square function over a vector using a ``.``
+
+To be clear, unlike Python, R, and Matlab (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
+
+Loops of this sort are at least as efficient than vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
+
+Furthermore, we can just drop the ``return`` because functions return the last calculation by default, which leads to
+
+.. code-block:: julia
+
+    # better style
+    function generatedata(n)
+        ϵ = randn(n) # use built in function
+        return ϵ.^2
+     end
+    data = generatedata(5)
+
+We can even drop the ``function`` if we define it on a single line
+
+.. code-block:: julia
+
+    # good style
+    generatedata(n) = randn(n).^2
+    data = generatedata(5)    
+
+Finally, we can broadcast any function, where squaring is only a special case
+    
+.. code-block:: julia
+
+    # good style
+    f(x) = x^2 # simple square function 
+    generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
+    data = generatedata(5)
+
+As a final--abstract--approach, we can make the ``generatedata`` function able to generically apply a function 
+    
+.. code-block:: julia
+
+    # too abstract?
+    generatedata(n, gen) = gen.(randn(n)) # Uses broadcast for some function `gen`
+    
+    f(x) = x^2 # simple square function 
+    data = generatedata(5, f) # applies f
+
+Whether this example is better or worse than the previous version depends on how it is used
+
+High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or confusing, but Julia enables you to use these techniques **with no performance overhead**
+
+For this particular case, the clearest and most general solution is probably the simplest
+
+.. code-block:: julia
+
+    # direct solution with broadcasting, and small user-defined function
+    n = 100    
+    f(x) = x^2
+
+    x = randn(n)
+    plot(f.(x), label = "x^2")
+    plot!(x, label = "x") # layer on the same plot
+
+While broadcasting above superficially looks like vectorizing functions in Matlab, or Python ufuncs, it is much richer and built on core foundations of the language
+
+The other additional function ``plot!`` adds a graph to the existing plot
+
+This follows a general convention in Julia, where an function which modifies the arguments or a global state has a ``!`` at the end of it the name
+
+
+A Slightly More Useful Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Let's make a slightly more useful function
 
 This function will be passed a choice of probability distribution and respond by plotting a histogram of observations
 
-In doing so we'll make use of the Distributions package
-
-The following code installs the Distributions package
-
-.. code-block:: julia
-
-    using Pkg
-    Pkg.add("Distributions")
+In doing so we'll make use of the Distributions package, which we assume was instantiated above with the project
 
 
 Here's the code
@@ -334,15 +381,13 @@ Here's the code
 
     using Distributions
 
-    function plot_histogram(distribution, n)
-        ϵ_values = rand(distribution, n)  # n draws from distribution
-        histogram(ϵ_values)
+    function plothistogram(distribution, n)
+        ϵ = rand(distribution, n)  # n draws from distribution
+        histogram(ϵ)
     end
 
-        lp = Laplace()
-        plot_histogram(lp, 500)
-
-The resulting figure looks like this
+    lp = Laplace()
+    plothistogram(lp, 500)
 
 
 Let's have a casual discussion of how all this works while leaving technical details for later in the lectures
@@ -350,12 +395,12 @@ Let's have a casual discussion of how all this works while leaving technical det
 First, ``lp = Laplace()`` creates an instance of a data type defined
 in the Distributions module that represents the Laplace distribution
 
-The name ``lp`` is bound to this object
+The name ``lp`` is bound to this value
 
-When we make the function call ``plot_histogram(lp, 500)`` the code in the body
-of the function ``plot_histogram`` is run with
+When we make the function call ``plothistogram(lp, 500)`` the code in the body
+of the function ``plothistogram`` is run with
 
-* the name ``distribution`` bound to the same object as ``lp``
+* the name ``distribution`` bound to the same value as ``lp``
 
 * the name ``n`` bound to the integer ``500``
 
@@ -372,22 +417,385 @@ The function ``rand()`` is defined in the base library such that ``rand(n)`` ret
 
     rand(3)
 
-
 On the other hand, ``distribution`` points to a data type representing the Laplace distribution that has been defined in a third party package
 
-So how can it be that ``rand()`` is able to take this kind of object as an
+So how can it be that ``rand()`` is able to take this kind of value as an
 argument and return the output that we want?
 
-The answer in a nutshell is **multiple dispatch**
+The answer in a nutshell is **multiple dispatch**, which Julia uses to implement **generic programming**
 
 This refers to the idea that functions in Julia can have different behavior
 depending on the particular arguments that they're passed
 
-Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of object
+Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value
 
-The interpreter knows which function definition to apply in a given setting by looking at the types of the objects the function is called on
+The compiler knows which function definition to apply in a given setting by looking at the types of the values the function is called on
 
 In Julia these alternative versions of a function are called **methods**
+
+Example: Variations on Fixed-Points
+================================================
+
+For our second example, we will start with a simple example of solving a fixed-points
+
+The goal is to start with code in a matlab style, and move towards a more **Julian** style with high mathematical clarity
+
+Fixed-Point Maps
+----------------------------
+
+Consider the simple equation, where the scalars :math:`p,\beta` are given, and  :math:`v` is the scalar we wish to solve for
+
+.. math::
+
+    v = p + \beta v
+
+Of course, in this simple example, with parameter restrictions this can be solved as :math:`v = p/(1 - \beta)`
+
+Rearrange the equation in terms of a map :math:`f(x) : \mathbb R \to \mathbb R`
+
+.. math::
+    :label: fixed_point_map
+
+    v = f(v)\quad
+
+where
+
+.. math::
+
+    f(v) := p + \beta v\quad
+ 
+
+Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem
+
+While Loops
+---------------------
+
+One approach to finding a fixed point of :eq:`fixed_point_map` is to start with an initial value, and iterate the map
+
+.. math::
+    :label: fixed_point_naive
+
+    v^{n+1} = f(v^n)\quad
+
+For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\beta)` when :math:`|\beta| < 1` by iterating backwards and taking :math:`n\to\infty`
+
+.. math::
+
+    v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^{n-1} \beta^i + \beta^n v_0
+
+To implement the iteration in :eq:`fixed_point_naive`, we start by solving this problem with a ``while`` loop
+
+The syntax for the while loop contains no surprises, and looks nearly identical to a Matlab implementation
+
+.. code-block:: julia
+
+    # poor style
+    p = 1.0 # note 1.0 rather than 1
+    β = 0.9
+    maxiter = 1000
+    tolerance = 1.0E-7
+    v_iv = 0.8 # initial condition
+
+    # setup the algorithm
+    v_old = v_iv
+    normdiff = Inf 
+    iter = 1
+    while normdiff > tolerance && iter <= maxiter
+        v_new = p + β * v_old # the f(v) map
+        normdiff = norm(v_new - v_old)
+        
+        # replace and continue
+        v_old = v_new
+        iter = iter + 1
+    end
+    println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
+
+The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or inside of a function
+
+Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values
+
+The other new function is the ``println`` with the string interpolation, which splices a value of an expression or variable prefixed by ``$`` into a string
+
+An alternative approach is to use a ``for`` loop, and checking for convergence in each iteration
+
+.. code-block:: julia
+
+    # setup the algorithm
+    v_old = v_iv
+    normdiff = Inf 
+    iter = 1
+    for i in 1:maxiter
+        v_new = p + β * v_old # the f(v) map
+        normdiff = norm(v_new - v_old)
+        if normdiff < tolerance # check convergence
+            iter = i
+            break # converged, exit loop
+        end
+        # replace and continue
+        v_old = v_new
+    end
+    println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
+
+The new feature there is ``break`` , which leaves a ``for`` or ``while`` loop
+
+Using a Function
+---------------------
+
+The first problem with this setup is that it depends on being sequently run--which can be easily remedied with a function
+
+.. code-block:: julia
+
+    # better, but still poor style
+    function v_fp(β, ρ, v_iv, tolerance, maxiter)
+        # setup the algorithm
+        v_old = v_iv
+        normdiff = Inf 
+        iter = 1
+        while normdiff > tolerance && iter <= maxiter
+            v_new = p + β * v_old # the f(v) map
+            normdiff = norm(v_new - v_old)
+            
+            #Replace and continue
+            v_old = v_new
+            iter = iter + 1
+        end
+        return (v_old, normdiff, iter) # returns a tuple
+    end    
+
+    # some values
+    p = 1.0 # note 1.0 rather than 1
+    β = 0.9
+    maxiter = 1000
+    tolerance = 1.0E-7
+    v_initial = 0.8 # initial condition
+
+    v_star, normdiff, iter = v_fp(β, p, v_initial, tolerance, maxiter)
+    println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
+
+
+While better, there are still improvements
+
+Passing a Function
+--------------------
+
+The chief issue is that the algorithm (finding a fixed point) is reusable and generic, while the function we calculate ``p + β * v`` is specific to our problem
+
+A key feature of languages like Julia, is the ability to efficiently handle functions passed to other functions
+
+.. code-block:: julia
+
+    # better style
+    function fixedpointmap(f, iv, tolerance, maxiter)
+        # setup the algorithm
+        x_old = iv
+        normdiff = Inf 
+        iter = 1
+        while normdiff > tolerance && iter <= maxiter
+            x_new = f(x_old) # use the passed in map
+            normdiff = norm(x_new - x_old)
+            x_old = x_new
+            iter = iter + 1
+        end
+        return (x_old, normdiff, iter)
+    end    
+
+    # define a map and parameters
+    p = 1.0
+    β = 0.9
+    f(v) = p + β * v # note that p and β are used in the function!
+
+    maxiter = 1000
+    tolerance = 1.0E-7
+    v_initial = 0.8 # initial condition
+
+    v_star, normdiff, iter = fixedpointmap(f, v_initial, tolerance, maxiter)
+    println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
+
+
+Much closer, but there are still hidden bugs if the user orders the settings or return types wrong
+
+Named Arguments and Return Values
+-----------------------------------
+
+To enable this, Julia has two features:  named function parameters, and named tuples
+
+.. code-block:: julia
+
+     # good style
+    function fixedpointmap(f; iv, tolerance = 1E-7, maxiter = 1000)
+        # setup the algorithm
+        x_old = iv
+        normdiff = Inf
+        iter = 1
+        while normdiff > tolerance && iter <= maxiter
+            x_new = f(x_old) # use the passed in map
+            normdiff = norm(x_new - x_old)
+            x_old = x_new
+            iter = iter + 1
+        end
+        return (value = x_old, normdiff = normdiff, iter = iter) # A named tuple
+    end    
+
+    # define a map and parameters
+    p = 1.0
+    β = 0.9
+    f(v) = p + β * v # note that p and β are used in the function!
+
+    sol = fixedpointmap(f, iv = 0.8, tolerance = 1.0E-8) # don't need to pass 
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+
+In this example, all function parameters after the ``;`` in the list, must be called by name
+
+Furthermore, a default value may be enabled--so the named parameter ``iv`` is required while ``tolerance`` and ``maxiter`` have default values
+
+The return type of the function also has named fields, ``value, normdiff,`` and ``iter``--all accessed intuitively using ``.``
+
+To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:``x = f(x)`` where :math:`f(x) := r x (1-x)`
+
+.. code-block:: julia
+
+    r = 2.0
+    f(x) = r * x * (1 - x)
+
+    sol = fixedpointmap(f, iv = 0.8)
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+
+
+Using a Package
+----------------------------
+
+But best of all is to avoid writing code altogether
+
+
+.. code-block:: julia
+
+    # best style
+    using NLsolve
+
+    p = 1.0
+    β = 0.9     
+    f(v) = p .+ β * v # broadcast the +
+    sol = fixedpoint(f, [0.8], inplace = false)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+
+The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed-point iteration scheme above
+
+Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]]``
+
+While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements
+
+In particular, we can use the ``Anderson acceleration`` with a memory of 5 iterations, by changing a setting
+
+.. code-block:: julia
+
+    # best style
+    using NLsolve
+
+    p = 1.0
+    β = 0.9
+    iv = [0.8]
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
+
+Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function
+
+But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
+
+The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
+
+Similar to anonymous functions in Matlab, and lambda functions in Python, Julia enables the creation of small functions without any names
+
+The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(x)``
+
+Composing Packages
+----------------------------
+
+A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source
+
+As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type,
+
+In Julia, this number can be calculated as
+
+.. code-block:: julia
+
+    eps()
+
+
+For many cases, this is sufficient precision--but consider that in iterative algorithms applied millions of times, those small differences can add up
+
+The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value
+
+.. code-block:: julia
+
+    # use arbitrary precision floating points
+    p = 1.0
+    β = 0.9
+    iv = [BigFloat(0.8)] # higher precision
+
+    # otherwise identical
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
+
+The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations, and the solution has a finite-precision solution with those parameters
+
+
+Multivariate Fixed Point Maps
+------------------------------
+
+The above example can be extended to multivariate maps without any modifications to the fixed point iteration code
+
+Using our own, homegrown iteration and simple passing in a bivariate map,
+
+.. code-block:: julia
+
+    p = [1.0, 2.0]
+    β = 0.9
+    iv = [0.8, 2.0]
+    f(v) = p .+ β * v # note that p and β are used in the function!
+
+    sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+
+This also works without any modifications with the ``fixedpoint`` library function
+
+.. code-block:: julia
+
+    using NLsolve
+    
+    p = [1.0, 2.0, 0.1]
+    β = 0.9
+    iv =[0.8, 2.0, 51.0]
+    f(v) = p .+ β * v
+
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
+
+.. code-block:: julia
+
+    using NLsolve, StaticArrays
+    p = @SVector [1.0, 2.0, 0.1]
+    β = 0.9
+    iv = @SVector  [0.8, 2.0, 51.0]
+    f(v) = p .+ β * v
+
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+
+The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
+
+All macros in Julia are prefixed by ``@`` in the name, and manipulate the code prior to compilation
+
+We will see a variety of macros, and discuss the "metaprogramming" behind them in a later lecture
+
+
+.. Composing Packages : Later, add in a auto-differentiation example when working with NLsolve forwarddiff or capstan
 
 
 Exercises
@@ -467,12 +875,12 @@ Simulate and plot the correlated time series
     x_{t+1} = \alpha \, x_t + \epsilon_{t+1}
     \quad \text{where} \quad
     x_0 = 0
-    \quad \text{and} \quad t = 0,\ldots,T
+    \quad \text{and} \quad t = 0,\ldots,n
 
 
 The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
 
-Set :math:`T = 200` and :math:`\alpha = 0.9`
+Set :math:`n = 200` and :math:`\alpha = 0.9`
 
 
 .. _jbe_ex6:
@@ -482,10 +890,74 @@ Exercise 6
 
 Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8` and :math:`\alpha = 0.98`
 
-In particular, you should produce (modulo randomness) a figure that looks as follows
+(The figure will illustrate how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
 
+.. _jbe_ex7:
 
-(The figure illustrates how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
+Exercise 7
+----------------------------------
+This exercise is more challenging
+
+Take a random walk, starting from :math:`x_0 = 1`
+
+.. math::
+
+    x_{t+1} = \, \alpha \, x_t + \sigma\, \epsilon_{t+1}
+    \quad \text{where} \quad
+    x_0 = 1
+    \quad \text{and} \quad t = 0,\ldots,t_{\max}
+
+* Furthermore, assume that the :math:`x_{t_{\max}} = 0`  (i.e. at :math:`t_{\max}`, the value drops to zero, regardless of its current state)
+* The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+* For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`
+
+Start :math:`\sigma = 0.2, \alpha = 1.0`
+
+1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 200` and plot a histogram
+2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
+
+Exercise 8(a)
+---------------
+
+This exercise is more challenging
+
+The root of a univariate function is :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
+
+One solution method to find local roots of smooth functions is called Newton's method
+
+Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
+
+.. math::
+
+    x^{n+1} = x^n - \frac{f(x^n}{f'(x^n)}
+
+until :math:`| x^{n+1} - x^n|` is below a tolerance
+
+#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
+
+#.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
+
+Exercise 8(b)
+---------------
+
+For those impatient to use more advanced features of Julia, implement a version where Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
+
+.. code-block:: julia
+
+    using ForwardDiff
+
+    # operator to get the derivative of this function using AD
+    D(f) = x -> ForwardDiff.derivative(f, x)
+
+    # example usage: create a function and get the derivative
+    f(x) = x^2
+    f_prime = D(f)
+
+    f(0.1), f_prime(0.1)
+    
+#. Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative
+
+#. Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``
 
 
 Solutions
@@ -498,8 +970,8 @@ Exercise 1
 
     function factorial2(n)
         k = 1
-        for i ∈ 1:n
-            k *= i
+        for i in 1:n
+            k *= i  # or k = k * i
         end
         return k
     end
@@ -508,7 +980,7 @@ Exercise 1
 
 .. code-block:: julia
 
-    factorial2(4) == factorial(4)  # Built-in function
+    factorial2(4) == factorial(4) # built-in function
 
 
 Exercise 2
@@ -519,18 +991,18 @@ Exercise 2
     function binomial_rv(n, p)
         count = 0
         U = rand(n)
-        for i ∈ 1:n
+        for i in 1:n
             if U[i] < p
-                count += 1    # Or count = count + 1
+                count += 1 # or count = count + 1
             end
         end
         return count
     end
 
-        for j ∈ 1:25
-            b = binomial_rv(10, 0.5)
-            print("$b, ")
-        end
+    for j in 1:25
+        b = binomial_rv(10, 0.5)
+        print("$b, ")
+    end
 
 Exercise 3
 ----------
@@ -555,9 +1027,9 @@ fraction that fall into the unit circle
 
         n = 1000000
         count = 0
-        for i ∈ 1:n
+        for i in 1:n
             u, v = rand(2)
-            d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # Distance from middle of square
+            d = sqrt((u - 0.5)^2 + (v - 0.5)^2)  # distance from middle of square
             if d < 0.5
                 count += 1
             end
@@ -573,24 +1045,24 @@ Exercise 4
 
 .. code-block:: julia
 
-        payoff = 0
-        count = 0
+    payoff = 0
+    count = 0
 
-        print("Count = ")
+    print("Count = ")
 
-        for i ∈ 1:10
-            U = rand()
-            if U < 0.5
-                count += 1
-            else
-                count = 0
-            end
-            print(count)
-            if count == 3
-                payoff = 1
-            end
+    for i in 1:10
+        U = rand()
+        if U < 0.5
+            count += 1
+        else
+            count = 0
         end
-        println("\npayoff = $payoff")
+        print(count)
+        if count == 3
+            payoff = 1
+        end
+    end
+    println("\npayoff = $payoff")
 
 
 We can simplify this somewhat using the **ternary operator**. Here's
@@ -598,31 +1070,31 @@ some examples
 
 .. code-block:: julia
 
-        a = 1  < 2 ? "foo" : "bar"
+    a = 1  < 2 ? "foo" : "bar"
 
 .. code-block:: julia
 
-        a = 1 > 2 ? "foo" : "bar"
+    a = 1 > 2 ? "foo" : "bar"
 
 
 Using this construction:
 
 .. code-block:: julia
 
-        payoff = 0
-        count = 0
+    payoff = 0.0
+    count = 0.0
 
-        print("Count = ")
+    print("Count = ")
 
-        for i ∈ 1:10
-            U = rand()
-            count = U < 0.5 ? count + 1 : 0
-            print(count)
-            if count == 3
-                payoff = 1
-            end
+    for i in 1:10
+        U = rand()
+        count = U < 0.5 ? count + 1 : 0
+        print(count)
+        if count == 3
+            payoff = 1
         end
-        println("\npayoff = $payoff")
+    end
+    println("\npayoff = $payoff")
 
 
 Exercise 5
@@ -632,14 +1104,14 @@ Here's one solution
 
 .. code-block:: julia
 
-        α = 0.9
-        T = 200
-        x = zeros(T + 1)
+    α = 0.9
+    n = 200
+    x = zeros(n + 1)
 
-        for t ∈ 1:T
-            x[t+1] = α * x[t] + randn()
-        end
-        return plot(x, color = "blue")
+    for t in 1:n
+        x[t+1] = α * x[t] + randn()
+    end
+    plot(x)
 
 
 Exercise 6
@@ -647,20 +1119,49 @@ Exercise 6
 
 .. code-block:: julia
 
-        αs = [0.0, 0.8, 0.98]
-        T = 200
+    αs = [0.0, 0.8, 0.98]
+    n = 200
+    p = plot() #Naming a plot to add to
 
-        series = []
-        labels = []
-
-        for α ∈ αs
-            x = zeros(T + 1)
-            x[1] = 0
-            for t ∈ 1:T
-                x[t+1] = α * x[t] + randn()
-            end
-            push!(series, x)
-            push!(labels, "α = $α")
+    for α in αs
+        x = zeros(n + 1)
+        x[1] = 0.0
+        for t in 1:n
+            x[t+1] = α * x[t] + randn()
         end
+        plot!(p, x, label = "alpha = $α") # add to plot p
+    end
+    p # display plot
 
-        plot(series, label = reshape(labels, 1, length(labels)))
+Exercise 7: Hint
+-----------------
+
+As a hint, notice the following pattern for finding the number of draws of a uniform random number until below a given threshold
+
+.. code-block:: julia
+
+    function drawsuntilthreshold(threshold; maxdraws=100)
+        for i in 1:maxdraws
+            val = rand()
+            if val < threshold # checks threshold
+                return i # leaves function, returning draw number
+            end
+        end
+        return Inf # if here, reached maxdraws
+    end
+
+    draws = drawsuntilthreshold(0.2, maxdraws=100)
+
+Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly
+
+.. code-block:: julia
+
+    vals = zeros(0) # empty vector
+
+    for i in 1:100
+        val = rand()
+        if val < 0.5
+            push!(vals, val)
+        end
+    end
+    println("There were $(length(vals)) below 0.5")

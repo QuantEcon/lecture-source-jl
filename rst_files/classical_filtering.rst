@@ -563,12 +563,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia 
 
-  #=
-
-  Author: Shunsuke Hori
-
-  =#
-
   using Polynomials, LinearAlgebra
 
   struct LQFilter{TF_ <: Union{Vector{Float64},Nothing}, TI_ <: Union{Int,Nothing}}

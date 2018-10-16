@@ -326,11 +326,6 @@ Here's a function that can be used to compute these values
 
 .. code-block:: julia 
 
-    #=
-
-    Authors: Shunsuke Hori
-
-    =#
     using LinearAlgebra 
 
     function price_single_beliefs(transition::AbstractMatrix, dividend_payoff::AbstractVector;

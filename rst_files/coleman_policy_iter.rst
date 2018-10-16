@@ -420,13 +420,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
-    using QuantEcon
+    using QuantEcon, Interpolations
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -434,7 +428,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         # This function requires the container of the output value as argument Kg
 
         # Construct linear interpolation object #
-        g_func = LinInterp(grid, g)
+        g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
 
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
@@ -461,19 +455,13 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 .. code-block:: julia
     :class: collapse
 
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
-
     using Optim
 
     function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
         # === Apply linear interpolation to w === #
-        w_func = LinInterp(grid, w)
+        w_func = LinearInterpolation(grid, w, extrapolation_bc=Line())
 
         if compute_policy
             σ = similar(w)
@@ -509,12 +497,6 @@ solution
 Here's a struct containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter

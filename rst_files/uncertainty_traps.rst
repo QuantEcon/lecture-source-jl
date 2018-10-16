@@ -240,8 +240,8 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   using Test
 
@@ -442,10 +442,11 @@ different values of :math:`M`
     M_range = 0:6
     γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
 
-    p1 = plot(x=repeat(collect(γ), outer=[length(M_range)+1]),
-         y=vec([γ γp]),
-         color=repeat(["45 Degree"; map(string, M_range)], inner=[length(γ)]),
-         Geom.line, Guide.colorkey(title="M"), Guide.xlabel("γ"), Guide.ylabel("γ'"))
+    labels = ["0", "1", "2", "3", "4", "5", "6"]
+
+    plot(γ,γ, lw=2, label = "45 Degree")
+    plot!(γ, γp, lw=2, label=labels)
+    plot!(xlabel="Gamma", ylabel="Gamma'", legend_title="M", legend=:bottomright)
 
 .. code-block:: julia
   :class: test
@@ -454,6 +455,7 @@ different values of :math:`M`
       @test γp[2,2] ≈ 0.46450522950184053
       @test γp[3,3] ≈ 0.8323524432613787
       @test γp[5,5] ≈ 1.3779664509290432
+  end
 
 The points where the curves hit the 45 degree lines are the long run
 steady states corresponding to each :math:`M`, if that value of
@@ -514,10 +516,9 @@ simulations
     Random.seed!(42)  # set random seed for reproducible results
     μ_vec, γ_vec, θ_vec, X_vec, M_vec = simulate(econ)
 
-    p2 = plot(x=repeat(collect(1:length(μ_vec)), outer=[2]),
-         y=[μ_vec; θ_vec],
-         color=repeat(["μ", "θ"], inner=[length(μ_vec)]),
-         Geom.line, Guide.colorkey(title="Variable"))
+    plot(1:length(μ_vec), μ_vec, lw=2, label="Mu")
+    plot!(1:length(θ_vec), θ_vec, lw=2, label="Theta")
+    plot!(xlabel="x", ylabel="y", legend_title="Variable", legend=:bottomright)
 
 .. code-block:: julia
   :class: test
@@ -533,10 +534,18 @@ Now let's plot the whole thing together
 .. code-block:: julia
 
     mdf = DataFrame(t=1:length(θ_vec), θ=θ_vec, μ=μ_vec, γ=γ_vec, M=M_vec)
-    p3 = plot(stack(mdf, collect(2:5)), x="t",
-         ygroup="variable",
-         y="value",
-         Geom.subplot_grid(Geom.line, free_y_axis=true))
+
+    len = 1:length(θ_vec)
+    yvals = [θ_vec, μ_vec, γ_vec, M_vec]
+    vars = ["Theta", "Mu", "Gamma", "M"]
+
+    plt = plot(layout = (4,1), size=(600,600))
+
+    for i = 1:4
+        plot!(plt[i], len, yvals[i], xlabel="t", ylabel=vars[i], label="")
+    end
+
+    plot(plt)
 
 .. code-block:: julia
   :class: test

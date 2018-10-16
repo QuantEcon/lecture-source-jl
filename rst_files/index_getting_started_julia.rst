@@ -3,26 +3,22 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 *********************************
-Programming in Julia
+Getting Started with Julia
 *********************************
 
-This first part of the course provides a relatively fast-paced introduction to the Julia programming language
+This first part of the course provides a relatively fast-paced introduction to enough of the Julia programming language to understand the lectures
 
 
 .. only:: html
 
     Lectures
     ********
-
-
 .. toctree::
     :maxdepth: 2
 
     getting_started
     julia_by_example
     julia_essentials
-    julia_arrays
-    types_methods
-    need_for_speed
-    julia_plots
-    julia_libraries
+    fundamental_types
+    introduction_to_types
+

@@ -493,12 +493,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-  =#
   using Distributions, LaTeXStrings, Plots, QuantEcon, Random
   Random.seed!(42) # For deterministic results.
 

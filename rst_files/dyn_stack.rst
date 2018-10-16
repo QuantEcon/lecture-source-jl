@@ -914,12 +914,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Victoria Gregory
-
-    =#
-
     using QuantEcon, Roots, LinearAlgebra
 
     struct Oligopoly{TF<:AbstractFloat}

@@ -14,7 +14,7 @@
 .. contents:: :depth: 2
 
 
-**Co-author: Chase Coleman**
+Co-authored with Chase Coleman.
 
 Overview
 ============
@@ -57,6 +57,7 @@ The model will prove useful for illustrating concepts such as
 * ergodicity
 
 * ensemble moments and cross section observations
+
 
 
 Setup
@@ -132,6 +133,7 @@ In the Barro tax smoothing model
 * a government faces an exogenous sequence of government purchases (net of  interest payments on its debt)
 
 * a government wants to smooth tax collections across states and time
+
 
 
 If we set
@@ -252,6 +254,7 @@ Under an optimal decision rule :math:`F`, the state vector :math:`x_t` evolves a
 Mapping into the LQ framework
 --------------------------------
 
+
 To map into the LQ framework, we'll use
 
 .. math::
@@ -339,6 +342,8 @@ First we create the objects for the optimal linear regulator
 
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
+    using Test
+
 .. code-block:: julia
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
@@ -383,6 +388,13 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     # the Bewley economy.
     mxbewley = mxo
     sxbewley = sxo
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test sxbewley[6] == 5.263157894733971
+  end
 
 
 The next step is to create the matrices for the LQ system
@@ -431,6 +443,12 @@ employing an alternative solution method
     P, F, d = stationary_values(LQPI)    #  Compute value function and decision rule
     ABF = ALQ - BLQ * F                  #  Form closed loop system
 
+.. code-block:: julia
+    :class: test
+
+    @testset "First Plot Tests" begin
+        @test ABF[4,2] == -0.6896550772889927
+    end
 
 Comparison with the difference equation approach
 --------------------------------------------------------------
@@ -603,19 +621,21 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         xvals = 1:T
 
         # Plot consumption and income
-        plt_1 = plot(csim[1,:], label="c", color=:blue, lw=2)
-        plot!(plt_1, ysim[1, :], label="y", color=:green, lw=2)
-        plot!(plt_1, csim', alpha=0.1, color=:blue, label="")
-        plot!(plt_1, ysim', alpha=0.1, color=:green, label="")
-        plot!(plt_1, title="Nonfinancial Income, Consumption, and Debt",
-              xlabel="t", ylabel="y and c",legend=:bottomright)
+        ax[1][:plot](csim[1, :], label="c", color="b")
+        ax[1][:plot](ysim[1, :], label="y", color="g")
+        ax[1][:plot](csim', alpha=.1, color="b")
+        ax[1][:plot](ysim', alpha=.1, color="g")
+        ax[1][:legend](loc=4)
+        ax[1][:set](title="Nonfinancial Income, Consumption, and Debt",
+                    xlabel="t", ylabel="y and c")
 
         # Plot debt
-        plt_2 = plot(bsim[1,: ], label="b", color=:red, lw=2)
-        plot!(plt_2, bsim', alpha=0.1, color=:red,label="")
-        plot!(plt_2, xlabel="t", ylabel="debt",legend=:bottomright)
+        ax[2][:plot](bsim[1, :], label="b", color="r")
+        ax[2][:plot](bsim', alpha=.1, color="r")
+        ax[2][:legend](loc=4)
+        ax[2][:set](xlabel="t", ylabel="debt")
 
-        plot(plt_1, plt_2, layout=(2,1), size=(800,600))
+        fig[:tight_layout]
     end
 
     function consumption_debt_fanchart(csim, cons_mean, cons_var,
@@ -644,6 +664,24 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         #fig[:suptitle]("Consumption/Debt over time")
 
         # Consumption fan
+        ax[1][:plot](xvals, cons_mean, color="k")
+        ax[1][:plot](xvals, csim', color="k", alpha=.25)
+        ax[1][:fill_between](xvals, c_perc_95m, c_perc_95p, alpha=.25, color="b")
+        ax[1][:fill_between](xvals, c_perc_90m, c_perc_90p, alpha=.25, color="r")
+        ax[1][:set](title="Consumption/Debt over time",
+                    ylim=(cmean-15, cmean+15), ylabel="consumption")
+
+        # Debt fan
+        ax[2][:plot](xvals, debt_mean, color="k")
+        ax[2][:plot](xvals, bsim', color="k", alpha=.25)
+        ax[2][:fill_between](xvals, d_perc_95m, d_perc_95p, alpha=.25, color="b")
+        ax[2][:fill_between](xvals, d_perc_90m, d_perc_90p, alpha=.25, color="r")
+        ax[2][:set](ylabel="debt", xlabel="t")
+
+        fig[:tight_layout]
+    end
+
+
         plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
         plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
         plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
@@ -671,6 +709,8 @@ Now let's create figures with initial conditions of zero for :math:`y_0` and :ma
 
     consumption_income_debt_figure(bsim0, csim0, ysim0)
 
+
+
 .. code-block:: julia
 
     consumption_debt_fanchart(csim0, cons_mean0, cons_var0,
@@ -689,6 +729,7 @@ Recall from  the :doc:`previous lecture <perm_income>` that we can represent the
     :label: old12
 
     (1-\beta) b_t + c_t = (1-\beta) E_t \sum_{j=0}^\infty \beta^j y_{t+j}
+
 
 So at time :math:`0` we have
 
@@ -800,6 +841,7 @@ Let's have a look at the corresponding figures
     cons_meanb, cons_varb, debt_meanb, debt_varb = out[4:end]
 
     consumption_income_debt_figure(bsimb, csimb, ysimb)
+
 
 
 .. code-block:: julia

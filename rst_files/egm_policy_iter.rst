@@ -153,12 +153,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Authors: Shunsuke Hori
-
-    =#
-
     function coleman_egm(g, k_grid, β, u_prime, u_prime_inv, f, f_prime, shocks)
 
         # Allocate memory for value of consumption on endogenous grid points
@@ -174,7 +168,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         y = k_grid + c  # y_i = k_i + c_i
 
         # Update policy function and return
-        Kg = LinInterp(y,c)
+        Kg = LinearInterpolation(y,c, extrapolation_bc=Line())
         Kg_f(x) = Kg(x)
         return Kg_f
     end
@@ -188,13 +182,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
 .. code-block:: julia
     :class: collapse
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
-    using QuantEcon
+    using QuantEcon, Interpolations
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -202,7 +190,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
         # This function requires the container of the output value as argument Kg
 
         # Construct linear interpolation object #
-        g_func = LinInterp(grid, g)
+        g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
 
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
@@ -241,12 +229,6 @@ As we :doc:`did for value function iteration <optgrowth>` and :doc:`time iterati
 The first step is to bring in the model that we used in the :doc:`Coleman policy function iteration <coleman_policy_iter>`
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
@@ -382,7 +364,7 @@ In fact it's easy to see that the difference is essentially zero:
   :class: test
 
   @testset "Discrepancy Test" begin
-    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 2.369331983805674e-7 # Check that the error is the same as it was before.
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 4.440892098500626e-16 # Check that the error is the same as it was before.
     @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) < 1e-5 # Test that the error is objectively very small.
   end
 

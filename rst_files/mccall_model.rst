@@ -659,6 +659,4 @@ Here's one solution
 .. code-block:: julia
     :class: test
 
-    @testset "Solution 1 Tests" begin
         # Just eyeball the plot pending undeprecation and rewrite.
-    end

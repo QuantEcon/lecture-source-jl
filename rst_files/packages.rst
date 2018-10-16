@@ -1,4 +1,4 @@
-.. _julia_libraries:
+.. _packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
@@ -23,11 +23,6 @@ As a result, most Julia libraries are written exclusively in Julia
 Not only does this make the libraries more portable, it makes them much easier to dive into, read, learn from and modify
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics
-
-
-Credits: Thanks to `@cc7768 <https://github.com/cc7768>`_, `@vgregory757 <https://github.com/vgregory757>`_ and `@spencerlyon2 <https://github.com/sglyon>`_ for keeping us up to date with current best practice
-
-
 
 Distributions
 =====================

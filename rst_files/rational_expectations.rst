@@ -668,11 +668,6 @@ Compare your results with the previous exercise.  Comment.
 Solutions
 ==========
 
-
-
-The following solutions were put together by Chase Coleman, Spencer
-Lyon, Thomas Sargent and John Stachurski
-
 Exercise 1
 ----------
 
@@ -792,6 +787,14 @@ Here's our solution
     @printf("F = [%.3f, %.3f, %.3f]\n", F[1], F[2], F[3])
     @printf("(h0, h1, h2) = [%.3f, %.3f, %.3f]\n", h0, h1, h2)
 
+.. code-block:: julia
+  :class: test
+  
+  @testset begin
+    @test F[1] == 0.07347294403502992
+    @test F[2] == -73.47294403502833
+    @test h0 == 96.94871794872053
+  end
 
 The implication is that
 
@@ -857,6 +860,12 @@ The following code implements this test
         end
     end
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test h0 == 96.94871794872053
+  end
 
 The output tells us that the answer is pair (iii), which implies
 :math:`(h_0, h_1, h_2) = (95.0819, 1.0000, -.0475)`
@@ -984,7 +993,12 @@ The problem can be solved as follows
     m0, m1 = -F[2], 1 - F[1]
     println("m0=$m0\tm1=$m1")
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+    @test m0 == 73.47294403502833
+  end
 
 We see that the law of motion for the monopolist is approximately
 :math:`Y_{t+1} = 73.4729 + 0.9265 Y_t`
