@@ -1,4 +1,5 @@
-using Pkg
-Pkg.activate(@__DIR__); #Activate project local to notebook
-pkg"instantiate; precompile"
-pkg"st"
+# Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+using InstantiateFromURL
+activate_github("QuantEcon/QuantEconLecturePackages")
+using LinearAlgebra, Statistics, Compat

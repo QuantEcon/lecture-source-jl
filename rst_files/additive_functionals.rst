@@ -19,6 +19,14 @@ Co-authored with Chase Coleman and Balint Szoke.
 Overview
 =============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Some time series are nonstationary
 
 For example, output, prices, and dividends are typically nonstationary, due to irregular but persistent growth
@@ -207,12 +215,6 @@ When simulating we embed our variables into a bigger system
 This system also constructs the components of the decompositions of :math:`y_t` and of :math:`\exp(y_t)` proposed by Hansen and Scheinkman :cite:`Hans_Scheink_2009`
 
 All of these objects are computed using the code below
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
   :class: test 
