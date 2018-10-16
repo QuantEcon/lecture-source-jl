@@ -426,12 +426,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @authors : Spencer Lyon <spencer.lyon@nyu.edu>, John Stachurski
-
-    =#
-
     using QuantEcon, Distributions, Interpolations
 
     """
