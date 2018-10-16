@@ -88,13 +88,6 @@ The following figure represents three vectors in this manner
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-              Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
-
     using Plots, LaTeXStrings
 
     vecs = ([2, 4], [-3, 3], [-4, -3.5])
@@ -813,13 +806,6 @@ The answer to both these questions is negative, as the next figure shows
 .. code-block:: julia
   :class: collapse
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-  =#
-
     f(x) = 0.6 * cos(4.0 * x) + 1.3
 
     xmin, xmax = -1.0, 1.0
@@ -1438,10 +1424,6 @@ As we will see, in economic contexts Lagrange multipliers often are shadow price
 
 Solutions
 ===========
-
-
-Thanks to `Willem Hekman <https://qutech.nl/person/willem-hekman/>`__ and Guanlong Ren
-for providing this solution.
 
 Exercise 1
 ----------
