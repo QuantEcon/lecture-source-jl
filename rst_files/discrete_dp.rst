@@ -64,10 +64,6 @@ We use dynamic programming many applied lectures, such as
 
 The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case
 
-
-The code discussed below was authored primarily by `Daisuke Oyama <https://github.com/oyamad>`_
-
-
 References
 ------------
 
@@ -771,9 +767,6 @@ The exercise is to replicate this solution using ``DiscreteDP``
 
 Solutions
 ==========
-
-Written jointly with `Diasuke Oyama <https://github.com/oyamad>`__ and
-`Max Huber <https://github.com/MaximilianJHuber>`__
 
 Setup
 -----
