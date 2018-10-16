@@ -669,12 +669,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia 
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
     using QuantEcon
     using Roots
     using Plots
