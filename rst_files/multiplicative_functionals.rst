@@ -107,12 +107,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     using QuantEcon, Distributions
     import Distributions: loglikelihood
 
