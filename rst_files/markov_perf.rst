@@ -465,12 +465,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @authors: Shunsuke Hori
-
-    =#
-
     using QuantEcon, LinearAlgebra
 
     # == Parameters == #
