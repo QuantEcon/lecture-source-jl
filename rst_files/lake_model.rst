@@ -224,13 +224,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @author : Victoria Gregory, John Stachurski
-
-    =#
-
-
     struct LakeModel{TF <: AbstractFloat}
         λ::TF
         α::TF
