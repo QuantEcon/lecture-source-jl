@@ -12,13 +12,6 @@ Plotting in Julia
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 Since it's inception, plotting in Julia has been a mix of happiness and frustration
 
@@ -89,6 +82,12 @@ Matplotlib has a straightforward plotting API that essentially replicates the pl
 These plotting routines can be expressed in Julia with almost identical syntax
 
 Here's an example
+
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
 

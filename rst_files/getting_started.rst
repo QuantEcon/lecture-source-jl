@@ -11,14 +11,6 @@ Setting up Your Julia Environment
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In this lecture we will cover how to get up and running with Julia
 
 Topics:
@@ -96,6 +88,12 @@ commands
 (Here ``ls`` is a UNIX style command that lists directory contents --- your shell commands depend on your operating system)
 
 Below we'll often show interactions with the interpreter as follows
+
+Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+
+.. code-block:: julia
+
+    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
 
