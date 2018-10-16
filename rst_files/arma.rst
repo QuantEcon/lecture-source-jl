@@ -13,6 +13,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we study covariance stationary linear stochastic processes, a
 class of models routinely used to study economic and financial time series
 
@@ -210,12 +218,6 @@ Applying :eq:`ma_inf_ac` to the previous expression for :math:`X_t`, we get the 
     \qquad k = 0, 1, \ldots
 
 The next figure plots an example of this function for :math:`\phi = 0.8` and :math:`\phi = -0.8` with :math:`\sigma = 1`
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test
@@ -427,6 +429,8 @@ As we will see, this can be interpreted as meaning that "all frequencies are equ
 Example 2: :index:`AR` and :index:`MA` and :index:`ARMA`
 ---------------------------------------------------------
 
+.. _ar1_acov::
+
 It is an exercise to show that the MA(1) process :math:`X_t = \theta \epsilon_{t-1} + \epsilon_t` has spectral density
 
 .. math::
@@ -476,7 +480,7 @@ Plotting :eq:`ar1_sd_ed` reveals the shape of the spectral density for the AR(1)
 
     ar1_sd(ϕ, ω) = 1 ./ (1 .- 2 * ϕ * cos.(ω) .+ ϕ.^2)
 
-    ω_s = range(0, stop = π, length = 180)
+    ω_s = range(0, π, length = 180)
 
     plt_1=plot()
     plt_2=plot()

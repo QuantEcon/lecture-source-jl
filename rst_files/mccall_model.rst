@@ -23,6 +23,14 @@ Job Search I: The McCall Search Model
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 The McCall search model :cite:`McCall1970` helped transform economists' way of thinking about labor markets
 
@@ -302,12 +310,6 @@ Implementation
 
 Let's start with some imports
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: test
 
@@ -325,7 +327,7 @@ Here's the distribution of wage offers we'll work with
 
     n, a, b = 50, 200, 100
     w_min, w_max = 10, 60
-    const w_vals = range(w_min, stop = w_max, length = n+1)
+    const w_vals = range(w_min,  w_max, length = n+1)
     dist = BetaBinomial(n, a, b)
     const p_vals = pdf.(Ref(dist), support(dist))
 
@@ -441,8 +443,8 @@ In particular, let's look at what happens when we change :math:`\beta` and
     grid_size = 25
     R = rand(Float64, (grid_size, grid_size))
 
-    c_vals = range(10.0, stop = 30.0, length = grid_size)
-    β_vals = range(0.9, stop = 0.99, length = grid_size)
+    c_vals = range(10.0,  30.0, length = grid_size)
+    β_vals = range(0.9,  0.99, length = grid_size)
 
     for (i, c) in enumerate(c_vals)
         for (j, β) in enumerate(β_vals)
@@ -644,7 +646,7 @@ Here's one solution
     compute_mean_stopping_time(w_bar, num_reps=10000) =
         mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
 
-    c_vals = range(10, stop = 40, length = 25)
+    c_vals = range(10,  40, length = 25)
     stop_times = similar(c_vals)
 
     for (i, c) in enumerate(c_vals)

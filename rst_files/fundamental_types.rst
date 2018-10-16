@@ -19,6 +19,14 @@ Arrays, Tuples, Ranges, and Other Fundamental Types
 Overview
 ============================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In Julia, arrays and tuples are the most important data type sfor working with numerical data
 
 In this lecture we give more details on

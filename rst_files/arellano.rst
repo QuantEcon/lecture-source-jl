@@ -13,6 +13,14 @@ Default Risk and Income Fluctuations
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture computes versions of  Arellano's  :cite:`arellano2008default` model of sovereign default
 
 The model describes interactions among default risk, output,  and  an equilibrium interest rate  that includes a premium for endogenous default risk
@@ -297,8 +305,6 @@ We'll use our code to replicate Arellano's results
 
 After that we'll perform some additional simulations
 
-The majority of the code below was written by `Chase Coleman <https://github.com/cc7768>`_
-
 It uses a slightly modified version of the algorithm recommended by Arellano
 
 * The appendix to :cite:`arellano2008default` recommends
@@ -331,12 +337,6 @@ The output process is discretized using `Tauchen's quadrature method <https://gi
 The code can be found below:
 
 (Results and discussion follow the code)
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test
@@ -383,7 +383,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                               nB::Integer = 251) where TF<:AbstractFloat
 
         # Create grids
-        Bgrid = collect(range(-.4, stop = .4, length = nB))
+        Bgrid = collect(range(-.4, .4, length = nB))
         mc = tauchen(ny, ρ, η)
         Π = mc.p
         ygrid = exp.(mc.state_values)

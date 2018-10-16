@@ -11,6 +11,14 @@ Optimal Taxation with State-Contingent Debt
 Overview
 =========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture describes a celebrated model of optimal fiscal policy by Robert E.
 Lucas, Jr., and Nancy Stokey  :cite:`LucasStokey1983`
 
@@ -683,12 +691,6 @@ Sequence Implementation
 
 The above steps are implemented in a type called `SequentialAllocation`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
   :class: test 
 
@@ -1323,7 +1325,7 @@ The above steps are implemented in a type called `RecursiveAllocation`
       policies = [cf, nf, xprimef]
       # Create xgrid
       xbar = [maximum(minimum(x, dims = 1)), minimum(maximum(x, dims = 1))]
-      xgrid = range(xbar[1], stop = xbar[2], length = length(μgrid0))
+      xgrid = range(xbar[1],  xbar[2], length = length(μgrid0))
       # Now iterate on bellman equation
       T = BellmanEquation(model, xgrid, policies)
       diff = 1.0
@@ -1679,7 +1681,7 @@ above)
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
 
-    B_vec = range(-1.5, stop = 1.0, length = 100)
+    B_vec = range(-1.5,  1.0, length = 100)
     taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...)')
     interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
 
@@ -1819,7 +1821,7 @@ The figure below plots a sample path of the Ramsey tax rate
     Random.seed!(42) # For reproducible results. 
 
     M1 = log_utility()
-    μ_grid = range(-0.6, stop = 0.0, length = 200)
+    μ_grid = range(-0.6,  0.0, length = 200)
     PP_seq = SequentialAllocation(M1)         # Solve sequential problem
     PP_bel = RecursiveAllocation(M1, μ_grid)  # Solve recursive problem
 

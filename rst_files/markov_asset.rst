@@ -27,6 +27,14 @@
 Overview
 =====================================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 .. index::
     single: Markov Asset Pricing; Overview
 
@@ -320,13 +328,9 @@ The next figure shows a simulation, where
 
 * :math:`g_t = \exp(X_t)`, so that :math:`\ln g_t = X_t` is the growth rate
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
 .. code-block:: julia
 
     using Test
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
     using QuantEcon, Plots, LaTeXStrings, Random
     Random.seed!(42) # For reproducible results.
@@ -583,13 +587,6 @@ the type `AssetPriceModel`
 
 
 .. code-block:: julia
-
-    #=
-
-    @authors: Spencer Lyon, Tom Sargent, John Stachurski
-
-    =#
-
 
     # A default Markov chain for the state process
     ρ = 0.9

@@ -14,10 +14,18 @@ Additive Functionals
 .. contents:: :depth: 2
 
 
-**Co-authors: Chase Coleman and Balint Szoke**
+Co-authored with Chase Coleman and Balint Szoke. 
 
 Overview
 =============
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Some time series are nonstationary
 
@@ -208,12 +216,6 @@ This system also constructs the components of the decompositions of :math:`y_t` 
 
 All of these objects are computed using the code below
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
   :class: test 
 
@@ -221,11 +223,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
     using QuantEcon, Plots, Distributions, LinearAlgebra
 
     struct AMF_LSS_VAR

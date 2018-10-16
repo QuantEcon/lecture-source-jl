@@ -16,6 +16,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we study optimal fiscal policy in a linear quadratic setting
 
 We slightly modify a well-known model of Robert Lucas and Nancy Stokey :cite:`LucasStokey1983` so that convenient formulas for
@@ -564,12 +572,6 @@ The following code provides functions for
 
 Description and clarifications are given below
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -577,11 +579,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-    =#
     using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
 
     abstract type AbstractStochProcess end

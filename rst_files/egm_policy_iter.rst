@@ -14,6 +14,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 We solved the stochastic optimal growth model using
 
 #. :doc:`value function iteration <optgrowth>`
@@ -140,24 +148,12 @@ The Operator
 
 Here's an implementation of :math:`K` using EGM as described above
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    Authors: Shunsuke Hori
-
-    =#
 
     function coleman_egm(g, k_grid, β, u_prime, u_prime_inv, f, f_prime, shocks)
 
@@ -187,12 +183,6 @@ We'll also run our original implementation, which uses an exogenous grid and req
 
 .. code-block:: julia
     :class: collapse
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     using QuantEcon, Interpolations
 
@@ -242,12 +232,6 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
         β::TF              # Discount factor
@@ -278,7 +262,7 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
                     f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
+        grid = collect(range(grid_min, grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)

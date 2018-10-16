@@ -16,6 +16,14 @@ A First Look at the Kalman Filter
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture provides a simple and intuitive introduction to the Kalman filter, for those who either
 
 * have heard of the Kalman filter but don't know how it works, or
@@ -88,12 +96,6 @@ where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
 
 This density :math:`p(x)` is shown below as a contour map, with the center of the red ellipse being equal to :math:`\hat x`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
     :class: test 
 
@@ -102,12 +104,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
   :class: collapse
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-  =#
   using Plots, LaTeXStrings, LinearAlgebra
 
 
@@ -147,8 +143,8 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   y = [2.3, -1.9]
 
   # == Set up grid for plotting == #
-  x_grid = range(-1.5, stop = 2.9, length = 100)
-  y_grid = range(-3.1, stop = 1.7, length = 100)
+  x_grid = range(-1.5, 2.9, length = 100)
+  y_grid = range(-3.1, 1.7, length = 100)
   X = repeat(x_grid', length(y_grid), 1)
   Y = repeat(y_grid, 1, length(y_grid))
 
@@ -688,7 +684,7 @@ Exercise 1
     # == Run == #
 
     N = 5
-    xgrid = range(θ - 5, stop = θ + 2, length = 200)
+    xgrid = range(θ - 5, θ + 2, length = 200)
     densities = []
     labels = []
     for i ∈ 1:N

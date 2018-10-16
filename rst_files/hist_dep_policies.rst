@@ -15,6 +15,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture describes history-dependent public policies and some of their representations
 
 History dependent policies are decision rules that depend on the entire past history of the state variables
@@ -661,20 +669,8 @@ We'll discuss how to compute :math:`\mu` :ref:`below <sec:computing_mu>` but fir
 
 We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95, 100]` and compute the Ramsey plan with the following piece of code
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
     using QuantEcon
     using Roots
     using Plots

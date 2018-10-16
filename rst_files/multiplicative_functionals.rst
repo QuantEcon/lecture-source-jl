@@ -13,10 +13,18 @@ Multiplicative Functionals
 
 .. contents:: :depth: 2
 
-**Co-authors: Chase Coleman and Balint Szoke**
+Co-authored with Chase Coleman and Balint Szoke.
 
 Overview
 =========
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 This lecture is a sequel to the :doc:`lecture on additive functionals <additive_functionals>`
 
@@ -94,24 +102,12 @@ Let's write a program to simulate sample paths of :math:`\{ x_t, y_{t} \}_{t=0}^
 
 We'll do this by formulating the additive functional as a linear state space model and putting the `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ struct to work
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     using QuantEcon, Distributions
     import Distributions: loglikelihood
@@ -380,7 +376,7 @@ Let's also plot the conditional pdf of :math:`\Delta y_{t+1}`
 
 .. code-block:: julia
 
-    xgrid = range(-1, stop = 1, length = 100)
+    xgrid = range(-1,  1, length = 100)
     println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
     plot(xgrid, pdf.(normdist, xgrid), label="")
     plot!(title="Conditional pdf f(Delta y_(t+1) | x_t)")
@@ -695,7 +691,7 @@ Here is some code that tackles these tasks
 
         # The distribution
         mdist = LogNormal(-t * H2 / 2, sqrt(t * H2))
-        x = range(xmin, stop = xmax, length = npts)
+        x = range(xmin,  xmax, length = npts)
         p = pdf.(Ref(mdist), x)
 
         return x, p
@@ -710,7 +706,7 @@ Here is some code that tackles these tasks
 
         # The distribution
         lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
-        x = range(xmin, stop = xmax, length = npts)
+        x = range(xmin,  xmax, length = npts)
         p = pdf.(Ref(lmdist), x)
 
         return x, p

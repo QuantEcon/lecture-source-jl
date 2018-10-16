@@ -14,6 +14,14 @@ Markov Perfect Equilibrium
 Overview
 ==========================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 .. index::
     single: Markov Perfect Equilibrium; Overview
 
@@ -452,24 +460,12 @@ Consider the previously presented duopoly model with parameter values of:
 
 From these we compute the infinite horizon MPE using the following code
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: test
 
     using Test
 
 .. code-block:: julia
-
-    #=
-
-    @authors: Shunsuke Hori
-
-    =#
 
     using QuantEcon, LinearAlgebra
 

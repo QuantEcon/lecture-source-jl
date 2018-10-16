@@ -546,7 +546,7 @@ Calls to this function run very quickly
 
 .. code-block:: julia
 
-    x = range(0, stop = 1, length = Int(1e6))
+    x = range(0,  1, length = Int(1e6))
     x = collect(x)
     typeof(x)
 

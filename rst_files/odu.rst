@@ -13,6 +13,15 @@ Job Search III: Search with Learning
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 In this lecture we consider an extension of the :doc:`previously studied <mccall_model>` job search model of McCall :cite:`McCall1970`
 
 In the McCall model, an unemployed worker decides when to accept a permanent position at a specified wage, given
@@ -162,12 +171,6 @@ Following  section 6.6 of :cite:`Ljungqvist2012`, our baseline parameterization 
 
 With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following shape
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -179,7 +182,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   using Plots
 
   w_max = 2
-  x = range(0, stop = w_max, length = 200)
+  x = range(0,  w_max, length = 200)
 
   G = Beta(3, 1.6)
   F = Beta(1, 1)
@@ -227,12 +230,6 @@ The code is as follows
 
 .. code-block:: julia
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-  =#
-
   using QuantEcon, Interpolations
 
   struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
@@ -270,8 +267,8 @@ The code is as follows
       π_min = 1e-3  # avoids instability
       π_max = 1 - π_min
 
-      w_grid = range(0, stop = w_max, length = w_grid_size)
-      π_grid = range(π_min, stop = π_max, length = π_grid_size)
+      w_grid = range(0,  w_max, length = w_grid_size)
+      π_grid = range(π_min,  π_max, length = π_grid_size)
 
       nodes, weights = qnwlege(21, 0.0, w_max)
 
@@ -386,8 +383,8 @@ Here's the value function:
 
   function plot_value_function(;w_plot_grid_size = 100,
                               π_plot_grid_size = 100)
-    π_plot_grid = range(0.001, stop = 0.99, length =  π_plot_grid_size)
-    w_plot_grid = range(0, stop = sp.w_max, length = w_plot_grid_size)
+    π_plot_grid = range(0.001,  0.99, length =  π_plot_grid_size)
+    w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
     Z = [vf[w_plot_grid[j], π_plot_grid[i]]
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
@@ -398,6 +395,7 @@ Here's the value function:
 
   plot_value_function()
 
+.. _odu_pol_vfi:: 
 
 The optimal policy:
 
@@ -405,8 +403,8 @@ The optimal policy:
 
   function plot_policy_function(;w_plot_grid_size = 100,
                                 π_plot_grid_size = 100)
-      π_plot_grid = range(0.001, stop = 0.99, length = π_plot_grid_size)
-      w_plot_grid = range(0, stop = sp.w_max, length = w_plot_grid_size)
+      π_plot_grid = range(0.001,  0.99, length = π_plot_grid_size)
+      w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
       Z = [pf[w_plot_grid[j], π_plot_grid[i]]
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
       p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, size=(400, 400), c=:coolwarm)

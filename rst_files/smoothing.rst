@@ -19,6 +19,14 @@ Consumption and Tax Smoothing with Complete and Incomplete Markets
 Overview
 ========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture describes two types of consumption-smoothing  and tax-smoothing models
 
 * one is in the **complete markets** tradition of Lucas and Stokey :cite:`LucasStokey1983`
@@ -371,12 +379,6 @@ Code
 Here's some code that, among other things, contains a function called `consumption_complete()`
 
 This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes given a set of parameters, under the assumption of complete markets
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

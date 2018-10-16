@@ -14,6 +14,15 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 In this lecture we're going to study a simple optimal growth model with one agent
 
 The model is a version of the standard one sector infinite horizon growth model studied in
@@ -508,12 +517,6 @@ What's important here is that the function approximation scheme must not only pr
 
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -527,7 +530,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
   f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
   c_grid = 0:.2:1
-  f_grid = range(0, stop = 1, length = 150)
+  f_grid = range(0,  1, length = 150)
 
   Af = LinearInterpolation(c_grid, f(c_grid))
 
@@ -547,12 +550,6 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
 
 .. code-block:: julia
-
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
 
     using Optim
 
@@ -697,7 +694,7 @@ We need a grid and some shock draws for Monte Carlo integration
     grid_size = 200      # Number of grid points
     shock_size = 250     # Number of shock draws in Monte Carlo integral
 
-    grid_y = collect(range(1e-5, stop = grid_max, length = grid_size))
+    grid_y = collect(range(1e-5,  grid_max, length = grid_size))
     shocks = exp.(μ .+ s * randn(shock_size))
 
 

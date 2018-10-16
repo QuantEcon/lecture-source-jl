@@ -13,6 +13,14 @@
 Overview
 =============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Markov chains are one of the most useful classes of stochastic processes, being
 
 * simple, flexible and supported by many elegant theoretical results
@@ -237,12 +245,6 @@ The Markov chain is then constructed as discussed above.  To repeat:
 In order to implement this simulation procedure, we need a method for generating draws from a discrete distributions
 
 For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

@@ -16,6 +16,14 @@ LQ Dynamic Programming Problems
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Linear quadratic (LQ) control refers to a class of dynamic optimization problems that have found applications in almost every scientific field
 
 This lecture provides an introduction to LQ control and its economic applications
@@ -680,12 +688,6 @@ The following figure was computed using :math:`r = 0.05, \beta = 1 / (1
 + r), \bar c = 2,  \mu = 1, \sigma = 0.25, T = 45` and :math:`q = 10^6`
 
 The shocks :math:`\{w_t\}` were taken to be iid and standard normal
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

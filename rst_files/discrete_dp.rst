@@ -13,6 +13,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we discuss a family of dynamic programming problems with the following features:
 
 #. a discrete state space and discrete choices (actions)
@@ -63,10 +71,6 @@ We use dynamic programming many applied lectures, such as
 * The :doc:`optimal growth lecture <optgrowth>`
 
 The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case
-
-
-The code discussed below was authored primarily by `Daisuke Oyama <https://github.com/oyamad>`_
-
 
 References
 ------------
@@ -521,12 +525,6 @@ Note:
 
 The following code sets up these objects for us
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -772,9 +770,6 @@ The exercise is to replicate this solution using ``DiscreteDP``
 Solutions
 ==========
 
-Written jointly with `Diasuke Oyama <https://github.com/oyamad>`__ and
-`Max Huber <https://github.com/MaximilianJHuber>`__
-
 Setup
 -----
 
@@ -799,7 +794,7 @@ model above. We discretize the state space into a grid of size
 
     grid_max = 2
     grid_size = 500
-    grid = range(1e-6, stop = grid_max, length = grid_size)
+    grid = range(1e-6, grid_max, length = grid_size)
 
 
 We choose the action to be the amount of capital to save for the next

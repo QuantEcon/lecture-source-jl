@@ -14,6 +14,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we'll continue our :doc:`earlier study <optgrowth>` of the stochastic optimal growth model
 
 In that lecture we solved the associated discounted dynamic programming problem using value function iteration
@@ -407,24 +415,12 @@ The Operator
 
 Here's some code that implements the Coleman operator
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     using QuantEcon, Interpolations
 
@@ -460,12 +456,6 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
 .. code-block:: julia
     :class: collapse
-
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
 
     using Optim
 
@@ -510,12 +500,6 @@ Here's a struct containing data from the log-linear growth model we used in the 
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
         β::TF              # Discount factor
@@ -546,7 +530,7 @@ Here's a struct containing data from the log-linear growth model we used in the 
                     f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
+        grid = collect(range(grid_min, grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)

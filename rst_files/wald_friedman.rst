@@ -17,12 +17,19 @@
 .. contents:: :depth: 2
 
 
-Co-authors: `Chase Coleman <https://github.com/cc7768>`__
-
-
+Co-authored with Chase Coleman.
 
 Overview
 =========
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 This lecture describes a statistical decision problem encountered  by Milton Friedman and W. Allen Wallis during World War II when they were analysts at the U.S. Government's  Statistical Research Group at Columbia University
 
@@ -171,13 +178,6 @@ The next figure shows two discretized beta distributions in the top panel
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-
 .. code-block:: julia
     :class: test
 
@@ -188,9 +188,9 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   using Distributions, Plots, LaTeXStrings, LinearAlgebra, QuantEcon, Printf, Interpolations
 
 
-  f0 = pdf.(Ref(Beta(1, 1)), range(0, stop = 1, length = 50))
+  f0 = pdf.(Ref(Beta(1, 1)), range(0,  1, length = 50))
   f0 = f0 / sum(f0)
-  f1 = pdf.(Ref(Beta(9, 9)), range(0, stop = 1, length = 50))
+  f1 = pdf.(Ref(Beta(9, 9)), range(0,  1, length = 50))
   f1 = f1 / sum(f1)  # Make sure sums to 1
 
   a = plot([f0 f1],
@@ -476,14 +476,14 @@ Here's the code
     # Create two distributions over 50 values for k
     # We are using a discretized beta distribution
 
-    p_m1 = range(0, stop = 1, length = 50)
+    p_m1 = range(0,  1, length = 50)
     f0 = clamp.(pdf.(Ref(Beta(1, 1)), p_m1), 1e-8, Inf)
     f0 = f0 / sum(f0)
     f1 = clamp.(pdf.(Ref(Beta(9, 9)), p_m1), 1e-8, Inf)
     f1 = f1 / sum(f1)
 
     # To solve
-    pg = range(0, stop = 1, length = 251)
+    pg = range(0,  1, length = 251)
     J1 = compute_fixed_point(x -> bellman_operator(pg, 0.5, f0, f1, 5.0, 5.0, x),
         zeros(length(pg)), err_tol = 1e-6, print_skip = 5);
 
@@ -534,12 +534,6 @@ We shall construct two types that
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     mutable struct WFSolution{TAV <: AbstractVector, TR<:Real}
         J::TAV
         lb::TR
@@ -562,7 +556,7 @@ We shall construct two types that
 
     function WaldFriedman(c, L0, L1, f0, f1; m = 25)
 
-        pgrid = range(0.0, stop = 1.0, length = m)
+        pgrid = range(0.0,  1.0, length = m)
 
         # Renormalize distributions so nothing is "too" small
         f0 = clamp.(f0, 1e-8, 1-1e-8)
@@ -729,7 +723,7 @@ Now let's use our type to solve Bellman equation :eq:`new1` and verify that it g
     # Create two distributions over 50 values for k
     # We are using a discretized beta distribution
 
-    p_m1 = range(0, stop = 1, length = 50)
+    p_m1 = range(0,  1, length = 50)
     f0 = clamp.(pdf.(Ref(Beta(1, 1)), p_m1), 1e-8, Inf)
     f0 = f0 / sum(f0)
     f1 = clamp.(pdf.(Ref(Beta(9, 9)), p_m1), 1e-8, Inf)
@@ -768,9 +762,9 @@ We'll start with the following parameterization
 
   function analysis_plot(;c = 1.25, L0 = 27.0, L1 = 27.0, a0 = 2.5, b0 = 2.0,
                          a1 = 2.0, b1 = 2.5, m = 251)
-      f0 = pdf.(Ref(Beta(a0, b0)), range(0, stop = 1, length = m))
+      f0 = pdf.(Ref(Beta(a0, b0)), range(0,  1, length = m))
       f0 = f0 / sum(f0)
-      f1 = pdf.(Ref(Beta(a1, b1)), range(0, stop = 1, length = m))
+      f1 = pdf.(Ref(Beta(a1, b1)), range(0,  1, length = m))
       f1 = f1 / sum(f1)  # Make sure sums to 1
 
       # Create an instance of our WaldFriedman class

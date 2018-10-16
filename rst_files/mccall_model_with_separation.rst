@@ -17,6 +17,13 @@ Job Search II: Search and Separation
 Overview
 ===============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Previously :doc:`we looked <mccall_model>` at the McCall job search model :cite:`McCall1970` as a way of understanding unemployment and worker decisions
 
@@ -221,12 +228,6 @@ This helps to tidy up the code and provides an object that's easy to pass to fun
 
 The default utility function is a CRRA utility function
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: test
 
@@ -372,7 +373,7 @@ Use
 .. code-block:: julia
 
 	grid_size = 25
-	γ_vals = range(0.05, stop = 0.95, length = grid_size)
+	γ_vals = range(0.05,  0.95, length = grid_size)
 
 
 Interpret your results
@@ -391,7 +392,7 @@ we can create an array for reservation wages for different values of :math:`c`,
 .. code-block:: julia
 
     grid_size = 25
-    c_vals = range(2, stop = 12, length = grid_size)
+    c_vals = range(2,  12, length = grid_size)
     w_bar_vals = similar(c_vals)
 
     mcm = McCallModel()
@@ -428,7 +429,7 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 .. code-block:: julia
 
     grid_size = 25
-    γ_vals = range(0.05, stop = 0.95, length = grid_size)
+    γ_vals = range(0.05,  0.95, length = grid_size)
     w_bar_vals = similar(γ_vals)
 
     mcm = McCallModel()

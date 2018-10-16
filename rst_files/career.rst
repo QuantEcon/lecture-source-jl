@@ -18,6 +18,14 @@ Job Search IV: Modeling Career Choice
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Next we study a computational problem concerning career and job choices
 
 The model is originally due to Derek Neal :cite:`Neal1999`
@@ -140,11 +148,8 @@ Nice properties:
 
 Here's a figure showing the effect of different shape parameters when :math:`n=50`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+.. _beta-binom:: 
 
 .. code-block:: julia
   :class: test
@@ -204,7 +209,7 @@ The code for solving the DP problem described above is found below:
                                F_b = 1.0,
                                G_a = 1.0,
                                G_b = 1.0)
-      θ = range(0, stop = B, length = N)
+      θ = range(0, B, length = N)
       ϵ = copy(θ)
       dist_F = BetaBinomial(N-1, F_a, F_b)
       dist_G = BetaBinomial(N-1, G_a, G_b)
