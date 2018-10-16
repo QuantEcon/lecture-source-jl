@@ -21,6 +21,17 @@ Topics:
 * More on user-defined functions
 * Comparisons and logic
 
+Setup
+------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+
+.. code-block:: julia
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Common Data Types
 ======================
@@ -37,13 +48,6 @@ Let's learn a bit more about them
 
 Primitive Data Types
 -------------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 
 A particularly simple data type is a Boolean value, which can be either ``true`` or
 ``false``
@@ -1328,11 +1332,9 @@ Let's test it
 .. code-block:: julia
 
     using Plots
-
-
-.. code-block:: julia
-
-    x_grid = range(-1, stop = 1, length = 100)
+    gr(fmt=:png)
+    
+    x_grid = range(-1.0, 1.0, length = 100)
     y_vals = f_ex5.(x_grid)
     y = g_ex5.(x_grid)
     plot(x_grid, y_vals, label = "true")

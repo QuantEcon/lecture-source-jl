@@ -51,7 +51,7 @@ Set Up
 
 We assume that you've worked your way through :doc:`our getting started lecture <getting_started>` already
 
-For this lecture, we recommend that you work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
+In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon notes is to go ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
 
 Other References
@@ -82,24 +82,34 @@ Fire up a :ref:`Jupyter notebook <jl_jupyter>`
 Introduction to Packages
 --------------------------
 
-The first step is to activate a project environment
+The first step is to activate a project environment, which are encapsulated by ``Project.toml`` and ``Manifest.toml`` files
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are **in the same location** as your notebook
+There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
 
+#. directly ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
+#. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
+#. use the ``InstantiateFromURL`` package
 
 .. code-block:: julia
 
-    using Pkg; Pkg.activate(@__DIR__); # activate environment in the notebook's location
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
 
+If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
 
-Julia code will often be created from a variety of packages, such as ``Plots.jl`` in this case
-
-A project is defined by a ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument)
+This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_ 
 
 We will discuss it more in :ref:`Julia Packages <packages>`, but these files provide a listing of packages and versions used by the code
 
 This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
+The careful selection of package versions is crucial for reproducibility, as otherwise your code can be broken by changes to packages out of your control
+
+After the installation and activation, ``using`` provides a way to say that a particular code or notebook will use the package
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
 
 .. _import:
 
@@ -114,11 +124,12 @@ Some functions are built into the base Julia, such as ``randn``, which returns a
 
 
 Other functions require importing all of the names from an external library
-
+ 
 .. code-block:: julia
 
-    using Plots, LinearAlgebra, Statistics
-
+    using Plots
+    gr(fmt=:png) # setting for easier display in jupyter notebooks
+ 
     n = 100
     ϵ = randn(n)
     plot(1:n, ϵ)
@@ -690,8 +701,6 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
 .. code-block:: julia
 
     # best style
-    using NLsolve
-
     p = 1.0
     β = 0.9
     iv = [0.8]

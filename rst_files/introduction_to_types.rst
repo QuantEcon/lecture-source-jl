@@ -21,18 +21,22 @@ In this lecture we give more details on
 
 * motivation for generic programming
 
+Setup
+------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Finding and Interpreting Types
 ================================
 
 Finding The Type
 --------------------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-    using LinearAlgebra, Statistics
 
 As we have seen in the previous lectures, in Julia all values have a type, which can be queried using the ``typeof`` function
 

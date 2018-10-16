@@ -35,6 +35,18 @@ In this lecture we give more details on
 
 * nothing, missing, and unions
 
+Setup
+------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+
+.. code-block:: julia
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Array Basics
 ================
 
@@ -46,14 +58,6 @@ Later, we will see how arrays (and all other types in Julia) are handled in a ge
 
 Shape and Dimension
 ----------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-    using LinearAlgebra, Statistics
-
 
 We've already seen some Julia arrays in action
 
@@ -444,7 +448,6 @@ As an example, consider creating a diagonal matrix
 
 .. code-block:: julia
 
-    using LinearAlgebra
     d = [1.0, 2.0]
     a = Diagonal(d)
 
@@ -975,9 +978,12 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maxval = 1.0
     minval = 0.0
     numpoints = 10
-    a = range(minval, stop=maxval, length=numpoints)
-    # a = range(minval, maxval, length=numpoints) # supported soon...
+    a = range(minval, maxval, length=numpoints) # or range(minval, stop=maxval, length=numpoints)
+
     maximum(a) == maxval
+
+
+For the ``range(minval, maxval, length=numpoints)`` notation, until the release of Julia v1.1, you will need to have the ``using Compat`` in the header, as we do above
 
 Tuples and Named Tuples
 =========================
