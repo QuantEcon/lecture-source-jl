@@ -178,12 +178,6 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-  =#
-
   using Distributions, QuantEcon
 
   # NOTE: only brute-force approach is available in bellman operator.
