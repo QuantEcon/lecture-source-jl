@@ -38,6 +38,6 @@ Here are some functions that create two-dimensional arrays
 Sparse
 
 
-.. _more_types:
+.. _more_types:__
 
 

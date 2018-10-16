@@ -142,6 +142,8 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
+.. beta-binom:: 
+
 .. code-block:: julia
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location

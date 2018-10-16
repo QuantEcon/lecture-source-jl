@@ -392,6 +392,7 @@ Here's the value function:
 
   plot_value_function()
 
+.. odu_pol_vfi:: 
 
 The optimal policy:
 
