@@ -10,7 +10,7 @@ Globalization and Cycles
 
 .. contents:: :depth: 2
 
-This lecture is coauthored with `Chase Coleman <https://github.com/cc7768>`__
+Co-authored with Chase Coleman.
 
 Overview
 =====================================

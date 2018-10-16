@@ -14,7 +14,7 @@ Additive Functionals
 .. contents:: :depth: 2
 
 
-**Co-authors: Chase Coleman and Balint Szoke**
+Co-authored with Chase Coleman and Balint Szoke. 
 
 Overview
 =============
