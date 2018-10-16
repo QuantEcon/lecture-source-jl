@@ -548,12 +548,6 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
 .. code-block:: julia
 
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
-
     using Optim
 
 
