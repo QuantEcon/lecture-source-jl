@@ -12,6 +12,15 @@ Uncertainty Traps
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 In this lecture we study a simplified version of an uncertainty traps model of Fajgelbaum, Schaal and Taschereau-Dumouchel :cite:`fun`
 
 The model features self-reinforcing uncertainty that has big impacts on economic activity
@@ -233,12 +242,6 @@ The method to evaluate the number of active firms generates :math:`F_1,
 \ldots, F_{\bar M}` and tests condition :eq:`firm_test` for each firm
 
 The function `UncertaintyTrapEcon` encodes as default values the parameters we'll use in the simulations below
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

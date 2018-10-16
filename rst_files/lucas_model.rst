@@ -19,6 +19,15 @@ Asset Pricing II: The Lucas Asset Pricing Model
 Overview
 =====================================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 As stated in an :doc:`earlier lecture <markov_asset>`, an asset is a claim on a stream of prospective payments
 
 What is the correct price to pay for such a claim?
@@ -412,12 +421,6 @@ Let's try this when :math:`\ln y_{t+1} = \alpha \ln y_t + \sigma \epsilon_{t+1}`
 Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, where :math:`\gamma > 0` is the coefficient of relative risk aversion
 
 Some code to implement the iterative computational procedure can be found below:
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

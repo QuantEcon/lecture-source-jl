@@ -16,6 +16,15 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 This lecture introduces the concept of *rational expectations equilibrium*
 
 To illustrate it, we describe a linear quadratic version of a famous and important model
@@ -670,12 +679,6 @@ Solutions
 
 Exercise 1
 ----------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

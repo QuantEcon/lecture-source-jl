@@ -19,6 +19,15 @@ Co-authored with Chase Coleman.
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 This lecture continues our analysis of the linear-quadratic (LQ) permanent income model of savings and consumption
 
 As we saw in our :doc:`previous lecture <perm_income>` on this topic, Robert Hall :cite:`Hall1978` used the LQ permanent income model to restrict and interpret intertemporal comovements of nondurable consumption, nonfinancial income, and financial wealth
@@ -339,14 +348,6 @@ The exogenous noinfinancial income process
 -------------------------------------------
 
 First we create the objects for the optimal linear regulator
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-    using Test
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

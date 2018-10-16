@@ -11,6 +11,13 @@ Useful Libraries
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
@@ -79,12 +86,6 @@ Although data can be heterogeneous within a ``DataFrame``, the contents of the c
 This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) or, more loosely, a spreadsheet in Excel
 
 Here's an example
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
 

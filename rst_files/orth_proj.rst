@@ -18,6 +18,14 @@ Orthogonal Projections and Their Applications
 Overview
 ===========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Orthogonal projection is a cornerstone of vector space methods, with many diverse applications
 
 These include, but are not limited to,
@@ -846,12 +854,6 @@ Exercise 3
 
 Here's a function that computes the orthonormal vectors using the GS
 algorithm given in the lecture.
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: Test 

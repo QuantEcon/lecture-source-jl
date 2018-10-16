@@ -219,8 +219,6 @@ Applying :eq:`ma_inf_ac` to the previous expression for :math:`X_t`, we get the 
 
 The next figure plots an example of this function for :math:`\phi = 0.8` and :math:`\phi = -0.8` with :math:`\sigma = 1`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
 .. code-block:: julia
   :class: test
 

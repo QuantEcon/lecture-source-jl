@@ -16,6 +16,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In a :doc:`previous lecture <finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models
 
 The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains
@@ -479,12 +487,6 @@ Example
 ---------------
 
 The following code is example of usage for the stochastic growth model :ref:`described above <solow_swan>`
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

@@ -16,6 +16,15 @@ Robustness
 Overview
 ===========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 .. index::
     single: Bellman Equation
 
@@ -1024,12 +1033,6 @@ We compute value-entropy correspondences for two policies
 #. A "moderate" concern for robustness policy :math:`F_b`, with :math:`\theta = 0.02`
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

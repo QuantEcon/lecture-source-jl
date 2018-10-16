@@ -23,6 +23,14 @@ Job Search I: The McCall Search Model
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 The McCall search model :cite:`McCall1970` helped transform economists' way of thinking about labor markets
 
@@ -301,12 +309,6 @@ Implementation
 ----------------
 
 Let's start with some imports
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

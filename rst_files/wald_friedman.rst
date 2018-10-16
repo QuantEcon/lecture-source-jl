@@ -22,6 +22,15 @@ Co-authored with Chase Coleman.
 Overview
 =========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 This lecture describes a statistical decision problem encountered  by Milton Friedman and W. Allen Wallis during World War II when they were analysts at the U.S. Government's  Statistical Research Group at Columbia University
 
 This problem led Abraham Wald :cite:`Wald47` to formulate **sequential analysis**, an approach to statistical decision problems intimately related to dynamic programming
@@ -168,13 +177,6 @@ We'll discretize this distribution to make it more straightforward to work with
 The next figure shows two discretized beta distributions in the top panel
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 
 .. code-block:: julia
     :class: test

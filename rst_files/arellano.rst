@@ -338,8 +338,6 @@ The code can be found below:
 
 (Results and discussion follow the code)
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
 .. code-block:: julia
     :class: test
 

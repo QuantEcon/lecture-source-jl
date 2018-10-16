@@ -148,7 +148,6 @@ Nice properties:
 
 Here's a figure showing the effect of different shape parameters when :math:`n=50`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
 .. _beta-binom:: 
 

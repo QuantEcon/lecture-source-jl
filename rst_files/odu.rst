@@ -13,6 +13,15 @@ Job Search III: Search with Learning
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 In this lecture we consider an extension of the :doc:`previously studied <mccall_model>` job search model of McCall :cite:`McCall1970`
 
 In the McCall model, an unemployed worker decides when to accept a permanent position at a specified wage, given
@@ -161,12 +170,6 @@ Following  section 6.6 of :cite:`Ljungqvist2012`, our baseline parameterization 
 * :math:`\beta = 0.95` and :math:`c = 0.6`
 
 With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following shape
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test
