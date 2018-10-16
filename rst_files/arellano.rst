@@ -297,8 +297,6 @@ We'll use our code to replicate Arellano's results
 
 After that we'll perform some additional simulations
 
-The majority of the code below was written by `Chase Coleman <https://github.com/cc7768>`_
-
 It uses a slightly modified version of the algorithm recommended by Arellano
 
 * The appendix to :cite:`arellano2008default` recommends
