@@ -14,6 +14,14 @@ Linear Algebra
 Overview
 ===========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Linear algebra is one of the most useful branches of applied mathematics for economists to invest in
 
 For example, many applied problems in economics and finance require the solution of a linear system of equations, such as
@@ -272,12 +280,6 @@ The expression :math:`\| x - y\|` is thought of as the distance between :math:`x
 
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
 

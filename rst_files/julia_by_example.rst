@@ -82,15 +82,13 @@ Fire up a :ref:`Jupyter notebook <jl_jupyter>`
 Introduction to Packages
 --------------------------
 
-The first step is to activate a project environment
+The first step is to activate a project environment. Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are **in the same location** as your notebook
+.. code-block:: julia 
 
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); # activate environment in the notebook's location
-
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Julia code will often be created from a variety of packages, such as ``Plots.jl`` in this case
 

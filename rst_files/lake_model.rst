@@ -16,6 +16,14 @@ A Lake Model of Employment and Unemployment
 Overview
 ===============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture describes what has come to be called a *lake model*
 
 The lake model is a basic tool for modeling unemployment
@@ -209,13 +217,6 @@ Implementation
 Let's code up these equations
 
 Here's the code:
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 
 .. code-block:: julia
   :class: test

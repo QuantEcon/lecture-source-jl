@@ -16,6 +16,14 @@ A First Look at the Kalman Filter
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture provides a simple and intuitive introduction to the Kalman filter, for those who either
 
 * have heard of the Kalman filter but don't know how it works, or
@@ -87,12 +95,6 @@ where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
 
 
 This density :math:`p(x)` is shown below as a contour map, with the center of the red ellipse being equal to :math:`\hat x`
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
     :class: test 

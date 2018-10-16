@@ -16,6 +16,14 @@ Estimation of :index:`Spectra`
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In a :ref:`previous lecture <arma>` we covered some fundamental properties of covariance stationary linear stochastic processes
 
 One objective for that lecture was to introduce spectral densities --- a standard and very useful technique for analyzing such processes
@@ -206,12 +214,6 @@ Here's a code snippet that, once the preceding code has been run, generates data
     X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}
 
 where :math:`\{ \epsilon_t \}` is white noise with unit variance, and compares the periodogram to the actual spectral density
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

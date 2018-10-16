@@ -14,6 +14,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we'll continue our :doc:`earlier study <optgrowth>` of the stochastic optimal growth model
 
 In that lecture we solved the associated discounted dynamic programming problem using value function iteration
@@ -406,12 +414,6 @@ The Operator
 
 
 Here's some code that implements the Coleman operator
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

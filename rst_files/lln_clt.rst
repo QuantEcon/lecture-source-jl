@@ -19,6 +19,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture illustrates two of the most important theorems of probability and statistics: The
 law of large numbers (LLN) and the central limit theorem (CLT)
 
@@ -211,12 +219,6 @@ It shows IID observations from three different distributions and plots :math:`\b
 The dots represent the underlying observations :math:`X_i` for :math:`i = 1, \ldots, 100`
 
 In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occurs as predicted
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
     :class: test 

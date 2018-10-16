@@ -13,6 +13,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Next we study an optimal savings problem for an infinitely lived consumer---the "common ancestor" described in :cite:`Ljungqvist2012`, section 1.3
 
 This is an essential sub-problem for many representative macroeconomic models
@@ -390,12 +398,6 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 * a ``coleman_operator`` function, which implements the Coleman operator :math:`K` specified above
 
 * an ``initialize``, which generates suitable initial conditions for iteration
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

@@ -19,6 +19,14 @@ Arrays, Tuples, Ranges, and Other Fundamental Types
 Overview
 ============================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In Julia, arrays and tuples are the most important data type sfor working with numerical data
 
 In this lecture we give more details on
@@ -46,14 +54,6 @@ Later, we will see how arrays (and all other types in Julia) are handled in a ge
 
 Shape and Dimension
 ----------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-    using LinearAlgebra, Statistics
-
 
 We've already seen some Julia arrays in action
 

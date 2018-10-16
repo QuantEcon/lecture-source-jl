@@ -18,6 +18,14 @@ Job Search IV: Modeling Career Choice
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Next we study a computational problem concerning career and job choices
 
 The model is originally due to Derek Neal :cite:`Neal1999`
@@ -143,10 +151,6 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
 .. _beta-binom:: 
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

@@ -18,6 +18,14 @@ Asset Pricing III:  Incomplete Markets
 Overview
 =========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture describes a version of a model of Harrison and Kreps :cite:`HarrKreps1978`
 
 The model determines the price of a dividend-yielding asset that is traded by two types of self-interested investors
@@ -110,12 +118,6 @@ Investors of  type :math:`b` think the transition matrix is
 
 
 The stationary (i.e., invariant) distributions of these two matrices can be calculated as follows:
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
   :class: test 

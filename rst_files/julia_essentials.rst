@@ -14,6 +14,14 @@ of the essential features of the language
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Topics:
 
 * Common data types
@@ -37,13 +45,6 @@ Let's learn a bit more about them
 
 Primitive Data Types
 -------------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 
 A particularly simple data type is a Boolean value, which can be either ``true`` or
 ``false``

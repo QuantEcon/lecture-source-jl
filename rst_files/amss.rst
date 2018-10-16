@@ -12,6 +12,14 @@ Optimal Taxation without State-Contingent Debt
 Overview
 ==========
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In :doc:`an earlier lecture <opt_tax_recur>` we described a model of 
 optimal taxation with state-contingent debt due to 
 Robert E. Lucas, Jr.,  and Nancy Stokey  :cite:`LucasStokey1983`
@@ -1010,12 +1018,6 @@ Code
 -----
 
 The recursive formulation is implemented as follows
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
 

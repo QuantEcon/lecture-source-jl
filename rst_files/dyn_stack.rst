@@ -11,6 +11,14 @@ Dynamic Stackelberg Problems
 Overview
 ==================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Previous lectures including :doc:`LQ dynamic programming <lqcontrol>`, :doc:`rational expectations equilibrium <rational_expectations>`, and :doc:`Markov perfect equilibrium <markov_perf>`  lectures have studied  decision problems that are recursive in what we can call "natural" state variables, such as
 
 * stocks of capital (fiscal, financial and human)
@@ -900,12 +908,6 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 .. [#f9] They used this method to compute a rational expectations competitive equilibrium.  Their key step was to eliminate price and output by substituting from the inverse demand curve and the production function into the firm's first-order conditions to get a difference equation in capital.
 
 .. [#f10] These calculations were performed by these functions:
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
   :class: test 

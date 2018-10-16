@@ -21,6 +21,14 @@ Linear State Space Models
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This lecture introduces the **linear state space** dynamic system
 
 This model is a workhorse that carries a powerful theory of prediction
@@ -1376,12 +1384,6 @@ the bars are at dates 10, 50 and 75
 
 Solutions
 ==========
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

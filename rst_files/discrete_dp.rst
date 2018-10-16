@@ -13,6 +13,14 @@
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we discuss a family of dynamic programming problems with the following features:
 
 #. a discrete state space and discrete choices (actions)
@@ -516,12 +524,6 @@ Note:
 * Probability distributions for :math:`(s, a)` with :math:`a \notin A(s)` can be arbitrary
 
 The following code sets up these objects for us
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test

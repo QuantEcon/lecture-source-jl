@@ -13,6 +13,14 @@ Classical Filtering With Linear Algebra
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 This is a sequel to the earlier lecture :doc:`Classical Control with Linear Algebra<classical_filtering>`
 
 That lecture used linear algebra -- in particular,  the `LU decomposition <https://en.wikipedia.org/wiki/LU_decomposition>`_  -- to formulate and solve a class of linear-quadratic optimal control problems
@@ -549,12 +557,6 @@ Implementation
 Code that computes solutions to  LQ control and filtering problems  using the methods described here and in :doc:`lu_tricks` can be found in the file `control_and_filter.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/lu_tricks/control_and_filter.jl>`__
 
 Here's how it looks
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
   :class: test 
