@@ -153,12 +153,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Authors: Shunsuke Hori
-
-    =#
-
     function coleman_egm(g, k_grid, β, u_prime, u_prime_inv, f, f_prime, shocks)
 
         # Allocate memory for value of consumption on endogenous grid points
@@ -187,12 +181,6 @@ We'll also run our original implementation, which uses an exogenous grid and req
 
 .. code-block:: julia
     :class: collapse
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     using QuantEcon, Interpolations
 
