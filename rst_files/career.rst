@@ -142,7 +142,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
-.. beta-binom:: 
+.. _beta-binom:: 
 
 .. code-block:: julia
 
@@ -206,7 +206,7 @@ The code for solving the DP problem described above is found below:
                                F_b = 1.0,
                                G_a = 1.0,
                                G_b = 1.0)
-      θ = range(0, stop = B, length = N)
+      θ = range(0, B, length = N)
       ϵ = copy(θ)
       dist_F = BetaBinomial(N-1, F_a, F_b)
       dist_G = BetaBinomial(N-1, G_a, G_b)

@@ -528,7 +528,7 @@ Here's a struct containing data from the log-linear growth model we used in the 
                     f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
+        grid = collect(range(grid_min, grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)

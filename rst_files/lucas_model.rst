@@ -457,7 +457,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         # == build a grid with mass around stationary distribution == #
         ssd = σ / sqrt(1 - α^2)
         grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
-        grid = range(grid_min, stop = grid_max, length = grid_size)
+        grid = range(grid_min,  grid_max, length = grid_size)
 
         # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
         h = similar(grid)

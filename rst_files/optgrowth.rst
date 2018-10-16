@@ -527,7 +527,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
   f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
   c_grid = 0:.2:1
-  f_grid = range(0, stop = 1, length = 150)
+  f_grid = range(0,  1, length = 150)
 
   Af = LinearInterpolation(c_grid, f(c_grid))
 
@@ -691,7 +691,7 @@ We need a grid and some shock draws for Monte Carlo integration
     grid_size = 200      # Number of grid points
     shock_size = 250     # Number of shock draws in Monte Carlo integral
 
-    grid_y = collect(range(1e-5, stop = grid_max, length = grid_size))
+    grid_y = collect(range(1e-5,  grid_max, length = grid_size))
     shocks = exp.(μ .+ s * randn(shock_size))
 
 

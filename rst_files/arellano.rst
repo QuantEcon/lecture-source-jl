@@ -381,7 +381,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                               nB::Integer = 251) where TF<:AbstractFloat
 
         # Create grids
-        Bgrid = collect(range(-.4, stop = .4, length = nB))
+        Bgrid = collect(range(-.4, .4, length = nB))
         mc = tauchen(ny, ρ, η)
         Π = mc.p
         ygrid = exp.(mc.state_values)

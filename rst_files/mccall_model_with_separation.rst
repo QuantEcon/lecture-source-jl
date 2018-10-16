@@ -372,7 +372,7 @@ Use
 .. code-block:: julia
 
 	grid_size = 25
-	γ_vals = range(0.05, stop = 0.95, length = grid_size)
+	γ_vals = range(0.05,  0.95, length = grid_size)
 
 
 Interpret your results
@@ -391,7 +391,7 @@ we can create an array for reservation wages for different values of :math:`c`,
 .. code-block:: julia
 
     grid_size = 25
-    c_vals = range(2, stop = 12, length = grid_size)
+    c_vals = range(2,  12, length = grid_size)
     w_bar_vals = similar(c_vals)
 
     mcm = McCallModel()
@@ -428,7 +428,7 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 .. code-block:: julia
 
     grid_size = 25
-    γ_vals = range(0.05, stop = 0.95, length = grid_size)
+    γ_vals = range(0.05,  0.95, length = grid_size)
     w_bar_vals = similar(γ_vals)
 
     mcm = McCallModel()

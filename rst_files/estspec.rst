@@ -312,7 +312,7 @@ Note the smaller weights towards the edges and larger weights in the center, so 
     end
 
     window = hanning_window(25) / sum(hanning_window(25))
-    x = range(-12, stop = 12, length = 25)
+    x = range(-12, 12, length = 25)
     plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights",
         xlabel="Position in sequence of weights", legend=false, grid=false)
 

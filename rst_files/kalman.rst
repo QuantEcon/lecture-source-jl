@@ -141,8 +141,8 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   y = [2.3, -1.9]
 
   # == Set up grid for plotting == #
-  x_grid = range(-1.5, stop = 2.9, length = 100)
-  y_grid = range(-3.1, stop = 1.7, length = 100)
+  x_grid = range(-1.5, 2.9, length = 100)
+  y_grid = range(-3.1, 1.7, length = 100)
   X = repeat(x_grid', length(y_grid), 1)
   Y = repeat(y_grid, 1, length(y_grid))
 
@@ -682,7 +682,7 @@ Exercise 1
     # == Run == #
 
     N = 5
-    xgrid = range(θ - 5, stop = θ + 2, length = 200)
+    xgrid = range(θ - 5, θ + 2, length = 200)
     densities = []
     labels = []
     for i ∈ 1:N

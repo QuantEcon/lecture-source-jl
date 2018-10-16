@@ -792,7 +792,7 @@ model above. We discretize the state space into a grid of size
 
     grid_max = 2
     grid_size = 500
-    grid = range(1e-6, stop = grid_max, length = grid_size)
+    grid = range(1e-6, grid_max, length = grid_size)
 
 
 We choose the action to be the amount of capital to save for the next

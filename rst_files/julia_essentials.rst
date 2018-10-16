@@ -1332,7 +1332,7 @@ Let's test it
 
 .. code-block:: julia
 
-    x_grid = range(-1, stop = 1, length = 100)
+    x_grid = range(-1, 1, length = 100)
     y_vals = f_ex5.(x_grid)
     y = g_ex5.(x_grid)
     plot(x_grid, y_vals, label = "true")

@@ -438,7 +438,7 @@ different values of :math:`M`
     ρ, σ_θ, γ_x = econ.ρ, econ.σ_θ, econ.γ_x # simplify names
 
     # grid for γ and γ_{t+1}
-    γ = range(1e-10, stop = 3, length = 200)
+    γ = range(1e-10,  3, length = 200)
     M_range = 0:6
     γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
 

@@ -534,7 +534,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
 
   # Plot
-  ygrid = range(0.01, stop = 4.0, length = 200)
+  ygrid = range(0.01,  4.0, length = 200)
   laes_plot = []
   colors = []
   for i ∈ 1:T
@@ -969,7 +969,7 @@ In particular, the exercise is to generate `J` boxplot figures, one for each ini
 .. code-block:: julia
     :class: no-execute
 
-    initial_conditions = range(8, stop = 0, length = J)
+    initial_conditions = range(8,  0, length = J)
 
 
 For each :math:`X_0` in this set,
@@ -1028,7 +1028,7 @@ to get an idea of the speed of convergence.
     ψ_est(a) = lae_est(LAE(p_TAR, X), a)
     k_est = kde(X)
 
-    ys = range(-3, stop = 3, length = 200)
+    ys = range(-3,  3, length = 200)
     plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label="true")
     plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
     plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, label="kernel based estimate")
@@ -1075,7 +1075,7 @@ Here's one program that does the job.
     T = 40    # Compute density of k_t at 1,...,T+1
 
     xmax = 6.5
-    ygrid = range(0.01, stop = xmax, length = 150)
+    ygrid = range(0.01,  xmax, length = 150)
     laes_plot = zeros(length(ygrid), 4*T)
     colors = []
     for i ∈ 1:4
@@ -1132,7 +1132,7 @@ series for one boxplot all at once.
     d = sqrt(1 - θ^2)
     δ = θ / d
 
-    initial_conditions = range(8, stop = 0, length = J)
+    initial_conditions = range(8,  0, length = J)
 
     Z = randn(k, n, J)
     titles = []

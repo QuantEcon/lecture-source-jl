@@ -706,7 +706,7 @@ function of the unemployment compensation rate
 
     # The default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
-    w_vec = range(1e-3, stop = max_wage, length = wage_grid_size + 1)
+    w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
     logw_dist = Normal(log(log_wage_mean), 1)
     cdf_logw = cdf.(Ref(logw_dist), log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
@@ -757,7 +757,7 @@ function of the unemployment compensation rate
 
     # Levels of unemployment insurance we wish to study
     Nc = 60
-    c_vec = range(5.0, stop = 140.0, length = Nc)
+    c_vec = range(5.0, 140.0, length = Nc)
 
     tax_vec = zeros(Nc)
     unempl_vec = similar(tax_vec)

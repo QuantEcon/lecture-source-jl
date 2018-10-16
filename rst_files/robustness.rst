@@ -1077,9 +1077,9 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     function value_and_entropy(emax, F, bw, grid_size = 1000)
         if lowercase(bw) == "worst"
-            θs = 1 ./ range(1e-8, stop = 1000, length = grid_size)
+            θs = 1 ./ range(1e-8,  1000, length = grid_size)
         else
-            θs = -1 ./ range(1e-8, stop = 1000, length = grid_size)
+            θs = -1 ./ range(1e-8,  1000, length = grid_size)
         end
 
         data = zeros(grid_size, 2)
@@ -1122,7 +1122,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     data_pairs = ((optimal_best_case, optimal_worst_case),
                   (robust_best_case, robust_worst_case))
 
-    egrid = range(0, stop = emax, length = 100)
+    egrid = range(0,  emax, length = 100)
     egrid_data = Vector{Vector{Float64}}()
     for data_pair in data_pairs
         for data in data_pair

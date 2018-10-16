@@ -924,7 +924,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
   # == Set seed and generate a_t sequence == #
   Random.seed!(123)
   n = 100
-  a_seq = sin.(range(0, stop = 5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
+  a_seq = sin.(range(0,  5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
 
   function plot_simulation(;γ=0.8, m=1, h=1., y_m=2.)
     d = γ * [1, -1]

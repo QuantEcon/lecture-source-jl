@@ -427,7 +427,7 @@ As we will see, this can be interpreted as meaning that "all frequencies are equ
 Example 2: :index:`AR` and :index:`MA` and :index:`ARMA`
 ---------------------------------------------------------
 
-.. ar1_acov::
+.. _ar1_acov::
 
 It is an exercise to show that the MA(1) process :math:`X_t = \theta \epsilon_{t-1} + \epsilon_t` has spectral density
 
@@ -478,7 +478,7 @@ Plotting :eq:`ar1_sd_ed` reveals the shape of the spectral density for the AR(1)
 
     ar1_sd(ϕ, ω) = 1 ./ (1 .- 2 * ϕ * cos.(ω) .+ ϕ.^2)
 
-    ω_s = range(0, stop = π, length = 180)
+    ω_s = range(0, π, length = 180)
 
     plt_1=plot()
     plt_2=plot()

@@ -245,13 +245,13 @@ Here's an example of the latter with an irregular grid
 
 .. code-block:: julia
 
-    x = log.(range(1, stop = exp(4), length = 10)) .+ 1  # Uneven grid
+    x = log.(range(1,  exp(4), length = 10)) .+ 1  # Uneven grid
     y = log.(x)                            # Corresponding y points
 
     itp_const = interpolate((x, ), y, Gridded(Constant()))
     itp_linear = interpolate((x, ), y, Gridded(Linear()))
 
-    xf = log.(range(1, stop = exp(4), length = 100)) .+ 1
+    xf = log.(range(1,  exp(4), length = 100)) .+ 1
     y_const = [ itp_const[x] for x ∈ xf ]
     y_linear = [ itp_linear[x] for x ∈ xf ]
     y_true = [ log(x) for x ∈ xf ]
@@ -272,7 +272,7 @@ The following example gives one illustration
 
     let
         n = 5
-        x = range(-3, stop = 3, length = n)
+        x = range(-3,  3, length = n)
         y = copy(x)
 
         z = zeros(n, n)
@@ -286,7 +286,7 @@ The following example gives one illustration
         itp = interpolate((x, y), z, Gridded(Linear()));
 
         nf = 50
-        xf = range(-3, stop = 3, length = nf)
+        xf = range(-3,  3, length = nf)
         yf = copy(xf)
 
         zf = zeros(nf, nf)

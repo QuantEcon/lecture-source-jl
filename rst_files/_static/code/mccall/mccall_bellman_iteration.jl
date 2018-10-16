@@ -1,4 +1,4 @@
-using Distributions, LinearAlgebra
+using Distributions, LinearAlgebra, Compat
 
 # A default utility function
 
@@ -13,7 +13,7 @@ end
 # default wage vector with probabilities
 
 const n = 60                                           # n possible outcomes for wage
-const default_w_vec = range(10, stop = 20, length = n) # wages between 10 and 20
+const default_w_vec = range(10, 20, length = n) # wages between 10 and 20
 const a, b = 600, 400                                  # shape parameters
 const dist = BetaBinomial(n-1, a, b)
 const default_p_vec = pdf.(Ref(dist), support(dist))

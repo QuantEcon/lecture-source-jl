@@ -558,7 +558,7 @@ Here's some code that does exactly this for the exponential distribution
     xmin, xmax = -3 * s, 3 * s
     histogram(Y, nbins = 60, alpha = 0.5, xlims = (xmin, xmax),
             norm = true, label = "")
-    xgrid = range(xmin, stop = xmax, length = 200)
+    xgrid = range(xmin, xmax, length = 200)
     plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color = :black,
         linewidth = 2, label = LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
         legendfont = font(12))
@@ -648,7 +648,7 @@ In the figure, the closest density is that of :math:`Y_1`, while the furthest is
     # == Plot == #
     a, b = -3, 3
     gs = 100
-    xs = range(a, stop = b, length = gs)
+    xs = range(a, b, length = gs)
 
     x_vec = []
     y_vec = []
@@ -1010,7 +1010,7 @@ depending on your configuration
     xmin = -3 * g′(μ) * s
     xmax = -xmin
     histogram(error_obs, nbins = 60, alpha = 0.5, normed = true, label = "")
-    xgrid = range(xmin, stop = xmax, length = 200)
+    xgrid = range(xmin, xmax, length = 200)
     plot!(xgrid, pdf.(Ref(Normal(0.0, asymptotic_sd)), xgrid), color = :black,
         linewidth = 2, label = LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
         legendfont = font(12), xlims = (xmin, xmax), grid = false)
@@ -1121,7 +1121,7 @@ Our solution is as follows
     # == Plot == #
     xmin, xmax = 0, 8
     histogram(chisq_obs, nbins = 50, normed = true, label = "")
-    xgrid = range(xmin, stop = xmax, length = 200)
+    xgrid = range(xmin, xmax, length = 200)
     plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color = :black,
         linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
         legendfont = font(12), xlims = (xmin, xmax), grid = false)

@@ -374,7 +374,7 @@ Let's also plot the conditional pdf of :math:`\Delta y_{t+1}`
 
 .. code-block:: julia
 
-    xgrid = range(-1, stop = 1, length = 100)
+    xgrid = range(-1,  1, length = 100)
     println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
     plot(xgrid, pdf.(normdist, xgrid), label="")
     plot!(title="Conditional pdf f(Delta y_(t+1) | x_t)")
@@ -689,7 +689,7 @@ Here is some code that tackles these tasks
 
         # The distribution
         mdist = LogNormal(-t * H2 / 2, sqrt(t * H2))
-        x = range(xmin, stop = xmax, length = npts)
+        x = range(xmin,  xmax, length = npts)
         p = pdf.(Ref(mdist), x)
 
         return x, p
@@ -704,7 +704,7 @@ Here is some code that tackles these tasks
 
         # The distribution
         lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
-        x = range(xmin, stop = xmax, length = npts)
+        x = range(xmin,  xmax, length = npts)
         p = pdf.(Ref(lmdist), x)
 
         return x, p

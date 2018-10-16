@@ -428,7 +428,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                             grid_max=16,
                             grid_size=50)
         R = 1 + r
-        asset_grid = range(-b, stop = grid_max, length = grid_size)
+        asset_grid = range(-b, grid_max, length = grid_size)
 
         ConsumerProblem(r, R, β, b, Π, z_vals, asset_grid)
     end
@@ -605,7 +605,7 @@ Reproduce the following figure, which shows (approximately) optimal consumption 
    :scale: 100%
 
 * Other than `r`, all parameters are at their default values
-* `r` steps through `range(0, stop = 0.04, length = 4)`
+* `r` steps through `range(0, 0.04, length = 4)`
 * Consumption is plotted against assets for income shock fixed at the smallest value
 
 The figure shows that higher interest rates boost savings and hence suppress consumption
@@ -770,7 +770,7 @@ Exercise 2
 
 .. code-block:: julia
 
-    r_vals = range(0, stop = 0.04, length = 4)
+    r_vals = range(0, 0.04, length = 4)
     traces = []
     legends = []
 
@@ -841,7 +841,7 @@ Exercise 4
 .. code-block:: julia
 
     M = 25
-    r_vals = range(0, stop = 0.04, length = M)
+    r_vals = range(0, 0.04, length = M)
 
     xs = []
     ys = []
