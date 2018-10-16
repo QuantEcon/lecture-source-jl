@@ -339,7 +339,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    using PyPlot, PyCall
+    using Plots, PyCall
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
