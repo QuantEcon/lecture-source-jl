@@ -230,12 +230,6 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
         β::TF              # Discount factor

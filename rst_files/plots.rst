@@ -44,9 +44,6 @@ to the :ref:`section on Plots.jl <plotsjl>`
 
 If you want a deeper understanding and more flexibility, continue from the next section and read on
 
-Credits: Thanks to `@albep <https://github.com/albep>`_, `@vgregory757 <https://github.com/vgregory757>`_ and `@spencerlyon2 <https://github.com/sglyon>`_ for help with the code examples below
-
-
 PyPlot
 ========================
 

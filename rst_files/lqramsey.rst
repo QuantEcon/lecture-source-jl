@@ -577,11 +577,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-    =#
     using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
 
     abstract type AbstractStochProcess end
