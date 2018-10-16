@@ -584,13 +584,6 @@ the type `AssetPriceModel`
 
 .. code-block:: julia
 
-    #=
-
-    @authors: Spencer Lyon, Tom Sargent, John Stachurski
-
-    =#
-
-
     # A default Markov chain for the state process
     ρ = 0.9
     σ = 0.02
