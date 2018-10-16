@@ -668,11 +668,6 @@ Compare your results with the previous exercise.  Comment.
 Solutions
 ==========
 
-
-
-The following solutions were put together by Chase Coleman, Spencer
-Lyon, Thomas Sargent and John Stachurski
-
 Exercise 1
 ----------
 
