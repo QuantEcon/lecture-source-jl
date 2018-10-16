@@ -420,12 +420,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     using QuantEcon, Interpolations
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
@@ -460,12 +454,6 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
 .. code-block:: julia
     :class: collapse
-
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
 
     using Optim
 
@@ -509,12 +497,6 @@ solution
 Here's a struct containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
