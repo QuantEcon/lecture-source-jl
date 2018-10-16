@@ -227,12 +227,6 @@ The code is as follows
 
 .. code-block:: julia
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-  =#
-
   using QuantEcon, Interpolations
 
   struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
