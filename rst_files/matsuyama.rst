@@ -339,12 +339,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     using PyPlot, PyCall
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
