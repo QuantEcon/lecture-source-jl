@@ -17,9 +17,7 @@
 .. contents:: :depth: 2
 
 
-Co-authors: `Chase Coleman <https://github.com/cc7768>`__
-
-
+Co-authored with Chase Coleman.
 
 Overview
 =========
@@ -533,12 +531,6 @@ We shall construct two types that
 
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     mutable struct WFSolution{TAV <: AbstractVector, TR<:Real}
         J::TAV
