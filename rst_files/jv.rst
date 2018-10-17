@@ -37,6 +37,7 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
     using LinearAlgebra, Statistics, Compat
+    using Interpolations
 
 Model
 ========
@@ -243,7 +244,7 @@ The following code solves the DP problem described above
       nodes, weights = jv.quad_nodes, jv.quad_weights
 
       # prepare interpoland of value function
-      Vf = LinInterp(jv.x_grid, V)
+      Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
 
       # instantiate the linesearch variables
       max_val = -1.0
@@ -285,7 +286,7 @@ The following code solves the DP problem described above
       nodes, weights = jv.quad_nodes, jv.quad_weights
 
       # prepare interpoland of value function
-      Vf = LinInterp(jv.x_grid, V)
+      Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
 
       # instantiate variables
       s_policy, ϕ_policy = out[1], out[2]
@@ -538,8 +539,8 @@ Here's code to produce the 45 degree diagram
     s_policy, ϕ_policy = bellman_operator(wp, V, ret_policies=true)
 
     # Turn the policy function arrays into CoordInterpGrid objects for interpolation
-    s = LinInterp(wp.x_grid, s_policy)
-    ϕ = LinInterp(wp.x_grid, ϕ_policy)
+    s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc=Line())
+    ϕ = LinearInterpolation(wp.x_grid, ϕ_policy, extrapolation_bc=Line())
 
     h_func(x, b, U) = (1 - b) * G(x, ϕ(x)) + b * max(G(x, ϕ(x)), U)
 
