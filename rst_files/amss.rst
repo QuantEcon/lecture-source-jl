@@ -12,24 +12,24 @@ Optimal Taxation without State-Contingent Debt
 Overview
 ==========
 
-In :doc:`an earlier lecture <opt_tax_recur>` we described a model of 
-optimal taxation with state-contingent debt due to 
+In :doc:`an earlier lecture <opt_tax_recur>` we described a model of
+optimal taxation with state-contingent debt due to
 Robert E. Lucas, Jr.,  and Nancy Stokey  :cite:`LucasStokey1983`
 
 Aiyagari, Marcet, Sargent, and Seppälä :cite:`AMSS_2002`  (hereafter, AMSS)
 studied optimal taxation in a model without state-contingent debt
 
-In this lecture, we 
+In this lecture, we
 
 * describe assumptions and equilibrium concepts
 
 * solve the model
 
-* implement the model numerically  
-  
+* implement the model numerically
+
 * conduct some policy experiments
 
-* compare outcomes with those in a corresponding complete-markets model 
+* compare outcomes with those in a corresponding complete-markets model
 
 We begin with an introduction to the model
 
@@ -44,7 +44,7 @@ Many but not all features of the economy are identical to those of :doc:`the Luc
 
 Let's start with things that are identical
 
-For :math:`t \geq 0`, a history of the state is represented by :math:`s^t = [s_t, s_{t-1}, \ldots, s_0]` 
+For :math:`t \geq 0`, a history of the state is represented by :math:`s^t = [s_t, s_{t-1}, \ldots, s_0]`
 
 Government purchases :math:`g(s)` are an exact time-invariant function of :math:`s`
 
@@ -91,7 +91,7 @@ where
 
 The government imposes a flat rate tax :math:`\tau_t(s^t)` on labor income at time :math:`t`, history :math:`s^t`
 
-Lucas and Stokey assumed that there are complete markets in one-period Arrow securities; also see :doc:`smoothing models<smoothing>` 
+Lucas and Stokey assumed that there are complete markets in one-period Arrow securities; also see :doc:`smoothing models<smoothing>`
 
 It is at this point that AMSS :cite:`AMSS_2002` modify the Lucas and Stokey economy
 
@@ -103,7 +103,7 @@ Ruling out complete markets in this way is a step in the direction of making tot
 Risk-free One-Period Debt Only
 --------------------------------
 
-In period :math:`t` and history :math:`s^t`, let 
+In period :math:`t` and history :math:`s^t`, let
 
 * :math:`b_{t+1}(s^t)` be the amount of the time :math:`t+1` consumption good that at time :math:`t` the government promised to pay
 
@@ -121,9 +121,9 @@ The government’s budget constraint in period :math:`t` at history :math:`s^t` 
     :label: TS_gov_wo
 
     \begin{aligned}
-    b_t(s^{t-1}) 
+    b_t(s^{t-1})
         & =    \tau^n_t(s^t) n_t(s^t) - g_t(s_t) - T_t(s^t)
-                       + {b_{t+1}(s^t) \over R_t(s^t )} 
+                       + {b_{t+1}(s^t) \over R_t(s^t )}
         \\
         & \equiv z(s^t) + {b_{t+1}(s^t) \over R_t(s^t )},
     \end{aligned}
@@ -138,7 +138,7 @@ with one-period gross interest rate :math:`R_t(s^t)` is
 
 .. math::
 
-    {1 \over R_t(s^t)} 
+    {1 \over R_t(s^t)}
     = \sum_{s^{t+1}\vert s^t} \beta  \pi_{t+1}(s^{t+1} | s^t)
                             { u_c(s^{t+1}) \over u_c(s^{t}) }
 
@@ -161,8 +161,8 @@ Therefore, the sum on the right side of equation :eq:`TS_gov_wo2` also has to de
 This requirement will give rise to **measurability constraints** on the Ramsey allocation to be discussed soon
 
 If we replace :math:`b_{t+1}(s^t)` on the right side of equation :eq:`TS_gov_wo2` by the right
-side of next period’s budget constraint (associated with a 
-particular realization :math:`s_{t}`) we get 
+side of next period’s budget constraint (associated with a
+particular realization :math:`s_{t}`) we get
 
 .. math::
 
@@ -179,24 +179,24 @@ arrive at:
     :label: TS_gov_wo3
 
     \begin{aligned}
-    b_t(s^{t-1}) 
+    b_t(s^{t-1})
         &=  \sum_{j=0}^\infty \sum_{s^{t+j} | s^t} \beta^j  \pi_{t+j}(s^{t+j} | s^t)
-                  { u_c(s^{t+j}) \over u_c(s^{t}) } \;z(s^{t+j})  
+                  { u_c(s^{t+j}) \over u_c(s^{t}) } \;z(s^{t+j})
             \end{aligned}
 
 
-Now let's 
+Now let's
 
 * substitute the resource constraint into the net-of-interest government surplus, and
 
-* use the household’s first-order condition :math:`1-\tau^n_t(s^t)= u_{\ell}(s^t) /u_c(s^t)` to eliminate the labor tax rate 
+* use the household’s first-order condition :math:`1-\tau^n_t(s^t)= u_{\ell}(s^t) /u_c(s^t)` to eliminate the labor tax rate
 
 so that we can express the net-of-interest government surplus :math:`z(s^t)` as
 
 .. math::
     :label: AMSS_44_2
 
-    z(s^t) 
+    z(s^t)
         = \left[1 - {u_{\ell}(s^t) \over u_c(s^t)}\right] \left[c_t(s^t)+g_t(s_t)\right]
             -g_t(s_t) - T_t(s^t)\,.
 
@@ -216,13 +216,13 @@ Indeed, it was the *only* implementability constraint there
 
 But now we also have a large number of additional implementability constraints
 
-.. math:: 
+.. math::
     :label: TS_gov_wo4a
 
      b_t(s^{t-1}) =  \EE_t \sum_{j=0}^\infty \beta^j
                   { u_c(s^{t+j}) \over u_c(s^{t}) } \;z(s^{t+j})
 
-Equation :eq:`TS_gov_wo4a` must hold for each :math:`s^t` for each :math:`t \geq 1` 
+Equation :eq:`TS_gov_wo4a` must hold for each :math:`s^t` for each :math:`t \geq 1`
 
 Comparison with Lucas-Stokey Economy
 -------------------------------------
@@ -243,7 +243,7 @@ After we have substituted the resource constraint into the utility function, we 
 
 .. math::
 
-    \max_{\{c_t(s^t),b_{t+1}(s^t)\}} 
+    \max_{\{c_t(s^t),b_{t+1}(s^t)\}}
     \EE_0 \sum_{t=0}^\infty \beta^t
                             u\left(c_t(s^t),1-c_t(s^t)-g_t(s_t)\right)
 
@@ -262,7 +262,7 @@ and
 .. math::
     :label: AMSS_46
 
-    \EE_{t} \sum_{j=0}^\infty \beta^j  
+    \EE_{t} \sum_{j=0}^\infty \beta^j
         { u_c(s^{t+j}) \over u_c(s^{t}) } \;
         z(s^{t+j}) = b_t(s^{t-1})
           \quad \forall \,  s^t
@@ -288,8 +288,8 @@ Depending on how the constraints  bind, these multipliers can be positive or neg
 .. math::
 
     \begin{aligned}
-       \gamma_t(s^t) 
-       &\;\geq\; (\leq)\;\, 0 \quad \text{if the constraint binds in this direction } 
+       \gamma_t(s^t)
+       &\;\geq\; (\leq)\;\, 0 \quad \text{if the constraint binds in this direction }
        \\
        & \EE_{t} \sum_{j=0}^\infty \beta^j
         { u_c(s^{t+j}) \over u_c(s^{t}) } \;z(s^{t+j}) \;\geq \;(\leq)\;\, b_t(s^{t-1}).
@@ -321,10 +321,10 @@ Then a Lagrangian for the Ramsey problem can  be represented as
        J &= \EE_{0} \sum_{t=0}^\infty \beta^t
                             \biggl\{ u\left(c_t(s^t), 1-c_t(s^t)-g_t(s_t)\right)\\
        &  \qquad + \gamma_t(s^t) \Bigl[ \EE_{t} \sum_{j=0}^\infty \beta^j
-             u_c(s^{t+j}) \,z(s^{t+j}) - u_c(s^{t}) \,b_t(s^{t-1}) \biggr\}           
+             u_c(s^{t+j}) \,z(s^{t+j}) - u_c(s^{t}) \,b_t(s^{t-1}) \biggr\}
              \\
        &= \EE_{0} \sum_{t=0}^\infty \beta^t
-                             \biggl\{ u\left(c_t(s^t), 1-c_t(s^t)-g_t(s_t)\right)   
+                             \biggl\{ u\left(c_t(s^t), 1-c_t(s^t)-g_t(s_t)\right)
             \\
        &  \qquad + \Psi_t(s^t)\, u_c(s^{t}) \,z(s^{t})
                        - \gamma_t(s^t)\, u_c(s^{t}) \, b_t(s^{t-1})  \biggr\}
@@ -341,8 +341,8 @@ where
     \Psi_{-1}(s^{-1})=0
 
 
-In :eq:`AMSS_lagr;a`,  the second equality uses  the law of iterated expectations 
-and Abel’s summation formula (also called *summation by parts*, see 
+In :eq:`AMSS_lagr;a`,  the second equality uses  the law of iterated expectations
+and Abel’s summation formula (also called *summation by parts*, see
 `this page <https://en.wikipedia.org/wiki/Abel%27s_summation_formula>`__)
 
 
@@ -354,11 +354,11 @@ to :math:`c_t(s^t)` can be expressed as
 
     \begin{aligned}
       u_c(s^t)-u_{\ell}(s^t) &+ \Psi_t(s^t)\left\{ \left[
-        u_{cc}(s^t) - u_{c\ell}(s^{t})\right]z(s^{t}) 
-        + u_{c}(s^{t})\,z_c(s^{t}) \right\}  
+        u_{cc}(s^t) - u_{c\ell}(s^{t})\right]z(s^{t})
+        + u_{c}(s^{t})\,z_c(s^{t}) \right\}
         \\
         & \hspace{35mm} - \gamma_t(s^t)\left[
-        u_{cc}(s^{t}) - u_{c\ell}(s^{t})\right]b_t(s^{t-1}) =0 
+        u_{cc}(s^{t}) - u_{c\ell}(s^{t})\right]b_t(s^{t-1}) =0
     \end{aligned}
 
 
@@ -375,24 +375,24 @@ If we substitute :math:`z(s^t)` from :eq:`AMSS_44_2` and its derivative
 differences from the corresponding condition for the optimal allocation
 in a Lucas-Stokey economy with state-contingent government debt
 
-1. The term involving :math:`b_t(s^{t-1})` in first-order condition 
-:eq:`AMSS_foc;a` does not appear in the corresponding expression  
+1. The term involving :math:`b_t(s^{t-1})` in first-order condition
+:eq:`AMSS_foc;a` does not appear in the corresponding expression
 for the Lucas-Stokey economy
-      
+
     * This term reflects the constraint that
       beginning-of-period government indebtedness must be the same across all
       realizations of next period’s state, a constraint that would  not be present if
       government debt could be state contingent
 
-2. The Lagrange multiplier :math:`\Psi_t(s^t)` in first-order condition 
-:eq:`AMSS_foc;a` may change over time in response to realizations of the state, 
+2. The Lagrange multiplier :math:`\Psi_t(s^t)` in first-order condition
+:eq:`AMSS_foc;a` may change over time in response to realizations of the state,
 while the multiplier :math:`\Phi` in the Lucas-Stokey economy is time invariant
 
 
-We need some code from our :doc:`an earlier lecture <opt_tax_recur>` 
+We need some code from our :doc:`an earlier lecture <opt_tax_recur>`
 on optimal taxation with state-contingent debt  sequential allocation implementation:
 
-.. code-block:: julia 
+.. code-block:: julia
     :class: collapse
 
     using QuantEcon
@@ -417,10 +417,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         n_less_than_one::Bool
     end
 
-    """
-    {{ class_word }} returns planner's allocation as a function of the multiplier
-    on the implementability constraint μ
-    """
+
     struct SequentialAllocation{TP <: Model,
                                 TI <: Integer,
                                 TV <: AbstractVector}
@@ -433,9 +430,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         zFB::TV
     end
 
-    """
-    Initializes the {{ class_word }} from the calibration model
-    """
+
     function SequentialAllocation(model::Model)
         β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
         mc = MarkovChain(Π)
@@ -446,9 +441,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return SequentialAllocation(model, mc, S, cFB, nFB, ΞFB, zFB)
     end
 
-    """
-    Find the first best allocation
-    """
+
     function find_first_best(model::Model, S::Integer, version::Integer)
         if version != 1 && version != 2
             throw(ArgumentError("version must be 1 or 2"))
@@ -483,9 +476,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         end
     end
 
-    """
-    Computes optimal allocation for time t≧ 1 for a given μ
-    """
+
     function time1_allocation(pas::SequentialAllocation, μ::Real)
         model, S = pas.model, pas.S
         Θ, β, Π, G, Uc, Ucc, Un, Unn =
@@ -513,9 +504,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return c, n, x, Ξ
     end
 
-    """
-    Finds the optimal allocation given initial government debt `B_` and state `s_0`
-    """
+
     function time0_allocation(pas::SequentialAllocation,
                             B_::AbstractFloat, s_0::Integer)
         model = pas.model
@@ -534,7 +523,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             (Θ .* n - c - G)[s_0]
             )
         end
-        
+
         # Find root
         res = nlsolve(FOC!, [0.0, pas.cFB[s_0], pas.nFB[s_0], pas.ΞFB[s_0]])
         if res.f_converged == false
@@ -543,9 +532,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return (res.zero...)
     end
 
-    """
-    Find the value associated with multiplier μ
-    """
+
     function time1_value(pas::SequentialAllocation, μ::Real)
         model = pas.model
         c, n, x, Ξ = time1_allocation(pas, μ)
@@ -554,17 +541,13 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return c, n, x, V
     end
 
-    """
-    Computes Τ given `c`, `n`
-    """
+
     function Τ(model::Model, c::Union{Real,Vector}, n::Union{Real,Vector})
         Uc, Un = model.Uc.(c, n), model.Un.(c, n)
         return 1+Un./(model.Θ .* Uc)
     end
 
-    """
-    Simulates planners policies for `T` periods
-    """
+
     function simulate(pas::SequentialAllocation,
                     B_::AbstractFloat, s_0::Integer,
                     T::Integer,
@@ -572,7 +555,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 
         model = pas.model
         Π, β, Uc = model.Π, model.β, model.Uc
-        
+
         if sHist == nothing
             sHist = QuantEcon.simulate(pas.mc, T, init=s_0)
         end
@@ -582,7 +565,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         ΤHist = zeros(T)
         μHist = zeros(T)
         RHist = zeros(T-1)
-        # time 0 
+        # time 0
         μ, cHist[1], nHist[1], _  = time0_allocation(pas, B_, s_0)
         ΤHist[1] = Τ(pas.model, cHist[1], nHist[1])[s_0]
         Bhist[1] = B_
@@ -601,9 +584,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
     end
 
-    """
-    Bellman equation for the continuation of the Lucas-Stokey Problem
-    """
+
     mutable struct BellmanEquation{TP <: Model,
                                 TI <: Integer,
                                 TV <: AbstractVector,
@@ -620,9 +601,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         zFB::TVV
     end
 
-    """
-    Initializes the {{ class_word }} from the calibration `model`
-    """
+
     function BellmanEquation(model::Model, xgrid::AbstractVector, policies0::Vector)
         S = size(model.Π, 1)                                                     # Number of states
         xbar = [minimum(xgrid), maximum(xgrid)]
@@ -634,9 +613,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return BellmanEquation(model, S, xbar, time_0, z0, cFB, nFB, xFB, zFB)
     end
 
-    """
-    Finds the optimal policies
-    """
+
     function get_policies_time1(T::BellmanEquation,
                             i_x::Integer, x::AbstractFloat,
                             s::Integer, Vf::AbstractArray)
@@ -676,9 +653,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         T.z0[i_x, s] = vcat(minx[1], minx[1] + G[s], minx[2:end])
         return vcat(-minf, T.z0[i_x, s])
     end
-    """
-    Finds the optimal policies
-    """
+
     function get_policies_time0(T::BellmanEquation,
                             B_::AbstractFloat, s0::Integer, Vf::Array)
         model, S = T.model, T.S
@@ -716,9 +691,9 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return vcat(-minf, vcat(minx[1], minx[1]+G[s0], minx[2:end]))
     end
 
-        
 
-To analyze the AMSS model, we find it useful to adopt a recursive formulation 
+
+To analyze the AMSS model, we find it useful to adopt a recursive formulation
 using techniques like those in our lectures on :doc:`dynamic Stackelberg models <dyn_stack>` and :doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
 
 
@@ -729,17 +704,17 @@ Recursive Version of AMSS Model
 
 We now describe a recursive formulation of the AMSS economy
 
-We have noted that from the point of view of the Ramsey planner, the restriction 
-to one-period risk-free securities 
+We have noted that from the point of view of the Ramsey planner, the restriction
+to one-period risk-free securities
 
-* leaves intact the single implementability constraint on allocations 
+* leaves intact the single implementability constraint on allocations
   :eq:`TS_gov_wo4` from the Lucas-Stokey economy, but
-  
-* adds measurability constraints :eq:`TS_gov_wo3` on functions of tails of  
+
+* adds measurability constraints :eq:`TS_gov_wo3` on functions of tails of
   allocations at each time and history
 
-We now explore how these constraints alter  Bellman equations for a time 
-:math:`0` Ramsey planner and for time :math:`t \geq 1`, history :math:`s^t` 
+We now explore how these constraints alter  Bellman equations for a time
+:math:`0` Ramsey planner and for time :math:`t \geq 1`, history :math:`s^t`
 continuation Ramsey planners
 
 
@@ -754,12 +729,12 @@ In the AMSS setting, the government faces a sequence of budget constraints
     \tau_t(s^t) n_t(s^t) + T_t(s^t) +  b_{t+1}(s^t)/ R_t (s^t) =  g_t + b_t(s^{t-1})
 
 
-where :math:`R_t(s^t)` is the gross risk-free rate of interest between :math:`t` 
+where :math:`R_t(s^t)` is the gross risk-free rate of interest between :math:`t`
 and :math:`t+1` at history :math:`s^t` and :math:`T_t(s^t)` are nonnegative transfers
 
 Throughout this lecture, we shall set transfers to zero (for some issues about the limiting behavior of debt, this makes a possibly
 important  difference from AMSS :cite:`AMSS_2002`, who restricted transfers
-to be nonnegative)  
+to be nonnegative)
 
 In this case, the household faces a sequence of budget constraints
 
@@ -769,10 +744,10 @@ In this case, the household faces a sequence of budget constraints
     b_t(s^{t-1}) + (1-\tau_t(s^t)) n_t(s^t) = c_t(s^t) + b_{t+1}(s^t)/R_t(s^t)
 
 
-The household’s first-order conditions are :math:`u_{c,t} = \beta R_t \EE_t u_{c,t+1}` 
+The household’s first-order conditions are :math:`u_{c,t} = \beta R_t \EE_t u_{c,t+1}`
 and :math:`(1-\tau_t) u_{c,t} = u_{l,t}`
 
-Using these to eliminate :math:`R_t` and :math:`\tau_t` from  budget constraint 
+Using these to eliminate :math:`R_t` and :math:`\tau_t` from  budget constraint
 :eq:`eqn:AMSSapp1` gives
 
 .. math::
@@ -787,7 +762,7 @@ or
 .. math::
     :label: eqn:AMSSapp2
 
-    u_{c,t}(s^t) b_t(s^{t-1}) + u_{l,t}(s^t) n_t(s^t) 
+    u_{c,t}(s^t) b_t(s^{t-1}) + u_{l,t}(s^t) n_t(s^t)
     = u_{c,t}(s^t) c_t(s^t) + \beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)
 
 
@@ -818,7 +793,7 @@ Write equation :eq:`eqn:AMSSapp2` as
 .. math::
     :label: eqn:AMSSapp2b
 
-    b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t) 
+    b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t)
     + {\frac{\beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)}{u_{c,t}}}
 
 
@@ -839,23 +814,23 @@ Two Bellman Equations
 
 Let :math:`\Pi(s|s_-)` be a Markov transition matrix whose entries tell probabilities of moving from state :math:`s_-` to state :math:`s` in one period
 
-Let 
+Let
 
-* :math:`V(x_-, s_-)` be the continuation value of a continuation 
+* :math:`V(x_-, s_-)` be the continuation value of a continuation
   Ramsey plan at :math:`x_{t-1} = x_-, s_{t-1} =s_-` for :math:`t \geq 1`
 
-* :math:`W(b, s)` be the value of the Ramsey plan at time :math:`0` at 
+* :math:`W(b, s)` be the value of the Ramsey plan at time :math:`0` at
   :math:`b_0=b` and :math:`s_0 = s`
 
 We distinguish between two types of planners:
 
-For :math:`t \geq 1`, the value function for a **continuation Ramsey planner** 
+For :math:`t \geq 1`, the value function for a **continuation Ramsey planner**
 satisfies the Bellman equation
 
 .. math::
     :label: eqn:AMSSapp5
 
-    V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s) 
+    V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s)
     - g(s), 1-n(s)) + \beta V(x(s),s) \right]
 
 
@@ -865,19 +840,19 @@ for each :math:`s \in {\cal S}`:
 .. math::
     :label: eqn:AMSSapp6
 
-    {\frac{u_c(s) x_- }{\beta \sum_{\tilde s} \Pi(\tilde s|s_-) u_c(\tilde s) }} 
+    {\frac{u_c(s) x_- }{\beta \sum_{\tilde s} \Pi(\tilde s|s_-) u_c(\tilde s) }}
     = u_c(s) (n(s) - g(s)) - u_l(s) n(s) + x(s)
 
 
-A continuation Ramsey planner at :math:`t \geq 1` takes 
-:math:`(x_{t-1}, s_{t-1}) = (x_-, s_-)` as given and before 
-:math:`s` is realized chooses 
-:math:`(n_t(s_t), x_t(s_t)) = (n(s), x(s))` for :math:`s \in  {\cal S}` 
+A continuation Ramsey planner at :math:`t \geq 1` takes
+:math:`(x_{t-1}, s_{t-1}) = (x_-, s_-)` as given and before
+:math:`s` is realized chooses
+:math:`(n_t(s_t), x_t(s_t)) = (n(s), x(s))` for :math:`s \in  {\cal S}`
 
 
-The **Ramsey planner** takes :math:`(b_0, s_0)` as given and chooses :math:`(n_0, x_0)`. 
+The **Ramsey planner** takes :math:`(b_0, s_0)` as given and chooses :math:`(n_0, x_0)`.
 
-The value function :math:`W(b_0, s_0)`   for the time :math:`t=0` Ramsey planner 
+The value function :math:`W(b_0, s_0)`   for the time :math:`t=0` Ramsey planner
 satisfies the Bellman equation
 
 .. math::
@@ -905,7 +880,7 @@ condition with respect to :math:`x(s)` is
 .. math::
     :label: eqn:AMSSapp7
 
-    \beta V_x(x(s),s) = \mu(s|s_-) 
+    \beta V_x(x(s),s) = \mu(s|s_-)
 
 
 Applying the envelope theorem to Bellman equation :eq:`eqn:AMSSapp5` gives
@@ -913,7 +888,7 @@ Applying the envelope theorem to Bellman equation :eq:`eqn:AMSSapp5` gives
 .. math::
     :label: eqn:AMSSapp8
 
-    V_x(x_-,s_-) = \sum_s \Pi(s|s_-) \mu(s|s_-) {\frac{u_c(s)}{\beta \sum_{\tilde s} 
+    V_x(x_-,s_-) = \sum_s \Pi(s|s_-) \mu(s|s_-) {\frac{u_c(s)}{\beta \sum_{\tilde s}
     \Pi(\tilde s|s_-) u_c(\tilde s) }}
 
 
@@ -922,24 +897,24 @@ Equations :eq:`eqn:AMSSapp7` and :eq:`eqn:AMSSapp8` imply that
 .. math::
     :label: eqn:AMSSapp9
 
-    V_x(x_-, s_-) = \sum_{s} \left( \Pi(s|s_-) {\frac{u_c(s)}{\sum_{\tilde s} 
+    V_x(x_-, s_-) = \sum_{s} \left( \Pi(s|s_-) {\frac{u_c(s)}{\sum_{\tilde s}
     \Pi(\tilde s| s_-) u_c(\tilde s)}} \right) V_x(x(s), s)
 
 
 Equation :eq:`eqn:AMSSapp9` states that :math:`V_x(x, s)` is a *risk-adjusted martingale*
 
-Saying that :math:`V_x(x, s)` is a risk-adjusted martingale  means  that 
-:math:`V_x(x, s)`  is a martingale with respect to the probability distribution 
+Saying that :math:`V_x(x, s)` is a risk-adjusted martingale  means  that
+:math:`V_x(x, s)`  is a martingale with respect to the probability distribution
 over :math:`s^t` sequences that is generated by the *twisted* transition probability matrix:
 
 .. math::
 
-    \check \Pi(s|s_-) \equiv \Pi(s|s_-) {\frac{u_c(s)}{\sum_{\tilde s} 
+    \check \Pi(s|s_-) \equiv \Pi(s|s_-) {\frac{u_c(s)}{\sum_{\tilde s}
     \Pi(\tilde s| s_-) u_c(\tilde s)}}
 
 
-**Exercise**: Please verify that :math:`\check \Pi(s|s_-)` is a valid Markov 
-transition density, i.e., that its elements are all nonnegative and 
+**Exercise**: Please verify that :math:`\check \Pi(s|s_-)` is a valid Markov
+transition density, i.e., that its elements are all nonnegative and
 that for each :math:`s_-`, the sum over :math:`s` equals unity
 
 
@@ -952,13 +927,13 @@ becomes a function of the history :math:`s^t` and initial
 government debt :math:`b_0`
 
 In :doc:`Lucas-Stokey model<opt_tax_recur>`, we
-found that 
+found that
 
-* a counterpart to :math:`V_x(x,s)` is time invariant and equal to 
+* a counterpart to :math:`V_x(x,s)` is time invariant and equal to
   the Lagrange multiplier on the Lucas-Stokey implementability constraint
 
-* time invariance of :math:`V_x(x,s)`  is the source of a key 
-  feature of the Lucas-Stokey model, namely, state variable degeneracy 
+* time invariance of :math:`V_x(x,s)`  is the source of a key
+  feature of the Lucas-Stokey model, namely, state variable degeneracy
   (i.e., :math:`x_t` is an exact function of :math:`s_t`)
 
 That :math:`V_x(x,s)` varies over time according to a twisted martingale
@@ -966,7 +941,7 @@ means that there is no state-variable degeneracy in the AMSS model
 
 In the AMSS model, both :math:`x` and :math:`s` are needed to describe the state
 
-This property of the AMSS model  transmits a twisted martingale 
+This property of the AMSS model  transmits a twisted martingale
 component to consumption, employment, and the tax rate
 
 
@@ -977,32 +952,32 @@ Digression on Nonnegative Transfers
 
 Throughout this lecture we have imposed that transfers :math:`T_t = 0`
 
-AMSS :cite:`AMSS_2002` instead imposed a nonnegativity 
+AMSS :cite:`AMSS_2002` instead imposed a nonnegativity
 constraint :math:`T_t\geq 0` on transfers
 
-They also considered a special case of quasi-linear preferences, 
+They also considered a special case of quasi-linear preferences,
 :math:`u(c,l)= c + H(l)`
 
 In this case, :math:`V_x(x,s)\leq 0` is a non-positive martingale
 
 By the *martingale convergence theorem*  :math:`V_x(x,s)` converges almost surely
 
-Furthermore, when the Markov chain :math:`\Pi(s| s_-)` and the government 
-expenditure function :math:`g(s)` are such that :math:`g_t` is perpetually 
+Furthermore, when the Markov chain :math:`\Pi(s| s_-)` and the government
+expenditure function :math:`g(s)` are such that :math:`g_t` is perpetually
 random, :math:`V_x(x, s)` almost surely converges to zero
 
 For quasi-linear preferences, the first-order condition with respect to :math:`n(s)` becomes
 
 .. math::
 
-    (1-\mu(s|s_-) ) (1 - u_l(s)) + \mu(s|s_-) n(s) u_{ll}(s) =0 
+    (1-\mu(s|s_-) ) (1 - u_l(s)) + \mu(s|s_-) n(s) u_{ll}(s) =0
 
 
-When :math:`\mu(s|s_-) = \beta V_x(x(s),x)` converges to zero, in the limit 
+When :math:`\mu(s|s_-) = \beta V_x(x(s),x)` converges to zero, in the limit
 :math:`u_l(s)= 1 =u_c(s)`, so that :math:`\tau(x(s),s) =0`
 
-Thus, in the limit, if :math:`g_t` is perpetually random,  the government 
-accumulates sufficient assets to finance all expenditures from earnings on those 
+Thus, in the limit, if :math:`g_t` is perpetually random,  the government
+accumulates sufficient assets to finance all expenditures from earnings on those
 assets, returning any excess revenues to the household as nonnegative lump sum transfers
 
 
@@ -1017,13 +992,11 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using Dierckx
 
-    """
-    Bellman equation for the continuation of the Lucas-Stokey Problem
-    """
+
     mutable struct BellmanEquation_Recursive{TP <: Model, TI <: Integer, TR <: Real}
         model::TP
         S::TI
@@ -1036,10 +1009,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         zFB::Vector{Vector{TR}}
     end
 
-    """
-    Compute the planner's allocation by solving Bellman
-    equation.
-    """
+
     struct RecursiveAllocation{TP <: Model,
                             TI <: Integer,
                             TVg <: AbstractVector,
@@ -1054,9 +1024,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         policies::TT
     end
 
-    """
-    Initializes the type from the calibration Model
-    """
+
     function RecursiveAllocation(model::Model, μgrid::AbstractArray)
         G = model.G
         S = size(model.Π, 1)             # number of states
@@ -1067,9 +1035,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         return RecursiveAllocation(model, mc, S, T, μgrid, xgrid, Vf, policies)
     end
 
-    """
-    Solve the time  1 Bellman equation for calibration Model and initial grid μgrid
-    """
+
     function solve_time1_bellman{TR <: Real}(model::Model{TR}, μgrid::AbstractArray)
         Π = model.Π
         S = size(model.Π, 1)
@@ -1143,9 +1109,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         return Vf, policies, T, xgrid
     end
 
-    """
-    Fits the policy functions
-    """
+
     function fit_policy_function{TF<:AbstractFloat}(T::BellmanEquation_Recursive,
                                                     PF::Function,
                             xgrid::AbstractVector{TF})
@@ -1180,9 +1144,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         return Vf, policies
     end
 
-    """
-    Computes Tau given c,n
-    """
+
     function Tau(pab::RecursiveAllocation,
                 c::AbstractArray,
             n::AbstractArray)
@@ -1193,9 +1155,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     Tau(pab::RecursiveAllocation, c::Real, n::Real) = Tau(pab, [c], [n])
 
-    """
-    Finds the optimal allocation given initial government debt B_ and state s_0
-    """
+
     function time0_allocation(pab::RecursiveAllocation, B_::Real, s0::Integer)
         T, Vf = pab.T, pab.Vf
         xbar = T.xbar
@@ -1205,9 +1165,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         return c0, n0, xprime0, T0
     end
 
-    """
-    Simulates planners policies for `T` periods
-    """
+
     function simulate{TF <: AbstractFloat}(pab::RecursiveAllocation,
                                         B_::TF, s_0::Integer, T::Integer,
                                         sHist::Vector=simulate(pab.mc, T, init=s_0))
@@ -1254,9 +1212,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         return cHist, nHist, Bhist, xHist, TauHist, THist, μHist, sHist
     end
 
-    """
-    Initializes the class from the calibration Model
-    """
+
     function BellmanEquation_Recursive{TF <: AbstractFloat}(model::Model{TF},
                                                             xgrid::AbstractVector{TF},
                                                             policies0::Array)
@@ -1282,14 +1238,12 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     end
 
 
-    """
-    Finds the optimal policies
-    """
+
     function get_policies_time1(T::BellmanEquation_Recursive,
-                                i_x::Integer, 
-                                x::Real, 
-                                s_::Integer, 
-                                Vf::AbstractArray{Function}, 
+                                i_x::Integer,
+                                x::Real,
+                                s_::Integer,
+                                Vf::AbstractArray{Function},
                                 xbar::AbstractVector)
         model, S = T.model, T.S
         β, Θ, G, Π = model.β, model.Θ, model.G, model.Π
@@ -1378,13 +1332,11 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         return vcat(-minf, T.z0[i_x, s_])
     end
 
-    """
-    Finds the optimal policies
-    """
+
     function get_policies_time0(T::BellmanEquation_Recursive,
-                                B_::Real, 
-                                s0::Integer, 
-                                Vf::AbstractArray{Function}, 
+                                B_::Real,
+                                s0::Integer,
+                                Vf::AbstractArray{Function},
                                 xbar::AbstractVector)
         model = T.model
         β, Θ, G = model.β, model.Θ, model.G
@@ -1464,8 +1416,8 @@ We now turn to some examples
 Anticipated One-Period War
 ----------------------------------
 
-In our lecture on :doc:`optimal taxation with state contingent debt <opt_tax_recur>` 
-we studied how the government manages uncertainty in a simple setting 
+In our lecture on :doc:`optimal taxation with state contingent debt <opt_tax_recur>`
+we studied how the government manages uncertainty in a simple setting
 
 As in that lecture, we assume the one-period utility function
 
@@ -1479,7 +1431,7 @@ As in that lecture, we assume the one-period utility function
     utility as a function of :math:`n` rather than leisure :math:`l`
 
 
-We consider the same government expenditure process studied in the lecture on 
+We consider the same government expenditure process studied in the lecture on
 :doc:`optimal taxation with state contingent debt <opt_tax_recur>`
 
 Government expenditures are known for sure in all periods except one
@@ -1492,8 +1444,8 @@ Government expenditures are known for sure in all periods except one
 
   *  If there is no war :math:`g_3 = g_l = 0.1`
 
-A useful trick is to define  components of the state vector as the following six 
-:math:`(t,g)` pairs: 
+A useful trick is to define  components of the state vector as the following six
+:math:`(t,g)` pairs:
 
 .. math::
 
@@ -1527,7 +1479,7 @@ We assume the same utility parameters as in the :doc:`Lucas-Stokey economy <opt_
 
 This utility function is implemented in the following type
 
-.. code-block:: julia 
+.. code-block:: julia
 
     function crra_utility(;
         β = 0.9,
@@ -1555,16 +1507,16 @@ This utility function is implemented in the following type
         return Model(β, Π, G, Θ, transfers,
                     U, Uc, Ucc, Un, Unn, n_less_than_one)
     end
-            
-          
-The following figure plots the Ramsey plan under both complete and incomplete 
+
+
+The following figure plots the Ramsey plan under both complete and incomplete
 markets for both possible realizations of the state at time :math:`t=3`
 
-Optimal policies when  the government has  access to state contingent debt are 
-represented by black lines, while the optimal policies when there is only a risk 
+Optimal policies when  the government has  access to state contingent debt are
+represented by black lines, while the optimal policies when there is only a risk
 free bond are in red
 
-Paths with circles are histories in which there is peace, while those with 
+Paths with circles are histories in which there is peace, while those with
 triangle denote war
 
 
@@ -1573,30 +1525,30 @@ triangle denote war
 
     time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
                                 Θ = ones(6))                       # Θ can in principle be random
-    
+
     time_example.Π = [ 0.0 1.0 0.0 0.0 0.0 0.0;
                        0.0 0.0 1.0 0.0 0.0 0.0;
                        0.0 0.0 0.0 0.5 0.5 0.0;
                        0.0 0.0 0.0 0.0 0.0 1.0;
                        0.0 0.0 0.0 0.0 0.0 1.0;
                        0.0 0.0 0.0 0.0 0.0 1.0]
-    
+
     # Initialize μgrid for value function iteration
     μgrid = linspace(-0.7, 0.01, 200)
-    
+
     time_example.transfers = true                                 # Government can use transfers
     time_sequential = SequentialAllocation(time_example)          # Solve sequential problem
-    
+
     time_bellman = RecursiveAllocation(time_example, μgrid)
-    
+
     sHist_h = [1, 2, 3, 4, 6, 6, 6]
     sHist_l = [1, 2, 3, 5, 6, 6, 6]
-    
+
     sim_seq_h = simulate(time_sequential, 1., 1, 7, sHist_h)
     sim_bel_h = simulate(time_bellman, 1., 1, 7, sHist_h)
     sim_seq_l = simulate(time_sequential, 1., 1, 7, sHist_l)
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
-    
+
     using Plots
     pyplot()
     titles = hcat("Consumption", "Labor", "Government Debt",
@@ -1623,7 +1575,7 @@ triangle denote war
         plot!(p[i], 0:6, sim_bel_h_plot[:, i], marker=:utriangle, color=:red, lab="")
     end
     p
-                     
+
 
 
 
@@ -1649,13 +1601,13 @@ To finance a war it raises taxes and issues more debt
 
 To service the additional debt burden, it raises taxes in all future periods
 
-The absence of state contingent debt leads to an important difference in the 
+The absence of state contingent debt leads to an important difference in the
 optimal tax policy
 
-When the Ramsey planner has access to state contingent debt, the optimal tax 
+When the Ramsey planner has access to state contingent debt, the optimal tax
 policy is history independent
 
-* the tax rate is a function  of the current level of government spending only, 
+* the tax rate is a function  of the current level of government spending only,
   given the Lagrange multiplier on the implementability constraint
 
 Without state contingent debt, the optimal tax rate is history dependent
@@ -1667,10 +1619,10 @@ Without state contingent debt, the optimal tax rate is history dependent
 Perpetual War Alert
 ^^^^^^^^^^^^^^^^^^^^
 
-History dependence occurs more dramatically in a case in which the government 
+History dependence occurs more dramatically in a case in which the government
 perpetually faces the prospect  of war
 
-This case was studied in the final example of the lecture on 
+This case was studied in the final example of the lecture on
 :doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
 
 There, each period the government faces a constant probability, :math:`0.5`, of war
@@ -1680,10 +1632,10 @@ In addition, this example features the following preferences
 .. math::
 
     u(c,n) = \log(c) + 0.69 \log(1-n)
-    
+
 In accordance, we will re-define our utility function
 
-.. code-block:: julia 
+.. code-block:: julia
 
     function log_utility(;β = 0.9,
                         ψ = 0.69,
@@ -1701,12 +1653,12 @@ In accordance, we will re-define our utility function
         return Model(β, Π, G, Θ, transfers,
                     U, Uc, Ucc, Un, Unn, n_less_than_one)
     end
-          
 
-With these preferences, Ramsey tax rates will vary even in the Lucas-Stokey 
+
+With these preferences, Ramsey tax rates will vary even in the Lucas-Stokey
 model with state-contingent debt
 
-The figure below plots optimal tax policies for both the economy with  
+The figure below plots optimal tax policies for both the economy with
 state contingent debt (circles) and the economy with only a risk-free bond
 (triangles)
 
@@ -1715,23 +1667,23 @@ state contingent debt (circles) and the economy with only a risk-free bond
 .. code-block:: julia
 
     log_example = log_utility()
-    
+
     log_example.transfers = true                             # Government can use transfers
     log_sequential = SequentialAllocation(log_example)       # Solve sequential problem
     log_bellman = RecursiveAllocation(log_example, μgrid)    # Solve recursive problem
 
     T = 20
     sHist = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1]
-    
+
     #simulate
     sim_seq = simulate(log_sequential, 0.5, 1, T, sHist)
     sim_bel = simulate(log_bellman, 0.5, 1, T, sHist)
-    
+
     sim_seq_plot = hcat(sim_seq[1:3]...,
                 sim_seq[4], log_example.G[sHist], log_example.Θ[sHist] .* sim_seq[2])
     sim_bel_plot = hcat(sim_bel[1:3]...,
                 sim_bel[5], log_example.G[sHist], log_example.Θ[sHist] .* sim_bel[2])
-    
+
     #plot policies
     p = plot(size = (700, 500), layout = grid(3, 2),
             xaxis=(0:T), grid=false, titlefont=Plots.font("sans-serif", 10))
@@ -1743,19 +1695,19 @@ state contingent debt (circles) and the economy with only a risk-free bond
         plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:black, lab=labels[i][1])
     end
     plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:black, lab="")
-            
 
 
 
-When the government experiences a prolonged period of peace, it is able to reduce 
+
+When the government experiences a prolonged period of peace, it is able to reduce
 government debt and set permanently lower tax rates
 
 However, the government  finances a long war by borrowing and raising taxes
 
-This results in a drift away from  policies with state contingent debt that 
-depends on the history of shocks 
+This results in a drift away from  policies with state contingent debt that
+depends on the history of shocks
 
-This is even more evident in the following figure that plots the evolution of 
+This is even more evident in the following figure that plots the evolution of
 the two policies over 200 periods
 
 
@@ -1770,7 +1722,7 @@ the two policies over 200 periods
                  log_example.G[sHist_long], log_example.Θ[sHist_long] .* sim_seq_long[2])
     sim_bel_long_plot = hcat(sim_bel_long[1:3]..., sim_bel_long[5],
                  log_example.G[sHist_long], log_example.Θ[sHist_long] .* sim_bel_long[2])
-    
+
     p = plot(size = (700, 500), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
             titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
@@ -1779,7 +1731,7 @@ the two policies over 200 periods
         plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2])
     end
     p
-    
+
 
 
 
@@ -1793,12 +1745,11 @@ the two policies over 200 periods
     any such allocation could be improved by lowering distortionary taxes
     rather than handing out lump-sum transfers. But without state-contingent
     debt  there can be circumstances when a government would like to make
-    lump-sum transfers to the private sector. 
+    lump-sum transfers to the private sector.
 
-.. [#fn_b] 
+.. [#fn_b]
     From the first-order conditions for the Ramsey
     problem, there exists another realization :math:`\tilde s^t` with
     the same history up until the previous period, i.e., :math:`\tilde s^{t-1}=
     s^{t-1}`, but where the multiplier on constraint :eq:`AMSS_46` takes  a positive value, so
     :math:`\gamma_t(\tilde s^t)>0`.
-
