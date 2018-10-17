@@ -452,7 +452,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
                 function obj(c)
                     EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
-                    return -u(c)  - β * EV
+                    return u(c)   β * EV
                 end
                 res = optimize(obj, opt_lb, R .* a .+ z .+ b)
                 c_star = Optim.minimizer(res)

@@ -573,9 +573,9 @@ Here's a function that implements the Bellman operator using linear interpolatio
             res = maximize(objective, 1e-10, y)
 
             if compute_policy
-                σ[i] = maximizer(res)
+                σ[i] = Optim.maximizer(res)
             end
-            Tw[i] = maximum(res)
+            Tw[i] = Optim.maximum(res)
         end
 
         if compute_policy
