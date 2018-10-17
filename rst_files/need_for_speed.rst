@@ -48,7 +48,7 @@ This lecture covers the key points
 Requirements
 -------------
 
-You should read our :doc:`earlier lecture <types_methods>` on types, methods and multiple dispatch before this one
+You should read our :doc:`earlier lecture <generic_programming>` on types, methods and multiple dispatch before this one
 
 Setup
 ------------------
