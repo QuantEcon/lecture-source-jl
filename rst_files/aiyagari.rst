@@ -13,14 +13,6 @@ The Aiyagari Model
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In this lecture we describe the structure of a class of models that build on work by Truman Bewley :cite:`Bewley1977`
 
 .. only:: html
@@ -50,9 +42,6 @@ The Aiyagari model has been used to investigate many topics, including
 
 * etc., etc., etc.
 
-
-
-
 References
 -------------
 
@@ -62,6 +51,16 @@ A textbook treatment is available in chapter 18 of :cite:`Ljungqvist2012`
 
 A continuous time version of the model by SeHyoun Ahn and Benjamin Moll can be found `here <http://nbviewer.jupyter.org/github/QuantEcon/QuantEcon.notebooks/blob/master/aiyagari_continuous_time.ipynb>`__
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Economy
 ==============

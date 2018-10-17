@@ -19,14 +19,6 @@ Consumption and Tax Smoothing with Complete and Incomplete Markets
 Overview
 ========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture describes two types of consumption-smoothing  and tax-smoothing models
 
 * one is in the **complete markets** tradition of Lucas and Stokey :cite:`LucasStokey1983`
@@ -94,6 +86,16 @@ The key difference between those lectures and this one is
 
 So these later lectures are partly about how the government should  manipulate prices of government debt
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Background
 ==========

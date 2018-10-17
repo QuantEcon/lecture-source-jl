@@ -31,6 +31,17 @@ Not only does this make the libraries more portable, it makes them much easier t
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Distributions
 =====================
 

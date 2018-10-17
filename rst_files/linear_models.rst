@@ -21,14 +21,6 @@ Linear State Space Models
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture introduces the **linear state space** dynamic system
 
 This model is a workhorse that carries a powerful theory of prediction
@@ -59,6 +51,17 @@ Its many applications include:
     * Rational expectations version of Cagan's model of hyperinflation
 
     * Sargent and Wallace's "unpleasant monetarist arithmetic," etc.
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Linear State Space Model

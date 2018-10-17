@@ -16,15 +16,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 This lecture introduces the concept of *rational expectations equilibrium*
 
 To illustrate it, we describe a linear quadratic version of a famous and important model
@@ -155,6 +146,16 @@ References for this lecture include
 
 * :cite:`Ljungqvist2012`, chapter 7
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Defining Rational Expectations Equilibrium
 ====================================================

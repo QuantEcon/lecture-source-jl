@@ -11,14 +11,6 @@ Setting up Your Julia Environment
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In this lecture we will cover how to get up and running with Julia
 
 Topics:
@@ -32,7 +24,16 @@ Topics:
 #. Installation of libraries, including the Julia code that underpins these lectures
 
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 First Steps
 ==============

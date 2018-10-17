@@ -13,14 +13,6 @@
 Overview
 =============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Markov chains are one of the most useful classes of stochastic processes, being
 
 * simple, flexible and supported by many elegant theoretical results
@@ -37,6 +29,16 @@ We will also introduce some of the high quality routines for working with Markov
 
 Prerequisite knowledge is basic probability and linear algebra
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 

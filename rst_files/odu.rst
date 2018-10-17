@@ -13,14 +13,6 @@ Job Search III: Search with Learning
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 
 In this lecture we consider an extension of the :doc:`previously studied <mccall_model>` job search model of McCall :cite:`McCall1970`
 
@@ -45,6 +37,17 @@ Model features
 * Infinite horizon dynamic programming with two states and one binary control
 
 * Bayesian updating to learn the unknown distribution
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 

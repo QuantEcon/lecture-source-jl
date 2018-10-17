@@ -16,20 +16,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-In this section we solve a simple on-the-job search model
-
-* based on :cite:`Ljungqvist2012`, exercise 6.18, and :cite:`Jovanovic1979`
-
-
-
 Model features
 ----------------
 
@@ -40,6 +26,17 @@ Model features
 
 * infinite horizon dynamic programming with one state variable and two controls
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Model
 ========

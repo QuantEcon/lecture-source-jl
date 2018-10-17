@@ -16,14 +16,6 @@ A First Look at the Kalman Filter
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture provides a simple and intuitive introduction to the Kalman filter, for those who either
 
 * have heard of the Kalman filter but don't know how it works, or
@@ -38,6 +30,16 @@ The second reference presents a  comprehensive treatment of the Kalman filter
 
 Required knowledge: Familiarity with matrix manipulations, multivariate normal distributions, covariance matrices, etc.
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Basic Idea
 ====================

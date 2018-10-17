@@ -12,15 +12,6 @@ Uncertainty Traps
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 In this lecture we study a simplified version of an uncertainty traps model of Fajgelbaum, Schaal and Taschereau-Dumouchel :cite:`fun`
 
 The model features self-reinforcing uncertainty that has big impacts on economic activity
@@ -51,6 +42,17 @@ Uncertainty traps emerge because:
 * Less information translates to higher uncertainty, further discouraging entrepreneurs from choosing to be active, and so on
 
 Uncertainty traps stem from a positive externality: high aggregate economic activity levels generates valuable information
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Model
 ===============

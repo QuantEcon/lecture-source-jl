@@ -16,15 +16,6 @@ Robustness
 Overview
 ===========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 .. index::
     single: Bellman Equation
 
@@ -152,7 +143,16 @@ Our discussion in this lecture is based on
 * :cite:`HansenSargent2008`
 
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Model

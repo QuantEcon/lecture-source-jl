@@ -19,15 +19,6 @@ Asset Pricing II: The Lucas Asset Pricing Model
 Overview
 =====================================
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 As stated in an :doc:`earlier lecture <markov_asset>`, an asset is a claim on a stream of prospective payments
 
 What is the correct price to pay for such a claim?
@@ -40,7 +31,16 @@ A side benefit of studying Lucas' model is that it provides a beautiful illustra
 
 Another difference to our :doc:`first asset pricing lecture <markov_asset>` is that the state space and shock will be continous rather than discrete
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Lucas Model

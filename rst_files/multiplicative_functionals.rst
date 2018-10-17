@@ -18,14 +18,6 @@ Co-authored with Chase Coleman and Balint Szoke.
 Overview
 =========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture is a sequel to the :doc:`lecture on additive functionals <additive_functionals>`
 
 That lecture
@@ -39,6 +31,18 @@ This lecture uses this special class to create and analyze two examples
 * A  **log likelihood process**, an object at the foundation of both frequentist and Bayesian approaches to statistical inference
 
 * A version of Robert E. Lucas's :cite:`Lucas_2003` and Thomas Tallarini's :cite:`Tall2000` approaches to measuring the benefits of moderating aggregate fluctuations
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 A Log-Likelihood Process
 ==========================

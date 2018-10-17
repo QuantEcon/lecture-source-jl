@@ -16,14 +16,6 @@ Estimation of :index:`Spectra`
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In a :ref:`previous lecture <arma>` we covered some fundamental properties of covariance stationary linear stochastic processes
 
 One objective for that lecture was to introduce spectral densities --- a standard and very useful technique for analyzing such processes
@@ -39,6 +31,17 @@ turn is computed via the famous `fast Fourier transform <https://en.wikipedia.or
 Once the basic technique has been explained, we will apply it to the analysis of several key macroeconomic time series
 
 For supplementary reading, see :cite:`Sargent1987` or :cite:`CryerChan2008`.
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 .. _periodograms:
 

@@ -18,22 +18,11 @@ Job Search IV: Modeling Career Choice
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Next we study a computational problem concerning career and job choices
 
 The model is originally due to Derek Neal :cite:`Neal1999`
 
 This exposition draws on the presentation in :cite:`Ljungqvist2012`, section 6.5
-
-
-
 
 Model features
 ----------------
@@ -42,6 +31,17 @@ Model features
 
 * Infinite horizon dynamic programming with two state variables
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Model
 ========

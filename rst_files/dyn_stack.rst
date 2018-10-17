@@ -11,14 +11,6 @@ Dynamic Stackelberg Problems
 Overview
 ==================
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Previous lectures including :doc:`LQ dynamic programming <lqcontrol>`, :doc:`rational expectations equilibrium <rational_expectations>`, and :doc:`Markov perfect equilibrium <markov_perf>`  lectures have studied  decision problems that are recursive in what we can call "natural" state variables, such as
 
 * stocks of capital (fiscal, financial and human)
@@ -68,6 +60,17 @@ These additional constraints make the Stackelberg leader's decision rule at :mat
 This lecture displays these principles within the tractable framework of linear quadratic problems
 
 It is based on chapter 19 of :cite:`Ljungqvist2012`
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Stackelberg Problem
 =======================

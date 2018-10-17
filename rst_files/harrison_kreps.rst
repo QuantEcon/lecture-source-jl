@@ -18,14 +18,6 @@ Asset Pricing III:  Incomplete Markets
 Overview
 =========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture describes a version of a model of Harrison and Kreps :cite:`HarrKreps1978`
 
 The model determines the price of a dividend-yielding asset that is traded by two types of self-interested investors
@@ -39,7 +31,6 @@ The model features
 * short sales constraints, and possibly :math:`\ldots`
 
 * (leverage) limits on an investor's ability to borrow in order to finance purchases of a risky asset
-
 
 References
 ----------
@@ -60,6 +51,16 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 
     *A component of an asset price can be interpreted as a bubble when all investors agree that the current price of the asset exceeds what they believe the asset's underlying dividend stream justifies*
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Structure of the Model
 =======================

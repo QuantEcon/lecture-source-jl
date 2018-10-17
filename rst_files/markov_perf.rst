@@ -14,14 +14,6 @@ Markov Perfect Equilibrium
 Overview
 ==========================
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 .. index::
     single: Markov Perfect Equilibrium; Overview
 
@@ -41,6 +33,16 @@ We will focus on settings with
 
 Other references include chapter 7 of :cite:`Ljungqvist2012`
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 

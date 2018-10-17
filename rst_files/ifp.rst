@@ -13,14 +13,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Next we study an optimal savings problem for an infinitely lived consumer---the "common ancestor" described in :cite:`Ljungqvist2012`, section 1.3
 
 This is an essential sub-problem for many representative macroeconomic models
@@ -57,12 +49,21 @@ This method turns out to be
 * More efficient numerically than value function iteration
 
 
-
 References
 ----------------
 
 Other useful references include :cite:`Deaton1991`, :cite:`DenHaan2010`, :cite:`Kuhn2013`, :cite:`Rabault2002`,  :cite:`Reiter2009`  and :cite:`SchechtmanEscudero1977`
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Optimal Savings Problem
 ===============================

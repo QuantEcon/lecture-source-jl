@@ -11,14 +11,6 @@ Optimal Taxation with State-Contingent Debt
 Overview
 =========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture describes a celebrated model of optimal fiscal policy by Robert E.
 Lucas, Jr., and Nancy Stokey  :cite:`LucasStokey1983`
 
@@ -52,6 +44,17 @@ In particular, we shall include forward-looking variables that summarize  optima
 responses of private agents to a Ramsey plan
 
 See :doc:`Optimal taxation <lqramsey>` for an analysis within a linear-quadratic setting
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 A Competitive Equilibrium with Distorting Taxes
 ================================================

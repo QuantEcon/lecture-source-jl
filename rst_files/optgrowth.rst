@@ -14,15 +14,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 In this lecture we're going to study a simple optimal growth model with one agent
 
 The model is a version of the standard one sector infinite horizon growth model studied in
@@ -45,6 +36,16 @@ treatments in our lectures on :doc:`shortest paths <short_path>` and
 We'll discuss some of the technical details of dynamic programming as we
 go along
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Model

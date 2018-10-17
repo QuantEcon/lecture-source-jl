@@ -12,14 +12,6 @@ Optimal Taxation without State-Contingent Debt
 Overview
 ==========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In :doc:`an earlier lecture <opt_tax_recur>` we described a model of 
 optimal taxation with state-contingent debt due to 
 Robert E. Lucas, Jr.,  and Nancy Stokey  :cite:`LucasStokey1983`
@@ -41,6 +33,16 @@ In this lecture, we
 
 We begin with an introduction to the model
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 
