@@ -51,7 +51,7 @@ Here are some functions that create two-dimensional arrays
 Sparse
 
 
-.. _more_types:
+.. _further_types:
 
 Cover ``mul!``?
 
