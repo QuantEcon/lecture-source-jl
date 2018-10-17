@@ -21,18 +21,22 @@ In this lecture we give more details on
 
 * motivation for generic programming
 
+Setup
+------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
+    using LinearAlgebra, Statistics, Compat
+
 Finding and Interpreting Types
 ================================
 
 Finding The Type
 --------------------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-    using LinearAlgebra, Statistics
 
 As we have seen in the previous lectures, in Julia all values have a type, which can be queried using the ``typeof`` function
 
@@ -59,7 +63,7 @@ The next two types use curly bracket notation to express the fact that they are 
 .. code-block:: julia
 
     @show typeof(1.0 + 1im)
-    @show typeof(ones(2,2);
+    @show typeof(ones(2,2));
 
 We will learn more details about  :doc:`generic programming <generic_programming>` later, but the key is to interpret the curly brackets as swappable parameters for a given type
 

@@ -35,6 +35,16 @@ We use the model as a vehicle for illustrating
 
 Background readings on the linear-quadratic-Gaussian permanent income model are Hall's  :cite:`Hall1978`  and chapter 2 of  :cite:`Ljungqvist2012`
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Savings Problem
 ====================
@@ -501,13 +511,6 @@ Defining assets as :math:`-b_t`, we see that assets are just the cumulative sum 
 
 The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 1`, and :math:`\sigma = 0.15`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-
 .. code-block:: julia
   :class: test
 
@@ -515,12 +518,8 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-  #=
-  @author : Spencer Lyon
-            Victoria Gregory
-  =#
-
   using Plots, Random
+  gr(fmt=:png)
 
   Random.seed!(42)
 

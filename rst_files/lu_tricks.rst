@@ -48,6 +48,18 @@ References
 
 Useful references include :cite:`Whittle1963`, :cite:`HanSar1980`, :cite:`Orfanidisoptimum1988`, :cite:`Athanasios1991`, and :cite:`Muth1960`
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 A Control Problem
 ====================================
 
@@ -905,13 +917,6 @@ The :math:`\{a_t\}` sequence we'll choose as a stationary cyclic process plus so
 
 Here's some code that generates a plot when :math:`\gamma = 0.8`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-
 .. code-block:: julia
   :class: test
 
@@ -920,11 +925,12 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
 
   using Plots, Random
-
+  gr(fmt=:png)
+  
   # == Set seed and generate a_t sequence == #
   Random.seed!(123)
   n = 100
-  a_seq = sin.(range(0, stop = 5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
+  a_seq = sin.(range(0,  5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
 
   function plot_simulation(;γ=0.8, m=1, h=1., y_m=2.)
     d = γ * [1, -1]

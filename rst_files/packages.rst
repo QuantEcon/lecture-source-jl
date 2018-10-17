@@ -11,6 +11,13 @@ Useful Libraries
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
@@ -24,10 +31,16 @@ Not only does this make the libraries more portable, it makes them much easier t
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics
 
+Setup
+------------------
 
-Credits: Thanks to `@cc7768 <https://github.com/cc7768>`_, `@vgregory757 <https://github.com/vgregory757>`_ and `@spencerlyon2 <https://github.com/sglyon>`_ for keeping us up to date with current best practice
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
+.. code-block:: julia 
 
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Distributions
 =====================
@@ -176,6 +189,7 @@ We begin by creating some data points, using a sine function
 
     using Interpolations
     using Plots
+    gr(fmt=:png)
 
     x = -7:7             # x points, coase grid
     y = sin.(x)          # corresponding y points
@@ -250,13 +264,13 @@ Here's an example of the latter with an irregular grid
 
 .. code-block:: julia
 
-    x = log.(range(1, stop = exp(4), length = 10)) .+ 1  # Uneven grid
+    x = log.(range(1,  exp(4), length = 10)) .+ 1  # Uneven grid
     y = log.(x)                            # Corresponding y points
 
     itp_const = interpolate((x, ), y, Gridded(Constant()))
     itp_linear = interpolate((x, ), y, Gridded(Linear()))
 
-    xf = log.(range(1, stop = exp(4), length = 100)) .+ 1
+    xf = log.(range(1,  exp(4), length = 100)) .+ 1
     y_const = [ itp_const[x] for x ∈ xf ]
     y_linear = [ itp_linear[x] for x ∈ xf ]
     y_true = [ log(x) for x ∈ xf ]
@@ -277,7 +291,7 @@ The following example gives one illustration
 
     let
         n = 5
-        x = range(-3, stop = 3, length = n)
+        x = range(-3,  3, length = n)
         y = copy(x)
 
         z = zeros(n, n)
@@ -291,7 +305,7 @@ The following example gives one illustration
         itp = interpolate((x, y), z, Gridded(Linear()));
 
         nf = 50
-        xf = range(-3, stop = 3, length = nf)
+        xf = range(-3,  3, length = nf)
         yf = copy(xf)
 
         zf = zeros(nf, nf)

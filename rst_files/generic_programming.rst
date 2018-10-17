@@ -30,6 +30,16 @@ Understanding them will help you
 
 * Read Julia code written by other programmers
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Types and Multiple Dispatch
 ===========================
@@ -837,5 +847,5 @@ Next let's plot the time series to see what it looks like
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
     plot(X, legend=:none)

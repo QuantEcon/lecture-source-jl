@@ -49,8 +49,6 @@ This lecture covers
 
 * a powerful set of routines for solving discrete DPs from the `QuantEcon code libary <http://quantecon.org/julia_index.html>`_
 
-
-
 How to Read this Lecture
 ---------------------------
 
@@ -63,10 +61,6 @@ We use dynamic programming many applied lectures, such as
 * The :doc:`optimal growth lecture <optgrowth>`
 
 The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case
-
-
-The code discussed below was authored primarily by `Daisuke Oyama <https://github.com/oyamad>`_
-
 
 References
 ------------
@@ -86,6 +80,18 @@ For background reading on dynamic programming and additional applications, see, 
 * :cite:`MirandaFackler2002`
 
 * `EDTC <http://johnstachurski.net/edtc.html>`_, chapter 5
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 .. _discrete_dps:
@@ -521,12 +527,6 @@ Note:
 
 The following code sets up these objects for us
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -692,6 +692,7 @@ What happens if the agent is more patient?
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
     bar(std_2, label="stationary dist")
 
 
@@ -772,9 +773,6 @@ The exercise is to replicate this solution using ``DiscreteDP``
 Solutions
 ==========
 
-Written jointly with `Diasuke Oyama <https://github.com/oyamad>`__ and
-`Max Huber <https://github.com/MaximilianJHuber>`__
-
 Setup
 -----
 
@@ -799,7 +797,7 @@ model above. We discretize the state space into a grid of size
 
     grid_max = 2
     grid_size = 500
-    grid = range(1e-6, stop = grid_max, length = grid_size)
+    grid = range(1e-6, grid_max, length = grid_size)
 
 
 We choose the action to be the amount of capital to save for the next

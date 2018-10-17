@@ -59,6 +59,16 @@ We admit some overlap with :doc:`this lecture <fundamental_types>`, where operat
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 :index:`Vectors`
 ================
@@ -88,15 +98,9 @@ The following figure represents three vectors in this manner
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-              Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
-
     using Plots, LaTeXStrings
-
+    gr(fmt=:png)
+    
     vecs = ([2, 4], [-3, 3], [-4, -3.5])
     x_vals = zeros(2, length(vecs))
     y_vals = zeros(2, length(vecs))
@@ -280,12 +284,6 @@ The expression :math:`\| x - y\|` is thought of as the distance between :math:`x
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
 
     using LinearAlgebra
@@ -341,6 +339,7 @@ The next figure shows the span of :math:`A = \{a_1, a_2\}` in :math:`\mathbb R ^
 
 The span is a 2 dimensional plane passing through these two points and the origin
 
+.. _la_3dvec:
 
 .. code-block:: julia
   :class: collapse
@@ -352,7 +351,7 @@ The span is a 2 dimensional plane passing through these two points and the origi
 
     # Axes
     gs = 3
-    z = range(x_min, stop = x_max, length = gs)
+    z = range(x_min, x_max, length = gs)
     x = zeros(gs)
     y = zeros(gs)
     plot(x, y, z, color = :black, linewidth=2, alpha=0.5, label = "", legend=false)
@@ -387,8 +386,8 @@ The span is a 2 dimensional plane passing through these two points and the origi
 
     # Draw the plane
     grid_size = 20
-    xr2 = range(x_min, stop = x_max, length = grid_size)
-    yr2 = range(y_min, stop = y_max, length = grid_size)
+    xr2 = range(x_min, x_max, length = grid_size)
+    yr2 = range(y_min, y_max, length = grid_size)
     z2 = zeros(grid_size, grid_size)
     for i ∈ 1:grid_size
         for j ∈ 1:grid_size
@@ -813,18 +812,11 @@ The answer to both these questions is negative, as the next figure shows
 .. code-block:: julia
   :class: collapse
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-  =#
-
     f(x) = 0.6 * cos(4.0 * x) + 1.3
 
     xmin, xmax = -1.0, 1.0
     Nx = 160
-    x = range(xmin, stop = xmax, length = Nx)
+    x = range(xmin, xmax, length = Nx)
     y = f.(x)
     ya, yb = extrema(y)
 
@@ -1136,7 +1128,7 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
         eig_2[2, i] = v[2]
     end
 
-    x = range(-5, stop = 5, length = 10)
+    x = range(-5, 5, length = 10)
     y = -x
 
     plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow = true, color = :red,
@@ -1438,10 +1430,6 @@ As we will see, in economic contexts Lagrange multipliers often are shadow price
 
 Solutions
 ===========
-
-
-Thanks to `Willem Hekman <https://qutech.nl/person/willem-hekman/>`__ and Guanlong Ren
-for providing this solution.
 
 Exercise 1
 ----------

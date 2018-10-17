@@ -21,10 +21,9 @@ This part of the course provides a more details on the Julia programming languag
     generic_programming
     need_for_speed
     plots
-
-..    more_types
-..    tools_editors
-..    packages
-..    version_control
-..    testing
-..    file_io
+    more_types
+    tools_editors
+    packages
+    version_control
+    testing
+    file_io

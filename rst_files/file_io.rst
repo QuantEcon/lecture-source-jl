@@ -18,8 +18,16 @@ Topics:
 * How to manually open and close files
 * Working with Panda, R, and other datasets
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 File Input and Output
 ======================

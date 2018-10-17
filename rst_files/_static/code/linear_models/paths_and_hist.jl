@@ -1,4 +1,5 @@
 using Plots
+gr(fmt=:png)
 pyplot()
 using QuantEcon
 using LaTeXStrings

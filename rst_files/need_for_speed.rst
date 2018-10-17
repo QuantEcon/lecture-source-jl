@@ -45,11 +45,22 @@ For longer, more sophisticated programs, you need to be aware of potential stumb
 
 This lecture covers the key points
 
-
 Requirements
 -------------
 
-You should read our :doc:`earlier lecture <types_methods>` on types, methods and multiple dispatch before this one
+You should read our :doc:`earlier lecture <generic_programming>` on types, methods and multiple dispatch before this one
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 
 Foundations
@@ -546,7 +557,7 @@ Calls to this function run very quickly
 
 .. code-block:: julia
 
-    x = range(0, stop = 1, length = Int(1e6))
+    x = range(0,  1, length = Int(1e6))
     x = collect(x)
     typeof(x)
 

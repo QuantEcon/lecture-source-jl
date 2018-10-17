@@ -18,6 +18,18 @@ In this lecture we give more types
 * fixed size arrays
 * structured arrays
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 Structured Arrays
 ==================
 
@@ -35,9 +47,11 @@ Here are some functions that create two-dimensional arrays
 .. code-block:: julia
 
     size(diagm(0 => [2, 4]))
+
 Sparse
 
 
-.. _more_types:
+.. _further_types:
 
+Cover ``mul!``?
 

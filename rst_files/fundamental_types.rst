@@ -35,6 +35,17 @@ In this lecture we give more details on
 
 * nothing, missing, and unions
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
+    using LinearAlgebra, Statistics, Compat
+
 Array Basics
 ================
 
@@ -46,14 +57,6 @@ Later, we will see how arrays (and all other types in Julia) are handled in a ge
 
 Shape and Dimension
 ----------------------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-    using LinearAlgebra, Statistics
-
 
 We've already seen some Julia arrays in action
 
@@ -444,7 +447,6 @@ As an example, consider creating a diagonal matrix
 
 .. code-block:: julia
 
-    using LinearAlgebra
     d = [1.0, 2.0]
     a = Diagonal(d)
 
@@ -975,9 +977,12 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maxval = 1.0
     minval = 0.0
     numpoints = 10
-    a = range(minval, stop=maxval, length=numpoints)
-    # a = range(minval, maxval, length=numpoints) # supported soon...
+    a = range(minval, maxval, length=numpoints) # or range(minval, stop=maxval, length=numpoints)
+
     maximum(a) == maxval
+
+
+For the ``range(minval, maxval, length=numpoints)`` notation, until the release of Julia v1.1, you will need to have the ``using Compat`` in the header, as we do above
 
 Tuples and Named Tuples
 =========================
@@ -1176,6 +1181,68 @@ Finally, ``nothing`` is a good way to indicate an optional parameter in a functi
     f(1.0)
     f(1.0, z=3.0)
 
+An alternative to ``nothing``, which can be useful and sometimes higher performance, is to use the ``NaN`` to signal that a value is invalid returning from a function
+
+.. code-block:: julia
+
+    function f(x)
+        if x > 0.0
+            return x
+        else
+            return NaN
+        end
+    end
+    f(0.1)
+    f(-1.0)
+    @show typeof(f(-1.0))
+    @show f(-1.0) == NaN # note, this fails!
+    @show isnan(f(-1.0)) # check with this
+
+Note that in this case, the return type is ``Float64`` regardless of the input for ``Float64`` input
+
+Keep in mind, though, that this only works if the return type of a function is a ``Float64``
+
+
+Exceptions
+----------------------------------
+
+(See `exceptions documentation <https://docs.julialang.org/en/v1/manual/control-flow/index.html#Exception-Handling-1>`_)
+
+While returning a ``nothing`` can be a good way to deal with functions which may or may not return values, a more robust error handling method is to use exceptions
+
+Unless you are writing a package, you will rarely want to define and throw your own exceptions, but will need to deal with them from other libraries
+
+The key distinction for when to use an exceptions vs. return a ``nothing`` is whether an error is unexpected rather than a normal path of execution
+
+An example of an exception is a ``DomainError``, which signifies that a value passed to a function is invalid
+
+.. code-block:: julia
+
+    sqrt(-1.0)
+
+Another example you will see is when the compiler cannot convert between types
+
+.. code-block:: julia
+
+    convert(Int64, 3.12)
+
+If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error
+
+Occasionally you will want to catch these errors and try to recover
+
+.. code-block:: julia
+
+    function f(x)
+        try
+            sqrt(x)
+        catch # enters if exception thrown
+            sqrt(complex(x, 0)) # convert to complex number
+        end
+    end
+    f(0.0)
+    f(-1.0)
+
+
 Missing
 ----------------------------------
 
@@ -1223,8 +1290,6 @@ In the case where you would like to calculate a value without the missing values
     @show coalesce.(x, 0.0); # replace missing with 0.0;
 
 As ``missing`` is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``
-
-
 
 Exercises
 =============

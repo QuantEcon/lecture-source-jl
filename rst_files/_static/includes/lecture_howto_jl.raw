@@ -1,5 +1,6 @@
 How to read this lecture...
 
+* If using QuantEcon lectures for the first time on a computer, execute ``] add InstantiateFromURL`` inside of a notebook or the REPL
 * For some notebooks, enable content with "Trust" on the command tab of Jupyter lab
 * Code should execute sequentially if run in a Jupyter notebook
 * Please direct feedback to `contact@quantecon.org <mailto:contact@quantecon.org">`_ or `discourse forum <http://discourse.quantecon.org/>`_ 

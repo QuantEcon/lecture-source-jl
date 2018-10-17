@@ -16,12 +16,6 @@
 Overview
 ============
 
-In this section we solve a simple on-the-job search model
-
-* based on :cite:`Ljungqvist2012`, exercise 6.18, and :cite:`Jovanovic1979`
-
-
-
 Model features
 ----------------
 
@@ -32,6 +26,17 @@ Model features
 
 * infinite horizon dynamic programming with one state variable and two controls
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Model
 ========
@@ -178,12 +183,6 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  #=
-
-  @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-  =#
-
   using Distributions, QuantEcon
 
   # NOTE: only brute-force approach is available in bellman operator.
@@ -230,7 +229,7 @@ The following code solves the DP problem described above
 
       # range for range(ϵ, grid_max, grid_size). Needed for
       # CoordInterpGrid below
-      x_grid = range(ϵ, stop = grid_max, length = grid_size)
+      x_grid = range(ϵ, grid_max, length = grid_size)
 
       JvWorker(A, α, β, x_grid, G, π_func, F, nodes, weights, ϵ)
   end
@@ -251,7 +250,7 @@ The following code solves the DP problem described above
       cur_val = 0.0
       max_s = 1.0
       max_ϕ = 1.0
-      search_grid = range(ϵ, stop = 1.0, length = 15)
+      search_grid = range(ϵ, 1.0, length = 15)
 
       for (i, x) in enumerate(jv.x_grid)
 
@@ -296,7 +295,7 @@ The following code solves the DP problem described above
       cur_val = 0.0
       max_s = 1.0
       max_ϕ = 1.0
-      search_grid = range(ϵ, stop = 1.0, length = 15)
+      search_grid = range(ϵ, 1.0, length = 15)
 
       for (i, x) in enumerate(jv.x_grid)
 
@@ -414,7 +413,8 @@ The code is as follows
 .. code-block:: julia
 
     using Plots, LaTeXStrings
-
+    gr(fmt=:png)
+    
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
@@ -472,18 +472,12 @@ large number :math:`K` of realizations of :math:`x_{t+1}` given :math:`x_t =
 x`.  Plot this with one dot for each realization, in the form of a 45 degree
 diagram.  Set
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: no-execute
 
     K = 50
     plot_grid_max, plot_grid_size = 1.2, 100
-    plot_grid = range(0, stop = plot_grid_max, length = plot_grid_size)
+    plot_grid = range(0, plot_grid_max, length = plot_grid_size)
     plot(plot_grid, plot_grid, color = :black, linestyle = :dash,
          lims = (0, plot_grid_max), legend = :none)
 
@@ -564,7 +558,7 @@ Here's code to produce the 45 degree diagram
     K = 50
 
     plot_grid_max, plot_grid_size = 1.2, 100
-    plot_grid = range(0, stop = plot_grid_max, length = plot_grid_size)
+    plot_grid = range(0, plot_grid_max, length = plot_grid_size)
     ticks = [0.25, 0.5, 0.75, 1.0]
 
     xs = []
@@ -616,7 +610,7 @@ Exercise 2
 
     xbar(ϕ) = (wp.A * ϕ^wp.α)^(1.0 / (1.0 - wp.α))
 
-    ϕ_grid = range(0, stop = 1, length = 100)
+    ϕ_grid = range(0, 1, length = 100)
 
     plot(ϕ_grid, [xbar(ϕ) * (1 - ϕ) for ϕ in ϕ_grid], color = :blue,
         label = L"$w^*(\phi)$", legendfont = font(12), xlabel = L"$\phi$",

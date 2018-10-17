@@ -28,7 +28,16 @@ We'll use this structure to obtain an **Euler equation**  based method that's mo
 
 In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical implementation part of the Euler equation method can be further adjusted to obtain even more efficiency
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Euler Equation
 ==========================
@@ -407,12 +416,6 @@ The Operator
 
 Here's some code that implements the Coleman operator
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -420,13 +423,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
-    using QuantEcon, Interpolations
+    using QuantEcon, Interpolations, Roots
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -442,7 +439,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                 vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
                 return u_prime(c) - β * mean(vals)
             end
-            Kg[i] = brent(h, 1e-10, y - 1e-10)
+            Kg[i] = find_zero(h, (1e-10, y - 1e-10))
         end
         return Kg
     end
@@ -460,12 +457,6 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
 .. code-block:: julia
     :class: collapse
-
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
 
     using Optim
 
@@ -510,12 +501,6 @@ Here's a struct containing data from the log-linear growth model we used in the 
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
         β::TF              # Discount factor
@@ -546,7 +531,7 @@ Here's a struct containing data from the log-linear growth model we used in the 
                     f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
+        grid = collect(range(grid_min, grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)

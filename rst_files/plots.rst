@@ -12,8 +12,7 @@ Plotting in Julia
 Overview
 ============
 
-
-Since it's inception, plotting in Julia has been a mix of happiness and frustration
+Since its inception, plotting in Julia has been a mix of happiness and frustration
 
 Some initially promising libraries have stagnated, or failed to keep up with user needs
 
@@ -44,8 +43,16 @@ to the :ref:`section on Plots.jl <plotsjl>`
 
 If you want a deeper understanding and more flexibility, continue from the next section and read on
 
-Credits: Thanks to `@albep <https://github.com/albep>`_, `@vgregory757 <https://github.com/vgregory757>`_ and `@spencerlyon2 <https://github.com/sglyon>`_ for help with the code examples below
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 PyPlot
 ========================

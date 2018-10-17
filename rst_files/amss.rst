@@ -33,6 +33,16 @@ In this lecture, we
 
 We begin with an introduction to the model
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 
@@ -986,13 +996,7 @@ Code
 
 The recursive formulation is implemented as follows
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-.. code-block:: julia
+.. code-block:: julia 
 
     using Dierckx
 
@@ -1550,6 +1554,7 @@ triangle denote war
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
 
     using Plots
+    gr(fmt=:png)
     pyplot()
     titles = hcat("Consumption", "Labor", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")

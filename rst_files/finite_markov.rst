@@ -29,6 +29,16 @@ We will also introduce some of the high quality routines for working with Markov
 
 Prerequisite knowledge is basic probability and linear algebra
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 
@@ -237,12 +247,6 @@ The Markov chain is then constructed as discussed above.  To repeat:
 In order to implement this simulation procedure, we need a method for generating draws from a discrete distributions
 
 For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test
@@ -928,7 +932,8 @@ The convergence in the theorem is illustrated in the next figure
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     P = [0.971 0.029 0.000
             0.145 0.778 0.077
             0.000 0.508 0.492]

@@ -31,7 +31,16 @@ A side benefit of studying Lucas' model is that it provides a beautiful illustra
 
 Another difference to our :doc:`first asset pricing lecture <markov_asset>` is that the state space and shock will be continous rather than discrete
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Lucas Model
@@ -413,24 +422,12 @@ Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, wh
 
 Some code to implement the iterative computational procedure can be found below:
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    @authors : Spencer Lyon <spencer.lyon@nyu.edu>, John Stachurski
-
-    =#
 
     using QuantEcon, Distributions, Interpolations
 
@@ -463,7 +460,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         # == build a grid with mass around stationary distribution == #
         ssd = σ / sqrt(1 - α^2)
         grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
-        grid = range(grid_min, stop = grid_max, length = grid_size)
+        grid = range(grid_min,  grid_max, length = grid_size)
 
         # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
         h = similar(grid)
@@ -555,7 +552,8 @@ Here's the resulting price function
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     plot(tree.grid, price_vals, lw=2, label="p*(y)")
     plot!(xlabel="y", ylabel="price", legend=:topleft)
 
