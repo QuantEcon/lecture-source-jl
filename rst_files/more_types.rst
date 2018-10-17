@@ -47,10 +47,11 @@ Here are some functions that create two-dimensional arrays
 .. code-block:: julia
 
     size(diagm(0 => [2, 4]))
+
 Sparse
 
 
-.. _more_types:__
+.. _more_types:
 
 Cover ``mul!``?
 
