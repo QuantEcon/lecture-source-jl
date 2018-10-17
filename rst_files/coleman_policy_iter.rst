@@ -423,7 +423,7 @@ Here's some code that implements the Coleman operator
 
 .. code-block:: julia
 
-    using QuantEcon, Interpolations
+    using QuantEcon, Interpolations, Roots
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -439,7 +439,7 @@ Here's some code that implements the Coleman operator
                 vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
                 return u_prime(c) - β * mean(vals)
             end
-            Kg[i] = brent(h, 1e-10, y - 1e-10)
+            Kg[i] = find_zero(h, (1e-10, y - 1e-10))
         end
         return Kg
     end
