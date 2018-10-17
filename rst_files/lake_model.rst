@@ -16,14 +16,6 @@ A Lake Model of Employment and Unemployment
 Overview
 ===============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture describes what has come to be called a *lake model*
 
 The lake model is a basic tool for modeling unemployment
@@ -62,6 +54,17 @@ on finite Markov chains <finite_markov>`
 
 You will also need some basic :doc:`linear algebra <linear_algebra>` and probability
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 

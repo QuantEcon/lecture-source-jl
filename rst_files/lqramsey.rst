@@ -16,14 +16,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In this lecture we study optimal fiscal policy in a linear quadratic setting
 
 We slightly modify a well-known model of Robert Lucas and Nancy Stokey :cite:`LucasStokey1983` so that convenient formulas for
@@ -61,6 +53,7 @@ Because the Lucas and Stokey model features state-contingent government debt, th
 
 We cover only the key features of the problem in this lecture, leaving you to refer to that source for additional results and intuition
 
+
 Model Features
 ---------------
 
@@ -68,6 +61,18 @@ Model Features
 * Representative household
 * Stochastic dynamic programming over an infinite horizon
 * Distortionary taxation
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Ramsey Problem
 =====================

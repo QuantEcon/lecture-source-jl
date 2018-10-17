@@ -16,14 +16,6 @@
 Overview
 ===========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture describes a rational expectations version of the famous permanent income model of Milton Friedman :cite:`Friedman1956`
 
 Robert Hall cast Friedman's model within a linear-quadratic setting :cite:`Hall1978`
@@ -43,6 +35,16 @@ We use the model as a vehicle for illustrating
 
 Background readings on the linear-quadratic-Gaussian permanent income model are Hall's  :cite:`Hall1978`  and chapter 2 of  :cite:`Ljungqvist2012`
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Savings Problem
 ====================

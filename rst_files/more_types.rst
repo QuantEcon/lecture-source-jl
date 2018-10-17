@@ -18,6 +18,18 @@ In this lecture we give more types
 * fixed size arrays
 * structured arrays
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 Structured Arrays
 ==================
 

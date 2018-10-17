@@ -23,15 +23,6 @@ Job Search I: The McCall Search Model
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 The McCall search model :cite:`McCall1970` helped transform economists' way of thinking about labor markets
 
 To clarify vague notions such as "involuntary" unemployment, McCall modeled the decision problem of unemployed agents directly, in terms of factors such as
@@ -48,6 +39,16 @@ Here we set up McCall's model and adopt the same solution method
 
 As we'll see, McCall's model is not only interesting in its own right but also an excellent vehicle for learning dynamic programming
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The McCall Model

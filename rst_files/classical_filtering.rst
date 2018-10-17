@@ -13,14 +13,6 @@ Classical Filtering With Linear Algebra
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This is a sequel to the earlier lecture :doc:`Classical Control with Linear Algebra<classical_filtering>`
 
 That lecture used linear algebra -- in particular,  the `LU decomposition <https://en.wikipedia.org/wiki/LU_decomposition>`_  -- to formulate and solve a class of linear-quadratic optimal control problems
@@ -53,10 +45,22 @@ For example, Sargent :cite:`Sargent1987` [chs. IX, XIV] and Hansen and Sargent :
 
 In this lecture we investigate these ideas using mostly elementary linear algebra
 
+
 References
 -------------
 
 Useful references include :cite:`Whittle1963`, :cite:`HanSar1980`, :cite:`Orfanidisoptimum1988`, :cite:`Athanasios1991`, and :cite:`Muth1960`
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Infinite Horizon Prediction and Filtering Problems
 =====================================================

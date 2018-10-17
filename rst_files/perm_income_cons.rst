@@ -19,15 +19,6 @@ Co-authored with Chase Coleman.
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 This lecture continues our analysis of the linear-quadratic (LQ) permanent income model of savings and consumption
 
 As we saw in our :doc:`previous lecture <perm_income>` on this topic, Robert Hall :cite:`Hall1978` used the LQ permanent income model to restrict and interpret intertemporal comovements of nondurable consumption, nonfinancial income, and financial wealth
@@ -67,9 +58,19 @@ The model will prove useful for illustrating concepts such as
 
 * ensemble moments and cross section observations
 
-
-
 Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
+Introduction
 ======================
 
 

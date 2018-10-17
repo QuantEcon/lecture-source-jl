@@ -14,14 +14,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 We solved the stochastic optimal growth model using
 
 #. :doc:`value function iteration <optgrowth>`
@@ -38,6 +30,18 @@ It is a good example of how a clever algorithm can save a massive amount of comp
 (Massive when we multiply saved CPU cycles on each implementation times the number of implementations worldwide)
 
 The original reference is :cite:`Carroll2006`
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 Key Idea

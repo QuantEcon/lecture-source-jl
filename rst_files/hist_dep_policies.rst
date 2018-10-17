@@ -15,14 +15,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture describes history-dependent public policies and some of their representations
 
 History dependent policies are decision rules that depend on the entire past history of the state variables
@@ -45,7 +37,6 @@ We study these ideas in  the context of a model in which a benevolent tax author
 
 The firm faces costs of adjustment and lives within a competitive equilibrium, which in turn imposes restrictions on the tax authority [#fn_a]_
 
-
 References
 -----------
 
@@ -60,6 +51,18 @@ Regarding techniques, we will make use of the methods described in
 .. :doc:`Stackelberg LQ models <lqstackelberg>`.
 
 .. TODO: Need to update the link above when the LQ Stackelberg lecture is released.
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 

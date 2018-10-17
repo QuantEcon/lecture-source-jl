@@ -45,11 +45,22 @@ For longer, more sophisticated programs, you need to be aware of potential stumb
 
 This lecture covers the key points
 
-
 Requirements
 -------------
 
 You should read our :doc:`earlier lecture <types_methods>` on types, methods and multiple dispatch before this one
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 
 Foundations

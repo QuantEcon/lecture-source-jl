@@ -19,14 +19,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture illustrates two of the most important theorems of probability and statistics: The
 law of large numbers (LLN) and the central limit theorem (CLT)
 
@@ -44,6 +36,17 @@ In addition, we examine several useful extensions of the classical theorems, suc
 
 
 Some of these extensions are presented as exercises
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 Relationships

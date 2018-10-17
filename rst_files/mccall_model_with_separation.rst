@@ -17,14 +17,6 @@ Job Search II: Search and Separation
 Overview
 ===============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Previously :doc:`we looked <mccall_model>` at the McCall job search model :cite:`McCall1970` as a way of understanding unemployment and worker decisions
 
 One unrealistic feature of the model is that every job is permanent
@@ -37,6 +29,16 @@ Once separation enters the picture, the agent comes to view
 
 *  a spell of unemployment as an *investment* in searching for an acceptable job
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Model

@@ -13,14 +13,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In this lecture we discuss a family of dynamic programming problems with the following features:
 
 #. a discrete state space and discrete choices (actions)
@@ -57,8 +49,6 @@ This lecture covers
 
 * a powerful set of routines for solving discrete DPs from the `QuantEcon code libary <http://quantecon.org/julia_index.html>`_
 
-
-
 How to Read this Lecture
 ---------------------------
 
@@ -90,6 +80,18 @@ For background reading on dynamic programming and additional applications, see, 
 * :cite:`MirandaFackler2002`
 
 * `EDTC <http://johnstachurski.net/edtc.html>`_, chapter 5
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 .. _discrete_dps:

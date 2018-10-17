@@ -14,14 +14,6 @@ Linear Algebra
 Overview
 ===========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Linear algebra is one of the most useful branches of applied mathematics for economists to invest in
 
 For example, many applied problems in economics and finance require the solution of a linear system of equations, such as
@@ -67,6 +59,16 @@ We admit some overlap with :doc:`this lecture <fundamental_types>`, where operat
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 :index:`Vectors`
 ================

@@ -19,15 +19,6 @@ Schelling's Segregation Model
 Overview
 =======================
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
 In 1969, Thomas C. Schelling developed a simple but striking model of racial segregation :cite:`Schelling1969`
 
 His model studies the dynamics of racially mixed neighborhoods
@@ -40,7 +31,16 @@ In recognition of this and other research, Schelling was awarded the 2005 Nobel 
 
 In this lecture we (in fact you) will build and run a version of Schelling's model
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Model
 =======================

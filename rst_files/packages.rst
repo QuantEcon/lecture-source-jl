@@ -11,6 +11,13 @@ Useful Libraries
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
@@ -23,6 +30,17 @@ As a result, most Julia libraries are written exclusively in Julia
 Not only does this make the libraries more portable, it makes them much easier to dive into, read, learn from and modify
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Distributions
 =====================

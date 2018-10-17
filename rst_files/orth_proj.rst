@@ -18,14 +18,6 @@ Orthogonal Projections and Their Applications
 Overview
 ===========
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 Orthogonal projection is a cornerstone of vector space methods, with many diverse applications
 
 These include, but are not limited to,
@@ -50,6 +42,7 @@ In this lecture we focus on
 * least squares regression
 
 
+
 Further Reading
 ----------------
 
@@ -61,6 +54,16 @@ For a complete set of proofs in a general setting, see, for example, :cite:`Roma
 
 For an advanced treatment of projection in the context of least squares prediction, see `this book chapter <http://www.tomsargent.com/books/TOMchpt.2.pdf>`_
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Key Definitions
 ===============

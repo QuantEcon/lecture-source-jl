@@ -27,14 +27,6 @@
 Overview
 =====================================
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 .. index::
     single: Markov Asset Pricing; Overview
 
@@ -61,6 +53,16 @@ Key tools for the lecture are
 
 * a formula for predicting the discounted sum of future values of a Markov state
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 :index:`Pricing Models`

@@ -13,14 +13,6 @@ Default Risk and Income Fluctuations
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 This lecture computes versions of  Arellano's  :cite:`arellano2008default` model of sovereign default
 
 The model describes interactions among default risk, output,  and  an equilibrium interest rate  that includes a premium for endogenous default risk
@@ -56,6 +48,18 @@ This can lead to
 * large capital outflows during recessions
 
 Such dynamics are consistent with experiences of many countries
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 Structure
 ===============

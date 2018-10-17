@@ -13,14 +13,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In this lecture we study covariance stationary linear stochastic processes, a
 class of models routinely used to study economic and financial time series
 
@@ -78,6 +70,17 @@ For supplementary reading, see
     * John Cochrane's `notes on time series analysis <https://lectures.quantecon.org/_downloads/time_series_book.pdf>`__, chapter 8
     * :cite:`Shiryaev1995`, chapter 6
     * :cite:`CryerChan2008`, all
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Introduction
 =================================

@@ -30,6 +30,16 @@ Understanding them will help you
 
 * Read Julia code written by other programmers
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Types and Multiple Dispatch
 ===========================

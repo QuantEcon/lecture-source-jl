@@ -16,14 +16,6 @@
 Overview
 ============
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 In a :doc:`previous lecture <finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models
 
 The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains
@@ -62,6 +54,17 @@ such as simulation, distribution dynamics, stability, ergodicity, etc.
     mathematical literature (e.g., :cite:`MeynTweedie2009`) in using the term to refer to any discrete **time**
     Markov process
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 .. _statd_density_case:
 
