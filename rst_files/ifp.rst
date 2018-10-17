@@ -629,7 +629,8 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     # === solve for optimal consumption === #
 
     m = ConsumerProblem(r=0.03, grid_max=4)

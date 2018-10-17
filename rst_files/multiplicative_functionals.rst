@@ -254,6 +254,7 @@ Here goes
 .. code-block:: julia
 
     using Plots, Random
+    gr(fmt=:png)
     Random.seed!(42)
 
     A, B, D, F = 0.8, 1.0, 0.5, 0.2

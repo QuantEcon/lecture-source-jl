@@ -638,6 +638,7 @@ Let's try this, using the same parameters in both complete and incomplete market
 .. code-block:: julia
 
     using Plots, Random
+    gr(fmt=:png)
 
     Random.seed!(42)
     N_simul = 150

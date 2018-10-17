@@ -1602,6 +1602,7 @@ triangle denote war
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
     
     using Plots
+    gr(fmt=:png)
     pyplot()
     titles = hcat("Consumption", "Labor", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")

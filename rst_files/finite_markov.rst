@@ -932,7 +932,8 @@ The convergence in the theorem is illustrated in the next figure
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     P = [0.971 0.029 0.000
             0.145 0.778 0.077
             0.000 0.508 0.492]

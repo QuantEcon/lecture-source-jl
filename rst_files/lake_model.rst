@@ -313,7 +313,8 @@ Let's run a simulation under the default parameters (see above) starting from :m
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     lm = LakeModel()
     N_0 = 150      # Population
     e_0 = 0.92     # Initial employment rate

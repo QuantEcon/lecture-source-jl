@@ -925,7 +925,8 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
 .. code-block:: julia
 
   using Plots, Random
-
+  gr(fmt=:png)
+  
   # == Set seed and generate a_t sequence == #
   Random.seed!(123)
   n = 100

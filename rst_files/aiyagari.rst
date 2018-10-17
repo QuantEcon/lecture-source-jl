@@ -346,6 +346,7 @@ As a first example of what we can do, let's compute and plot an optimal accumula
 .. code-block:: julia
 
     using Plots, Random
+    gr(fmt=:png)
     Random.seed!(42)
 
     # Example prices

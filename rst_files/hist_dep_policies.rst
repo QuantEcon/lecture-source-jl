@@ -678,6 +678,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
     using Roots
     using Plots
     using LaTeXStrings
+    gr(fmt=:png)
     pyplot()
 
     struct HistDepRamsey{TF<:AbstractFloat}

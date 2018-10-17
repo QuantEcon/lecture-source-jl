@@ -222,6 +222,7 @@ Let's test out the code above on some example parameterizations, after the follo
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
     using LaTeXStrings
 
 

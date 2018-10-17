@@ -526,6 +526,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 .. code-block:: julia
 
     using Plots, QuantEcon, LaTeXStrings, Interpolations
+    gr(fmt=:png)
 
 .. code-block:: julia
 

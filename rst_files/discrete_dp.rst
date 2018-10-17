@@ -692,6 +692,7 @@ What happens if the agent is more patient?
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
     bar(std_2, label="stationary dist")
 
 

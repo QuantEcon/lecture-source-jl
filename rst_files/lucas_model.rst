@@ -552,7 +552,8 @@ Here's the resulting price function
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     plot(tree.grid, price_vals, lw=2, label="p*(y)")
     plot!(xlabel="y", ylabel="price", legend=:topleft)
 
