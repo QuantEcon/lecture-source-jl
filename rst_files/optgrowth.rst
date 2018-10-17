@@ -568,13 +568,13 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
         # == set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)} == #
         for (i, y) in enumerate(grid)
-            objective(c) = - u(c) - β * mean(w_func.(f(y - c) .* shocks))
-            res = optimize(objective, 1e-10, y)
+            objective(c) = u(c) + β * mean(w_func.(f(y - c) .* shocks))
+            res = maximize(objective, 1e-10, y)
 
             if compute_policy
-                σ[i] = res.minimizer
+                σ[i] = Optim.maximizer(res)
             end
-            Tw[i] = - res.minimum
+            Tw[i] = Optim.maximum(res)
         end
 
         if compute_policy
@@ -957,7 +957,7 @@ We have also dialed down the shocks a bit
 
 .. code-block:: julia
   :class: test
-  
+
   @testset begin
     @test shocks[25] == 0.8050318706532391
   end
