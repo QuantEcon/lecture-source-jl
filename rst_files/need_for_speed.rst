@@ -12,6 +12,14 @@ The Need for Speed
 Overview
 ============================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 Computer scientists often classify programming languages according to the following two categories
 
 *High level languages* aim to maximize productivity by

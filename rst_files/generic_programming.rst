@@ -11,6 +11,14 @@ Generic and Functional Programming
 Overview
 ============================
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 In this lecture we delve more deeply into the structure of Julia, and in particular into
 
 * the concept of types

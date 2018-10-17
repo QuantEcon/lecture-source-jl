@@ -14,6 +14,14 @@ Shortest Paths
 Overview
 =============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 The shortest path problem is a `classic problem <https://en.wikipedia.org/wiki/Shortest_path>`_ in mathematics and computer science with applications in
 
 * Economics (sequential decision making, analysis of social networks, etc.)

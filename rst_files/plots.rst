@@ -12,6 +12,14 @@ Plotting in Julia
 Overview
 ============
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 Since it's inception, plotting in Julia has been a mix of happiness and frustration
 
