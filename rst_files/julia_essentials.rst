@@ -30,7 +30,7 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
 .. code-block:: julia
 
     using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
     using LinearAlgebra, Statistics, Compat
 
 Common Data Types

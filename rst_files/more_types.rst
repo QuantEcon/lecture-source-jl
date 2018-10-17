@@ -40,4 +40,5 @@ Sparse
 
 .. _more_types:__
 
+Cover ``mul!``?
 

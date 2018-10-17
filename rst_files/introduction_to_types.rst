@@ -29,7 +29,7 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
 .. code-block:: julia
 
     using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
     using LinearAlgebra, Statistics, Compat
 
 Finding and Interpreting Types
@@ -63,7 +63,7 @@ The next two types use curly bracket notation to express the fact that they are 
 .. code-block:: julia
 
     @show typeof(1.0 + 1im)
-    @show typeof(ones(2,2);
+    @show typeof(ones(2,2));
 
 We will learn more details about  :doc:`generic programming <generic_programming>` later, but the key is to interpret the curly brackets as swappable parameters for a given type
 

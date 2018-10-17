@@ -93,7 +93,7 @@ There are three ways to install packages and versions (where the first two metho
 .. code-block:: julia
 
     using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
 
