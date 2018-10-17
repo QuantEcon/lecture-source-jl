@@ -432,7 +432,7 @@ As we will see, this can be interpreted as meaning that "all frequencies are equ
 Example 2: :index:`AR` and :index:`MA` and :index:`ARMA`
 ---------------------------------------------------------
 
-.. _ar1_acov::
+.. _ar1_acov:
 
 It is an exercise to show that the MA(1) process :math:`X_t = \theta \epsilon_{t-1} + \epsilon_t` has spectral density
 
