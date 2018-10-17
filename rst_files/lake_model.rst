@@ -519,7 +519,7 @@ Let's plot the path of the sample averages over 5,000 periods
 
 .. code-block:: julia
 
-    using QuantEcon, Random
+    using QuantEcon, Roots, Random
 
     Random.seed!(42)
     lm = LakeModel(d=0.0, b=0.0)
@@ -755,8 +755,7 @@ function of the unemployment compensation rate
             return t - u_rate * c
         end
 
-        τ = brent(steady_state_budget, 0.0, 0.9 * c)
-
+        τ = find_zero(steady_state_budget, (0.0, 0.9c))
         return τ
     end
 
