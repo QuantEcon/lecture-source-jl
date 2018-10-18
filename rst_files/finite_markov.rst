@@ -38,10 +38,13 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
+
+.. code-block:: julia     
+    
+    # Import packages. 
     using LinearAlgebra, Statistics, Compat
-
-
-
+    using QuantEcon, Random, Plots, Printf, Distributions
+    gr(fmt=:png) # Setup for the Plots.
 
 Definitions
 ==============
@@ -246,7 +249,7 @@ The Markov chain is then constructed as discussed above.  To repeat:
 
 In order to implement this simulation procedure, we need a method for generating draws from a discrete distributions
 
-For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
+For this task we'll use a Bernoulli random variable with two states.
 
 .. code-block:: julia
     :class: test
@@ -255,23 +258,18 @@ For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/b
 
 .. code-block:: julia
 
-    using QuantEcon, Random
+    Random.seed!(42) # for result reproducibility
 
-    Random.seed!(42)
-
-    ψ = [0.1, 0.9];        # Probabilities over sample space {1, 2}
-    d = DiscreteRV(ψ);
-    init = rand(d, 5)             # Generate 5 independent draws from ψ
+    d = Bernoulli(0.9) # d = 0 with probability .1, and d = 1 with probability .9 
+    init = rand(d, 5)            
 
 
 .. code-block:: julia
     :class: test
 
     @testset "Initial Block" begin
-        @test init == [2, 2, 1, 2, 2] # Mainly to check seeding invariance.
+        @test init == [1, 1, 1, 1, 0] # Mainly to check seeding invariance.
     end
-
-
 
 We'll write our code as a function that takes the following three arguments
 
@@ -281,21 +279,16 @@ We'll write our code as a function that takes the following three arguments
 
 * A positive integer ``sample_size`` representing the length of the time series the function should return
 
-
-
 .. code-block:: julia
 
     function mc_sample_path(P; init = 1, sample_size = 1000)
         X = zeros(Int, sample_size) # allocate memory
-        X[1] = init
-        # === convert each row of P into a distribution === #
-        n = size(P)[1]
-        P_dist = [ DiscreteRV(vec(P[i,:])) for i ∈ 1:n ]
-
-        # === generate the sample path === #
-        for t ∈ 1:(sample_size - 1)
-            X[t+1] = rand(P_dist[X[t]])
-        end
+        X[1] = init # set the initial state
+        rows = [P[i, :] for i in 1:size(P)[1]] # enumerate rows 
+        dists = [Categorical(row) for row in rows] # create transition dists for each state
+        for t ∈ 2:sample_size
+            X[t] = rand(dists[X[t-1]]) # fill the next state based on the previous state's transition distribution
+        end 
         return X
     end
 
@@ -930,37 +923,30 @@ The convergence in the theorem is illustrated in the next figure
 
 
 .. code-block:: julia
-
-    using Plots
-    gr(fmt=:png)
     
     P = [0.971 0.029 0.000
-            0.145 0.778 0.077
-            0.000 0.508 0.492]
+         0.145 0.778 0.077
+         0.000 0.508 0.492] # stochastic matrix 
 
-    ψ = [0.0 0.2 0.8]
+    ψ = [0.0 0.2 0.8] # initial distribution  
 
-    t = 20
-    x_vals = zeros(t+1)
+    t = 20 # path length 
+    x_vals = zeros(t) 
     y_vals = similar(x_vals)
     z_vals = similar(x_vals)
-    colors = []
+    colors = [repeat([:red], 20); :black] # for plotting
 
     for i ∈ 1:t
         x_vals[i] = ψ[1]
         y_vals[i] = ψ[2]
         z_vals[i] = ψ[3]
-        ψ = ψ * P
-        push!(colors, :red)
+        ψ = ψ * P # update distribution 
     end
-    push!(colors, :black)
 
     mc = MarkovChain(P)
     ψ_star = stationary_distributions(mc)[1]
-    x_vals[t+1] = ψ_star[1]
-    y_vals[t+1] = ψ_star[2]
-    z_vals[t+1] = ψ_star[3]
-    scatter(x_vals, y_vals, z_vals, color = colors)
+    x_star, y_star, z_star = ψ_star # unpack the stationary dist 
+    scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors)
     plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
 
 .. code-block:: julia
@@ -1413,11 +1399,6 @@ The exercise is to write a function ``approx_markov(rho, sigma_u, m = 3, n = 7)`
 
 Solutions
 ===========
-
-
-.. code-block:: julia
-
-    using LaTeXStrings, Printf
 
 Exercise 1
 ----------
