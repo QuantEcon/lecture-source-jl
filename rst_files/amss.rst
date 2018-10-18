@@ -362,11 +362,16 @@ while the multiplier :math:`\Phi` in the Lucas-Stokey economy is time invariant
 We need some code from our :doc:`an earlier lecture <opt_tax_recur>`
 on optimal taxation with state-contingent debt  sequential allocation implementation:
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+Setup
+------------------
 
-.. code-block:: julia
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 .. code-block:: julia
     :class: test
@@ -924,6 +929,7 @@ The recursive formulation is implemented as follows
     using Dierckx
 
     mutable struct BellmanEquation_Recursive{TP<: Model, TI <: Integer, TR <: Real}
+
         model::TP
         S::TI
         xbar::Array{TR}
@@ -936,6 +942,7 @@ The recursive formulation is implemented as follows
     end
 
     struct RecursiveAllocation{TP <: Model, TI <: Integer, TVg <: AbstractVector, TT <: Tuple}
+
         model::TP
         mc::MarkovChain
         S::TI
@@ -957,6 +964,7 @@ The recursive formulation is implemented as follows
     end
 
     function solve_time1_bellman(model::Model{TR}, μgrid::AbstractArray) where {TR <: Real}
+
         Π = model.Π
         S = size(model.Π, 1)
 
@@ -1085,6 +1093,7 @@ The recursive formulation is implemented as follows
     function simulate(pab::RecursiveAllocation,
                       B_::TF, s_0::Integer, T::Integer,
                       sHist::Vector=simulate(pab.mc, T, init=s_0)) where {TF <: AbstractFloat}
+
         model, mc, Vf, S = pab.model, pab.mc, pab.Vf, pab.S
         Π, Uc = model.Π, model.Uc
         cf, nf, xprimef, TTf = pab.policies
@@ -1433,6 +1442,7 @@ triangle denote war
     # Initialize μgrid for value function iteration
     μgrid = range(-0.7, stop = 0.01, length = 200)
 
+
     time_example.transfers = true                                 # Government can use transfers
     time_sequential = SequentialAllocation(time_example)          # Solve sequential problem
 
@@ -1447,7 +1457,7 @@ triangle denote war
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
 
     using Plots
-
+    gr(fmt=:png)
     titles = hcat("Consumption", "Labor", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")
     sim_seq_l_plot = hcat(sim_seq_l[1:3]..., sim_seq_l[4],
@@ -1472,7 +1482,6 @@ triangle denote war
         plot!(p[i], 0:6, sim_bel_h_plot[:, i], marker=:utriangle, color=:red, lab="")
     end
     p
-
 
 How a Ramsey planner responds to  war depends on the structure of the asset market.
 
@@ -1587,7 +1596,6 @@ state contingent debt (circles) and the economy with only a risk-free bond
     end
     plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:black, lab="")
 
-
 When the government experiences a prolonged period of peace, it is able to reduce
 government debt and set permanently lower tax rates
 
@@ -1618,7 +1626,6 @@ the two policies over 200 periods
         plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2])
     end
     p
-
 
 .. rubric:: Footnotes
 

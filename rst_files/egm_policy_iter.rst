@@ -32,6 +32,18 @@ It is a good example of how a clever algorithm can save a massive amount of comp
 The original reference is :cite:`Carroll2006`
 
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
 Key Idea
 ==========================
 
@@ -140,24 +152,12 @@ The Operator
 
 Here's an implementation of :math:`K` using EGM as described above
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    Authors: Shunsuke Hori
-
-    =#
 
     function coleman_egm(g, k_grid, β, u_prime, u_prime_inv, f, f_prime, shocks)
 
@@ -174,7 +174,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         y = k_grid + c  # y_i = k_i + c_i
 
         # Update policy function and return
-        Kg = LinInterp(y,c)
+        Kg = LinearInterpolation(y,c, extrapolation_bc=Line())
         Kg_f(x) = Kg(x)
         return Kg_f
     end
@@ -188,13 +188,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
 .. code-block:: julia
     :class: collapse
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
-    using QuantEcon
+    using QuantEcon, Interpolations, Roots
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -202,7 +196,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
         # This function requires the container of the output value as argument Kg
 
         # Construct linear interpolation object #
-        g_func = LinInterp(grid, g)
+        g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
 
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
@@ -210,7 +204,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
                 vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
                 return u_prime(c) - β * mean(vals)
             end
-            Kg[i] = brent(h, 1e-10, y - 1e-10)
+            Kg[i] = find_zero(h, (1e-10, y - 1e-10))
         end
         return Kg
     end
@@ -228,6 +222,7 @@ Let's test out the code above on some example parameterizations, after the follo
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
     using LaTeXStrings
 
 
@@ -241,12 +236,6 @@ As we :doc:`did for value function iteration <optgrowth>` and :doc:`time iterati
 The first step is to bring in the model that we used in the :doc:`Coleman policy function iteration <coleman_policy_iter>`
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
@@ -278,7 +267,7 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
                     f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
+        grid = collect(range(grid_min, grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)
@@ -382,7 +371,7 @@ In fact it's easy to see that the difference is essentially zero:
   :class: test
 
   @testset "Discrepancy Test" begin
-    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 2.369331983805674e-7 # Check that the error is the same as it was before.
+    @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) ≈ 4.440892098500626e-16 # Check that the error is the same as it was before.
     @test maximum(abs, (c_star_new.(mlog.grid) - c_star.(mlog.grid))) < 1e-5 # Test that the error is objectively very small.
   end
 

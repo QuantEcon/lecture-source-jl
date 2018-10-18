@@ -14,7 +14,7 @@
 .. contents:: :depth: 2
 
 
-**Co-author: Chase Coleman**
+Co-authored with Chase Coleman.
 
 Overview
 ============
@@ -58,9 +58,19 @@ The model will prove useful for illustrating concepts such as
 
 * ensemble moments and cross section observations
 
-
-
 Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
+
+Introduction
 ======================
 
 
@@ -340,14 +350,6 @@ The exogenous noinfinancial income process
 
 First we create the objects for the optimal linear regulator
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-    using Test
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -357,6 +359,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     using QuantEcon, LinearAlgebra
     using Plots
+    gr(fmt=:png)
 
     # Set parameters
     α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0
