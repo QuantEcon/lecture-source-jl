@@ -23,7 +23,7 @@ We want users to be able to say _"the code is clearer than Matlab, and even clos
 
 - **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
-    - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≦` when writing code.
+    - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
     - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.  **TODO** 
 - **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
