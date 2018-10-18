@@ -87,7 +87,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -105,26 +105,16 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
 
 .. code-block:: julia
 
-    vecs = ([2, 4], [-3, 3], [-4, -3.5])
-
-    # Create matrices of x and y values, labels for plotting
-    x_vals = reduce(hcat, ([0, v] for v in first.(vecs)))
-    y_vals = reduce(hcat, ([0, v] for v in last.(vecs)))
-    labels = [(1.1x, 1.1y, "[$x, $y]") for (x, y) in vecs]
+    x_vals = [0 0 0 ; 2 -3 -4]
+    y_vals = [0 0 0 ; 4 3 -3.5]
 
     plot(x_vals, y_vals, arrow = true, color = :blue,
          legend = :none, xlims = (-5, 5), ylims = (-5, 5),
-         annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+         annotations = [(2.2, 4.4, "[2, 4]"),
+                        (-3.3, 3.3, "[-3, 3]"),
+                        (-4.4, -3.85, "[-4, -3.5]")],
+         xticks = -5:1:5, yticks = -5:1:5,
          framestyle = :origin)
-
-.. code-block:: julia
-    :class: test
-
-    @testset "First Block" begin
-        @test labels[2][1] ≈ -3.3
-        @test y_vals[2, :] == [4.0, 3.0, -3.5]
-    end
-
 
 Vector Operations
 -------------------
@@ -167,7 +157,6 @@ As a matter of definition, when we add two vectors, we add them element by eleme
     \end{array}
     \right]
 
-
 Scalar multiplication is an operation that takes a number :math:`\gamma` and a
 vector :math:`x` and produces
 
@@ -191,14 +180,12 @@ Scalar multiplication is illustrated in the next figure
 
     # illustrate scalar multiplication
 
-    x = [2, 2, 2]
-    scalars = [-2, 1, 2]
-    vals = x .* scalars
-    x_vals = reduce(hcat, ([0, v] for v in vals))
-    y_vals = x_vals
-    labels = map((v, s) -> (v + 0.4, v - 0.2, string(isone(s) ? "" : s, "x")), vals, scalars)
+    x = [2]
+    scalars = [-2 1 2]
+    vals = [0 0 0; x * scalars]
+    labels = [(-3.6, -4.2, "-2x"), (2.4, 1.8, "x"), (4.4, 3.8, "2x")]
 
-    plot(x_vals, y_vals, arrow = true, color = [:red :red :blue],
+    plot(xy_vals, xy_vals, arrow = true, color = [:red :red :blue],
          legend = :none, xlims = (-5, 5), ylims = (-5, 5),
          annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
          framestyle = :origin)
@@ -320,32 +307,18 @@ The span is a 2 dimensional plane passing through these two points and the origi
 .. code-block:: julia
     :class: collapse
 
-    x_min, x_max = -5, 5
-    y_min, y_max = -5, 5
-
-    α, β = 0.2, 0.1
-
     # Fixed linear function, to generate a plane
-    f(x, y) = α * x + β * y
-
-    # Vector locations, by coordinate
-    x_coords = [3, 3]
-    y_coords = [4, -4]
-    z_coords = f(x_coords, y_coords)
+    f(x, y) = 0.2x + 0.1y
 
     # Lines to vectors
-    x_vec = reduce(hcat, ([0, x] for x in x_coords))
-    y_vec = reduce(hcat, ([0, y] for y in y_coords))
-    z_vec = reduce(hcat, ([0, z] for z in z_coords))
+    x_vec = [0 0; 3 3]
+    y_vec = [0 0; 4 -4]
+    z_vec = [0 0; f(3, 4) f(3, -4)]
 
     # Draw the plane
-    grid_size = 20
-    xr2 = range(x_min, x_max, length = grid_size)
-    yr2 = range(y_min, y_max, length = grid_size)
-    z2 = zeros(grid_size, grid_size)
-    for (position, value) in zip(eachindex(z2), (f(x, y) for x in xr2 for y in yr2))
-        z2[position] = value
-    end
+    n = 20
+    grid = range(-5, 5, length = n)
+    z2 = [ f(grid[row], grid[col]) for row in 1:n, col in 1:n ]
     surface(xr2, yr2, z2, fill = :blues)
     plot!(x_vec, y_vec, z_vec, color = [:yellow :pink], labels = "")
 
@@ -353,9 +326,9 @@ The span is a 2 dimensional plane passing through these two points and the origi
     :class: test
 
     @testset "Surface Plot Test" begin
-        @test z2[2, 2] ≈ -1.342105263157895
-        @test x_vec[2, 2] == 3.0
-        @test xr2[2] ≈ -4.473684210526316
+        @test z2[2, 2] ≈ -1.34210526
+        @test x_vec[2, 2] ≈ 3
+        @test grid[2] ≈ -4.47368421
     end
 
 Examples
@@ -985,25 +958,22 @@ The next figure shows two eigenvectors (blue arrows) and their images under :mat
 
 As expected, the image :math:`Av` of each :math:`v` is just a scaled version of the original
 
-
 .. code-block:: julia
     :class: collapse
 
     A = [1 2
          2 1]
     evals, evecs = eigen(A)
-    
-    a1, a2 = evals
-    evecs = selectdim.(Ref(evecs), 1, 1:2)
-    eig_1 = reduce(hcat, ([0, v] for v in first.(evecs)))
-    eig_2 = reduce(hcat, ([0, v] for v in last.(evecs)))
 
+    a1, a2 = evals
+    eig_1 = [0 0; evecs[:,1]']
+    eig_2 = [0 0; evecs[:,2]']
     x = range(-5, 5, length = 10)
     y = -x
 
     plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow = true, color = :red,
-    legend = :none, xlims = (-3, 3), ylims = (-3, 3), xticks = -3:3, yticks = -3:3,
-    framestyle = :origin)
+         legend = :none, xlims = (-3, 3), ylims = (-3, 3), xticks = -3:3, yticks = -3:3,
+         framestyle = :origin)
     plot!(a2 * eig_1[:, 2], a2 * eig_2, arrow = true, color = :red)
     plot!(eig_1, eig_2, arrow = true, color = :blue)
     plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
@@ -1059,7 +1029,7 @@ follows
 .. code-block:: julia
 
     evals
-    
+
 .. code-block:: julia
 
     evecs
