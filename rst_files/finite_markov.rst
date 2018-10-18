@@ -37,7 +37,7 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
 .. code-block:: julia 
 
     using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
+    activate_github("QuantEcon/QuantEconLecturePackages");
 
 .. code-block:: julia     
     
@@ -1314,7 +1314,7 @@ The following code snippet provides a hint as to how you can go about this
 
 .. code-block:: jlcon
 
-    collect((m.match for m ∈ eachmatch(r"\w", "x +++ y ****** z")))
+    collect((m.match for m ∈ eachmatch(r"\w", "x +++ y ****** z"))) # will only extract alphanumeric characters
 
 
 .. code-block:: jlcon
