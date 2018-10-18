@@ -55,6 +55,17 @@ on finite Markov chains <finite_markov>`
 You will also need some basic :doc:`linear algebra <linear_algebra>` and probability
 
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 
 The Model
@@ -210,26 +221,12 @@ Let's code up these equations
 
 Here's the code:
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-
 .. code-block:: julia
   :class: test
 
   using Test
 
 .. code-block:: julia
-
-    #=
-
-    @author : Victoria Gregory, John Stachurski
-
-    =#
-
 
     struct LakeModel{TF <: AbstractFloat}
         λ::TF
@@ -316,7 +313,8 @@ Let's run a simulation under the default parameters (see above) starting from :m
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     lm = LakeModel()
     N_0 = 150      # Population
     e_0 = 0.92     # Initial employment rate
@@ -521,7 +519,7 @@ Let's plot the path of the sample averages over 5,000 periods
 
 .. code-block:: julia
 
-    using QuantEcon, Random
+    using QuantEcon, Roots, Random
 
     Random.seed!(42)
     lm = LakeModel(d=0.0, b=0.0)
@@ -713,7 +711,7 @@ function of the unemployment compensation rate
 
     # The default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
-    w_vec = range(1e-3, stop = max_wage, length = wage_grid_size + 1)
+    w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
     logw_dist = Normal(log(log_wage_mean), 1)
     cdf_logw = cdf.(Ref(logw_dist), log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
@@ -757,14 +755,13 @@ function of the unemployment compensation rate
             return t - u_rate * c
         end
 
-        τ = brent(steady_state_budget, 0.0, 0.9 * c)
-
+        τ = find_zero(steady_state_budget, (0.0, 0.9c))
         return τ
     end
 
     # Levels of unemployment insurance we wish to study
     Nc = 60
-    c_vec = range(5.0, stop = 140.0, length = Nc)
+    c_vec = range(5.0, 140.0, length = Nc)
 
     tax_vec = zeros(Nc)
     unempl_vec = similar(tax_vec)

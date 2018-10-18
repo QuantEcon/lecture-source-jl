@@ -146,6 +146,16 @@ References for this lecture include
 
 * :cite:`Ljungqvist2012`, chapter 7
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Defining Rational Expectations Equilibrium
 ====================================================
@@ -668,19 +678,8 @@ Compare your results with the previous exercise.  Comment.
 Solutions
 ==========
 
-
-
-The following solutions were put together by Chase Coleman, Spencer
-Lyon, Thomas Sargent and John Stachurski
-
 Exercise 1
 ----------
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test
@@ -794,6 +793,7 @@ Here's our solution
 
 .. code-block:: julia
   :class: test
+  
   @testset begin
     @test F[1] == 0.07347294403502992
     @test F[2] == -73.47294403502833

@@ -54,7 +54,7 @@ These are the kinds of topics addressed by linear algebra
 
 In this lecture we will cover the basics of linear and matrix algebra, treating both theory and computation
 
-We admit some overlap with :doc:`this lecture <julia_arrays>`, where operations on Julia arrays were first explained
+We admit some overlap with :doc:`this lecture <fundamental_types>`, where operations on Julia arrays were first explained
 
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
@@ -82,9 +82,16 @@ The following figure represents three vectors in this manner
 
 Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
-.. code-block:: julia
+Setup
+------------------
 
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 .. code-block:: julia
     :class: test
@@ -94,6 +101,9 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
+
+.. code-block:: julia
 
     vecs = ([2, 4], [-3, 3], [-4, -3.5])
 
@@ -305,6 +315,7 @@ The next figure shows the span of :math:`A = \{a_1, a_2\}` in :math:`\mathbb R ^
 
 The span is a 2 dimensional plane passing through these two points and the origin
 
+.. _la_3dvec:
 
 .. code-block:: julia
     :class: collapse
@@ -346,7 +357,6 @@ The span is a 2 dimensional plane passing through these two points and the origi
         @test x_vec[2, 2] == 3.0
         @test xr2[2] ≈ -4.473684210526316
     end
-
 
 Examples
 ^^^^^^^^^
@@ -542,7 +552,6 @@ Scalar multiplication and addition are immediate generalizations of the vector c
     \end{array}
     \right]
 
-
 and
 
 .. math::
@@ -621,7 +630,6 @@ According to the preceding rule, this gives us an :math:`n \times 1` column vect
         a_{n1} x_1 + \cdots + a_{nk} x_k
     \end{array}
     \right]
-
 
 .. note::
 
@@ -760,7 +768,6 @@ In particular, if :math:`a_1, \ldots, a_k` are the columns of :math:`A`, then
 
     Ax = x_1 a_1 + \cdots + x_k a_k
 
-
 Hence the range of :math:`f(x) = Ax` is exactly the span of the columns of :math:`A`
 
 We want the range to be large, so that it contains arbitrary :math:`y`
@@ -770,7 +777,6 @@ As you might recall, the condition that we want for the span to be large is :ref
 A happy fact is that linear independence of the columns of :math:`A` also gives us uniqueness
 
 Indeed, it follows from our :ref:`earlier discussion <la_unique_reps>` that if :math:`\{a_1, \ldots, a_k\}` are linearly independent and :math:`y = Ax = x_1 a_1 + \cdots + x_k a_k`, then no :math:`z \not= x` satisfies :math:`y = Az`
-
 
 The :math:`n \times n` Case
 --------------------------------
@@ -883,7 +889,6 @@ projections
 More Columns than Rows
 -------------------------
 
-
 This is the :math:`n \times k` case with :math:`n < k`, so there are fewer
 equations than unknowns
 
@@ -910,9 +915,7 @@ Then if :math:`y = Ax = x_1 a_1 + x_2 a_2 + x_3 a_3`, we can also write
     = x_1 (\alpha a_2 + \beta a_3) + x_2 a_2 + x_3 a_3
     = (x_1 \alpha + x_2) a_2 + (x_1 \beta + x_3) a_3
 
-
 In other words, uniqueness fails
-
 
 Linear Equations with Julia
 ----------------------------------
@@ -953,7 +956,6 @@ The latter method is preferred because it automatically selects the best algorit
 
 If ``A`` is not square then  ``A \ y`` returns the least squares solution :math:`\hat x = (A'A)^{-1}A'y`
 
-
 .. _la_eigen:
 
 :index:`Eigenvalues` and :index:`Eigenvectors`
@@ -974,7 +976,6 @@ If :math:`\lambda` is scalar and :math:`v` is a non-zero vector in :math:`\mathb
 
     A v = \lambda v
 
-
 then we say that :math:`\lambda` is an *eigenvalue* of :math:`A`, and
 :math:`v` is an *eigenvector*
 
@@ -991,10 +992,12 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
     A = [1 2
          2 1]
     evals, evecs = eigen(A)
+    
     a1, a2 = evals
     evecs = selectdim.(Ref(evecs), 1, 1:2)
     eig_1 = reduce(hcat, ([0, v] for v in first.(evecs)))
     eig_2 = reduce(hcat, ([0, v] for v in last.(evecs)))
+
     x = range(-5, 5, length = 10)
     y = -x
 
@@ -1056,12 +1059,10 @@ follows
 .. code-block:: julia
 
     evals
-
-
+    
 .. code-block:: julia
 
     evecs
-
 
 Note that the *columns* of ``evecs`` are the eigenvectors
 
@@ -1079,7 +1080,6 @@ matrices :math:`A` and :math:`B`, seeks generalized eigenvalues
 .. math::
 
     A v = \lambda B v
-
 
 This can be solved in Julia via ``eigen(A, B)``
 
@@ -1118,11 +1118,9 @@ Let :math:`A` be a square matrix, and let
 
     \| A \| := \max_{\| x \| = 1} \| A x \|
 
-
 The norms on the right-hand side are ordinary vector norms, while the norm on
 the left-hand side is a *matrix norm* --- in this case, the so-called
 *spectral norm*
-
 
 For example, for a square matrix :math:`S`, the condition :math:`\| S \| < 1` means that :math:`S` is *contractive*, in the sense that it pulls all vectors towards the origin [#cfn]_
 
@@ -1146,7 +1144,6 @@ Neumann's theorem states the following: If :math:`\| A^k \| < 1` for some
 
     (I - A)^{-1} = \sum_{k=0}^{\infty} A^k
 
-
 .. _la_neumann_remarks:
 
 :index:`Spectral Radius`
@@ -1161,14 +1158,12 @@ A result known as Gelfand's formula tells us that, for any square matrix :math:`
 
     \rho(A) = \lim_{k \to \infty} \| A^k \|^{1/k}
 
-
 Here :math:`\rho(A)` is the *spectral radius*, defined as :math:`\max_i |\lambda_i|`, where :math:`\{\lambda_i\}_i` is the set of eigenvalues of :math:`A`
 
 As a consequence of Gelfand's formula, if all eigenvalues are strictly less than one in modulus,
 there exists a :math:`k` with :math:`\| A^k \| < 1`
 
 In which case :eq:`la_neumann` is valid
-
 
 :index:`Positive Definite Matrices`
 ------------------------------------
@@ -1284,9 +1279,6 @@ As we will see, in economic contexts Lagrange multipliers often are shadow price
 
 Solutions
 ===========
-
-Thanks to `Willem Hekman <https://qutech.nl/person/willem-hekman/>`__ and Guanlong Ren
-for providing this solution.
 
 Exercise 1
 ----------
@@ -1427,6 +1419,5 @@ Therefore, the solution to the optimization problem
 :math:`\tilde{P} := A'PA - A'PB(Q + B'PB)^{-1}B'PA`.
 
 .. rubric:: Footnotes
-
 
 .. [#cfn] Suppose that :math:`\|S \| < 1`. Take any nonzero vector :math:`x`, and let :math:`r := \|x\|`. We have :math:`\| Sx \| = r \| S (x/r) \| \leq r \| S \| < r = \| x\|`. Hence every point is pulled towards the origin.

@@ -10,7 +10,7 @@ Globalization and Cycles
 
 .. contents:: :depth: 2
 
-This lecture is coauthored with `Chase Coleman <https://github.com/cc7768>`__
+Co-authored with Chase Coleman.
 
 Overview
 =====================================
@@ -39,6 +39,17 @@ On the technical side, the paper introduces the concept of `coupled oscillators 
 As we will see, coupled oscillators arise endogenously within the model
 
 Below we review the model and replicate some of the results on synchronization of innovation across countries
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Key Ideas
 ==========================
@@ -326,24 +337,12 @@ For some parameterizations, synchronization will occur for "most" initial condit
 
 Here's the main body of code
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
   :class: test 
 
   using Test 
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     using PyPlot, PyCall
 
@@ -441,7 +440,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                                      maxiter, npers, npts)
         # Create unit range with npts
         synchronized, pers_2_sync = false, 0
-        unit_range = range(0.0, stop = 1.0, length = npts)
+        unit_range = range(0.0,  1.0, length = npts)
 
         # Allocate space to store time to sync
         time_2_sync = zeros(npts, npts)
@@ -633,7 +632,7 @@ Exercise 1
             fig, ax = subplots()
         end
         # Create attraction basis
-        unitrange = range(0, stop = 1, length = npts)
+        unitrange = range(0,  1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
         ab = create_attraction_basis(model,npts=npts)
         cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
@@ -715,7 +714,7 @@ Exercise 2
                 ab = create_attraction_basis(model, maxiter=maxiter, npts=npts)
 
                 # Color map with colormesh
-                unitrange = range(0, stop = 1, length = npts)
+                unitrange = range(0,  1, length = npts)
                 cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
                 cbar_ax = fig[:add_axes]([0.95, 0.15, 0.05, 0.7])
                 colorbar(cf, cax=cbar_ax)

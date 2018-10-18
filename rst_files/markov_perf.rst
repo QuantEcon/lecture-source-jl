@@ -33,6 +33,16 @@ We will focus on settings with
 
 Other references include chapter 7 of :cite:`Ljungqvist2012`
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 
@@ -452,24 +462,12 @@ Consider the previously presented duopoly model with parameter values of:
 
 From these we compute the infinite horizon MPE using the following code
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: test
 
     using Test
 
 .. code-block:: julia
-
-    #=
-
-    @authors: Shunsuke Hori
-
-    =#
 
     using QuantEcon, LinearAlgebra
 
@@ -564,7 +562,8 @@ The following program
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     AF = A - B1 * F1 - B2 * F2
     n = 20
     x = zeros(3, n)

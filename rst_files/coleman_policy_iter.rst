@@ -28,7 +28,16 @@ We'll use this structure to obtain an **Euler equation**  based method that's mo
 
 In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical implementation part of the Euler equation method can be further adjusted to obtain even more efficiency
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Euler Equation
 ==========================
@@ -407,12 +416,6 @@ The Operator
 
 Here's some code that implements the Coleman operator
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -420,13 +423,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
-
-    using QuantEcon
+    using QuantEcon, Interpolations, Roots
 
     function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
                                Kg = similar(g))
@@ -434,7 +431,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         # This function requires the container of the output value as argument Kg
 
         # Construct linear interpolation object #
-        g_func = LinInterp(grid, g)
+        g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
 
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
@@ -442,7 +439,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                 vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
                 return u_prime(c) - β * mean(vals)
             end
-            Kg[i] = brent(h, 1e-10, y - 1e-10)
+            Kg[i] = find_zero(h, (1e-10, y - 1e-10))
         end
         return Kg
     end
@@ -461,19 +458,13 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 .. code-block:: julia
     :class: collapse
 
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
-
     using Optim
 
     function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
         # === Apply linear interpolation to w === #
-        w_func = LinInterp(grid, w)
+        w_func = LinearInterpolation(grid, w, extrapolation_bc=Line())
 
         if compute_policy
             σ = similar(w)
@@ -481,13 +472,13 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
         # == set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)} == #
         for (i, y) in enumerate(grid)
-            objective(c) = - u(c) - β * mean(w_func.(f(y - c) .* shocks))
-            res = optimize(objective, 1e-10, y)
+            objective(c) =  u(c) + β * mean(w_func.(f(y - c) .* shocks))
+            res = maximize(objective, 1e-10, y)
 
             if compute_policy
-                σ[i] = res.minimizer
+                σ[i] = Optim.maximizer(res)
             end
-            Tw[i] = - res.minimum
+            Tw[i] = Optim.maximum(res)
         end
 
         if compute_policy
@@ -509,12 +500,6 @@ solution
 Here's a struct containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
 
 .. code-block:: julia
-
-    #=
-
-    Author: Shunsuke Hori
-
-    =#
 
     struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
         α::TR              # Productivity parameter
@@ -546,7 +531,7 @@ Here's a struct containing data from the log-linear growth model we used in the 
                     f_prime = k -> α*k^(α-1)       # f'
                     )
 
-        grid = collect(range(grid_min, stop = grid_max, length = grid_size))
+        grid = collect(range(grid_min, grid_max, length = grid_size))
 
         if γ == 1                                       # when γ==1, log utility is assigned
             u_log(c) = log(c)

@@ -37,7 +37,6 @@ We study these ideas in  the context of a model in which a benevolent tax author
 
 The firm faces costs of adjustment and lives within a competitive equilibrium, which in turn imposes restrictions on the tax authority [#fn_a]_
 
-
 References
 -----------
 
@@ -52,6 +51,18 @@ Regarding techniques, we will make use of the methods described in
 .. :doc:`Stackelberg LQ models <lqstackelberg>`.
 
 .. TODO: Need to update the link above when the LQ Stackelberg lecture is released.
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 
@@ -661,24 +672,13 @@ We'll discuss how to compute :math:`\mu` :ref:`below <sec:computing_mu>` but fir
 
 We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95, 100]` and compute the Ramsey plan with the following piece of code
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-            Victoria Gregory <victoria.gregory@nyu.edu>
-
-    =#
     using QuantEcon
     using Roots
     using Plots
     using LaTeXStrings
+    gr(fmt=:png)
     pyplot()
 
     struct HistDepRamsey{TF<:AbstractFloat}

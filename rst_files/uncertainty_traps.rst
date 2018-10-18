@@ -43,6 +43,17 @@ Uncertainty traps emerge because:
 
 Uncertainty traps stem from a positive externality: high aggregate economic activity levels generates valuable information
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 The Model
 ===============
 
@@ -233,12 +244,6 @@ The method to evaluate the number of active firms generates :math:`F_1,
 \ldots, F_{\bar M}` and tests condition :eq:`firm_test` for each firm
 
 The function `UncertaintyTrapEcon` encodes as default values the parameters we'll use in the simulations below
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
   :class: test
@@ -438,7 +443,7 @@ different values of :math:`M`
     ρ, σ_θ, γ_x = econ.ρ, econ.σ_θ, econ.γ_x # simplify names
 
     # grid for γ and γ_{t+1}
-    γ = range(1e-10, stop = 3, length = 200)
+    γ = range(1e-10,  3, length = 200)
     M_range = 0:6
     γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
 

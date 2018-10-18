@@ -1,12 +1,10 @@
-.. _types_methods:
+.. _generic_programming:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ******************************************
-Types, Methods and Dispatch
+Generic and Functional Programming
 ******************************************
-
-.. TODO: Add some discussion about names and scope?  Or to julia_essentials?
 
 .. contents:: :depth: 2
 
@@ -32,93 +30,19 @@ Understanding them will help you
 
 * Read Julia code written by other programmers
 
+Setup
+------------------
 
-.. _julia_types:
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
+.. code-block:: julia 
 
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Types and Multiple Dispatch
 ===========================
-
-
-Common Types
----------------
-
-In Julia all objects have a type, which can be queried using the ``typeof()`` function
-
-
-.. code-block:: julia
-
-    typeof(0.5)
-
-
-.. code-block:: julia
-
-    typeof(5)
-
-
-.. code-block:: julia
-
-    typeof("foo")
-
-
-.. code-block:: julia
-
-    typeof('c')
-
-
-The next two types use curly bracket notation to express the fact that they are *parametric*
-
-
-.. code-block:: julia
-
-    typeof(1 + 1im)
-
-
-.. code-block:: julia
-
-    typeof(Matrix{Float64}(undef, 2, 2))
-
-
-We'll return to parametric types later in this lecture
-
-
-Remark: Note that, by convention, type names use CamelCase ---  ``FloatingPoint``, ``Array``, ``AbstractArray``, etc.
-
-
-Variables and Type
---------------------
-
-
-After assigning a variable name to an object, we can query the type of the
-object via the name
-
-.. code-block:: julia
-
-    x = 42
-
-
-.. code-block:: julia
-
-    typeof(x)
-
-
-The type resides with the object itself, not with the name ``x``
-
-Thus, ``x`` is just a symbol bound to an object of type ``Int64``
-
-Indeed, we can *rebind* the symbol ``x`` to any other object, of the same type or otherwise
-
-.. code-block:: julia
-
-    x = 42.0
-
-
-Now ``x`` "points to" another object, of type ``Float64``
-
-.. code-block:: julia
-
-    typeof(x)
 
 
 Multiple Dispatch
@@ -537,8 +461,8 @@ Perhaps not, but who wants to search the whole house for their fishing reel when
 
 Certainly not us
 
-Just as it's convenient to store household objects in draws, it's also
-convenient to organize the objects in your program into
+Just as it's convenient to store household values in draws, it's also
+convenient to organize the values in your program into
 designated "containers"
 
 The first step is to design and build the containers
@@ -547,7 +471,7 @@ We do this by declaring and using our own types
 
 For example,
 
-* a ``Firm`` type might store parameters for objects that represent firms in a given model
+* a ``Firm`` type might store parameters for values that represent firms in a given model
 
 * an ``EstimationResults`` type might store output from some statistical procedure, etc.
 
@@ -658,7 +582,7 @@ and organize them into a single entity like so
     end
 
 
-Here ``mutable`` means that we can change (mutate) data while the object is live in memory -- see below
+Here ``mutable`` means that we can change (mutate) data while the value is live in memory -- see below
 
 
 For the distribution ``ϕ`` we'll assign a ``Distribution`` from the `Distributions <https://github.com/JuliaStats/Distributions.jl>`__ package
@@ -923,5 +847,5 @@ Next let's plot the time series to see what it looks like
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
     plot(X, legend=:none)

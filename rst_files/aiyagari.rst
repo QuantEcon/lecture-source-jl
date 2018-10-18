@@ -42,9 +42,6 @@ The Aiyagari model has been used to investigate many topics, including
 
 * etc., etc., etc.
 
-
-
-
 References
 -------------
 
@@ -54,6 +51,16 @@ A textbook treatment is available in chapter 18 of :cite:`Ljungqvist2012`
 
 A continuous time version of the model by SeHyoun Ahn and Benjamin Moll can be found `here <http://nbviewer.jupyter.org/github/QuantEcon/QuantEcon.notebooks/blob/master/aiyagari_continuous_time.ipynb>`__
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Economy
 ==============
@@ -231,12 +238,6 @@ The action is the choice of next period asset level :math:`a_{t+1}`
 
 The type also includes a default set of parameters that we'll adopt unless otherwise specified
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -278,7 +279,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                         a_size=200)
 
         # set up grids
-        a_vals = range(a_min, stop = a_max, length = a_size)
+        a_vals = range(a_min, a_max, length = a_size)
         z_size = length(z_chain.state_values)
         n = a_size*z_size
         s_vals = gridmake(a_vals, z_chain.state_values)
@@ -345,6 +346,7 @@ As a first example of what we can do, let's compute and plot an optimal accumula
 .. code-block:: julia
 
     using Plots, Random
+    gr(fmt=:png)
     Random.seed!(42)
 
     # Example prices
@@ -438,7 +440,7 @@ The intersection gives equilibrium interest rates and capital
 
     # Create a grid of r values at which to compute demand and supply of capital
     num_points = 20
-    r_vals = range(0.005, stop = 0.04, length = num_points)
+    r_vals = range(0.005, 0.04, length = num_points)
 
     # Compute supply of capital
     k_vals = prices_to_capital_stock.(Ref(am), r_vals)

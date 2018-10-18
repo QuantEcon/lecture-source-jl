@@ -32,6 +32,17 @@ Once the basic technique has been explained, we will apply it to the analysis of
 
 For supplementary reading, see :cite:`Sargent1987` or :cite:`CryerChan2008`.
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 .. _periodograms:
 
 :index:`Periodograms`
@@ -207,12 +218,6 @@ Here's a code snippet that, once the preceding code has been run, generates data
 
 where :math:`\{ \epsilon_t \}` is white noise with unit variance, and compares the periodogram to the actual spectral density
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -312,7 +317,7 @@ Note the smaller weights towards the edges and larger weights in the center, so 
     end
 
     window = hanning_window(25) / sum(hanning_window(25))
-    x = range(-12, stop = 12, length = 25)
+    x = range(-12, 12, length = 25)
     plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights",
         xlabel="Position in sequence of weights", legend=false, grid=false)
 
