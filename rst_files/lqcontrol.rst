@@ -51,6 +51,16 @@ For additional reading on LQ control, see, for example,
 
 In order to focus on computation, we leave longer proofs to these sources (while trying to provide as much intuition as possible)
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Introduction
 ====================
@@ -681,12 +691,6 @@ The following figure was computed using :math:`r = 0.05, \beta = 1 / (1
 
 The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -791,6 +795,7 @@ relatively more weight on later consumption values
            color = [:blue :green :black :orange :red],
            xaxis = ("Time"), layout = (2, 1),
            bottom_margin = 20mm, size = (600, 600))
+
 
 
 We now have a slowly rising consumption stream and a hump-shaped build
@@ -1426,7 +1431,12 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
               xaxis = ("Time"), layout = (2,1),
               bottom_margin = 20mm, size = (600, 600))
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+    @test ap[20] == -8.123970759436794
+  end
 
 Exercise 2
 ----------
@@ -1513,6 +1523,12 @@ the lecture.
               xaxis = ("Time"), layout = (2, 1),
               bottom_margin = 20mm, size = (600, 600))
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test income[20] == 3.0809720173965855
+  end
 
 Exercise 3
 ----------
@@ -1597,3 +1613,12 @@ Our solution code is
               xaxis = ("Time"), title = "Dynamics with γ = $γ",
               bottom_margin = 20mm, top_margin = 10mm,
               size = (700, 500))
+
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test xp[20] == 2.8378651501210808
+    @test q_bar[25] == 2.518687537862516
+  end

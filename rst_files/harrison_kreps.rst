@@ -32,7 +32,6 @@ The model features
 
 * (leverage) limits on an investor's ability to borrow in order to finance purchases of a risky asset
 
-
 References
 ----------
 
@@ -52,6 +51,16 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 
     *A component of an asset price can be interpreted as a bubble when all investors agree that the current price of the asset exceeds what they believe the asset's underlying dividend stream justifies*
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Structure of the Model
 =======================
@@ -110,12 +119,6 @@ Investors of  type :math:`b` think the transition matrix is
 
 
 The stationary (i.e., invariant) distributions of these two matrices can be calculated as follows:
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia 
   :class: test 
@@ -326,11 +329,6 @@ Here's a function that can be used to compute these values
 
 .. code-block:: julia 
 
-    #=
-
-    Authors: Shunsuke Hori
-
-    =#
     using LinearAlgebra 
 
     function price_single_beliefs(transition::AbstractMatrix, dividend_payoff::AbstractVector;

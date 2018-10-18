@@ -36,6 +36,16 @@ treatments in our lectures on :doc:`shortest paths <short_path>` and
 We'll discuss some of the technical details of dynamic programming as we
 go along
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Model
@@ -508,12 +518,6 @@ What's important here is that the function approximation scheme must not only pr
 
 The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -522,12 +526,13 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
 
     using Plots, QuantEcon, LaTeXStrings, Interpolations
+    gr(fmt=:png)
 
 .. code-block:: julia
 
   f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
   c_grid = 0:.2:1
-  f_grid = range(0, stop = 1, length = 150)
+  f_grid = range(0,  1, length = 150)
 
   Af = LinearInterpolation(c_grid, f(c_grid))
 
@@ -548,12 +553,6 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
 .. code-block:: julia
 
-    #=
-
-    @authors : Spencer Lyon, John Stachurski
-
-    =#
-
     using Optim
 
 
@@ -569,13 +568,13 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
         # == set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)} == #
         for (i, y) in enumerate(grid)
-            objective(c) = - u(c) - β * mean(w_func.(f(y - c) .* shocks))
-            res = optimize(objective, 1e-10, y)
+            objective(c) = u(c) + β * mean(w_func.(f(y - c) .* shocks))
+            res = maximize(objective, 1e-10, y)
 
             if compute_policy
-                σ[i] = res.minimizer
+                σ[i] = Optim.maximizer(res)
             end
-            Tw[i] = - res.minimum
+            Tw[i] = Optim.maximum(res)
         end
 
         if compute_policy
@@ -697,7 +696,7 @@ We need a grid and some shock draws for Monte Carlo integration
     grid_size = 200      # Number of grid points
     shock_size = 250     # Number of shock draws in Monte Carlo integral
 
-    grid_y = collect(range(1e-5, stop = grid_max, length = grid_size))
+    grid_y = collect(range(1e-5,  grid_max, length = grid_size))
     shocks = exp.(μ .+ s * randn(shock_size))
 
 
@@ -769,6 +768,12 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
   plot!(plt, grid_y, v_star.(grid_y), color=:black, linewidth=2, alpha=0.8, label=lb)
   plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v_star.(grid_y)[2] == -33.370496456772266
+  end
 
 The figure shows
 
@@ -910,6 +915,12 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     plot!(plt, grid_y, cstar, lw=2, alpha=0.6, label="true policy function")
     plot!(plt, legend=:bottomright)
 
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test cstar[102] == 1.2505758978894472
+  end
 
 The figure shows that we've done a good job in this instance of approximating
 the true policy
@@ -943,6 +954,13 @@ We have also dialed down the shocks a bit
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
 
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test shocks[25] == 0.8050318706532391
+  end
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
 

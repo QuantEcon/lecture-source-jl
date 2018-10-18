@@ -1,4 +1,5 @@
 using Plots, LaTeXStrings
+gr(fmt=:png)
 pyplot()
 
 

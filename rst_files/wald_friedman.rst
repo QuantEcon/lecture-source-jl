@@ -15,7 +15,7 @@
 
 .. contents:: :depth: 2
 
-Co-authors: `Chase Coleman <https://github.com/cc7768>`__ and `José Bayoán Santiago Calderón <http://github.com/nosferican>`__.
+Co-authored with Chase Coleman.
 
 Overview
 =========
@@ -155,12 +155,16 @@ The next figure shows two discretized beta distributions in the top panel
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+Setup
+------------------
 
-.. code-block:: julia
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-    using Pkg; Pkg.activate(@__DIR__); # activate environment in the notebook's location
+.. code-block:: julia 
 
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 .. code-block:: julia
     :class: test
 
@@ -499,6 +503,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
                         L0 = 2, L1 = 2,
                         c = 0.2, p = 0.5,
                         n = 100, return_output = false);
+
 
 .. code-block:: julia
     :class: test

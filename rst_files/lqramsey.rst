@@ -53,6 +53,7 @@ Because the Lucas and Stokey model features state-contingent government debt, th
 
 We cover only the key features of the problem in this lecture, leaving you to refer to that source for additional results and intuition
 
+
 Model Features
 ---------------
 
@@ -60,6 +61,18 @@ Model Features
 * Representative household
 * Stochastic dynamic programming over an infinite horizon
 * Distortionary taxation
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Ramsey Problem
 =====================
@@ -564,24 +577,13 @@ The following code provides functions for
 
 Description and clarifications are given below
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+.. code-block:: julia
+  :class: test
+
+  using Test
 
 .. code-block:: julia
 
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-.. code-block:: julia 
-  :class: test 
-
-  using Test 
-
-.. code-block:: julia
-
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-    =#
     using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
 
     abstract type AbstractStochProcess end
@@ -881,20 +883,20 @@ Here's the code
 
     gen_fig_1(path)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
-    @test path.p[3] ≈ 1.5395294981420302 # Randomness check. 
+  @testset begin
+    @test path.p[3] ≈ 1.5395294981420302 # Randomness check.
     @test path.g[31] ≈ 0.31995784745763833 # Stuff we plot. --
-    @test path.c[36] ≈ 0.6387556584133354 
+    @test path.c[36] ≈ 0.6387556584133354
     @test path.B[9] ≈ 0.07442403655989423
     @test path.rvn[27] ≈ 0.35087848425010165
     @test path.π[31] ≈ 0.002863930880184773
     @test path.R[43] ≈ 1.055269758955539
     @test path.ξ[43] ≈ 0.9867651305840917
     @test path.Π[43] ≈ -0.18634133373855144 # -- Plot tests
-  end 
+  end
 
 The legends on the figures indicate the variables being tracked
 
@@ -947,10 +949,10 @@ Our second example adopts a discrete Markov specification for the exogenous proc
 
     gen_fig_1(path)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test path.p[3] ≈ 1.5852129146694405
     @test path.B[13] ≈ 0.003279632025474284
     @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
@@ -958,7 +960,7 @@ Our second example adopts a discrete Markov specification for the exogenous proc
     @test path.c[2] ≈ 0.6147870853305598
     @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05]
     @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-  end 
+  end
 
 The call ``gen_fig_2(path)`` generates
 
@@ -1018,6 +1020,20 @@ Solutions
 
     T = 50
     path = compute_paths(econ, T)
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test path.p[3]  ≈ 1.524261187305079
+    @test path.B[13]   ≈ 0.057880270344257134
+    @test path.g[7] ≈ 0.37173360141336675
+    @test path.rvn[7]  ≈ 0.3516395027502925
+    @test path.c[2]  ≈ 0.6259521929536346
+    @test path.R[5][1]  ≈ 1.0501742289013196
+    @test path.ξ[10] == 1.0013523500366277
+  end
+
 
 .. code-block:: julia
 

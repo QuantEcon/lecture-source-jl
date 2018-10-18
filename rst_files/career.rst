@@ -24,9 +24,6 @@ The model is originally due to Derek Neal :cite:`Neal1999`
 
 This exposition draws on the presentation in :cite:`Ljungqvist2012`, section 6.5
 
-
-
-
 Model features
 ----------------
 
@@ -34,6 +31,17 @@ Model features
 
 * Infinite horizon dynamic programming with two state variables
 
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Model
 ========
@@ -140,11 +148,8 @@ Nice properties:
 
 Here's a figure showing the effect of different shape parameters when :math:`n=50`
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
 
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+.. _beta-binom:
 
 .. code-block:: julia
   :class: test
@@ -154,6 +159,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
 
   using Plots, QuantEcon, Distributions # used PyPlot
+  gr(fmt=:png)
 
   n = 50
   a_vals = [0.5, 1, 100]
@@ -204,7 +210,7 @@ The code for solving the DP problem described above is found below:
                                F_b = 1.0,
                                G_a = 1.0,
                                G_b = 1.0)
-      θ = range(0, stop = B, length = N)
+      θ = range(0, B, length = N)
       ϵ = copy(θ)
       dist_F = BetaBinomial(N-1, F_a, F_b)
       dist_G = BetaBinomial(N-1, G_a, G_b)
@@ -452,6 +458,14 @@ Exercise 1
         ax[:plot](θ_path, label="θ")
         ax[:legend](loc="lower right")
     end
+
+.. code-block:: julia
+  :class: test
+
+  @testset begin
+    @test v[10] == 160.0457666508633
+    @test optimal_policy[30] == 3.0
+  end
 
 
 Exercise 2

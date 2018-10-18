@@ -49,12 +49,21 @@ This method turns out to be
 * More efficient numerically than value function iteration
 
 
-
 References
 ----------------
 
 Other useful references include :cite:`Deaton1991`, :cite:`DenHaan2010`, :cite:`Kuhn2013`, :cite:`Rabault2002`,  :cite:`Reiter2009`  and :cite:`SchechtmanEscudero1977`
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Optimal Savings Problem
 ===============================
@@ -391,12 +400,6 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
 * an ``initialize``, which generates suitable initial conditions for iteration
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: test
 
@@ -428,7 +431,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
                             grid_max=16,
                             grid_size=50)
         R = 1 + r
-        asset_grid = range(-b, stop = grid_max, length = grid_size)
+        asset_grid = range(-b, grid_max, length = grid_size)
 
         ConsumerProblem(r, R, β, b, Π, z_vals, asset_grid)
     end
@@ -452,7 +455,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
                 function obj(c)
                     EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
-                    return -u(c)  - β * EV
+                    return u(c)   β * EV
                 end
                 res = optimize(obj, opt_lb, R .* a .+ z .+ b)
                 c_star = Optim.minimizer(res)
@@ -605,7 +608,7 @@ Reproduce the following figure, which shows (approximately) optimal consumption 
    :scale: 100%
 
 * Other than `r`, all parameters are at their default values
-* `r` steps through `range(0, stop = 0.04, length = 4)`
+* `r` steps through `range(0, 0.04, length = 4)`
 * Consumption is plotted against assets for income shock fixed at the smallest value
 
 The figure shows that higher interest rates boost savings and hence suppress consumption
@@ -626,7 +629,8 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     # === solve for optimal consumption === #
 
     m = ConsumerProblem(r=0.03, grid_max=4)
@@ -770,7 +774,7 @@ Exercise 2
 
 .. code-block:: julia
 
-    r_vals = range(0, stop = 0.04, length = 4)
+    r_vals = range(0, 0.04, length = 4)
     traces = []
     legends = []
 
@@ -841,7 +845,7 @@ Exercise 4
 .. code-block:: julia
 
     M = 25
-    r_vals = range(0, stop = 0.04, length = M)
+    r_vals = range(0, 0.04, length = M)
 
     xs = []
     ys = []

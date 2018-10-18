@@ -31,7 +31,16 @@ A side benefit of studying Lucas' model is that it provides a beautiful illustra
 
 Another difference to our :doc:`first asset pricing lecture <markov_asset>` is that the state space and shock will be continous rather than discrete
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Lucas Model
@@ -54,13 +63,10 @@ Either way, the assumption of a representative agent means that prices adjust to
 
 This makes it very easy to compute competitive equilibrium prices
 
-
-
-
 Basic Setup
 --------------------------
 
-Let's review the set up 
+Let's review the set up
 
 Assets
 ^^^^^^^^^^^^^^^
@@ -416,26 +422,14 @@ Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, wh
 
 Some code to implement the iterative computational procedure can be found below:
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
+.. code-block:: julia
+  :class: test
+
+  using Test
 
 .. code-block:: julia
 
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-.. code-block:: julia 
-  :class: test 
-
-  using Test 
-
-.. code-block:: julia
-
-    #=
-
-    @authors : Spencer Lyon <spencer.lyon@nyu.edu>, John Stachurski
-
-    =#
-
-    using QuantEcon, Distributions
+    using QuantEcon, Distributions, Interpolations
 
     """
     The Lucas asset pricing model --- parameters and grid data
@@ -466,8 +460,8 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         # == build a grid with mass around stationary distribution == #
         ssd = σ / sqrt(1 - α^2)
         grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
-        grid = range(grid_min, stop = grid_max, length = grid_size)
-        
+        grid = range(grid_min,  grid_max, length = grid_size)
+
         # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
         h = similar(grid)
         for (i, y) in enumerate(grid)
@@ -495,7 +489,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         grid, α, β, h = lt.grid, lt.α, lt.β, lt.h
         z = lt.shocks
 
-        Af = LinInterp(grid, f)
+        Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
 
         Tf = [h[i] + β * mean(Af.(grid[i]^α.*z)) for i ∈ 1:length(grid)]
         return Tf
@@ -506,26 +500,26 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     Compute the equilibrium price function associated with Lucas tree `lt`
     """
     function solve_lucas_model(lt::LucasTree;
-                            tol::AbstractFloat=1e-6, 
+                            tol::AbstractFloat=1e-6,
                             max_iter::Integer=500)
-        
+
         # == simplify notation == #
         grid, γ = lt.grid, lt.γ
-        
+
         i = 0
         f = zero(grid)  # Initial guess of f
         error = tol + 1
-        
+
         while (error > tol) && (i < max_iter)
             f_new = lucas_operator(lt, f)
             error = maximum(abs, f_new - f)
             f = f_new
             i += 1
         end
-        
+
         # p(y) = f(y) * y ^ γ
         price = f .* grid.^γ
-        
+
         return price
     end
 
@@ -536,22 +530,20 @@ An example of usage is given in the docstring and repeated here
 
 .. code-block:: julia
 
-    using Random 
-    Random.seed!(42) # For reproducible results. 
+    using Random
+    Random.seed!(42) # For reproducible results.
 
     tree = LucasTree(γ=2.0, β=0.95, α=0.90, σ=0.1)
     price_vals = solve_lucas_model(tree);
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
-    @test price_vals[57] ≈ 44.50662425412852
-    @test price_vals[78] ≈ 68.44204772922079
-    @test price_vals[13] ≈ 9.878515482070496
-  end 
-    
-
+  @testset begin
+    @test price_vals[57] ≈ 44.5077566916004
+    @test price_vals[78] ≈ 68.42956586308563
+    @test price_vals[13] ≈ 9.880376662058682
+  end
 
 Here's the resulting price function
 
@@ -559,14 +551,13 @@ Here's the resulting price function
 
 .. code-block:: julia
 
-    using PyPlot
-
-    plt[:plot](figsize=(12, 8))
-    plt[:plot](tree.grid, price_vals, label=L"$p*(y)$")
-    plt[:xlabel](L"$y$")
-    plt[:ylabel]("price")
-    plt[:legend]()
+    using Plots
+    gr(fmt=:png)
     
+    plot(tree.grid, price_vals, lw=2, label="p*(y)")
+    plot!(xlabel="y", ylabel="price", legend=:topleft)
+
+
 
 
 The price is increasing, even if we remove all serial correlation from the endowment process
@@ -612,19 +603,22 @@ Solutions
 
     Random.seed!(42)
 
+    plot()
     for β in (.95, 0.98)
         tree = LucasTree(;β=β)
         grid = tree.grid
         price_vals = solve_lucas_model(tree)
-        plt[:plot](grid, price_vals, label=latexstring("\$ \\beta = $β\$"))
+        plot!(grid, price_vals, lw=2, label="beta = beta_var")
     end
 
-    plt[:legend]()
+    plot!(xlabel="y", ylabel="price", legend=:topleft)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin # For the 0.98, since the other one is overwritten. 
-    @test price_vals[20] ≈ 36.292037642169
-    @test price_vals[57] ≈ 129.1157997870433
-  end 
+  @testset begin # For the 0.98, since the other one is overwritten.
+    Random.seed!(42)
+    price_vals = solve_lucas_model(LucasTree(β = 0.98))
+    @test price_vals[20] ≈ 35.00073581199659
+    @test price_vals[57] ≈ 124.32987344509688
+  end
