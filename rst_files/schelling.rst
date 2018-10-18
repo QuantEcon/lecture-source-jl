@@ -157,6 +157,8 @@ then increase the number of agents.
 .. code-block:: julia
 
     using Plots, Random, LinearAlgebra
+    gr(fmt=:png)
+    
     Random.seed!(42)  # set seed for random numbers. Reproducible output
 
 

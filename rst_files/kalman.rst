@@ -107,7 +107,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   :class: collapse
 
   using Plots, LaTeXStrings, LinearAlgebra
-
+    gr(fmt=:png)
 
   function bivariate_normal(X,
                             Y,

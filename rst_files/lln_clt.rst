@@ -231,7 +231,8 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
 .. code-block:: julia
 
     using Plots, Distributions, LaTeXStrings, Random, Statistics
-
+    gr(fmt=:png)
+    
     n = 100
     Random.seed!(42)  # reproducible results
 

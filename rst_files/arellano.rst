@@ -654,6 +654,7 @@ Solutions
 .. code-block:: julia
 
     using Plots, Compose, ColorTypes, DataFrames
+    gr(fmt=:png)
 
 Compute the value function, policy and equilibrium prices
 

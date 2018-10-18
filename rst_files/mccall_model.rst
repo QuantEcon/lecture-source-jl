@@ -319,7 +319,7 @@ Let's start with some imports
 .. code-block:: julia
 
     using Plots, QuantEcon, Distributions, LaTeXStrings, LinearAlgebra, Random
-
+    gr(fmt=:png)
 
 Here's the distribution of wage offers we'll work with
 

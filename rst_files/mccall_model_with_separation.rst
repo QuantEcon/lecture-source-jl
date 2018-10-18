@@ -249,7 +249,7 @@ We'll use the default parameterizations found in the code above
 .. code-block:: julia
 
     using Plots, LaTeXStrings
-
+    gr(fmt=:png)
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)

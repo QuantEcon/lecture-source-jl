@@ -1536,6 +1536,7 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
 
     using Plots
+    gr(fmt=:png)
     titles = hcat("Consumption",
                   "Labor Supply",
                   "Government Debt",

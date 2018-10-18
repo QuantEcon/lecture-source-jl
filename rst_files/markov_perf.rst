@@ -562,7 +562,8 @@ The following program
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
+    
     AF = A - B1 * F1 - B2 * F2
     n = 20
     x = zeros(3, n)

@@ -189,6 +189,7 @@ We begin by creating some data points, using a sine function
 
     using Interpolations
     using Plots
+    gr(fmt=:png)
 
     x = -7:7             # x points, coase grid
     y = sin.(x)          # corresponding y points
@@ -372,7 +373,7 @@ The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero(
 Optimization
 ---------------------
 
-For constrained, univariate minimization a useful option is ``optimize()`` from the
+For constrained, univariate minimization a useful option is ``maximize()`` from the
 `Optim <https://github.com/JuliaOpt/Optim.jl>`_ package
 
 This function defaults to a robust hybrid optimization routine called Brent's method
@@ -381,7 +382,7 @@ This function defaults to a robust hybrid optimization routine called Brent's me
 
     using Optim
 
-    optimize(x -> x^2, -1.0, 1.0)
+    maximize(x -> x^2, -1.0, 1.0)
 
 
 For other optimization routines, including least squares and multivariate optimization, see `the documentation <https://github.com/JuliaOpt/Optim.jl/blob/master/README.md>`_

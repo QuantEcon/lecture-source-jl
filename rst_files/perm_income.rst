@@ -519,6 +519,7 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
 .. code-block:: julia
 
   using Plots, Random
+  gr(fmt=:png)
 
   Random.seed!(42)
 

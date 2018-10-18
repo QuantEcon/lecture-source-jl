@@ -847,5 +847,5 @@ Next let's plot the time series to see what it looks like
 .. code-block:: julia
 
     using Plots
-
+    gr(fmt=:png)
     plot(X, legend=:none)

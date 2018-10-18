@@ -99,7 +99,8 @@ The following figure represents three vectors in this manner
 .. code-block:: julia
 
     using Plots, LaTeXStrings
-
+    gr(fmt=:png)
+    
     vecs = ([2, 4], [-3, 3], [-4, -3.5])
     x_vals = zeros(2, length(vecs))
     y_vals = zeros(2, length(vecs))

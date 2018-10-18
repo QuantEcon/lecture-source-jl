@@ -424,6 +424,7 @@ Now try copying the following into a notebook cell and hit ``Shift-Enter``
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
     plot(sin, -2pi, pi, label="sine function")
 
 
