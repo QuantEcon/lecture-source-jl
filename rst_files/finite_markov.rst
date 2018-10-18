@@ -1409,28 +1409,21 @@ compare it to the stationary probability.
 .. code-block:: julia
 
     Random.seed!(42)
-    α = β = 0.1
+
+    α = 0.1 # probability of getting hired 
+    β = 0.1 # probability of getting fired
     N = 10000
-    p = β / (α + β)
-
-    P = [1 - α   α    # Careful: P and p are distinct
-            β     1 - β]
-
+    p_bar = β / (α + β) # steady-state probabilities
+    P = [1 - α   α
+         β   1 - β] # stochastic matrix 
     mc = MarkovChain(P)
-
-    labels = []
-    y_vals = []
+    labels = ["start unemployed", "start employed"]
+    y_vals = Array{Vector}(undef, 2) # sample paths holder
 
     for x0 ∈ 1:2
-        # == Generate time series for worker that starts at x0 == #
-        X = simulate_indices(mc, N; init = x0)
-
-        # == Compute fraction of time spent unemployed, for each n == #
-        X_bar = cumsum(X.==1) ./ (1:N) # (1:N) required, as otherwise the colon takes precedence.
-
-        l = LaTeXString("\$X_0 = $x0\$")
-        push!(labels, l)
-        push!(y_vals, X_bar .- p)
+        X = simulate_indices(mc, N; init = x0) # generate the sample path 
+        X_bar = cumsum(X.==1) ./ (1:N) # compute state fraction. ./ required for precedence
+        y_vals[x0] = X_bar .- p_bar # plot divergence from steady state
     end
 
     plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
@@ -1442,7 +1435,6 @@ compare it to the stationary probability.
     @testset "Exercise 1 Tests" begin
         @test y_vals[2][5] == -0.5
         @test X[1:5] == [2, 2, 2, 2, 2]
-        @test labels == Any[L"$X_0 = 1$", L"$X_0 = 2$"]
     end
 
 Exercise 2
@@ -1497,49 +1489,34 @@ executing the next cell
 
 .. code-block:: julia
 
-    #=
-    Return list of pages, ordered by rank
-    =#
-
     infile = "web_graph_data.txt"
     alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-    n = 14 # Total number of web pages (nodes)
+    n = 14 # total number of web pages (nodes)
 
-    # == Create a matrix Q indicating existence of links == #
-    #  * Q[i, j] = 1 if there is a link from i to j
-    #  * Q[i, j] = 0 otherwise
-    Q = zeros(Int64, n, n)
-    f = open(infile, "r")
-    edges = readlines(f)
-    close(f)
+    # create adjacency matrix of links (Q[i, j] = 1 for link, 0 otherwise)
+    Q = zeros(Int64, n, n) 
+    edges = readlines(infile)
     for edge ∈ edges
-        from_node, to_node = collect((m.match for m = eachmatch(r"\w", edge)))
-        i = first(something(findfirst(from_node, alphabet), 0:-1))
-        j = first(something(findfirst(to_node, alphabet), 0:-1))
+        from_node, to_node = [String(m.match) for m = eachmatch(r"\w", edge)] # String() required to go from Substring to String. r"\w" is a word character. 
+        i = findfirst(isequal(from_node[1]), alphabet) # [1] required to go from String to Char
+        j = findfirst(isequal(to_node[1]), alphabet)
         Q[i, j] = 1
     end
 
-    # == Create the corresponding Markov matrix P == #
+    # create the corresponding stochastic matrix 
     P = zeros(n, n)
     for i ∈ 1:n
         P[i, :] = Q[i, :] / sum(Q[i, :])
     end
 
     mc = MarkovChain(P)
+    r = stationary_distributions(mc)[1] # stationary distribution 
+    ranked_pages = Dict(alphabet[i] => r[i] for i ∈ 1:n) # results holder 
 
-    # == Compute the stationary distribution r == #
-    r = stationary_distributions(mc)[1]
-    ranked_pages = Dict(alphabet[i] => r[i] for i ∈ 1:n)
-
-    # == Print solution, sorted from highest to lowest rank == #
+    # print solution
     println("Rankings\n ***")
-    sort_inds = reverse!(sortperm(collect(values(ranked_pages))))
-    the_keys = collect(keys(ranked_pages))
-    the_vals = collect(values(ranked_pages))
-    for i ∈ sort_inds
-        @printf("%s: %.4f\n", the_keys[i], the_vals[i])
-    end
+    sort(collect(ranked_pages), by = x -> x[2], rev = true) # print sorted
 
 .. code-block:: julia
     :class: test
