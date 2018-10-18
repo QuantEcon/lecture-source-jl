@@ -835,6 +835,33 @@ A convenience macro for adding broadcasting on every function call is `@.`
 
     @. z = x + y - sin(x)
 
+
+Since the ``+,-,=`` operators are functions, beyind the scenes this is broadcasting against both the ``x`` and ``y`` vectors
+
+The compiler will fix anything which is a scalar, and otherwise iterate across every vector
+
+.. code-block:: julia
+
+    f(a, b) = a + b # bivariate function
+    a = [1 2 3]
+    b = [4 5 6]
+    @show f.(a, b) # across both
+    @show f.(a, 2); # fix scalar for second
+
+The compiler is only able to detect "scalar" values in this way for a limited number of types (e.g. integers, floating points, etc)
+
+For other types, you will need to wrap any scalars in ``Ref`` to fix them, or else it will try to broadcast the value
+
+.. code-block:: julia
+
+    using Distributions
+    d = Normal(0.0, 1.0) # create a normal Distributions
+    pdf(d, 0.1) # call as a function
+    x = [0.1, 0.2, 0.3]
+    pdf.(Ref(d), x) # note that pdf.(d, x) fails
+
+
+
 Scoping and Closures
 =====================
 
