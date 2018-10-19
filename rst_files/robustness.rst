@@ -143,7 +143,16 @@ Our discussion in this lecture is based on
 * :cite:`HansenSargent2008`
 
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Model
@@ -1025,12 +1034,6 @@ We compute value-entropy correspondences for two policies
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
     :class: test
 
@@ -1039,11 +1042,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-    =#
     using QuantEcon, Plots, LinearAlgebra, Interpolations
 
     # model parameters
@@ -1082,9 +1080,9 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
     function value_and_entropy(emax, F, bw, grid_size = 1000)
         if lowercase(bw) == "worst"
-            θs = 1 ./ range(1e-8, stop = 1000, length = grid_size)
+            θs = 1 ./ range(1e-8,  1000, length = grid_size)
         else
-            θs = -1 ./ range(1e-8, stop = 1000, length = grid_size)
+            θs = -1 ./ range(1e-8,  1000, length = grid_size)
         end
 
         data = zeros(grid_size, 2)
@@ -1127,7 +1125,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
     data_pairs = ((optimal_best_case, optimal_worst_case),
                   (robust_best_case, robust_worst_case))
 
-    egrid = range(0, stop = emax, length = 100)
+    egrid = range(0,  emax, length = 100)
     egrid_data = Vector{Vector{Float64}}()
     for data_pair in data_pairs
         for data in data_pair

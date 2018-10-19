@@ -29,9 +29,22 @@ We will also introduce some of the high quality routines for working with Markov
 
 Prerequisite knowledge is basic probability and linear algebra
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
+.. code-block:: julia
 
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages");
+
+.. code-block:: julia
+
+    # Import packages.
+    using LinearAlgebra, Statistics, Compat
+    using QuantEcon, Random, Plots, Printf, Distributions
+    gr(fmt=:png) # Setup for the Plots.
 
 Definitions
 ==============
@@ -57,7 +70,6 @@ Each row of :math:`P` can be regarded as a probability mass function over :math:
 
 It is too not difficult to check [#pm]_ that if :math:`P` is a stochastic matrix, then so is the :math:`k`-th power :math:`P^k` for all :math:`k \in \mathbb N`
 
-
 :index:`Markov Chains`
 -----------------------------
 
@@ -80,7 +92,6 @@ This means that, for any date :math:`t` and any state :math:`y \in S`,
     \mathbb P \{ X_{t+1} = y  \,|\, X_t \}
     = \mathbb P \{ X_{t+1}  = y \,|\, X_t, X_{t-1}, \ldots \}
 
-
 In other words, knowing the current state is enough to know probabilities for future states
 
 In particular, the dynamics of a Markov chain are fully determined by the set of values
@@ -90,7 +101,6 @@ In particular, the dynamics of a Markov chain are fully determined by the set of
 
     P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}
     \qquad (x, y \in S)
-
 
 By construction,
 
@@ -105,7 +115,6 @@ We can view :math:`P` as a stochastic matrix where
     P_{ij} = P(x_i, x_j)
     \qquad 1 \leq i, j \leq n
 
-
 Going the other way, if we take a stochastic matrix :math:`P`, we can generate a Markov
 chain :math:`\{X_t\}` as follows:
 
@@ -113,11 +122,7 @@ chain :math:`\{X_t\}` as follows:
 
 * for each :math:`t = 0, 1, \ldots`, draw :math:`X_{t+1}` from :math:`P(X_t,\cdot)`
 
-
 By construction, the resulting process satisfies :eq:`mpp`
-
-
-
 
 .. _mc_eg1:
 
@@ -150,7 +155,6 @@ We can write out the transition probabilities in matrix form as
     \end{array}
       \right)
 
-
 Once we have the values :math:`\alpha` and :math:`\beta`, we can address a range of questions, such as
 
 * What is the average duration of unemployment?
@@ -179,7 +183,6 @@ Using  US unemployment data, Hamilton :cite:`Hamilton2005` estimated the stochas
       \end{array}
     \right)
 
-
 where
 
 * the frequency is monthly
@@ -193,14 +196,10 @@ In general, large values on the main diagonal indicate persistence in the proces
 
 This Markov process can also be represented as a directed graph, with edges labeled by transition probabilities
 
-
 .. figure:: /_static/figures/hamilton_graph.png
    :scale: 80%
 
 Here "ng" is normal growth, "mr" is mild recession, etc.
-
-
-
 
 Simulation
 =============
@@ -220,9 +219,6 @@ However, it's also a good exercise to roll our own routines --- let's do that fi
 
 In these exercises we'll take the state space to be :math:`S = 1,\ldots, n`
 
-
-
-
 Rolling our own
 --------------------
 
@@ -236,13 +232,7 @@ The Markov chain is then constructed as discussed above.  To repeat:
 
 In order to implement this simulation procedure, we need a method for generating draws from a discrete distributions
 
-For this task we'll use `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_ from `QuantEcon <http://quantecon.org/julia_index.html>`__
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
+For this task we'll use a Bernoulli random variable with two states.
 
 .. code-block:: julia
     :class: test
@@ -251,23 +241,17 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    using QuantEcon, Random
+    Random.seed!(42) # for result reproducibility
 
-    Random.seed!(42)
-
-    ψ = [0.1, 0.9];        # Probabilities over sample space {1, 2}
-    d = DiscreteRV(ψ);
-    init = rand(d, 5)             # Generate 5 independent draws from ψ
-
+    d = Bernoulli(0.9) # d = 0 with probability .1, and d = 1 with probability .9
+    init = rand(d, 5)
 
 .. code-block:: julia
     :class: test
 
     @testset "Initial Block" begin
-        @test init == [2, 2, 1, 2, 2] # Mainly to check seeding invariance.
+        @test init == [1, 1, 1, 1, 0] # Mainly to check seeding invariance.
     end
-
-
 
 We'll write our code as a function that takes the following three arguments
 
@@ -277,24 +261,18 @@ We'll write our code as a function that takes the following three arguments
 
 * A positive integer ``sample_size`` representing the length of the time series the function should return
 
-
-
 .. code-block:: julia
 
     function mc_sample_path(P; init = 1, sample_size = 1000)
-        X = zeros(Int, sample_size) # allocate memory
-        X[1] = init
-        # === convert each row of P into a distribution === #
-        n = size(P)[1]
-        P_dist = [ DiscreteRV(vec(P[i,:])) for i ∈ 1:n ]
-
-        # === generate the sample path === #
-        for t ∈ 1:(sample_size - 1)
-            X[t+1] = rand(P_dist[X[t]])
+        X = fill(0, sample_size) # allocate memory
+        X[1] = init # set the initial state
+        rows = [P[i, :] for i in 1:size(P)[1]] # enumerate rows
+        dists = [Categorical(row) for row in rows] # create transition dists for each state
+        for t in 2:sample_size
+            X[t] = rand(dists[X[t-1]]) # fill the next state based on the previous state's transition distribution
         end
         return X
     end
-
 
 Let's see how it works using the small matrix
 
@@ -309,12 +287,9 @@ Let's see how it works using the small matrix
       \end{array}
     \right)
 
-
 As we'll see later, for a long series drawn from ``P``, the fraction of the sample that takes value 1 will be about 0.25
 
 If you run the following code you should get roughly that answer
-
-
 
 .. code-block:: julia
 
@@ -322,7 +297,6 @@ If you run the following code you should get roughly that answer
     P = [0.4 0.6; 0.2 0.8]
     X = mc_sample_path(P, sample_size = 100000);
     μ_1 = mean(X .== 1)
-
 
 .. code-block:: julia
     :class: test
@@ -332,15 +306,12 @@ If you run the following code you should get roughly that answer
         @test X[1:5] == [1, 2, 2, 1, 1]
     end
 
-
 Using QuantEcon's Routines
 ----------------------------
 
 As discussed above, `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ has routines for handling Markov chains, including simulation
 
 Here's an illustration using the same `P` as the preceding example
-
-
 
 .. code-block:: julia
 
@@ -368,38 +339,22 @@ These state values can be integers, floats, or even strings
 
 The following code illustrates
 
-
-
-
 .. code-block:: julia
 
     mc = MarkovChain(P, ["unemployed", "employed"])
     simulate(mc, 4, init = 1)   # Start at state 1
 
-
 .. code-block:: julia
 
     simulate(mc, 4, init = 2)  # Start at state 2
-
-
-
 
 .. code-block:: julia
 
     simulate(mc, 4)          # Start with randomly chosen initial condition
 
-
-
-
 .. code-block:: julia
 
     simulate_indices(mc, 4)
-
-
-
-
-
-
 
 .. _mc_md:
 
@@ -433,7 +388,6 @@ Using the `law of total probability <https://en.wikipedia.org/wiki/Law_of_total_
        = \sum_{x \in S} \mathbb P \{ X_{t+1} = y \, | \, X_t = x \}
                    \cdot \mathbb P \{ X_t = x \}
 
-
 In words, to get the probability of being at :math:`y` tomorrow, we account for
 all  ways this can happen and sum their probabilities
 
@@ -445,7 +399,6 @@ Rewriting this statement in terms of  marginal and conditional probabilities giv
 
     \psi_{t+1}(y) = \sum_{x \in S} P(x,y) \psi_t(x)
 
-
 There are :math:`n` such equations, one for each :math:`y \in S`
 
 If we think of :math:`\psi_{t+1}` and :math:`\psi_t` as *row vectors* (as is traditional in this literature), these :math:`n` equations are summarized by the matrix expression
@@ -456,7 +409,6 @@ If we think of :math:`\psi_{t+1}` and :math:`\psi_t` as *row vectors* (as is tra
     :label: fin_mc_fr
 
     \psi_{t+1} = \psi_t P
-
 
 In other words, to move the distribution forward one unit of time, we postmultiply by :math:`P`
 
@@ -477,14 +429,12 @@ This is very important, so let's repeat it
 
     X_0 \sim \psi_0 \quad \implies \quad X_m \sim \psi_0 P^m
 
-
 and, more generally,
 
 .. math::
     :label: mdfmc2
 
     X_t \sim \psi_t \quad \implies \quad X_{t+m} \sim \psi_t P^m
-
 
 .. _finite_mc_mstp:
 
@@ -509,7 +459,6 @@ In particular
 .. math::
 
     \mathbb P \{X_{t+m} = y \} = P^m(x, y) = (x, y) \text{-th element of } P^m
-
 
 Example: Probability of Recession
 -----------------------------------
@@ -537,9 +486,7 @@ The probability of being in recession (either mild or severe) in 6 months time i
       \end{array}
     \right)
 
-
 .. _mc_eg1-1:
-
 
 Example 2: Cross-Sectional Distributions
 --------------------------------------------
@@ -562,13 +509,11 @@ The cross-sectional distribution records the fractions of workers employed and u
 
 The same distribution also describes the fractions of  a particular worker's career spent being employed and unemployed, respectively
 
-
 :index:`Irreducibility and Aperiodicity`
 ============================================
 
 .. index::
     single: Markov Chains; Irreducibility, Aperiodicity
-
 
 Irreducibility and aperiodicity are central concepts of modern Markov chain theory
 
@@ -588,7 +533,6 @@ there exist positive integers :math:`j` and :math:`k` such that
     \quad \text{and} \quad
     P^k(y, x) > 0
 
-
 In view of our discussion :ref:`above <finite_mc_mstp>`, this means precisely
 that
 
@@ -603,15 +547,11 @@ communicate; that is, if :math:`x` and :math:`y` communicate for all
 For example, consider the following transition probabilities for wealth of a fictitious set of
 households
 
-
 .. figure:: /_static/figures/mc_irreducibility1.png
     :scale: 100%
 
-
-
 We can translate this into a stochastic matrix, putting zeros where
 there's no edge between nodes
-
 
 .. math::
 
@@ -624,13 +564,10 @@ there's no edge between nodes
       \end{array}
     \right)
 
-
 It's clear from the graph that this stochastic matrix is irreducible: we can
 reach any state from any other state eventually
 
 We can also test this using `QuantEcon.jl <http://quantecon.org/julia_index.html>`__'s MarkovChain class
-
-
 
 .. code-block:: julia
 
@@ -645,14 +582,10 @@ We can also test this using `QuantEcon.jl <http://quantecon.org/julia_index.html
         @test is_irreducible(mc) == true
     end
 
-
-
 Here's a more pessimistic scenario, where the poor are poor forever
 
 .. figure:: /_static/figures/mc_irreducibility2.png
     :scale: 100%
-
-
 
 This stochastic matrix is not irreducible, since, for example, `rich` is not accessible from `poor`
 
@@ -671,17 +604,11 @@ Let's confirm this
         @test is_irreducible(mc) == false
     end
 
-
-
 We can also determine the "communication classes," or the sets of communicating states (where communication refers to a nonzero probability of moving in each direction).
 
 .. code-block:: julia
 
     communication_classes(mc)
-
-
-
-
 
 It might be clear to you already that irreducibility is going to be important in terms of long run outcomes
 
@@ -689,11 +616,8 @@ For example, poverty is a life sentence in the second graph but not the first
 
 We'll come back to this a bit later
 
-
-
 Aperiodicity
 ----------------
-
 
 Loosely speaking, a Markov chain is called periodic if it cycles in a predictible way, and aperiodic otherwise
 
@@ -702,12 +626,7 @@ Here's a trivial example with three states
 .. figure:: /_static/figures/mc_aperiodicity1.png
     :scale: 100%
 
-
-
 The chain cycles with period 3:
-
-
-
 
 .. code-block:: julia
 
@@ -722,18 +641,12 @@ The chain cycles with period 3:
         @test period(mc) == 3 # Confirm that everything is behaving as expected.
     end
 
-
-
-
-
-
 More formally, the **period** of a state :math:`x` is the greatest common divisor
 of the set of integers
 
 .. math::
 
     D(x) := \{j \geq 1 : P^j(x, x) > 0\}
-
 
 In the last example, :math:`D(x) = \{3, 6, 9, \ldots\}` for every state :math:`x`, so the period is 3
 
@@ -744,12 +657,7 @@ For example, the stochastic matrix associated with the transition probabilities 
 .. figure:: /_static/figures/mc_aperiodicity2.png
     :scale: 100%
 
-
-
 We can confirm that the stochastic matrix is periodic as follows
-
-
-
 
 .. code-block:: julia
 
@@ -790,13 +698,11 @@ As seen in :eq:`fin_mc_fr`, we can shift probabilities forward one unit of time 
 
 Some distributions are invariant under this updating process --- for example,
 
-
 .. code-block:: julia
 
     P = [.4 .6; .2 .8];
     ψ = [0.25, 0.75];
     ψ' * P
-
 
 Such distributions are called **stationary**, or **invariant**
 
@@ -837,7 +743,6 @@ This gives some intuition for the following fundamental theorem
 
 #. For any initial distribution :math:`\psi_0`, we have :math:`\| \psi_0 P^t - \psi^* \| \to 0` as :math:`t \to \infty`
 
-
 For a proof, see, for example, theorem 5.2 of :cite:`haggstrom2002finite`
 
 (Note that part 1 of the theorem requires only irreducibility, whereas part 2
@@ -848,8 +753,6 @@ A stochastic matrix satisfying the conditions of the theorem is sometimes called
 One easy sufficient condition for aperiodicity and irreducibility is that every element of :math:`P` is strictly positive
 
 * Try to convince yourself of this
-
-
 
 Example
 ----------
@@ -866,11 +769,9 @@ Using :math:`\psi^* = \psi^* P` and a bit of algebra yields
 
     p = \frac{\beta}{\alpha + \beta}
 
-
 This is, in some sense, a steady state probability of unemployment --- more on interpretation below
 
 Not surprisingly it tends to zero as :math:`\beta \to 0`, and to one as :math:`\alpha \to 0`
-
 
 Calculating Stationary Distributions
 -----------------------------------------------
@@ -889,7 +790,6 @@ In fact if :math:`P` has two distinct stationary distributions :math:`\psi_1,
 
     \psi_3 := \lambda \psi_1 + (1 - \lambda) \psi_2
 
-
 is a stationary distribution for :math:`P` for any :math:`\lambda \in [0, 1]`
 
 If we restrict attention to the case where only one stationary distribution exists, one option for finding it is to try to solve the linear system :math:`\psi (I_n - P) = 0` for :math:`\psi`, where :math:`I_n` is the :math:`n \times n` identity
@@ -900,16 +800,13 @@ Hence we need to impose the restriction that the solution must be a probability 
 
 A suitable algorithm is implemented in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ --- the next code block illustrates
 
-
 .. code-block:: julia
 
     P = [.4 .6; .2 .8];
     mc = MarkovChain(P);
     stationary_distributions(mc)
 
-
 The stationary distribution is unique
-
 
 Convergence to Stationarity
 -----------------------------------------------
@@ -923,39 +820,31 @@ This adds considerable weight to our interpretation of :math:`\psi^*` as a stoch
 
 The convergence in the theorem is illustrated in the next figure
 
-
-
 .. code-block:: julia
 
-    using Plots
-
     P = [0.971 0.029 0.000
-            0.145 0.778 0.077
-            0.000 0.508 0.492]
+         0.145 0.778 0.077
+         0.000 0.508 0.492] # stochastic matrix
 
-    ψ = [0.0 0.2 0.8]
+    ψ = [0.0 0.2 0.8] # initial distribution
 
-    t = 20
-    x_vals = zeros(t+1)
+    t = 20 # path length
+    x_vals = zeros(t)
     y_vals = similar(x_vals)
     z_vals = similar(x_vals)
-    colors = []
+    colors = [repeat([:red], 20); :black] # for plotting
 
-    for i ∈ 1:t
+    for i in 1:t
         x_vals[i] = ψ[1]
         y_vals[i] = ψ[2]
         z_vals[i] = ψ[3]
-        ψ = ψ * P
-        push!(colors, :red)
+        ψ = ψ * P # update distribution
     end
-    push!(colors, :black)
 
     mc = MarkovChain(P)
     ψ_star = stationary_distributions(mc)[1]
-    x_vals[t+1] = ψ_star[1]
-    y_vals[t+1] = ψ_star[2]
-    z_vals[t+1] = ψ_star[3]
-    scatter(x_vals, y_vals, z_vals, color = colors)
+    x_star, y_star, z_star = ψ_star # unpack the stationary dist
+    scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors)
     plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
 
 .. code-block:: julia
@@ -978,9 +867,6 @@ Here
 
 The code for the figure can be found `here <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/finite_markov/mc_convergence_plot.jl>`__ --- you might like to try experimenting with different initial conditions
 
-
-
-
 .. _ergodicity:
 
 :index:`Ergodicity`
@@ -996,7 +882,6 @@ Under irreducibility, yet another important result obtains: For all :math:`x \in
 
     \frac{1}{n} \sum_{t = 1}^m \mathbf{1}\{X_t = x\}  \to \psi^*(x)
         \quad \text{as } m \to \infty
-
 
 Here
 
@@ -1014,7 +899,6 @@ This gives us another way to interpret the stationary distribution --- provided 
 
 The convergence in :eq:`llnfmc0` is a special case of a law of large numbers result for Markov chains --- see `EDTC <http://johnstachurski.net/edtc.html>`_, section 4.3.4 for some additional information
 
-
 .. _mc_eg1-2:
 
 Example
@@ -1030,7 +914,6 @@ We saw that the stationary distribution is :math:`(p, 1-p)`, where
 
     p = \frac{\beta}{\alpha + \beta}
 
-
 In the cross-sectional interpretation, this is the fraction of people unemployed
 
 In view of our latest (ergodicity) result, it is also the fraction of time that a worker can expect to spend unemployed
@@ -1038,7 +921,6 @@ In view of our latest (ergodicity) result, it is also the fraction of time that 
 Thus, in the long-run, cross-sectional averages for a population and time-series averages for a given person coincide
 
 This is one interpretation of the notion of ergodicity
-
 
 .. _finite_mc_expec:
 
@@ -1055,14 +937,12 @@ We are interested in computing expectations of the form
 
     \mathbb E [ h(X_t) ]
 
-
 and conditional expectations such as
 
 .. math::
     :label: mc_cce
 
     \mathbb E [ h(X_{t + k})  \mid X_t = x]
-
 
 where
 
@@ -1082,7 +962,6 @@ where
     \end{array}
       \right)
 
-
 The unconditional expectation :eq:`mc_une` is easy: We just sum over the
 distribution of :math:`X_t` to get
 
@@ -1090,7 +969,6 @@ distribution of :math:`X_t` to get
 
     \mathbb E [ h(X_t) ]
     = \sum_{x \in S} (\psi P^t)(x) h(x)
-
 
 Here :math:`\psi` is the distribution of :math:`X_0`
 
@@ -1101,7 +979,6 @@ write this as
 
     \mathbb E [ h(X_t) ]
     =  \psi P^t h
-
 
 For the conditional expectation :eq:`mc_cce`, we need to sum over
 the conditional distribution of :math:`X_{t + k}` given :math:`X_t = x`
@@ -1114,18 +991,13 @@ We already know that this is :math:`P^k(x, \cdot)`, so
     \mathbb E [ h(X_{t + k})  \mid X_t = x]
     = (P^k h)(x)
 
-
 The vector :math:`P^k h` stores the conditional expectation :math:`\mathbb E [ h(X_{t + k})  \mid X_t = x]` over all :math:`x`
-
-
-
 
 Expectations of Geometric Sums
 ------------------------------------
 
 Sometimes we also want to compute expectations of a geometric sum, such as
 :math:`\sum_t \beta^t h(X_t)`
-
 
 In view of the preceding discussion, this is
 
@@ -1136,7 +1008,6 @@ In view of the preceding discussion, this is
         \right]
     = [(I - \beta P)^{-1} h](x)
 
-
 where
 
 .. math::
@@ -1145,7 +1016,6 @@ where
 
 
 Premultiplication by :math:`(I - \beta P)^{-1}` amounts to "applying the **resolvent operator**"
-
 
 Exercises
 ==============
@@ -1167,7 +1037,6 @@ According to the discussion :ref:`above <mc_eg1-2>`, if a worker's employment dy
     \end{array}
       \right)
 
-
 with :math:`\alpha \in (0,1)` and :math:`\beta \in (0,1)`, then, in the long-run, the fraction
 of time spent unemployed will be
 
@@ -1175,14 +1044,12 @@ of time spent unemployed will be
 
     p := \frac{\beta}{\alpha + \beta}
 
-
 In other words, if :math:`\{X_t\}` represents the Markov chain for
 employment, then :math:`\bar X_m \to p` as :math:`m \to \infty`, where
 
 .. math::
 
     \bar X_m := \frac{1}{m} \sum_{t = 1}^m \mathbf{1}\{X_t = 1\}
-
 
 Your exercise is to illustrate this convergence
 
@@ -1201,9 +1068,6 @@ course
 .. figure:: /_static/figures/mc_ex1_plot.png
 
 (You don't need to add the fancy touches to the graph---see the solution if you're interested)
-
-
-
 
 .. _mc_ex2:
 
@@ -1259,7 +1123,6 @@ Letting :math:`j` be (the integer index of) a typical page and :math:`r_j` be it
 
     r_j = \sum_{i \in L_j} \frac{r_i}{\ell_i}
 
-
 where
 
 * :math:`\ell_i` is the total number of outbound links from :math:`i`
@@ -1281,7 +1144,6 @@ With this definition of :math:`P` we have
     = \sum_{i \in L_j} \frac{r_i}{\ell_i}
     = \sum_{\text{all } i} \mathbf 1\{i \to j\} \frac{r_i}{\ell_i}
     = \sum_{\text{all } i} P(i, j) r_i
-
 
 Writing :math:`r` for the row vector of rankings, this becomes :math:`r = r P`
 
@@ -1319,21 +1181,15 @@ To parse this file and extract the relevant information, you can use `regular ex
 
 The following code snippet provides a hint as to how you can go about this
 
+.. code-block:: jlcon
 
+    [ m.match for m in eachmatch(r"\w", "x +++ y ****** z") ] # will only extract alphanumeric characters
 
 .. code-block:: jlcon
 
-    collect((m.match for m ∈ eachmatch(r"\w", "x +++ y ****** z")))
-
-
-.. code-block:: jlcon
-
-    collect((m.match for m ∈ eachmatch(r"\w", "a ^^ b &&& \$\$ c")))
-
+    [ m.match for m in eachmatch(r"\w", "a ^^ b &&& \$\$ c") ]
 
 When you solve for the ranking, you will find that the highest ranked node is in fact ``g``, while the lowest is ``a``
-
-
 
 .. _mc_ex3:
 
@@ -1348,7 +1204,6 @@ In particular, Markov chains are routinely generated as discrete approximations 
 
     y_{t+1} = \rho y_t + u_{t+1}
 
-
 Here :math:`{u_t}` is assumed to be iid and :math:`N(0, \sigma_u^2)`
 
 The variance of the stationary probability distribution of :math:`\{ y_t \}` is
@@ -1356,7 +1211,6 @@ The variance of the stationary probability distribution of :math:`\{ y_t \}` is
 .. math::
 
     \sigma_y^2 := \frac{\sigma_u^2}{1-\rho^2}
-
 
 Tauchen's method :cite:`Tauchen1986` is the most common method for approximating this continuous state process with a finite state Markov chain
 
@@ -1384,13 +1238,11 @@ The values :math:`P(x_i, x_j)` are computed to approximate the AR(1) process ---
 
     P(x_i, x_j) = P(x_i, x_0) = F(x_0-\rho x_i + s/2)
 
-
 2. If :math:`j = n-1`, then set
 
 .. math::
 
     P(x_i, x_j) = P(x_i, x_{n-1}) = 1 - F(x_{n-1} - \rho x_i - s/2)
-
 
 3. Otherwise, set
 
@@ -1398,21 +1250,14 @@ The values :math:`P(x_i, x_j)` are computed to approximate the AR(1) process ---
 
     P(x_i, x_j) = F(x_j - \rho x_i + s/2) - F(x_j - \rho x_i - s/2)
 
-
 The exercise is to write a function ``approx_markov(rho, sigma_u, m = 3, n = 7)`` that returns
 :math:`\{x_0, \ldots, x_{n-1}\} \subset \mathbb R` and :math:`n \times n` matrix
 :math:`P` as described above
 
 * Even better, write a function that returns an instance of `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__ `MarkovChain` type
 
-
 Solutions
 ===========
-
-
-.. code-block:: julia
-
-    using LaTeXStrings, Printf
 
 Exercise 1
 ----------
@@ -1423,28 +1268,21 @@ compare it to the stationary probability.
 .. code-block:: julia
 
     Random.seed!(42)
-    α = β = 0.1
+
+    α = 0.1 # probability of getting hired
+    β = 0.1 # probability of getting fired
     N = 10000
-    p = β / (α + β)
-
-    P = [1 - α   α    # Careful: P and p are distinct
-            β     1 - β]
-
+    p_bar = β / (α + β) # steady-state probabilities
+    P = [1 - α   α
+         β   1 - β] # stochastic matrix
     mc = MarkovChain(P)
+    labels = ["start unemployed", "start employed"]
+    y_vals = Array{Vector}(undef, 2) # sample paths holder
 
-    labels = []
-    y_vals = []
-
-    for x0 ∈ 1:2
-        # == Generate time series for worker that starts at x0 == #
-        X = simulate_indices(mc, N; init = x0)
-
-        # == Compute fraction of time spent unemployed, for each n == #
-        X_bar = cumsum(X.==1) ./ (1:N) # (1:N) required, as otherwise the colon takes precedence.
-
-        l = LaTeXString("\$X_0 = $x0\$")
-        push!(labels, l)
-        push!(y_vals, X_bar .- p)
+    for x0 in 1:2
+        X = simulate_indices(mc, N; init = x0) # generate the sample path
+        X_bar = cumsum(X.==1) ./ (1:N) # compute state fraction. ./ required for precedence
+        y_vals[x0] = X_bar .- p_bar # plot divergence from steady state
     end
 
     plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
@@ -1456,7 +1294,6 @@ compare it to the stationary probability.
     @testset "Exercise 1 Tests" begin
         @test y_vals[2][5] == -0.5
         @test X[1:5] == [2, 2, 2, 2, 2]
-        @test labels == Any[L"$X_0 = 1$", L"$X_0 = 2$"]
     end
 
 Exercise 2
@@ -1511,49 +1348,34 @@ executing the next cell
 
 .. code-block:: julia
 
-    #=
-    Return list of pages, ordered by rank
-    =#
-
     infile = "web_graph_data.txt"
     alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-    n = 14 # Total number of web pages (nodes)
+    n = 14 # total number of web pages (nodes)
 
-    # == Create a matrix Q indicating existence of links == #
-    #  * Q[i, j] = 1 if there is a link from i to j
-    #  * Q[i, j] = 0 otherwise
-    Q = zeros(Int64, n, n)
-    f = open(infile, "r")
-    edges = readlines(f)
-    close(f)
-    for edge ∈ edges
-        from_node, to_node = collect((m.match for m = eachmatch(r"\w", edge)))
-        i = first(something(findfirst(from_node, alphabet), 0:-1))
-        j = first(something(findfirst(to_node, alphabet), 0:-1))
+    # create adjacency matrix of links (Q[i, j] = 1 for link, 0 otherwise)
+    Q = fill(0, n, n)
+    edges = readlines(infile)
+    for edge in edges
+        from_node, to_node = [String(m.match) for m = eachmatch(r"\w", edge)] # String() required to go from Substring to String. r"\w" is a word character.
+        i = findfirst(isequal(from_node[1]), alphabet) # [1] required to go from String to Char
+        j = findfirst(isequal(to_node[1]), alphabet)
         Q[i, j] = 1
     end
 
-    # == Create the corresponding Markov matrix P == #
+    # create the corresponding stochastic matrix
     P = zeros(n, n)
-    for i ∈ 1:n
+    for i in 1:n
         P[i, :] = Q[i, :] / sum(Q[i, :])
     end
 
     mc = MarkovChain(P)
+    r = stationary_distributions(mc)[1] # stationary distribution
+    ranked_pages = Dict(alphabet[i] => r[i] for i in 1:n) # results holder
 
-    # == Compute the stationary distribution r == #
-    r = stationary_distributions(mc)[1]
-    ranked_pages = Dict(alphabet[i] => r[i] for i ∈ 1:n)
-
-    # == Print solution, sorted from highest to lowest rank == #
+    # print solution
     println("Rankings\n ***")
-    sort_inds = reverse!(sortperm(collect(values(ranked_pages))))
-    the_keys = collect(keys(ranked_pages))
-    the_vals = collect(values(ranked_pages))
-    for i ∈ sort_inds
-        @printf("%s: %.4f\n", the_keys[i], the_vals[i])
-    end
+    sort(collect(ranked_pages), by = x -> x[2], rev = true) # print sorted
 
 .. code-block:: julia
     :class: test
@@ -1567,7 +1389,6 @@ Exercise 3
 ----------
 
 A solution from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ can be found `here <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`_
-
 
 .. rubric:: Footnotes
 

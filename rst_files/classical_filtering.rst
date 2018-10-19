@@ -45,10 +45,22 @@ For example, Sargent :cite:`Sargent1987` [chs. IX, XIV] and Hansen and Sargent :
 
 In this lecture we investigate these ideas using mostly elementary linear algebra
 
+
 References
 -------------
 
 Useful references include :cite:`Whittle1963`, :cite:`HanSar1980`, :cite:`Orfanidisoptimum1988`, :cite:`Athanasios1991`, and :cite:`Muth1960`
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Infinite Horizon Prediction and Filtering Problems
 =====================================================
@@ -550,24 +562,12 @@ Code that computes solutions to  LQ control and filtering problems  using the me
 
 Here's how it looks
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia 
   :class: test 
 
   using Test 
 
 .. code-block:: julia 
-
-  #=
-
-  Author: Shunsuke Hori
-
-  =#
 
   using Polynomials, LinearAlgebra
 

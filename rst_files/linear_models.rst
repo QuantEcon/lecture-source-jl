@@ -52,6 +52,17 @@ Its many applications include:
 
     * Sargent and Wallace's "unpleasant monetarist arithmetic," etc.
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
+
 
 The Linear State Space Model
 ===============================
@@ -1376,12 +1387,6 @@ the bars are at dates 10, 50 and 75
 
 Solutions
 ==========
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
 
 .. code-block:: julia
     :class: test

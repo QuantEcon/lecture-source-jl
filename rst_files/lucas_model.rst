@@ -31,7 +31,16 @@ A side benefit of studying Lucas' model is that it provides a beautiful illustra
 
 Another difference to our :doc:`first asset pricing lecture <markov_asset>` is that the state space and shock will be continous rather than discrete
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 The Lucas Model
@@ -53,12 +62,6 @@ Lucas studied a pure exchange economy with a representative consumer (or househo
 Either way, the assumption of a representative agent means that prices adjust to eradicate desires to trade
 
 This makes it very easy to compute competitive equilibrium prices
-
-
-.. code-block:: julia
-
-    using Test
-
 
 Basic Setup
 --------------------------
@@ -403,9 +406,6 @@ on the left hand side gives :eq:`ltbc` with :math:`\alpha := \beta`
 
 .. _lt_comp_eg:
 
-.. code-block:: julia
-  using Test
-
 Computation -- An Example
 ----------------------------
 
@@ -422,12 +422,6 @@ Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, wh
 
 Some code to implement the iterative computational procedure can be found below:
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -435,13 +429,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @authors : Spencer Lyon <spencer.lyon@nyu.edu>, John Stachurski
-
-    =#
-
-    using QuantEcon, Distributions
+    using QuantEcon, Distributions, Interpolations
 
     """
     The Lucas asset pricing model --- parameters and grid data
@@ -472,7 +460,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         # == build a grid with mass around stationary distribution == #
         ssd = σ / sqrt(1 - α^2)
         grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
-        grid = range(grid_min, stop = grid_max, length = grid_size)
+        grid = range(grid_min,  grid_max, length = grid_size)
 
         # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
         h = similar(grid)
@@ -501,7 +489,7 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
         grid, α, β, h = lt.grid, lt.α, lt.β, lt.h
         z = lt.shocks
 
-        Af = LinInterp(grid, f)
+        Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
 
         Tf = [h[i] + β * mean(Af.(grid[i]^α.*z)) for i ∈ 1:length(grid)]
         return Tf
@@ -552,9 +540,9 @@ An example of usage is given in the docstring and repeated here
   :class: test
 
   @testset begin
-    @test price_vals[57] ≈ 44.50662425412852
-    @test price_vals[78] ≈ 68.44204772922079
-    @test price_vals[13] ≈ 9.878515482070496
+    @test price_vals[57] ≈ 44.5077566916004
+    @test price_vals[78] ≈ 68.42956586308563
+    @test price_vals[13] ≈ 9.880376662058682
   end
 
 Here's the resulting price function
@@ -563,13 +551,12 @@ Here's the resulting price function
 
 .. code-block:: julia
 
-    using PyPlot
+    using Plots
+    gr(fmt=:png)
+    
+    plot(tree.grid, price_vals, lw=2, label="p*(y)")
+    plot!(xlabel="y", ylabel="price", legend=:topleft)
 
-    plt[:plot](figsize=(12, 8))
-    plt[:plot](tree.grid, price_vals, label=L"$p*(y)$")
-    plt[:xlabel](L"$y$")
-    plt[:ylabel]("price")
-    plt[:legend]()
 
 
 
@@ -616,14 +603,15 @@ Solutions
 
     Random.seed!(42)
 
+    plot()
     for β in (.95, 0.98)
         tree = LucasTree(;β=β)
         grid = tree.grid
         price_vals = solve_lucas_model(tree)
-        plt[:plot](grid, price_vals, label=latexstring("\$ \\beta = $β\$"))
+        plot!(grid, price_vals, lw=2, label="beta = beta_var")
     end
 
-    plt[:legend]()
+    plot!(xlabel="y", ylabel="price", legend=:topleft)
 
 .. code-block:: julia
   :class: test
@@ -631,6 +619,6 @@ Solutions
   @testset begin # For the 0.98, since the other one is overwritten.
     Random.seed!(42)
     price_vals = solve_lucas_model(LucasTree(β = 0.98))
-    @test price_vals[20] ≈ 34.996401835558295
-    @test price_vals[57] ≈ 124.32043561450588
+    @test price_vals[20] ≈ 35.00073581199659
+    @test price_vals[57] ≈ 124.32987344509688
   end

@@ -16,9 +16,8 @@ Schelling's Segregation Model
 
 .. contents:: :depth: 2
 
-Outline
+Overview
 =======================
-
 
 In 1969, Thomas C. Schelling developed a simple but striking model of racial segregation :cite:`Schelling1969`
 
@@ -32,7 +31,16 @@ In recognition of this and other research, Schelling was awarded the 2005 Nobel 
 
 In this lecture we (in fact you) will build and run a version of Schelling's model
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Model
 =======================
@@ -141,12 +149,6 @@ Here's one solution that does the job we want. If you feel like a
 further exercise you can probably speed up some of the computations and
 then increase the number of agents.
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -155,6 +157,8 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 .. code-block:: julia
 
     using Plots, Random, LinearAlgebra
+    gr(fmt=:png)
+    
     Random.seed!(42)  # set seed for random numbers. Reproducible output
 
 

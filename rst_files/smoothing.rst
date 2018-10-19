@@ -86,6 +86,16 @@ The key difference between those lectures and this one is
 
 So these later lectures are partly about how the government should  manipulate prices of government debt
 
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 Background
 ==========
@@ -372,12 +382,6 @@ Here's some code that, among other things, contains a function called `consumpti
 
 This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes given a set of parameters, under the assumption of complete markets
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -634,6 +638,7 @@ Let's try this, using the same parameters in both complete and incomplete market
 .. code-block:: julia
 
     using Plots, Random
+    gr(fmt=:png)
 
     Random.seed!(42)
     N_simul = 150

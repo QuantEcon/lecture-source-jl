@@ -9,12 +9,13 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 1. Assume this may be the **first programming language** students learn
 2. Use **compact, script-style** code, organized into functions only when it is natural.  Best practices for writing packages and expository/exploratory/interactive code can be different.
 3. Keep things as **close to the whiteboard math** as possible, including in the code structure and notation
-4. Ensure that all **code can be copied and pasted without modification** into functions for performance and modification without changes to scoping (e.g. no `local` or `global` ever required)
-5. **Avoid type annotations** unless they are required for dispatching
-6. **Avoid creating custom types** unless it is absolutely necessary
-7. Beyond the [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/), avoid unnecessary whitespace lines and redundant comments
-8. Don't use fancy features and control flow from Julia - unless it makes the code look closer to the math
-9. Avoid both micro-optimizations and coding patterns that pessimize (i.e. poor performance with no benefit in code clarity)
+4. Maintain this **correspondence between math and code** even if the code is less efficient.  Only optimize if it is really necessary.
+5. Ensure that all **code can be copied and pasted without modification** into functions for performance and modification without changes to scoping (e.g. no `local` or `global` ever required)
+6. **Avoid type annotations** unless they are required for dispatching
+7. **Avoid creating custom types** unless it is absolutely necessary
+8. Beyond the [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/), avoid unnecessary whitespace lines and redundant comments
+9. Don't use fancy features and control flow from Julia - unless it makes the code look closer to the math
+10. Avoid both micro-optimizations and coding patterns that pessimize (i.e. poor performance with no benefit in code clarity)
 
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
@@ -22,7 +23,7 @@ We want users to be able to say _"the code is clearer than Matlab, and even clos
 
 - **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
-    - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≦` when writing code.
+    - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
     - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.  **TODO** 
 - **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
@@ -37,7 +38,7 @@ bar = 2.0
 # GOOD!
 foo(a)
 
-# Parameters
+# parameters
 bar = 2.0
 ```
 - **Do not** align the `=` sign for construction of variables (though acceptable for matrices).  i.e.
@@ -60,17 +61,23 @@ A = [1 2;
   - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
 - **Prefer** `in` to `∈` 
 - Comment spacing
-  - Comments on their own lines, which are generally prefered
+  - Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
 ```julia
 x = 1
 
-# Comment1
+# comment1
 x = 2
 ```
   - Comments on the same line of code
 ```julia
-x = 1 # Comment2
+x = 1 # comment2
 ```
+- **Add comment for equation to code correspondence whenever possible**.  That is, if there was a formula in the document at some point, say `b = a x^2 (14)` where the `14` is the equation number when rendering, then the code which implements it should be
+```julia
+# GOOD!
+b = a * x^2 # (14)
+```
+  - The exception to this rule is if it is immediately clear that a line of code represents a formula due to immediate proximity in the document.  Always err on the side of extra equation numbers, and add it to the `rst` as required.
 
 ## Type Annotations, Parameters, and Generic Programming
 
@@ -90,7 +97,7 @@ params = MyParams(2.0)
 params = (a = 2.0, b = [1.0 2.0 3.0])
 
 # BETTER!
-myparams = @with_kw (a = 10.0, b = [1 2 3]) #Generates new named tuples with defaults
+myparams = @with_kw (a = 10.0, b = [1 2 3]) # generates new named tuples with defaults
 params = myparams(a = 2.0) # -> (a=2.0, b=[1.0 2.0 3.0])
 myparamsdefaults = myparams() # -> (a = 10.0, b = [1.0 2.0 3.0])
 ```
@@ -117,16 +124,16 @@ f(param)
 - **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
 ```julia
 # BAD! (unless out is a preallocated and very large vector)
-function f(out, x)
+function f!(out, x)
     out .= 2 * x
 end
 
-#GOOD
+# GOOD
 function f(x)
    return 2 * x
 end
 
-#BEST
+# BEST
 f(x) = 2 * x
 ```
   - The main problem is that the semantics of variable bindings are subtle in julia.  They are likely to accidentally go `out = 2 * x` and it would silently fail because it renames the `out` variable, and doesn't rewrite the contents.
@@ -156,7 +163,7 @@ vcat(a, b)
 
 # GOOD!
 [a b]
-[a; b] #or,
+[a; b] # or,
 [a;
  b]
 ```
@@ -174,28 +181,58 @@ A + 2 * Ival
 A + I
 A + 2*I
 ```
+- **Slice with copy for clarity**, and if necessary use `@views`
+```julia
+
+# GOOD! (usually)
+A = [1 2; 3 4]
+A[:, 1]
+
+#GOOD when views necessary 
+A = [1 2; 3 4]
+@views A[:, 1]
+
+# BAD!
+A = [1 2; 3 4]
+view(A, :, 1)
+```
 - **Preallocate with `similar`** whenever possible, and avoid type annotations unless necessary.  The goal is to maintain code independent of types, which will aid later in generic programming.  Where you cannot, just allocate zeros, etc. instead 
 ```julia
 N = 5
 x = [1.0, 2.0, 3.0, 4.0, 5.0]
 
-# Bad!
+# BAD!
 y = Array{Float64}(undef, N)
 A = Array{Float64}(undef, N, N)
 
-# Better
-y = zeros(N) #If we want the default, floats
+# BETTER!
+y = zeros(N) # if we want the default, floats
 A = zeros(N,N)
 
-# Best (if a candidate `x` exists)
-y = similar(x, N) # Keeps things generic.  The `N` here is not required if the same size
-A = similar(x, N, N) # Same type but NxN size
+# BEST! (if a candidate `x` exists)
+y = similar(x, N) # keeps things generic.  The `N` here is not required if the same size
+A = similar(x, N, N) # same type but NxN size
+```
+- **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
+```julia
+x = [1 0; 0 1]
+
+# note, typeof(Q) ==  LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}
+Q, R = qr(x)
+
+
+# BAD!
+Q = Matrix(Q)
+val = Q * Q' # some calculation using Q and other things
+
+# GOOD!
+val = Q * Q' # directly, without any conversion
 ```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
-# Bad!
+# BAD!
 N = 5
-x = [] # Really bad since it is an Any vector!
+x = [] # really bad since it is an Any vector!
 for i in 1:N
     push!(x, 2.0 * i^2)
 end
@@ -213,7 +250,7 @@ x = [2.0 * i^2 for i in 1:N]
 
 # or
 f(i) = 2.0 * i^2
-x = f.(1:5) #Use broadcasting
+x = f.(1:5) # use broadcasting
 ```
 - Prefer `eachindex` to accessing the sizes of vectors.
 ```julia
@@ -232,9 +269,9 @@ for i in eachindex(x)
 end
 y
 
-# GOOD! #No way to preallocate y (although easier ways to write)
+# GOOD! No way to preallocate y (although easier ways to write)
 x = rand(10)
-y = similar(x, 0) # Empty of same type as x
+y = similar(x, 0) # empty of same type as x
 for val in x
     if val < 0.5
         push!(y, val)
@@ -272,24 +309,18 @@ A = [1 2 3; 4 5 6]
 
 # BETTER!
 for i in eachindex(A)
-       B[i] = A[i]^2
+    B[i] = A[i]^2
 end
 ```
 TODO: when you need the `i` and `j` what do you do?  Just loop over both... 
 
-- **Avoid `range` when possible** and use the `1.0:0.1:1.0` style notation, etc.  Getting rid of the `linspace` is a pain, but use ranges if the exact top doesn't matter.
+- **Avoid `range` when possible** and use the `1.0:0.1:1.0` style notation, etc.
 ```julia
-range(1, stop=5) #BAD!
-1:5 #GOOD!
+ # BAD!
+ range(1, stop=5)
 
-
-N = 10
-zmin = 0.0
-zstop = 1.0
-
-# Old linspace(zmin, zstop, N) doesn't work
-# ACCEPTABLE!
-range(zmin, stop = zstop, length = N)
+# GOOD!
+1:5 
 ```    
   - Furthermore, if you don't really care if if hits the `zstop` exactly and are willing to give a stepsize then, the following is the clearest
 ```julia
@@ -300,22 +331,31 @@ step = 0.1
 # GOOD! But..
 r = zmin:step:zstop
 
-# ...CAREFUL
-r = 0.0:0.22:1.0 # Note the end isn't a multiple of the step...
+# CAREFUL!
+r = 0.0:0.22:1.0 # note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
-@assert maximum(r) == 0.88 # Use to get the maxium of the range, perhaps != 
+@assert maximum(r) == 0.88 # use to get the maxium of the range, perhaps != 
 ```
-- **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
+- **Use the new `range` from Compat.jl**. This provides code compatible with Julia 1.1
+```julia
+# BAD! but the only pure Julia 1.0 version
+range(0.0, stop=1.0, length = 10)
 
+# GOOD! but requires Julia 1.1 or Compat
+using Compat
+range(0.0, 1.0, length=10)
+```
+
+- **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
-- The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, LaTeXStrings, Plots, ....`
+- The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, Plots, Compat`
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
-- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, QuantEcon`)  but packages used only in a single place should have the `using` local to that use.
+- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single place should have the `using` local to that use.
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
-- **Always seed random numbers** in order for automated testing to function.
+- **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?

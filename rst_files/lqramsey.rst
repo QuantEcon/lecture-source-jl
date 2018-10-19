@@ -53,6 +53,7 @@ Because the Lucas and Stokey model features state-contingent government debt, th
 
 We cover only the key features of the problem in this lecture, leaving you to refer to that source for additional results and intuition
 
+
 Model Features
 ---------------
 
@@ -60,6 +61,18 @@ Model Features
 * Representative household
 * Stochastic dynamic programming over an infinite horizon
 * Distortionary taxation
+
+
+Setup
+------------------
+
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 The Ramsey Problem
 =====================
@@ -564,12 +577,6 @@ The following code provides functions for
 
 Description and clarifications are given below
 
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
 .. code-block:: julia
   :class: test
 
@@ -577,11 +584,6 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 
 .. code-block:: julia
 
-    #=
-
-    @author : Spencer Lyon <spencer.lyon@nyu.edu>
-
-    =#
     using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
 
     abstract type AbstractStochProcess end

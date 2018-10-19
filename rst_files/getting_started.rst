@@ -24,7 +24,16 @@ Topics:
 #. Installation of libraries, including the Julia code that underpins these lectures
 
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
+
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 First Steps
 ==============
@@ -402,7 +411,7 @@ Plots
 
 Let's generate some plots
 
-There are several options we'll :doc:`discuss in detail later <julia_plots>` 
+There are several options we'll :doc:`discuss in detail later <plots>` 
 
 For now lets start with ``Plots.jl``
 
@@ -415,6 +424,7 @@ Now try copying the following into a notebook cell and hit ``Shift-Enter``
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png)
     plot(sin, -2pi, pi, label="sine function")
 
 

@@ -38,8 +38,16 @@ For us, the shortest path problem also provides a nice introduction to the logic
 
 Dynamic programming is an extremely powerful optimization technique that we apply in many lectures on this site
 
+Setup
+------------------
 
+Activate the ``QuantEconLecturePackages`` project environment and package versions
 
+.. code-block:: julia 
+
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages")
+    using LinearAlgebra, Statistics, Compat
 
 
 Outline of the Problem
