@@ -11,8 +11,6 @@ Linear Algebra
 
 .. contents:: :depth: 2
 
-Co-authors: `Spencer Lyon <https://github.com/sglyon>`__ and `Victoria Gregory <http://github.com/vgregory757>`__.
-
 Overview
 ===========
 
@@ -67,7 +65,7 @@ material that will be used in applications as we go along
 
 A *vector* is an element of a vector space.
 
-Vector can be added together and scaled (multiplied) by scalars.
+Vectors can be added together and scaled (multiplied) by scalars.
 
 Vectors can be written as :math:`x = [x_1, \ldots, x_n]`
 
