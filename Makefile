@@ -7,6 +7,7 @@ SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = lecture-source-jl
 SOURCEDIR     = rst_files
 BUILDDIR      = _build
+DEPVER        = v0.3.1
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -17,5 +18,6 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
+	sed 's/DEPVER/$(DEPVER)/g' $(SOURCEDIR)/_static/includes/deps.jl
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	bash -c "cp notebooks/*.toml _build/jupyter"

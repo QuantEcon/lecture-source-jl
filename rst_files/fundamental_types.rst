@@ -38,13 +38,8 @@ In this lecture we give more details on
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
-    using LinearAlgebra, Statistics, Compat
 
 Array Basics
 ================

@@ -31,13 +31,7 @@ In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical im
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 The Euler Equation
 ==========================

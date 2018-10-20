@@ -42,14 +42,7 @@ As we'll see, McCall's model is not only interesting in its own right but also a
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
+.. literalinclude:: /_static/includes/deps.jl
 
 The McCall Model
 =================
