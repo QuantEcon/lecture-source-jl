@@ -602,49 +602,56 @@ Docker
 
 Docker is a way to share consistent development environments with people. We have a QuantEcon Docker that does all this setup work for you. Here is the overview: 
 
-1. Install [Docker](https://docs.docker.com/install/), should expect to see an executable file
-    - Link [for Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac)
-    - For [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows). Don't click the line for Windows containers. 
-    - Note: You may need to create an account on Docker's website to download 
+1. Install `Docker <https://docs.docker.com/install>`_, should expect to see an executable file
+    
+    * Link `for Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+
+    * For `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. Don't click the line for Windows containers. 
+
+    * Note: You may need to create an account on Docker's website to download 
+
 
 2. Test your Docker setup
-    - Can run either `docker version` or `docker run hello-world` in your terminal. 
 
-3. Download the QuantEcon Docker image by running `docker pull quantecon/base` in your terminal. 
+    * Can run either ``docker version`` or ``docker run hello-world`` in your terminal. 
 
-4. Run it by running `docker run --dm -p 8888:8888 quantecon/base`. You'll see something like the following:
-    - This is the simplest way to run the container. We'll go over some variants below.
 
-    ```
-    
+3. Download the QuantEcon Docker image by running ``docker pull quantecon/base`` in your terminal. 
+
+4. Run it by running ``docker run --dm -p 8888:8888 quantecon/base``. You'll see something like the following:
+
+    * This is the simplest way to run the container. We'll go over some variants below.
+
+
+.. code-block:: none
+
     127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b
-    ```
 
-    Paste that into your browser (without the `)` before the `:8888`), and you're good to go. 
+Paste that into your browser (without the `)` before the `:8888`), and you're good to go. 
 
-5. To quit, run `docker stop $(docker ps -aq)` (or `docker stop CONTAINERID`) in a different terminal. 
+5. To quit, run ``docker stop $(docker ps -aq)`` (or ``docker stop CONTAINERID``) in a different terminal. 
 
 Persistent Storage
 ----------------------
 
 There are two things to note here:
 
-1. To persist the `work/` directory in your Docker (useful for storing local files, packages, etc.), first run:
+1. To persist the ``work/`` directory in your Docker (useful for storing local files, packages, etc.), first run:
 
-```
-docker volume create quantecon
-```
+.. code-block:: none
 
-And then add `-v quantecon:/home/jovyan/work` to the above command (before the name of the image, which comes last). This will create a local Docker volume on your machine which feeds into the `~/work` directory.
+    docker volume create quantecon
 
-2. To load a local directory into your Docker image (we recommend `/local`), you can run something like:
+And then add ``-v quantecon:/home/jovyan/work`` to the above command (before the name of the image, which comes last). This will create a local Docker volume on your machine which feeds into the ``~/work`` directory.
 
-```
-docker run -p 8888:8888 -v "$PWD":/home/jovyan/local quantecon/base 
-docker run -p 8888:8888 -v {pwd}:/home/jovyan/local quantecon/base 
-```
+2. To load a local directory into your Docker image (we recommend ``/local``), you can run something like:
 
-To do both, simply: `docker run -p 8888:8888 -v "$PWD":/home/jovyan/local -v source:/home/jovyan/work quantecon/base` 
+.. code-block:: none
+
+    docker run -p 8888:8888 -v "$PWD":/home/jovyan/local quantecon/base 
+    docker run -p 8888:8888 -v {pwd}:/home/jovyan/local quantecon/base 
+
+To do both, simply: ``docker run -p 8888:8888 -v "$PWD":/home/jovyan/local -v source:/home/jovyan/work quantecon/base``
 
 
 Exercises
