@@ -16,7 +16,7 @@ const n = 60                                           # n possible outcomes for
 const default_w_vec = range(10, 20, length = n) # wages between 10 and 20
 const a, b = 600, 400                                  # shape parameters
 const dist = BetaBinomial(n-1, a, b)
-const default_p_vec = pdf.(Ref(dist), support(dist))
+const default_p_vec = pdf.(dist, support(dist))
 
 mutable struct McCallModel{TF <: AbstractFloat,
                            TAV <: AbstractVector{TF},
