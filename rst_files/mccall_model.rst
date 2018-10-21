@@ -383,8 +383,7 @@ between successive iterates is below `tol`
                                       max_iter = 500,
                                       tol = 1e-6)
 
-    # == First compute the value function == #
-
+     # first compute the value function
     v = collect(w_vals ./ (1 - β))
     v_next = similar(v)
     i = 0
@@ -403,7 +402,7 @@ between successive iterates is below `tol`
         v[:] .= v_next  # copy contents into v
     end
 
-    # == Now compute the reservation wage == #
+     # now compute the reservation wage
        return (1 - β) * (c + β * sum(v .* p_vals))
     end
 
