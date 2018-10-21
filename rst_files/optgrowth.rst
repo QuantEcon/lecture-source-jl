@@ -1,4 +1,4 @@
-
+#
 .. _optgrowth:
 
 .. include:: /_static/includes/lecture_howto_jl_full.raw

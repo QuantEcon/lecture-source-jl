@@ -920,8 +920,8 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
 
   using Plots, Random
   gr(fmt=:png)
-  
-  # == Set seed and generate a_t sequence == #
+
+  # set seed and generate a_t sequence
   Random.seed!(123)
   n = 100
   a_seq = sin.(range(0,  5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
@@ -934,8 +934,7 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
     y_hist, L, U, y = optimal_y(testlq, a_seq)
     y = y[end:-1:1]  # reverse y
 
-    # == Plot simulation results == #
-
+    # plot simulation results
     time = 1:length(y)
     plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle, 
                markersize = 2, label="a_t")
