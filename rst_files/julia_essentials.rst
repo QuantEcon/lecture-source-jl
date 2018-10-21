@@ -842,18 +842,17 @@ The compiler will fix anything which is a scalar, and otherwise iterate across e
     @show f.(a, b) # across both
     @show f.(a, 2); # fix scalar for second
 
-The compiler is only able to detect "scalar" values in this way for a limited number of types (e.g. integers, floating points, etc)
+The compiler is only able to detect "scalar" values in this way for a limited number of types (e.g. integers, floating points, etc) and some packages (e.g. Distributions)
 
 For other types, you will need to wrap any scalars in ``Ref`` to fix them, or else it will try to broadcast the value
 
+Another place that you may use a ``Ref`` is to fix a function parameter you do not want to broadcast over
+
 .. code-block:: julia
 
-    using Distributions
-    d = Normal(0.0, 1.0) # create a normal Distributions
-    pdf(d, 0.1) # call as a function
-    x = [0.1, 0.2, 0.3]
-    pdf.(Ref(d), x) # note that pdf.(d, x) fails
-
+    f(x, y) = [1, 2, 3] ⋅ x + y
+    f([3, 4, 5], 2) # uses vector as first parameter
+    f.(Ref([3,4, 5]), [2,3]) # broadcasting over 2nd parameter, fixing first
 
 
 Scoping and Closures
@@ -1049,12 +1048,13 @@ Similarly, for while loops
 
     val = 1.0
     tol = 0.002
-    while val < tol
+    while val > tol
         old = val
         val = val / 2
         difference = val - old
     end
-    val # but `difference` is not in scope
+    @show val;
+    # @show difference # fails, not in scope
 
 A Quick Check for Scoping Design
 ---------------------------------------------

@@ -163,7 +163,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
   for (a, b) in zip(a_vals, b_vals)
       ab_label = "a = $a, b = $b"
       dist = BetaBinomial(n, a, b)
-      plot!(plt, 0:n, pdf.(Ref(dist), support(dist)), label = ab_label)
+      plot!(plt, 0:n, pdf.(dist, support(dist)), label = ab_label)
   end
   plt
 
@@ -208,8 +208,8 @@ The code for solving the DP problem described above is found below:
       ϵ = copy(θ)
       dist_F = BetaBinomial(N-1, F_a, F_b)
       dist_G = BetaBinomial(N-1, G_a, G_b)
-      F_probs = pdf.(Ref(dist_F), support(dist_F))
-      G_probs = pdf.(Ref(dist_G), support(dist_G))
+      F_probs = pdf.(dist_F, support(dist_F))
+      G_probs = pdf.(dist_G, support(dist_G))
       F_mean = sum(θ .* F_probs)
       G_mean = sum(ϵ .* G_probs)
       CareerWorkerProblem(β, N, B, θ, ϵ, F_probs, G_probs, F_mean, G_mean)

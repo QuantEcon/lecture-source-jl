@@ -687,7 +687,7 @@ Exercise 1
     for i ∈ 1:N
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
-        push!(densities, pdf.(Ref(Normal(m, sqrt(v))), xgrid))
+        push!(densities, pdf.(Normal(m, sqrt(v)), xgrid))
         push!(labels, LaTeXString("\$t=$i\$"))
 
         # Generate the noisy signal

@@ -20,5 +20,5 @@ help:
 %: Makefile
 	sed -i 's/DEPVER/$(DEPVER)/g' $(SOURCEDIR)/_static/includes/deps.jl 
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) 
-	bash -c "cp notebooks/*.toml _build/jupyter"
 	sed -i 's/$(DEPVER)/DEPVER/g' $(SOURCEDIR)/_static/includes/deps.jl # Reset static source file. 
+
