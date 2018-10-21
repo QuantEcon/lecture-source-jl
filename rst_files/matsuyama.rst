@@ -597,14 +597,7 @@ Dark colors indicate synchronization, while light colors indicate failure to syn
 
 As you can see, larger values of :math:`\rho` translate to more synchronization
 
-You are asked to replicate this figure in the exercises
-
-In the solution to the exercises, you'll also find a figure with sliders, allowing you to experiment with different parameters
-
-Here's one snapshot from the interactive figure
-
-.. figure:: /_static/figures/matsuyama_18.png
-   :scale: 80%
+You are asked to replicate this figure in the exercises.
 
 Exercises
 ==============
@@ -687,41 +680,3 @@ Exercise 1
     @test ab3[1:4, 1:4] == [0.0 167.0 183.0 201.0; 167.0 0.0 201.0 230.0; 183.0 201.0 0.0 172.0; 201.0 230.0 172.0 0.0]
     @test ab4[1:4, 1:4] == [0.0 161.0 169.0 193.0; 161.0 0.0 193.0 210.0; 169.0 193.0 0.0 186.0; 193.0 210.0 186.0 0.0]
   end 
-
-
-Exercise 2
-----------
-
-.. code-block:: julia
-
-    using Interact
-    function interact_attraction_basis(
-            ρ_min, ρ_step, ρ_max,
-            maxiter_min, maxiter_step, maxiter_max,
-            npts_min, npts_step, npts_max)
-
-        # Create the figure and axis that we will plot on
-        fig, ax = subplots(figsize=(12, 10))
-        @manipulate for ρ=ρ_min:ρ_step:ρ_max,
-            maxiter=maxiter_min:maxiter_step:maxiter_max,
-            npts=npts_min:npts_step:npts_max
-             withfig(fig, clear=false) do
-                ax[:cla]()
-
-                # Create model and attraction basis
-                s1, θ, δ = 0.5, 2.5, 0.75
-                model = MSGSync(s1, θ, δ, ρ)
-                ab = create_attraction_basis(model, maxiter=maxiter, npts=npts)
-
-                # Color map with colormesh
-                unitrange = range(0,  1, length = npts)
-                cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
-                cbar_ax = fig[:add_axes]([0.95, 0.15, 0.05, 0.7])
-                colorbar(cf, cax=cbar_ax)
-            end
-        end
-    end
-
-.. code-block:: julia
-
-    interact_attraction_basis( 0.00, 0.05, 1.0, 50, 50, 5000, 25, 25, 750)
