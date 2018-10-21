@@ -597,7 +597,7 @@ Dark colors indicate synchronization, while light colors indicate failure to syn
 
 As you can see, larger values of :math:`\rho` translate to more synchronization
 
-You are asked to replicate this figure in the exercises.
+You are asked to replicate this figure in the exercises
 
 Exercises
 ==============
