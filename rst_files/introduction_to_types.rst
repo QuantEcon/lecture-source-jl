@@ -144,12 +144,12 @@ Now ``x`` "points to" another value, of type ``Float64``
 
     typeof(x)
 
-Introduction to Types
+Deducing Types
 ======================
 
 We will discuss this in detail in :doc:`this lecture <generic_programming>`, but much of its performance gains and generality of notation comes from Julia's type system
 
-For example, as we have seen
+For example, with
 
 .. code-block:: julia
 
@@ -171,6 +171,29 @@ Given the information on the type, the compiler can work through the sequence of
     x = [1, 2, 3]
     z = f(x) # compiler deduces type
 
+Analyzing Function Return Types (Advanced)
+-------------------------------------------
+
+For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
+
+We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but to give a hint
+
+.. code-block:: julia
+
+    @code_warntype f(x)
+
+Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function is a simple vector
+
+In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : nothing
+    @code_warntype f(1)
+
+This states that the compiler determines the return type could be one of two different types, ``Body::Union{Nothing, Int64}`` 
+
+
 Good Practices for Functions and Variables
 --------------------------------------------
 
@@ -186,7 +209,7 @@ The type of this is ``Array{Any,1}``, where the ``Any`` means the compiler has d
 
 While occasionally useful, this is to be avoided whenever possible in performance sensitive code
 
-The other place this can come up is in the declaration of functions,
+The other place this can come up is in the declaration of functions
 
 As an example, consider a function which returns different types depending on the arguments
 
@@ -218,7 +241,7 @@ While we keep talking about types, you will notice that we have never declared a
 
 This is intentional for exposition and "user" code of packages, rather than the writing of those packages themselves
 
-It is also in contrast to some of the sample code you will see
+It is also in contrast to some of the sample code you will see in other julia sources
 
 To give an example of the declaration of types, the following are equivalent
 
@@ -254,6 +277,10 @@ To see a few examples where the first works and the second fails
     #f2([0.1; 2.0], [1 2; 3 4]) # not a Float64
     #f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a Matrix{Float64}
 
+Declaring Struct
+-----------------
+
+TODO: Another major diff
 
 Exercises
 =============
