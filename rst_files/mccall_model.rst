@@ -44,7 +44,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -390,7 +390,7 @@ between successive iterates is below `tol`
                                       max_iter = 500,
                                       tol = 1e-6)
 
-    # == First compute the value function == #
+     First compute the value function
 
     v = collect(w_vals ./ (1 - β))
     v_next = similar(v)
@@ -410,7 +410,7 @@ between successive iterates is below `tol`
         v[:] .= v_next  # copy contents into v
     end
 
-    # == Now compute the reservation wage == #
+     Now compute the reservation wage
        return (1 - β) * (c + β * sum(v .* p_vals))
     end
 
@@ -564,7 +564,7 @@ Here's an implementation:
                                           β = 0.99,
                                           max_iter = 500,
                                           tol = 1e-5)
-        # == First compute ψ == #
+         First compute ψ
 
         ψ = dot(w_vals, p_vals) ./ (1 - β)
         i = 0
@@ -580,7 +580,7 @@ Here's an implementation:
             ψ = ψ_next
         end
 
-        # == Now compute the reservation wage == #
+         Now compute the reservation wage
 
         return (1 - β) * (c + β * ψ)
     end

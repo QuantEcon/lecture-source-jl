@@ -151,7 +151,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -759,17 +759,17 @@ Here's our solution
 
 .. code-block:: julia
 
-    # == Model parameters == #
+    # model parameters
     a0 = 100
     a1 = 0.05
     β = 0.95
     γ = 10.0
 
-    # == Beliefs == #
+    # beliefs
     κ0 = 95.5
     κ1 = 0.95
 
-    # == Formulate the LQ problem == #
+    # formulate the LQ problem
     A = [1  0  0
          0 κ1 κ0
          0  0  1]
@@ -782,7 +782,7 @@ Here's our solution
 
     Q = 0.5 * γ
 
-    # == Solve for the optimal policy == #
+    # solve for the optimal policy
     lq = QuantEcon.LQ(Q, R, A, B; bet = β)
     P, F, d = stationary_values(lq)
 
@@ -793,7 +793,7 @@ Here's our solution
 
 .. code-block:: julia
   :class: test
-  
+
   @testset begin
     @test F[1] == 0.07347294403502992
     @test F[2] == -73.47294403502833
@@ -932,7 +932,7 @@ we can obtain the implied aggregate law of motion via
 
 .. code-block:: julia
 
-    # == Formulate the planner's LQ problem == #
+    # formulate the planner's LQ problem
     A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
@@ -941,11 +941,11 @@ we can obtain the implied aggregate law of motion via
 
     Q = γ / 2.0
 
-    # == Solve for the optimal policy == #
+    # solve for the optimal policy
     lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
 
-    # == Print the results == #
+    # print the results
     κ0, κ1 = -F[2], 1 - F[1]
     println("κ0=$κ0\tκ1=$κ1")
 
@@ -980,7 +980,7 @@ The problem can be solved as follows
 
 .. code-block:: julia
 
-    # == Formulate the monopolist's LQ problem == #
+    # formulate the monopolist's LQ problem
     A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
@@ -989,11 +989,11 @@ The problem can be solved as follows
 
     Q = γ / 2.0
 
-    # == Solve for the optimal policy == #
+    # solve for the optimal policy
     lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
 
-    # == Print the results == #
+    # print the results
     m0, m1 = -F[2], 1 - F[1]
     println("m0=$m0\tm1=$m1")
 

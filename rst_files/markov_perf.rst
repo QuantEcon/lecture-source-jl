@@ -38,7 +38,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -471,14 +471,13 @@ From these we compute the infinite horizon MPE using the following code
 
     using QuantEcon, LinearAlgebra
 
-    # == Parameters == #
+    # parameters
     a0 = 10.0
     a1 = 2.0
     β = 0.96
     γ = 12.0
 
-    # == In LQ form == #
-
+    # in LQ form
     A  = Matrix{Float64}(I, 3, 3)
     B1 = [0.0, 1.0, 0.0]
     B2 = [0.0, 0.0, 1.0]
@@ -493,22 +492,23 @@ From these we compute the infinite horizon MPE using the following code
 
     Q1 = Q2 = γ
     S1 = S2 = W1 = W2 = M1 = M2 = 0.0
-    # == Solve using QE's nnash function == #
+
+    # solve using QE's nnash function
     F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
                            beta=β)
 
-    # == Display policies == #
+    # display policies
     println("Computed policies for firm 1 and firm 2:")
     println("F1 = $F1")
     println("F2 = $F2")
 
 .. code-block:: julia
-  :class: test 
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test F1 ≈ [-0.6684661455442794 0.295124817744414 0.07584666305807419]
     @test F2 ≈ [-0.6684661455442794 0.07584666305807419 0.295124817744414]
-  end 
+  end
 
 Running the code produces the following output
 
@@ -526,15 +526,15 @@ We hope that the resulting policy will agree with `F1` as computed above
     F1_ih
 
 .. code-block:: julia
-  :class: test 
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test P1_ih[2, 2] ≈ 5.441368459897164
-    @test d == 0.0 
+    @test d == 0.0
     @test Λ1[1, 1] == 1.0 && Λ1[3, 2] ≈ -0.07584666305807419
     @test F1_ih ≈ [-0.6684661291052371 0.29512481789806305 0.07584666292394007]
-    @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true. 
-  end 
+    @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true.
+  end
 
 This is close enough for rock and roll, as they say in the trade
 
@@ -563,7 +563,7 @@ The following program
 
     using Plots
     gr(fmt=:png)
-    
+
     AF = A - B1 * F1 - B2 * F2
     n = 20
     x = zeros(3, n)
@@ -581,12 +581,12 @@ The following program
     plot!(plt, title="Output and prices, duopoly MPE")
 
 .. code-block:: julia
-  :class: test 
+  :class: test
 
-  @testset begin 
-    @test p[4] ≈ 3.590643786682385 # Near the intersection. 
+  @testset begin
+    @test p[4] ≈ 3.590643786682385 # Near the intersection.
     @test q[4] ≈ 3.2046781066588075
-  end 
+  end
 
 Note that the initial condition has been set to :math:`q_{10} = q_{20} = 1.0`
 
@@ -736,13 +736,13 @@ First let's compute the duopoly MPE under the stated parameters
 
 .. code-block:: julia
 
-    # == Parameters == #
+    # parameters
     a0 = 10.0
     a1 = 2.0
     β = 0.96
     γ = 12.0
 
-    # == In LQ form == #
+    # in LQ form
     A = Matrix{Float64}(I, 3, 3)
     B1 = [0.0, 1.0, 0.0]
     B2 = [0.0, 0.0, 1.0]
@@ -758,19 +758,19 @@ First let's compute the duopoly MPE under the stated parameters
     Q1 = Q2 = γ
     S1 = S2 = W1 = W2 = M1 = M2 = 0.0
 
-    # == Solve using QE's nnash function == #
+    # solve using QE's nnash function
     F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
                            beta=β)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test F1[2] ≈ 0.295124817744414
-    @test F2[1] ≈ -0.6684661455442794 
+    @test F2[1] ≈ -0.6684661455442794
     @test P1[1, 2] ≈ -13.28370101134053
     @test P2[2, 1] ≈ 2.435873888234417
-  end 
+  end
 
 Now we evaluate the time path of industry output and prices given
 initial condition :math:`q_{10} = q_{20} = 1`
@@ -789,13 +789,13 @@ initial condition :math:`q_{10} = q_{20} = 1`
     q = q1 + q2       # Total output, MPE
     p = a0 .- a1 * q   # Price, MPE
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test p[3] ≈ 4.061490827306079
     @test q[3] ≈ 2.9692545863469606
-  end 
+  end
 
 
 Next let's have a look at the monopoly solution
@@ -846,16 +846,16 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
         qm[i] = float(x) + q_bar
     end
     pm = a0 .- a1 * qm
-    
-.. code-block:: julia 
-  :class: test 
+
+.. code-block:: julia
+  :class: test
 
   @testset begin
     @test pm[4] ≈ 5.318386130957389
     @test pm[12] ≈ 5.015048683853457
     @test pm[end] ≈ 5.000711283764278
-    @test length(pm) == 20 
-  end 
+    @test length(pm) == 20
+  end
 
 Let's have a look at the different time paths
 
@@ -907,8 +907,7 @@ we set up the matrices as follows:
 
 .. code-block:: julia
 
-    # ==  Create matrices needed to compute the Nash feedback equilibrium == #
-
+    # create matrices needed to compute the Nash feedback equilibrium
     A = [δ_1     0   -δ_1 * b[1];
            0   δ_1   -δ_1 * b[2];
            0     0             1]
@@ -947,15 +946,15 @@ we set up the matrices as follows:
           0.0  D[1, 2] / 2.0]
     M2 = copy(M1)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @testset begin
     @test M1 == [0.0 0.0; 0.0 0.25]
     @test M2 == [0.0 0.0; 0.0 0.25]
     @test Q1 == [-1.5 0.0; 0.0 -1.0]
     @test Q2 == [-1.5 0.0; 0.0 -1.0]
-  end 
+  end
 
 We can now compute the equilibrium using ``qe.nnash``
 
@@ -969,16 +968,16 @@ We can now compute the equilibrium using ``qe.nnash``
     println("\nFirm 2's feedback rule:\n")
     println(F2)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test F1[3] ≈ 0.02723606266195122
     @test F2[1] ≈ 0.027236062661951208
     @test P1[1, 2] ≈ -0.03907919510094898
     @test P2[2, 1] ≈ -0.03907919510094898
     @test P2[2, 3] ≈ 16.175157671662866
-  end 
+  end
 
 Now let's look at the dynamics of inventories, and reproduce the graph
 corresponding to :math:`\delta = 0.02`
@@ -999,11 +998,11 @@ corresponding to :math:`\delta = 0.02`
     plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
     plot!(title="delta = 0.02")
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test I1[10] ≈ 1.2469115281955268
     @test I2[5] ≈ 1.2116937821313627
     @test AF[1, 2] ≈ 0.028667796322072864
-  end 
+  end
