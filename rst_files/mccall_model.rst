@@ -377,6 +377,7 @@ between successive iterates is below `tol`
 
 In the above, we use ``v = copy(v_iv)`` rather than just ``v_iv = v``
 
+<<<<<<< HEAD
 To understand why, first recall that ``v_iv`` is a function argument-- either defaulting to the given value, or passed into the function
   * If we had gone ``v = v_iv`` instead, then it would have simply created a new name ``v`` which binds to whatever is located at ``v_iv``
   * Since we later use ``v .= v_next`` later in the algorithm, the values in it would be modified
@@ -384,6 +385,14 @@ To understand why, first recall that ``v_iv`` is a function argument-- either de
   * The big issue this creates are "side-effects" where you can call a function and strange things can happen outside of the function that you didn't expect
   * If you intended for the modification to potentially occur, then the Julia style guide says that we should call the function ``compute_reservation_wage_direct!`` to make the possible side-effects clear
 
+=======
+     # first compute the value function
+    v = collect(w_vals ./ (1 - β))
+    v_next = similar(v)
+    i = 0
+    error = tol + 1
+    while i < max_iter && error > tol
+>>>>>>> 552afcd... fixed some typos in comments
 
 As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone 
 
