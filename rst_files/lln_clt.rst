@@ -251,6 +251,7 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
     titles = []
     for i ∈ 1:num_plots
         dist_names = collect(keys(distributions))
+        
         # choose a randomly selected distribution
         name = dist_names[rand(1:length(dist_names))]
         dist = pop!(distributions, name)

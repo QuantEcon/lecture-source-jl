@@ -463,7 +463,7 @@ Here's that Bellman operator code again, which needs to be executed because we'l
     function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
-        # Apply linear interpolation to w
+        # apply linear interpolation to w
         w_func = LinearInterpolation(grid, w, extrapolation_bc=Line())
 
         if compute_policy

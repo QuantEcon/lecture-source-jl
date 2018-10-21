@@ -311,7 +311,7 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
     c_star(y) = (1 - mlog.α * mlog.β) * y
 
-    # Some useful constants
+    # some useful constants
     ab = mlog.α * mlog.β
     c1 = log(1 - ab) / (1 - mlog.β)
     c2 = (mlog.μ + mlog.α * log(ab)) / (1 - mlog.α)
