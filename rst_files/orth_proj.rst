@@ -770,7 +770,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -792,7 +792,7 @@ Activate the ``QuantEconLecturePackages`` project environment and package versio
             orthogonal = I - Z * inv(Z'Z) * Z'
             projection = orthogonal * b
             # Normalize
-            output = projection / norm(projection)
+            return projection / norm(projection)
         end
 
         for col in 1:size(U, 2)
@@ -823,7 +823,7 @@ by the columns of :math:`X`.
     :class: test
 
     @testset "Test Py1" begin
-        @test Py1 ≈ [-0.5652173913043479, 3.2608695652173916, -2.217391304347826]
+        @test Py1 ≈ [-0.56521739, 3.26086956, -2.2173913]
     end
 
 Now let's orthogonalize first, using Gram--Schmidt:
