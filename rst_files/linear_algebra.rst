@@ -317,7 +317,7 @@ The span is a 2 dimensional plane passing through these two points and the origi
     n = 20
     grid = range(-5, 5, length = n)
     z2 = [ f(grid[row], grid[col]) for row in 1:n, col in 1:n ]
-    surface(xr2, yr2, z2, fill = :blues)
+    surface(grid, grid, z2, fill = :blues)
     plot!(x_vec, y_vec, z_vec, color = [:yellow :pink], labels = "")
 
 .. code-block:: julia
