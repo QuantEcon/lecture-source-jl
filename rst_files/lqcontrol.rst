@@ -54,13 +54,7 @@ In order to focus on computation, we leave longer proofs to these sources (while
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 Introduction
 ====================
@@ -702,7 +696,7 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
     Random.seed!(42)
 
-    # == Model parameters == #
+    # model parameters
     r = 0.05
     β = 1/(1 + r)
     T = 45
@@ -711,7 +705,7 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     μ = 1.0
     q = 1e6
 
-    # == Formulate as an LQ problem == #
+    # formulate as an LQ problem
     Q = 1.0
     R = zeros(2, 2)
     Rf = zeros(2, 2); Rf[1, 1] = q
@@ -720,17 +714,17 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     B = [-1.0; 0.0]
     C = [σ; 0.0]
 
-    # == Compute solutions and simulate == #
+    # compute solutions and simulate
     lq = LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
     x0 = [0.0; 1.0]
     xp, up, wp = compute_sequence(lq, x0)
 
-    # == Convert back to assets, consumption and income == #
+    # convert back to assets, consumption and income
     assets = vec(xp[1, :])               # a_t
     c = vec(up .+ c_bar)                  # c_t
     income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
 
-    # == Plot results == #
+    # plot results
     p = plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
              lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
              color = [:blue :green :black :orange :red],
@@ -779,17 +773,17 @@ relatively more weight on later consumption values
 
   Random.seed!(42) # For reproducible results.
 
-  # == Compute solutions and simulate == #
+  # compute solutions and simulate
   lq = LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)
   x0 = [0.0; 1.0]
   xp, up, wp = compute_sequence(lq, x0)
 
-  # == Convert back to assets, consumption and income == #
+  # convert back to assets, consumption and income
   assets = vec(xp[1, :])               # a_t
   c = vec(up .+ c_bar)                  # c_t
   income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
 
-  # == Plot results == #
+  # plot results
   p = plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
            lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
            color = [:blue :green :black :orange :red],
@@ -1391,7 +1385,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
 
 .. code-block:: julia
 
-    # == Model parameters == #
+    # model parameters
     r = 0.05
     β = 1/(1 + r)
     T = 50
@@ -1402,7 +1396,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     m1 = T * (μ/(T/2)^2)
     m2 = -(μ/(T/2)^2)
 
-    # == Formulate as an LQ problem == #
+    # formulate as an LQ problem
     Q = 1.0
     R = zeros(4, 4)
     Rf = zeros(4, 4); Rf[1, 1] = q
@@ -1413,7 +1407,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     B = [-1.0; 0.0; 0.0; 0.0]
     C = [σ; 0.0; 0.0; 0.0]
 
-    # == Compute solutions and simulate == #
+    # compute solutions and simulate
     lq = LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
     x0 = [0.0; 1.0; 0.0; 0.0]
     xp, up, wp = compute_sequence(lq, x0)
@@ -1424,7 +1418,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     time = 1:T
     income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2   # Income
 
-    # == Plot results == #
+    # plot results
     p1 = plot(Vector[income, ap, c, zeros(T + 1)],
               lab = ["non-financial income" "assets" "consumption" ""],
               color = [:orange :blue :green :black],
@@ -1461,7 +1455,7 @@ the lecture.
     m1 = 2 * μ/K
     m2 = - μ/K^2
 
-    # == Formulate LQ problem 1 (retirement) == #
+    # formulate LQ problem 1 (retirement)
     Q = 1.0
     R = zeros(4, 4)
     Rf = zeros(4, 4); Rf[1, 1] = q
@@ -1472,20 +1466,20 @@ the lecture.
     B = [-1.0; 0.0; 0.0; 0.0]
     C = [0.0; 0.0; 0.0; 0.0]
 
-    # == Initialize LQ instance for retired agent == #
+    # initialize LQ instance for retired agent
     lq_retired = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
     lq_retired_proxy = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)                # since update_values!() changes its argument
                                                                                 # in place, we need another identical
                                                                                 # instance just to get the correct value
                                                                                 # function
 
-    # == Iterate back to start of retirement, record final value function == #
+    # iterate back to start of retirement, record final value function
     for i in 1:(T-K)
         update_values!(lq_retired_proxy)
     end
     Rf2 = lq_retired_proxy.P
 
-    # == Formulate LQ problem 2 (working life) == #
+    # formulate LQ problem 2 (working life)
     Q = 1.0
     R = zeros(4, 4)
     A = [1 + r -c_bar m1 m2;
@@ -1495,16 +1489,17 @@ the lecture.
     B = [-1.0; 0.0; 0.0; 0.0]
     C = [σ; 0.0; 0.0; 0.0]
 
-    # == Set up working life LQ instance with terminal Rf from lq_retired == #
+    # set up working life LQ instance with terminal Rf from lq_retired
     lq_working = LQ(Q, R, A, B, C; bet=β, capT=K, rf=Rf2)
 
-    # == Simulate working state / control paths == #
+    # simulate working state / control paths
     x0 = [0.0; 1.0; 0.0; 0.0]
     xp_w, up_w, wp_w = compute_sequence(lq_working, x0)
-    # == Simulate retirement paths (note the initial condition) == #
+
+    # simulate retirement paths (note the initial condition)
     xp_r, up_r, wp_r = compute_sequence(lq_retired, xp_w[:, end])
 
-    # == Convert results back to assets, consumption and income == #
+    # convert results back to assets, consumption and income
     xp = [xp_w xp_r[:, 2:end]]
     assets = vec(xp[1, :])               # Assets
 
@@ -1516,7 +1511,7 @@ the lecture.
     income_r = ones(T-K) * s
     income = [income_w; income_r]
 
-    # == Plot results == #
+    # plot results
     p2 = plot(Vector[income, assets, c, zeros(T + 1)],
               lab = ["non-financial income" "assets" "consumption" ""],
               color = [:orange :blue :green :black],
@@ -1572,7 +1567,7 @@ Our solution code is
 
 .. code-block:: julia
 
-    # == Model parameters == #
+    # model parameters
     a0 = 5.0
     a1 = 0.5
     σ = 0.15
@@ -1586,7 +1581,7 @@ Our solution code is
     m0 = (a0-c)/(2 * a1)
     m1 = 1/(2 * a1)
 
-    # == Formulate LQ problem == #
+    # formulate LQ problem
     Q = γ
     R = [a1 -a1 0;
          -a1 a1 0;
@@ -1606,7 +1601,7 @@ Our solution code is
     q_bar = vec(xp[1, :])
     q = vec(xp[2, :])
 
-    # == Plot simulation results == #
+    # plot simulation results
     p3 = plot(1:length(q), [q_bar q],
               lab = ["q bar" "q"],
               color = [:black :blue],
