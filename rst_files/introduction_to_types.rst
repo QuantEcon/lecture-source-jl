@@ -26,14 +26,6 @@ Setup
 
 .. literalinclude:: /_static/includes/deps.jl
 
-<<<<<<< HEAD
-=======
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.1")
-    using LinearAlgebra, Statistics, Compat
->>>>>>> d5cba6c... Type hiearchy merged
 
 Finding and Interpreting Types
 ================================

@@ -31,17 +31,7 @@ In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical im
 Setup
 ------------------
 
-<<<<<<< HEAD
 .. literalinclude:: /_static/includes/deps.jl
-=======
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
->>>>>>> e6f4627... coleman_policy_iter PyPlot to Plots
 
 The Euler Equation
 ==========================
