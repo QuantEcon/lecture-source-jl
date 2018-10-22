@@ -25,7 +25,6 @@ For example, many applied problems in economics and finance require the solution
         y_2 = c x_1 + d x_2
     \end{array}
 
-
 or, more generally,
 
 .. math::
@@ -36,7 +35,6 @@ or, more generally,
         \vdots  \\
         y_n = a_{n1} x_1 + a_{n2} x_2 + \cdots + a_{nk} x_k
     \end{array}
-
 
 The objective here is to solve for the "unknowns" :math:`x_1, \ldots, x_k` given :math:`a_{11}, \ldots, a_{nk}` and :math:`y_1, \ldots, y_n`
 
@@ -59,23 +57,17 @@ We admit some overlap with :doc:`this lecture <fundamental_types>`, where operat
 Note that this lecture is more theoretical than most, and contains background
 material that will be used in applications as we go along
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
-
 :index:`Vectors`
 ================
 
 .. index::
     single: Linear Algebra; Vectors
 
-A *vector* of length :math:`n` is just a sequence (or array, or tuple) of :math:`n` numbers, which we write as :math:`x = (x_1, \ldots, x_n)` or  :math:`x = [x_1, \ldots, x_n]`
+A *vector* is an element of a vector space.
 
-We will write these sequences either horizontally or vertically as we please
+Vectors can be added together and scaled (multiplied) by scalars.
 
-(Later, when we wish to perform certain matrix operations, it will become necessary to distinguish between the two)
+Vectors can be written as :math:`x = [x_1, \ldots, x_n]`
 
 The set of all :math:`n`-vectors is denoted by :math:`\mathbb R^n`
 
@@ -86,6 +78,11 @@ the point
 
 The following figure represents three vectors in this manner
 
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
     :class: test
 
@@ -93,35 +90,21 @@ The following figure represents three vectors in this manner
 
 .. code-block:: julia
 
-    using Plots, LaTeXStrings
+    using Plots
     gr(fmt=:png)
-    
-    vecs = ([2, 4], [-3, 3], [-4, -3.5])
-    x_vals = zeros(2, length(vecs))
-    y_vals = zeros(2, length(vecs))
-    labels = []
-
-    # Create matrices of x and y values, labels for plotting
-    for i ∈ eachindex(vecs)
-        v = vecs[i]
-        x_vals[2, i] = v[1]
-        y_vals[2, i] = v[2]
-        labels = [labels; (1.1 * v[1], 1.1 * v[2], "$v")]
-    end
-
-    plot(x_vals, y_vals, arrow = true, color = :blue,
-            legend = :none, xlims = (-5, 5), ylims = (-5, 5),
-            annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
-            framestyle = :origin)
 
 .. code-block:: julia
-    :class: test
 
-    @testset "First Block" begin
-        @test labels[2][1] ≈ -3.3
-        @test y_vals[2, :] == [4.0, 3.0, -3.5]
-    end
+    x_vals = [0 0 0 ; 2 -3 -4]
+    y_vals = [0 0 0 ; 4 3 -3.5]
 
+    plot(x_vals, y_vals, arrow = true, color = :blue,
+         legend = :none, xlims = (-5, 5), ylims = (-5, 5),
+         annotations = [(2.2, 4.4, "[2, 4]"),
+                        (-3.3, 3.3, "[-3, 3]"),
+                        (-4.4, -3.85, "[-4, -3.5]")],
+         xticks = -5:1:5, yticks = -5:1:5,
+         framestyle = :origin)
 
 Vector Operations
 -------------------
@@ -164,7 +147,6 @@ As a matter of definition, when we add two vectors, we add them element by eleme
     \end{array}
     \right]
 
-
 Scalar multiplication is an operation that takes a number :math:`\gamma` and a
 vector :math:`x` and produces
 
@@ -184,46 +166,27 @@ vector :math:`x` and produces
 
 Scalar multiplication is illustrated in the next figure
 
-
-
 .. code-block:: julia
 
     # illustrate scalar multiplication
 
-    x = [2, 2]
-    scalars = [-2, 2]
+    x = [2]
+    scalars = [-2 1 2]
+    vals = [0 0 0; x * scalars]
+    labels = [(-3.6, -4.2, "-2x"), (2.4, 1.8, "x"), (4.4, 3.8, "2x")]
 
-    # Create matrices of x and y values, labels for plotting
-    x_vals = zeros(2, 1 + length(scalars))
-    y_vals = zeros(2, 1 + length(scalars))
-    labels = []
-    x_vals[2, 3] = x[1]
-    y_vals[2, 3] = x[2]
-    labels = [labels; (x[1] + 0.4, x[2] - 0.2, "x")]
-
-    # Perform scalar multiplication, store results in plotting matrices
-    for i ∈ eachindex(scalars)
-        s = scalars[i]
-        v = s .* x
-        x_vals[2, i] = v[1]
-        y_vals[2, i] = v[2]
-        labels = [labels; (v[1] + 0.4, v[2] - 0.2, string(s, "x"))]
-    end
-
-    plot(x_vals, y_vals, arrow = true, color = [:red :red :blue],
-            legend = :none, xlims = (-5, 5), ylims = (-5, 5),
-            annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
-            framestyle = :origin)
-
+    plot(xy_vals, xy_vals, arrow = true, color = [:red :red :blue],
+         legend = :none, xlims = (-5, 5), ylims = (-5, 5),
+         annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
+         framestyle = :origin)
 
 .. code-block:: julia
-   :class: test
-            
-   @testset "second block" begin
-        @test y_vals[2,:] == [-4.0,4.0,2.0]
-        @test labels[2,1] == (-3.6,-4.2,"-2x")
-    end
+    :class: test
 
+    @testset "second block" begin
+        @test @view(x_vals[2:2,:]) == [-4 2 4]
+        @test labels[2] == (2.4, 1.8, "x")
+    end
 
 In Julia, a vector can be represented as a one dimensional `Array`
 
@@ -233,21 +196,17 @@ Julia `Arrays` allow us to express scalar multiplication and addition with a ver
 
     x = ones(3)
 
-
 .. code-block:: julia
 
     y = [2, 4, 6]
-
 
 .. code-block:: julia
 
     x + y
 
-
 .. code-block:: julia
 
     4x  # equivalent to 4 * x and 4 .* x
-
 
 Inner Product and Norm
 ------------------------
@@ -263,7 +222,6 @@ The *inner product* of vectors :math:`x,y \in \mathbb R ^n` is defined as
 .. math::
 
     x' y := \sum_{i=1}^n x_i y_i
-
 
 Two vectors are called *orthogonal* if their inner product is zero
 
@@ -306,7 +264,7 @@ follows
 .. code-block:: julia
     :class: test
 
-    @test norm(x) ≈ 1.7320508075688772 atol = 1e-10
+    @test norm(x) ≈ 1.7320508
 
 Span
 -----
@@ -337,72 +295,31 @@ The span is a 2 dimensional plane passing through these two points and the origi
 .. _la_3dvec:
 
 .. code-block:: julia
-  :class: collapse
-
-    x_min, x_max = -5, 5
-    y_min, y_max = -5, 5
-
-    α, β = 0.2, 0.1
-
-    # Axes
-    gs = 3
-    z = range(x_min, x_max, length = gs)
-    x = zeros(gs)
-    y = zeros(gs)
-    plot(x, y, z, color = :black, linewidth=2, alpha=0.5, label = "", legend=false)
-    plot!(z, x, y, color = :black, linewidth=2, alpha=0.5, label = "")
-    plot!(y, z, x, color = :black, linewidth=2, alpha=0.5, label = "")
+    :class: collapse
 
     # Fixed linear function, to generate a plane
-    f(x, y) = α .* x + β .* y
-
-    # Vector locations, by coordinate
-    x_coords = [3, 3]
-    y_coords = [4, -4]
-    z = f(x_coords, y_coords)
+    f(x, y) = 0.2x + 0.1y
 
     # Lines to vectors
-    n = 2
-    x_vec = zeros(n, n)
-    y_vec = zeros(n, n)
-    z_vec = zeros(n, n)
-    labels = []
-
-    for i ∈ 1:n
-        x_vec[:, i] = [0; x_coords[i]]
-        y_vec[:, i] = [0; y_coords[i]]
-        z_vec[:, i] = [0; f(x_coords[i], y_coords[i])]
-        lab = string("a", i)
-        push!(labels, lab)
-    end
-
-    plot!(x_vec, y_vec, z_vec, color = [:blue :red], linewidth = 1.5,
-        alpha = 0.6, label = labels)
+    x_vec = [0 0; 3 3]
+    y_vec = [0 0; 4 -4]
+    z_vec = [0 0; f(3, 4) f(3, -4)]
 
     # Draw the plane
-    grid_size = 20
-    xr2 = range(x_min, x_max, length = grid_size)
-    yr2 = range(y_min, y_max, length = grid_size)
-    z2 = zeros(grid_size, grid_size)
-    for i ∈ 1:grid_size
-        for j ∈ 1:grid_size
-            z2[j, i] = f(xr2[i], yr2[j])
-        end
-    end
-    surface!(xr2, yr2, z2, cbar = false, alpha = 0.2, fill = :blues,
-            xlims = (x_min, x_max), ylims = (x_min, x_max),
-            zlims = (x_min, x_max), xticks = [0], yticks = [0],
-            zticks = [0])
+    n = 20
+    grid = range(-5, 5, length = n)
+    z2 = [ f(grid[row], grid[col]) for row in 1:n, col in 1:n ]
+    surface(grid, grid, z2, fill = :blues)
+    plot!(x_vec, y_vec, z_vec, color = [:yellow :pink], labels = "")
 
 .. code-block:: julia
     :class: test
 
     @testset "Surface Plot Test" begin
-        @test z2[2, 2] ≈ -1.342105263157895
-        @test x_vec[2, 2] == 3.0
-        @test xr2[2] ≈ -4.473684210526316
+        @test z2[2, 2] ≈ -1.34210526
+        @test x_vec[2, 2] ≈ 3
+        @test grid[2] ≈ -4.47368421
     end
-
 
 Examples
 ^^^^^^^^^
@@ -525,9 +442,7 @@ then
 
     (\beta_1 - \gamma_1) a_1 + \cdots + (\beta_k - \gamma_k) a_k = 0
 
-
 Linear independence now implies :math:`\gamma_i = \beta_i` for all :math:`i`
-
 
 Matrices
 ==========
@@ -551,7 +466,6 @@ An :math:`n \times k` matrix is a rectangular array :math:`A` of numbers with :m
     \end{array}
     \right]
 
-
 Often, the numbers in the matrix represent coefficients in a system of linear equations, as discussed at the start of this lecture
 
 For obvious reasons, the matrix :math:`A` is also called a vector if either :math:`n = 1` or :math:`k = 1`
@@ -569,7 +483,6 @@ For a square matrix :math:`A`, the :math:`i` elements of the form :math:`a_{ii}`
 :math:`A` is called *diagonal* if the only nonzero entries are on the principal diagonal
 
 If, in addition to being diagonal, each element along the principal diagonal is equal to 1, then :math:`A` is called the *identity matrix*, and denoted by :math:`I`
-
 
 Matrix Operations
 --------------------
@@ -601,7 +514,6 @@ Scalar multiplication and addition are immediate generalizations of the vector c
         \gamma a_{n1} & \cdots & \gamma a_{nk} \\
     \end{array}
     \right]
-
 
 and
 
@@ -682,7 +594,6 @@ According to the preceding rule, this gives us an :math:`n \times 1` column vect
     \end{array}
     \right]
 
-
 .. note::
 
     :math:`A B` and :math:`B A` are not generally the same thing
@@ -692,7 +603,6 @@ Another important special case is the identity matrix
 You should check that if :math:`A` is :math:`n \times k` and :math:`I` is the :math:`k \times k` identity matrix, then :math:`AI = A`
 
 If :math:`I` is the :math:`n \times n` identity matrix, then :math:`IA = A`
-
 
 Matrices in Julia
 -----------------
@@ -706,50 +616,37 @@ You can create them as follows
     A = [1 2
          3 4]
 
-
 .. code-block:: julia
 
     typeof(A)
-
 
 .. code-block:: julia
 
     size(A)
 
-
 The ``size`` function returns a tuple giving the number of rows and columns
 
 To get the transpose of ``A``, use ``transpose(A)`` or, more simply, ``A'``
 
-
-
 There are many convenient functions for creating common matrices (matrices of zeros, ones, etc.) --- see :ref:`here <creating_arrays>`
 
-
-
 Since operations are performed elementwise by default, scalar multiplication and addition have very natural syntax
-
 
 .. code-block:: julia
 
     A = ones(3, 3)
 
-
 .. code-block:: julia
 
     2I
-
-
 
 .. code-block:: julia
 
     A + I
 
-
 To multiply matrices we use the ``*`` operator
 
 In particular, ``A * B`` is matrix multiplication, whereas ``A .* B`` is element by element multiplication
-
 
 .. _la_linear_map:
 
@@ -769,11 +666,9 @@ A function :math:`f \colon \mathbb R ^k \to \mathbb R ^n` is called *linear* if,
 
     f(\alpha x + \beta y) = \alpha f(x) + \beta f(y)
 
-
 You can check that this holds for the function :math:`f(x) = A x + b` when :math:`b` is the zero vector, and fails when :math:`b` is nonzero
 
 In fact, it's `known <https://en.wikipedia.org/wiki/Linear_map#Matrices>`_ that :math:`f` is linear if and *only if* there exists a matrix :math:`A` such that :math:`f(x) = Ax` for all :math:`x`
-
 
 Solving Systems of Equations
 ================================
@@ -791,7 +686,6 @@ written more conveniently as
 
     y = Ax
 
-
 The problem we face is to determine a vector :math:`x \in \mathbb R ^k` that solves :eq:`la_se2`, taking :math:`y` and :math:`A` as given
 
 This is a special case of a more general problem: Find an :math:`x` such that :math:`y = f(x)`
@@ -802,66 +696,25 @@ If so, is it always unique?
 
 The answer to both these questions is negative, as the next figure shows
 
-
-
 .. code-block:: julia
-  :class: collapse
+    :class: collapse
 
-    f(x) = 0.6 * cos(4.0 * x) + 1.3
-
-    xmin, xmax = -1.0, 1.0
-    Nx = 160
-    x = range(xmin, xmax, length = Nx)
-    y = f.(x)
-    ya, yb = extrema(y)
-
-    p1 = plot(x, y, color = :black, label = [L"$f$" ""], grid = false)
-    plot!(x, ya * ones(Nx, 1), fill_between = yb * ones(Nx, 1),
-        fillalpha = 0.1, color = :blue, label = "", lw = 0)
-    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
-    annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
-    vline!([0], color = :black, label = "")
-    hline!([0], color = :black, label = "")
-    plot!(foreground_color_axis = :white, foreground_color_text = :white,
-        foreground_color_border = :white)
-
-    ybar = 1.5
-    plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, label = "")
-    annotate!(0.05, 0.8 * ybar, L"$y$")
-
-    x_vals = zeros(2, 4)
-    y_vals = similar(x_vals)
-    labels = []
-    for (i, z) ∈ enumerate([-0.35, 0.35])
-        x_vals[:, 2*i-1] = z * ones(2, 1)
-        y_vals[2, 2*i-1] = f(z)
-        labels = [labels; (z, -0.2, LaTeXString("\$x_$i\$"))]
-    end
-    plot!(x_vals, y_vals, color = :black, linestyle = :dash, label = "", annotation = labels)
-
-    p2 = plot(x, y, color = :black, label = [L"$f$" ""], grid=false)
-    plot!(x, ya*ones(Nx, 1), fill_between = yb * ones(Nx, 1),
-        fillalpha = 0.1, color = :blue, label = "", lw = 0)
-    plot!(zeros(2, 2), [ya ya; yb yb], lw = 3, color = :blue, label = [L"range of $f$" ""])
-    annotate!(0.04, -0.3, L"$0$", ylims = (-0.6, 3.2))
-    vline!([0], color = :black, label = "")
-    hline!([0], color = :black, label = "")
-    plot!(foreground_color_axis = :white, foreground_color_text = :white,
-        foreground_color_border = :white)
-
-    ybar = 2.6
-    plot!(x, x .* 0 .+ ybar, color = :black, linestyle = :dash, legend = :none)
-    annotate!(0.04, 0.91 * ybar, L"$y$")
-
-    plot(p1, p2, layout = (2, 1), size = (600, 700))
+    y_min, y_max = extrema(0.6cos(4x) + 1.3 for x in range(-2, 2, length = 100))
+    plt1 = plot(x -> 0.6cos(4x) + 1.3, xlim = (-2, 2), label = "f")
+    hline!(plt1, [0.6cos(4 * 0.5) + 1.3], linestyle = :dot, linewidth = 2, label = "")
+    vline!(plt1, [-1.07, -0.5, 0.5, 1.07], linestyle = :dot, linewidth = 2, label = "")
+    plot!(plt1, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue, label = ["range of f" ""])
+    plt2 = plot(x -> 0.6cos(4x) + 1.3, xlim = (-2, 2), label = "f")
+    hline!(plt2, [2], linestyle = :dot, linewidth = 2, label = "")
+    plot!(plt2, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue, label = ["range of f" ""])
+    plot(plt1, plt2, layout = (2, 1), ylim = (0, 3.5))
 
 .. code-block:: julia
     :class: test
 
     @testset "Sinusoid Plot Test" begin
-        @test ybar == 2.6
-        @test y[4] - 0.8439924889513749 ≈ 0.0 atol = 1e-10
-        @test y_vals[2, 3] - 1.4019802857401447 ≈ 0.0 atol = 1e-10
+        @test y_min ≈ 0.7000295365
+        @test y_max ≈ 1.8988853959
     end
 
 In the first plot there are multiple solutions, as the function is not one-to-one, while
@@ -878,7 +731,6 @@ In particular, if :math:`a_1, \ldots, a_k` are the columns of :math:`A`, then
 
     Ax = x_1 a_1 + \cdots + x_k a_k
 
-
 Hence the range of :math:`f(x) = Ax` is exactly the span of the columns of :math:`A`
 
 We want the range to be large, so that it contains arbitrary :math:`y`
@@ -888,7 +740,6 @@ As you might recall, the condition that we want for the span to be large is :ref
 A happy fact is that linear independence of the columns of :math:`A` also gives us uniqueness
 
 Indeed, it follows from our :ref:`earlier discussion <la_unique_reps>` that if :math:`\{a_1, \ldots, a_k\}` are linearly independent and :math:`y = Ax = x_1 a_1 + \cdots + x_k a_k`, then no :math:`z \not= x` satisfies :math:`y = Az`
-
 
 The :math:`n \times n` Case
 --------------------------------
@@ -1001,7 +852,6 @@ projections
 More Columns than Rows
 -------------------------
 
-
 This is the :math:`n \times k` case with :math:`n < k`, so there are fewer
 equations than unknowns
 
@@ -1028,16 +878,12 @@ Then if :math:`y = Ax = x_1 a_1 + x_2 a_2 + x_3 a_3`, we can also write
     = x_1 (\alpha a_2 + \beta a_3) + x_2 a_2 + x_3 a_3
     = (x_1 \alpha + x_2) a_2 + (x_1 \beta + x_3) a_3
 
-
 In other words, uniqueness fails
-
 
 Linear Equations with Julia
 ----------------------------------
 
 Here's an illustration of how to solve linear equations with Julia's built-in linear algebra facilities
-
-.. code-block:: jlcon
 
 .. code-block:: julia
 
@@ -1073,7 +919,6 @@ The latter method is preferred because it automatically selects the best algorit
 
 If ``A`` is not square then  ``A \ y`` returns the least squares solution :math:`\hat x = (A'A)^{-1}A'y`
 
-
 .. _la_eigen:
 
 :index:`Eigenvalues` and :index:`Eigenvectors`
@@ -1094,7 +939,6 @@ If :math:`\lambda` is scalar and :math:`v` is a non-zero vector in :math:`\mathb
 
     A v = \lambda v
 
-
 then we say that :math:`\lambda` is an *eigenvalue* of :math:`A`, and
 :math:`v` is an *eigenvector*
 
@@ -1104,39 +948,29 @@ The next figure shows two eigenvectors (blue arrows) and their images under :mat
 
 As expected, the image :math:`Av` of each :math:`v` is just a scaled version of the original
 
-
 .. code-block:: julia
-  :class: collapse
+    :class: collapse
 
     A = [1 2
-        2 1]
+         2 1]
     evals, evecs = eigen(A)
-    a1, a2 = evals[1], evals[2]
-    evecs = evecs[:, 1], evecs[:, 2]
-    eig_1 = zeros(2, length(evecs))
-    eig_2 = zeros(2, length(evecs))
-    labels = []
 
-    for i ∈ eachindex(evecs)
-        v = evecs[i]
-        eig_1[2, i] = v[1]
-        eig_2[2, i] = v[2]
-    end
-
+    a1, a2 = evals
+    eig_1 = [0 0; evecs[:,1]']
+    eig_2 = [0 0; evecs[:,2]']
     x = range(-5, 5, length = 10)
     y = -x
 
     plot(eig_1[:, 2], a1 * eig_2[:, 2], arrow = true, color = :red,
-        legend = :none, xlims = (-3, 3), ylims = (-3, 3),
-        annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
-        framestyle = :origin)
+         legend = :none, xlims = (-3, 3), ylims = (-3, 3), xticks = -3:3, yticks = -3:3,
+         framestyle = :origin)
     plot!(a2 * eig_1[:, 2], a2 * eig_2, arrow = true, color = :red)
     plot!(eig_1, eig_2, arrow = true, color = :blue)
     plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
     plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 
 .. code-block:: julia
- :class: test
+   :class: test
 
   @testset "eigvals" begin
     @test eig_1[2,2] ≈ 0.7071067811865475
@@ -1186,11 +1020,9 @@ follows
 
     evals
 
-
 .. code-block:: julia
 
     evecs
-
 
 Note that the *columns* of ``evecs`` are the eigenvectors
 
@@ -1209,20 +1041,17 @@ matrices :math:`A` and :math:`B`, seeks generalized eigenvalues
 
     A v = \lambda B v
 
-
-This can be solved in Julia via ``eig(A, B)``
+This can be solved in Julia via ``eigen(A, B)``
 
 Of course, if :math:`B` is square and invertible, then we can treat the
 generalized eigenvalue problem as an ordinary eigenvalue problem :math:`B^{-1}
 A v = \lambda v`, but this is not always the case
-
 
 Further Topics
 ================
 
 We round out our discussion by briefly mentioning several other important
 topics
-
 
 Series Expansions
 ---------------------
@@ -1249,11 +1078,9 @@ Let :math:`A` be a square matrix, and let
 
     \| A \| := \max_{\| x \| = 1} \| A x \|
 
-
 The norms on the right-hand side are ordinary vector norms, while the norm on
 the left-hand side is a *matrix norm* --- in this case, the so-called
 *spectral norm*
-
 
 For example, for a square matrix :math:`S`, the condition :math:`\| S \| < 1` means that :math:`S` is *contractive*, in the sense that it pulls all vectors towards the origin [#cfn]_
 
@@ -1277,7 +1104,6 @@ Neumann's theorem states the following: If :math:`\| A^k \| < 1` for some
 
     (I - A)^{-1} = \sum_{k=0}^{\infty} A^k
 
-
 .. _la_neumann_remarks:
 
 :index:`Spectral Radius`
@@ -1292,14 +1118,12 @@ A result known as Gelfand's formula tells us that, for any square matrix :math:`
 
     \rho(A) = \lim_{k \to \infty} \| A^k \|^{1/k}
 
-
 Here :math:`\rho(A)` is the *spectral radius*, defined as :math:`\max_i |\lambda_i|`, where :math:`\{\lambda_i\}_i` is the set of eigenvalues of :math:`A`
 
 As a consequence of Gelfand's formula, if all eigenvalues are strictly less than one in modulus,
 there exists a :math:`k` with :math:`\| A^k \| < 1`
 
 In which case :eq:`la_neumann` is valid
-
 
 :index:`Positive Definite Matrices`
 ------------------------------------
@@ -1320,7 +1144,6 @@ Analogous definitions exist for negative definite and negative semi-definite mat
 It is notable that if :math:`A` is positive definite, then all of its eigenvalues
 are strictly positive, and hence :math:`A` is invertible (with positive
 definite inverse)
-
 
 .. _la_mcalc:
 
@@ -1350,15 +1173,12 @@ Then
 
 #. :math:`\frac{\partial y'B z}{\partial B} = y z'`
 
-
 Exercise 1 below asks you to apply these formulas
-
 
 Further Reading
 -----------------
 
 The documentation of the linear algebra features built into Julia can be found `here <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_
-
 
 Chapters 2 and 3 of the `Econometric Theory <http://www.johnstachurski.net/emet.html>`_ contains
 a discussion of linear algebra along the same lines as above, with solved exercises
@@ -1366,10 +1186,8 @@ a discussion of linear algebra along the same lines as above, with solved exerci
 If you don't mind a slightly abstract approach, a nice intermediate-level text on linear algebra
 is :cite:`Janich1994`
 
-
 Exercises
 =============
-
 
 Exercise 1
 -----------
@@ -1380,13 +1198,11 @@ Let :math:`x` be a given :math:`n \times 1` vector and consider the problem
 
     v(x) =  \max_{y,u} \left\{ - y'P y - u' Q u \right\}
 
-
 subject to the linear constraint
 
 .. math::
 
     y = A x + B u
-
 
 Here
 
@@ -1404,7 +1220,6 @@ One way to solve the problem is to form the Lagrangian
 
     \mathcal L = - y' P y - u' Q u + \lambda' \left[A x + B u - y\right]
 
-
 where :math:`\lambda` is an :math:`n \times 1` vector of Lagrange multipliers
 
 Try applying the formulas given above for differentiating quadratic and linear forms to obtain the first-order conditions for maximizing :math:`\mathcal L` with respect to :math:`y, u` and minimizing it with respect to :math:`\lambda`
@@ -1421,7 +1236,6 @@ As we will see, in economic contexts Lagrange multipliers often are shadow price
 
 .. note::
     If we don't care about the Lagrange multipliers, we can substitute the constraint into the objective function, and then just maximize :math:`-(Ax + Bu)'P (Ax + Bu) - u' Q u` with respect to :math:`u`.  You can verify that this leads to the same maximizer.
-
 
 Solutions
 ===========
@@ -1463,7 +1277,6 @@ Differentiating Lagrangian equation w.r.t y and setting its derivative
 equal to zero yields
 
 .. math::  \frac{ \partial L}{\partial y} = - (P + P') y - \lambda = - 2 P y - \lambda = 0 \:,
-
 
 since P is symmetric.
 
@@ -1569,6 +1382,5 @@ Therefore, the solution to the optimization problem
 :math:`\tilde{P} := A'PA - A'PB(Q + B'PB)^{-1}B'PA`.
 
 .. rubric:: Footnotes
-
 
 .. [#cfn] Suppose that :math:`\|S \| < 1`. Take any nonzero vector :math:`x`, and let :math:`r := \|x\|`. We have :math:`\| Sx \| = r \| S (x/r) \| \leq r \| S \| < r = \| x\|`. Hence every point is pulled towards the origin.
