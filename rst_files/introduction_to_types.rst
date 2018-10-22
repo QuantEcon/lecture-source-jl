@@ -295,7 +295,7 @@ As an example, consider a function which returns different types depending on th
         end
     end
     @show f(1)
-    @show f(-1)
+    @show f(-1);
 
 The issue here is relatively subtle:  ``1.0`` is a floating point, while ``0`` is an integer
 
@@ -447,7 +447,7 @@ The second issue is that by choosing a type (as in the ``Foo`` above), you may b
     # Some other typed for the values 
     a = 2 # not a floating point, but f() would work
     b = 3
-    c = [1.0 2.0 3.0]' # transpose is not a `Vector`. But f() would work
+    c = [1.0, 2.0, 3.0]' # transpose is not a `Vector`. But f() would work
     # foo = Foo(a, b, c) # fails to compile
 
     # works with the NotTyped version, but low performance
@@ -471,7 +471,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
     # Works fine
     a = 2
     b = 3
-    c = [1.0 2.0 3.0]' # transpose is not a `Vector`. But f() would work
+    c = [1.0, 2.0, 3.0]' # transpose is not a `Vector`. But f() would work
     foo = Foo3(a, b, c)
     f(foo)
 
@@ -481,10 +481,10 @@ You could constrain the types based on the abstract parent type using the ``<:``
 
 .. code-block:: julia
 
-    struct Foo4{T1 <: Real, T2 <: Real, T3 <: AbstractArray}
+    struct Foo4{T1 <: Real, T2 <: Real, T3 <: AbstractVecOrMat{<:Real}}
         a::T1
         b::T2
-        c::T3 # this isn't really right.  Should constrain more
+        c::T3 # should check dimensions as well
     end
     foo = Foo4(a, b, c) # no problem, and high performance
 
@@ -504,13 +504,14 @@ However, the other issue where constructor arguments are error-prone, can be rem
 
 .. code-block:: julia
 
-    @with_kw  struct Foo4
+    using Parameters
+    @with_kw  struct Foo5
         a::Float64 = 2.0 # adds default value
         b::Int64
         c::Vector{Float64}
     end
-    foo = Foo4(a = 0.1, b = 2, c = [1.0, 2.0, 3.0])
-    foo2 = Foo4(c = [1.0, 2.0, 3.0], b = 2) # rearrange order, uses default values
+    foo = Foo5(a = 0.1, b = 2, c = [1.0, 2.0, 3.0])
+    foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2) # rearrange order, uses default values
     @show foo
     @show foo2
 
@@ -538,7 +539,39 @@ To see this in action, consider the absolute value function ``abs``
 
 In all of these cases, the ``abs`` function has specialized code depending on the type passed in
 
-use abs for numbers and complex numbers
+To do this, you need to specify different **methods** of the function which operate on a particular set of types
+
+Unlike most cases we have seen before, this requires a type annotation
+
+To rewrite the ``abs`` function
+
+.. code-block:: julia
+
+    function ourabs(x::Real)
+        if x > zero(x) # note, not 0!
+            return x
+        else
+            return -x
+        end
+    end
+
+    function ourabs(x::Complex)
+        sqrt(real(x)^2 + imag(x)^2)
+    end
+
+    @show ourabs(-1) # Int64
+    @show ourabs(-1.0) # Float64
+    @show ourabs(1.0 - 2.0im); # Complex{Float64}
+
+Note that in the above, ``x`` works for any type of ``Real``, including ``Int64``, ``Float64``, and ones you may not have realized exist
+
+
+.. code-block:: julia
+
+    x = -2//3 # a Rational number
+    @show typeof(x)
+    @show ourabs(x)
+
 
 Exercises
 =============
