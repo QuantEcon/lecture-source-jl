@@ -167,7 +167,7 @@ Setup
 
 .. code-block:: julia
 
-    using Distributions, Parameters, Plots, Printf, Random, Roots, StatPlots
+    using Distributions, Parameters, Printf, Random, Roots, StatPlots, Plots
 
 .. code-block:: julia
 
