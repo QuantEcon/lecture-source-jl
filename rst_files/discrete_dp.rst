@@ -766,6 +766,8 @@ The exercise is to replicate this solution using ``DiscreteDP``
 Solutions
 ==========
 
+These were written jointly by Max Huber and Daisuke Oyama. 
+
 Setup
 -----
 

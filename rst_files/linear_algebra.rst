@@ -1426,6 +1426,9 @@ As we will see, in economic contexts Lagrange multipliers often are shadow price
 Solutions
 ===========
 
+Thanks to `Willem Hekman <https://qutech.nl/person/willem-hekman/>`__ and Guanlong Ren
+for providing this solution.
+
 Exercise 1
 ----------
 
