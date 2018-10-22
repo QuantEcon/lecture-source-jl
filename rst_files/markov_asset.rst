@@ -58,7 +58,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -630,15 +630,15 @@ the type `AssetPriceModel`
 
     """
     function tree_price(ap::AssetPriceModel)
-        # == Simplify names, set up matrices  == #
+        # simplify names, set up matrices
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = reshape(y, 1, ap.n)
         J = P .* ap.g.(y).^(1 - γ)
 
-        # == Make sure that a unique solution exists == #
+        # make sure that a unique solution exists
         test_stability(ap, J)
 
-        # == Compute v == #
+        # compute v
         Ones = ones(ap.n)
         v = (I - β * J) \ (β * J * Ones)
 
@@ -772,15 +772,16 @@ The above is implemented in the function `consol_price`
 .. code-block:: julia
 
     function consol_price(ap::AssetPriceModel, ζ::AbstractFloat)
-        # == Simplify names, set up matrices  == #
+
+        # simplify names, set up matrices
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = reshape(y, 1, ap.n)
         M = P .* ap.g.(y).^(-γ)
 
-        # == Make sure that a unique solution exists == #
+        # make sure that a unique solution exists
         test_stability(ap, M)
 
-        # == Compute price == #
+        # compute price
         Ones = ones(ap.n)
         p = (I - β * M) \ ( β * ζ * M * Ones)
 
@@ -873,22 +874,24 @@ We can find the solution with the following function `call_option`
     """
     function call_option(ap::AssetPriceModel, ζ::AbstractFloat, p_s::AbstractFloat, ϵ=1e-7)
 
-        # == Simplify names, set up matrices  == #
+        # simplify names, set up matrices
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = reshape(y, 1, ap.n)
         M = P .* ap.g.(y).^(-γ)
 
-        # == Make sure that a unique console price exists == #
+        # make sure that a unique console price exists
         test_stability(ap, M)
 
-        # == Compute option price == #
+        # compute option price
         p = consol_price(ap, ζ)
         w = zeros(ap.n, 1)
         error = ϵ + 1
         while (error > ϵ)
-            # == Maximize across columns == #
+
+            # maximize across columns
             w_new = max.(β * M * w, p .- p_s)
-            # == Find maximal difference of each component and update == #
+
+            # find maximal difference of each component and update
             error = maximum(abs, w - w_new)
             w = w_new
         end
@@ -1141,19 +1144,20 @@ Here's a suitable function:
                                         p_s::AbstractFloat,
                                         k::Int)
 
-        # == Simplify names, set up matrices  == #
+        # simplify names, set up matrices
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = y'
         M = P .* ap.g.(y).^(- γ)
 
-        # == Make sure that a unique console price exists == #
+        # make sure that a unique console price exists
         test_stability(ap, M)
 
-        # == Compute option price == #
+        # compute option price
         p = consol_price(ap, ζ)
         w = zeros(ap.n, 1)
         for i ∈ 1:k
-            # == Maximize across columns == #
+
+            # maximize across columns
             w = max.(β * M * w, p .- p_s)
         end
 

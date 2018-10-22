@@ -33,7 +33,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -463,14 +463,14 @@ Here's that Bellman operator code again, which needs to be executed because we'l
     function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
-        # === Apply linear interpolation to w === #
+        # apply linear interpolation to w
         w_func = LinearInterpolation(grid, w, extrapolation_bc=Line())
 
         if compute_policy
             σ = similar(w)
         end
 
-        # == set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)} == #
+        # set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)}
         for (i, y) in enumerate(grid)
             objective(c) =  u(c) + β * mean(w_func.(f(y - c) .* shocks))
             res = maximize(objective, 1e-10, y)

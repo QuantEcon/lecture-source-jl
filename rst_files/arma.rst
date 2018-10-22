@@ -76,7 +76,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -752,8 +752,7 @@ Here are some functions to generate the plots
 
     using QuantEcon, Random
 
-    # == Plot functions == #
-
+    # plot functions
     function plot_spectral_density(arma, plt)
         (w, spect) = spectral_density(arma, two_pi=false)
         plot!(plt, w, spect, lw=2, alpha=0.7,label="")

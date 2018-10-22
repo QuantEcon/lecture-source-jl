@@ -68,7 +68,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -864,7 +864,7 @@ Here's the code
     using Random
     Random.seed!(42)
 
-    # == Parameters == #
+    # parameters
     β = 1 / 1.05
     ρ, mg = .7, .35
     A = Matrix{Float64}(I, 2, 2)

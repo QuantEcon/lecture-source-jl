@@ -35,7 +35,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -98,10 +98,10 @@ where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
 
 This density :math:`p(x)` is shown below as a contour map, with the center of the red ellipse being equal to :math:`\hat x`
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    using Test 
+    using Test
 
 .. code-block:: julia
   :class: collapse
@@ -126,25 +126,25 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   end
 
 
-  # == Set up the Gaussian prior density p == #
+  # set up the Gaussian prior density p
   Σ = [0.4  0.3
        0.3 0.45]
   x_hat = [ 0.2
            -0.2]''
 
-  # == Define the matrices G and R from the equation y = G x + N(0, R) == #
+  # define the matrices G and R from the equation y = G x + N(0, R)
   G = I
   R = 0.5 .* Σ
 
-  # == The matrices A and Q == #
+  # the matrices A and Q
   A = [1.2    0
        0   -0.2]
   Q = 0.3 .* Σ
 
-  # == The observed value of y == #
+  # the observed value of y
   y = [2.3, -1.9]
 
-  # == Set up grid for plotting == #
+  # set up grid for plotting
   x_grid = range(-1.5, 2.9, length = 100)
   y_grid = range(-3.1, 1.7, length = 100)
   X = repeat(x_grid', length(y_grid), 1)
@@ -158,20 +158,20 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
       return bivariate_normal(X, Y, s_x, s_y, m_x, m_y, s_xy)
   end
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
 
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "First Plot Tests" begin
         @test Q == [0.12 0.09; 0.09 0.135]
-        @test G isa UniformScaling 
-        @test Z[3] == 7.987729252590346e-5 # Final Gaussian plot data. 
-    end 
+        @test G isa UniformScaling
+        @test Z[3] == 7.987729252590346e-5 # Final Gaussian plot data.
+    end
 
 The Filtering Step
 --------------------
@@ -186,7 +186,7 @@ location :math:`y`
 
 .. code-block:: julia
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
@@ -257,7 +257,7 @@ The original density is left in as contour lines for comparison
 
 .. code-block:: julia
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   M = Σ * G' * inv(G * Σ * G' + R)
   x_hat_F = x_hat + M * (y - G * x_hat)
@@ -270,14 +270,14 @@ The original density is left in as contour lines for comparison
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
   annotate!(y[1], y[2], L"$y$", color = :black)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Updated Belief Tests" begin
         @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 1.1102230246251565e-16 0.6666666666666667]
         @test Σ_F ≈ [0.13333333333333325 0.09999999999999992; 0.09999999999999998 0.15000000000000002]
-        @test new_Z[19] == 4.183648381237758e-22 # Final data to be plotted. 
-    end 
+        @test new_Z[19] == 4.183648381237758e-22 # Final data to be plotted.
+    end
 
 Our new density twists the prior :math:`p(x)` in a direction determined by  the new
 information :math:`y - G \hat x`
@@ -376,7 +376,7 @@ the update has used parameters
 
 .. code-block:: julia
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   M = Σ * G' * inv(G * Σ * G' + R)
   x_hat_F = x_hat + M * (y - G * x_hat)
@@ -394,13 +394,13 @@ the update has used parameters
   contour!(x_grid, y_grid, Z_F, fill = false, levels = 6, color = :grays, cbar = false)
   annotate!(y[1], y[2], L"$y$", color = :black)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Prediction Test" begin
         @test new_x_hat ≈ [1.9199999999999995, 0.26666666666666655]
         @test new_Σ ≈ [0.312 0.066; 0.066 0.141]
-    end 
+    end
 
 The Recursive Procedure
 -------------------------
@@ -673,17 +673,17 @@ Exercise 1
 
     using Distributions
 
-    # == Parameters == #
+    # parameters
 
     θ = 10
     A, G, Q, R = 1.0, 1.0, 0.0, 1.0
     x_hat_0, Σ_0 = 8.0, 1.0
 
-    # == Initialize Kalman filter == #
+    # initialize Kalman filter
 
     kalman = Kalman(A, G, Q, R)
     set_state!(kalman, x_hat_0, Σ_0)
-    # == Run == #
+    # Run
 
     N = 5
     xgrid = range(θ - 5, θ + 2, length = 200)
@@ -705,13 +705,13 @@ Exercise 1
     plot(xgrid, densities, label = reshape(labels,1,length(labels)), legend = :topleft, grid = false,
             title = LaTeXString("First $N densities when \$θ = $θ\$"))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Solution 1 Tests" begin
         @test length(xgrid) == 200 && xgrid[1] == 5.0 && xgrid[end] == 12.0
         @test densities[1][4] == 0.006048628905320978
-    end 
+    end
 
 Exercise 2
 ----------
@@ -741,13 +741,13 @@ Exercise 2
     plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,
          legend = false, xlims = (0, T), ylims = (0, 1))
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solution 2 Tests" begin 
+    @testset "Solution 2 Tests" begin
         @test z[4] == 0.9467254193267353
-        @test T == 600 
-    end 
+        @test T == 600
+    end
 
 Exercise 3
 ----------
@@ -756,43 +756,44 @@ Exercise 3
 
     Random.seed!(41)  # reproducible results
 
-    # === Define A, Q, G, R === #
+    # define A, Q, G, R
     G = Matrix{Float64}(I, 2, 2)
     R = 0.5 .* G
     A = [0.5 0.4
             0.6 0.3]
     Q = 0.3 .* G
 
-    # === Define the prior density === #
+    # define the prior density
     Σ = [0.9 0.3
             0.3 0.9]
     x_hat = [8, 8]
 
-    # === Initialize the Kalman filter === #
+    # initialize the Kalman filter
     kn = Kalman(A, G, Q, R)
     set_state!(kn, x_hat, Σ)
 
-    # === Set the true initial value of the state === #
+    # set the true initial value of the state
     x = zeros(2)
 
-    # == Print eigenvalues of A == #
+    # print eigenvalues of A
     println("Eigenvalues of A:\n$(eigvals(A))")
 
-    # == Print stationary Σ == #
+    # print stationary Σ
     S, K = stationary_values(kn)
     println("Stationary prediction error variance:\n$S")
 
-    # === Generate the plot === #
+    # generate the plot
     T = 50
     e1 = zeros(T)
     e2 = similar(e1)
     for t ∈ 1:T
-        # == Generate signal and update prediction == #
+
+        # generate signal and update prediction
         dist = MultivariateNormal(G * x, R)
         y = rand(dist)
         update!(kn, y)
 
-        # == Update state and record error == #
+        # update state and record error
         Ax = A * x
         x = rand(MultivariateNormal(Ax, Q))
         e1[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, kn.cur_x_hat))
@@ -802,14 +803,14 @@ Exercise 3
     plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
     plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solution 3 Tests" begin 
+    @testset "Solution 3 Tests" begin
         @test e1[2] == 5.123448550499836
         @test e2[19] == 0.03717649374189149
         @test x[1] == 0.9619597742127561 && x[2] == 0.8669993304801348
-    end 
+    end
 
 .. rubric:: Footnotes
 

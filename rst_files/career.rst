@@ -37,7 +37,7 @@ Setup
 
 Activate the ``QuantEconLecturePackages`` project environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages")
@@ -297,7 +297,7 @@ Here's the value function
   func(x) = update_bellman(wp, x)
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
-  # === plot value function === #
+  # plot value function
   tg, eg = meshgrid(wp.θ, wp.ϵ)
   tg = Matrix(tg)
   eg = Matrix(eg)
