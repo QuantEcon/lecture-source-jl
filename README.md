@@ -1,5 +1,7 @@
 # "Lectures in Quantitative Economics"-- Julia Version
 
+:warning: If you're using macOS (as opposed to Linux or the WSL), you will need to `brew install gnu-sed` and update the `sed` commands in the Makefile to read `gsed`. 
+
 ## Setup Instructions
 1. Clone this repo
 2. Install Conda and Julia on your target operating system.  If on Windows, install the [Windows Substyem for Linux](https://github.com/econtoolkit/tutorials/blob/master/julia/WSL.md)
