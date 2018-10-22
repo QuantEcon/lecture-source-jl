@@ -707,7 +707,7 @@ The answer to both these questions is negative, as the next figure shows
 .. code-block:: julia
     :class: collapse
 
-    y_min, y_max = extrema(0.6cos.(4x) + 1.3 for x in range(-2, 2, length = 100))
+    y_min, y_max = extrema(0.6cos(4x) + 1.3 for x in range(-2, 2, length = 100))
     plt1 = plot(x -> 0.6cos(4x) + 1.3, xlim = (-2, 2), label = "f")
     hline!(plt1, [0.6cos(4 * 0.5) + 1.3], linestyle = :dot, linewidth = 2, label = "")
     vline!(plt1, [-1.07, -0.5, 0.5, 1.07], linestyle = :dot, linewidth = 2, label = "")
