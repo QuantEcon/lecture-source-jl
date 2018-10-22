@@ -697,7 +697,7 @@ Here is some code that tackles these tasks
         # The distribution
         mdist = LogNormal(-t * H2 / 2, sqrt(t * H2))
         x = range(xmin,  xmax, length = npts)
-        p = pdf.(Ref(mdist), x)
+        p = pdf.(mdist, x)
 
         return x, p
     end
@@ -712,7 +712,7 @@ Here is some code that tackles these tasks
         # The distribution
         lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
         x = range(xmin,  xmax, length = npts)
-        p = pdf.(Ref(lmdist), x)
+        p = pdf.(lmdist, x)
 
         return x, p
     end

@@ -330,7 +330,7 @@ Here's the distribution of wage offers we'll work with
     w_min, w_max = 10, 60
     const w_vals = range(w_min,  w_max, length = n+1)
     dist = BetaBinomial(n, a, b)
-    const p_vals = pdf.(Ref(dist), support(dist))
+    const p_vals = pdf.(dist, support(dist))
 
     plt = plot(w_vals, p_vals, label = L"$p_i$", xlabel = "wages", ylabel = "probabilities")
 

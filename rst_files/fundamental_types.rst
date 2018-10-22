@@ -38,9 +38,9 @@ In this lecture we give more details on
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+Activate the ``QuantEconLecturePackages`` projesct environment and package versions
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.1");
@@ -79,7 +79,7 @@ The REPL tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Fl
 
 Here ``Int64`` and ``Float64`` are types for the elements inferred by the compiler
 
-We'll talk more about types later 
+We'll talk more about types later
 
 The ``1`` in ``Array{Int64,1}`` and ``Array{Any,1}`` indicates that the array is
 one dimensional (i.e., a ``Vector``)
@@ -193,7 +193,7 @@ If you need more control over the types, fill with a non-floating point
 .. code-block:: julia
 
     fill(0, 2, 2) # fills with 0, not 0.0
-    
+
 Or fill with a boolean type
 
 .. code-block:: julia
@@ -377,12 +377,12 @@ An aside: some or all elements of an array can be set equal to one number using 
 Views and Slices
 -----------------------------
 
-Using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type 
+Using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type
 
 .. code-block:: julia
 
     a = [1 2; 3 4]
-    b = a[:, 2] 
+    b = a[:, 2]
     @show b
     a[:, 2] = [4, 5] # modify a
     @show a
@@ -393,7 +393,7 @@ A ``view`` on the other hand does not copy the value
 .. code-block:: julia
 
     a = [1 2; 3 4]
-    @views b = a[:, 2] 
+    @views b = a[:, 2]
     @show b
     a[:, 2] = [4, 5]
     @show a
@@ -405,12 +405,12 @@ An alternative is to call the ``view`` function directly--though it is generally
 
 .. code-block:: julia
 
-    @views b = a[:, 2] 
+    @views b = a[:, 2]
     view(a, :, 2) == b
 
 As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else
 
-Another important lesson about views is that they **are not** normal, dense arrays 
+Another important lesson about views is that they **are not** normal, dense arrays
 
 .. code-block:: julia
 
@@ -418,10 +418,10 @@ Another important lesson about views is that they **are not** normal, dense arra
     b_slice = a[:, 2]
     @show typeof(b_slice)
     @show typeof(a)
-    @views b = a[:, 2] 
+    @views b = a[:, 2]
     @show typeof(b);
 
-The type of ``b`` is a good example of how types are not as they may seem 
+The type of ``b`` is a good example of how types are not as they may seem
 
 Similarly
 
@@ -447,7 +447,7 @@ Special Matrices
 
 As we saw with the ``transpose``, sometimes types that look like matrices are not stored as a dense array
 
-As an example, consider creating a diagonal matrix 
+As an example, consider creating a diagonal matrix
 
 .. code-block:: julia
 
@@ -480,7 +480,7 @@ Whereas you should instead use
     b = [1.0 2.0; 3.0 4.0]
     b - I # good style, and note the lack of dimensions of I
 
-While the implementation of ``I`` is a little abstract to go into at this point, a hint is that 
+While the implementation of ``I`` is a little abstract to go into at this point, a hint is that
 
 .. code-block:: julia
 
@@ -498,7 +498,7 @@ As discussed above, in Julia, the left hand side of an assignment is a "binding"
     x = [1 2 3]
     y = x # name y binds to whatever value `x` bound to
 
-The consequence of this, is that you can re-bind that name 
+The consequence of this, is that you can re-bind that name
 
 .. code-block:: julia
 
@@ -518,7 +518,7 @@ In the above, suppose you had meant to change the value of ``x`` to the values o
     y = x # name y binds to whatever `x` bound to
     z = [2 3 4]
     y .= z # Now dispatches the assignment of each element
-    @show (x, y, z);    
+    @show (x, y, z);
 
 Alternatively, you could have used ``y[:] = z``
 
@@ -548,7 +548,7 @@ In general, these "out-of-place" functions are preferred to "in-place" functions
     end
     f!(y, val)
     y
-    
+
 This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with ``!`` (e.g. ``push!``)
 
 We can also see a common mistake, where instead of modifying the arguments, the name binding is swapped
@@ -566,8 +566,8 @@ We can also see a common mistake, where instead of modifying the arguments, the 
     end
     f!(y, val)
     y
-    
-The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking 
+
+The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking
 
 Note that scalars are always immutable, such that
 
@@ -769,7 +769,7 @@ Unlike matlab and other languages, scalar addition requires the ``.+`` in order 
 .. code-block:: julia
 
     x = [1, 2]
-    x .+ 1 # i.e. not x + 1 
+    x .+ 1 # i.e. not x + 1
     x .- 1 # i.e. not x - 1
 
 
@@ -974,7 +974,7 @@ But care should be taken if the terminal node is not a multiple of the set sizes
     a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ... ??? Not 1.0
     maximum(a) == maxval
 
-To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
+To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages
 
 .. code-block:: julia
 
@@ -1028,7 +1028,7 @@ Named tuples are a convenient and high-performance way to manage and unpack sets
     function f(parameters)
         α, β = parameters.α, parameters.β # poor style, error prone if adding parameters
         return α + β
-    end 
+    end
     parameters = (α = 0.1, β = 0.2)
     f(parameters)
 
@@ -1041,7 +1041,7 @@ This functionality is aided by the ``Parameters.jl`` package and the ``@unpack``
     function f(parameters)
         @unpack α, β = parameters # good style, less sensitive to errors
         return α + β
-    end 
+    end
     parameters = (α = 0.1, β = 0.2)
     f(parameters)
 
@@ -1069,7 +1069,9 @@ Sometimes a variable, return type from a function, or value in an array needs to
 There are two distinct use cases for this
 
 #. ``nothing`` ("software engineers null"): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.
-#. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available 
+#. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available
+
+.. error_handling:
 
 Nothing and Basic Error Handling
 ----------------------------------
@@ -1133,7 +1135,7 @@ As an aside, an equivalent way to write the above function, which you will somet
 .. code-block:: julia
 
     function f(x)
-        x > 0.0 ? sqrt(x) : nothing # the "a ? b : c" pattern is the ternary 
+        x > 0.0 ? sqrt(x) : nothing # the "a ? b : c" pattern is the ternary
     end
     f(1.0)
 
@@ -1226,14 +1228,14 @@ An example of an exception is a ``DomainError``, which signifies that a value pa
 
     # to see the error
     try sqrt(-1.0); catch err; err end # catches the exception and prints it.
-    
+
 
 Another example you will see is when the compiler cannot convert between types
 
 .. code-block:: julia
 
     # convert(Int64, 3.12) # throws exception, turned off to prevent breaking notebook
-    
+
     # to see the error
     try convert(Int64, 3.12); catch err; err end # catches the exception and prints it.
 
@@ -1286,7 +1288,7 @@ This even applies for the comparison of values, which
 
     x = missing
     @show x == missing
-    @show x === missing # an exception 
+    @show x === missing # an exception
     @show ismissing(x);
 
 Where ``ismissing`` is the canonical way to test the value
@@ -1424,8 +1426,8 @@ First, lets simulate data we can use to estimate the parameters
 
 * draw :math:`N=50` values for :math:`x_1, x_2` from iid normal distributions
 
-Then, simulate with different :math:`w` 
-* draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1` 
+Then, simulate with different :math:`w`
+* draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1`
 * repeat that so you have ``M = 20`` different simulations of the ``y`` for the ``N`` values
 
 Finally, calculate order least squares manually (i.e., putting the observables into matrices and vectors, and directly using the equations for `OLS <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_ rather than a package).
@@ -1492,4 +1494,3 @@ Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` functi
 
     using QuantEcon
     norm(our_solution - solve_discrete_lyapunov(A, Sigma * Sigma'))
-

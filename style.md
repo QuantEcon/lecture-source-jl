@@ -9,6 +9,7 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 1. Assume this may be the **first programming language** students learn
 2. Use **compact, script-style** code, organized into functions only when it is natural.  Best practices for writing packages and expository/exploratory/interactive code can be different.
 3. Keep things as **close to the whiteboard math** as possible, including in the code structure and notation
+4. **Don't be clever**, be clear.  Terse is not a virtue unless the terseness makes the code clearer, or closer to the whiteboard math
 4. Maintain this **correspondence between math and code** even if the code is less efficient.  Only optimize if it is really necessary.
 5. Ensure that all **code can be copied and pasted without modification** into functions for performance and modification without changes to scoping (e.g. no `local` or `global` ever required)
 6. **Avoid type annotations** unless they are required for dispatching
@@ -212,6 +213,14 @@ A = zeros(N,N)
 # BEST! (if a candidate `x` exists)
 y = similar(x, N) # keeps things generic.  The `N` here is not required if the same size
 A = similar(x, N, N) # same type but NxN size
+```
+- **Create vector literals with `,`** rather than `;` when possible
+```julia
+# BAD!
+y = [1; 2; 3]
+
+# GOOD!
+y = [1, 2, 3]
 ```
 - **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
 ```julia
