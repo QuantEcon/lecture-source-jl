@@ -35,14 +35,7 @@ The original reference is :cite:`Carroll2006`
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
+.. literalinclude:: /_static/includes/deps.jl
 
 Key Idea
 ==========================
@@ -311,7 +304,7 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 
     c_star(y) = (1 - mlog.α * mlog.β) * y
 
-    # some useful constants
+    # == Some useful constants == #
     ab = mlog.α * mlog.β
     c1 = log(1 - ab) / (1 - mlog.β)
     c2 = (mlog.μ + mlog.α * log(ab)) / (1 - mlog.α)

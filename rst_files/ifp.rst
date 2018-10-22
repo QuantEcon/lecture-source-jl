@@ -57,13 +57,8 @@ Other useful references include :cite:`Deaton1991`, :cite:`DenHaan2010`, :cite:`
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 The Optimal Savings Problem
 ===============================
@@ -630,8 +625,8 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 
     using Plots
     gr(fmt=:png)
-
-    # solve for optimal consumption
+    
+    # === solve for optimal consumption === #
 
     m = ConsumerProblem(r=0.03, grid_max=4)
     v_init, c_init = initialize(m)
@@ -643,7 +638,7 @@ The following figure is a 45 degree diagram showing the law of motion for assets
     a = m.asset_grid
     R, z_vals = m.R, m.z_vals
 
-    # generate savings plot
+    # === generate savings plot === #
 
     plot(a, R * a .+ z_vals[1] - c[:, 1], label="Low income")
     plot!(xlabel="Current assets", ylabel="Next period assets")

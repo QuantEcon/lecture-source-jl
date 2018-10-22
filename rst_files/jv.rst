@@ -30,14 +30,8 @@ Model features
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-    using Interpolations
 
 Model
 ========
@@ -415,7 +409,7 @@ The code is as follows
 
     using Plots, LaTeXStrings
     gr(fmt=:png)
-
+    
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
@@ -424,7 +418,7 @@ The code is as follows
 
     s_policy, ϕ_policy = bellman_operator(wp, V, ret_policies = true)
 
-    # plot solution 
+    # === plot solution === #
     p = plot(wp.x_grid, [ϕ_policy s_policy V],
              title = ["ϕ policy" "s policy" "value function"],
              color = [:orange :blue :green],

@@ -1,4 +1,4 @@
-using Distributions, LinearAlgebra, Compat, Expectations
+using Distributions, LinearAlgebra, Compat
 
 # A default utility function
 
@@ -16,15 +16,18 @@ const n = 60                                           # n possible outcomes for
 const default_w_vec = range(10, 20, length = n) # wages between 10 and 20
 const a, b = 600, 400                                  # shape parameters
 const dist = BetaBinomial(n-1, a, b)
+const default_p_vec = pdf.(dist, support(dist))
 
 mutable struct McCallModel{TF <: AbstractFloat,
-                           TAV <: AbstractVector{TF}}
+                           TAV <: AbstractVector{TF},
+                           TAV2 <: AbstractVector{TF}}
     α::TF         # Job separation rate
     β::TF         # Discount rate
     γ::TF         # Job offer rate
     c::TF         # Unemployment compensation
     σ::TF         # Utility parameter
     w_vec::TAV    # Possible wage values
+    p_vec::TAV2   # Probabilities over w_vec
 
     McCallModel(α::TF = 0.2,
                 β::TF = 0.98,
@@ -32,11 +35,11 @@ mutable struct McCallModel{TF <: AbstractFloat,
                 c::TF = 6.0,
                 σ::TF = 2.0,
                 w_vec::TAV = default_w_vec,
-                ) where {TF, TAV} =
-        new{TF, TAV}(α, β, γ, c, σ, w_vec)
+                p_vec::TAV2 = default_p_vec) where {TF, TAV, TAV2} =
+        new{TF, TAV, TAV2}(α, β, γ, c, σ, w_vec, p_vec)
 end
 
-function update_bellman!(mcm, V, V_new, U, E)
+function update_bellman!(mcm, V, V_new, U)
     # Simplify notation
     α, β, σ, c, γ = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ
 
@@ -46,7 +49,8 @@ function update_bellman!(mcm, V, V_new, U, E)
     end
 
     U_new = u(c, σ) + β * (1 - γ) * U +
-            β * γ * E*max.(U, V)
+            β * γ * dot(max.(U, V), mcm.p_vec)
+
     return U_new
 end
 
@@ -57,10 +61,9 @@ function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
     U = 1.0                        # Initial guess of U
     i = 0
     error = tol + 1
-    E = expectation(dist, nodes = mcm.w_vec)
 
     while error > tol && i < max_iter
-        U_new = update_bellman!(mcm, V, V_new, U, E)
+        U_new = update_bellman!(mcm, V, V_new, U)
         error_1 = maximum(abs, V_new - V)
         error_2 = abs(U_new - U)
         error = max(error_1, error_2)

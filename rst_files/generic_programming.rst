@@ -33,13 +33,7 @@ Understanding them will help you
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.1")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 Types and Multiple Dispatch
 ===========================
@@ -262,6 +256,75 @@ We can likewise build specialized methods and hence generate fast code
 We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`
 
 
+The Type Hierarchy
+=====================
+
+Let's discuss how types are organized in Julia
+
+
+Abstract vs Concrete Types
+---------------------------
+
+We saw above that ``Float64`` is the standard type for representing a 64 bit
+floating point number
+
+But we've also seen references to types such as ``Real`` and ``AbstractFloat``
+
+The former (i.e., ``Float64``) is an example of a **concrete type**, as is ``Int64`` or ``Float32``
+
+The latter (i.e., ``Real``, ``AbstractFloat``) are examples of so-called **abstract types**
+
+Concrete types are types that we can *instantiate* --- i.e., pair with data in memory
+
+On the other hand, abstract types help us organize and work with related concrete types
+
+
+The Type Hierarchy
+----------------------
+
+How exactly do abstract types organize or relate different concrete types?
+
+The answer is that, in the Julia language specification, the types form a hierarchy
+
+For example, ``Float64`` and ``Int64`` are **subtypes** of ``Real``
+
+.. code-block:: julia
+
+    Float64 <: Real
+
+.. code-block:: julia
+
+    Int64 <: Real
+
+
+On the other hand, 64 bit complex numbers are not reals
+
+.. code-block:: julia
+
+    ComplexF32 <: Real
+
+
+They are, however, subtypes of ``Number``
+
+.. code-block:: julia
+
+    ComplexF32 <: Number
+
+
+``Number`` in turn is a subtype of ``Any``, which is a parent of all types
+
+
+.. code-block:: julia
+
+    Number <: Any
+
+
+In particular, the type tree is organized with ``Any`` at the top and the concrete types at the bottom
+
+
+We never actually see *instances* of abstract types (i.e., ``typeof(x)`` never returns an abstract type)
+
+The point of abstract types is to categorize the concrete types, as well as other abstract types that sit below them in the hierarchy
 
 
 Back to Multiple Dispatch

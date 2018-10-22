@@ -56,14 +56,7 @@ Key tools for the lecture are
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
+.. literalinclude:: /_static/includes/deps.jl
 
 :index:`Pricing Models`
 =====================================
@@ -630,15 +623,15 @@ the type `AssetPriceModel`
 
     """
     function tree_price(ap::AssetPriceModel)
-        # simplify names, set up matrices
+        # == Simplify names, set up matrices  == #
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = reshape(y, 1, ap.n)
         J = P .* ap.g.(y).^(1 - γ)
 
-        # make sure that a unique solution exists
+        # == Make sure that a unique solution exists == #
         test_stability(ap, J)
 
-        # compute v
+        # == Compute v == #
         Ones = ones(ap.n)
         v = (I - β * J) \ (β * J * Ones)
 
@@ -772,16 +765,15 @@ The above is implemented in the function `consol_price`
 .. code-block:: julia
 
     function consol_price(ap::AssetPriceModel, ζ::AbstractFloat)
-
-        # simplify names, set up matrices
+        # == Simplify names, set up matrices  == #
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = reshape(y, 1, ap.n)
         M = P .* ap.g.(y).^(-γ)
 
-        # make sure that a unique solution exists
+        # == Make sure that a unique solution exists == #
         test_stability(ap, M)
 
-        # compute price
+        # == Compute price == #
         Ones = ones(ap.n)
         p = (I - β * M) \ ( β * ζ * M * Ones)
 
@@ -874,24 +866,22 @@ We can find the solution with the following function `call_option`
     """
     function call_option(ap::AssetPriceModel, ζ::AbstractFloat, p_s::AbstractFloat, ϵ=1e-7)
 
-        # simplify names, set up matrices
+        # == Simplify names, set up matrices  == #
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = reshape(y, 1, ap.n)
         M = P .* ap.g.(y).^(-γ)
 
-        # make sure that a unique console price exists
+        # == Make sure that a unique console price exists == #
         test_stability(ap, M)
 
-        # compute option price
+        # == Compute option price == #
         p = consol_price(ap, ζ)
         w = zeros(ap.n, 1)
         error = ϵ + 1
         while (error > ϵ)
-
-            # maximize across columns
+            # == Maximize across columns == #
             w_new = max.(β * M * w, p .- p_s)
-
-            # find maximal difference of each component and update
+            # == Find maximal difference of each component and update == #
             error = maximum(abs, w - w_new)
             w = w_new
         end
@@ -1144,20 +1134,19 @@ Here's a suitable function:
                                         p_s::AbstractFloat,
                                         k::Int)
 
-        # simplify names, set up matrices
+        # == Simplify names, set up matrices  == #
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
         y = y'
         M = P .* ap.g.(y).^(- γ)
 
-        # make sure that a unique console price exists
+        # == Make sure that a unique console price exists == #
         test_stability(ap, M)
 
-        # compute option price
+        # == Compute option price == #
         p = consol_price(ap, ζ)
         w = zeros(ap.n, 1)
         for i ∈ 1:k
-
-            # maximize across columns
+            # == Maximize across columns == #
             w = max.(β * M * w, p .- p_s)
         end
 

@@ -1,4 +1,4 @@
-#
+
 .. _optgrowth:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
@@ -39,13 +39,7 @@ go along
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 
 The Model
@@ -559,14 +553,14 @@ Here's a function that implements the Bellman operator using linear interpolatio
     function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
-        # apply linear interpolation to w
+        # === Apply linear interpolation to w === #
         w_func = LinearInterpolation(grid, w)
 
         if compute_policy
             σ = similar(w)
         end
 
-        # set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)}
+        # == set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)} == #
         for (i, y) in enumerate(grid)
             objective(c) = u(c) + β * mean(w_func.(f(y - c) .* shocks))
             res = maximize(objective, 1e-10, y)
@@ -799,8 +793,8 @@ tolerance level
         error = tol + 1
         i = 0
 
-        # create storage array for bellman_operator. Reduces  memory
-        # allocation and speeds code up
+        # == Create storage array for bellman_operator. Reduces  memory
+        # allocation and speeds code up == #
         Tw = similar(grid_y)
 
         # Iterate to find solution

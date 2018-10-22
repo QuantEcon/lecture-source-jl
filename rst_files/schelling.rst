@@ -34,13 +34,7 @@ In this lecture we (in fact you) will build and run a version of Schelling's mod
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 The Model
 =======================
@@ -158,7 +152,7 @@ then increase the number of agents.
 
     using Plots, Random, LinearAlgebra
     gr(fmt=:png)
-
+    
     Random.seed!(42)  # set seed for random numbers. Reproducible output
 
 
@@ -194,13 +188,13 @@ then increase the number of agents.
             end
         end
 
-        # sort from smallest to largest, according to distance
+        # == Sort from smallest to largest, according to distance == #
         sort!(distances)
 
-        # extract the neighboring agents
+        # == Extract the neighboring agents == #
         neighbors = [agent for (d, agent) in distances[1:num_neighbors]]
 
-        # count how many neighbors have the same type as self
+        # == Count how many neighbors have the same type as self == #
         num_same_type = sum(a.kind == other.kind for other in neighbors)
 
         return num_same_type ≥ require_same_type
@@ -218,7 +212,7 @@ then increase the number of agents.
         x_vals_0, y_vals_0 = Float64[], Float64[]
         x_vals_1, y_vals_1 = Float64[], Float64[]
 
-        # obtain locations of each type
+        # == Obtain locations of each type == #
         for agent in agents
             x, y = agent.location
             if agent.kind == 0
@@ -239,19 +233,20 @@ then increase the number of agents.
 
 .. code-block:: julia
 
-    # main
+    # == Main == #
+
     num_of_type_0 = 250
     num_of_type_1 = 250
     num_neighbors = 10      # Number of agents regarded as neighbors
     require_same_type = 5   # Want at least this many neighbors to be same type
 
-    # create a list of agents
+    # == Create a list of agents == #
     agents = Agent[Agent(0) for i in 1:num_of_type_0]
     push!(agents, [Agent(1) for i in 1:num_of_type_1]...)
 
     count = 1
 
-    # loop until none wishes to move
+    # ==  Loop until none wishes to move == #
     while true
         println("Entering loop $count")
         p = plot_distribution(agents, count)

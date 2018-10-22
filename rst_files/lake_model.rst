@@ -58,15 +58,7 @@ You will also need some basic :doc:`linear algebra <linear_algebra>` and probabi
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
+.. literalinclude:: /_static/includes/deps.jl
 
 The Model
 ==========

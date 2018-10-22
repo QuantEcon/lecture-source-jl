@@ -24,13 +24,13 @@ In this lecture we'll try to save you some of our pain by focusing on what we be
 
 First we look at two high quality plotting packages that have proved useful to us in a range of applications
 
-After that we turn to a relative newcomer called `Plots.jl <https://juliaplots.github.io/>`__
+After that we turn to a relative newcomer called `Plots.jl <https://juliaplots.github.io/>`__ 
 
 The latter package takes a different -- and intriguing -- approach that combines and exploits the strengths of several existing plotting libraries
 
-Below we assume that
+Below we assume that 
 
-* you've already read through :doc:`our getting started lecture <getting_started>`
+* you've already read through :doc:`our getting started lecture <getting_started>` 
 
 * you are working in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
@@ -38,7 +38,7 @@ Below we assume that
 How to Read this Lecture
 -------------------------
 
-If you want to get started quickly with relatively simple plots, you can skip straight
+If you want to get started quickly with relatively simple plots, you can skip straight 
 to the :ref:`section on Plots.jl <plotsjl>`
 
 If you want a deeper understanding and more flexibility, continue from the next section and read on
@@ -46,13 +46,7 @@ If you want a deeper understanding and more flexibility, continue from the next 
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 PyPlot
 ========================
@@ -70,7 +64,7 @@ One disadvantage of PyPlot is that it not only requires Python but also much of 
 
 Fortunately, installation of the latter has been greatly simplified by the excellent Anaconda Python distribution
 
-Moreover, the tools that come with Anaconda (such as Jupyter) are too good to miss out on
+Moreover, the tools that come with Anaconda (such as Jupyter) are too good to miss out on 
 
 So please go ahead and :ref:`install Anaconda <install_anaconda>` if you haven't yet
 
@@ -110,16 +104,16 @@ Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.
 3D Plots
 ^^^^^^^^^^
 
-Here's an example of how to create a 3D plot
+Here's an example of how to create a 3D plot 
 
 .. code-block:: julia
-
+   
    using QuantEcon: meshgrid
-
+   
    n = 50
    x = linspace(-3, 3, n)
    y = x
-
+   
    z = Array{Float64}(n, n)
    f(x, y) = cos(x^2 + y^2) / (1 + x^2 + y^2)
    for i in 1:n
@@ -127,7 +121,7 @@ Here's an example of how to create a 3D plot
            z[j, i] = f(x[i], y[j])
        end
    end
-
+   
    xgrid, ygrid = meshgrid(x, y)
    surf(xgrid, ygrid, z', cmap=ColorMap("jet"), alpha=0.7)
    zlim(-0.5, 1.0)
@@ -137,9 +131,9 @@ Here's an example of how to create a 3D plot
 The Object Oriented API
 ------------------------
 
-Matplotlib also has a more powerful and expressive object oriented API
+Matplotlib also has a more powerful and expressive object oriented API 
 
-Because Julia isn't object oriented in the same sense as Python,
+Because Julia isn't object oriented in the same sense as Python, 
 the syntax required to access this interface via PyPlot is a little awkward
 
 Here's an example
@@ -150,7 +144,7 @@ Here's an example
     y = sin.(x)
     fig, ax = subplots()
     ax[:plot](x, y, "b-", linewidth=2)
-
+    
 
 The resulting figure is the same
 
@@ -167,7 +161,7 @@ Here's a similar plot with a bit more customization
     fig, ax = subplots()
     ax[:plot](x, y, "r-", linewidth=2, label="sine function", alpha=0.6)
     ax[:legend](loc="upper center")
-
+    
 
 The resulting figure has a legend at the top center
 
@@ -198,17 +192,17 @@ We use `Distributions.jl` to get the values of the densities given a randomly ge
 .. code-block:: julia
 
     using Distributions
-
+    
     u = Uniform()
-
+    
     fig, ax = subplots()
     x = linspace(-4, 4, 150)
     for i in 1:3
-        # compute normal pdf from randomly generated mean and std
+        # == Compute normal pdf from randomly generated mean and std == #
         m, s = rand(u) * 2 - 1, rand(u) + 1
         d = Normal(m, s)
         y = pdf.(d, x)
-        # plot current pdf
+        # == Plot current pdf == #
         ax[:plot](x, y, linewidth=2, alpha=0.6, label="draw $i")
     end
     ax[:legend]()
@@ -227,7 +221,7 @@ the call
 
     fig, axes = subplots(num_rows, num_cols)
 
-Here's an example that generates 6 normal distributions, takes 100 draws from each, and plots each of the resulting histograms
+Here's an example that generates 6 normal distributions, takes 100 draws from each, and plots each of the resulting histograms 
 
 .. code-block:: julia
 
@@ -235,16 +229,16 @@ Here's an example that generates 6 normal distributions, takes 100 draws from ea
     num_rows, num_cols = 2, 3
     fig, axes = subplots(num_rows, num_cols, figsize=(16,6))
     subplot_num = 0
-
+    
     for i in 1:num_rows
         for j in 1:num_cols
             ax = axes[i, j]
             subplot_num += 1
-            # generate a normal sample with random mean and std
+            # == Generate a normal sample with random mean and std == #
             m, s = rand(u) * 2 - 1, rand(u) + 1
             d = Normal(m, s)
             x = rand(d, 100)
-            # histogram the sample
+            # == Histogram the sample == #
             ax[:hist](x, alpha=0.6, bins=20)
             ax[:set_title]("histogram $subplot_num")
             ax[:set_xticks]([-4, 0, 4])
@@ -285,7 +279,7 @@ Here's a version of the sine function plot you saw above
     x = linspace(0, 10, 200)
     y = sin.(x)
     # specify which module scatter belongs to since both have scatter
-    PlotlyJS.plot(PlotlyJS.scatter(x=x, y=y, marker_color="blue", line_width=2))
+    PlotlyJS.plot(PlotlyJS.scatter(x=x, y=y, marker_color="blue", line_width=2)) 
 
 
 
@@ -295,17 +289,17 @@ Here's a replication of the :ref:`figure with multiple Gaussian densities <mpoa>
 
     traces = PlotlyJS.GenericTrace[]
     u = Uniform()
-
+    
     x = linspace(-4, 4, 150)
     for i in 1:3
-        # compute normal pdf from randomly generated mean and std
+        # == Compute normal pdf from randomly generated mean and std == #
         m, s = rand(u) * 2 - 1, rand(u) + 1
         d = Normal(m, s)
         y = pdf.(d, x)
         trace = PlotlyJS.scatter(x=x, y=y, name="draw $i")
         push!(traces, trace)
     end
-
+    
     PlotlyJS.plot(traces, PlotlyJS.Layout())
 
 
@@ -321,11 +315,11 @@ Plots.jl
 
 `Plots.jl <https://github.com/tbreloff/Plots.jl>`__ is another relative newcomer to the Julia plotting scene, authored by `Tom Breloff <https://github.com/tbreloff>`_
 
-The approach of Plots.jl is to
+The approach of Plots.jl is to 
 
 #. provide a "frontend" plotting language
 
-#. render the plots by using one of several existing plotting libraries as "backends"
+#. render the plots by using one of several existing plotting libraries as "backends" 
 
 In other words, Plots.jl plotting commands are translated internally to commands understood by a selected plotting library
 
@@ -398,21 +392,21 @@ This is valid syntax, as is
 .. code-block:: julia
 
     Plots.plot(sin, 0, 10)   # Plot the sine function from 0 to 10
+    
 
-
-Plots.jl accommodates these useful variations in syntax by exploiting multiple dispatch
+Plots.jl accommodates these useful variations in syntax by exploiting multiple dispatch 
 
 
 Multiple Plots on One Axis
 -----------------------------
 
-Next, let's replicate the :ref:`figure with multiple Gaussian densities <mpoa>`
+Next, let's replicate the :ref:`figure with multiple Gaussian densities <mpoa>` 
 
 
 .. code-block:: julia
 
     Plots.plotlyjs()
-
+    
     x = linspace(-4, 4, 150)
     y_vals = Array{Vector}(3)
     labels = Array{String}(1, 3)
@@ -422,7 +416,7 @@ Next, let's replicate the :ref:`figure with multiple Gaussian densities <mpoa>`
         y_vals[i] = pdf.(d, x)
         labels[i] = string("mu = ", round(m, 2))
     end
-
+    
     Plots.plot(x, y_vals, linewidth=2, alpha=0.6, label=labels)
 
 Also, when you have multiple y-series, `Plots.jl` can accept one x-values vector and apply it to each y-series
@@ -438,7 +432,7 @@ Let's replicate the subplots figure :ref:`shown above <pyplot_sub>`
 .. code-block:: julia
 
     Plots.pyplot()
-
+    
     draws = Array{Vector}(6)
     titles = Array{String}(1, 6)
     for i = 1:6
@@ -448,7 +442,7 @@ Let's replicate the subplots figure :ref:`shown above <pyplot_sub>`
         t = string(L"$\mu = $", round(m, 2), L", $\sigma = $", round(s, 2))
         titles[i] = t
     end
-
+    
     Plots.histogram(draws,
                     layout=6,
                     title=titles,
@@ -481,11 +475,11 @@ histograms
         titles[i] = t
     end
 
-    Plots.histogram(draws,
-                    layout=6,
-                    title=titles,
-                    legend=:none,
-                    titlefont=Plots.font(9),
+    Plots.histogram(draws, 
+                    layout=6, 
+                    title=titles, 
+                    legend=:none, 
+                    titlefont=Plots.font(9), 
                     color=[:red :blue :yellow :green :black :purple],
                     bins=20)
 
@@ -502,11 +496,11 @@ Here's a sample 3D plot
 .. code-block:: julia
 
     Plots.plotlyjs()
-
+    
     n = 50
     x = linspace(-3, 3, n)
     y = x
-
+    
     z = Array{Float64}(n, n)
     ff(x, y) = cos(x^2 + y^2) / (1 + x^2 + y^2)
     for i in 1:n
@@ -514,7 +508,7 @@ Here's a sample 3D plot
             z[j, i] = ff(x[i], y[j])
         end
     end
-
+    
     Plots.surface(x, y, z')
 
 
@@ -540,7 +534,7 @@ The identity function :math:`f(x) = x` is approximated on the nonnegative number
 
 .. math::
 
-    d_n(x) = \sum_{k=1}^{n 2^n} \frac{k-1}{2^n} \mathbb{1}
+    d_n(x) = \sum_{k=1}^{n 2^n} \frac{k-1}{2^n} \mathbb{1} 
         \left\{ \frac{k-1}{2^n} \leq x < \frac{k}{2^n} \right\}
         + n \mathbb{1}\{ x \geq n \}
 
@@ -596,19 +590,20 @@ Here's the function :math:`d_n` for any given :math:`n`:
 
     x_grid = linspace(0, 10, 100)
     n_vals = [1, 2, 3, 4, 5]
-
+    
     function_vals = []
     labels = []
-
+    
     for n in n_vals
         push!(function_vals, [d(x, n) for x in x_grid])
         push!(labels, "$n")
     end
-
+    
     push!(function_vals, x_grid)
     push!(labels, "identity function")
-
-    Plots.plot(x_grid,
-               function_vals,
+    
+    Plots.plot(x_grid, 
+               function_vals, 
                label=reshape(labels, 1, length(n_vals) + 1),
                ylim=(0, 10))
+

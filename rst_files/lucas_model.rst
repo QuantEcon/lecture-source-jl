@@ -34,13 +34,7 @@ Another difference to our :doc:`first asset pricing lecture <markov_asset>` is t
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 
 The Lucas Model
@@ -457,12 +451,12 @@ Some code to implement the iterative computational procedure can be found below:
         ϕ = LogNormal(0.0, σ)
         shocks = rand(ϕ, 500)
 
-        # build a grid with mass around stationary distribution
+        # == build a grid with mass around stationary distribution == #
         ssd = σ / sqrt(1 - α^2)
         grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
         grid = range(grid_min,  grid_max, length = grid_size)
 
-        # set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz)
+        # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
         h = similar(grid)
         for (i, y) in enumerate(grid)
             h[i] = β * mean((y^α .* shocks).^(1 - γ))
@@ -485,7 +479,7 @@ Some code to implement the iterative computational procedure can be found below:
     """
     function lucas_operator(lt::LucasTree, f::Vector)
 
-        # unpack names
+        # == unpack names == #
         grid, α, β, h = lt.grid, lt.α, lt.β, lt.h
         z = lt.shocks
 
@@ -503,7 +497,7 @@ Some code to implement the iterative computational procedure can be found below:
                             tol::AbstractFloat=1e-6,
                             max_iter::Integer=500)
 
-        # simplify notation
+        # == simplify notation == #
         grid, γ = lt.grid, lt.γ
 
         i = 0
@@ -553,7 +547,7 @@ Here's the resulting price function
 
     using Plots
     gr(fmt=:png)
-
+    
     plot(tree.grid, price_vals, lw=2, label="p*(y)")
     plot!(xlabel="y", ylabel="price", legend=:topleft)
 

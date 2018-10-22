@@ -32,12 +32,7 @@ Prerequisite knowledge is basic probability and linear algebra
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages");
+.. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
 

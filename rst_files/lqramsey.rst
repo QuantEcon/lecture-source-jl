@@ -66,13 +66,7 @@ Model Features
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 The Ramsey Problem
 =====================
@@ -864,7 +858,7 @@ Here's the code
     using Random
     Random.seed!(42)
 
-    # parameters
+    # == Parameters == #
     β = 1 / 1.05
     ρ, mg = .7, .35
     A = Matrix{Float64}(I, 2, 2)

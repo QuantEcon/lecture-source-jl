@@ -149,13 +149,8 @@ References for this lecture include
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 Defining Rational Expectations Equilibrium
 ====================================================
@@ -759,17 +754,17 @@ Here's our solution
 
 .. code-block:: julia
 
-    # model parameters
+    # == Model parameters == #
     a0 = 100
     a1 = 0.05
     β = 0.95
     γ = 10.0
 
-    # beliefs
+    # == Beliefs == #
     κ0 = 95.5
     κ1 = 0.95
 
-    # formulate the LQ problem
+    # == Formulate the LQ problem == #
     A = [1  0  0
          0 κ1 κ0
          0  0  1]
@@ -782,7 +777,7 @@ Here's our solution
 
     Q = 0.5 * γ
 
-    # solve for the optimal policy
+    # == Solve for the optimal policy == #
     lq = QuantEcon.LQ(Q, R, A, B; bet = β)
     P, F, d = stationary_values(lq)
 
@@ -793,7 +788,7 @@ Here's our solution
 
 .. code-block:: julia
   :class: test
-
+  
   @testset begin
     @test F[1] == 0.07347294403502992
     @test F[2] == -73.47294403502833
@@ -932,7 +927,7 @@ we can obtain the implied aggregate law of motion via
 
 .. code-block:: julia
 
-    # formulate the planner's LQ problem
+    # == Formulate the planner's LQ problem == #
     A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
@@ -941,11 +936,11 @@ we can obtain the implied aggregate law of motion via
 
     Q = γ / 2.0
 
-    # solve for the optimal policy
+    # == Solve for the optimal policy == #
     lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
 
-    # print the results
+    # == Print the results == #
     κ0, κ1 = -F[2], 1 - F[1]
     println("κ0=$κ0\tκ1=$κ1")
 
@@ -980,7 +975,7 @@ The problem can be solved as follows
 
 .. code-block:: julia
 
-    # formulate the monopolist's LQ problem
+    # == Formulate the monopolist's LQ problem == #
     A = Matrix{Float64}(I, 2, 2)
     B = [1.0, 0.0]
 
@@ -989,11 +984,11 @@ The problem can be solved as follows
 
     Q = γ / 2.0
 
-    # solve for the optimal policy
+    # == Solve for the optimal policy == #
     lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
 
-    # print the results
+    # == Print the results == #
     m0, m1 = -F[2], 1 - F[1]
     println("m0=$m0\tm1=$m1")
 
