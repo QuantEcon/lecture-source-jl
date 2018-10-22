@@ -33,13 +33,8 @@ Required knowledge: Familiarity with matrix manipulations, multivariate normal d
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 The Basic Idea
 ====================
@@ -158,7 +153,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
       return bivariate_normal(X, Y, s_x, s_y, m_x, m_y, s_xy)
   end
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
@@ -186,7 +181,7 @@ location :math:`y`
 
 .. code-block:: julia
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
   contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
@@ -257,7 +252,7 @@ The original density is left in as contour lines for comparison
 
 .. code-block:: julia
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   M = Σ * G' * inv(G * Σ * G' + R)
   x_hat_F = x_hat + M * (y - G * x_hat)
@@ -376,7 +371,7 @@ the update has used parameters
 
 .. code-block:: julia
 
-  # == Plot the figure == #
+  # plot the figure
   Z = gen_gaussian_plot_vals(x_hat, Σ)
   M = Σ * G' * inv(G * Σ * G' + R)
   x_hat_F = x_hat + M * (y - G * x_hat)
@@ -673,13 +668,13 @@ Exercise 1
 
     using Distributions
 
-    # == Parameters == #
+    # parameters
 
     θ = 10
     A, G, Q, R = 1.0, 1.0, 0.0, 1.0
     x_hat_0, Σ_0 = 8.0, 1.0
 
-    # == Initialize Kalman filter == #
+    # initialize Kalman filter
 
     kalman = Kalman(A, G, Q, R)
     set_state!(kalman, x_hat_0, Σ_0)
@@ -692,7 +687,7 @@ Exercise 1
     for i ∈ 1:N
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
-        push!(densities, pdf.(Ref(Normal(m, sqrt(v))), xgrid))
+        push!(densities, pdf.(Normal(m, sqrt(v)), xgrid))
         push!(labels, LaTeXString("\$t=$i\$"))
 
         # Generate the noisy signal
@@ -756,43 +751,44 @@ Exercise 3
 
     Random.seed!(41)  # reproducible results
 
-    # === Define A, Q, G, R === #
+    # define A, Q, G, R
     G = Matrix{Float64}(I, 2, 2)
     R = 0.5 .* G
     A = [0.5 0.4
             0.6 0.3]
     Q = 0.3 .* G
 
-    # === Define the prior density === #
+    # define the prior density
     Σ = [0.9 0.3
             0.3 0.9]
     x_hat = [8, 8]
 
-    # === Initialize the Kalman filter === #
+    # initialize the Kalman filter
     kn = Kalman(A, G, Q, R)
     set_state!(kn, x_hat, Σ)
 
-    # === Set the true initial value of the state === #
+    # set the true initial value of the state
     x = zeros(2)
 
-    # == Print eigenvalues of A == #
+    # print eigenvalues of A
     println("Eigenvalues of A:\n$(eigvals(A))")
 
-    # == Print stationary Σ == #
+    # print stationary Σ
     S, K = stationary_values(kn)
     println("Stationary prediction error variance:\n$S")
 
-    # === Generate the plot === #
+    # generate the plot
     T = 50
     e1 = zeros(T)
     e2 = similar(e1)
     for t ∈ 1:T
-        # == Generate signal and update prediction == #
+
+        # generate signal and update prediction
         dist = MultivariateNormal(G * x, R)
         y = rand(dist)
         update!(kn, y)
 
-        # == Update state and record error == #
+        # update state and record error
         Ax = A * x
         x = rand(MultivariateNormal(Ax, Q))
         e1[t] = sum(abs2(a - b) for (a, b) ∈ zip(x, kn.cur_x_hat))

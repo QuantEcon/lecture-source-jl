@@ -42,14 +42,7 @@ As we'll see, McCall's model is not only interesting in its own right but also a
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
+.. literalinclude:: /_static/includes/deps.jl
 
 The McCall Model
 =================
@@ -330,7 +323,7 @@ Here's the distribution of wage offers we'll work with
     w_min, w_max = 10, 60
     const w_vals = range(w_min,  w_max, length = n+1)
     dist = BetaBinomial(n, a, b)
-    const p_vals = pdf.(Ref(dist), support(dist))
+    const p_vals = pdf.(dist, support(dist))
 
     plt = plot(w_vals, p_vals, label = L"$p_i$", xlabel = "wages", ylabel = "probabilities")
 
@@ -390,8 +383,7 @@ between successive iterates is below `tol`
                                       max_iter = 500,
                                       tol = 1e-6)
 
-    # == First compute the value function == #
-
+     # first compute the value function
     v = collect(w_vals ./ (1 - β))
     v_next = similar(v)
     i = 0
@@ -410,7 +402,7 @@ between successive iterates is below `tol`
         v[:] .= v_next  # copy contents into v
     end
 
-    # == Now compute the reservation wage == #
+     # now compute the reservation wage
        return (1 - β) * (c + β * sum(v .* p_vals))
     end
 

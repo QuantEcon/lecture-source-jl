@@ -41,16 +41,7 @@ Model features
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
-
+.. literalinclude:: /_static/includes/deps.jl
 
 Model
 ========
@@ -190,8 +181,8 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
   G = Beta(3, 1.6)
   F = Beta(1, 1)
-  plot(x, pdf.(Ref(G), x/w_max)/w_max, label="g")
-  plot!(x, pdf.(Ref(F), x/w_max)/w_max, label="f")
+  plot(x, pdf.(G, x/w_max)/w_max, label="g")
+  plot!(x, pdf.(F, x/w_max)/w_max, label="f")
 
 .. code-block:: julia
   :class: test
@@ -265,8 +256,8 @@ The code is as follows
 
       # NOTE: the x./w_max)./w_max in these functions makes our dist match
       #       the scipy one with scale=w_max given
-      f(x) = pdf.(Ref(F), x/w_max)/w_max
-      g(x) = pdf.(Ref(G), x/w_max)/w_max
+      f(x) = pdf.(F, x/w_max)/w_max
+      g(x) = pdf.(G, x/w_max)/w_max
 
       π_min = 1e-3  # avoids instability
       π_max = 1 - π_min

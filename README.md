@@ -25,3 +25,7 @@ This may take a long time, as it will install and precompile every package used 
   2. In the main directory of the repo: `make jupyter``
   3. Execute all of the notebooks with `./run-all-notebooks.sh`.  This will take a long-time the first execution.
   4. `cd` to the `/notebooks` directory, and run `jupyter lab` to examine them. 
+
+## Development Tools
+
+On top of the above, we have the following dev scripts: 
