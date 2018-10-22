@@ -136,11 +136,10 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
        0   -0.2]
   Q = 0.3 .* Σ
 
-  # == The observed value of y == #
   y = [2.3, -1.9]
 
-  # == Set up grid for plotting == #
-  x_grid = range(-1.5, 2.9, length = 100)
+  # set up grid for plotting 
+  x_grid = range(-1.5, 2.9, length = 100) 
   y_grid = range(-3.1, 1.7, length = 100)
   X = repeat(x_grid', length(y_grid), 1)
   Y = repeat(y_grid, 1, length(y_grid))
