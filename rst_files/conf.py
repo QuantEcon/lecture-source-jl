@@ -413,4 +413,4 @@ jupyter_headers = {
 # Filename for the file containing the welcome block
 jupyter_welcome_block = ""
 
-jupyter_drop_tests = True
+jupyter_drop_tests = False
