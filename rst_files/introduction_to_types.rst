@@ -11,6 +11,8 @@ Introduction to Types and Generic Programming
 Overview
 ============================
 
+In Julia, arrays and tuples are the most important data type for working with numerical data
+
 In this lecture we give more details on
 
 * declaring types
@@ -28,6 +30,12 @@ Setup
 
 .. literalinclude:: /_static/includes/deps.jl
 
+<<<<<<< HEAD
+=======
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.1")
+    using LinearAlgebra, Statistics, Compat
+>>>>>>> d5cba6c... Type hiearchy merged
 
 Finding and Interpreting Types
 ================================
@@ -108,13 +116,18 @@ Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Sy
 
 **Remark:** Note that, by convention, type names use CamelCase ---  ``Array``, ``AbstractArray``, etc.
 
-Since variables and functions are denoted in lower case, this can be used to distinguish from  types when reading code and output
+(See `parametric types documentation <https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1>`_)
+
+**Remark:** Note that, by convention, type names use CamelCase ---  ``FloatingPoint``, ``Array``, ``AbstractArray``, etc.
 
 
 Variables, Types, and Values
 --------------------------------
 
-The type resides with the value itself, not with the name ``x``
+Since variables and functions are denoted in lower case, this can be used to easily identify types when reading code and output
+
+After assigning a variable name to an value, we can query the type of the
+value via the name
 
 .. code-block:: julia
 
@@ -572,6 +585,13 @@ Note that in the above, ``x`` works for any type of ``Real``, including ``Int64`
     @show typeof(x)
     @show ourabs(x)
 
+
+
+Multiple Dispatch
+==================
+use abs for numbers and complex numbers
+
+special code for trapezoidal rule for a uniform vs. non-uniform grid
 
 Exercises
 =============
