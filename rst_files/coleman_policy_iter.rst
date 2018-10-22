@@ -576,7 +576,7 @@ theory
 
 .. code-block:: julia
 
-    using PyPlot # change to Plots
+    using Plots
 
     function verify_true_policy(m, shocks, c_star)
         # Compute (Kc^*)
@@ -589,10 +589,9 @@ theory
                                       shocks)
 
         # Plot c^* and Kc^* #
-        fig, ax = subplots()
-        ax[:plot](m.grid, c_star, label=L"optimal policy $c^*$")
-        ax[:plot](m.grid, c_star_new, label=L"$Kc^*$")
-        ax[:legend](loc="upper left")
+        plot(m.grid, c_star, label="optimal policy c^*")
+        plot!(m.grid, c_star_new, label="Kc^*")
+        plot!(legend=:topleft)
     end
 
 .. code-block:: julia
@@ -624,20 +623,20 @@ The initial condition we'll use is the one that eats the whole pie: :math:`c(y) 
     function check_convergence(m, shocks, c_star, g_init;
                                n_iter = 15)
 
-        fig, ax = subplots(figsize=(9, 6))
-        jet = ColorMap("jet")
+
+
         g = g_init;
-        ax[:plot](m.grid, g, color=jet(0), lw=2,
-                  alpha=0.6, label=L"initial condition $c(y) = y$")
+        plot(m.grid, g, lw=2,
+              alpha=0.6, label="intial condition c(y) = y")
         for i = 1:n_iter
             new_g = coleman_operator(g, m.grid, m.β, m.u_prime,
                                      m.f, m.f_prime, shocks)
             g = new_g
-            ax[:plot](m.grid, g, color=jet(i / n_iter), lw=2, alpha=0.6)
+            plot!(m.grid, g, lw=2, alpha=0.6, label="")
         end
-        ax[:plot](m.grid, c_star, "k-", lw=2, alpha=0.8,
-                  label=L"true policy function $c^*$")
-        ax[:legend](loc="upper left")
+        plot!(m.grid, c_star, color=:black, lw=2, alpha=0.8,
+              label="true policy function c^*")
+        plot!(legend=:topleft)
     end
 
 .. code-block:: julia
@@ -695,11 +694,10 @@ discussed above
         pf_error = c_star - g
         vf_error = c_star - vf_g
 
-        fig, ax = subplots()
-        ax[:plot](m.grid, 0 * m.grid, "k-", lw=1)
-        ax[:plot](m.grid, pf_error, lw=2, alpha=0.6, label="policy iteration error")
-        ax[:plot](m.grid, vf_error, lw=2, alpha=0.6, label="value iteration error")
-        ax[:legend](loc="lower left")
+        plot(m.grid, 0 * m.grid, color=:black, lw=1)
+        plot!(m.grid, pf_error, lw=2, alpha=0.6, label="policy iteration error")
+        plot!(m.grid, vf_error, lw=2, alpha=0.6, label="value iteration error")
+        plot!(legend=:bottomleft)
     end
 
 .. code-block:: julia
@@ -864,10 +862,10 @@ Here's the code, which will execute if you've run all the code above
         new_w, vf_g = bellman_operator(w, m.grid, m.β, m.u,
                                        m.f, shocks, compute_policy=true)
 
-        fig, ax = subplots()
-        ax[:plot](m.grid, g, lw=2, alpha=0.6, label="policy iteration")
-        ax[:plot](m.grid, vf_g, lw=2, alpha=0.6, label="value iteration")
-        ax[:legend](loc="upper left")
+
+        plot(m.grid, g, lw=2, alpha=0.6, label="policy iteration")
+        plot!(m.grid, vf_g, lw=2, alpha=0.6, label="value iteration")
+        plot!(legend=:topleft)
     end
 
 .. code-block:: julia
