@@ -1405,7 +1405,7 @@ Given these parameters
 
 * simulate :math:`N=200` paths of the stochastic process above to the :math:`T`, for each :math:`\theta \in \Theta`, where we refer to an element of a particular simulation as :math:`y^n_t`
 * overlay plots a histogram of the stationary distribution of :math:`y_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``
-* numerically find the mean and variance of this as an ensemble average, i.e. :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\sum_{n=1}^N\frac{y^n_T}{N}`
+* numerically find the mean and variance of this as an ensemble average, i.e. :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
 
 Later, we will interpret some of these in :doc:`this lecture <lln_clt>`
 
