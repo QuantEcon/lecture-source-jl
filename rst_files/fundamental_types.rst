@@ -38,12 +38,12 @@ In this lecture we give more details on
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+Activate the ``QuantEconLecturePackages`` projesct environment and package versions
 
 .. code-block:: julia 
 
     using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
+    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.1")
     using LinearAlgebra, Statistics, Compat
 
 Array Basics
