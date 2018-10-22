@@ -40,7 +40,6 @@ Setup
 
 .. literalinclude:: /_static/includes/deps.jl
 
-
 Array Basics
 ================
 
@@ -1099,6 +1098,8 @@ There are two distinct use cases for this
 #. ``nothing`` ("software engineers null"): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.
 #. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available 
 
+.. error_handling:
+
 Nothing and Basic Error Handling
 ----------------------------------
 
@@ -1250,24 +1251,31 @@ An example of an exception is a ``DomainError``, which signifies that a value pa
 
 .. code-block:: julia
 
-    sqrt(-1.0)
+    # sqrt(-1.0) # throws exception, turned off to prevent breaking notebook
+
+    # to see the error
+    try sqrt(-1.0); catch err; err end # catches the exception and prints it.
+    
 
 Another example you will see is when the compiler cannot convert between types
 
 .. code-block:: julia
 
-    convert(Int64, 3.12)
+    # convert(Int64, 3.12) # throws exception, turned off to prevent breaking notebook
+    
+    # to see the error
+    try convert(Int64, 3.12); catch err; err end # catches the exception and prints it.
 
 If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error
 
-Occasionally you will want to catch these errors and try to recover
+Occasionally you will want to catch these errors and try to recover, as we did above in the ``try`` block
 
 .. code-block:: julia
 
     function f(x)
         try
             sqrt(x)
-        catch # enters if exception thrown
+        catch err # enters if exception thrown
             sqrt(complex(x, 0)) # convert to complex number
         end
     end
@@ -1288,7 +1296,7 @@ For example, if you loaded data from a panel, and gaps existed
 
     x = [3.0, missing, 5.0, missing, missing]
 
-A key feature of ``missing`` is that it propagates through other function calls 
+A key feature of ``missing`` is that it propagates through other function calls - unlike ``nothing``
 
 .. code-block:: julia
 
@@ -1400,6 +1408,59 @@ Test your iterative method against ``solve_discrete_lyapunov`` using matrices
         0.5 & 0.4 \\
         0.4 & 0.6
     \end{bmatrix}
+
+Exercise 2
+----------------
+
+Take a stochastic process for :math:`\{y_t\}_{t=0}^T`
+
+.. math::
+    y_{t+1} = \gamma + \theta y_t + \sigma w_{t+1}
+
+where
+
+* :math:`w_{t+1}` is distributed ``Normal(0,1)``
+* :math:`\gamma=1, \sigma=1, y_0 = 0`
+* :math:`\theta \in \Theta \equiv \{0.1, 0.5, 0.98\}`
+
+Given these parameters
+
+* simulate a single :math:`y_t` series for each :math:`\theta \in \Theta` for :math:`T = 150`.  Feel free to experiment with different :math:`T`
+* overlay plots of the rolling mean of the process for each :math:`\theta \in \Theta`, i.e. for each :math:`1 \leq \tau \leq T` plot
+
+.. math::
+
+    \frac{1}{\tau}\sum_{t=1}^{\tau}y_T
+
+* simulate :math:`N=200` paths of the stochastic process above to the :math:`T`, for each :math:`\theta \in \Theta`, where we refer to an element of a particular simulation as :math:`y^n_t`
+* overlay plots a histogram of the stationary distribution of :math:`y_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``
+* numerically find the mean and variance of this as an ensemble average, i.e. :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
+
+Later, we will interpret some of these in :doc:`this lecture <lln_clt>`
+
+Exercise 3
+--------------
+
+Let the data generating process for a variable be
+
+.. math::
+
+    y = a x_1 + b x_1^2 + c x_2 + d + \sigma w
+
+where :math:`y, x_1, x_2` are scalar observables, :math:`a,b,c,d` are parameters to estimate, and :math:`w` are iid normal with mean 0 and variance 1
+
+First, lets simulate data we can use to estimate the parameters
+
+* draw :math:`N=50` values for :math:`x_1, x_2` from iid normal distributions
+
+Then, simulate with different :math:`w` 
+* draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1` 
+* repeat that so you have ``M = 20`` different simulations of the ``y`` for the ``N`` values
+
+Finally, calculate order least squares manually (i.e., putting the observables into matrices and vectors, and directly using the equations for `OLS <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_ rather than a package).
+
+* for each of the ``M=20`` simulations, calculate the OLS estimates for :math:`a, b, c, d, \sigma`
+* plot a histogram of these estimates for each variable.
 
 
 Solutions

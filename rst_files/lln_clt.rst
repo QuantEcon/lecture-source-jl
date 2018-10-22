@@ -230,8 +230,8 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
     n = 100
     Random.seed!(42)  # reproducible results
 
-    # == Arbitrary collection of distributions == #
-    distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
+    
+    distributions = Dict("student's t with 10 degrees of freedom" => TDist(10), # arbitrary collection of distributions
         "β(2, 2)" => Beta(2.0, 2.0),
         "lognormal LN(0, 1/2)" => LogNormal(0.5),
         "γ(5, 1/2)" => Gamma(5.0, 2.0),
@@ -245,7 +245,8 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
     titles = []
     for i ∈ 1:num_plots
         dist_names = collect(keys(distributions))
-        # == Choose a randomly selected distribution == #
+        
+        # choose a randomly selected distribution
         name = dist_names[rand(1:length(dist_names))]
         dist = pop!(distributions, name)
 

@@ -214,6 +214,14 @@ A = zeros(N,N)
 y = similar(x, N) # keeps things generic.  The `N` here is not required if the same size
 A = similar(x, N, N) # same type but NxN size
 ```
+- **Create vector literals with `,`** rather than `;` when possible
+```julia
+# BAD!
+y = [1; 2; 3]
+
+# GOOD!
+y = [1, 2, 3]
+```
 - **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
 ```julia
 x = [1 0; 0 1]

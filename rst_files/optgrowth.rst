@@ -553,7 +553,7 @@ Here's a function that implements the Bellman operator using linear interpolatio
     function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
-        # === Apply linear interpolation to w === #
+        # apply linear interpolation to w
         w_func = LinearInterpolation(grid, w)
 
         if compute_policy
@@ -793,8 +793,8 @@ tolerance level
         error = tol + 1
         i = 0
 
-        # == Create storage array for bellman_operator. Reduces  memory
-        # allocation and speeds code up == #
+        # create storage array for bellman_operator. Reduces  memory
+        # allocation and speeds code up
         Tw = similar(grid_y)
 
         # Iterate to find solution
