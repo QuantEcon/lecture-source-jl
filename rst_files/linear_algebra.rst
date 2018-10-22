@@ -163,7 +163,6 @@ vector :math:`x` and produces
     \end{array}
     \right]
 
-
 Scalar multiplication is illustrated in the next figure
 
 .. code-block:: julia
@@ -175,18 +174,10 @@ Scalar multiplication is illustrated in the next figure
     vals = [0 0 0; x * scalars]
     labels = [(-3.6, -4.2, "-2x"), (2.4, 1.8, "x"), (4.4, 3.8, "2x")]
 
-    plot(xy_vals, xy_vals, arrow = true, color = [:red :red :blue],
+    plot(vals, vals, arrow = true, color = [:red :red :blue],
          legend = :none, xlims = (-5, 5), ylims = (-5, 5),
          annotations = labels, xticks = -5:1:5, yticks = -5:1:5,
          framestyle = :origin)
-
-.. code-block:: julia
-    :class: test
-
-    @testset "second block" begin
-        @test @view(x_vals[2:2,:]) == [-4 2 4]
-        @test labels[2] == (2.4, 1.8, "x")
-    end
 
 In Julia, a vector can be represented as a one dimensional `Array`
 
@@ -231,7 +222,6 @@ The *norm* of a vector :math:`x` represents its "length" (i.e., its distance fro
 
     \| x \| := \sqrt{x' x} := \left( \sum_{i=1}^n x_i^2 \right)^{1/2}
 
-
 The expression :math:`\| x - y\|` is thought of as the distance between :math:`x` and :math:`y`
 
 Continuing on from the previous example, the inner product and norm can be computed as
@@ -241,21 +231,17 @@ follows
 
     using LinearAlgebra
 
-
 .. code-block:: julia
 
     dot(x, y)               # Inner product of x and y
-
 
 .. code-block:: julia
 
     sum(prod, zip(x, y))    # Gives the same result
 
-
 .. code-block:: julia
 
     norm(x)                 # Norm of x
-
 
 .. code-block:: julia
 
@@ -282,7 +268,6 @@ In particular, :math:`y \in \mathbb R ^n` is a linear combination of :math:`A :=
 
     y = \beta_1 a_1 + \cdots + \beta_k a_k
     \text{ for some scalars } \beta_1, \ldots, \beta_k
-
 
 In this context, the values :math:`\beta_1, \ldots, \beta_k` are called the *coefficients* of the linear combination
 
@@ -361,14 +346,12 @@ If :math:`A = \{e_1, e_2, e_3\}` consists  of the *canonical basis vectors* of :
     \end{array}
     \right]
 
-
 then the span of :math:`A` is all of :math:`\mathbb R ^3`, because, for any
 :math:`x = (x_1, x_2, x_3) \in \mathbb R ^3`, we can write
 
 .. math::
 
     x = x_1 e_1 + x_2 e_2 + x_3 e_3
-
 
 Now consider :math:`A_0 = \{e_1, e_2, e_1 + e_2\}`
 
@@ -416,7 +399,6 @@ The following statements are equivalent to linear independence of :math:`A := \{
 
 (The zero in the first expression is the origin of :math:`\mathbb R ^n`)
 
-
 .. _la_unique_reps:
 
 Unique Representations
@@ -430,7 +412,6 @@ linearly independent and
 .. math::
 
     y = \beta_1 a_1 + \cdots \beta_k a_k
-
 
 then no other coefficient sequence :math:`\gamma_1, \ldots, \gamma_k` will produce
 the same vector :math:`y`
@@ -543,7 +524,6 @@ and
         a_{n1} + b_{n1} &  \cdots & a_{nk} + b_{nk} \\
     \end{array}
     \right]
-
 
 In the latter case, the matrices must have the same shape in order for the definition to make sense
 
@@ -699,23 +679,17 @@ The answer to both these questions is negative, as the next figure shows
 .. code-block:: julia
     :class: collapse
 
-    y_min, y_max = extrema(0.6cos(4x) + 1.3 for x in range(-2, 2, length = 100))
-    plt1 = plot(x -> 0.6cos(4x) + 1.3, xlim = (-2, 2), label = "f")
-    hline!(plt1, [0.6cos(4 * 0.5) + 1.3], linestyle = :dot, linewidth = 2, label = "")
+    f(x) = 0.6cos(4x) + 1.3
+    grid = range(-2, 2, length = 100)
+    y_min, y_max = extrema( f(x) for x in grid )
+    plt1 = plot(f, xlim = (-2, 2), label = "f")
+    hline!(plt1, [f(0.5)], linestyle = :dot, linewidth = 2, label = "")
     vline!(plt1, [-1.07, -0.5, 0.5, 1.07], linestyle = :dot, linewidth = 2, label = "")
     plot!(plt1, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue, label = ["range of f" ""])
-    plt2 = plot(x -> 0.6cos(4x) + 1.3, xlim = (-2, 2), label = "f")
+    plt2 = plot(f, xlim = (-2, 2), label = "f")
     hline!(plt2, [2], linestyle = :dot, linewidth = 2, label = "")
     plot!(plt2, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue, label = ["range of f" ""])
     plot(plt1, plt2, layout = (2, 1), ylim = (0, 3.5))
-
-.. code-block:: julia
-    :class: test
-
-    @testset "Sinusoid Plot Test" begin
-        @test y_min ≈ 0.7000295365
-        @test y_max ≈ 1.8988853959
-    end
 
 In the first plot there are multiple solutions, as the function is not one-to-one, while
 in the second there are no solutions, since :math:`y` lies outside the range of :math:`f`
@@ -803,7 +777,6 @@ Perhaps the most important fact about determinants is that :math:`A` is nonsingu
 
 This gives us a useful one-number summary of whether or not a square matrix can be
 inverted
-
 
 More Rows than Columns
 -------------------------
@@ -930,7 +903,6 @@ If ``A`` is not square then  ``A \ y`` returns the least squares solution :math:
 .. index::
     single: Linear Algebra; Eigenvectors
 
-
 Let :math:`A` be an :math:`n \times n` square matrix
 
 If :math:`\lambda` is scalar and :math:`v` is a non-zero vector in :math:`\mathbb R ^n` such that
@@ -1003,7 +975,6 @@ Some nice facts about the eigenvalues of a square matrix :math:`A` are as follow
 #. If :math:`A` is invertible and :math:`\lambda_1, \ldots, \lambda_n` are its eigenvalues, then the eigenvalues of :math:`A^{-1}` are :math:`1/\lambda_1, \ldots, 1/\lambda_n`
 
 A corollary of the first statement is that a matrix is invertible if and only if all its eigenvalues are nonzero
-
 
 Using Julia, we can solve for the eigenvalues and eigenvectors of a matrix as
 follows
