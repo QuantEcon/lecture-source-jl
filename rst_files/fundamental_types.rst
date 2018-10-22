@@ -560,6 +560,9 @@ We can also see a common mistake, where instead of modifying the arguments, the 
     
 The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking 
 
+In-place and Immutable Types
+------------------------------
+
 Note that scalars are always immutable, such that
 
 .. code-block:: julia
@@ -570,6 +573,40 @@ Note that scalars are always immutable, such that
     x = 5
     # x .-= 2 # fails!
     x = x - 2 # subtle difference: creates a new value and rebinds the variable
+
+
+In particular, there is no way to pass any immutable into a function and have it modified
+
+.. code-block:: julia
+
+    x = 2
+    function f(x)
+        x = 3 # MISTAKE! does not modify x, creates a new value !
+    end
+    f(x) # cannot modify immutables in place
+    @show x;
+
+This is also true for other immutable types such as tuples, as well as some vector types
+
+.. code-block:: julia
+
+    using StaticArrays
+    xdynamic = [1, 2]
+    xstatic = @SVector [1, 2] # turns it into a highly optimized static vector
+
+    f(x) = 2x
+    @show f(xdynamic)
+    @show f(xstatic)
+
+    # inplace version
+    function g(x)
+        x .= 2x
+        return "Success!"
+    end
+    @show xdynamic
+    @show g(xdynamic)
+    @show xdynamic;
+    # g(xstatic) # fails, static vectors are immutable
 
 Operations on Arrays
 ================================
