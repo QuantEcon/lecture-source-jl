@@ -674,7 +674,7 @@ Multiplying two **one** dimensional vectors gives an error --- which is reasonab
     ones(2) * ones(2)
 
 
-If you want an inner product in this setting use ``dot()`` or the `` ``unicode ``\dot<TAB>``
+If you want an inner product in this setting use ``dot()`` or the `` ``unicode ``\cdot<TAB>``
 
 .. code-block:: julia
 
