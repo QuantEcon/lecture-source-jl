@@ -413,4 +413,11 @@ jupyter_headers = {
 # Filename for the file containing the welcome block
 jupyter_welcome_block = ""
 
+#Allow .. only:: html pass through 
+jupyter_allow_html_only = True
+
+#Adjust links to target html (rather than ipynb) when targeting html through nbconvert
+jupyter_target_html = True
+
+#Drop Tests Embedded in Lectures
 jupyter_drop_tests = False
