@@ -30,12 +30,6 @@ Setup
 
 .. literalinclude:: /_static/includes/deps.jl
 
-<<<<<<< HEAD
-=======
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.1")
-    using LinearAlgebra, Statistics, Compat
->>>>>>> d5cba6c... Type hiearchy merged
 
 Finding and Interpreting Types
 ================================
@@ -254,31 +248,6 @@ Given the information on the type, the compiler can work through the sequence of
     z = f(x) # compiler deduces type
 
 
-Analyzing Function Return Types (Advanced)
--------------------------------------------
-
-For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
-
-We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but to give a hint
-
-.. code-block:: julia
-
-    x = [1, 2, 3]
-    f(x) = 2x
-    @code_warntype f(x)
-
-Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function when called with ``[1, 2, 3]`` is always a vector of integers
-
-In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : nothing
-    @code_warntype f(1)
-
-This states that the compiler determines the return type could be one of two different types, ``Body::Union{Nothing, Int64}`` 
-
-
 Good Practices for Functions and Variable Types
 -------------------------------------------------
 
@@ -317,6 +286,64 @@ Consequently, given the type of ``x``, the compiler cannot in general determine 
 This issue, called **type stability** is at the heart of most Julia performance considerations
 
 Luckily, the practice of trying to ensure that functions return the same types is also the most consistent with simple, clear code
+
+
+
+Analyzing Function Return Types (Advanced)
+-------------------------------------------
+
+For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
+
+We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro``@code_warntype`` gives us a hint
+
+
+
+.. code-block:: julia
+
+    x = [1, 2, 3]
+    f(x) = 2x
+    @code_warntype f(x)
+
+The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example--i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
+
+Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function when called with types like ``[1, 2, 3]`` is always a vector of integers
+
+In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : nothing
+    @code_warntype f(1)
+
+This states that the compiler determines the return type when called with an integer (like ``1``) could be one of two different types, ``Body::Union{Nothing, Int64}``
+
+A final example is a variation on the above, which returns the maximum of ``x`` and ``0``
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : 0.0
+    @code_warntype f(1)
+
+Which shows that, when called with an integer, the type could be that integer or the floating point ``0.0``
+
+On the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : 0
+    @code_warntype f(1.0)
+
+The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x`` 
+n the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
+
+.. code-block:: julia
+
+    @show zero(2.3)
+    @show zero(4)
+    @show zero(2.0 + 3im)
+
+    f(x) = x > 0.0 ? x : zero(x)
+    @code_warntype f(1.0)
 
 
 Manually Declaring Function and Variable Types
@@ -391,7 +418,7 @@ Let's start with a trivial example where the ``struct`` we build has fields name
 
 .. code-block:: julia
 
-    struct FooNotTyped
+    struct FooNotTyped # immutable by default, use `mutable struct` otherwise 
         a # BAD! Not typed
         b
         c
@@ -419,11 +446,13 @@ It has the same name as the data type but uses function call notion
     @show foo.a # get the value for a field
     @show foo.b
     @show foo.c;
+    # foo.a = 2.0 # fails, since it is immutable
 
 You will notice two differences above for the creation of a ``struct`` compared to our use of ``NamedTuple``
 
 * Types are declared for the fields, rather than inferred by the compiler
 * The construction of a new instance, has no named parameters to prevent accidental misuse by choosing the wrong order
+
 
 Issues with Type Declarations
 -------------------------------
@@ -581,15 +610,114 @@ Note that in the above, ``x`` works for any type of ``Real``, including ``Int64`
 
 .. code-block:: julia
 
-    x = -2//3 # a Rational number
+    x = -2//3 # a Rational number, -2/3
     @show typeof(x)
     @show ourabs(x)
 
+You will also note that we used an abstract type, ``Real``, and an incomplete parametric type ``Complex`` when defining the above Functions
+
+Unlike the creation of ``struct`` fields, there is no penalty in using absract types when you define function parameters, as they are used purely to determine which version of a function to use
+
+Multiple Dispatch in an Algorithms (Advanced)
+----------------------------------------------
+
+If you want an algorithm to have specialized versions when given different input types, you need to declare the types for the inputs
+
+As an example where this could come up, assume that we have some grid ``x`` of values, the results of a function ``f`` applied at those values, and want to calculate an approximation derivative using forward differences
+
+In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the forward-difference approximation of the derivative is
+
+.. math::
+
+    f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
+
+To implement this calculation for a vector of inputs, we notice that there is a specialized implementation if the grid is uniform
+
+The uniform grid can be implemented using a range, which we can analyze with ``typeof`` and ``supertype``
+
+.. code-block:: julia
+
+    x = range(0.0, 1.0, length = 20)
+    x_2 = 1:1:20 # if integers
+    @show typeof(x)
+    @show typeof(x_2)
+    @show supertype(typeof(x))
+    @show supertype(typeof(x_2))
+    @show supertype(supertype(typeof(x_2))) # up tree!
+
+    @show typeof(x) <: AbstractRange
+    @show typeof(x_2) <: AbstractRange;
+
+The types of the range objects can be very complicated, but are both subtypes of ``AbstractRange``
+
+While you may not know the exact concrete type, any ``AbstractRange`` has an informal set of operations that are defined
+
+.. code-block:: julia
+
+    @show minimum(x)
+    @show maximum(x)
+    @show length(x)
+    @show step(x);
+
+Similarly, there are a number of operations available for any ``AbstractVector``--whatever the concrete type may be
+
+.. code-block:: julia
+
+    f(x) = x^2
+    f_x = f.(x) # calculating at the range values
+    @show typeof(f_x)
+    @show supertype(typeof(f_x))
+    @show supertype(supertype(typeof(f_x))) # walk up tree again!
+
+    @show length(f_x); # and many more
+
+There are also many functions that can use any ``AbstractArray``, such as
+
+.. code-block:: julia
+
+    ?diff # finds first differences
+
+Finally, we can make a high performance specialization for any ``AbstractVector`` and ``AbstractRange``
+
+Next, we can use those 
+
+.. code-block:: julia
+
+    using Plots, ForwardDiff
+    derivatives(f::AbstractVector, x::AbstractRange) = diff(f)/step(x)
+
+    f(x) = x^2
+    D_f(x) = ForwardDiff.derivative(f, x) # use AD as a comparison
+    x = 0.0:0.1:1.0       
+    f_x = f.(x)
+    D_f_x = derivatives(f_x, x)
+
+    plot(x, D_f.(x), label = "f' with AD")
+    plot!(x, D_f_x, label = "f'")
+
+What about if we pass in a function instead of an ``AbstractArray``
+
+.. code-block:: julia
+
+    @show typeof(f) <: Function
+    derivatives(f::Function, x::AbstractRange) = diff(f.(x))/step(x) # use function
+    derivatives(f, x)
+
+Finally, if ``x`` was an ``AbstractArray`` rather than an ``AbstractRange`` we can no longer use a uniform step
+
+.. code-block:: julia
+
+    derivatives(f::Function, x::AbstractArray) = diff(f.(x))./diff(x) # broadcasts over the diff
+    derivatives(f, x)
+
+
+In the final example, we see that it is able to use specialized implementations over both the ``f`` and the ``x`` parameters
+
+This is the "multiple" in multiple dispatch
 
 
 Multiple Dispatch
 ==================
-use abs for numbers and complex numbers
 
 special code for trapezoidal rule for a uniform vs. non-uniform grid
 
