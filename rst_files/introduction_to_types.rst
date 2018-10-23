@@ -612,18 +612,18 @@ Note that in the above, ``x`` works for any type of ``Real``, including ``Int64`
 
     x = -2//3 # a Rational number, -2/3
     @show typeof(x)
-    @show ourabs(x)
+    @show ourabs(x);
 
 You will also note that we used an abstract type, ``Real``, and an incomplete parametric type ``Complex`` when defining the above Functions
 
 Unlike the creation of ``struct`` fields, there is no penalty in using absract types when you define function parameters, as they are used purely to determine which version of a function to use
 
-Multiple Dispatch in an Algorithms (Advanced)
+Multiple Dispatch in Algorithms (Advanced)
 ----------------------------------------------
 
-If you want an algorithm to have specialized versions when given different input types, you need to declare the types for the inputs
+If you want an algorithm to have specialized versions when given different input types, you need to declare the types for the function inputs
 
-As an example where this could come up, assume that we have some grid ``x`` of values, the results of a function ``f`` applied at those values, and want to calculate an approximation derivative using forward differences
+As an example where this could come up, assume that we have some grid ``x`` of values, the results of a function ``f`` applied at those values, and want to calculate an approximate derivative using forward differences
 
 In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the forward-difference approximation of the derivative is
 
@@ -650,7 +650,7 @@ The uniform grid can be implemented using a range, which we can analyze with ``t
 
 The types of the range objects can be very complicated, but are both subtypes of ``AbstractRange``
 
-While you may not know the exact concrete type, any ``AbstractRange`` has an informal set of operations that are defined
+While you may not know the exact concrete type, any ``AbstractRange`` has an informal set of operations that are available
 
 .. code-block:: julia
 
@@ -659,7 +659,7 @@ While you may not know the exact concrete type, any ``AbstractRange`` has an inf
     @show length(x)
     @show step(x);
 
-Similarly, there are a number of operations available for any ``AbstractVector``--whatever the concrete type may be
+Similarly, there are a number of operations available for any ``AbstractVector``, such as ``length`` 
 
 .. code-block:: julia
 
@@ -679,49 +679,82 @@ There are also many functions that can use any ``AbstractArray``, such as
 
 Finally, we can make a high performance specialization for any ``AbstractVector`` and ``AbstractRange``
 
-Next, we can use those 
+.. code-block:: julia
+    
+    derivatives(f::AbstractVector, x::AbstractRange) = diff(f)/step(x)
+
+
+We can use auto-differentiation to compare the results
 
 .. code-block:: julia
 
     using Plots, ForwardDiff
-    derivatives(f::AbstractVector, x::AbstractRange) = diff(f)/step(x)
+    # operator to get the derivative of this function using AD
+    D(f) = x -> ForwardDiff.derivative(f, x)
 
-    f(x) = x^2
-    D_f(x) = ForwardDiff.derivative(f, x) # use AD as a comparison
-    x = 0.0:0.1:1.0       
+
+    f(x) = sin(x)
+    x = 0.0:0.1:4.0
     f_x = f.(x)
     D_f_x = derivatives(f_x, x)
 
-    plot(x, D_f.(x), label = "f' with AD")
-    plot!(x, D_f_x, label = "f'")
+    plot(x[1:end-1], D(f).(x[1:end-1]), label = "f' with AD")
+    plot!(x[1:end-1], D_f_x, label = "f'")
 
 What about if we pass in a function instead of an ``AbstractArray``
 
 .. code-block:: julia
 
+    derivatives(f::Function, x::AbstractRange) = diff(f.(x))/step(x) # broadcast function
+
     @show typeof(f) <: Function
-    derivatives(f::Function, x::AbstractRange) = diff(f.(x))/step(x) # use function
-    derivatives(f, x)
+    d_f = derivatives(f, x)
+    @show d_f[1];
 
 Finally, if ``x`` was an ``AbstractArray`` rather than an ``AbstractRange`` we can no longer use a uniform step
 
 .. code-block:: julia
 
     derivatives(f::Function, x::AbstractArray) = diff(f.(x))./diff(x) # broadcasts over the diff
-    derivatives(f, x)
 
+    d_f = derivatives(f, x)
+    @show d_f[1];
 
-In the final example, we see that it is able to use specialized implementations over both the ``f`` and the ``x`` parameters
+In the final example, we see that it is able to use specialized implementations over both the ``f`` and the ``x`` arguments
 
-This is the "multiple" in multiple dispatch
-
-
-Multiple Dispatch
-==================
-
-special code for trapezoidal rule for a uniform vs. non-uniform grid
+This is the "multiple" in multiple-dispatch
 
 Exercises
 =============
 
-.. special code for trapezoidal rule for a uniform vs. non-uniform grid
+Exercise 1 (Advanced)
+-----------------------
+
+The `trapezoidal rule <https://en.wikipedia.org/wiki/Trapezoidal_rule>`_  approximate an integral with
+
+.. math::
+
+    \int_\underline{x}^\bar{x} f(x) \, dx \approx \sum_{n=1}^N \frac{f(x_{n-1}) + f(x_n)}{2} \Delta x_n
+
+where :math:`x_0 = \underline{x},\, x_N = \bar{x}`, and :math:`\Delta x_n \equiv x_{n-1} - x_n`
+
+Given an ``x`` and a function ``f``, implement a few variations of the trapezoidal rule using multiple-dispatch
+
+* ``trapezoidal(f, x)`` for any ``typeof(x) = AbstractArray`` and ``typeof(f) == AbstractArray`` where ``length(x) = length(f)``
+* ``trapezoidal(f, x)`` for any ``typeof(x) = AbstractRange`` and ``typeof(f) == AbstractArray`` where ``length(x) = length(f)``
+  * exploit the fact that ``AbstractRange`` have constant step sizes to specialize the algorithm
+* ``trapezoidal(f, x̲, x̄, N)`` where ``typeof(f) = Function``, and the other arguments are ``Real``
+  * for this, build a uniform grid with ``N`` points on ``[x̲,x̄]``, call the ``f`` function at those grid points, and use the existing ``trapezoidal(f, x)`` from the implementation
+
+With these,
+1. Test each variation of the function with :math:`f(x) = x^2` with :math:`\underline{x}=0,\, \bar{x} = 1`
+2. From the analytical solution of the function, plot the error of ``trapezoidal(f, x̲, x̄, N)`` relative to the analytical solution for a grid of different ``N`` values
+3. Consider trying different functions for :math:`f(x)` and comparing the solutions for various ``N``
+
+When trying different functions, instead of integrating by hand consider using a high-accuracy library for numerical integration such as `QuadGK.jl <https://juliamath.github.io/QuadGK.jl/latest/>`_ 
+
+.. code-block:: julia
+
+    using QuadGK
+    f(x) = x^2
+    value, accuracy = quadgk(f, 0.0, 1.0)
