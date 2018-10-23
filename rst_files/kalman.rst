@@ -104,54 +104,6 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
   using Plots, LaTeXStrings, LinearAlgebra, Compat
     gr(fmt=:png)
 
-  function bivariate_normal(X,
-                            Y,
-                            σ_x = 1.0,
-                            σ_y = 1.0,
-                            μ_x = 0.0,
-                            μ_y = 0.0,
-                            σ_xy = 0.0)
-      Xμ = X .- μ_x
-      Yμ = Y .- μ_y
-
-      ρ = σ_xy / (σ_x * σ_y)
-      z = Xμ.^2 / σ_x^2 + Yμ.^2 / σ_y^2 - 2 * ρ .* Xμ .* Yμ / (σ_x * σ_y)
-      denom = 2π * σ_x * σ_y * sqrt(1 - ρ^2)
-      return exp.(-z / (2 * (1 - ρ^2))) ./ denom
-  end
-
-
-  # == Set up the Gaussian prior density p == #
-  Σ = [0.4  0.3
-       0.3 0.45]
-  x_hat = [ 0.2
-           -0.2]''
-
-  # == Define the matrices G and R from the equation y = G x + N(0, R) == #
-  G = I
-  R = 0.5 .* Σ
-
-  # == The matrices A and Q == #
-  A = [1.2    0
-       0   -0.2]
-  Q = 0.3 .* Σ
-
-  y = [2.3, -1.9]
-
-  # set up grid for plotting 
-  x_grid = range(-1.5, 2.9, length = 100) 
-  y_grid = range(-3.1, 1.7, length = 100)
-  X = repeat(x_grid', length(y_grid), 1)
-  Y = repeat(y_grid, 1, length(y_grid))
-
-  function gen_gaussian_plot_vals(μ, C)
-      "Z values for plotting the bivariate Gaussian N(μ, C)"
-      m_x, m_y = μ[1], μ[2]
-      s_x, s_y = sqrt(C[1, 1]), sqrt(C[2, 2])
-      s_xy = C[1, 2]
-      return bivariate_normal(X, Y, s_x, s_y, m_x, m_y, s_xy)
-  end
-
     # set up prior objects 
     Σ = [sqrt(0.4)  0.3
          0.3 sqrt(0.45)]
