@@ -41,14 +41,7 @@ Dynamic programming is an extremely powerful optimization technique that we appl
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
+.. literalinclude:: /_static/includes/deps.jl
 
 Outline of the Problem
 =========================

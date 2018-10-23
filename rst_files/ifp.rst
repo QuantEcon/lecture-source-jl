@@ -57,13 +57,8 @@ Other useful references include :cite:`Deaton1991`, :cite:`DenHaan2010`, :cite:`
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 The Optimal Savings Problem
 ===============================

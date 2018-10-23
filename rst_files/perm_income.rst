@@ -38,13 +38,7 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 The Savings Problem
 ====================

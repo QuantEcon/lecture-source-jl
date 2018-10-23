@@ -40,13 +40,7 @@ Some of these extensions are presented as exercises
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 
 Relationships
@@ -236,8 +230,8 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
     n = 100
     Random.seed!(42)  # reproducible results
 
-    # == Arbitrary collection of distributions == #
-    distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
+    
+    distributions = Dict("student's t with 10 degrees of freedom" => TDist(10), # arbitrary collection of distributions
         "β(2, 2)" => Beta(2.0, 2.0),
         "lognormal LN(0, 1/2)" => LogNormal(0.5),
         "γ(5, 1/2)" => Gamma(5.0, 2.0),
@@ -251,7 +245,8 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
     titles = []
     for i ∈ 1:num_plots
         dist_names = collect(keys(distributions))
-        # == Choose a randomly selected distribution == #
+        
+        # choose a randomly selected distribution
         name = dist_names[rand(1:length(dist_names))]
         dist = pop!(distributions, name)
 
@@ -476,7 +471,7 @@ The next figure plots the probability mass function of :math:`Y_n` for :math:`n 
     titles = []
     for n ∈ ns
         b = Binomial(n, 0.5)
-        push!(pdfs, pdf.(Ref(b), dom))
+        push!(pdfs, pdf.(b, dom))
         t = LaTeXString("\$n = $n\$")
         push!(titles, t)
     end
@@ -565,7 +560,7 @@ Here's some code that does exactly this for the exponential distribution
     histogram(Y, nbins = 60, alpha = 0.5, xlims = (xmin, xmax),
             norm = true, label = "")
     xgrid = range(xmin, xmax, length = 200)
-    plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color = :black,
+    plot!(xgrid, pdf.(Normal(0.0, s), xgrid), color = :black,
         linewidth = 2, label = LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
         legendfont = font(12))
 
@@ -1017,7 +1012,7 @@ depending on your configuration
     xmax = -xmin
     histogram(error_obs, nbins = 60, alpha = 0.5, normed = true, label = "")
     xgrid = range(xmin, xmax, length = 200)
-    plot!(xgrid, pdf.(Ref(Normal(0.0, asymptotic_sd)), xgrid), color = :black,
+    plot!(xgrid, pdf.(Normal(0.0, asymptotic_sd), xgrid), color = :black,
         linewidth = 2, label = LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
         legendfont = font(12), xlims = (xmin, xmax), grid = false)
 
@@ -1128,7 +1123,7 @@ Our solution is as follows
     xmin, xmax = 0, 8
     histogram(chisq_obs, nbins = 50, normed = true, label = "")
     xgrid = range(xmin, xmax, length = 200)
-    plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color = :black,
+    plot!(xgrid, pdf.(Chisq(2), xgrid), color = :black,
         linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
         legendfont = font(12), xlims = (xmin, xmax), grid = false)
 
