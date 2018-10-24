@@ -3,34 +3,40 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ******************************************
-Generic and Functional Programming
+Generic Programming and Design
 ******************************************
 
 .. contents:: :depth: 2
+
+.. epigraph::
+
+    I find OOP methodologically wrong. It starts with classes. It is as if mathematicians would start with axioms. You do not start with axioms - you start with proofs. Only when you have found a bunch of related proofs, can you come up with axioms. You end with axioms. The same thing is true in programming: you have to start with interesting algorithms. Only when you understand them well, can you come up with an interface that will let them work. - Alexander Stepanov
 
 Overview
 ============================
 
 In this lecture we delve more deeply into the structure of Julia, and in particular into
 
-* the concept of types
+* abstract and concrete types
 
-* methods and multiple dispatch
+* the type tree 
 
-* building user-defined types
+* designing and using generic interfaces
+
+* the role of generic interfaces in Julia performance
 
 
 These concepts relate to the way that Julia stores and acts on data
 
 Understanding them will help you
 
+* Design code that matches the "white-board" mathematics 
+
+* Create code that can use (and be used) by a variety of other packages
+
 * Write "well organized" Julia code that's easy to read, modify, maintain and debug
 
 * Improve the speed at which your code runs
-
-* Read Julia code written by other programmers
-
-Thanks to Jeffrey Sarnoff
 
 Setup
 ------
@@ -38,19 +44,13 @@ Setup
 .. literalinclude:: /_static/includes/deps.jl
 
 
-Generic Programming Foundations and Mathematics
+Exploring Type Trees
 ==================================================
 
-.. Un-learn Object-Oriented Programming
-.. -----------------------------------------
-.. 
-.. The superficial similarity can lead to misuse
-.. 
-.. Types are *not* classes, and methods are not simply member functions
 
 At the root of all types is ``Any``
 
-There are a (very limited) set of operations which are available for any type, including a ``show`` function and ``typeof``
+There are a (very limited) set of operations which are available for ``Any``, including a ``show`` function and ``typeof``
 
 .. code-block:: julia
 
@@ -62,13 +62,268 @@ There are a (very limited) set of operations which are available for any type, i
     @show typeof(x)
     @show typeof(y)
     @show supertype(typeof(x))
-    @show typeof(x) |> supertype # pipe just applies a function around another functoin
-    @show typeof(y) |> supertype;
+    @show typeof(x) |> supertype # pipe just applies a function around another function
+    @show supertype(typeof(y));
 
 We will investigate some of the sub-types of ``Any``
 
-Example: `Number` and Algebraic Structures
+Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing the tree of types were discussed in `this lecture <introduction_to_types>`_
+
+.. code-block:: julia
+
+    using Base: show_supertypes # import the function from the `Base` package
+
+    show_supertypes(Int64)
+
+.. code-block:: julia
+    
+    show_supertypes(typeof(ones(2,2))
+
+.. code-block:: julia
+    
+    show_supertypes(typeof(Normal()))
+
+.. code-block:: julia
+    
+    subtypes(Integer)
+
+Using the ``subtypes`` function, we can traverse the type tree below a particular type
+
+.. code-block:: julia
+
+    # From https://github.com/JuliaLang/julia/issues/24741
+    function subtypetree(t, level=1, indent=4)
+            if level == 1
+                println(t)
+            end
+            for s in subtypes(t)
+                println(join(fill(" ", level * indent)) * string(s)) # print type
+                subtypetree(s, level+1, indent) #recursively print the next types, indenting
+            end
+        end
+
+Using this function, we can see all of the current types in memory below ``Number`` in the tree
+
+.. code-block:: julia
+
+    subtypetree(Number) # warning: Don't use this function on ``Any``!
+
+For the most part, all of the *leaves" will be concrete types
+
+
+Unlearning Object Oriented (OO) Programming
+------------------------------------------
+(see `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types)
+
+If you have never used programming languages such as C++, Java, Python, etc., then this section may seem unfamilar and abstract
+
+On the other hand, if you have used object-oriented programming in those languages, then some of the concepts in this section will appear familiar
+
+**Don't be fooled!**
+
+ The superficial similarity can lead to misuse: types are *not* classes, and methods are not simply the equivalent to member functions
+
+In particular, previous OO knowledge may lead you to write code such as
+
+.. code-block:: julia
+
+    #BAD Julia approaches
+    mutable struct MyModel
+        a::Float64
+        b::Float64
+
+        MyModel(myparam) = new(a,b) # an inner constructor
+    end
+
+    function solve(m::MyModel, x)
+        return m.a + m.b # some algorithm
+    end
+
+    function set_a(m::MyModel, a)
+        m.a = a
+    end
+
+
+    m = MyModel(2.0, 3.0)
+    x = 0.1
+    set_a(m, 4.1)
+    solve(m, x)
+
+And then think to yourself "that is pretty much the same as OO, except" you
+* reverse the first argument, i.e. ``solve(m, x)`` instead of the object-oriented ``m.solve(x)``
+* cannot control encapsulation of the fields ``a, b``, but you can add getter/setters like ``set_a``
+* do not have concrete inheritance
+
+While this sort of programming is possible, it is both verbose and missing the point of Julia and the power of generic programming
+
+Generic programming is a fundamentally different way of thinking, and a largely iterative process
+
+As its essence, the key difference is that you will start with creating algorithms which are largely orthogonal to concrete types, and in the process you will discover commonality which leads to abstract types
+
+This design process is in direct contrast to object-oriented design and analysis, where you start by specifying a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
+
+This lecture is intended to help you walk through some of the logic behind existing generic implementations in Julia
+
+
+Distributions
 ----------------------------------------------
+
+First, lets consider working with "distributions"
+
+If we consider mathematical "distributions" that we will use in our algorithms, they may include (1) drawing random numbers for Monte-carlo methods; (2) using the pdf or cdf in various calculations
+
+In that sense, some code may be useful in distributions where a `pdf` is not necessarily defined or meaningful
+
+The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl`package
+
+Lets examine the tree of types for a ``Normal`` distribution
+
+.. code-block:: julia
+
+    using Distributions
+    d1 = Normal(1.0, 2.0) # an example type to explore
+    @show d1
+    show_supertypes(d1)
+
+The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions, chiefly the ability to draw a random number
+
+.. code-block:: julia
+
+    @show rand(d1);
+
+The purpose of that abstract type is to provide an interface for drawing from a variety of distributions, some of which may not have a well-defined predefined pdfs
+
+If you were writing a function to simulate a stochastic process with an arbitrary `iid` shocks, where you did not need to assume an existing of a ``pdf`` etc., this is a natural candidate
+
+For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where :math:`\epsilon \sim D` for some :math:`D` which allows drawing random values
+
+.. code-block:: julia
+
+    function simulateprocess(x₀; a = 1.0, b = 1.0, N = 5, d::Sampleable{Univariate,Continuous})
+        x = zeros(typeof(x₀), N+1) # preallocate vector, careful on the type
+        x[1] = x₀
+        for t in 2:N+1
+            x[t] = a * x[t-1] + b * rand(d) # draw
+        end
+        return x
+    end
+    @show simulateprocess(0.0, d=Normal(0.2, 2.0));
+
+..    # @show simulateprocess(0.0, d=Normal(0.2, 2.0)); #add example of something without pdf
+
+The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else  
+
+Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has certain functions we would expect to operate with it
+
+These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, maximum`` and a few others
+
+.. code-block:: julia
+
+    d1 = Normal(1.0, 2.0)
+    d2 = Exponential(0.1)
+    @show d1
+    @show d2
+    @show supertype(typeof(d1))
+    @show supertype(typeof(d2))
+
+    @show pdf(d1, 0.1)
+    @show pdf(d2, 0.1)
+    @show cdf(d1, 0.1)
+    @show cdf(d2, 0.1)
+    @show support(d1)
+    @show support(d2)
+    @show minimum(d1)
+    @show minimum(d2)
+    @show maximum(d1)
+    @show maximum(d2);
+
+You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_  
+
+If you fulfill all of the conditions of a particular interface, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
+
+As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.jl>`_ package
+
+.. code-block:: julia
+
+    using StatPlots
+    d = Normal(2.0, 1.0)
+    plot(d) # note no other arguments!
+
+The ``plot`` function when applied to anything which is a subtype of ``Distributions{Univariate, Continuous}``, will display the ``pdf`` using the ``minimum`` and ``maximum`` applied to the value
+
+To demonstrate this, lets create our own distribution type
+
+.. code-block:: julia
+
+    struct OurTruncatedExponential <: Distribution{Univariate,Continuous}
+        α::Float64
+        xmax::Float64
+    end
+    Distributions.pdf(d::OurTruncatedExponential, x) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
+    Distributions.minimum(d::OurTruncatedExponential) = 0
+    Distributions.maximum(d::OurTruncatedExponential) = d.xmax
+    # ... should do all of them, but this was enough
+
+
+
+To demonstrate this
+
+.. code-block:: julia
+
+    d = OurTruncatedExponential(1.0,2.0)
+    @show minimum(d), maximum(d)
+    @show support(d) # why does this work?
+
+Curiously, you will note that the ``support`` function is operational, even though we did not provide one
+
+This is another example of the power of multiple dispatch and generic programming
+
+In the background, the ``Distributions.jl`` package  has something like the following implemented
+
+.. code-block:: julia
+    :class: no-execute
+
+        Distributions.support(d::Distribution) = RealInterval(minimum(d), maximum(d))
+
+Hence, since ``OurTruncatedExponential <: Distribution``, and we implemented ``minimum`` and ``maximum``, calls to ``support`` gets this implementation
+
+
+Of course, while we should implement more of the func
+
+That turns out to be enough for us to use the ``StatPlots`` package
+
+
+    plot(d) # uses the generic code!
+
+A few things to point out
+
+* Even if it worked for ``StatPlots``, our implementation is incomplete, as we haven't fulfilled all of the requirements of a ``Distribution``
+* We also did not implement the ``rand`` function, which means we are breaking the implicit contract of the ``Sampleable`` abstract type
+* It turns out that there is a better way to to this precise thing already built into ``Distributions``
+
+.. code-block:: julia
+
+    d = Truncated(Exponential(0.1), 0.0, 2.0)
+    @show typeof(d)
+    plot(d)
+
+Which, of course, is also written in terms of the generic type
+
+.. code-block:: julia
+
+    d = Truncated(OurTruncatedExponential(1.0,2.0), 0.1, 1.5) # truncate again!
+    @show typeof(d)
+    plot(d)
+
+
+Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of separate packages that have simply agreed on what the appropriate functions and abstract types
+
+This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions
+
+Number, Real, and Algebraic Structures
+=======================================
+
+(Special thank you to Jeffrey Sarnoff)
 
 In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is a set with two binary operators (:math:`+` and :math:`\cdot`, called the additive and multiplicative operators) where there is an
 * additive operator is associative and commutative
@@ -170,83 +425,6 @@ For example, floating point numbers all have a machine precision below which the
     @show eps(Float64)
     @show eps(BigFloat);
 
-Example: Distributions
-----------------------------------------------
-
-First, lets look at the tree of types for a ``Normal`` distribution, as implemented in the ``Distributions.jl`` package
-
-.. code-block:: julia
-
-    using Distributions
-    d1 = Normal(1.0, 2.0) # an example type to explore
-    @show d1
-    @show typeof(d1)
-    @show typeof(d1) |> supertype # i.e. supertype(typeof(d1))
-    @show typeof(d1) |> supertype |> supertype
-    @show typeof(d1) |> supertype |> supertype |> supertype;
-
-The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions, chiefly the ability to draw a random number
-
-.. code-block:: julia
-
-    @show rand(d1);
-
-The purpose of that abstract type is to provide an interface for drawing from a variety of distributions, some of which may not have a well-defined predefined
-
-If you were writing a function a stochastic process with an arbitrary `iid` shocks, where you did not need to assume an existing of a ``pdf`` etc., this is a natural candidate
-
-For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where :math:`\epsilon \sim D` for any `D` we can draw from
-
-.. code-block:: julia
-
-    function simulateprocess(x₀; a = 1.0, b = 1.0, N = 10, d::Sampleable{Univariate,Continuous})
-        x = zeros(typeof(x₀), N+1) # preallocate vector, careful on the type
-        x[1] = x₀
-        for t in 2:N+1
-            x[t] = a * x[t-1] + b * rand(d) # draw
-        end
-        return x
-    end
-    @show simulateprocess(0.0, d=Normal(0.2, 2.0), N=5);
-    # @show simulateprocess(0.0, d=Normal(0.2, 2.0), N=5); #add example of something with pdf
-
-The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else  
-
-Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has certain functions we would expect to operate with it
-
-These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, maximum`` and a few others
-
-.. code-block:: julia
-
-    d1 = Normal(1.0, 2.0)
-    d2 = Exponential(0.1)
-    @show d1
-    @show d2
-    @show supertype(typeof(d1))
-    @show supertype(typeof(d2))
-
-    @show pdf(d1, 0.1)
-    @show pdf(d2, 0.1)
-    @show cdf(d1, 0.1)
-    @show cdf(d2, 0.1)
-    @show support(d1)
-    @show support(d2)
-    @show minimum(d1)
-    @show minimum(d2)
-    @show maximum(d1)
-    @show maximum(d2);
-
-You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_  
-
-If you fulfill all of the conditions of a particular interface, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
-
-As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.jl>`_ package
-
-
-.. code-block:: julia
-
-    using StatPlots
-        
 
 Limitations of these Structures in Julia
 ------------------------------------------
@@ -553,7 +731,6 @@ Analyzing Function Return Types
 For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
 
 We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
-
 
 
 .. code-block:: julia
@@ -976,4 +1153,5 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
 ..     using Plots
 ..     gr(fmt=:png)
 ..     plot(X, legend=:none)
+
 
