@@ -67,7 +67,7 @@ There are a (very limited) set of operations which are available for any type, i
 
 We will investigate some of the sub-types of ``Any``
 
-Example: ``Number`` and Algebraic Structures
+Example: `Number` and Algebraic Structures
 ----------------------------------------------
 
 In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is a set with two binary operators (:math:`+` and :math:`\cdot`, called the additive and multiplicative operators) where there is an
@@ -77,8 +77,8 @@ In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is 
 * additive inverse of each element, i.e. :math:`-a` such that :math:`a + (-a) = 0`
 * multiplicative identity element, usually denoted ``1`` such that :math:`a \cdot 1 = a`
 
-This is glancing over a few other key parts of the definition, but it is also useful to say what is not needed
-* There is no assumption of any total or partial ordering, i.e. there does not need to be any meaningful ``<`` operator defined
+This is skipping over a few other key parts of the definition, but it is also useful to say what is not needed
+* A total or partial ordering is not required (i.e. there does not need to be any meaningful ``<`` operator defined)
 * A multiplicative inverse is not required
 
 This algebraic structure provides motivation for the abstract ``Number`` type in Julia
@@ -154,7 +154,7 @@ To demonstrate with the ``Rational`` type
     @show a / b
     @show a < b;
 
-**Remark** Here we see how the precise connection to the mathematics breaks down for practical reasons, in particular
+**Remark** Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular
 * ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
 * However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
 * in computer science, this is called type promotion, where a type can be converted to another to ensure an operation is possible
@@ -178,7 +178,7 @@ First, lets look at the tree of types for a ``Normal`` distribution, as implemen
 .. code-block:: julia
 
     using Distributions
-    d1 = Normal(1.0, 2.0)
+    d1 = Normal(1.0, 2.0) # an example type to explore
     @show d1
     @show typeof(d1)
     @show typeof(d1) |> supertype # i.e. supertype(typeof(d1))
@@ -191,7 +191,26 @@ The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions
 
     @show rand(d1);
 
-The purpose of that abstract type is to provide an interface for drawing from a variety of distributions, some of which may not have a well-defined pdf or cdf
+The purpose of that abstract type is to provide an interface for drawing from a variety of distributions, some of which may not have a well-defined predefined
+
+If you were writing a function a stochastic process with an arbitrary `iid` shocks, where you did not need to assume an existing of a ``pdf`` etc., this is a natural candidate
+
+For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where :math:`\epsilon \sim D` for any `D` we can draw from
+
+.. code-block:: julia
+
+    function simulateprocess(x₀; a = 1.0, b = 1.0, N = 10, d::Sampleable{Univariate,Continuous})
+        x = zeros(typeof(x₀), N+1) # preallocate vector, careful on the type
+        x[1] = x₀
+        for t in 2:N+1
+            x[t] = a * x[t-1] + b * rand(d) # draw
+        end
+        return x
+    end
+    @show simulateprocess(0.0, d=Normal(0.2, 2.0), N=5);
+    # @show simulateprocess(0.0, d=Normal(0.2, 2.0), N=5); #add example of something with pdf
+
+The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else  
 
 Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has certain functions we would expect to operate with it
 
@@ -217,10 +236,17 @@ These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, max
     @show maximum(d1)
     @show maximum(d2);
 
-You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions
+You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_  
 
-With that, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
+If you fulfill all of the conditions of a particular interface, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
 
+As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.jl>`_ package
+
+
+.. code-block:: julia
+
+    using StatPlots
+        
 
 Limitations of these Structures in Julia
 ------------------------------------------
