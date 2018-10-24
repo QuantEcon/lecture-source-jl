@@ -101,7 +101,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 .. code-block:: julia
   :class: collapse
 
-  using Plots, LaTeXStrings, LinearAlgebra, Compat
+  using Plots, LaTeXStrings, LinearAlgebra, Compat, Distributions
     gr(fmt=:png)
 
     # set up prior objects 
@@ -225,7 +225,7 @@ The original density is left in as contour lines for comparison
     Σ_F = Σ - M * G * Σ
 
     # plot the new density on the old plot 
-    newdist = MvNormal(x_hat_F, Σ_F)
+    newdist = MvNormal(x_hat_F, Symmetric(Σ_F)) # because Σ_F
     contour!(x_grid, y_grid, (x, y) -> pdf(newdist, [x, y]), fill = false, levels = 6, color = :grays, cbar = false)
 
 .. code-block:: julia 
@@ -234,7 +234,6 @@ The original density is left in as contour lines for comparison
     @testset "Updated Belief Tests" begin
         @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 1.1102230246251565e-16 0.6666666666666667]
         @test Σ_F ≈ [0.13333333333333325 0.09999999999999992; 0.09999999999999998 0.15000000000000002]
-        @test new_Z[19] == 4.183648381237758e-22 # Final data to be plotted. 
     end 
 
 Our new density twists the prior :math:`p(x)` in a direction determined by  the new
@@ -334,23 +333,13 @@ the update has used parameters
 
 .. code-block:: julia
 
-  # plot the figure
-  Z = gen_gaussian_plot_vals(x_hat, Σ)
-  M = Σ * G' * inv(G * Σ * G' + R)
-  x_hat_F = x_hat + M * (y - G * x_hat)
-  Σ_F = Σ - M * G * Σ
-  Z_F = gen_gaussian_plot_vals(x_hat_F, Σ_F)
-  new_x_hat = A * x_hat_F
-  new_Σ = A * Σ_F * A' + Q
-  new_Z = gen_gaussian_plot_vals(new_x_hat, new_Σ)
-  # Plot Density 1
-  contour(x_grid, y_grid, new_Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
-  contour!(x_grid, y_grid, new_Z, fill = false, levels = 6, color = :grays, cbar = false)
-  # Plot Density 2
-  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
-  # Plot Density 3
-  contour!(x_grid, y_grid, Z_F, fill = false, levels = 6, color = :grays, cbar = false)
-  annotate!(y[1], y[2], L"$y$", color = :black)
+    # get the predictive distribution 
+    new_x_hat = A * x_hat_F
+    new_Σ = A * Σ_F * A' + Q    
+    predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
+
+    # Plot Density 3
+    contour!(x_grid, y_grid, (x, y) -> pdf(predictdist, [x, y]), fill = false, levels = 6, color = :grays, cbar = false)
 
 .. code-block:: julia 
     :class: test 
@@ -629,29 +618,22 @@ Exercise 1
 
 .. code-block:: julia
 
-    using Distributions
-
     # parameters
-
     θ = 10
     A, G, Q, R = 1.0, 1.0, 0.0, 1.0
     x_hat_0, Σ_0 = 8.0, 1.0
 
     # initialize Kalman filter
-
     kalman = Kalman(A, G, Q, R)
     set_state!(kalman, x_hat_0, Σ_0)
-    # == Run == #
 
-    N = 5
     xgrid = range(θ - 5, θ + 2, length = 200)
-    densities = []
-    labels = []
-    for i ∈ 1:N
+    densities = Array{Array{Float64, 1}, 1}(undef, 5) # we'll do 5 rounds of updating
+    labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
+    for i ∈ 1:5 
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
-        push!(densities, pdf.(Normal(m, sqrt(v)), xgrid))
-        push!(labels, LaTeXString("\$t=$i\$"))
+        densities[i] = pdf.(Normal(m, sqrt(v)), xgrid)
 
         # Generate the noisy signal
         y = θ + randn()
@@ -660,8 +642,8 @@ Exercise 1
         update!(kalman, y)
     end
 
-    plot(xgrid, densities, label = reshape(labels,1,length(labels)), legend = :topleft, grid = false,
-            title = LaTeXString("First $N densities when \$θ = $θ\$"))
+    plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
+            title = "First 5 densities when θ = $θ")
 
 .. code-block:: julia 
     :class: test 
@@ -676,7 +658,7 @@ Exercise 2
 
 .. code-block:: julia
 
-    using Random
+    using Random, Expectations
     Random.seed!(42)  # reproducible results
     ϵ = 0.1
     kalman = Kalman(A, G, Q, R)
@@ -684,26 +666,26 @@ Exercise 2
 
     nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
 
-    T = 600
+    T = 300
     z = zeros(T)
     for t ∈ 1:T
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         dist = Normal(m, sqrt(v))
-        integral = do_quad(x -> pdf.(dist, x), nodes, weights)
+        E = expectation(dist, nodes)
+        integral = E(x -> 1) # Just take the pdf integral
         z[t] = 1. - integral
     # Generate the noisy signal and update the Kalman filter
     update!(kalman, θ + randn())
     end
 
-    plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,
-         legend = false, xlims = (0, T), ylims = (0, 1))
+    plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,xlims=(0, T), legend = false)
 
 .. code-block:: julia 
     :class: test 
 
     @testset "Solution 2 Tests" begin 
-        @test z[4] == 0.9467254193267353
+        @test z[4] == 0.9310333042533682
         @test T == 600 
     end 
 
