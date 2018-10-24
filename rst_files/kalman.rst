@@ -105,8 +105,8 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     gr(fmt=:png)
 
     # set up prior objects 
-    Σ = [sqrt(0.4)  0.3
-         0.3 sqrt(0.45)]
+    Σ = [0.4  0.3
+         0.3 0.45]
     x_hat = [0.2, -0.2]
 
     # define G and R from the equation y = Gx + N(0, R)
@@ -118,20 +118,17 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
          0   -0.2]
     Q = 0.3Σ
 
-    y = [2.3, -1.9]
+    y = [2.3, -1.9] 
 
     # plotting objects 
     x_grid = range(-1.5, 2.9, length = 100) 
     y_grid = range(-3.1, 1.7, length = 100)
 
-    # generate data to plot 
+    # generate distribution  
     dist = MvNormal(x_hat, Σ)
-    data = [[x, y] for x in x_grid, y in y_grid] # a meshgrid of the data points 
-    Z = pdf.(Ref(dist), data) # fill a vector Z with the probabilities of each point
 
     # plot 
-    contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
-    contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
+    contour(x_grid, y_grid, (x, y) -> pdf(dist, [x, y]), fill = true, levels = 6, color = :lightrainbow, alpha = 0.6, cbar = false) # saves us the trouble of reshaping a data matrix to be a Cartesian grid 
 
 .. code-block:: julia 
     :class: test 
@@ -139,7 +136,6 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     @testset "First Plot Tests" begin
         @test Q == [0.12 0.09; 0.09 0.135]
         @test G isa UniformScaling 
-        @test Z[3] == 7.987729252590346e-5 # Final Gaussian plot data. 
     end 
 
 The Filtering Step
@@ -156,10 +152,7 @@ location :math:`y`
 .. code-block:: julia
 
   # plot the figure
-  Z = gen_gaussian_plot_vals(x_hat, Σ)
-  contour(x_grid, y_grid, Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
-  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
-  annotate!(y[1], y[2], L"$y$", color = :black)
+  annotate!(y[1], y[2], "y", color = :black)
 
 
 The bad news is that our sensors are imprecise.
