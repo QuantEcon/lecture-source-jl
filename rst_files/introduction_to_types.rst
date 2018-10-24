@@ -110,10 +110,6 @@ Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Sy
 
 **Remark:** Note that, by convention, type names use CamelCase ---  ``Array``, ``AbstractArray``, etc.
 
-(See `parametric types documentation <https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1>`_)
-
-**Remark:** Note that, by convention, type names use CamelCase ---  ``FloatingPoint``, ``Array``, ``AbstractArray``, etc.
-
 
 Variables, Types, and Values
 --------------------------------
@@ -143,37 +139,35 @@ Now ``x`` "points to" another value, of type ``Float64``
 
     typeof(x)
 
-However, outside of these sorts of examples and tests, it is usually a bad idea to change the type of a variable haphazardly
+.. However, outside of these sorts of examples and tests, it is usually a bad idea to change the type of a variable haphazardly
 
-Beyond a few notable exceptions for error handling (e.g. ``nothing`` used for `error handling <error_handling>`_), changing types is usually a symptom of poorly organized code--and it makes compiler `type inference <type_inference>`_ more difficult
+However, beyond a few notable exceptions (e.g. ``nothing`` used for `error handling <error_handling>`_), changing types is usually a symptom of poorly organized code--and it makes compiler `type inference <type_inference>`_ more difficult
 
 The Type Hierarchy
 =====================
 
-Let's discuss how types are organized in Julia
+Let's discuss how types are organized
 
 Abstract vs Concrete Types
 ---------------------------
 (See `abstract types documentation  <https://docs.julialang.org/en/v1/manual/types/#Abstract-Types-1>`_)
 
-In our example above, the Julia library code for ``Array``and ``Complex`` are written in a way such that it will work for any ``Real`` type--which ``Float64`` fulfills
-
-In this case, ``Real`` is an **abstract type**, and a value of type ``Real`` can never be created directly 
-
-Instead, it provides a way to write :doc:`generic <generic_programming>` code for specific to any concrete types based on ``Real``
-
-We saw above that ``Float64`` is the standard type for representing a 64 bit
-floating point number
-
-But we've also seen references to types such as ``Real`` and ``AbstractFloat``
-
-The former (i.e., ``Float64``) is an example of a **concrete type**, as is ``Int64`` or ``Float32``
-
-The latter (i.e., ``Real``, ``AbstractFloat``) are examples of so-called **abstract types**
+Up to this point, most of the types we have worked with (e.g., ``Float64, Int64``) are examples of **concrete types**
 
 Concrete types are types that we can *instantiate* --- i.e., pair with data in memory
 
-On the other hand, abstract types help us organize and work with related concrete types
+We will now examine types **abstract types** that cannot be instantiated, (e.g., ``Real``, ``AbstractFloat``)
+
+While you will never have a ``Real`` number directly in memory, the abstract types will help us organize and work with related concrete types
+
+.. In our example above, the Julia library code for ``Array`` and ``Complex`` are written in a way such that it will work for any ``Real``
+
+.. Instead, it provides a way to write :doc:`generic <generic_programming>` code for specific to any concrete types based on ``Real``
+
+.. We saw above that ``Float64`` is the standard type for representing a 64 bit
+floating point number
+
+.. But we've also seen references to types such as ``Real`` and ``AbstractFloat``
 
 
 The Type Hierarchy
@@ -217,6 +211,24 @@ In particular, the type tree is organized with ``Any`` at the top and the concre
 We never actually see *instances* of abstract types (i.e., ``typeof(x)`` never returns an abstract type)
 
 The point of abstract types is to categorize the concrete types, as well as other abstract types that sit below them in the hierarchy
+
+There are some further functions to help you explore the type hierarchy, such as ``show_supertypes`` which walks up the tree of types to ``Any`` for a given type
+
+.. code-block:: julia
+    
+    using Base: show_supertypes # import the function from the `Base` package
+
+    show_supertypes(Int64)
+
+
+
+And the ``subtypes`` which gives a list of the available subtypes for any packages or code currently loaded
+
+.. code-block:: julia
+    
+    @show subtypes(Real)
+    @show subtypes(AbstractFloat);
+
 
 .. _type_inference:
 
@@ -288,64 +300,6 @@ This issue, called **type stability** is at the heart of most Julia performance 
 Luckily, the practice of trying to ensure that functions return the same types is also the most consistent with simple, clear code
 
 
-
-Analyzing Function Return Types (Advanced)
--------------------------------------------
-
-For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
-
-We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro``@code_warntype`` gives us a hint
-
-
-
-.. code-block:: julia
-
-    x = [1, 2, 3]
-    f(x) = 2x
-    @code_warntype f(x)
-
-The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example--i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
-
-Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function when called with types like ``[1, 2, 3]`` is always a vector of integers
-
-In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : nothing
-    @code_warntype f(1)
-
-This states that the compiler determines the return type when called with an integer (like ``1``) could be one of two different types, ``Body::Union{Nothing, Int64}``
-
-A final example is a variation on the above, which returns the maximum of ``x`` and ``0``
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : 0.0
-    @code_warntype f(1)
-
-Which shows that, when called with an integer, the type could be that integer or the floating point ``0.0``
-
-On the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : 0
-    @code_warntype f(1.0)
-
-The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x`` 
-n the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
-
-.. code-block:: julia
-
-    @show zero(2.3)
-    @show zero(4)
-    @show zero(2.0 + 3im)
-
-    f(x) = x > 0.0 ? x : zero(x)
-    @code_warntype f(1.0)
-
-
 Manually Declaring Function and Variable Types
 -------------------------------------------------
 
@@ -353,7 +307,7 @@ Manually Declaring Function and Variable Types
 
 You will notice that in the lecture notes we have never directly declared any types
 
-This is intentional for exposition and for serious "user" code of packages, rather than the writing of those packages themselves
+This is intentional both for exposition and as a best practice for using packages (as opposed to writing new packages, where declaring these types is very important)
 
 It is also in contrast to some of the sample code you will see in other Julia sources, which you will need to be able to read
 
@@ -399,7 +353,7 @@ Creating New Types
 
 Up until now, we have used ``NamedTuple`` to collect sets of parameters for our models and examples
 
-There are many reasons to use that for the narrow purpose of maintaining values for model parameters, but you will eventually need to be able to read code that creates its own typse
+There are many reasons to use that for the narrow purpose of maintaining values for model parameters, but you will eventually need to be able to read code that creates its own types
 
 Syntax for Creating Concrete Types
 -------------------------------------
@@ -408,11 +362,10 @@ Syntax for Creating Concrete Types
 
 While other sorts of types exist, we almost always use the ``struct`` keyword, which is for creation of composite data types
 
-Notes:
-
 * "composite" refers to the fact that the data types in question can be used as collection of named fields
 
 * the ``struct`` terminology is used in a number of programming languages to refer to composite data types
+
 
 Let's start with a trivial example where the ``struct`` we build has fields named ``a, b, c``, are not typed
 
@@ -429,7 +382,7 @@ And another where the types of the fields are chosen
 .. code-block:: julia
 
     struct Foo
-        a::Float64 # or just `a` if not declaring type
+        a::Float64
         b::Int64
         c::Vector{Float64}
     end
@@ -633,7 +586,7 @@ In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the for
 
 To implement this calculation for a vector of inputs, we notice that there is a specialized implementation if the grid is uniform
 
-The uniform grid can be implemented using a range, which we can analyze with ``typeof`` and ``supertype``
+The uniform grid can be implemented using an `AbstractRange`, which we can analyze with ``typeof, supertype`` and ``show_supertypes``
 
 .. code-block:: julia
 
@@ -642,13 +595,24 @@ The uniform grid can be implemented using a range, which we can analyze with ``t
     @show typeof(x)
     @show typeof(x_2)
     @show supertype(typeof(x))
-    @show supertype(typeof(x_2))
-    @show supertype(supertype(typeof(x_2))) # up tree!
+
+To see the entire tree about a particular type, use ``show_supertypes``
+
+.. code-block:: julia
+
+    show_supertypes(typeof(x)) # or typeof(x) |> show_supertypes
+
+.. code-block:: julia
+
+    show_supertypes(typeof(x_2))
+
+The types of the range objects can be very complicated, but are both subtypes of ``AbstractRange``
+
+.. code-block:: julia
 
     @show typeof(x) <: AbstractRange
     @show typeof(x_2) <: AbstractRange;
 
-The types of the range objects can be very complicated, but are both subtypes of ``AbstractRange``
 
 While you may not know the exact concrete type, any ``AbstractRange`` has an informal set of operations that are available
 
@@ -668,14 +632,28 @@ Similarly, there are a number of operations available for any ``AbstractVector``
     @show typeof(f_x)
     @show supertype(typeof(f_x))
     @show supertype(supertype(typeof(f_x))) # walk up tree again!
-
     @show length(f_x); # and many more
-
-There are also many functions that can use any ``AbstractArray``, such as
 
 .. code-block:: julia
 
-    ?diff # finds first differences
+    show_supertypes(typeof(f_x))
+
+There are also many functions that can use any ``AbstractArray``, such as ``diff``
+
+.. Would be nice to have this embedded, but no way to get the output trimmed
+
+.. code-block:: julia
+    :class: no-execute
+
+    ?diff
+
+    search: diff symdiff setdiff symdiff! setdiff! Cptrdiff_t
+
+    diff(A::AbstractVector)
+    diff(A::AbstractMatrix; dims::Integer)
+    Finite difference operator of matrix or vector A. If A is a matrix, specify the dimension over which to operate with the dims keyword argument.
+
+Hence, we can call this function for anything of type ``AbstractVector``
 
 Finally, we can make a high performance specialization for any ``AbstractVector`` and ``AbstractRange``
 
@@ -692,7 +670,6 @@ We can use auto-differentiation to compare the results
     # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
 
-
     f(x) = sin(x)
     x = 0.0:0.1:4.0
     f_x = f.(x)
@@ -701,7 +678,7 @@ We can use auto-differentiation to compare the results
     plot(x[1:end-1], D(f).(x[1:end-1]), label = "f' with AD")
     plot!(x[1:end-1], D_f_x, label = "f'")
 
-What about if we pass in a function instead of an ``AbstractArray``
+Consider a variation where we pass a function instead of an ``AbstractArray``
 
 .. code-block:: julia
 
@@ -711,7 +688,7 @@ What about if we pass in a function instead of an ``AbstractArray``
     d_f = derivatives(f, x)
     @show d_f[1];
 
-Finally, if ``x`` was an ``AbstractArray`` rather than an ``AbstractRange`` we can no longer use a uniform step
+Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can no longer use a uniform step
 
 .. code-block:: julia
 

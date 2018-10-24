@@ -547,6 +547,63 @@ Hence the call ``f(3.0)`` continues up to ``f(x::Number)``
 
 Finally, ``f("foo")`` is handled by the generic function, since ``String`` is not a subtype of ``Number``
 
+Analyzing Function Return Types
+-------------------------------------------
+
+For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
+
+We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
+
+
+
+.. code-block:: julia
+
+    x = [1, 2, 3]
+    f(x) = 2x
+    @code_warntype f(x)
+
+The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example--i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
+
+Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function when called with types like ``[1, 2, 3]`` is always a vector of integers
+
+In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : nothing
+    @code_warntype f(1)
+
+This states that the compiler determines the return type when called with an integer (like ``1``) could be one of two different types, ``Body::Union{Nothing, Int64}``
+
+A final example is a variation on the above, which returns the maximum of ``x`` and ``0``
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : 0.0
+    @code_warntype f(1)
+
+Which shows that, when called with an integer, the type could be that integer or the floating point ``0.0``
+
+On the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
+
+.. code-block:: julia
+
+    f(x) = x > 0.0 ? x : 0
+    @code_warntype f(1.0)
+
+The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x`` 
+n the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
+
+.. code-block:: julia
+
+    @show zero(2.3)
+    @show zero(4)
+    @show zero(2.0 + 3im)
+
+    f(x) = x > 0.0 ? x : zero(x)
+    @code_warntype f(1.0)
+
+
 .. 
 .. User-Defined Types
 .. ==============================
