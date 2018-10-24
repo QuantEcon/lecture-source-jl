@@ -219,18 +219,14 @@ The original density is left in as contour lines for comparison
 
 .. code-block:: julia
 
-  # plot the figure
-  Z = gen_gaussian_plot_vals(x_hat, Σ)
-  M = Σ * G' * inv(G * Σ * G' + R)
-  x_hat_F = x_hat + M * (y - G * x_hat)
-  Σ_F = Σ - M * G * Σ
-  new_Z = gen_gaussian_plot_vals(x_hat_F, Σ_F)
-  # Plot Density 1
-  contour(x_grid, y_grid, new_Z, fill = true, levels = 6, color = :lightrainbow, alpha = 0.6)
-  contour!(x_grid, y_grid, new_Z, fill = false, levels = 6, color = :grays, cbar = false)
-  # Plot Density 2
-  contour!(x_grid, y_grid, Z, fill = false, levels = 6, color = :grays, cbar = false)
-  annotate!(y[1], y[2], L"$y$", color = :black)
+    # define posterior objects 
+    M = Σ * G' * inv(G * Σ * G' + R)
+    x_hat_F = x_hat + M * (y - G * x_hat)
+    Σ_F = Σ - M * G * Σ
+
+    # plot the new density on the old plot 
+    newdist = MvNormal(x_hat_F, Σ_F)
+    contour!(x_grid, y_grid, (x, y) -> pdf(newdist, [x, y]), fill = false, levels = 6, color = :grays, cbar = false)
 
 .. code-block:: julia 
     :class: test 
