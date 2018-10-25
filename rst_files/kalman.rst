@@ -101,7 +101,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 .. code-block:: julia
   :class: collapse
 
-  using Plots, LaTeXStrings, LinearAlgebra, Compat, Distributions
+  using Plots, LinearAlgebra, Compat, Distributions
     gr(fmt=:png)
 
     # set up prior objects 
