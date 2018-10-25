@@ -306,8 +306,11 @@ for val in x
 end
 n
 
-# BEST!
+# BETTER!
 sum(xval -> xval^2, x) # i.e. transform each x and then reduce
+
+#BEST! keep it simple with broadcasting
+sum(x.^2)
 ```
 
 - **Use `eachindex`** to iterate through matrices and arrays of dimension > 2 as long as you don't need the actual index.  Otherwise,   For example,
@@ -399,15 +402,35 @@ f(x) = x^2 + sum(x * Y .+ 1)
 f.(X)
 ```
 
+- **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
+```
+# BAD! 
+x = 1:3
+mapreduce(xval -> xval^2, +, x)
+
+# GOOD! Direct for this case
+sum(x.^2)
+
+# QUESTIONABLE! Explain carefully with a comment if using
+X = [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [5.0, 6.0, 7.0]]
+reduce(hcat, X)
+
+# GOOD, if verbose 
+Y = ones(3,3)
+for i in 1:3
+    Y[:,i] = X[i]
+end
+```
+The exception, of course, is when dealing with parallel programming where functional patterns are essential.
+
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
 - The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, Plots, Compat`
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
-- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single place should have the `using` local to that use.
+- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single may have the `using` local to that use to ensure students know which package it comes from
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
-2. Simple error handling of reasonable failures (e.g. returning a union with `Nothing`, etc.)  I am not sure we want to teach them about exceptions, for example.
