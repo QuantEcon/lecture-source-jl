@@ -357,6 +357,8 @@ range(0.0, 1.0, length=10)
 
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
+- **Square directly instead of abs2**. There are times where `abs2(x)` is faster than `x^2`, but they are rare, and it is harder to read.
+
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
