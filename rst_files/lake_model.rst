@@ -940,8 +940,8 @@ Finally we combine these two paths and plot
   :class: test
 
   @testset begin
-      @test x1[1] ≈ 8.266806439740906
-      @test x2[2] ≈ 92.11669328327237
+      @test x1[1] ≈ 8.266629060956117
+      @test x2[2] ≈ 92.11681713146707
       @test x3[3] ≈ 98.95872483999996
   end
 
@@ -949,10 +949,10 @@ And the rates
 
 .. code-block:: julia
 
-    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color=:blue, grid = true, label="",bg_inside=:lightgrey, lw=2)
+    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[:, 1], color=:blue, grid = true, label="",bg_inside=:lightgrey, lw=2)
     plot!(plt_unemp, [x0[1]], linetype=:hline, linestyle = :dash, color =:red, label = "", lw=2)
 
-    plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color=:blue, grid=true, label="",bg_inside=:lightgrey, lw=2)
+    plt_emp = plot(title = "Employment Rate", 1:T, x_path[:, 2], color=:blue, grid=true, label="",bg_inside=:lightgrey, lw=2)
     plot!(plt_emp, [x0[2]], linetype=:hline, linestyle = :dash, color =:red, label ="", lw=2)
 
     plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
@@ -961,6 +961,6 @@ And the rates
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.06791496880896275
-      @test x_path[2,7] ≈ 0.9429332289570732
+    @test x_path[3, 1] ≈  0.06791409498571369
+    @test x_path[7, 2] ≈ 0.9429334410213106
   end
