@@ -445,12 +445,11 @@ Here's some code that does exactly this for the exponential distribution
 .. code-block:: julia
 
     function simulation1(distribution, n = 250, k = 10_000)
-        n_sq = √n
-        μ = mean(distribution)
         σ = std(distribution)
-        y = [n_sq * (mean(rand(distribution) for draw in 1:n) - μ) for trial in 1:k]
-        density(y, xlims = (-3σ, 3σ), label = "Empirical Distribution")
-        return plot!(Normal(0, σ), color = :black, label = "Normal(0.00, $(σ^2))")
+        f(distribution, n) = √n * mean(rand(distribution) - mean(distribution) for draw in 1:n)
+        y = [ f(distribution, n) for trial in 1:k ]
+        density(y, label = "Empirical Distribution")
+        return plot!(Normal(0, σ), linestyle = :dash, color = :black, label = "Normal(0.00, $(σ^2))")
     end
 
 .. code-block:: julia
@@ -485,12 +484,14 @@ specified as the convex combination of three different beta densities
 .. code-block:: julia
 
     function simulation2()
-        generate_data(k = 10_000) =
-            Beta(2, 2) |>
-            (d -> [ rand(d) + rand([-0.5, 0.6, -1.1]) for i in 1:k ]) |>
-            (d -> (d .- mean(d)) ./ std(d))
-        data = reduce(hcat, generate_data() for col in 1:5) |>
-               (data -> cumsum(data, dims = 2) ./ sqrt.(1:5)')
+        function generate_data(k = 10_000)
+            distribution = Beta(2, 2)
+            X = rand(distribution, k)
+            X += rand([-0.5, 0.6, -1.1], k)
+            return (X .- mean(distribution)) ./ std(distribution)
+        end
+        data = reduce(hcat, generate_data() for col in 1:5)
+        data = cumsum(data, dims = 2) ./ sqrt.(1:5)'
         return density(data, labels = (1:5)', xlab = "Y", ylab = "Density")
     end
 
@@ -780,9 +781,10 @@ Here is one solution
 .. code-block:: julia
 
     Random.seed!(0)
-    function exercise1(;n = 250, k = 10_000, dist = Uniform(0, π/2), g = sin, g′ = cos)
-        μ, σ = mean(dist), std(dist)
-        data = [ mean(rand(dist) for i in 1:n) for x in 1:k ]
+    function exercise1(;n = 250, k = 10_000, distribution = Uniform(0, π/2), g = sin, g′ = cos)
+        μ, σ = mean(distribution), std(distribution)
+        f(distribution, n) = mean(rand(distribution) for i in 1:n)
+        data = [ f(distribution, n) for x in 1:k ]
         error_obs = sqrt(n) .* (g.(data) .- g.(μ))
         density(error_obs, label = "Empirical Density")
         return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic", color = :black)
@@ -856,15 +858,16 @@ Our solution is as follows
         Σ = [vw    vw
              vw vw + vu]
         Q = inv(sqrt(Σ))
-        generate_data(dw, du, n) =
-            rand(dw, n) |>
-            (W -> [W    W + rand(du, n)]) |>
-            (X -> sqrt(n) * mean(X, dims = 1))
-        data = mapreduce(x -> generate_data(dw, du, n), vcat, 1:k) |>
-               (X -> Q * X') |>
-               (X -> sum(abs2, X, dims = 1)) |>
-               vec
-        density(data, label = "", xlim = (0, 10))
+        function generate_data(dw, du, n)
+            dw = rand(dw, n)
+            X = [dw dw + rand(du, n)]
+            return sqrt(n) * mean(X, dims = 1)
+        end
+        X = mapreduce(x -> generate_data(dw, du, n), vcat, 1:k)
+        X = Q * X'
+        X = sum(abs2, X, dims = 1)
+        X = vec(X)
+        density(X, label = "", xlim = (0, 10))
         return plot!(Chisq(2), color = :black, linestyle = :dash,
                      label = "Chi-squared with 2 degrees of freedom", grid = false)
     end
