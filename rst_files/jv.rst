@@ -178,7 +178,7 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  using Distributions, QuantEcon
+  using Distributions, QuantEcon, Interpolations
 
   # NOTE: only brute-force approach is available in bellman operator.
   # Waiting on a simple constrained optimizer to be written in pure Julia
@@ -407,19 +407,20 @@ The code is as follows
 
 .. code-block:: julia
 
-    using Plots, LaTeXStrings
+    using Plots, LaTeXStrings, NLsolve
     gr(fmt=:png)
-    
+
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
     f(x) = bellman_operator(wp, x)
-    V = compute_fixed_point(f, v_init, max_iter = 300)
+    V = fixedpoint(f, v_init, inplace = false)
+    sol_V = V.zero
 
-    s_policy, ϕ_policy = bellman_operator(wp, V, ret_policies = true)
+    s_policy, ϕ_policy = bellman_operator(wp, sol_V, ret_policies = true)
 
     # === plot solution === #
-    p = plot(wp.x_grid, [ϕ_policy s_policy V],
+    p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
              title = ["ϕ policy" "s policy" "value function"],
              color = [:orange :blue :green],
              xaxis = ("x", (0.0, maximum(wp.x_grid))),
@@ -526,11 +527,10 @@ Here's code to produce the 45 degree diagram
     G, π_func, F = wp.G, wp.π_func, wp.F       # Simplify names
 
     v_init = collect(wp.x_grid) * 0.5
-    println("Computing value function")
     f2(x) = bellman_operator(wp, x)
-    V = compute_fixed_point(f2, v_init, max_iter=300)
-    println("Computing policy functions")
-    s_policy, ϕ_policy = bellman_operator(wp, V, ret_policies=true)
+    V2 = fixedpoint(f2, v_init, inplace = false)
+    sol_V2 = V2.zero
+    s_policy, ϕ_policy = bellman_operator(wp, sol_V2, ret_policies=true)
 
     # Turn the policy function arrays into CoordInterpGrid objects for interpolation
     s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc=Line())
