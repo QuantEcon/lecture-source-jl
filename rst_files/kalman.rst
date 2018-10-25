@@ -631,19 +631,19 @@ Exercise 1
 
     xgrid = range(θ - 5, θ + 2, length = 200)
     densities = zeros(200, 5) # one column per round of updating
-    labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
     for i in 1:5 
-        # Record the current predicted mean and variance, and plot their densities
+        # record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         densities[:, i] = pdf.(Normal(m, sqrt(v)), xgrid)
 
-        # Generate the noisy signal
+        # generate the noisy signal
         y = θ + randn()
 
-        # Update the Kalman filter
+        # update the Kalman filter
         update!(kalman, y)
     end
 
+    labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
     plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
             title = "First 5 densities when θ = $θ")
 
