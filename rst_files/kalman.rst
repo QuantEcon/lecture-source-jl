@@ -630,12 +630,12 @@ Exercise 1
     set_state!(kalman, x_hat_0, Σ_0)
 
     xgrid = range(θ - 5, θ + 2, length = 200)
-    densities = [ [1.0], [2.0], [3.0], [4.0], [5.0] ]; # we'll do 5 rounds of updating
+    densities = zeros(200, 5) # one column per round of updating
     labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
     for i in 1:5 
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
-        densities[i] = pdf.(Normal(m, sqrt(v)), xgrid)
+        densities[:, i] = pdf.(Normal(m, sqrt(v)), xgrid)
 
         # Generate the noisy signal
         y = θ + randn()
@@ -652,7 +652,7 @@ Exercise 1
 
     @testset "Solution 1 Tests" begin
         @test length(xgrid) == 200 && xgrid[1] == 5.0 && xgrid[end] == 12.0
-        @test densities[1][4] == 0.006048628905320978
+        @test densities[4, 1] == 0.006048628905320978
     end 
 
 Exercise 2
@@ -668,7 +668,7 @@ Exercise 2
 
     nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
 
-    T = 300
+    T = 600
     z = zeros(T)
     for t in 1:T
         # Record the current predicted mean and variance, and plot their densities
