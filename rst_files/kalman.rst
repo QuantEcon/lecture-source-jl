@@ -101,8 +101,9 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 .. code-block:: julia
   :class: collapse
 
-  using Plots, Distributions
-    gr(fmt=:png)
+    using Plots, Distributions
+
+    gr(fmt=:png) # plots setup
 
     # set up prior objects 
     Σ = [0.4  0.3
