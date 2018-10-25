@@ -738,8 +738,8 @@ Exercise 3
         # update state and record error
         Ax = A * x
         x = rand(MultivariateNormal(Ax, Q))
-        e1[t] = sum(abs(a - b)^2 for (a, b) in zip(x, kn.cur_x_hat))
-        e2[t] = sum(abs(a - b)^2 for (a, b) in zip(x, Ax))
+        e1[t] = sum((a - b)^2 for (a, b) in zip(x, kn.cur_x_hat))
+        e2[t] = sum((a - b)^2 for (a, b) in zip(x, Ax))
     end
 
     plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
