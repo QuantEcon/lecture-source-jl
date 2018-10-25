@@ -220,58 +220,26 @@ Here's the code:
 
 .. code-block:: julia
 
-    struct LakeModel{TF <: AbstractFloat}
-        λ::TF
-        α::TF
-        b::TF
-        d::TF
-        g::TF
-        A::Matrix{TF}
-        A_hat::Matrix{TF}
-    end
+    using Parameters, NLsolve
 
-    function LakeModel(;λ = 0.283,
-                        α = 0.013,
-                        b = 0.0124,
-                        d = 0.00822)
-
+    function LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
         g = b - d
-        A = [(1-λ) * (1-d) + b  (1-d) * α + b;
+        A = [(1-λ) * (1-d) + b  (1-d) * α + b; # carry out intermediate calculations
             (1-d) * λ          (1-d) * (1-α)]
         A_hat = A ./ (1 + g)
-
-        return LakeModel(λ, α, b, d, g, A, A_hat)
+        (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
-    function rate_steady_state(lm, tol = 1e-6)
-        x = 0.5 * ones(2)
-        error = tol + 1
-        while (error > tol)
-            new_x = lm.A_hat * x
-            error = maximum(abs, new_x - x)
-            x = new_x
-        end
-        return x
-    end
+    rate_steady_state(lm) = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5], inplace = false).zero
 
     function simulate_stock_path(lm, X0, T)
-        X_path = zeros(eltype(X0), 2, T)
-        X = copy(X0)
-        for t in 1:T
-            X_path[:, t] = X
-            X = lm.A * X
-        end
-        return X_path
+        raw = [lm.A^t * X0 for t in 0:T-1]
+        reshaped = hcat(raw...)' # each row is one time period
     end
 
-    function simulate_rate_path(lm, x0, T)
-        x_path = zeros(eltype(x0), 2, T)
-        x = copy(x0)
-        for t in 1:T
-            x_path[:, t] = x
-            x = lm.A_hat * x
-        end
-        return x_path
+    function simulate_rate_path(lm, x0, T) # same as above, but A_hat instead of A
+        raw = [lm.A_hat^t * x0 for t in 0:T-1]
+        reshaped = hcat(raw...)'
     end
 
 .. code-block:: julia
@@ -305,8 +273,9 @@ Let's run a simulation under the default parameters (see above) starting from :m
 .. code-block:: julia
 
     using Plots
+
     gr(fmt=:png)
-    
+
     lm = LakeModel()
     N_0 = 150      # Population
     e_0 = 0.92     # Initial employment rate
@@ -358,8 +327,8 @@ This is the case for our default parameters:
 
 .. code-block:: julia
 
-    using LinearAlgebra
     lm = LakeModel()
+
     e, f = eigvals(lm.A_hat)
     abs(e), abs(f)
 
@@ -377,6 +346,7 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 .. code-block:: julia
 
     lm = LakeModel()
+
     e_0 = 0.92     # Initial employment rate
     u_0 = 1 - e_0  # Initial unemployment rate
     T = 50         # Simulation length
@@ -514,6 +484,7 @@ Let's plot the path of the sample averages over 5,000 periods
     using QuantEcon, Roots, Random
 
     Random.seed!(42)
+
     lm = LakeModel(d=0.0, b=0.0)
     T = 5000                        # Simulation length
 
@@ -529,10 +500,7 @@ Let's plot the path of the sample averages over 5,000 periods
     s_bar_u = 1 .- s_bar_e
     s_bars = [s_bar_u s_bar_e]
 
-
-
-
-
+    # plotting
     plt_unemp = plot(title="Percent of time unemployed", 1:T, s_bars[:,1],color=:blue, lw=2,alpha=0.5,label="", grid=true)
     plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle=:dash, color=:red, lw=2, label="")
 
@@ -692,42 +660,39 @@ function of the unemployment compensation rate
 
 .. code-block:: julia
 
-    # Some global variables that will stay constant
+    # some global variables that will stay constant
     α = 0.013
     α_q = (1 - (1 - α)^3)
-    b_param = 0.0124
-    d_param = 0.00822
+    b = 0.0124
+    d = 0.00822
     β = 0.98
     γ = 1.0
     σ = 2.0
 
-    # The default wage distribution: a discretized log normal
-    log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
-    w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
-    logw_dist = Normal(log(log_wage_mean), 1)
-    cdf_logw = cdf.(logw_dist, log.(w_vec))
-    pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
-    p_vec = pdf_logw ./ sum(pdf_logw)
-    w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
+    dist = Truncated(LogNormal(20), 0, 170) # the default wage distribution: a truncated log normal
+    E = expectation(dist)
 
     function compute_optimal_quantities(c, τ)
-        mcm = McCallModel(α_q,
-                          β,
-                          γ,
-                          c-τ,                # post-tax compensation
-                          σ,
-                          collect(w_vec .- τ),   # post-tax wages
-                          p_vec)
-
-
+        mcm = McCallModel(α_q = α_q, β = β, γ = γ, c = c - τ, σ = σ, dist = dist)
         w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
-        λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
-
+        λ = γ * E(wage -> wage - τ > w_bar ? 1 : 0) # find probability of wage τ higher than w_bar
         return w_bar, λ, V, U
     end
 
     function compute_steady_state_quantities(c, τ)
-        w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
+        w_bar, λ, V, U = compute_optimal_quantities(c, τ)
+        lm = LakeModel(λ = λ, α = α_q, b = b, d = d)
+        x = rate_steady_state(lm)
+        u_rate, e_rate = x
+
+        # compute welfare
+        expected_accept = E(wage -> wage - τ > w_bar ? n : 0)/E(wage -> wage - τ > w_bar ? 1 : 0) # expected wage conditional on accepting
+        w = sum(V .* expected_accept)
+        welfare = e_rate .* w + u_rate .* U
+        return u_rate, e_rate, welfare 
+    end
+
+    function compute_steady_state_quantities(c, τ)
 
         # Compute steady state employment and unemployment rates
         lm = LakeModel(λ=λ_param, α=α_q, b=b_param, d=d_param)
@@ -944,7 +909,7 @@ state
   @testset begin
     @test x0[1] == 0.08266806439740906
   end
-  
+
 Here are the other parameters:
 
 
