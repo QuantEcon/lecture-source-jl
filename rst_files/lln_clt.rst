@@ -446,8 +446,10 @@ Here's some code that does exactly this for the exponential distribution
 
     function simulation1(distribution, n = 250, k = 10_000)
         σ = std(distribution)
-        f(distribution, n) = √n * mean(rand(distribution) - mean(distribution) for draw in 1:n)
-        y = [ f(distribution, n) for trial in 1:k ]
+        y = rand(distribution, n, k)
+        y .-= mean(distribution)
+        y = mean(y, dims = 1)
+        y = √n * vec(y)
         density(y, label = "Empirical Distribution")
         return plot!(Normal(0, σ), linestyle = :dash, color = :black, label = "Normal(0.00, $(σ^2))")
     end
@@ -483,16 +485,14 @@ specified as the convex combination of three different beta densities
 
 .. code-block:: julia
 
-    function simulation2()
-        function generate_data(k = 10_000)
-            distribution = Beta(2, 2)
-            X = rand(distribution, k)
-            X += rand([-0.5, 0.6, -1.1], k)
-            return (X .- mean(distribution)) ./ std(distribution)
+    function simulation2(distribution = Beta(2, 2), n = 5, k = 10_000)
+        y = rand(distribution, k, n)
+        for col in 1:n
+            y[:,col] += rand([-0.5, 0.6, -1.1], k)
         end
-        data = reduce(hcat, generate_data() for col in 1:5)
-        data = cumsum(data, dims = 2) ./ sqrt.(1:5)'
-        return density(data, labels = (1:5)', xlab = "Y", ylab = "Density")
+        y = (y .- mean(distribution)) ./ std(distribution)
+        y = cumsum(y, dims = 2) ./ sqrt.(1:5)'
+        return density(y, labels = (1:5)', xlab = "Y", ylab = "Density")
     end
 
 .. code-block:: julia
@@ -781,11 +781,12 @@ Here is one solution
 .. code-block:: julia
 
     Random.seed!(0)
-    function exercise1(;n = 250, k = 10_000, distribution = Uniform(0, π/2), g = sin, g′ = cos)
+    function exercise1(distribution = Uniform(0, π/2); n = 250, k = 10_000, g = sin, g′ = cos)
         μ, σ = mean(distribution), std(distribution)
-        f(distribution, n) = mean(rand(distribution) for i in 1:n)
-        data = [ f(distribution, n) for x in 1:k ]
-        error_obs = sqrt(n) .* (g.(data) .- g.(μ))
+        y = rand(distribution, n, k)
+        y = mean(y, dims = 1)
+        y = vec(y)
+        error_obs = sqrt(n) .* (g.(y) .- g.(μ))
         density(error_obs, label = "Empirical Density")
         return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic", color = :black)
     end
