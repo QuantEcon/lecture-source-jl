@@ -107,7 +107,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 
     # set up prior objects 
     Σ = [0.4  0.3
-         0.3 0.45]
+            0.3 0.45]
     x_hat = [0.2, -0.2]
 
     # define G and R from the equation y = Gx + N(0, R)
@@ -116,7 +116,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 
     # define A and Q 
     A = [1.2  0
-         0   -0.2]
+            0   -0.2]
     Q = 0.3Σ
 
     y = [2.3, -1.9] 
