@@ -630,9 +630,9 @@ Exercise 1
     set_state!(kalman, x_hat_0, Σ_0)
 
     xgrid = range(θ - 5, θ + 2, length = 200)
-    densities = Array{Array{Float64, 1}, 1}(undef, 5) # we'll do 5 rounds of updating
+    densities = [ [1.0], [2.0], [3.0], [4.0], [5.0] ]; # we'll do 5 rounds of updating
     labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
-    for i ∈ 1:5 
+    for i in 1:5 
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         densities[i] = pdf.(Normal(m, sqrt(v)), xgrid)
@@ -670,7 +670,7 @@ Exercise 2
 
     T = 300
     z = zeros(T)
-    for t ∈ 1:T
+    for t in 1:T
         # Record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         dist = Normal(m, sqrt(v))
@@ -728,7 +728,7 @@ Exercise 3
     T = 50
     e1 = zeros(T)
     e2 = similar(e1)
-    for t ∈ 1:T
+    for t in 1:T
 
         # generate signal and update prediction
         dist = MultivariateNormal(G * x, R)
