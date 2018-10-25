@@ -288,9 +288,9 @@ Let's run a simulation under the default parameters (see above) starting from :m
 
     X_path = simulate_stock_path(lm, X_0, T)
 
-    x1 = X_path[1, :]
-    x2 = X_path[2, :]
-    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
+    x1 = X_path[:, 1]
+    x2 = X_path[:, 2]
+    x3 = sum(X_path, dims = 2)
 
     plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, grid = true, label="")
     plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, grid=true, label="")
@@ -356,10 +356,10 @@ Let's look at the convergence of the unemployment and employment rate to steady 
     x_path = simulate_rate_path(lm, x_0, T)
 
 
-    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color=:blue, lw=2, alpha=0.5, grid=true, label="")
+    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[:, 1],color=:blue, lw=2, alpha=0.5, grid=true, label="")
     plot!(plt_unemp, [xbar[1]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
 
-    plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color=:blue, lw=2, alpha=0.5, grid=true, label="")
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[:, 2],color=:blue, lw=2, alpha=0.5, grid=true, label="")
     plot!(plt_emp, [xbar[2]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
 
     plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
@@ -368,8 +368,8 @@ Let's look at the convergence of the unemployment and employment rate to steady 
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.08137725667264473
-      @test x_path[2,7] ≈ 0.9176350068305223
+      @test x_path[3, 1] ≈ 0.08137725667264473
+      @test x_path[7, 2] ≈ 0.9176350068305223
   end
 
 
@@ -513,7 +513,7 @@ Let's plot the path of the sample averages over 5,000 periods
   :class: test
 
   @testset begin
-      @test xbar[1] ≈ 0.043921027960428106
+      @test round(xbar[1], digits = 5) == round(0.043921027960428106, digits = 5)
       @test s_bars[end,end] ≈ 0.957
   end
 
@@ -621,7 +621,6 @@ where the notation :math:`V` and :math:`U` is as defined in the :doc:`McCall sea
 
 The wage offer distribution will be a discretized version of the lognormal distribution :math:`LN(\log(20),1)`, as shown in the next figure
 
-
 .. figure:: /_static/figures/lake_distribution_wages.png
     :scale: 80%
 
@@ -699,12 +698,6 @@ function of the unemployment compensation rate
 
     find_balanced_budget_tax(c) = find_zero(steady_state_budget, (0.0, 0.9c))
 
-
-
-        τ = find_zero(steady_state_budget, (0.0, 0.9c))
-        return τ
-    end
-
     # Levels of unemployment insurance we wish to study
     Nc = 60
     c_vec = range(5.0, 140.0, length = Nc)
@@ -729,7 +722,6 @@ function of the unemployment compensation rate
     plt_welf = plot(title="Welfare", c_vec, welfare_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
 
     plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800,700))
-
 
 .. code-block:: julia
   :class: test
@@ -830,9 +822,9 @@ Now plot stocks
 
 .. code-block:: julia
 
-    x1 = X_path[1, :]
-    x2 = X_path[2, :]
-    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
+    x1 = X_path[:, 1]
+    x2 = X_path[:, 2]
+    x3 = sum(X_path, dims = 2)
 
     plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, grid = true, label="",bg_inside=:lightgrey)
     plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, grid=true, label="",bg_inside=:lightgrey)
@@ -844,9 +836,9 @@ Now plot stocks
   :class: test
 
   @testset begin
-      @test x1[1] ≈ 8.266806439740906
-      @test x2[2] ≈ 91.43618846013545
-      @test x3[3] ≈ 100.83774723999996
+      @test round(x1[1], digits = 3) == round(8.266806439740906, digits = 3)
+      @test round(x2[2], digits = 3) == round(91.43618846013545, digits = 3)
+      @test round(x3[3], digits = 3) == round(100.83774723999996, digits = 3)
   end
 
 And how the rates evolve
@@ -865,8 +857,8 @@ And how the rates evolve
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.09471123542018117
-      @test x_path[2,7] ≈ 0.893616705896849
+      @test x_path[3, 1] ≈ 0.09471016375604385
+      @test x_path[7, 2] ≈ 0.8936170970733354
   end
 
 We see that it takes 20 periods for the economy to converge to it's new
@@ -892,7 +884,7 @@ state
   :class: test
 
   @testset begin
-    @test x0[1] == 0.08266806439740906
+    @test x0[1] ≈ 0.082666290609561176
   end
 
 Here are the other parameters:
@@ -911,7 +903,6 @@ Let's increase :math:`b` to the new value and simulate for 20 periods
     X_path1 = simulate_stock_path(lm, x0 * N0, T_hat)   # simulate stocks
     x_path1 = simulate_rate_path(lm, x0, T_hat)         # simulate rates
 
-
 Now we reset :math:`b` to the original value and then, using the state
 after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
@@ -919,21 +910,21 @@ additional 30 periods
 .. code-block:: julia
 
     lm = LakeModel(b=0.0124)
-    X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T_hat+1)    # simulate stocks
-    x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T_hat+1)     # simulate rates
+    X_path2 = simulate_stock_path(lm, X_path1[end-1, :], T-T_hat+1)    # simulate stocks
+    x_path2 = simulate_rate_path(lm, x_path1[end-1, :], T-T_hat+1)     # simulate rates
 
 Finally we combine these two paths and plot
 
 .. code-block:: julia
 
-    x_path = hcat(x_path1, x_path2[:, 2:end])  # note [2:] to avoid doubling period 20
-    X_path = hcat(X_path1, X_path2[:, 2:end])
+    x_path = [x_path1; x_path2[2:end, :]]  # note [2:] to avoid doubling period 20
+    X_path = [X_path1; X_path2[2:end, :]]
 
 .. code-block:: julia
 
-    x1 = X_path[1,:]
-    x2 = X_path[2,:]
-    x3 = dropdims(sum(X_path, dims = 1), dims = 1) # remove an unnecessary dimension
+    x1 = X_path[:, 1]
+    x2 = X_path[:, 2]
+    x3 = sum(X_path, dims = 2) # remove an unnecessary dimension
 
     plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, alpha = 0.7, grid = true, label="",bg_inside=:lightgrey)
     plot!(plt_unemp, ylims=extrema(x1).+(-1,1))
