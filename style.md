@@ -358,6 +358,46 @@ range(0.0, 1.0, length=10)
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 - **Square directly instead of abs2**. There are times where `abs2(x)` is faster than `x^2`, but they are rare, and it is harder to read.
+- **Do not use compehensions or generators simply to avoid a temporary**. That is
+```julia
+x = 1:3
+f(x) = x^2
+
+# BAD (even if sometimes faster)
+sum(f(xval) for xval in x)
+mean(f(xval) for xval in x)
+
+# GOOD!
+sum(f.(x))
+mean(f.(x))
+```
+- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematica, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
+```julia
+# BAD! Tough to mentally parse that this is a nested loop creating a single vector vs. a matrix
+[i + j for i in 1:3 for j in 1:3]
+
+# GOOD! easier to read that this creates an addition table
+[i + j for i in 1:3, j in 1:3]
+
+# OK, and easy enough to read
+X = 1:3
+[x + 1 for x in X]
+
+# BAD! Tough to read since multiple comprehensiosn
+X = 1:3
+Y = [1 2 3]
+
+[x^2 + sum(x * y + 1 for y in Y) for x in X]
+
+# BETTER! Put everything into a function
+f(x) = x^2 + sum(x * y + 1 for y in Y)
+[f(x) for x in X]
+
+#... but at that point?
+# BEST! remove the generator/comprehension and just use broadcasting
+f(x) = x^2 + sum(x * Y .+ 1)
+f.(X)
+```
 
 ## Dependencies
 
