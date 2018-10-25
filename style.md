@@ -306,8 +306,11 @@ for val in x
 end
 n
 
-# BEST!
+# BETTER!
 sum(xval -> xval^2, x) # i.e. transform each x and then reduce
+
+#BEST! keep it simple with broadcasting
+sum(x.^2)
 ```
 
 - **Use `eachindex`** to iterate through matrices and arrays of dimension > 2 as long as you don't need the actual index.  Otherwise,   For example,
@@ -358,16 +361,76 @@ range(0.0, 1.0, length=10)
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 - **Square directly instead of abs2**. There are times where `abs2(x)` is faster than `x^2`, but they are rare, and it is harder to read.
+- **Do not use compehensions or generators simply to avoid a temporary**. That is
+```julia
+x = 1:3
+f(x) = x^2
+
+# BAD (even if sometimes faster)
+sum(f(xval) for xval in x)
+mean(f(xval) for xval in x)
+
+# GOOD!
+sum(f.(x))
+mean(f.(x))
+```
+- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematica, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
+```julia
+# BAD! Tough to mentally parse that this is a nested loop creating a single vector vs. a matrix
+[i + j for i in 1:3 for j in 1:3]
+
+# GOOD! easier to read that this creates an addition table
+[i + j for i in 1:3, j in 1:3]
+
+# OK, and easy enough to read
+X = 1:3
+[x + 1 for x in X]
+
+# BAD! Tough to read since multiple comprehensiosn
+X = 1:3
+Y = [1 2 3]
+
+[x^2 + sum(x * y + 1 for y in Y) for x in X]
+
+# BETTER! Put everything into a function
+f(x) = x^2 + sum(x * y + 1 for y in Y)
+[f(x) for x in X]
+
+#... but at that point?
+# BEST! remove the generator/comprehension and just use broadcasting
+f(x) = x^2 + sum(x * Y .+ 1)
+f.(X)
+```
+
+- **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
+```
+# BAD! 
+x = 1:3
+mapreduce(xval -> xval^2, +, x)
+
+# GOOD! Direct for this case
+sum(x.^2)
+
+# QUESTIONABLE! Explain carefully with a comment if using
+X = [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [5.0, 6.0, 7.0]]
+reduce(hcat, X)
+
+# GOOD, if verbose 
+Y = ones(3,3)
+for i in 1:3
+    Y[:,i] = X[i]
+end
+```
+The exception, of course, is when dealing with parallel programming where functional patterns are essential.
 
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
 - The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, Plots, Compat`
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
-- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single place should have the `using` local to that use.
+- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single may have the `using` local to that use to ensure students know which package it comes from
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
-2. Simple error handling of reasonable failures (e.g. returning a union with `Nothing`, etc.)  I am not sure we want to teach them about exceptions, for example.
