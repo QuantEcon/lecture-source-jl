@@ -58,13 +58,7 @@ such as simulation, distribution dynamics, stability, ergodicity, etc.
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 .. _statd_density_case:
 
@@ -498,7 +492,7 @@ The following code is example of usage for the stochastic growth model :ref:`des
 
 .. code-block:: julia
 
-  using Distributions, LaTeXStrings, Plots, QuantEcon, Random
+  using Distributions, LaTeXStrings, StatPlots, Plots, QuantEcon, Random
   Random.seed!(42) # For deterministic results.
 
   s = 0.2
@@ -519,7 +513,7 @@ The following code is example of usage for the stochastic growth model :ref:`des
       # scipy silently evaluates the pdf of the lognormal dist at a negative
       # value as zero. It should be undefined and Julia recognizes this.
       pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-      return pdf.(Ref(ϕ), pdf_arg) ./ d
+      return pdf.(ϕ, pdf_arg) ./ d
   end
 
   n = 10000  # Number of observations at each date t
@@ -915,7 +909,6 @@ To illustrate, let's generate three artificial data sets and compare them with a
 
 .. code-block:: julia
 
-    using StatPlots     # needed for box plot support
     Random.seed!(42) # For determinism
 
     n = 500
@@ -1019,10 +1012,10 @@ to get an idea of the speed of convergence.
     Random.seed!(42)  # reproducible results
 
     # true density of TAR model
-    ψ_star(y) = 2 .* pdf.(Ref(ϕ), y) .* cdf.(Ref(ϕ), δ * y)
+    ψ_star(y) = 2 .* pdf.(ϕ, y) .* cdf.(ϕ, δ * y)
 
     # Stochastic kernel for the TAR model.
-    p_TAR(x, y) = pdf.(Ref(ϕ), (y .- θ .* abs.(x)) ./ d) ./ d
+    p_TAR(x, y) = pdf.(ϕ, (y .- θ .* abs.(x)) ./ d) ./ d
 
     Z = rand(ϕ, n)
     X = zeros(n)
@@ -1073,7 +1066,7 @@ Here's one program that does the job.
         # scipy silently evaluates the pdf of the lognormal dist at a negative
         # value as zero. It should be undefined and Julia recognizes this.
         pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-        return pdf.(Ref(ϕ), pdf_arg) ./ d
+        return pdf.(ϕ, pdf_arg) ./ d
     end
 
     n = 1000  # Number of observations at each date t

@@ -35,19 +35,19 @@ needs_sphinx = '1.5'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-	'sphinx.ext.mathjax', 
-	'sphinxcontrib.bibtex', 
+	'sphinx.ext.mathjax',
+	'sphinxcontrib.bibtex',
 	'IPython.sphinxext.ipython_console_highlighting',
     # Custom Sphinx Extensions
-    'sphinxcontrib.jupyter', 
+    'sphinxcontrib.jupyter',
 ]
 
 # Retired Extensions but may be useful in Future
 
-	# 'matplotlib.sphinxext.plot_directive',               
+	# 'matplotlib.sphinxext.plot_directive',
 	# 'matplotlib.sphinxext.only_directives',
 	# 'sphinxcontrib.tikz',
-	# 'sphinx.ext.graphviz',  
+	# 'sphinx.ext.graphviz',
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -297,7 +297,7 @@ latex_elements = {
 \chapter*{Preface}
 \large
 This \textbf{pdf} presents a series of lectures on quantitative economic
-modeling, designed and written by \href{http://www.tomsargent.com/}{Thomas J. Sargent} and \href{http://johnstachurski.net}{John Stachurski}.  
+modeling, designed and written by \href{http://www.tomsargent.com/}{Thomas J. Sargent} and \href{http://johnstachurski.net}{John Stachurski}.
 The primary programming languages are \href{https://www.python.org}{Python} and \href{http://julialang.org/}{Julia}.
 You can send feedback to the authors via contact@quantecon.org.
 
@@ -365,7 +365,7 @@ latex_documents = [
 
 linkcheck_ignore = [r'https:\/\/github\.com\/.*?#.*'] #Anchors on Github seem to create issues with linkchecker
 
-linkcheck_timeout = 30 
+linkcheck_timeout = 30
 
 # --------------------------------------------
 # jupyter Sphinx Extension conversion settings
@@ -413,4 +413,11 @@ jupyter_headers = {
 # Filename for the file containing the welcome block
 jupyter_welcome_block = ""
 
-jupyter_drop_tests = True
+#Allow .. only:: html pass through 
+jupyter_allow_html_only = True
+
+#Adjust links to target html (rather than ipynb) when targeting html through nbconvert
+jupyter_target_html = True
+
+#Drop Tests Embedded in Lectures
+jupyter_drop_tests = False
