@@ -26,8 +26,6 @@ In this lecture we delve more deeply into the structure of Julia, and in particu
 * the role of generic interfaces in Julia performance
 
 
-These concepts relate to the way that Julia stores and acts on data
-
 Understanding them will help you
 
 * Design code that matches the "white-board" mathematics 
@@ -161,6 +159,13 @@ Generic programming is a fundamentally different way of thinking, and a largely 
 As its essence, the key difference is that you will start with creating algorithms which are largely orthogonal to concrete types, and in the process you will discover commonality which leads to abstract types
 
 This design process is in direct contrast to object-oriented design and analysis, where you start by specifying a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
+
+
+Iterative Design of Abstractions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A crucial part of the process of designing interfaces and abstractions is that it is iterative
+
 
 This lecture is intended to help you walk through some of the logic behind existing generic implementations in Julia
 
@@ -316,7 +321,7 @@ Which, of course, is also written in terms of the generic type
     plot(d)
 
 
-Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of separate packages that have simply agreed on what the appropriate functions and abstract types
+Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of different packages that have simply agreed on a set of appropriate functions and abstract types
 
 This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions
 
