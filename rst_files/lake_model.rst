@@ -689,28 +689,17 @@ function of the unemployment compensation rate
         expected_accept = E(wage -> wage - τ > w_bar ? n : 0)/E(wage -> wage - τ > w_bar ? 1 : 0) # expected wage conditional on accepting
         w = sum(V .* expected_accept)
         welfare = e_rate .* w + u_rate .* U
-        return u_rate, e_rate, welfare 
-    end
-
-    function compute_steady_state_quantities(c, τ)
-
-        # Compute steady state employment and unemployment rates
-        lm = LakeModel(λ=λ_param, α=α_q, b=b_param, d=d_param)
-        x = rate_steady_state(lm)
-        u_rate, e_rate = x
-
-        # Compute steady state welfare
-        w = sum(V .* p_vec .* (w_vec .- τ .> w_bar)) / sum(p_vec .* (w_vec .- τ .> w_bar))
-        welfare = e_rate .* w + u_rate .* U
-
         return u_rate, e_rate, welfare
     end
 
-    function find_balanced_budget_tax(c)
-        function steady_state_budget(t)
-            u_rate, e_rate, w = compute_steady_state_quantities(c, t)
-            return t - u_rate * c
-        end
+    function steady_state_budget(t)
+        u_rate, e_rate, w = compute_steady_state_quantities(c, t)
+        return t - u_rate * c
+    end
+
+    find_balanced_budget_tax(c) = find_zero(steady_state_budget, (0.0, 0.9c))
+
+
 
         τ = find_zero(steady_state_budget, (0.0, 0.9c))
         return τ
@@ -740,8 +729,6 @@ function of the unemployment compensation rate
     plt_welf = plot(title="Welfare", c_vec, welfare_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
 
     plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800,700))
-
-
 
 
 .. code-block:: julia
@@ -853,8 +840,6 @@ Now plot stocks
 
     plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
 
-
-
 .. code-block:: julia
   :class: test
 
@@ -937,7 +922,6 @@ additional 30 periods
     X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T_hat+1)    # simulate stocks
     x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T_hat+1)     # simulate rates
 
-
 Finally we combine these two paths and plot
 
 .. code-block:: julia
@@ -945,12 +929,11 @@ Finally we combine these two paths and plot
     x_path = hcat(x_path1, x_path2[:, 2:end])  # note [2:] to avoid doubling period 20
     X_path = hcat(X_path1, X_path2[:, 2:end])
 
-
 .. code-block:: julia
 
     x1 = X_path[1,:]
     x2 = X_path[2,:]
-    x3 = dropdims(sum(X_path, dims = 1), dims = 1)
+    x3 = dropdims(sum(X_path, dims = 1), dims = 1) # remove an unnecessary dimension
 
     plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, alpha = 0.7, grid = true, label="",bg_inside=:lightgrey)
     plot!(plt_unemp, ylims=extrema(x1).+(-1,1))
@@ -961,11 +944,6 @@ Finally we combine these two paths and plot
     plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, alpha = 0.7, grid=true,label="",bg_inside=:lightgrey)
     plot!(plt_labor, ylims=extrema(x3).+(-1,1))
     plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
-
-
-
-
-
 
 .. code-block:: julia
   :class: test
