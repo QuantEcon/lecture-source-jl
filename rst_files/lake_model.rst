@@ -490,7 +490,7 @@ Let's plot the path of the sample averages over 5,000 periods
 
     α, λ = lm.α, lm.λ
     P = [(1 - λ)     λ;
-         α      (1 - α)]
+        α      (1 - α)]
 
     mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
     xbar = rate_steady_state(lm)
@@ -644,87 +644,47 @@ We will make use of code we wrote in the :doc:`McCall model lecture <mccall_mode
 
 The first piece of code, repeated below, implements value function iteration
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using Distributions, LinearAlgebra, Compat, Expectations
 
-    # A default utility function
+    # model objects
+    n = 60                                           # n possible outcomes for wage
+    default_w_vec = range(10, 20, length = n) # wages between 10 and 20
+    a, b = 600, 400                                  # shape parameters
+    dist = BetaBinomial(n-1, a, b)
 
-    function u(c, σ)
-        if c > 0
-            return (c^(1 - σ) - 1) / (1 - σ)
-        else
-            return -10e6
-        end
-    end
+    u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e6 # return the utility if c > 0, large negative number otherwise
 
-    # default wage vector with probabilities
+    # constructor
+    McCallModel(;α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist) = (α = α, β = β, γ = γ, c = c, σ = σ, w_vec = w_vec, dist = dist)
 
-    const n = 60                                           # n possible outcomes for wage
-    const default_w_vec = range(10, 20, length = n) # wages between 10 and 20
-    const a, b = 600, 400                                  # shape parameters
-    const dist = BetaBinomial(n-1, a, b)
-
-    mutable struct McCallModel{TF <: AbstractFloat,
-                            TAV <: AbstractVector{TF}}
-        α::TF         # Job separation rate
-        β::TF         # Discount rate
-        γ::TF         # Job offer rate
-        c::TF         # Unemployment compensation
-        σ::TF         # Utility parameter
-        w_vec::TAV    # Possible wage values
-
-        McCallModel(α::TF = 0.2,
-                    β::TF = 0.98,
-                    γ::TF = 0.7,
-                    c::TF = 6.0,
-                    σ::TF = 2.0,
-                    w_vec::TAV = default_w_vec,
-                    ) where {TF, TAV} =
-            new{TF, TAV}(α, β, γ, c, σ, w_vec)
-    end
-
-    function update_bellman!(mcm, V, V_new, U, E)
-        # Simplify notation
-        α, β, σ, c, γ = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ
+    # update
+    function update_bellman(mcm, V, E)
+        @unpack α, β, σ, c, γ, dist, w_vec = mcm # unpack model objects
+        U = V[end] # U is at the end of V
+        V_new = similar(V) # create a new V
 
         for (w_idx, w) in enumerate(mcm.w_vec)
             # w_idx indexes the vector of possible wages
             V_new[w_idx] = u(w, σ) + β * ((1 - α) * V[w_idx] + α * U)
         end
 
-        U_new = u(c, σ) + β * (1 - γ) * U +
-                β * γ * E*max.(U, V)
-        return U_new
+        V_new[end] = u(c, σ) + β * (1 - γ) * U + β * γ * E*max.(U, V[1:end-1])
+        return V_new
     end
 
     function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
-
-        V = ones(length(mcm.w_vec))    # Initial guess of V
-        V_new = similar(V)             # To store updates to V
-        U = 1.0                        # Initial guess of U
-        i = 0
-        error = tol + 1
-        E = expectation(dist, nodes = mcm.w_vec)
-
-        while error > tol && i < max_iter
-            U_new = update_bellman!(mcm, V, V_new, U, E)
-            error_1 = maximum(abs, V_new - V)
-            error_2 = abs(U_new - U)
-            error = max(error_1, error_2)
-            V[:] = V_new
-            U = U_new
-            i += 1
-        end
-
-        return V, U
+        V = ones(Float64, length(mcm.w_vec)+1)    # initial guess of V and U (at the end)
+        E = expectation(mcm.dist, mcm.w_vec) # create an expectation operator for the distribution and nodes
+        sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero # grab the fixed point
+        return sol[1:end-1], sol[end] # returns (V, U)
     end
-
 
 The second piece of code repeated from :doc:`the McCall model lecture <mccall_model>` is used to complete the reservation wage
 
 
-.. code-block:: julia 
+.. code-block:: julia
 
     function compute_reservation_wage(mcm; return_values = false)
         V, U = solve_mccall_model(mcm)
@@ -760,10 +720,10 @@ function of the unemployment compensation rate
     σ = 2.0
 
     dist = Truncated(LogNormal(20), 0, 170) # the default wage distribution: a truncated log normal
-    E = expectation(dist)
+    w_vec = range(1e-3, 170, length = 201)
 
     function compute_optimal_quantities(c, τ)
-        mcm = McCallModel(α_q = α_q, β = β, γ = γ, c = c - τ, σ = σ, dist = dist)
+        mcm = McCallModel(α = α_q, β = β, γ = γ, c = c - τ, σ = σ, w_vec = w_vec, dist = dist)
         w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
         λ = γ * E(wage -> wage - τ > w_bar ? 1 : 0) # find probability of wage τ higher than w_bar
         return w_bar, λ, V, U
@@ -782,12 +742,12 @@ function of the unemployment compensation rate
         return u_rate, e_rate, welfare
     end
 
-    function steady_state_budget(t)
+    function steady_state_budget(c, t)
         u_rate, e_rate, w = compute_steady_state_quantities(c, t)
         return t - u_rate * c
     end
 
-    find_balanced_budget_tax(c) = find_zero(steady_state_budget, (0.0, 0.9c))
+    find_balanced_budget_tax(c) = find_zero(t -> steady_state_budget(c, t), (0.0, 0.99c))
 
     # Levels of unemployment insurance we wish to study
     Nc = 60
@@ -936,10 +896,10 @@ And how the rates evolve
 
 .. code-block:: julia
 
-    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color=:blue, grid = true, label="",bg_inside=:lightgrey)
+    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[:, 1], color=:blue, grid = true, label="",bg_inside=:lightgrey)
     plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle = :dash, color =:red, label = "")
 
-    plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color=:blue, grid=true, label="",bg_inside=:lightgrey)
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[:, 2], color=:blue, grid=true, label="",bg_inside=:lightgrey)
     plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle = :dash, color =:red, label ="")
 
     plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
