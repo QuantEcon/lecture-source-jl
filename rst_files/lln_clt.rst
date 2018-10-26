@@ -220,7 +220,7 @@ Setup
 .. code-block:: julia
 
     function ksl(distribution, n = 100)
-        title = typeof(distribution).name.name # last .name goes from Core.TypeName to String
+        title = nameof(typeof(distribution))
         observations = rand(distribution, n)
         sample_means = cumsum(observations) ./ (1:n)
         μ = mean(distribution)
