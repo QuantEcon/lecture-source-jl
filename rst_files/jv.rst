@@ -178,7 +178,7 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  using Distributions, QuantEcon
+  using Distributions, QuantEcon, Interpolations
 
   # NOTE: only brute-force approach is available in bellman operator.
   # Waiting on a simple constrained optimizer to be written in pure Julia
@@ -409,7 +409,7 @@ The code is as follows
 
     using Plots, LaTeXStrings
     gr(fmt=:png)
-    
+
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
