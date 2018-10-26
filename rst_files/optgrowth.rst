@@ -839,7 +839,7 @@ to converge to :math:`v^*`
 
 .. code-block:: julia
 
-    import QuantEcon: compute_fixed_point
+    using NLsolve
 
     Tw = similar(grid_y)
     initial_w = 5 * log.(grid_y)
@@ -851,12 +851,9 @@ to converge to :math:`v^*`
                                            k -> k^α,
                                            shocks)
 
-    v_star_approx = compute_fixed_point(bellman_operator,
-                                        initial_w,
-                                        max_iter = 500,
-                                        verbose = 2,
-                                        print_skip = 10,
-                                        err_tol = 1e-5)
+
+    v_star_approx = fixedpoint(bellman_operator, initial_w, inplace = false)
+    sol_v_star_approx = v_star_approx.zero
 
 
 Let's have a look at the result
@@ -864,7 +861,7 @@ Let's have a look at the result
 .. code-block:: julia
 
     plt = plot(ylim=(-35,-24))
-    plot!(plt, grid_y, v_star_approx, lw=2,alpha=0.6, label="approximate value function")
+    plot!(plt, grid_y, sol_v_star_approx, lw=2,alpha=0.6, label="approximate value function")
     plot!(plt, grid_y, v_star.(grid_y), lw=2, alpha=0.6, label="true value function")
     plot!(plt, legend=:bottomright)
 
@@ -872,7 +869,7 @@ Let's have a look at the result
   :class: test
 
   @testset "QuantEcon Iteration Test" begin
-    @test v_star_approx[17] ≈ -29.131728770166063
+    @test sol_v_star_approx[17] ≈ -29.13196547776264
   end
 
 
@@ -894,7 +891,7 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
 
 .. code-block:: julia
 
-    Tw, σ = bellman_operator(v_star_approx,
+    Tw, σ = bellman_operator(sol_v_star_approx,
                              grid_y,
                              β,
                              log,
@@ -993,20 +990,16 @@ Here's one solution (assuming as usual that you've executed everything above)
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = compute_fixed_point(bellman_operator,
-                                            initial_w,
-                                            max_iter = 50,
-                                            verbose = 0,
-                                            print_skip = 10,
-                                            err_tol = 1e-5)
+        v_star_approx = fixedpoint(bellman_operator, initial_w, inplace = false)
+        sol_v_star_approx = v_star_approx.zero
 
-        Tw, σ = bellman_operator(v_star_approx,
-                                 grid_y,
-                                 β,
-                                 log,
-                                 k -> k^α,
-                                 shocks,
-                                 compute_policy = true)
+        Tw, σ = bellman_operator(sol_v_star_approx,
+                                grid_y,
+                                β,
+                                log,
+                                k -> k^α,
+                                shocks,
+                                compute_policy = true)
 
         σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
