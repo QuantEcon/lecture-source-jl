@@ -311,7 +311,8 @@ Let's start with some imports
 
 .. code-block:: julia
 
-    using Plots, QuantEcon, Distributions, LaTeXStrings, LinearAlgebra, Random
+    using StatPlots, Plots, QuantEcon, Distributions, LinearAlgebra, Random, Expectations, NLsolve
+
     gr(fmt=:png)
 
 Here's the distribution of wage offers we'll work with
@@ -320,20 +321,15 @@ Here's the distribution of wage offers we'll work with
 .. code-block:: julia
 
     n, a, b = 50, 200, 100
-    w_min, w_max = 10, 60
-    const w_vals = range(w_min,  w_max, length = n+1)
     dist = BetaBinomial(n, a, b)
-    const p_vals = pdf.(dist, support(dist))
 
-    plt = plot(w_vals, p_vals, label = L"$p_i$", xlabel = "wages", ylabel = "probabilities")
+    plt = plot(dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
 
 .. code-block:: julia
     :class: test
 
-    @testset "First Plot Test" begin
-        @test p_vals[4] ≈ 5.789516415478556e-17 # p invariance
-        @test w_vals[1] == 10 && w_vals[end] == 60 && length(w_vals) == 51 # grid invariance
+    @testset begin
         @test dist isa Distributions.BetaBinomial && dist.n == 50 && dist.α == 200 && dist.β == 100 # distribution invariance
     end
 
@@ -347,31 +343,25 @@ Our initial guess :math:`v` is the value of accepting at every given wage
 
 .. code:: julia
 
-    function plot_value_function_seq(plt,
-                                     c = 25,
-                                     β = 0.99,
-                                     num_plots = 6)
+    # parameters and constant objects
+    w_min, w_max = 10, 60
+    w_vals =range(w_min, w_max, length = n+1)
+    c = 25
+    β = 0.99
+    num_plots = 6
+    E = expectation(dist)
 
-        plt = deepcopy(plt)
-        v = collect(w_vals ./ (1 - β))
-        v_next = similar(v)
+    # functions and matrix to plot
+    stop_val(w) = w/(1-β)
+    cont_val(v) = c + β*E*v # using E as a linear operator
+    best_val(w, v) = max(stop_val(w), cont_val(v))
+    vs = repeat(w_vals./(1-β), outer = (1, 6)) # data to fill
 
-        for i in 1:num_plots
-            plot!(plt, w_vals, v, label = "iterate $i")
-
-            # Update guess
-            for (j, w) in enumerate(w_vals)
-                stop_val = w / (1 - β)
-                cont_val = c + β * sum(v .* p_vals)
-                v_next[j] = max(stop_val, cont_val)
-            end
-            v[:] .= v_next
-        end
-        return plt
+    # fill and plot
+    for col in 2:num_plots
+        vs[:, col] .= best_val.(w_vals, Ref(vs[:, col-1])) # update using previous value function
     end
-
-    plot_value_function_seq(plt)
-
+    plot(vs)
 
 Here's more serious iteration effort, that continues until measured deviation
 between successive iterates is below `tol`
@@ -379,32 +369,13 @@ between successive iterates is below `tol`
 
 .. code-block:: julia
 
-    function compute_reservation_wage(c, β;
-                                      max_iter = 500,
-                                      tol = 1e-6)
 
-     # first compute the value function
-    v = collect(w_vals ./ (1 - β))
-    v_next = similar(v)
-    i = 0
-    error = tol + 1
-    while i < max_iter && error > tol
-
-        for (j, w) in enumerate(w_vals)
-            stop_val = w / (1 - β)
-            cont_val = c + β * sum(v .* p_vals)
-            v_next[j] = max(stop_val, cont_val)
-        end
-
-        error = maximum(abs(a - b) for (a, b) in zip(v_next, v))
-        i += 1
-
-        v[:] .= v_next  # copy contents into v
-    end
-
-     # now compute the reservation wage
-       return (1 - β) * (c + β * sum(v .* p_vals))
-    end
+  function compute_reservation_wage(c, β; max_iter = 500, tol = 1e-6)
+      v = w_vals ./(1-β)
+      v_star = fixedpoint(v -> best_val.(w_vals, Ref(v)), v, inplace = false).zero
+      # now return the reservation wage
+      return (1 - β) * (c + β * E*v)
+  end
 
 Let's compute the reservation wage at the default parameters
 
@@ -418,7 +389,7 @@ Let's compute the reservation wage at the default parameters
     :class: test
 
     @testset "Reservation Wage Tests" begin
-        @test compute_reservation_wage(c, β) ≈ 47.316499709964695
+        @test compute_reservation_wage(c, β) ≈ 43.15000000000235
     end
 
 Comparative Statics
@@ -449,18 +420,19 @@ In particular, let's look at what happens when we change :math:`\beta` and
     :class: test
 
     @testset "Comparative Statics Tests" begin
-        @test R[4, 4] ≈ 41.15851842026257 # Arbitrary reservation wage.
+        @test R[4, 4] ≈ 40.59687500000215 # Arbitrary reservation wage.
         @test grid_size == 25 # grid invariance.
         @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance.
         @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance.
     end
 
-.. code:: julia
+.. code-block:: julia
 
-    contourf(c_vals, β_vals, R',
+    contour(c_vals, β_vals, R',
              title = "Reservation Wage",
              xlabel = "c",
-             ylabel = L"\beta")
+             ylabel = "beta",
+             fill=true)
 
 
 As expected, the reservation wage increases both with patience and with
@@ -552,34 +524,15 @@ Here's an implementation:
 
 .. code-block:: julia
 
-    function compute_reservation_wage_two(c;
-                                          β = 0.99,
-                                          max_iter = 500,
-                                          tol = 1e-5)
-        # == First compute ψ == #
-
-        ψ = dot(w_vals, p_vals) ./ (1 - β)
-        i = 0
-        error = tol + 1
-        while i < max_iter && error > tol
-
-            s = max.((w_vals ./ (1 - β)), ψ)
-            ψ_next = c + β * dot(s, p_vals)
-
-            error = abs.(ψ_next - ψ)
-            i += 1
-
-            ψ = ψ_next
-        end
-
-        # == Now compute the reservation wage == #
-
-        return (1 - β) * (c + β * ψ)
+    function compute_reservation_wage_two(c; β = 0.99, max_iter = 500, tol = 1e-5)
+        ψ = E*w_vals ./ (1 - β)
+        s(ψ) = max.((w_vals ./ (1 - β)), ψ)
+        ψ_star = fixedpoint(ψ -> [c + β*E*s(ψ[1])], [ψ], inplace = false).zero[1]
+        return (1 - β) * (c + β * ψ_star)
     end
 
 
 You can use this code to solve the exercise below
-
 
 
 Exercises
@@ -617,15 +570,12 @@ Here's one solution
 .. code:: julia
 
     function compute_stopping_time(w_bar; seed=1234)
-
         Random.seed!(seed)
         stopping_time = 0
-
         t = 1
         while true
             # Generate a wage draw
-            d = DiscreteRV(p_vals)
-            w = w_vals[rand(d)]
+            w = w_vals[rand(dist)] # the wage dist set up earlier
             if w ≥ w_bar
                 stopping_time = t
                 break
@@ -636,9 +586,7 @@ Here's one solution
         return stopping_time
     end
 
-    compute_mean_stopping_time(w_bar, num_reps=10000) =
-        mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
-
+    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
     c_vals = range(10,  40, length = 25)
     stop_times = similar(c_vals)
 
