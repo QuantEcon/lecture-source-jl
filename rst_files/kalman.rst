@@ -35,7 +35,6 @@ Setup
 
 .. literalinclude:: /_static/includes/deps.jl
 
-
 The Basic Idea
 ====================
 
@@ -67,7 +66,6 @@ In particular, we take
 
     p = N(\hat x, \Sigma)
 
-
 where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
 :math:`2 \times 2` covariance matrix.  In our simulations, we will suppose that
 
@@ -90,55 +88,56 @@ where :math:`\hat x` is the mean of the distribution and :math:`\Sigma` is a
     \end{array}
       \right)
 
-
 This density :math:`p(x)` is shown below as a contour map, with the center of the red ellipse being equal to :math:`\hat x`
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    using Test 
+    using Test
 
 .. code-block:: julia
-  :class: collapse
 
     using Plots, Distributions
 
-    gr(fmt=:png) # plots setup
+    gr(fmt = :png) # plots setup
 
-    # set up prior objects 
+.. code-block:: julia
+    :class: collapse
+
+    # set up prior objects
     Σ = [0.4  0.3
-            0.3 0.45]
+         0.3  0.45]
     x_hat = [0.2, -0.2]
 
     # define G and R from the equation y = Gx + N(0, R)
-    G = I # this is a generic identity object that conforms to the right dimensions 
+    G = I # this is a generic identity object that conforms to the right dimensions
     R = 0.5 .* Σ
 
-    # define A and Q 
+    # define A and Q
     A = [1.2  0
-            0   -0.2]
+         0   -0.2]
     Q = 0.3Σ
 
-    y = [2.3, -1.9] 
+    y = [2.3, -1.9]
 
-    # plotting objects 
-    x_grid = range(-1.5, 2.9, length = 100) 
+    # plotting objects
+    x_grid = range(-1.5, 2.9, length = 100)
     y_grid = range(-3.1, 1.7, length = 100)
 
-    # generate distribution  
+    # generate distribution
     dist = MvNormal(x_hat, Σ)
     two_args_to_pdf(dist) = (x, y) -> pdf(dist, [x, y]) # returns a function to be plotted
 
-    # plot 
-    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = true, levels = 6, color = :lightrainbow, alpha = 0.6, cbar = false) # saves us the trouble of reshaping a data matrix to be a Cartesian grid 
+    # plot
+    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = true, levels = 6, color = :lightrainbow, alpha = 0.6, cbar = false) # saves us the trouble of reshaping a data matrix to be a Cartesian grid
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "First Plot Tests" begin
         @test Q == [0.12 0.09; 0.09 0.135]
-        @test G isa UniformScaling 
-    end 
+        @test G isa UniformScaling
+    end
 
 The Filtering Step
 --------------------
@@ -150,12 +149,10 @@ The good news is that the missile has been located by our sensors, which report 
 The next figure shows the original prior :math:`p(x)` and the new reported
 location :math:`y`
 
-
 .. code-block:: julia
 
   # plot the figure
   annotate!(y[1], y[2], "y", color = :black)
-
 
 The bad news is that our sensors are imprecise.
 
@@ -166,7 +163,6 @@ In particular, we should interpret the output of our sensor not as
     :label: kl_measurement_model
 
     y = G x + v, \quad \text{where} \quad v \sim N(0, R)
-
 
 Here :math:`G` and :math:`R` are :math:`2 \times 2` matrices with :math:`R`
 positive definite.  Both are assumed known, and the noise term :math:`v` is assumed
@@ -182,7 +178,6 @@ us to  update our prior :math:`p(x)` to :math:`p(x \,|\, y)` via
 .. math::
 
     p(x \,|\, y) = \frac{p(y \,|\, x) \, p(x)} {p(y)}
-
 
 where :math:`p(y) = \int p(y \,|\, x) \, p(x) dx`
 
@@ -200,7 +195,6 @@ In particular, the solution is known [#f1]_ to be
 
     p(x \,|\, y) = N(\hat x^F, \Sigma^F)
 
-
 where
 
 .. math::
@@ -210,45 +204,40 @@ where
     \quad \text{and} \quad
     \Sigma^F := \Sigma - \Sigma G' (G \Sigma G' + R)^{-1} G \Sigma
 
-
 Here  :math:`\Sigma G' (G \Sigma G' + R)^{-1}` is the matrix of population regression coefficients of the hidden object :math:`x - \hat x` on the surprise :math:`y - G \hat x`
 
 This new density :math:`p(x \,|\, y) = N(\hat x^F, \Sigma^F)` is shown in the next figure via contour lines and the color map
 
 The original density is left in as contour lines for comparison
 
-
-
 .. code-block:: julia
 
-    # define posterior objects 
+    # define posterior objects
     M = Σ * G' * inv(G * Σ * G' + R)
     x_hat_F = x_hat + M * (y - G * x_hat)
     Σ_F = Σ - M * G * Σ
 
-    # plot the new density on the old plot 
+    # plot the new density on the old plot
     newdist = MvNormal(x_hat_F, Symmetric(Σ_F)) # because Σ_F
     contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 6, color = :grays, cbar = false)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Updated Belief Tests" begin
         @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 1.1102230246251565e-16 0.6666666666666667]
         @test Σ_F ≈ [0.13333333333333325 0.09999999999999992; 0.09999999999999998 0.15000000000000002]
-    end 
+    end
 
 Our new density twists the prior :math:`p(x)` in a direction determined by  the new
 information :math:`y - G \hat x`
 
 In generating the figure, we set :math:`G` to the identity matrix and :math:`R = 0.5 \Sigma` for :math:`\Sigma` defined in :eq:`kalman_dhxs`
 
-
 .. _kl_forecase_step:
 
 The Forecast Step
 -------------------
-
 
 What have we achieved so far?
 
@@ -270,7 +259,6 @@ Let's suppose that we have one, and that it's linear and Gaussian. In particular
 
     x_{t+1} = A x_t + w_{t+1}, \quad \text{where} \quad w_t \sim N(0, Q)
 
-
 Our aim is to combine this law of motion and our current distribution :math:`p(x \,|\, y) = N(\hat x^F, \Sigma^F)` to come up with a new *predictive* distribution for the location in one unit of time
 
 In view of :eq:`kl_xdynam`, all we have to do is introduce a random vector :math:`x^F \sim N(\hat x^F, \Sigma^F)` and work out the distribution of :math:`A x^F + w` where :math:`w` is independent of :math:`x^F` and has distribution :math:`N(0, Q)`
@@ -286,7 +274,6 @@ Elementary calculations and the expressions in :eq:`kl_filter_exp` tell us that
     = A \hat x^F
     = A \hat x + A \Sigma G' (G \Sigma G' + R)^{-1}(y - G \hat x)
 
-
 and
 
 .. math::
@@ -295,7 +282,6 @@ and
     = A \operatorname{Var}[x^F] A' + Q
     = A \Sigma^F A' + Q
     = A \Sigma A' - A \Sigma G' (G \Sigma G' + R)^{-1} G \Sigma A' + Q
-
 
 The matrix :math:`A \Sigma G' (G \Sigma G' + R)^{-1}` is often written as
 :math:`K_{\Sigma}` and called the *Kalman gain*
@@ -314,7 +300,6 @@ Our updated prediction is the density :math:`N(\hat x_{new}, \Sigma_{new})` wher
         \Sigma_{new} &:= A \Sigma A' - K_{\Sigma} G \Sigma A' + Q \nonumber
     \end{aligned}
 
-
 * The density :math:`p_{new}(x) = N(\hat x_{new}, \Sigma_{new})` is called the *predictive distribution*
 
 The predictive distribution is the new density shown in the following figure, where
@@ -332,24 +317,23 @@ the update has used parameters
       \qquad
     Q = 0.3 * \Sigma
 
-
 .. code-block:: julia
 
-    # get the predictive distribution 
+    # get the predictive distribution
     new_x_hat = A * x_hat_F
-    new_Σ = A * Σ_F * A' + Q    
+    new_Σ = A * Σ_F * A' + Q
     predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
 
     # Plot Density 3
     contour!(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, levels = 6, color = :grays, cbar = false)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Prediction Test" begin
         @test new_x_hat ≈ [1.9199999999999995, 0.26666666666666655]
         @test new_Σ ≈ [0.312 0.066; 0.066 0.141]
-    end 
+    end
 
 The Recursive Procedure
 -------------------------
@@ -386,7 +370,6 @@ Repeating :eq:`kl_mlom0`, the dynamics for :math:`\hat x_t` and :math:`\Sigma_t`
         \Sigma_{t+1} &= A \Sigma_t A' - K_{\Sigma_t} G \Sigma_t A' + Q \nonumber
     \end{aligned}
 
-
 These are the standard dynamic equations for the Kalman filter (see, for example, :cite:`Ljungqvist2012`, page 58)
 
 .. _kalman_convergence:
@@ -413,7 +396,6 @@ To study this topic, let's expand the second equation in :eq:`kalman_lom`:
 
     \Sigma_{t+1} = A \Sigma_t A' -  A \Sigma_t G' (G \Sigma_t G' + R)^{-1} G \Sigma_t A' + Q
 
-
 This is a nonlinear difference equation in :math:`\Sigma_t`
 
 A fixed point of :eq:`kalman_sdy` is a constant matrix :math:`\Sigma` such that
@@ -422,7 +404,6 @@ A fixed point of :eq:`kalman_sdy` is a constant matrix :math:`\Sigma` such that
     :label: kalman_dare
 
     \Sigma = A \Sigma A' -  A \Sigma G' (G \Sigma G' + R)^{-1} G \Sigma A' + Q
-
 
 Equation :eq:`kalman_sdy` is known as a discrete time Riccati difference equation
 
@@ -436,24 +417,19 @@ A sufficient (but not necessary) condition is that all the eigenvalues :math:`\l
 
 In this case, for any initial choice of :math:`\Sigma_0` that is both nonnegative and symmetric, the sequence :math:`\{\Sigma_t\}` in :eq:`kalman_sdy` converges to a nonnegative symmetric matrix :math:`\Sigma` that solves :eq:`kalman_dare`
 
-
 Implementation
 =========================
 
 .. index::
     single: Kalman Filter; Programming Implementation
 
-
 The `QuantEcon.jl`_ package is able to implement the Kalman filter by using methods for the type ``Kalman``
-
-
 
 * Instance data consists of:
 
     * The parameters :math:`A, G, Q, R` of a given model
 
     * the moments :math:`(\hat x_t, \Sigma_t)` of the current prior
-
 
 * The type ``Kalman`` from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package has a number of methods, some that we will wait to use until we study more advanced applications in subsequent lectures
 
@@ -467,13 +443,10 @@ The `QuantEcon.jl`_ package is able to implement the Kalman filter by using meth
 
     * a ``stationary_values``, which computes the solution to :eq:`kalman_dare` and the corresponding (stationary) Kalman gain
 
-
 You can view the program `on GitHub <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/kalman.jl>`__
-
 
 Exercises
 =============
-
 
 .. _kalman_ex1:
 
@@ -503,7 +476,6 @@ Your figure should -- modulo randomness -- look something like this
 .. figure:: /_static/figures/kl_ex1_fig.png
    :scale: 100%
 
-
 .. _kalman_ex2:
 
 Exercise 2
@@ -518,7 +490,6 @@ To get a better idea, choose a small :math:`\epsilon > 0` and calculate
 
     z_t := 1 - \int_{\theta - \epsilon}^{\theta + \epsilon} p_t(x) dx
 
-
 for :math:`t = 0, 1, 2, \ldots, T`
 
 Plot :math:`z_t` against :math:`T`, setting :math:`\epsilon = 0.1` and :math:`T = 600`
@@ -527,7 +498,6 @@ Your figure should show error erratically declining something like this
 
 .. figure:: /_static/figures/kl_ex2_fig.png
    :scale: 100%
-
 
 .. _kalman_ex3:
 
@@ -569,7 +539,6 @@ Set
     \end{array}
       \right)
 
-
 To initialize the prior density, set
 
 .. math::
@@ -582,7 +551,6 @@ To initialize the prior density, set
     \end{array}
       \right)
 
-
 and :math:`\hat x_0 = (8, 8)`
 
 Finally, set :math:`x_0 = (0, 0)`
@@ -593,7 +561,6 @@ You should end up with a figure similar to the following (modulo randomness)
    :scale: 100%
 
 Observe how, after an initial learning period, the Kalman filter performs quite well, even relative to the competitor who predicts optimally with knowledge of the latent state
-
 
 .. _kalman_ex4:
 
@@ -606,10 +573,8 @@ Observe how the diagonal values in the stationary solution :math:`\Sigma` (see :
 
 The interpretation is that more randomness in the law of motion for :math:`x_t` causes more (permanent) uncertainty in prediction
 
-
 Solutions
 ==========
-
 
 .. code-block:: julia
 
@@ -631,7 +596,7 @@ Exercise 1
 
     xgrid = range(θ - 5, θ + 2, length = 200)
     densities = zeros(200, 5) # one column per round of updating
-    for i in 1:5 
+    for i in 1:5
         # record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         densities[:, i] = pdf.(Normal(m, sqrt(v)), xgrid)
@@ -645,15 +610,15 @@ Exercise 1
 
     labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
     plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
-            title = "First 5 densities when θ = $θ")
+            title = "First 5 densities when theta = $θ")
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     @testset "Solution 1 Tests" begin
         @test length(xgrid) == 200 && xgrid[1] == 5.0 && xgrid[end] == 12.0
         @test densities[4, 1] == 0.006048628905320978
-    end 
+    end
 
 Exercise 2
 ----------
@@ -683,13 +648,13 @@ Exercise 2
 
     plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,xlims=(0, T), legend = false)
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solution 2 Tests" begin 
+    @testset "Solution 2 Tests" begin
         @test z[4] == 0.9310333042533682
-        @test T == 600 
-    end 
+        @test T == 600
+    end
 
 Exercise 3
 ----------
@@ -745,14 +710,14 @@ Exercise 3
     plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
     plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
-    @testset "Solution 3 Tests" begin 
+    @testset "Solution 3 Tests" begin
         @test e1[2] == 5.123448550499836
         @test e2[19] == 0.03717649374189149
         @test x[1] == 0.9619597742127561 && x[2] == 0.8669993304801348
-    end 
+    end
 
 .. rubric:: Footnotes
 
