@@ -267,7 +267,7 @@ then increase the number of agents.
     end
 
     println("Converged, terminating")
-    plot(plot_array..., layout=(count-1,1), size=(400,(count-1)*400))
+    plot(plot_array..., layout=(count-1,1), size=(600,(count-1)*400))
 
 .. code-block:: julia
   :class: test
