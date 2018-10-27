@@ -152,7 +152,7 @@ then increase the number of agents.
 
     using Plots, Random, LinearAlgebra
     gr(fmt=:png)
-    
+
     Random.seed!(42)  # set seed for random numbers. Reproducible output
 
 
@@ -245,12 +245,12 @@ then increase the number of agents.
     push!(agents, [Agent(1) for i in 1:num_of_type_1]...)
 
     count = 1
+    plot_array = Any[]
 
     # ==  Loop until none wishes to move == #
     while true
         println("Entering loop $count")
-        p = plot_distribution(agents, count)
-        display(p)
+        push!(plot_array, plot_distribution(agents, count))
         count += 1
         no_one_moved = true
         movers = 0
@@ -267,7 +267,7 @@ then increase the number of agents.
     end
 
     println("Converged, terminating")
-
+    plot(plot_array..., layout=(count-1,1), size=(400,(count-1)*400))
 
 .. code-block:: julia
   :class: test
