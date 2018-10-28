@@ -165,7 +165,7 @@ While you will never have a ``Real`` number directly in memory, the abstract typ
 .. Instead, it provides a way to write :doc:`generic <generic_programming>` code for specific to any concrete types based on ``Real``
 
 .. We saw above that ``Float64`` is the standard type for representing a 64 bit
-floating point number
+.. floating point number
 
 .. But we've also seen references to types such as ``Real`` and ``AbstractFloat``
 
@@ -516,6 +516,91 @@ However, the other issue where constructor arguments are error-prone, can be rem
     end
     f(foo)
 
+.. _generic_tips_tricks:
+
+Tips and Tricks for Writing Generic Functions
+------------------------------------------------
+
+As discussed in the previous sections, there is major advantage to never declaring a type unless it is absolutely necessary
+
+The main place where it is necessary is designing code around `multiple dispatch <intro_multiple_dispatch>`_
+
+If you are careful in writing ensuring code that doesn't unnecessarily assume a particular set of types, it will both have higher performance and let you seamlessly use a number of powerful libraries such as `auto-differentiation <https://github.com/JuliaDiff/ForwardDiff.jl>`_, `static arrays <https://github.com/JuliaArrays/StaticArrays.jl>`_, `GPUs <https://github.com/JuliaGPU/CuArrays.jl>`_, `interval arithmetic and root finding <https://github.com/JuliaIntervals/IntervalRootFinding.jl>`_, `arbitrary precision numbers <https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/index.html#Arbitrary-Precision-Arithmetic-1>`_, and many more packages--including ones that have not even been written yet
+
+A few simple programming patterns will ensure that this is possible
+
+* **Do not declare types when declaring variables or functions unless necessary**
+
+.. code-block:: julia
+
+  # BAD
+    x = [5.0, 6.0, 2.1] 
+    function f(x::Array{Float64, 1}) # not generic!
+        y = zeros(length(x)) # not generic, hidden float!
+        z = Diagonal(ones(length(x))) # not generic, hidden float!
+        q = ones(length(x))
+        y .= z * x + q
+        return y
+    end
+    f(x)
+
+    # GOOD
+    function f2(x) # or x::AbstractVector
+        y = similar(x)
+        z = I
+        q = ones(eltype(x), length(x)) # or fill(one(x), length(x))
+        y .= z * x + q
+        return y
+    end
+    f2(x)
+
+* **Preallocate related vector with ``similar`` where possible, and use ``eltype`` or ``typeof``**
+
+.. code-block:: julia
+
+    function f(x)
+        y = similar(x)
+        for i in eachindex(x)
+            y[i] = x[i]^2 # of course, could broadcast
+        end 
+        return y
+    end
+    f([BigInt(1), BigInt(2)])
+
+* **Use typeof or eltype when you need to declare a type**
+
+.. code-block:: julia
+
+    @show typeof([1.0, 2.0, 3.0])
+    @show eltype([1.0, 2.0, 3.0]);
+
+* **Beware of hidden floating points**.  
+
+.. code-block:: julia
+
+    @show typeof(ones(3))
+    @show typeof(ones(Int64, 3))
+    @show typeof(zeros(3))
+    @show typeof(zeros(Int64, 3));
+
+* **Prefer ``one`` and ``zero`` when writing generic code**
+
+.. code-block:: julia
+
+    @show typeof(1)
+    @show typeof(1.0)
+    @show typeof(BigFloat(1.0))
+    @show typeof(one(BigFloat)) # gets multiplicative identity, passing in type
+    @show typeof(zero(BigFloat)) 
+    x = BigFloat(2)
+    @show typeof(one(x)) # can call with a variable for convenience
+    @show typeof(zero(x));
+
+These patterns are relatively straightforward, but think of generic programming as a Leontief production function:  if *any* of the functions you write or call are not careful, then it may break the chain
+
+This is all the more reason to exploit carefully designed packages rather than a "do-it-yourself" approach to coding
+
+.. _intro_multiple_dispatch:
 
 Introduction to Multiple Dispatch
 ===================================
@@ -704,7 +789,69 @@ This is the "multiple" in multiple-dispatch
 Exercises
 =============
 
-Exercise 1 (Advanced)
+Exercise 1
+-----------------
+
+Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArrays.jl>`_ 
+
+* Describe 2 abstract types and the hierarchy of 3 different concrete types
+* Benchmark the calculation of some simple linear algebra with a static array compared to the following for a dense arrays for ``N=3`` and ``N=15``
+  
+.. code-block:: julia
+
+    using BenchmarkTools
+    N = 3
+    A = rand(N, N)
+    x = rand(N)
+    @btime $A * $x # the $ in front of variable names is sometimes important
+    @btime inv($A)
+
+Exercise 2
+-------------
+A key step in the calculation of the Kalman Filter is calculateion of the Kalman gain, as can be seen with the following example using dense matrices from `this lecture <kalman>`_
+
+Using what you learned from Exercise 1, benchmark this using Static Arrays
+
+.. code-block:: julia
+
+    Σ = [0.4  0.3;
+        0.3 0.45]
+    G = I
+    R = 0.5 * Σ
+
+    gain(Σ, G, R) = Σ * G' * inv(G * Σ * G' + R)
+    @btime gain($Σ, $G, $R)
+
+How many times faster are static arrays in this example?
+
+Exercise 3
+---------------
+
+The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a package for simple univariate Polynomials
+
+.. code-block:: julia
+
+    using Polynomials
+    p = Poly([2, -5, 2], :x) # :x just gives a symbol for display
+    @show p
+    p′ = polyder(p) # gives the derivative of p, another polynomial
+    @show p(0.1), p′(0.1) # call like a function
+    @show roots(p); # find roots such that p(x) = 0
+
+
+Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
+
+Exercise 4
+--------------
+
+Using your solution to Exercise 8(a/b) in the `Julia By Example Lecture <julia_by_example>`_ to create a specialized version of Newton's method for Polynomials, using the ``polyder`` function
+
+The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``, where the ``p::Poly`` ensure that this version of the function will be used anytime a polynomial is passed (i.e. dispatch)
+
+Compare the results of this function to the built in ``roots(p)`` 
+
+
+Exercise 5 (Advanced)
 -----------------------
 
 The `trapezoidal rule <https://en.wikipedia.org/wiki/Trapezoidal_rule>`_  approximate an integral with
@@ -735,3 +882,29 @@ When trying different functions, instead of integrating by hand consider using a
     using QuadGK
     f(x) = x^2
     value, accuracy = quadgk(f, 0.0, 1.0)
+    
+Exercise 6 (Advanced)
+-----------------------
+
+Take a variation of your code in Exercise 5 which implements the trapezoidal rule for the uniform grid
+
+Use auto-differentation to calculate the following derivative for the example functions
+
+.. math::
+
+    \frac{d}{d \bar{x}}\int_\underline{x}^\bar{x} f(x) \, dx
+
+Hint: See the following code for the general pattern, and be careful to follow the `rules for generic programming <_generic_tips_tricks>`_
+
+.. code-block:: julia
+
+    function f(a, b; N = 50)
+        r = range(a, b, length=N) # one 
+    return mean(r)
+    end
+    Df(x) = ForwardDiff.derivative(y -> f(0.0, y), x) 
+
+    using ForwardDiff
+    @show f(0.0, 3.0)
+    @show f(0.0, 3.1)
+    Df(3.0)
