@@ -90,79 +90,76 @@ Setup
 ^^^^^^^
 
 
-1. `Install Docker <https://docs.docker.com/install>`_
+Install `Docker <https://docs.docker.com/install>`_
     
-    * Link `for Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+* Link for `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+* For `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. Don't click the line for Windows containers
+* Note: You may need to create an account on Docker's website to download 
 
-    * For `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. Don't click the line for Windows containers
+Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
 
-    * Note: You may need to create an account on Docker's website to download 
+Test your Docker setup (run ``docker version`` in the terminal, and check there are no obvious errors)
 
-2. Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
+Download the QuantEcon Docker image by running the following in your terminal (this may some time depending on your internet connection)
 
-3. Test your Docker setup
+.. code-block:: none
 
-    * Run ``docker version`` in the terminal, and check there are no obvious errors
+    docker pull quantecon/base
 
-4. Download the QuantEcon Docker image by running the following in your terminal (this may some time depending on your internet connection)
+After this is finished, first clear any existing volumes and then create a persistent storage volume
 
-    .. code-block:: none
+.. code-block:: none
 
-        docker pull quantecon/base
-
-5. After this is finished, first clear any existing volumes and then create a persistent storage volume
-
-    .. code-block:: none
-
-        docker volume rm quantecon 
-        docker volume create quantecon 
+    docker volume rm quantecon 
+    docker volume create quantecon 
 
 Running in a Local Folder
 --------------------------
 
 The Docker image has can exchange files local to where it is run
 
-1. Open a terminal and ``cd`` to the directory you are interested in storing local files
+Open a terminal and ``cd`` to the directory you are interested in storing local files
 
-2. To run an image local to those files, type the following in the terminal (on Linux and OSX)
+To run an image local to those files, type the following in the terminal (on Linux and OSX)
 
-    .. code-block:: none
+.. code-block:: none
 
-        docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
 
-    And on Powershell,
+And on Powershell,
 
-    .. code-block:: none
+.. code-block:: none
 
-        docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
 
-    **Remark:** When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
+**Remark:** When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
 
-3. In the output, you should see some text near that bottom that looks like 
+In the output, you should see some text near that bottom that looks like 
 
-    .. code-block:: none
+.. code-block:: none
 
-        127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b 
+    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b 
 
-4. Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
+Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
 
-5. In a browser, go to a URL like the following
+In a browser, go to a URL like the following
 
-    .. code-block:: none
+.. code-block:: none
 
-            http://127.0.0.1:8888/lab
+        http://127.0.0.1:8888/lab
 
-6. Paste the text into ``Password or token:`` and choose ``Log in``
+**Note**: ``Ctrl+C`` is also the keyboard shortcut you use to kill the container. So be sure to copy using the mouse. 
 
-5. Ensure you save any important files to the local notebooks in the ``local`` directory, which uses your local filesystem
+Paste the text into ``Password or token:`` and choose ``Log in``
+
+Ensure you save any important files to the local notebooks in the ``local`` directory, which uses your local filesystem
 
 
 A few useful maintenance features
 
 * To stop the container, use `Ctrl-C` or type ``docker stop $(docker ps -aq)`` in a different terminal
 * To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
-.. Is this really necessary?
-.. * To clean unnecessary Docker assets from your system, run ``docker system prune`` 
+* To clean unnecessary Docker assets from your system, run ``docker system prune`` 
 
 
 .. _jl_jupyterlocal:
