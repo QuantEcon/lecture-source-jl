@@ -489,7 +489,7 @@ Here's an implementation:
 .. code-block:: julia
 
     function compute_reservation_wage_two(c; β = 0.99, max_iter = 500, tol = 1e-5)
-        ψ = E*w_vals ./ (1 - β)
+        ψ = E * w_vals ./ (1 - β)
         s(ψ) = max.((w_vals ./ (1 - β)), ψ)
         ψ_star = fixedpoint(ψ -> [c + β * E * s(ψ[1])], [ψ], inplace = false).zero[1]
         return (1 - β) * (c + β * ψ_star)
