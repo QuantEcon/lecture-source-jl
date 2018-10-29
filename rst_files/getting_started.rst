@@ -171,19 +171,18 @@ While using the Docker instance is convenient and error-proof, you may eventuall
 
 The easiest way to do that is to install Anaconda for a full Python and Jupyter environment, 
 
-#. Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ and follow the instructions
+Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ and follow the instructions
 
-  * If you are asked during the installation process whether you'd like to make Anaconda your default Python installation, say yes --- you can always remove it later
-  * Otherwise you can accept all of the defaults
-  * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
-  * Make sure you follow the instructions for using the ``conda`` command in your path. 
+* If you are asked during the installation process whether you'd like to make Anaconda your default Python installation, say yes --- you can always remove it later
+* Otherwise you can accept all of the defaults
+* Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
+* Make sure you follow the instructions for using the ``conda`` command in your path. 
 
-#. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
+Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
 
-#. Assuming there were no problems, you should now be able to start Julia either by
+Assuming there were no problems, you should now be able to start Julia either by
 
 * Navigating to Julia through your menus or desktop icons (Windows, OSX), or
-
 * Opening a terminal and typing ``julia`` (Linux)
 
 Either way you should now be looking at something like this (modulo your operating system --- this is a Linux machine)
@@ -191,7 +190,7 @@ Either way you should now be looking at something like this (modulo your operati
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 75%
 
-#. In that ``julia`` terminal, type the following
+In that ``julia`` terminal, type the following
 
 .. code-block:: julia
 
@@ -202,7 +201,7 @@ Then, install and precompile all of the key packages for these lecture notes (wh
 
 .. literalinclude:: /_static/includes/deps.jl    
 
-#. To run Jupyter, in a terminal type 
+To run Jupyter, in a terminal type 
 
 .. code-block:: none
 
