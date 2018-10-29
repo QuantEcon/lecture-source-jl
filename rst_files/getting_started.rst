@@ -173,9 +173,7 @@ The easiest way to do that is to install Anaconda for a full Python and Jupyter 
 
 Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version) and follow the instructions
 
-* If you are asked during the installation process whether you'd like to make Anaconda your default Python installation, say yes --- you can always remove it later. 
-* Make sure you click yes to "add Anaconda to my PATH." If you'd rather do that later, see: `here <http://docs.anaconda.com/anaconda/install/windows/>`_.
-* Otherwise you can accept all of the defaults
+* Make sure you click yes to "add Anaconda to my PATH." If you'd rather do that later, see: `Windows <http://docs.anaconda.com/anaconda/install/windows/>` and `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_. 
 * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
 
 Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
