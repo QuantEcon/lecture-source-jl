@@ -44,7 +44,7 @@ As we have seen in the previous lectures, in Julia all values have a type, which
     @show typeof(1)
     @show typeof(1.0);
 
-The harcoded values ``1`` and ``1.0`` are called literals in a programming language, and the compiler will deduce their types (``Int64`` and ``Float64`` respectively in the example above)
+The hard-coded values ``1`` and ``1.0`` are called literals in a programming language, and the compiler will deduce their types (``Int64`` and ``Float64`` respectively in the example above)
 
 You can also query the type of a value
 
@@ -529,114 +529,162 @@ If you are careful in writing ensuring code that doesn't unnecessarily assume a 
 
 A few simple programming patterns will ensure that this is possible
 
-* **Do not declare types when declaring variables or functions unless necessary**
+* Do not declare types when declaring variables or functions unless necessary
 
-.. code-block:: julia
+    .. code-block:: julia
 
-  # BAD
-    x = [5.0, 6.0, 2.1] 
-    function f(x::Array{Float64, 1}) # not generic!
-        y = zeros(length(x)) # not generic, hidden float!
-        z = Diagonal(ones(length(x))) # not generic, hidden float!
-        q = ones(length(x))
-        y .= z * x + q
-        return y
-    end
-    f(x)
+        # BAD
+        x = [5.0, 6.0, 2.1] 
+        function g(x::Array{Float64, 1}) # not generic!
+            y = zeros(length(x)) # not generic, hidden float!
+            z = Diagonal(ones(length(x))) # not generic, hidden float!
+            q = ones(length(x))
+            y .= z * x + q
+            return y
+        end
+        g(x)
 
-    # GOOD
-    function f2(x) # or x::AbstractVector
-        y = similar(x)
-        z = I
-        q = ones(eltype(x), length(x)) # or fill(one(x), length(x))
-        y .= z * x + q
-        return y
-    end
-    f2(x)
+        # GOOD
+        function g2(x) # or x::AbstractVector
+            y = similar(x)
+            z = I
+            q = ones(eltype(x), length(x)) # or fill(one(x), length(x))
+            y .= z * x + q
+            return y
+        end
+        g2(x)
 
-* **Preallocate related vector with ``similar`` where possible, and use ``eltype`` or ``typeof``**
+* Preallocate related vector with ``similar`` where possible, and use ``eltype`` or ``typeof``
 
-.. code-block:: julia
+    .. code-block:: julia
 
-    function f(x)
-        y = similar(x)
-        for i in eachindex(x)
-            y[i] = x[i]^2 # of course, could broadcast
-        end 
-        return y
-    end
-    f([BigInt(1), BigInt(2)])
+        function g(x)
+            y = similar(x)
+            for i in eachindex(x)
+                y[i] = x[i]^2 # of course, could broadcast
+            end 
+            return y
+        end
+        g([BigInt(1), BigInt(2)])
 
-* **Use typeof or eltype when you need to declare a type**
+* Use typeof or eltype when you need to declare a type
 
-.. code-block:: julia
+    .. code-block:: julia
 
-    @show typeof([1.0, 2.0, 3.0])
-    @show eltype([1.0, 2.0, 3.0]);
+        @show typeof([1.0, 2.0, 3.0])
+        @show eltype([1.0, 2.0, 3.0]);
 
-* **Beware of hidden floating points**.  
+* Beware of hidden floating points
 
-.. code-block:: julia
+    .. code-block:: julia
 
-    @show typeof(ones(3))
-    @show typeof(ones(Int64, 3))
-    @show typeof(zeros(3))
-    @show typeof(zeros(Int64, 3));
+        @show typeof(ones(3))
+        @show typeof(ones(Int64, 3))
+        @show typeof(zeros(3))
+        @show typeof(zeros(Int64, 3));
 
-* **Prefer ``one`` and ``zero`` when writing generic code**
+* Use ``one`` and ``zero`` when you need to write generic code
 
-.. code-block:: julia
+    .. code-block:: julia
 
-    @show typeof(1)
-    @show typeof(1.0)
-    @show typeof(BigFloat(1.0))
-    @show typeof(one(BigFloat)) # gets multiplicative identity, passing in type
-    @show typeof(zero(BigFloat)) 
-    x = BigFloat(2)
-    @show typeof(one(x)) # can call with a variable for convenience
-    @show typeof(zero(x));
+        @show typeof(1)
+        @show typeof(1.0)
+        @show typeof(BigFloat(1.0))
+        @show typeof(one(BigFloat)) # gets multiplicative identity, passing in type
+        @show typeof(zero(BigFloat)) 
+        x = BigFloat(2)
+        @show typeof(one(x)) # can call with a variable for convenience
+        @show typeof(zero(x));
+
+    This last example is a subtle, because of something called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_
+
+* Assume reasonable type promotion exists for numeric types
+
+    .. code-block:: julia
+
+        # ACCEPTABLE
+        function g(x::AbstractFloat)
+            return x + 1.0 # Assumes that `1.0` can be converted to something compatible with typeof(x)
+        end
+        x = BigFloat(1.0)
+        @show typeof(g(x)); # This has "promoted" the 1.0 to a BigFloat
+
+    But sometimes assuming promotion is not enough 
+
+    .. code-block:: julia
+
+        # BAD
+        function g2(x::AbstractFloat)
+            if x > 0.0 # can't efficiently call with x::Integer
+                return x + 1.0 # ok.  assumes can promote Float64 to the AbstractFloat
+            otherwise 
+                return 0 # bad! Returns a Int64
+            end
+        end
+        x = BigFloat(1.0)
+        x2 = BigFloat(-1.0)
+        @show typeof(g2(x))
+        @show typeof(g2(x2)) # type unstable
+
+        # GOOD
+        function g3(x) #
+            if x > zero(x) # any type with an additive identity
+                return x + one(x) # More general, but less important of a change
+            otherwise 
+                return zero(x)
+            end
+        end        
+        @show typeof(g3(x))
+        @show typeof(g3(x2)); # type stable
+
 
 These patterns are relatively straightforward, but think of generic programming as a Leontief production function:  if *any* of the functions you write or call are not careful, then it may break the chain
 
 This is all the more reason to exploit carefully designed packages rather than a "do-it-yourself" approach to coding
 
-
 A Digression on Style and Naming
 ------------------------------------
 
-The previous section helps establish some of the reasons behind the key style choice in these lecture notes: "be aware of types, but avoid declaring them"
+The previous section helps establishes some of the reasoning behind the key style choice in these lectures: "be aware of types, but avoid declaring them"
 
 The purpose of this is threefold
 
-* provide easy to read code with miminal "syntactic noise" and a clear correspondence to the math
+* provide easy to read code with minimal "syntactic noise" and a clear correspondence to the math
 * ensure that code is sufficiently generic to exploit other packages and types
-* avoid common mistakes and unncessary performance degredations
+* avoid common mistakes and unnecessary performance degradations
 
 This is just one of many decisions and patterns to ensure that your code is consistent and clear
 
-It is worth reviewing some of the key
+The best resource is to carefully read other peoples code, but a few sources to review are
 
-* **TODO**
-
+* `Julia Style Guide <https://docs.julialang.org/en/v1/manual/style-guide/>`_
+* `Julia Praxis Naming Guides <https://github.com/JuliaPraxis/Naming/tree/master/guides>`_
+* `QuantEcon Style Guide <https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md>`_ used in these lectures
 
 Now why would we emphasize naming as style as a crucial part of the lectures?
 
-Because it is an essential tool for creating research that is **reproducible** and likely **correct**
+Because it is an essential tool for creating research that is **reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_(computer_science)>`_
 
 Some helpful ways to think about this are 
 
 * **Clearly written code is easier to review for errors**: The first-order concern of any code is that it correctly implements the whiteboard math
-* **Code is read many more times than it is written**: Saving a few keystrokes in typing a variable name is never worth it, nor is a divergence from the mathematical notation adding extra text when a single symbol for a variable name would map better to the model
-* **Write code to be read in the future, not today**: If you are not sure anyone else will read the code, then write it for a future version of your self who may have forgotten everything your current self is currently thinking--which is probably fairly accurate correct 
+* **Code is read many more times than it is written**: Saving a few keystrokes in typing a variable name is never worth it, nor is a divergence from the mathematical notation where a single symbol for a variable name would map better to the model
+* **Write code to be read in the future, not today**: If you are not sure anyone else will read the code, then write it for an ignorant future version of your self who may have forgotten everything, and is likely to misuse the code
 * **Maintain the correspondence between the whiteboard math and the code**: For example, if you change notation in your model, then immediately update all variables in the code to reflect it
 
-One common mistake people make when trying to apply these goals is to provide both a large number of comments
 
-Over the years, people have found that excess comments in code (and *especially* big comment templates used before every function declaration) can make code harder to read
+Commenting Code
+^^^^^^^^^^^^^^^^^^^
 
-The issue is one of syntactic noise: if most of the comments are redundant given clear variable and function names, then the comments make it more difficult to mentally parse and read
+One common mistake people make when trying to apply these goals is to add in a large number of comments
 
-If you examine Julia code in packages and the core language, you will see a great amount of care taken in function and variable names, and only the addition of comments where it is helpful
+Over the years, developers have found that excess comments in code (and *especially* big comment headers used before every function declaration) can make code *harder* to read
+
+The issue is one of syntactic noise: if most of the comments are redundant given clear variable and function names, then the comments make it more difficult to mentally parse and read the code
+
+If you examine Julia code in packages and the core language, you will see a great amount of care taken in function and variable names, and comments are only added where helpful
+
+For creating packages that you intend others to use, instead of a comment header, you should use `docstrings <https://docs.julialang.org/en/v1/manual/documentation/index.html#Syntax-Guide-1>`_
 
 
 
@@ -659,7 +707,7 @@ To see this in action, consider the absolute value function ``abs``
 
 In all of these cases, the ``abs`` function has specialized code depending on the type passed in
 
-To do this, you need to specify different **methods** of the function which operate on a particular set of types
+To do this, a function specifies different **methods** which operate on a particular set of types
 
 Unlike most cases we have seen before, this requires a type annotation
 
@@ -711,7 +759,7 @@ In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the for
 
 To implement this calculation for a vector of inputs, we notice that there is a specialized implementation if the grid is uniform
 
-The uniform grid can be implemented using an `AbstractRange`, which we can analyze with ``typeof, supertype`` and ``show_supertypes``
+The uniform grid can be implemented using an ``AbstractRange``, which we can analyze with ``typeof, supertype`` and ``show_supertypes``
 
 .. code-block:: julia
 
@@ -795,13 +843,13 @@ We can use auto-differentiation to compare the results
     # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
 
-    f(x) = sin(x)
+    q(x) = sin(x)
     x = 0.0:0.1:4.0
-    f_x = f.(x)
-    D_f_x = derivatives(f_x, x)
+    q_x = q.(x)
+    D_q_x = derivatives(q_x, x)
 
-    plot(x[1:end-1], D(f).(x[1:end-1]), label = "f' with AD")
-    plot!(x[1:end-1], D_f_x, label = "f'")
+    plot(x[1:end-1], D(q).(x[1:end-1]), label = "q' with AD")
+    plot!(x[1:end-1], D_q_x, label = "q'")
 
 Consider a variation where we pass a function instead of an ``AbstractArray``
 
@@ -809,9 +857,9 @@ Consider a variation where we pass a function instead of an ``AbstractArray``
 
     derivatives(f::Function, x::AbstractRange) = diff(f.(x))/step(x) # broadcast function
 
-    @show typeof(f) <: Function
-    d_f = derivatives(f, x)
-    @show d_f[1];
+    @show typeof(q) <: Function
+    d_q = derivatives(q, x)
+    @show d_q[1];
 
 Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can no longer use a uniform step
 
@@ -848,7 +896,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 Exercise 2
 -------------
-A key step in the calculation of the Kalman Filter is calculateion of the Kalman gain, as can be seen with the following example using dense matrices from `this lecture <kalman>`_
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from `this lecture <kalman>`_
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
@@ -928,7 +976,7 @@ Exercise 6 (Advanced)
 
 Take a variation of your code in Exercise 5 which implements the trapezoidal rule for the uniform grid
 
-Use auto-differentation to calculate the following derivative for the example functions
+Use auto-differentiation to calculate the following derivative for the example functions
 
 .. math::
 

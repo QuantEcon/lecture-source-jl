@@ -417,7 +417,7 @@ To demonstrate with the ``Rational`` type
 **Remark** Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular
 * ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
 * However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
-* in computer science, this is called type promotion, where a type can be converted to another to ensure an operation is possible
+* This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e. it can be independent of the type hiearchy)
 
 Moving further down the tree of types provides more operations, which start to become more tied to the computational implementation than the mathematics
 
