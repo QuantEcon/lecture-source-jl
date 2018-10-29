@@ -1288,8 +1288,12 @@ Exercise 2
 .. code-block:: julia
 
     nodes = keys(web_graph_data)
+    n = length(nodes)
     # create adjacency matrix of links (Q[i, j] = true for link, false otherwise)
-    Q = mapreduce(edges -> (nodes .∈ Ref(edges))', vcat, values(web_graph_data))
+    Q = fill(false, n, n)
+    for (node, edges) in enumerate(values(web_graph_data))
+        Q[node, nodes .∈ Ref(edges)] .= true
+    end
 
     # create the corresponding stochastic matrix
     P = Q ./ sum(Q, dims = 2)
