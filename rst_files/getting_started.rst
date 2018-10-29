@@ -53,9 +53,6 @@ In order of priority, for those just getting started, we suggest
 
 Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
 
-
-
-
 .. _jl_jupyterhub:
 
 Using Jupyter on the Cloud or Department Server
@@ -63,12 +60,9 @@ Using Jupyter on the Cloud or Department Server
 
 If you have access to a cloud based solution for Jupyter, then that is typically the easiest solution
 
-.. A few options:
-.. - juliabox?
-.. - Ask at your university.  For example, many Canadian students have access to syzygy.ca
-
+* JuliaBox, once it's working. 
+* Ask at your university.  For example, many Canadian students have access to syzygy.ca
 * Students: ask your department if these resources are available (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ in general)
-* ** REMARK:** Currently, `www.juliabox.com <www.juliabox.com>`_ does not support adding packages and cannot be used
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared Jupyterhub instance with precompiled packages ready for these lecture notes
 
 To easily install the packages used by these notebooks on a cloud-based jupyterhub installation, you will need to go open a Jupyter notebook and type
@@ -116,19 +110,17 @@ Setup
 
     docker pull quantecon/base
 
-5. After this is finished, create a persistent storage
+5. After this is finished, create a persistent storage volume
 
 .. code-block:: none
 
-    docker volume create quantecon
-
-** TODO: WAS THIS THE LAST SETUP THING FOR PERSISTENT STORAGE?**
-
+    docker volume rm quantecon # nuke anything existing with that name
+    docker volume create quantecon # will store the .julia 
 
 Running in a Local Folder
 --------------------------
 
-The Docker image has its own storage but can also access files local to where it is run
+The Docker image has can exchange files local to where it is run
 
 1. Open a terminal and ``cd`` to the directory you are interested in storing local files
 
@@ -136,32 +128,35 @@ The Docker image has its own storage but can also access files local to where it
 
 .. code-block:: none
 
-     docker run --rm -p 8888:8888 -v qe-julia:/home/jovyan/.Julia -v {pwd}:/home/jovyan/local quantecon/base 
+     docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
 
-And on Windows,
+And on Powershell,
 
 .. code-block:: none
 
-    docker run -p 8888:8888 -v {pwd}:/home/jovyan/local -v source:/home/jovyan/work quantecon/base
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
 
 3. In the output, you should see some text near that bottom that looks like 
 
 .. code-block:: none
 
-    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b
-
-or
-
-.. code-block:: none
-
-    WHATDOESITLOOKLIKEONWINDOWS????
+    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b # PowerShell and Linux
 
 4. Paste that into your browser (without the `)` before the `:8888`), and you will be accessing Jupyter in that directory.
 
 To stop the container, use `Ctrl-C` or type ``docker stop $(docker ps -aq)`` in a different terminal
 
+To save local files, make sure you write them to the machine. 
 
 .. _jl_jupyterlocal:
+
+5. To reset Docker, just: 
+
+* Clear docker volumes by clearing elements of ``docker volume ls`` (``docker volume rm $(docker volume ls -q)``)
+
+* Clear docker images by running ``docker rmi`` on ``docker images`` (or, ``docker rmi $(docker images -aq)``.)
+
+* Clear docker containers as above, by running ``docker kill $(docker ps -aq)``.)
 
 Installing Julia and Dependencies Manually
 ----------------------------------------------
@@ -174,7 +169,8 @@ The easiest way to do that is to install Anaconda for a full Python and Jupyter 
 
   * If you are asked during the installation process whether you'd like to make Anaconda your default Python installation, say yes --- you can always remove it later
   * Otherwise you can accept all of the defaults
-  * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal
+  * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
+  * Make sure you follow the instructions for using the ``conda`` command in your path. 
 
 #. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
 
@@ -185,7 +181,6 @@ The easiest way to do that is to install Anaconda for a full Python and Jupyter 
 * Opening a terminal and typing ``julia`` (Linux)
 
 Either way you should now be looking at something like this (modulo your operating system --- this is a Linux machine)
-
 
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 75%
@@ -206,9 +201,6 @@ Then, install and precompile all of the key packages for these lecture notes (wh
 .. code-block:: none
 
     jupyter lab
-
-** DO YOU NEED TO DO ANYTHING ON WINDOWS OR OSX TO GET JUPYTER IN THE PATH BY DEFAULT?  IF SO, ADD TO INSTRUCTIONS**
-
 
 .. _jl_jupyter:
 
@@ -243,8 +235,6 @@ Here's what your Julia notebook should look like
    :scale: 70%
 
 The notebook displays an *active cell*, into which you can type Julia commands
-
-
 
 Notebook Basics
 ------------------
