@@ -92,11 +92,11 @@ Setup
 
 1. Install `Docker <https://docs.docker.com/install>`_
     
-    * Link `for Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+* Link `for Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
 
-    * For `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. Don't click the line for Windows containers
+* For `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. Don't click the line for Windows containers
 
-    * Note: You may need to create an account on Docker's website to download 
+* Note: You may need to create an account on Docker's website to download 
 
 2. Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
 
@@ -106,16 +106,16 @@ Setup
 
 4. Download the QuantEcon Docker image by running the following in your terminal (this may some time depending on your internet connection)
 
-.. code-block:: none
+    .. code-block:: none
 
-    docker pull quantecon/base
+        docker pull quantecon/base
 
 5. After this is finished, create a persistent storage volume
 
-.. code-block:: none
+    .. code-block:: none
 
-    docker volume rm quantecon # nuke anything existing with that name
-    docker volume create quantecon # will store the .julia 
+        docker volume rm quantecon # nuke anything existing with that name
+        docker volume create quantecon # will store the .julia 
 
 Running in a Local Folder
 --------------------------
@@ -146,7 +146,7 @@ And on Powershell,
 
 To stop the container, use `Ctrl-C` or type ``docker stop $(docker ps -aq)`` in a different terminal
 
-To save local files, make sure you write them to the machine. 
+To save local files, make sure you write them to the ``local`` folder. 
 
 .. _jl_jupyterlocal:
 
