@@ -114,8 +114,9 @@ Setup
 
     .. code-block:: none
 
-        docker volume rm quantecon # nuke anything existing with that name
-        docker volume create quantecon # will store the .julia 
+        # reset quantecon and mount 
+        docker volume rm quantecon 
+        docker volume create quantecon 
 
 Running in a Local Folder
 --------------------------
@@ -140,7 +141,8 @@ And on Powershell,
 
 .. code-block:: none
 
-    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b # PowerShell and Linux
+    # PowerShell and Linux
+    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b 
 
 4. Paste that into your browser (without the `)` before the `:8888`), and you will be accessing Jupyter in that directory.
 
@@ -150,13 +152,7 @@ To save local files, make sure you write them to the ``local`` folder.
 
 .. _jl_jupyterlocal:
 
-5. To reset Docker, just: 
-
-* Clear docker volumes by clearing elements of ``docker volume ls`` (``docker volume rm $(docker volume ls -q)``)
-
-* Clear docker images by running ``docker rmi`` on ``docker images`` (or, ``docker rmi $(docker images -aq)``.)
-
-* Clear docker containers as above, by running ``docker kill $(docker ps -aq)``.)
+5. To reset your Docker volume, run the code in step (5) above. To clean unnecessary Docker assets from your system, run ``docker system prune``.
 
 Installing Julia and Dependencies Manually
 ----------------------------------------------
