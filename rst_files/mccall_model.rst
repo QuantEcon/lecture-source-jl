@@ -10,7 +10,6 @@ Job Search I: The McCall Search Model
 
 .. contents:: :depth: 2
 
-
 .. epigraph::
 
     "Questioning a McCall worker is like having a conversation with an out-of-work friend:
@@ -18,7 +17,6 @@ Job Search I: The McCall Search Model
     had a new one lined up?' This is real social science: an attempt to model, to understand,
     human behavior by visualizing the situation people find themselves in, the options they face
     and the pros and cons as they themselves see them." -- Robert E. Lucas, Jr.
-
 
 Overview
 ============
@@ -39,14 +37,8 @@ Here we set up McCall's model and adopt the same solution method
 
 As we'll see, McCall's model is not only interesting in its own right but also an excellent vehicle for learning dynamic programming
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The McCall Model
 =================
-
 
 .. index::
     single: Models; McCall
@@ -68,7 +60,6 @@ The worker is infinitely lived and aims to maximize the expected discounted sum 
 .. math::
     \mathbb{E} \sum_{t=0}^{\infty} \beta^t Y_t
 
-
 The constant :math:`\beta` lies in :math:`(0, 1)` and is called a **discount factor**
 
 The smaller is :math:`\beta`, the more the worker discounts future utility relative to current utility
@@ -79,11 +70,8 @@ The variable  :math:`Y_t` is income, equal to
 
 * unemployment compensation :math:`c` when unemployed
 
-
-
 A Trade Off
 --------------------
-
 
 The worker faces a trade-off:
 
@@ -100,8 +88,6 @@ Dynamic programming can be thought of as a two step procedure that
 #. then deduces optimal actions given those values
 
 We'll go through these steps in turn
-
-
 
 The Value Function
 ---------------------
@@ -150,8 +136,6 @@ If we optimize and pick the best of these two options, we obtain maximal lifetim
 
 But this is precisely :math:`V(w)`, which is the l.h.s. of :eq:`odu_pv`
 
-
-
 The Optimal Policy
 -------------------
 
@@ -199,11 +183,6 @@ The agent should accept if and only if the current wage offer exceeds the reserv
 
 Clearly, we can compute this reservation wage if we can compute the value function
 
-
-
-
-
-
 Computing the Optimal Policy: Take 1
 ======================================
 
@@ -213,7 +192,6 @@ points :math:`w_1, \ldots, w_n`
 In doing so, we can identify these values with the vector :math:`v = (v_i)` where :math:`v_i := V(w_i)`
 
 In view of :eq:`odu_pv`, this vector satisfies the nonlinear system of equations
-
 
 .. math::
     :label: odu_pv2
@@ -228,7 +206,6 @@ In view of :eq:`odu_pv`, this vector satisfies the nonlinear system of equations
 It turns out that there is exactly one vector :math:`v := (v_i)_{i=1}^n` in
 :math:`\mathbb R^n` that satisfies this equation
 
-
 The Algorithm
 -------------
 
@@ -237,7 +214,6 @@ To compute this vector, we proceed as follows:
 Step 1: pick an arbitrary initial guess :math:`v \in \mathbb R^n`
 
 Step 2: compute a new vector :math:`v' \in \mathbb R^n` via
-
 
 .. math::
     :label: odu_pv2p
@@ -260,7 +236,6 @@ to :eq:`odu_pv2`, which represents the value function
 
 (Arbitrarily good means here that the approximation converges to the true
 solution as the tolerance goes to zero)
-
 
 The Fixed Point Theory
 -----------------------
@@ -297,12 +272,13 @@ The iterative algorithm presented above corresponds to iterating with
 The Banach contraction mapping theorem tells us that this iterative process
 generates a sequence that converges to the fixed point
 
-
-
 Implementation
 ----------------
 
-Let's start with some imports
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
     :class: test
@@ -311,12 +287,11 @@ Let's start with some imports
 
 .. code-block:: julia
 
-    using StatPlots, Plots, QuantEcon, Distributions, LinearAlgebra, Random, Expectations, NLsolve
+    using Distributions, Expectations, NLsolve, QuantEcon, Random, StatPlots
 
-    gr(fmt=:png)
+    gr(fmt = :png)
 
 Here's the distribution of wage offers we'll work with
-
 
 .. code-block:: julia
 
@@ -325,14 +300,15 @@ Here's the distribution of wage offers we'll work with
 
     plt = plot(dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
-
 .. code-block:: julia
     :class: test
 
     @testset begin
-        @test dist isa Distributions.BetaBinomial && dist.n == 50 && dist.α == 200 && dist.β == 100 # distribution invariance
+        @test dist isa Distributions.BetaBinomial
+        @test dist.n == 50
+        @test dist.α == 200
+        @test dist.β == 100
     end
-
 
 First let's have a look at the sequence of approximate value functions that
 the algorithm above generates
@@ -345,35 +321,32 @@ Our initial guess :math:`v` is the value of accepting at every given wage
 
     # parameters and constant objects
     w_min, w_max = 10, 60
-    w_vals =range(w_min, w_max, length = n+1)
+    w_vals = range(w_min, w_max, length = n + 1)
     c = 25
     β = 0.99
     num_plots = 6
     E = expectation(dist)
 
     # functions and matrix to plot
-    stop_val(w) = w/(1-β)
-    cont_val(v) = c + β*E*v # using E as a linear operator
+    stop_val(w) = w / (1 - β)
+    cont_val(v) = c + β * E * v # using E as a linear operator
     best_val(w, v) = max(stop_val(w), cont_val(v))
-    vs = repeat(w_vals./(1-β), outer = (1, 6)) # data to fill
+    vs = repeat(w_vals ./ (1 - β), outer = (1, 6)) # data to fill
 
     # fill and plot
     for col in 2:num_plots
-        vs[:, col] .= best_val.(w_vals, Ref(vs[:, col-1])) # update using previous value function
+        vs[:, col] .= best_val.(w_vals, Ref(vs[:, col - 1])) # update using previous value function
     end
     plot(vs)
 
 Here's more serious iteration effort, that continues until measured deviation
 between successive iterates is below `tol`
 
-
 .. code-block:: julia
-
 
   function compute_reservation_wage(c, β; max_iter = 500, tol = 1e-6)
       v = w_vals ./(1-β)
       v_star = fixedpoint(v -> best_val.(w_vals, Ref(v)), v, inplace = false).zero
-      # now return the reservation wage
       return (1 - β) * (c + β * E*v)
   end
 
@@ -395,7 +368,6 @@ Let's compute the reservation wage at the default parameters
 Comparative Statics
 -------------------
 
-
 Now we know how to compute the reservation wage, let's see how it varies with
 parameters
 
@@ -405,10 +377,10 @@ In particular, let's look at what happens when we change :math:`\beta` and
 .. code:: julia
 
     grid_size = 25
-    R = rand(Float64, (grid_size, grid_size))
+    R = rand(Float64, grid_size, grid_size)
 
-    c_vals = range(10.0,  30.0, length = grid_size)
-    β_vals = range(0.9,  0.99, length = grid_size)
+    c_vals = range(10.0, 30.0, length = grid_size)
+    β_vals = range(0.9, 0.99, length = grid_size)
 
     for (i, c) in enumerate(c_vals)
         for (j, β) in enumerate(β_vals)
@@ -429,15 +401,13 @@ In particular, let's look at what happens when we change :math:`\beta` and
 .. code-block:: julia
 
     contour(c_vals, β_vals, R',
-             title = "Reservation Wage",
-             xlabel = "c",
-             ylabel = "beta",
-             fill=true)
-
+            title = "Reservation Wage",
+            xlabel = "c",
+            ylabel = "beta",
+            fill = true)
 
 As expected, the reservation wage increases both with patience and with
 unemployment compensation
-
 
 Computing the Optimal Policy: Take 2
 ======================================
@@ -471,7 +441,6 @@ By the Bellman equation, we then have
     = \max \left\{ \frac{w_i}{1 - \beta}, \, \psi \right\}
 
 Substituting this last equation into :eq:`j1` gives
-
 
 .. math::
     :label: j2
@@ -511,34 +480,25 @@ Step 4: if the deviation is larger than some fixed tolerance, set :math:`\psi = 
 
 Step 5: return :math:`\psi`
 
-
 Once again, one can use the Banach contraction mapping theorem to show that this process always converges
-
 
 The big difference here, however, is that we're iterating on a single number, rather than an :math:`n`-vector
 
-
 Here's an implementation:
-
-
 
 .. code-block:: julia
 
     function compute_reservation_wage_two(c; β = 0.99, max_iter = 500, tol = 1e-5)
         ψ = E*w_vals ./ (1 - β)
         s(ψ) = max.((w_vals ./ (1 - β)), ψ)
-        ψ_star = fixedpoint(ψ -> [c + β*E*s(ψ[1])], [ψ], inplace = false).zero[1]
+        ψ_star = fixedpoint(ψ -> [c + β * E * s(ψ[1])], [ψ], inplace = false).zero[1]
         return (1 - β) * (c + β * ψ_star)
     end
 
-
 You can use this code to solve the exercise below
-
 
 Exercises
 =========
-
-
 
 Exercise 1
 ------------
@@ -546,7 +506,7 @@ Exercise 1
 Compute the average duration of unemployment when :math:`\beta=0.99` and
 :math:`c` takes the following values
 
-    ``c_vals = np.linspace(10, 40, 25)``
+    ``c_vals = range(10, 40, length = 25)``
 
 That is, start the agent off as unemployed, computed their reservation wage
 given the parameters, and then simulate to see how long it takes to accept
@@ -555,17 +515,13 @@ Repeat a large number of times and take the average
 
 Plot mean unemployment duration as a function of :math:`c` in ``c_vals``
 
-
 Solutions
 ==========
-
 
 Exercise 1
 ----------
 
 Here's one solution
-
-
 
 .. code:: julia
 
@@ -598,8 +554,7 @@ Here's one solution
     plot(c_vals, stop_times, label = "mean unemployment duration",
          xlabel = "unemployment compensation", ylabel = "months")
 
-
 .. code-block:: julia
     :class: test
 
-        # Just eyeball the plot pending undeprecation and rewrite.
+    # Just eyeball the plot pending undeprecation and rewrite.
