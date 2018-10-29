@@ -228,82 +228,43 @@ The default utility function is a CRRA utility function
 
     using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using Distributions, LinearAlgebra, Compat, Expectations
+    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-    # A default utility function
+    # a default utility function
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) + (c <= 0)*(-10e6) # if c > 0, return utility; else, return large negative
 
-    function u(c, σ)
-        if c > 0
-            return (c^(1 - σ) - 1) / (1 - σ)
-        else
-            return -10e6
-        end
-    end
-
-    # default wage vector with probabilities
-
+    # model objects
     const n = 60                                           # n possible outcomes for wage
-    const default_w_vec = range(10, 20, length = n) # wages between 10 and 20
+    const default_w_vec = range(10, 20, length = n)        # wages between 10 and 20
     const a, b = 600, 400                                  # shape parameters
-    const dist = BetaBinomial(n-1, a, b)
+    const dist = BetaBinomial(n-1, a, b)                   # wage distribution
 
-    mutable struct McCallModel{TF <: AbstractFloat,
-                            TAV <: AbstractVector{TF}}
-        α::TF         # Job separation rate
-        β::TF         # Discount rate
-        γ::TF         # Job offer rate
-        c::TF         # Unemployment compensation
-        σ::TF         # Utility parameter
-        w_vec::TAV    # Possible wage values
+    # constructor
+    McCallModel(;α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist) = (α = α, β = β, γ = γ, c = c, σ = σ, w_vec = w_vec, dist = dist)
 
-        McCallModel(α::TF = 0.2,
-                    β::TF = 0.98,
-                    γ::TF = 0.7,
-                    c::TF = 6.0,
-                    σ::TF = 2.0,
-                    w_vec::TAV = default_w_vec,
-                    ) where {TF, TAV} =
-            new{TF, TAV}(α, β, γ, c, σ, w_vec)
-    end
-
-    function update_bellman!(mcm, V, V_new, U, E)
-        # Simplify notation
-        α, β, σ, c, γ = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ
+    # update
+    function update_bellman(mcm, V, E)
+        @unpack α, β, σ, c, γ, dist, w_vec = mcm # unpack model objects
+        U = V[end] # U is at the end of V
+        V_new = similar(V) # create a new V
 
         for (w_idx, w) in enumerate(mcm.w_vec)
             # w_idx indexes the vector of possible wages
             V_new[w_idx] = u(w, σ) + β * ((1 - α) * V[w_idx] + α * U)
         end
 
-        U_new = u(c, σ) + β * (1 - γ) * U +
-                β * γ * E*max.(U, V)
-        return U_new
+        V_new[end] = u(c, σ) + β * (1 - γ) * U + β * γ * E*max.(U, V[1:end-1])
+        return V_new
     end
 
     function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
-
-        V = ones(length(mcm.w_vec))    # Initial guess of V
-        V_new = similar(V)             # To store updates to V
-        U = 1.0                        # Initial guess of U
-        i = 0
-        error = tol + 1
-        E = expectation(dist, nodes = mcm.w_vec)
-
-        while error > tol && i < max_iter
-            U_new = update_bellman!(mcm, V, V_new, U, E)
-            error_1 = maximum(abs, V_new - V)
-            error_2 = abs(U_new - U)
-            error = max(error_1, error_2)
-            V[:] = V_new
-            U = U_new
-            i += 1
+            V = ones(Float64, length(mcm.w_vec)+1)
+            E = expectation(mcm.dist)
+            sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero
+            return sol[1:end-1], sol[end] # returns (V, U)
         end
-
-        return V, U
-    end
-
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
 
@@ -316,7 +277,7 @@ We'll use the default parameterizations found in the code above
 
 .. code-block:: julia
 
-    using Plots, LaTeXStrings
+    # plots setting
     gr(fmt=:png)
 
     mcm = McCallModel()
@@ -327,15 +288,15 @@ We'll use the default parameterizations found in the code above
         [V U_vec],
         lw = 2,
         α = 0.7,
-        label = [L"$V$" L"$U$"])
+        label = ["V" "U"])
 
 .. code-block:: julia
     :class: test
 
-    @testset "First Plot Tests" begin
-        @test U ≈ 45.623263135173644 # U value
-        @test V[3] ≈ 45.58068793055933 # Arbitrary V
 
+    @testset "First Plot Tests" begin
+        @test U ≈ 45.623746143470015 # U value
+        @test V[3] ≈ 45.581170938855706 # Arbitrary V
     end
 
 
@@ -485,7 +446,7 @@ we can create an array for reservation wages for different values of :math:`c`,
     mcm = McCallModel()
 
     for (i, c) in enumerate(c_vals)
-        mcm.c = c
+        mcm = McCallModel(c = c)
         w_bar = compute_reservation_wage(mcm)
         w_bar_vals[i] = w_bar
     end
@@ -496,7 +457,7 @@ we can create an array for reservation wages for different values of :math:`c`,
          α = 0.7,
          xlabel = "unemployment compensation",
          ylabel = "reservation wage",
-         label = L"$\bar w$ as a function of $c$")
+         label = "w_bar as a function of c")
 
 .. code-block:: julia
     :class: test
@@ -519,10 +480,8 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
     γ_vals = range(0.05,  0.95, length = grid_size)
     w_bar_vals = similar(γ_vals)
 
-    mcm = McCallModel()
-
     for (i, γ) in enumerate(γ_vals)
-        mcm.γ = γ
+        mcm = McCallModel(γ = γ)
         w_bar = compute_reservation_wage(mcm)
         w_bar_vals[i] = w_bar
     end
@@ -533,7 +492,7 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
          α = 0.7,
          xlabel = "job offer rate",
          ylabel = "reservation wage",
-         label = L"$\bar w$ as a function of $\gamma$")
+         label = "w_bar as a function of gamma")
 
 .. code-block:: julia
     :class: test
