@@ -600,6 +600,46 @@ These patterns are relatively straightforward, but think of generic programming 
 
 This is all the more reason to exploit carefully designed packages rather than a "do-it-yourself" approach to coding
 
+
+A Digression on Style and Naming
+------------------------------------
+
+The previous section helps establish some of the reasons behind the key style choice in these lecture notes: "be aware of types, but avoid declaring them"
+
+The purpose of this is threefold
+
+* provide easy to read code with miminal "syntactic noise" and a clear correspondence to the math
+* ensure that code is sufficiently generic to exploit other packages and types
+* avoid common mistakes and unncessary performance degredations
+
+This is just one of many decisions and patterns to ensure that your code is consistent and clear
+
+It is worth reviewing some of the key
+
+* **TODO**
+
+
+Now why would we emphasize naming as style as a crucial part of the lectures?
+
+Because it is an essential tool for creating research that is **reproducible** and likely **correct**
+
+Some helpful ways to think about this are 
+
+* **Clearly written code is easier to review for errors**: The first-order concern of any code is that it correctly implements the whiteboard math
+* **Code is read many more times than it is written**: Saving a few keystrokes in typing a variable name is never worth it, nor is a divergence from the mathematical notation adding extra text when a single symbol for a variable name would map better to the model
+* **Write code to be read in the future, not today**: If you are not sure anyone else will read the code, then write it for a future version of your self who may have forgotten everything your current self is currently thinking--which is probably fairly accurate correct 
+* **Maintain the correspondence between the whiteboard math and the code**: For example, if you change notation in your model, then immediately update all variables in the code to reflect it
+
+One common mistake people make when trying to apply these goals is to provide both a large number of comments
+
+Over the years, people have found that excess comments in code (and *especially* big comment templates used before every function declaration) can make code harder to read
+
+The issue is one of syntactic noise: if most of the comments are redundant given clear variable and function names, then the comments make it more difficult to mentally parse and read
+
+If you examine Julia code in packages and the core language, you will see a great amount of care taken in function and variable names, and only the addition of comments where it is helpful
+
+
+
 .. _intro_multiple_dispatch:
 
 Introduction to Multiple Dispatch
