@@ -36,11 +36,6 @@ For us, the shortest path problem also provides a nice introduction to the logic
 
 Dynamic programming is an extremely powerful optimization technique that we apply in many lectures on this site
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 Outline of the Problem
 =========================
 
@@ -161,6 +156,7 @@ Setup
     using Test
 
 .. code-block:: julia
+    :class: collapse
 
     graph = Dict([0 => [(14, 72.21), (8, 11.11), (1, 0.04)],
                   1 => [(13, 64.94), (6, 20.59), (46, 1247.25)],
