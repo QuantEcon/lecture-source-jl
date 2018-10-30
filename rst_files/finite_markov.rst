@@ -838,8 +838,8 @@ The convergence in the theorem is illustrated in the next figure
     mc = MarkovChain(P)
     ψ_star = stationary_distributions(mc)[1]
     x_star, y_star, z_star = ψ_star # unpack the stationary dist
-    scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors)
-    plot!(lims = (0, 1), ticks = [0.25 0.5 0.75]', legend = :none, camera = (300, 30))
+    plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors, gridalpha = 0.5, legend = :none)
+    plot!(plt, camera = (45,45))
 
 .. code-block:: julia
     :class: test
