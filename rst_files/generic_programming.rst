@@ -177,9 +177,9 @@ First, lets consider working with "distributions"
 
 If we consider mathematical "distributions" that we will use in our algorithms, they may include (1) drawing random numbers for Monte-carlo methods; (2) using the pdf or cdf in various calculations
 
-In that sense, some code may be useful in distributions where a `pdf` is not necessarily defined or meaningful
+In that sense, some code may be useful in distributions where a ``pdf`` is not necessarily defined or meaningful
 
-The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl`package
+The process of using concrete distributions in these sorts of applications led to the creation of the ``Distributions.jl`` package
 
 Lets examine the tree of types for a ``Normal`` distribution
 
