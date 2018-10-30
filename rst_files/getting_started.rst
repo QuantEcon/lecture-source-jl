@@ -24,15 +24,15 @@ Topics:
 Jupyter
 =========================
 
-Like Python, and unlike Matlab and Stata there is a looser connection between Julia as a programming language and Julia as a development environment to edit and explore 
+Like Python, and unlike Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a development environment
 
-Because of this, you will have different options for editing code on your local computer or in cloud resources
+Because of this, you will have different options for editing code on your local computer or in the cloud
 
-Several of the options rely on `Jupyter <http://jupyter.org/>`_  which provides a web interface to access computational kernels for different languages (e.g. Julia, Python, R, etc.)
+Several of the options rely on `Jupyter <http://jupyter.org/>`_  which provides a browser-based interface to access computational kernels for different languages (e.g. Julia, Python, R, etc.)
 
-While you will eventually use other editors for major projects, there are some advantages of starting with Jupyter while learning the language
+While you will eventually use other editors, there are some advantages of starting with Jupyter while learning the language
 
-* It can require little or no installation if you use a cloud-based solution
+* It requires no installation if you used a cloud-based solution
 
 * Nicely formatted output in the browser, including tables, figures, animation, video, etc.
 
@@ -47,7 +47,7 @@ Recommended Options
 
 In order of priority, for those just getting started, we suggest
 
-#. Use `Jupyter on the cloud <jl_jupyterhub>`_ if it is available
+#. Use `Jupyter on the cloud or department server <jl_jupyterhub>`_ if it is available
 #. Install the pre-built `docker-based Jupyter <jl_jupyterdocker>`_ from QuantEcon
 #. Install `Anaconda and Julia locally <jl_jupyterlocal>`_ otherwise and manually install QuantEcon based packages
 
@@ -55,50 +55,56 @@ Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ a
 
 .. _jl_jupyterhub:
 
-Using Jupyter on the Cloud or Department Server
---------------------------------------------------
+Using Jupyter Online
+---------------------------
 
 If you have access to a cloud based solution for Jupyter, then that is typically the easiest solution
 
-* JuliaBox, once it's working. 
-* Ask at your university.  For example, many Canadian students have access to syzygy.ca
-* Students: ask your department if these resources are available (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ in general)
+.. * JuliaBox (currently having , once it's working. 
+..  For example, many Canadian students have access to syzygy.ca
+.. * Ask at your university .. 
+.. (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ )
+
+* Students: ask your department if these resources are available 
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared Jupyterhub instance with precompiled packages ready for these lecture notes
 
-To easily install the packages used by these notebooks on a cloud-based jupyterhub installation, you will need to go open a Jupyter notebook and type
+If you have are given an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
 
-.. code-block:: julia
+Otherwise, if there are errors when you attempt to use an online Jupyterhub, you will need to go open a Jupyter notebook and type
+
+.. code-block:: none
 
     ] add InstantiateFromURL
-
 
 
 .. _jl_jupyterdocker:
 
 Installing a Pre-built Jupyter Image
--------------------------------------------
+======================================
 
-`Docker <https://www.docker.com/>`_ is a technology that you to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a mimimal, self-contained operating system on another computer
+`Docker <https://www.docker.com/>`_ is a technology that you to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a minimal, self-contained operating system on another computer
 
 While it is largely used for running code in the cloud and in distributed computing, it is also convenient for using on local computers 
 
 In essence, it allows people to share a consistent and reproducible environment with no setup or tinkering required
 
-QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_  Docker image 
+QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
 
 Setup
-^^^^^^^
+-----------
 
-
-Install `Docker <https://docs.docker.com/install>`_
+* Create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
     
-* Link for `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
-* For `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. Don't click the line for Windows containers
-* Note: You may need to create an account on Docker's website to download 
+Download and install
+
+* `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+* `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. **Do not** choose to use Windows containers
 
 Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
 
-Test your Docker setup (run ``docker version`` in the terminal, and check there are no obvious errors)
+.. To verify that there are no obvious errors in the installation, run 
+.. 
+.. Run ``docker version`` in the terminal to check there are no obvious errors
 
 Download the QuantEcon Docker image by running the following in your terminal (this may some time depending on your internet connection)
 
@@ -106,17 +112,17 @@ Download the QuantEcon Docker image by running the following in your terminal (t
 
     docker pull quantecon/base
 
-After this is finished, first clear any existing volumes and then create a persistent storage volume
+After this is finished, first clear any existing volumes and then create a persistent storage volume (ignoring any warnings from the ``rm`` step)
 
 .. code-block:: none
 
-    docker volume rm quantecon 
+    docker volume rm quantecon
     docker volume create quantecon 
 
 Running in a Local Folder
 --------------------------
 
-The Docker image has can exchange files local to where it is run
+The Docker image has can exchange files locally (and recursively below in the tree) to where it is run
 
 Open a terminal and ``cd`` to the directory you are interested in storing local files
 
@@ -126,7 +132,7 @@ To run an image local to those files, type the following in the terminal (on Lin
 
     docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
 
-And on Powershell,
+And on Powershell on Window
 
 .. code-block:: none
 
@@ -152,29 +158,49 @@ In a browser, go to a URL like the following
 
 Paste the text into ``Password or token:`` and choose ``Log in``
 
-Ensure you save any important files to the local notebooks in the ``local`` directory, which uses your local filesystem
+Ensure you save any important files to the local notebooks in the ``local`` directory, which stores in the local filesystem where you ran the docker command
 
 
 A few useful maintenance features
 
+* If you forget your token number, you may need to stop and restart the container
 * To stop the container, use `Ctrl-C` or type ``docker stop $(docker ps -aq)`` in a different terminal
 * To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
 * To clean unnecessary Docker assets from your system, run ``docker system prune`` 
+
+Creating a Shortcut
+----------------------
+
+For convenience, consider creating a shortcut to run when 
+
+For Windows:
+* Right click on the desktop or some other location and choose New/Shortcut
+* For the `location of the item` copy in
+
+.. code-block:: none
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base``
+
+* Name and finish the creation of the shortcut
+* Right-click on the new shortcut, choose Properties, and then change the ``Start in`` to be the directory below which you may wish to store files (e.g. ``C:\Users\YOURNAME\Documents`` )
+
 
 
 .. _jl_jupyterlocal:
 
 Installing Julia and Dependencies Manually
-----------------------------------------------
+==============================================
 
 While using the Docker instance is convenient and error-proof, you may eventually want to install things locally
 
 The easiest way to do that is to install Anaconda for a full Python and Jupyter environment, 
 
-Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version) and follow the instructions
+Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version) and install
 
-* Make sure you click yes to "add Anaconda to my PATH." If you'd rather do that later, see: `Windows <http://docs.anaconda.com/anaconda/install/windows/>` and `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_. 
-* Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
+* Make sure you click yes to "add Anaconda to my PATH." If you'd rather do that later, see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_. 
+
+.. This could be in a separate section
+.. * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
 
 Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
 
@@ -199,7 +225,7 @@ Then, install and precompile all of the key packages for these lecture notes (wh
 
 .. literalinclude:: /_static/includes/deps.jl    
 
-To run Jupyter, in a terminal type 
+To run Jupyter, in a terminal ``cd`` to the location you wish to modify local files in and type 
 
 .. code-block:: none
 
