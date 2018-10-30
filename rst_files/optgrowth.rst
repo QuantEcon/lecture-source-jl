@@ -477,9 +477,9 @@ Setup
 .. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
+    using Test
 
 .. code-block:: julia
 
@@ -602,13 +602,13 @@ Let's code this up now so we can test against it below
     v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Primitives Tests" begin
-    @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998, 1.6233766233766234]
-    @test u_prime(c1) ≈ -0.08255792258789846
-    @test v_star(3) ≈ -25.245288867900843
-  end
+    @testset "Primitives Tests" begin
+        @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998, 1.6233766233766234]
+        @test u_prime(c1) ≈ -0.08255792258789846
+        @test v_star(3) ≈ -25.245288867900843
+    end
 
 A First Test
 --------------
@@ -630,11 +630,11 @@ We need a grid and some shock draws for Monte Carlo integration
     shocks = exp.(μ .+ s * randn(shock_size))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Shock Invariance Tests" begin
-    @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
-  end
+    @testset "Shock Invariance Tests" begin
+        @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
+    end
 
 Now let's do some tests
 
@@ -654,12 +654,12 @@ In practice we expect some small numerical error
   plot!(plt, legend = :bottomright)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Bellman Operator Tests" begin
-    @test w[4] ≈ -31.59897775567377
-    @test length(w) == 200
-  end
+    @testset "Bellman Operator Tests" begin
+        @test w[4] ≈ -31.59897775567377
+        @test length(w) == 200
+    end
 
 The two functions are essentially indistinguishable, so we are off to a good start
 
@@ -724,11 +724,11 @@ We can check our result by plotting it against the true value
     plot!(plt, legend = :bottomright)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Iteration Scheme Tests" begin
-    @test v_star_approx[4] ≈ -31.85032776321786
-  end
+    @testset "Iteration Scheme Tests" begin
+        @test v_star_approx[4] ≈ -31.85032776321786
+    end
 
 The figure shows that we are pretty much on the money
 
@@ -754,11 +754,11 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     plot!(plt, legend = :bottomright)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test cstar[102] == 1.2505758978894472
-  end
+    @testset begin
+        @test cstar[102] == 1.2505758978894472
+    end
 
 The figure shows that we've done a good job in this instance of approximating
 the true policy
@@ -790,11 +790,11 @@ We have also dialed down the shocks a bit
     shocks = exp.(μ .+ s * randn(shock_size))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test shocks[25] == 0.8050318706532391
-  end
+    @testset begin
+        @test shocks[25] == 0.8050318706532391
+    end
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
 
