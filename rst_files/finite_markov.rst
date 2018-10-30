@@ -36,10 +36,9 @@ Setup
 
 .. code-block:: julia
 
-    # Import packages.
-    using LinearAlgebra, Statistics, Compat
-    using QuantEcon, Random, Plots, Printf, Distributions
-    gr(fmt=:png) # Setup for the Plots.
+    using Distributions, Plots, Printf, QuantEcon, Random
+
+    gr(fmt = :png)
 
 Definitions
 ==============
@@ -290,7 +289,7 @@ If you run the following code you should get roughly that answer
 
     Random.seed!(42)
     P = [0.4 0.6; 0.2 0.8]
-    X = mc_sample_path(P, sample_size = 100000);
+    X = mc_sample_path(P, sample_size = 100_000);
     μ_1 = mean(X .== 1)
 
 .. code-block:: julia
@@ -313,8 +312,8 @@ Here's an illustration using the same `P` as the preceding example
     Random.seed!(42)
     P = [0.4 0.6; 0.2 0.8];
     mc = MarkovChain(P)
-    X = simulate(mc, 100000);
-    μ_2 = mean(X .== 1)             # Should be close to 0.25
+    X = simulate(mc, 100_000);
+    μ_2 = mean(isone, X)             # Should be close to 0.25
 
 .. code-block:: julia
     :class: test
@@ -596,7 +595,7 @@ Let's confirm this
     :class: test
 
     @testset "Checking reducibility" begin
-        @test is_irreducible(mc) == false
+        @test !is_irreducible(mc)
     end
 
 We can also determine the "communication classes," or the sets of communicating states (where communication refers to a nonzero probability of moving in each direction).
@@ -680,7 +679,7 @@ We can confirm that the stochastic matrix is periodic as follows
     :class: test
 
     @testset "check if aperiodic" begin
-        @test is_aperiodic(mc) == false
+        @test !is_aperiodic(mc)
     end
 
 :index:`Stationary Distributions`
@@ -1009,7 +1008,6 @@ where
 
     (I - \beta P)^{-1}  = I + \beta P + \beta^2 P^2 + \cdots
 
-
 Premultiplication by :math:`(I - \beta P)^{-1}` amounts to "applying the **resolvent operator**"
 
 Exercises
@@ -1160,30 +1158,6 @@ Since :math:`r` is the stationary distribution of :math:`P`, assuming that the u
 Your exercise is to apply this ranking algorithm to the graph pictured above,
 and return the list of pages ordered by rank
 
-The data for this graph is in the ``web_graph_data.txt`` file --- you can also view it `here <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/finite_markov/web_graph_data.txt>`__
-
-There is a total of 14 nodes (i.e., web pages), the first named ``a`` and the last named ``n``
-
-A typical line from the file has the form
-
-.. code-block:: none
-
-    d -> h;
-
-This should be interpreted as meaning that there exists a link from ``d`` to ``h``
-
-To parse this file and extract the relevant information, you can use `regular expressions <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_
-
-The following code snippet provides a hint as to how you can go about this
-
-.. code-block:: jlcon
-
-    [ m.match for m in eachmatch(r"\w", "x +++ y ****** z") ] # will only extract alphanumeric characters
-
-.. code-block:: jlcon
-
-    [ m.match for m in eachmatch(r"\w", "a ^^ b &&& \$\$ c") ]
-
 When you solve for the ranking, you will find that the highest ranked node is in fact ``g``, while the lowest is ``a``
 
 .. _mc_ex3:
@@ -1257,8 +1231,8 @@ Solutions
 Exercise 1
 ----------
 
-Compute the fraction of time that the worker spends unemployed, and
-compare it to the stationary probability.
+Compute the fraction of time that the worker spends unemployed, and compare it
+to the stationary probability.
 
 .. code-block:: julia
 
@@ -1266,7 +1240,7 @@ compare it to the stationary probability.
 
     α = 0.1 # probability of getting hired
     β = 0.1 # probability of getting fired
-    N = 10000
+    N = 10_000
     p_bar = β / (α + β) # steady-state probabilities
     P = [1 - α   α
          β   1 - β] # stochastic matrix
@@ -1276,12 +1250,12 @@ compare it to the stationary probability.
 
     for x0 in 1:2
         X = simulate_indices(mc, N; init = x0) # generate the sample path
-        X_bar = cumsum(X.==1) ./ (1:N) # compute state fraction. ./ required for precedence
+        X_bar = cumsum(X .== 1) ./ (1:N) # compute state fraction. ./ required for precedence
         y_vals[x0] = X_bar .- p_bar # plot divergence from steady state
     end
 
     plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
-            ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
+         ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
 
 .. code-block:: julia
     :class: test
@@ -1294,79 +1268,39 @@ compare it to the stationary probability.
 Exercise 2
 ----------
 
-First save the data into a file called ``web_graph_data.txt`` by
-executing the next cell
+.. code-block:: julia
+
+    web_graph_data = sort(Dict('a' => ['d', 'f'],
+                               'b' => ['j', 'k', 'm'],
+                               'c' => ['c', 'g', 'j', 'm'],
+                               'd' => ['f', 'h', 'k'],
+                               'e' => ['d', 'h', 'l'],
+                               'f' => ['a', 'b', 'j', 'l'],
+                               'g' => ['b', 'j'],
+                               'h' => ['d', 'g', 'l', 'm'],
+                               'i' => ['g', 'h', 'n'],
+                               'j' => ['e', 'i', 'k'],
+                               'k' => ['n'],
+                               'l' => ['m'],
+                               'm' => ['g'],
+                               'n' => ['c', 'j', 'm']))
 
 .. code-block:: julia
 
-    f = open("web_graph_data.txt", "w")
-    contents = """a -> d;
-    a -> f;
-    b -> j;
-    b -> k;
-    b -> m;
-    c -> c;
-    c -> g;
-    c -> j;
-    c -> m;
-    d -> f;
-    d -> h;
-    d -> k;
-    e -> d;
-    e -> h;
-    e -> l;
-    f -> a;
-    f -> b;
-    f -> j;
-    f -> l;
-    g -> b;
-    g -> j;
-    h -> d;
-    h -> g;
-    h -> l;
-    h -> m;
-    i -> g;
-    i -> h;
-    i -> n;
-    j -> e;
-    j -> i;
-    j -> k;
-    k -> n;
-    l -> m;
-    m -> g;
-    n -> c;
-    n -> j;
-    n -> m;
-    """
-    write(f, contents)
-    close(f)
-
-.. code-block:: julia
-
-    infile = "web_graph_data.txt"
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
-
-    n = 14 # total number of web pages (nodes)
-
-    # create adjacency matrix of links (Q[i, j] = 1 for link, 0 otherwise)
-    Q = fill(0, n, n)
-    edges = readlines(infile)
-    for edge in edges
-        from_node, to_node = [String(m.match) for m = eachmatch(r"\w", edge)] # String() required to go from Substring to String. r"\w" is a word character.
-        i = findfirst(isequal(from_node[1]), alphabet) # [1] required to go from String to Char
-        j = findfirst(isequal(to_node[1]), alphabet)
-        Q[i, j] = 1
+    nodes = keys(web_graph_data)
+    n = length(nodes)
+    # create adjacency matrix of links (Q[i, j] = true for link, false otherwise)
+    Q = fill(false, n, n)
+    for (node, edges) in enumerate(values(web_graph_data))
+        Q[node, nodes .∈ Ref(edges)] .= true
     end
 
     # create the corresponding stochastic matrix
-    P = zeros(n, n)
-    for i in 1:n
-        P[i, :] = Q[i, :] / sum(Q[i, :])
-    end
+    P = Q ./ sum(Q, dims = 2)
 
     mc = MarkovChain(P)
     r = stationary_distributions(mc)[1] # stationary distribution
-    ranked_pages = Dict(alphabet[i] => r[i] for i in 1:n) # results holder
+    ranked_pages = Dict(zip(keys(web_graph_data), r)) # results holder
 
     # print solution
     println("Rankings\n ***")
