@@ -10,7 +10,6 @@
 
 .. contents:: :depth: 2
 
-
 Overview
 ============
 
@@ -28,11 +27,6 @@ We'll use this structure to obtain an **Euler equation**  based method that's mo
 
 In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical implementation part of the Euler equation method can be further adjusted to obtain even more efficiency
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The Euler Equation
 ==========================
 
@@ -48,7 +42,6 @@ Let's take the model set out in :doc:`the stochastic growth model lecture <optgr
 
 The last two conditions are usually called **Inada conditions**
 
-
 Recall the Bellman equation
 
 .. math::
@@ -60,7 +53,6 @@ Recall the Bellman equation
         \right\}
     \quad \text{for all} \quad
     y \in \mathbb R_+
-
 
 Let the optimal consumption policy be denoted by :math:`c^*`
 
@@ -91,11 +83,9 @@ form
             u(y-k) + \beta \int v^*(f(k) z) \phi(dz)
         \right\},
 
-
 differentiate naively with respect to :math:`y`,  and then  evaluate at the optimum
 
 Section 12.1 of `EDTC <http://johnstachurski.net/edtc.html>`_ contains full proofs of these results, and closely related discussions can be found in many other texts
-
 
 Differentiability of the value function and iteriority of the optimal policy
 imply that optimal consumption satisfies the first order condition associated
@@ -106,7 +96,6 @@ with :eq:`cpi_fpb30`, which is
 
     u'(c^*(y)) = \beta \int (v^*)'(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)
 
-
 Combining :eq:`cpi_env` and the first-order condition :eq:`cpi_foc` gives the famous **Euler equation**
 
 .. math::
@@ -114,7 +103,6 @@ Combining :eq:`cpi_env` and the first-order condition :eq:`cpi_foc` gives the fa
 
     (u'\circ c^*)(y)
     = \beta \int (u'\circ c^*)(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)
-
 
 We can think of the Euler equation as a functional equation
 
@@ -124,12 +112,9 @@ We can think of the Euler equation as a functional equation
     (u'\circ \sigma)(y)
     = \beta \int (u'\circ \sigma)(f(y - \sigma(y)) z) f'(y - \sigma(y)) z \phi(dz)
 
-
 over interior consumption policies :math:`\sigma`, one solution of which is the optimal policy :math:`c^*`
 
 Our aim is to solve the functional equation :eq:`cpi_euler_func` and hence obtain :math:`c^*`
-
-
 
 The Coleman Operator
 -------------------------------
@@ -143,7 +128,6 @@ Recall the Bellman operator
     \left\{
         u(c) + \beta \int w(f(y - c) z) \phi(dz)
     \right\}
-
 
 Just as we introduced the Bellman operator to solve the Bellman equation, we
 will now introduce an operator over policies to help us solve the Euler
@@ -164,7 +148,6 @@ Henceforth we denote this set of policies by :math:`\mathscr P`
     u'(c)
     = \beta \int (u' \circ \sigma) (f(y - c) z ) f'(y - c) z \phi(dz)
 
-
 We call this operator the **Coleman operator** to acknowledge the work of :cite:`Coleman1990`  (although many people have studied this and other closely related iterative techniques)
 
 In essence, :math:`K\sigma` is the consumption policy that the Euler equation tells
@@ -184,11 +167,7 @@ solves
     u'(c)
     = \beta \int (u' \circ c^*) (f(y - c) z ) f'(y - c) z \phi(dz)
 
-
 In view of the Euler equation, this is exactly :math:`c^*(y)`
-
-
-
 
 Is the Coleman Operator Well Defined?
 --------------------------------------
@@ -204,20 +183,16 @@ For any :math:`\sigma \in \mathscr P`, the right side of :eq:`cpi_coledef`
 
 * diverges to :math:`+\infty` as :math:`c \uparrow y`
 
-
 The left side of :eq:`cpi_coledef`
 
 * is continuous and strictly decreasing in :math:`c` on :math:`(0, y)`
 
 * diverges to :math:`+\infty` as :math:`c \downarrow 0`
 
-
 Sketching these curves and using the information above will convince you that they cross exactly once as :math:`c` ranges over :math:`(0, y)`
 
 With a bit more analysis, one can show in addition that :math:`K \sigma \in \mathscr P`
 whenever :math:`\sigma \in \mathscr P`
-
-
 
 Comparison with Value Function Iteration
 =========================================
@@ -241,7 +216,6 @@ It turns out that, once we actually implement these two routines, time iteration
 
 More on this below
 
-
 Equivalent Dynamics
 ---------------------
 
@@ -261,7 +235,6 @@ associate it with trajectories of the form
 
     x_{t+1} = g(x_t), \qquad x_0 \text{ given}
 
-
 Equivalently, :math:`x_t = g^t(x_0)`, where :math:`g` is the :math:`t`-th
 composition of :math:`g` with itself
 
@@ -271,8 +244,6 @@ Here's the picture
     :scale: 40%
 
 Now let another function :math:`h \colon Y \to Y` where :math:`Y` is another set
-
-
 
 Suppose further that
 
@@ -287,7 +258,6 @@ The last statement can be written more simply as
 
     \tau \circ g = h \circ \tau
 
-
 or, by applying :math:`\tau^{-1}` to both sides
 
 .. math::
@@ -295,12 +265,10 @@ or, by applying :math:`\tau^{-1}` to both sides
 
     g = \tau^{-1} \circ h \circ \tau
 
-
 Here's a commutative diagram that illustrates
 
 .. figure:: /_static/figures/col_pol_bij1.png
     :scale: 50%
-
 
 Here's a similar figure that traces out the action of the maps on a point
 :math:`x \in X`
@@ -316,7 +284,6 @@ In fact, if you like proofs by induction, you won't have trouble showing that
 
     g^n = \tau^{-1} \circ h^n \circ \tau
 
-
 is valid for all :math:`n`
 
 What does this tell us?
@@ -328,7 +295,6 @@ It tells us that the following are equivalent
 * shift :math:`x` to :math:`Y` using :math:`\tau`,  iterate :math:`n` times with :math:`h` starting at :math:`\tau(x)`, and shift the result :math:`h^n(\tau(x))` back to :math:`X` using :math:`\tau^{-1}`
 
 We end up with exactly the same object
-
 
 Back to Economics
 --------------------
@@ -343,7 +309,6 @@ The implication is that they have exactly the same rate of convergence
 To make life a little easier, we'll assume in the following analysis (although not
 always in our applications) that :math:`u(0) = 0`
 
-
 A Bijection
 ^^^^^^^^^^^^^
 
@@ -354,7 +319,6 @@ For :math:`v \in \mathscr V` let
 .. math::
     M v := h \circ v' \qquad \text{where } h := (u')^{-1}
 
-
 Although we omit details, :math:`\sigma := M v` is actually the unique
 :math:`v`-greedy policy
 
@@ -363,7 +327,6 @@ Although we omit details, :math:`\sigma := M v` is actually the unique
 It turns out that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P`
 
 A (solved) exercise below asks you to confirm this
-
 
 Commutative Operators
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -381,11 +344,7 @@ In view of the preceding discussion, this implies that
 
     T^n = M^{-1} \circ K^n \circ M
 
-
 Hence, :math:`T` and :math:`K` converge at exactly the same rate!
-
-
-
 
 Implementation
 ================
@@ -396,31 +355,32 @@ However, it turns out that, once numerical approximation is taken into account, 
 
 In particular, the image of policy functions under :math:`K` can be calculated faster and with greater accuracy than the image of value functions under :math:`T`
 
-
 Our intuition for this result is that
 
 * the Coleman operator exploits more information because it uses first order and envelope conditions
 
 * policy functions generally have less curvature than value functions, and hence admit more accurate approximations based on grid point information
 
-
 The Operator
 ----------------
 
-
 Here's some code that implements the Coleman operator
 
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
+    using Test
 
 .. code-block:: julia
 
-    using QuantEcon, Interpolations, Roots
+    using QuantEcon, Interpolations, Roots, Parameters, BenchmarkTools
 
-    function coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks,
-                               Kg = similar(g))
+    function coleman_operator!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
 
         # This function requires the container of the output value as argument Kg
 
@@ -430,8 +390,8 @@ Here's some code that implements the Coleman operator
         # solve for updated consumption value #
         for (i, y) in enumerate(grid)
             function h(c)
-                vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
-                return u_prime(c) - β * mean(vals)
+                vals = ∂u∂c.(g_func.(f(y - c) * shocks)) .* f′(y - c) .* shocks
+                return ∂u∂c(c) - β * mean(vals)
             end
             Kg[i] = find_zero(h, (1e-10, y - 1e-10))
         end
@@ -439,9 +399,8 @@ Here's some code that implements the Coleman operator
     end
 
     # The following function does NOT require the container of the output value as argument
-    coleman_operator(g, grid, β, u_prime, f, f_prime, shocks) =
-        coleman_operator!(g, grid, β, u_prime, f, f_prime, shocks, similar(g))
-
+    coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks) =
+        coleman_operator!(similar(g), g, grid, β, ∂u∂c, f, f′, shocks)
 
 It has some similarities to the code for the Bellman operator in our :doc:`optimal growth lecture <optgrowth>`
 
@@ -450,7 +409,6 @@ For example, it evaluates integrals by Monte Carlo and approximates functions us
 Here's that Bellman operator code again, which needs to be executed because we'll use it in some tests below
 
 .. code-block:: julia
-    :class: collapse
 
     using Optim
 
@@ -464,7 +422,7 @@ Here's that Bellman operator code again, which needs to be executed because we'l
             σ = similar(w)
         end
 
-        # == set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)} == #
+        # set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)}
         for (i, y) in enumerate(grid)
             objective(c) =  u(c) + β * mean(w_func.(f(y - c) .* shocks))
             res = maximize(objective, 1e-10, y)
@@ -485,88 +443,56 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 Testing on the Log / Cobb--Douglas case
 ------------------------------------------
 
-
 As we :doc:`did for value function iteration <optgrowth>`, let's start by
 testing our method in the presence of a model that does have an analytical
 solution
-
 
 Here's a struct containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
 
 .. code-block:: julia
 
-    struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
-        α::TR              # Productivity parameter
-        β::TF              # Discount factor
-        γ::TR              # risk aversion
-        μ::TR              # First parameter in lognorm(μ, σ)
-        s::TR              # Second parameter in lognorm(μ, σ)
-        grid_min::TR       # Smallest grid point
-        grid_max::TR       # Largest grid point
-        grid_size::TI      # Number of grid points
-        u::Function        # utility function
-        u_prime::Function  # derivative of utility function
-        f::Function        # production function
-        f_prime::Function  # derivative of production function
-        grid::Vector{TR}   # grid
-    end
-
-    function Model(;α = 0.65,                      # Productivity parameter
-                    β = 0.95,                      # Discount factor
-                    γ = 1.0,                       # risk aversion
-                    μ = 0.0,                       # First parameter in lognorm(μ, σ)
-                    s = 0.1,                       # Second parameter in lognorm(μ, σ)
-                    grid_min = 1e-6,               # Smallest grid point
-                    grid_max = 4.0,                # Largest grid point
-                    grid_size = 200,               # Number of grid points
-                    u = c->(c^(1-γ)-1)/(1-γ),     # utility function
-                    u_prime = c-> c^(-γ),          # u'
-                    f = k-> k^α,                   # production function
-                    f_prime = k -> α*k^(α-1)       # f'
-                    )
-
-        grid = collect(range(grid_min, grid_max, length = grid_size))
-
-        if γ == 1                                       # when γ==1, log utility is assigned
-            u_log(c) = log(c)
-            m = Model(α, β, γ, μ, s, grid_min, grid_max,
-                    grid_size, u_log, u_prime, f, f_prime, grid)
-        else
-            m = Model(α, β, γ, μ, s, grid_min, grid_max,
-                    grid_size, u, u_prime, f, f_prime, grid)
-        end
-        return m
-    end
-
+    isoelastic(c, γ) = isone(γ) ? log(c) : (c^(1 - γ) - 1) / (1 - γ)
+    Model = @with_kw (α = 0.65,                            # Productivity parameter
+                      β = 0.95,                            # Discount factor
+                      γ = 1.0,                             # Risk aversion
+                      μ = 0.0,                             # First parameter in lognorm(μ, σ)
+                      s = 0.1,                             # Second parameter in lognorm(μ, σ)
+                      grid = range(1e-6, 4, length = 200), # Grid
+                      grid_min = 1e-6,                     # Smallest grid point
+                      grid_max = 4.0,                      # Largest grid point
+                      grid_size = 200,                     # Number of grid points
+                      u = (c, γ = γ) -> isoelastic(c, γ),  # utility function
+                      ∂u∂c = c -> c^(-γ),                  # u′
+                      f = k -> k^α,                        # production function
+                      f′ = k -> α * k^(α - 1),             # f′
+                      )
 
 Next we generate an instance
 
 .. code-block:: julia
 
-    m = Model(γ = 1.0)   # model instance with specific parameter
+    m = Model()
 
 We also need some shock draws for Monte Carlo integration
 
 .. code-block:: julia
 
-  using Random
-  Random.seed!(42) # For reproducible results.
+    using Random
+    Random.seed!(42) # For reproducible results.
 
     shock_size = 250                                       # Number of shock draws in Monte Carlo integral
     shocks = collect(exp.(m.μ .+ m.s * randn(shock_size)))  # generate shocks
-
-
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the
 theory
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Shock Tests" begin
-    @test shocks[4] ≈ 0.9704956010607036
-    @test length(shocks) == 250 == shock_size
-  end
+    @testset "Shock Tests" begin
+        @test shocks[4] ≈ 0.9704956010607036
+        @test length(shocks) == 250 == shock_size
+    end
 
 .. code-block:: julia
 
@@ -574,33 +500,28 @@ theory
 
     function verify_true_policy(m, shocks, c_star)
         # Compute (Kc^*)
-        c_star_new = coleman_operator(c_star,
-                                      m.grid,
-                                      m.β,
-                                      m.u_prime,
-                                      m.f,
-                                      m.f_prime,
-                                      shocks)
+        @unpack grid, β, ∂u∂c, f, f′ = m
+        c_star_new = coleman_operator(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
         # Plot c^* and Kc^* #
-        plot(m.grid, c_star, label="optimal policy c^*")
-        plot!(m.grid, c_star_new, label="Kc^*")
-        plot!(legend=:topleft)
+        plot(grid, c_star, label = "optimal policy c^*")
+        plot!(grid, c_star_new, label = "Kc^*")
+        plot!(legend = :topleft)
     end
 
 .. code-block:: julia
 
-    c_star = (1 - m.α * m.β) * m.grid                      # True policy (c^*)
+    c_star = (1 - m.α * m.β) * m.grid     # True policy (c^*)
     verify_true_policy(m, shocks, c_star)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Verify True Policy Tests" begin
-    @test c_star[4] ≈ 0.023065703366834174
-    @test length(c_star) == 200
-    # The plot should look like a 45-degree line.
-  end
+    @testset "Verify True Policy Tests" begin
+        @test c_star[4] ≈ 0.023065703366834174
+        @test length(c_star) == 200
+        # The plot should look like a 45-degree line.
+    end
 
 We can't really distinguish the two plots, so we are looking good, at least
 for this test
@@ -608,35 +529,29 @@ for this test
 Next let's try iterating from an arbitrary initial condition and see if we
 converge towards :math:`c^*`
 
-
 The initial condition we'll use is the one that eats the whole pie: :math:`c(y) = y`
-
 
 .. code-block:: julia
 
     function check_convergence(m, shocks, c_star, g_init;
                                n_iter = 15)
-
-
-
+        @unpack grid, β, ∂u∂c, f, f′ = m
         g = g_init;
-        plot(m.grid, g, lw=2,
-              alpha=0.6, label="intial condition c(y) = y")
-        for i = 1:n_iter
-            new_g = coleman_operator(g, m.grid, m.β, m.u_prime,
-                                     m.f, m.f_prime, shocks)
+        plot(m.grid, g, lw = 2,
+              alpha = 0.6, label = "intial condition c(y) = y")
+        for i in 1:n_iter
+            new_g = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
             g = new_g
-            plot!(m.grid, g, lw=2, alpha=0.6, label="")
+            plot!(grid, g, lw = 2, alpha = 0.6, label = "")
         end
-        plot!(m.grid, c_star, color=:black, lw=2, alpha=0.8,
-              label="true policy function c^*")
-        plot!(legend=:topleft)
+        plot!(grid, c_star, color = :black, lw = 2, alpha = 0.8,
+              label = "true policy function c^*")
+        plot!(legend = :topleft)
     end
 
 .. code-block:: julia
 
-    check_convergence(m, shocks, c_star, m.grid, n_iter=15)
-
+    check_convergence(m, shocks, c_star, m.grid, n_iter = 15)
 
 We see that the policy has converged nicely, in only a few steps
 
@@ -656,13 +571,12 @@ and hence the same errors
 But in fact we expect the first method to be more accurate for reasons
 discussed above
 
-
 .. code-block:: julia
 
     function iterate_updating(func, arg_init;
                               sim_length = 20)
         arg = arg_init;
-        for i=1:sim_length
+        for i in 1:sim_length
             new_arg = func(arg)
             arg = new_arg
         end
@@ -671,37 +585,32 @@ discussed above
 
     function compare_error(m, shocks, g_init, w_init;
                            sim_length = 20)
-
+        @unpack grid, β, u, ∂u∂c, f, f′ = m
         g, w = g_init, w_init
         ## two functions for simplification
-        bellman_single_arg(w) = bellman_operator(w, m.grid, m.β, m.u,
-                                                 m.f, shocks)
+        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
 
-        coleman_single_arg(g) = coleman_operator(g, m.grid, m.β, m.u_prime,
-                                                 m.f, m.f_prime,     shocks)
+        coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
 
-        g = iterate_updating(coleman_single_arg, m.grid, sim_length=20)
-        w = iterate_updating(bellman_single_arg, m.u.(m.grid), sim_length=20)
-        new_w, vf_g = bellman_operator(w, m.grid, m.β, m.u,
-                                       m.f, shocks, compute_policy=true)
+        g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
+        w = iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
+        new_w, vf_g = bellman_operator(w, grid, β, u, f, shocks, compute_policy = true)
 
         pf_error = c_star - g
         vf_error = c_star - vf_g
 
-        plot(m.grid, 0 * m.grid, color=:black, lw=1)
-        plot!(m.grid, pf_error, lw=2, alpha=0.6, label="policy iteration error")
-        plot!(m.grid, vf_error, lw=2, alpha=0.6, label="value iteration error")
-        plot!(legend=:bottomleft)
+        plot(grid, zero(grid), color = :black, lw = 1)
+        plot!(grid, pf_error, lw = 2, alpha = 0.6, label = "policy iteration error")
+        plot!(grid, vf_error, lw = 2, alpha = 0.6, label = "value iteration error")
+        plot!(legend = :bottomleft)
     end
 
 .. code-block:: julia
 
     compare_error(m, shocks, m.grid, m.u.(m.grid), sim_length=20)
 
-
 As you can see, time iteration is much more accurate for a given
 number of iterations
-
 
 Exercises
 ===========
@@ -715,12 +624,10 @@ Show that :eq:`cpi_ed_tk` is valid.  In particular,
 
 * Fix :math:`y \in (0, \infty)` and show that :math:`MTv(y) = KMv(y)`
 
-
 Exercise 2
 -----------
 
 Show that :math:`M` is a bijection from :math:`\mathscr V` to :math:`\mathscr P`
-
 
 Exercise 3
 ------------
@@ -730,7 +637,6 @@ Consider the same model as above but with the CRRA utility function
 .. math::
 
     u(c) = \frac{c^{1 - \gamma} - 1}{1 - \gamma}
-
 
 Iterate 20 times with Bellman iteration and Euler equation time iteration
 
@@ -742,12 +648,11 @@ Iterate 20 times with Bellman iteration and Euler equation time iteration
 
 Compare the resulting policies and check that they are close
 
-
 Exercise 4
 -----------
 
-Do the same exercise, but now, rather than plotting results, time how long 20
-iterations takes in each case
+Do the same exercise, but now, rather than plotting results, benchmark both approaches with 20
+iterations
 
 Solutions
 ===========
@@ -766,11 +671,9 @@ where :math:`c(y)` solves
     u'(c(y))
     = \beta \int v' (f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)
 
-
 Hence :math:`MTv(y) = (u')^{-1} (u'(c(y))) = c(y)`
 
 On the other hand, :math:`KMv(y)` is the :math:`c(y)` that solves
-
 
 .. math::
 
@@ -784,9 +687,7 @@ On the other hand, :math:`KMv(y)` is the :math:`c(y)` that solves
         & = \beta \int v'(f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)
     \end{aligned}
 
-
 We see that :math:`c(y)` is the same in each case
-
 
 Solution to Exercise 2
 -------------------------
@@ -825,76 +726,68 @@ Then :math:`v(0) = w(0) = 0` and :math:`v' = w'` on :math:`(0, \infty)`
 
 The fundamental theorem of calculus then implies that :math:`v = w` on :math:`\mathbb R_+`
 
-
 Solution to Exercise 3
 -------------------------
 
 Here's the code, which will execute if you've run all the code above
 
-
 .. code-block:: julia
 
     # Model instance with risk aversion = 1.5
     # others are same as the previous instance
-    m_ex = Model(γ=1.5)
+    m_ex = Model(γ = 1.5)
 
 .. code-block:: julia
 
-    function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
+    function exercise3(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
                        sim_length = 20)
 
+        @unpack grid, β, u, ∂u∂c, f, f′ = m
         # initial policy and value
         g, w = g_init, w_init
         # iteration
-        bellman_single_arg(w) = bellman_operator(w, m.grid, m.β, m.u,
-                                                 m.f, shocks)
-        coleman_single_arg(g) = coleman_operator(g, m.grid, m.β, m.u_prime,
-                                                 m.f, m.f_prime, shocks)
+        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
+        coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
 
-        g = iterate_updating(coleman_single_arg, m.grid, sim_length=20)
-        w = iterate_updating(bellman_single_arg, m.u.(m.grid), sim_length=20)
-        new_w, vf_g = bellman_operator(w, m.grid, m.β, m.u,
-                                       m.f, shocks, compute_policy=true)
+        g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
+        w = iterate_updating(bellman_single_arg, u.(m.grid), sim_length = 20)
+        new_w, vf_g = bellman_operator(w, grid, β, u, f, shocks, compute_policy = true)
 
-
-        plot(m.grid, g, lw=2, alpha=0.6, label="policy iteration")
-        plot!(m.grid, vf_g, lw=2, alpha=0.6, label="value iteration")
-        plot!(legend=:topleft)
+        plot(grid, g, lw = 2, alpha = 0.6, label = "policy iteration")
+        plot!(grid, vf_g, lw = 2, alpha = 0.6, label = "value iteration")
+        return plot!(legend = :topleft)
     end
 
 .. code-block:: julia
 
     exercise2(m_ex, shocks, m.grid, m.u.(m.grid), sim_length=20)
 
-
 The policies are indeed close
-
 
 Solution to Exercise 4
 -------------------------
-
 
 Here's the code
 
 It assumes that you've just run the code from the previous exercise
 
-
 .. code-block:: julia
 
-    function exercise3(m, shocks)
-        bellman_single_arg(w) = bellman_operator(w, m.grid, m.β, m.u,
-                                                 m.f, shocks)
-        coleman_single_arg(g) = coleman_operator(g, m.grid, m.β, m.u_prime,
-                                                 m.f, m.f_prime, shocks)
-
-        println("Timing value function iteration")
-        @time iterate_updating(bellman_single_arg, m.u.(m.grid), sim_length=20)
-
-        println("Timing Coleman policy function iteration")
-        @time iterate_updating(coleman_single_arg, m.grid, sim_length=20)
-        return nothing
+    function bellman(m, shocks)
+        @unpack grid, β, u, ∂u∂c, f, f′ = m
+        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
+        iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
+    end
+    function coleman(m, shocks)
+        @unpack grid, β, ∂u∂c, f, f′ = m
+        coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
+        iterate_updating(coleman_single_arg, grid, sim_length = 20)
     end
 
 .. code-block:: julia
 
-    exercise3(m_ex, shocks)
+    @benchmark bellman(m_ex, shocks)
+
+.. code-block:: julia
+
+    @benchmark bellman(m_ex, shocks)
