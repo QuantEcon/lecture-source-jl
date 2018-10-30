@@ -483,7 +483,7 @@ Setup
 
 .. code-block:: julia
 
-    using Plots, QuantEcon, Interpolations
+    using Plots, QuantEcon, Interpolations, NLsolve
     gr(fmt = :png)
 
 .. code-block:: julia
@@ -511,35 +511,19 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
     using Optim
 
-    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
-                              compute_policy = false)
-
-        # apply linear interpolation to w
+    function T(w, grid, β, u, f, shocks, Tw = similar(w); compute_policy = false)
         w_func = LinearInterpolation(grid, w)
-
+        objectives = [c -> u(c) + β * mean(w_func.(f(y - c) .* shocks)) for y in grid] # objective for each grid point
+        results = [maximize(objectives[i], 1e-10, grid[i]) for i in 1:length(grid)] # solver result for each grid point
+        Tw = [Optim.maximum(res) for res in results]
         if compute_policy
-            σ = similar(w)
-        end
-
-        # set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)}
-        for (i, y) in enumerate(grid)
-            objective(c) = u(c) + β * mean(w_func.(f(y - c) .* shocks))
-            res = maximize(objective, 1e-10, y)
-
-            if compute_policy
-                σ[i] = Optim.maximizer(res)
-            end
-            Tw[i] = Optim.maximum(res)
-        end
-
-        if compute_policy
+            σ = [Optim.maximizer(res) for res in results]
             return Tw, σ
-        else
-            return Tw
         end
+        return Tw
     end
 
-The arguments to `bellman_operator` are described in the docstring to the function
+The arguments to `T` are described in the docstring to the function
 
 Notice that the expectation in :eq:`fcbell20_optgrowth` is computed via Monte Carlo, using the approximation
 
@@ -662,16 +646,11 @@ In practice we expect some small numerical error
 
 .. code-block:: julia
 
-  w = bellman_operator(v_star.(grid_y),
-                       grid_y,
-                       β,
-                       log,
-                       k -> k^α,
-                       shocks)
+  w = T(v_star.(grid_y), grid_y, β, log, k -> k^α, shocks)
 
   plt = plot(ylim = (-35,-24))
-  plot!(plt, grid_y, w, linewidth = 2, alpha = 0.6, label = L"$Tv^*$")
-  plot!(plt, v_star, grid_y, linewidth = 2, alpha=0.6, label = L"v^*")
+  plot!(plt, grid_y, w, linewidth = 2, alpha = 0.6, label = "T(v_star)")
+  plot!(plt, v_star, grid_y, linewidth = 2, alpha=0.6, label = "v_star")
   plot!(plt, legend = :bottomright)
 
 .. code-block:: julia
@@ -698,12 +677,7 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
     lb = "initial condition"
     plt = plot(grid_y, w, color = :black, linewidth = 2, alpha = 0.8, label = lb)
     for i in 1:n
-        w = bellman_operator(w,
-                            grid_y,
-                            β,
-                            log,
-                            k -> k^α,
-                            shocks)
+        w = T(w, grid_y, β, log, k -> k^α, shocks)
         plot!(grid_y, w, color = RGBA(i/n, 0, 1 - i/n, 0.8), linewidth = 2, alpha = 0.6, label = "")
     end
 
@@ -728,38 +702,13 @@ The sequence of iterates converges towards :math:`v^*`
 
 We are clearly getting closer
 
-We can write a function that iterates until the difference is below a particular
-tolerance level
+We can write a function that computes the exact fixed point
 
 .. code-block:: julia
 
-    function solve_optgrowth(initial_w;
-                             tol = 1e-6,
-                             max_iter = 500)
-
-        w = initial_w  # Set initial condition
-        error = tol + 1
-        i = 0
-
-        # create storage array for bellman_operator. Reduces  memory
-        # allocation and speeds code up
+    function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
         Tw = similar(grid_y)
-
-        # Iterate to find solution
-
-        while (error > tol) && (i < max_iter)
-            w_new = bellman_operator(w,
-                                 grid_y,
-                                 β,
-                                 log,
-                                 k -> k^α,
-                                 shocks)
-            error = maximum(abs, w_new - w)
-            w = w_new
-            i += 1
-        end
-
-        return w
+        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero # gets returned
     end
 
 We can check our result by plotting it against the true value
@@ -781,42 +730,6 @@ We can check our result by plotting it against the true value
     @test v_star_approx[4] ≈ -31.850304884715662
   end
 
-Alternatively, we can use `QuantEcon <http://quantecon.org/julia_index.html>`__'s `compute_fixed_point` function
-to converge to :math:`v^*`
-
-.. code-block:: julia
-
-    using NLsolve
-
-    Tw = similar(grid_y)
-    initial_w = 5 * log.(grid_y)
-
-    bellman_operator(w) = bellman_operator(w,
-                                           grid_y,
-                                           β,
-                                           log,
-                                           k -> k^α,
-                                           shocks)
-
-    v_star_approx = fixedpoint(bellman_operator, initial_w, inplace = false)
-    sol_v_star_approx = v_star_approx.zero
-
-Let's have a look at the result
-
-.. code-block:: julia
-
-    plt = plot(ylim = (-35,-24))
-    plot!(plt, grid_y, sol_v_star_approx, lw = 2, alpha = 0.6, label = "approximate value function")
-    plot!(plt, v_star, grid_y, lw = 2, alpha = 0.6, label = "true value function")
-    plot!(plt, legend = :bottomright)
-
-.. code-block:: julia
-  :class: test
-
-  @testset "QuantEcon Iteration Test" begin
-    @test sol_v_star_approx[17] ≈ -29.13196547776264
-  end
-
 The figure shows that we are pretty much on the money
 
 The Policy Function
@@ -833,14 +746,7 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
 
 .. code-block:: julia
 
-    Tw, σ = bellman_operator(sol_v_star_approx,
-                             grid_y,
-                             β,
-                             log,
-                             k -> k^α,
-                             shocks;
-                             compute_policy = true)
-
+    Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks; compute_policy = true)
     cstar = (1 - α * β) * grid_y
 
     plt = plot(grid_y, σ, lw=2, alpha=0.6, label = "approximate policy function")
@@ -919,23 +825,14 @@ Here's one solution (assuming as usual that you've executed everything above)
     plt = plot()
 
     for β in (0.9, 0.94, 0.98)
-
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = fixedpoint(bellman_operator, initial_w, inplace = false)
-        sol_v_star_approx = v_star_approx.zero
-
-        Tw, σ = bellman_operator(sol_v_star_approx,
-                                grid_y,
-                                β,
-                                log,
-                                k -> k^α,
-                                shocks,
-                                compute_policy = true)
-
+        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero
+        Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks, compute_policy = true)
         σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
+
         plot!(plt, y, lw = 2, alpha = 0.6, label = label = "beta = $β")
     end
 
