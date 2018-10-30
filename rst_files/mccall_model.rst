@@ -328,25 +328,49 @@ Our initial guess :math:`v` is the value of accepting at every given wage
     E = expectation(dist)
 
     # functions and matrix to plot
-    stop_val(w) = w / (1 - β)
-    cont_val(v) = c + β * E * v # using E as a linear operator
-    best_val(w, v) = max(stop_val(w), cont_val(v))
-    vs = repeat(w_vals ./ (1 - β), outer = (1, 6)) # data to fill
+    T(w, v) = max(w/(1 - β), c + β*E*v)
+    vs = zeros(n+1, 6) # data to fill
+    vs[:, 1] .= w_vals
 
     # fill and plot
     for col in 2:num_plots
-        vs[:, col] .= best_val.(w_vals, Ref(vs[:, col - 1])) # update using previous value function
+        vs[:, col] .= T.(w_vals, Ref(vs[:, col - 1])) # update using previous value function
     end
     plot(vs)
 
 Here's more serious iteration effort, that continues until measured deviation
 between successive iterates is below `tol`
 
+.. code-block:: julia 
+    :class: test 
+
+    function compute_reservation_wage(c, β;
+        max_iter = 500,
+        tol = 1e-6)
+        # first compute the value function
+        v = collect(w_vals ./ (1 - β))
+        v_next = similar(v)
+        i = 0
+        error = tol + 1
+        while i < max_iter && error > tol
+            for (j, w) in enumerate(w_vals)
+                stop_val = w / (1 - β)
+                cont_val = c + β * sum(v .* p_vals)
+                v_next[j] = max(stop_val, cont_val)
+            end
+            error = maximum(abs(a - b) for (a, b) in zip(v_next, v))
+            i += 1
+            v[:] .= v_next  # copy contents into v
+        end
+        # now compute the reservation wage
+        return (1 - β) * (c + β * sum(v .* p_vals))
+    end
+
 .. code-block:: julia
 
   function compute_reservation_wage(c, β; max_iter = 500, tol = 1e-6)
       v = w_vals ./(1-β)
-      v_star = fixedpoint(v -> best_val.(w_vals, Ref(v)), v, inplace = false).zero
+      v_star = fixedpoint(v -> T.(w_vals, Ref(v)), v, inplace = false).zero
       return (1 - β) * (c + β * E*v)
   end
 
@@ -529,6 +553,7 @@ Here's one solution
         Random.seed!(seed)
         stopping_time = 0
         t = 1
+        @assert length(w_vals) ∈ support(dist) && w_bar <= w_vals[end] # make sure the constraint is sometimes binding
         while true
             # Generate a wage draw
             w = w_vals[rand(dist)] # the wage dist set up earlier
