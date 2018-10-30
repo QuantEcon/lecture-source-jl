@@ -168,24 +168,6 @@ A few useful maintenance features
 * To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
 * To clean unnecessary Docker assets from your system, run ``docker system prune`` 
 
-Creating a Shortcut
-----------------------
-
-For convenience, consider creating a shortcut to run when 
-
-For Windows:
-* Right click on the desktop or some other location and choose New/Shortcut
-* For the `location of the item` copy in
-
-.. code-block:: none
-
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base``
-
-* Name and finish the creation of the shortcut
-* Right-click on the new shortcut, choose Properties, and then change the ``Start in`` to be the directory below which you may wish to store files (e.g. ``C:\Users\YOURNAME\Documents`` )
-
-
-
 .. _jl_jupyterlocal:
 
 Installing Julia and Dependencies Manually
