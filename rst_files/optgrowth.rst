@@ -727,7 +727,7 @@ We can check our result by plotting it against the true value
   :class: test
 
   @testset "Iteration Scheme Tests" begin
-    @test v_star_approx[4] ≈ -31.850304884715662
+    @test v_star_approx[4] ≈ -31.85032776321786
   end
 
 The figure shows that we are pretty much on the money
@@ -837,3 +837,24 @@ Here's one solution (assuming as usual that you've executed everything above)
     end
 
     plot!(plt, legend = :bottomright)
+
+.. code-block:: julia
+    :class: test
+
+    using Random
+    Random.seed!(42)
+    β = 0.94
+
+    Tw = similar(grid_y)
+    initial_w = 5 * log.(grid_y)
+    v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero
+    Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks, compute_policy = true)
+    σ_func = LinearInterpolation(grid_y, σ)
+    y = simulate_og(σ_func);
+
+    @testset begin
+        @test y[5] ≈ 0.489631315122766
+        @test σ[3] ≈ 0.025086036502830814
+        @test Tw[4] ≈ -22.27089960340596
+        @test v_star_approx[50] ≈ -17.79360247626825
+    end
