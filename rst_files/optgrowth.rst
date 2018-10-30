@@ -523,8 +523,6 @@ Here's a function that implements the Bellman operator using linear interpolatio
         return Tw
     end
 
-The arguments to `T` are described in the docstring to the function
-
 Notice that the expectation in :eq:`fcbell20_optgrowth` is computed via Monte Carlo, using the approximation
 
 .. math::
@@ -588,12 +586,12 @@ Let's code this up now so we can test against it below
     # Utility
     u(c) = log(c)
 
-    u_prime(c) = 1 / c
+    ∂u∂c(c) = 1 / c
 
     # Deterministic part of production function
     f(k) = k^α
 
-    f_prime(k) = α * k^(α - 1)
+    f′(k) = α * k^(α - 1)
 
     # True optimal policy
     c_star(y) = (1 - α * β) * y
@@ -606,7 +604,7 @@ Let's code this up now so we can test against it below
 
     @testset "Primitives Tests" begin
         @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998, 1.6233766233766234]
-        @test u_prime(c1) ≈ -0.08255792258789846
+        @test ∂u∂c(c1) ≈ -0.08255792258789846
         @test v_star(3) ≈ -25.245288867900843
     end
 
