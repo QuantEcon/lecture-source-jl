@@ -553,7 +553,7 @@ Here's one solution
         Random.seed!(seed)
         stopping_time = 0
         t = 1
-        @assert length(w_vals) ∈ support(dist) && w_bar <= w_vals[end] # make sure the constraint is sometimes binding
+        @assert length(w_vals) - 1 ∈ support(dist) && w_bar <= w_vals[end] # make sure the constraint is sometimes binding
         while true
             # Generate a wage draw
             w = w_vals[rand(dist)] # the wage dist set up earlier
