@@ -436,7 +436,7 @@ we can create an array for reservation wages for different values of :math:`c`,
 
     c_vals = range(2,  12, length = 25)
 
-    models = [mcm(c = cval) for cval in cvals]
+    models = [McCallModel(c = cval) for cval in c_vals]
     sols = solve_mccall_model.(models)
     w_bar_vals = [solve_mccall_model(sol) for sol in sols]
 
@@ -467,7 +467,7 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 
     γ_vals = range(0.05,  0.95, length = 25)
     
-    models = [mcm(γ = γval) for γval in γ_vals]
+    models = [McCallModel(γ = γval) for γval in γ_vals]
     sols = solve_mccall_model.(models)
     w_bar_vals = [sol[3] for sol in sols]
 
