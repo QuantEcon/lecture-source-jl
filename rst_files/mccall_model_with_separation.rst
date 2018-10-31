@@ -233,7 +233,7 @@ The default utility function is a CRRA utility function
     using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
     # a default utility function
-    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) + (c <= 0)*(-10e6) # if c > 0, return utility; else, return large negative
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
 
     # model objects
     const n = 60                                           # n possible outcomes for wage
@@ -242,7 +242,7 @@ The default utility function is a CRRA utility function
     const dist = BetaBinomial(n-1, a, b)                   # wage distribution
 
     # constructor
-    McCallModel(;α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist) = (α = α, β = β, γ = γ, c = c, σ = σ, w_vec = w_vec, dist = dist)
+    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist)
 
     # update
     function update_bellman(mcm, V, E)
@@ -264,7 +264,7 @@ The default utility function is a CRRA utility function
             E = expectation(mcm.dist)
             sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero
             return sol[1:end-1], sol[end] # returns (V, U)
-        end
+    end
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
 
