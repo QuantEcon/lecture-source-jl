@@ -168,18 +168,17 @@ and
 
 Formally, we can define a "Bellman operator" T which maps:
 
-    .. math::
-        :label: bellman_operator
+.. math::
+    :label: bellman_operator
           
-        TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U ]
+    TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U 
           
 In which case we are searching for a fixed point
     
-    .. math::
-        :label: bellman_operator
+.. math::
+    :label: bellman_operator_fp
           
-        TV^{*} = V^*
-              
+    TV^{*} = V^*              
 
 Solving the Bellman Equations
 -------------------------------
@@ -289,7 +288,14 @@ We'll use the default parameterizations found in the code above
     u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
 
     # model constructor
-    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, u = u, w = range(10, 20, length = 60) , dist = BetaBinomial(59, 600, 400))
+    McCallModel = @with_kw (α = 0.2, 
+        β = 0.98, # discount rate 
+        γ = 0.7, 
+        c = 6.0, # unemployment compensation 
+        σ = 2.0, 
+        u = u, # utility function 
+        w = range(10, 20, length = 60), # wage values
+        dist = BetaBinomial(59, 600, 400)) # distribution over wage values 
 
 .. code-block:: julia
 
