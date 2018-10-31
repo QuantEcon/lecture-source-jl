@@ -115,7 +115,6 @@ and
 
     U = u(c) + \beta \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
-
 Let's interpret these two equations in light of the fact that today's tomorrow is tomorrow's today
 
 * The left hand sides of equations :eq:`bell1_mccall` and :eq:`bell2_mccall` are the values of a worker in a particular situation *today*
@@ -167,6 +166,20 @@ and
       \beta (1 - \gamma) U
           + \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
+Formally, we can define a "Bellman operator" T which maps:
+
+    .. math::
+        :label: bellman_operator
+          
+        TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U ]
+          
+In which case we are searching for a fixed point
+    
+    .. math::
+        :label: bellman_operator
+          
+        TV^{*} = V^*
+              
 
 Solving the Bellman Equations
 -------------------------------
