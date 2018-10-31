@@ -216,55 +216,51 @@ Implementation
 
 Let's implement this iterative process
 
-In the code you'll see that we use a type to store the various parameters and other
-objects associated with a given model
-
-This helps to tidy up the code and provides an object that's easy to pass to functions
-
-The default utility function is a CRRA utility function
-
 .. code-block:: julia
     :class: test
 
     using Test
 
-.. code-block:: julia
+.. code-block:: julia 
 
     using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-    # a default utility function
-    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, iter = 2_000)
+        # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
+        @unpack α, β, σ, c, γ, w, dist, u = mcm 
+        
+        # parameter validation
+        @assert c > 0.0
+        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here 
+        
+        # necessary objects 
+        u_w = u.(w, σ) 
+        u_c = u(c, σ)
+        E = expectation(dist) # expectation operator for wage distribution
 
-    # model objects
-    const n = 60                                           # n possible outcomes for wage
-    const default_w_vec = range(10, 20, length = n)        # wages between 10 and 20
-    const a, b = 600, 400                                  # shape parameters
-    const dist = BetaBinomial(n-1, a, b)                   # wage distribution
+        # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
+        function T(x)
+            V = x[1:end-1]
+            U = x[end]
+            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+        end 
 
-    # constructor
-    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist)
-
-    # update
-    function update_bellman(mcm, V, E)
-        @unpack α, β, σ, c, γ, dist, w_vec = mcm # unpack model objects
-        U = V[end] # U is at the end of V
-        V_new = similar(V) # create a new V
-
-        for (w_idx, w) in enumerate(mcm.w_vec)
-            # w_idx indexes the vector of possible wages
-            V_new[w_idx] = u(w, σ) + β * ((1 - α) * V[w_idx] + α * U)
+        # value function iteration  
+        x_iv = [V_iv; U_iv] # initial x val
+        xstar = fixedpoint(T, x_iv; inplace = false, iterations = iter, xtol = tol).zero 
+        V = xstar[1:end-1]
+        U = xstar[end]
+        
+        # compute the reservation wage 
+        wbarindex = searchsortedfirst(V .- U, 0.0)
+        if wbarindex >= length(w) # if this is true, you never want to accept
+            wbar = Inf
+        else
+            wbar = w[wbarindex] # otherwise, return the number
         end
 
-        V_new[end] = u(c, σ) + β * (1 - γ) * U + β * γ * E*max.(U, V[1:end-1])
-        return V_new
-    end
-
-    function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
-            V = ones(Float64, length(mcm.w_vec)+1)
-            E = expectation(mcm.dist)
-            sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero
-            return sol[1:end-1], sol[end] # returns (V, U)
-    end
+        return V, U, wbar
+    end 
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
 
@@ -274,6 +270,19 @@ Let's plot the approximate solutions :math:`U` and :math:`V` to see what they lo
 
 We'll use the default parameterizations found in the code above
 
+.. code-block:: julia
+
+    # a default utility function
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
+
+    # default objects
+    const n = 60                                           # n possible outcomes for wage
+    const default_w_vec = range(10, 20, length = n)        # wages between 10 and 20
+    const a, b = 600, 400                                  # shape parameters
+    const dist = BetaBinomial(n-1, a, b)                   # wage distribution
+
+    # model constructor
+    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, u = u, w = default_w_vec, dist = dist)
 
 .. code-block:: julia
 
@@ -282,9 +291,9 @@ We'll use the default parameterizations found in the code above
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)
-    U_vec = U .* ones(length(mcm.w_vec))
+    U_vec = U .* ones(n)
 
-    plot(mcm.w_vec,
+    plot(mcm.w,
         [V U_vec],
         lw = 2,
         α = 0.7,
@@ -293,15 +302,17 @@ We'll use the default parameterizations found in the code above
 .. code-block:: julia
     :class: test
 
-
     @testset "First Plot Tests" begin
-        @test U ≈ 45.623746143470015 # U value
-        @test V[3] ≈ 45.581170938855706 # Arbitrary V
+        @test U ≈ 45.623503368698636 # U value
+        @test V[3] ≈ 45.58092816408433 # Arbitrary V
     end
 
 
 The value :math:`V` is increasing because higher :math:`w` generates a higher wage flow conditional on staying employed
 
+At this point, it's natural to ask how the model would respond if we perturbed the parameters 
+
+These calculations, called comparative statics, are performed in the next section
 
 The Reservation Wage
 =======================
@@ -324,35 +335,11 @@ Optimal behavior for the worker is characterized by :math:`\bar w`
 
 *  if the  wage offer :math:`w` in hand is less than :math:`\bar w`, then the worker rejects
 
-Here's a function called `compute_reservation_wage` that takes an instance of a McCall model and returns the reservation wage associated with a given model
-
-It uses `np.searchsorted <https://docs.scipy.org/doc/numpy/reference/generated/numpy.searchsorted.html>`__ to obtain the first :math:`w` in the set of possible wages such that :math:`V(w) > U`
-
 If :math:`V(w) < U` for all :math:`w`, then the function returns `np.inf`
-
-.. code-block:: julia
-
-    function compute_reservation_wage(mcm; return_values = false)
-        V, U = solve_mccall_model(mcm)
-        w_idx = searchsortedfirst(V .- U, 0)
-
-        if w_idx == length(V)
-            w_bar = Inf
-        else
-            w_bar = mcm.w_vec[w_idx]
-        end
-
-        if return_values == false
-            return w_bar
-        else
-            return w_bar, V, U
-        end
-    end
 
 Let's use it to look at how the reservation wage varies with parameters
 
 In each instance below we'll show you a figure and then ask you to reproduce it in the exercises
-
 
 The Reservation Wage and Unemployment Compensation
 ----------------------------------------------------
@@ -433,7 +420,7 @@ Solutions
 Exercise 1
 ----------
 
-Using the `compute_reservation_wage` function mentioned earlier in the lecture,
+Using the `solve_mccall_model` function mentioned earlier in the lecture,
 we can create an array for reservation wages for different values of :math:`c`,
 :math:`\beta` and :math:`\alpha` and plot the results like so
 
@@ -447,17 +434,17 @@ we can create an array for reservation wages for different values of :math:`c`,
 
     for (i, c) in enumerate(c_vals)
         mcm = McCallModel(c = c)
-        w_bar = compute_reservation_wage(mcm)
+        ~, ~, w_bar = solve_mccall_model(mcm)
         w_bar_vals[i] = w_bar
     end
 
     plot(c_vals,
-         w_bar_vals,
-         lw = 2,
-         α = 0.7,
-         xlabel = "unemployment compensation",
-         ylabel = "reservation wage",
-         label = "w_bar as a function of c")
+        w_bar_vals,
+        lw = 2,
+        α = 0.7,
+        xlabel = "unemployment compensation",
+        ylabel = "reservation wage",
+        label = "w_bar as a function of c")
 
 .. code-block:: julia
     :class: test
@@ -482,17 +469,17 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 
     for (i, γ) in enumerate(γ_vals)
         mcm = McCallModel(γ = γ)
-        w_bar = compute_reservation_wage(mcm)
+        ~, ~, w_bar = solve_mccall_model(mcm)
         w_bar_vals[i] = w_bar
     end
 
     plot(γ_vals,
-         w_bar_vals,
-         lw = 2,
-         α = 0.7,
-         xlabel = "job offer rate",
-         ylabel = "reservation wage",
-         label = "w_bar as a function of gamma")
+        w_bar_vals,
+        lw = 2,
+        α = 0.7,
+        xlabel = "job offer rate",
+        ylabel = "reservation wage",
+        label = "w_bar as a function of gamma")
 
 .. code-block:: julia
     :class: test
