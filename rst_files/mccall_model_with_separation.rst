@@ -438,7 +438,7 @@ we can create an array for reservation wages for different values of :math:`c`,
 
     models = [McCallModel(c = cval) for cval in c_vals]
     sols = solve_mccall_model.(models)
-    w_bar_vals = [solve_mccall_model(sol) for sol in sols]
+    w_bar_vals = [sol[3] for sol in sols]
 
     plot(c_vals,
         w_bar_vals,
