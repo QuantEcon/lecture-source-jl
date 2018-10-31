@@ -296,8 +296,9 @@ Here's the distribution of wage offers we'll work with
 
 .. code-block:: julia
 
-    dist = BetaBinomial(50, 200, 100) # probability distribution
-    w = range(10.0, 60.0, length = length(support(dist))) # linearly space wages
+    n = 50
+    dist = BetaBinomial(n, 200, 100) # probability distribution
+    w = range(10.0, 60.0, length = n+1) # linearly space wages
     plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
 We can explore taking expectations over this distribution
