@@ -123,7 +123,7 @@ f(param)
 
 ## General Control Structures and Code Organization
 
-- **Return Named Tuples** from functions with multiple return arguments.  That is,
+- **Return Named Tuples** from functions with multiple return values.  That is,
 
 ```julia 
 # BAD
