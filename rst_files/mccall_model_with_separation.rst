@@ -304,7 +304,7 @@ We'll use the default parameterizations found in the code above
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)
-    U_vec = fill(U, length(mcm.w_vec))
+    U_vec = fill(U, length(mcm.w))
 
     plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
 
