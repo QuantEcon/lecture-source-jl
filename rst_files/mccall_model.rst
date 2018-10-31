@@ -310,30 +310,49 @@ We can explore taking expectations over this distribution
     # exploring the properties of the operator
     wage(i) = w[i+1] # +1 to map from support of 0
     E_w = E(wage)
-    E_w_2 = E(i -> (w[i+1])^2 - E_w^2) # variance
+    E_w_2 = E(i -> wage(i)^2 - E_w^2) # variance
     @show E_w, E_w_2
 
     # use operator with left-multiply
     @show E * w; # identity
 
 
-To impllement our algorithm, let's have a look at the sequence of approximate value functions that
+To implement our algorithm, let's have a look at the sequence of approximate value functions that
 this fixed point algorithm generates
 
 Default parameter values are embedded in the function
 
 Our initial guess :math:`v` is the value of accepting at every given wage
 
-.. code:: julia
+.. code-block:: julia
 
-    # parameters and constant objects
- 
+    # parameters and constant objects 
     c = 25
     β = 0.99
     num_plots = 6
 
-    # Operator
-    T(v) = max.(w/(1 - β), c + β * E*v) # (5)
+    # Bellman operator (capture global values)
+    genericT(; c = 25, β = 0.99, w = w, E = E) = v -> max.(w/(1 - β), c + β * E*v) # 5
+    T = genericT()
+
+Before proceeding, it's worth pointing out a subtlety about how we defined the operator 
+
+The first function, ``genericT``, defines a *family* of Bellman operators, parametrized by objects in the keyword arguments, like the unemployment compensation and discount factor 
+
+The object returned is itself a function; namely, a map T from v to ``max.(w/(1 - β), c + β * E*v)`` 
+
+We can define different operators, as below 
+
+.. code-block:: julia
+
+    T1 = genericT(c = 30) 
+    T2 = genericT(c = 30, β = 0.7)  
+    plot(T1(w), legend = false) # apply T1 to the wage vector itself as a first guess 
+    plot!(T2(w), legend = false)
+
+Now, we can return to implementing the iteration scheme defined above 
+
+.. code-block:: julia 
 
     # fill in  matrix of vs
     vs = zeros(n + 1, 6) # data to fill
@@ -352,6 +371,7 @@ between successive iterates is below `tol`
 .. code-block:: julia 
 
     function compute_reservation_wage_direct(c, β; v_iv = collect(w ./(1-β)), max_iter = 500, tol = 1e-6)
+        T = genericT(c = c, β = β) # define our Bellman operator 
         v = copy(v_iv) # start at initial value
         v_next = similar(v)
         i = 0
@@ -373,6 +393,7 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
 .. code-block:: julia
 
   function compute_reservation_wage(c, β; v_iv = collect(w ./(1-β)), iterations = 500, ftol = 1e-6, m = 6)
+      T = genericT(c = c, β = β) # define our Bellman operator  
       v_star = fixedpoint(T, v_iv, inplace = false, iterations = iterations, ftol = ftol, m = 6).zero # (5)
       return (1 - β) * (c + β * E*v_star) # (3)
   end
@@ -399,6 +420,8 @@ Comparative Statics
 Now we know how to compute the reservation wage, let's see how it varies with
 parameters
 
+
+
 In particular, let's look at what happens when we change :math:`\beta` and
 :math:`c`
 
@@ -410,29 +433,25 @@ In particular, let's look at what happens when we change :math:`\beta` and
     c_vals = range(10.0, 30.0, length = grid_size)
     β_vals = range(0.9, 0.99, length = grid_size)
 
-    for (i, c) in enumerate(c_vals)
-        for (j, β) in enumerate(β_vals)
-            R[i, j] = compute_reservation_wage(c, β)
-        end
-    end
+.. code-block:: julia
+
+    contour(c_vals, β_vals, (c, β) -> compute_reservation_wage(c, β), # plot the function directly to avoid errors from matrix vs. Cartesian indexing
+            title = "Reservation Wage",
+            xlabel = "c",
+            ylabel = "beta",
+            fill = true)
 
 .. code-block:: julia
     :class: test
 
     @testset "Comparative Statics Tests" begin
-        @test R[4, 4] ≈ 40.59687500000215 # Arbitrary reservation wage.
+        @test compute_reservation_wage(10.0, 0.9) ==  40.39579058732861  # arbitrary reservation wage.
+        @test compute_reservation_wage_direct(10.0, 0.9) == 40.39579058713624 # same thing, with direct function. 
         @test grid_size == 25 # grid invariance.
         @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance.
         @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance.
     end
 
-.. code-block:: julia
-
-    contour(c_vals, β_vals, R',
-            title = "Reservation Wage",
-            xlabel = "c",
-            ylabel = "beta",
-            fill = true)
 
 As expected, the reservation wage increases both with patience and with
 unemployment compensation
