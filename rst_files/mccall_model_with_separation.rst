@@ -217,7 +217,6 @@ In which case we are searching for a fixed point
           
     TV^{*} = V^*              
 
-
 As before, the system always converges to the true solutions---in this case,
 the :math:`V` and :math:`U` that solve :eq:`bell01_mccall` and :eq:`bell02_mccall`
 
@@ -305,13 +304,9 @@ We'll use the default parameterizations found in the code above
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)
-    U_vec = U .* ones(length(mcm.w))
+    U_vec = fill(U, length(mcm.w_vec))
 
-    plot(mcm.w,
-        [V U_vec],
-        lw = 2,
-        α = 0.7,
-        label = ["V" "U"])
+    plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
 
 .. code-block:: julia
     :class: test
@@ -421,8 +416,7 @@ Use
 
 .. code-block:: julia
 
-	grid_size = 25
-	γ_vals = range(0.05,  0.95, length = grid_size)
+	γ_vals = range(0.05,  0.95, length = 25)
 
 
 Interpret your results
@@ -440,17 +434,11 @@ we can create an array for reservation wages for different values of :math:`c`,
 
 .. code-block:: julia
 
-    grid_size = 25
-    c_vals = range(2,  12, length = grid_size)
-    w_bar_vals = similar(c_vals)
+    c_vals = range(2,  12, length = 25)
 
-    mcm = McCallModel()
-
-    for (i, c) in enumerate(c_vals)
-        mcm = McCallModel(c = c)
-        ~, ~, w_bar = solve_mccall_model(mcm)
-        w_bar_vals[i] = w_bar
-    end
+    models = [mcm(c = cval) for cval in cvals]
+    sols = solve_mccall_model.(models)
+    w_bar_vals = [solve_mccall_model(sol) for sol in sols]
 
     plot(c_vals,
         w_bar_vals,
@@ -477,30 +465,20 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 
 .. code-block:: julia
 
-    grid_size = 25
-    γ_vals = range(0.05,  0.95, length = grid_size)
-    w_bar_vals = similar(γ_vals)
+    γ_vals = range(0.05,  0.95, length = 25)
+    
+    models = [mcm(γ = γval) for γval in γ_vals]
+    sols = solve_mccall_model.(models)
+    w_bar_vals = [sol[3] for sol in sols]
 
-    for (i, γ) in enumerate(γ_vals)
-        mcm = McCallModel(γ = γ)
-        ~, ~, w_bar = solve_mccall_model(mcm)
-        w_bar_vals[i] = w_bar
-    end
-
-    plot(γ_vals,
-        w_bar_vals,
-        lw = 2,
-        α = 0.7,
-        xlabel = "job offer rate",
-        ylabel = "reservation wage",
-        label = "w_bar as a function of gamma")
+    plot(γ_vals, w_bar_vals, lw = 2, α = 0.7, xlabel = "job offer rate", ylabel = "reservation wage", label = "w_bar as a function of gamma")
 
 .. code-block:: julia
     :class: test
 
     @testset "Solutions 2 Tests" begin
         @test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
-        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == grid_size == 25
+        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == 25
     end
 
 As expected, the reservation wage increases in :math:`\gamma`
