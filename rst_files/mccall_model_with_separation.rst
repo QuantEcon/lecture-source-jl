@@ -275,14 +275,8 @@ We'll use the default parameterizations found in the code above
     # a default utility function
     u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
 
-    # default objects
-    const n = 60                                           # n possible outcomes for wage
-    const default_w_vec = range(10, 20, length = n)        # wages between 10 and 20
-    const a, b = 600, 400                                  # shape parameters
-    const dist = BetaBinomial(n-1, a, b)                   # wage distribution
-
     # model constructor
-    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, u = u, w = default_w_vec, dist = dist)
+    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, u = u, w = range(10, 20, length = 60) , dist = BetaBinomial(59, 600, 400))
 
 .. code-block:: julia
 
@@ -291,7 +285,7 @@ We'll use the default parameterizations found in the code above
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)
-    U_vec = U .* ones(n)
+    U_vec = U .* ones(length(mcm.w))
 
     plot(mcm.w,
         [V U_vec],
