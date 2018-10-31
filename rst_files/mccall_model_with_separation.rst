@@ -4,7 +4,6 @@
 
 .. highlight:: julia
 
-
 ********************************************
 Job Search II: Search and Separation
 ********************************************
@@ -28,11 +27,6 @@ Once separation enters the picture, the agent comes to view
 *  the loss of a job as a capital loss, and
 
 *  a spell of unemployment as an *investment* in searching for an acceptable job
-
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
 
 The Model
 ============
@@ -59,8 +53,6 @@ we've added some flexibility over preferences by introducing a utility function 
 
 It satisfies :math:`u'> 0` and :math:`u'' < 0`
 
-
-
 Timing and Decisions
 -----------------------
 
@@ -82,10 +74,8 @@ If he rejects the offer, he enters next period unemployed
 
 When employed, the agent faces a constant probability :math:`\alpha` of becoming unemployed at the end of the period
 
-
 (Note: we do not allow for job search while employed---this topic is taken
 up in a :doc:`later lecture <jv>`)
-
 
 Solving the Model using Dynamic Programming
 ============================================
@@ -107,14 +97,12 @@ Then :math:`V` and :math:`U`  should satisfy
 
     V(w) = u(w) + \beta [(1-\alpha)V(w) + \alpha U ]
 
-
 and
 
 .. math::
     :label: bell2_mccall
 
     U = u(c) + \beta \sum_i \max \left\{ U, V(w_i) \right\} p_i
-
 
 Let's interpret these two equations in light of the fact that today's tomorrow is tomorrow's today
 
@@ -135,7 +123,6 @@ Equations :eq:`bell1_mccall` and :eq:`bell2_mccall` provide enough information t
 
 Before discussing this, however, let's make a small extension to the model
 
-
 Stochastic Offers
 -----------------
 
@@ -149,14 +136,12 @@ He either accepts or rejects the offer
 
 Otherwise the model is the same
 
-
 With some thought, you  will be able to convince yourself that :math:`V` and :math:`U`  should now satisfy
 
 .. math::
     :label: bell01_mccall
 
     V(w) = u(w) + \beta [(1-\alpha)V(w) + \alpha U ]
-
 
 and
 
@@ -167,10 +152,8 @@ and
       \beta (1 - \gamma) U
           + \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
-
 Solving the Bellman Equations
 -------------------------------
-
 
 We'll use the same iterative approach to solving the Bellman equations that we
 adopted in the :doc:`first job search lecture <mccall_model>`
@@ -183,15 +166,12 @@ Here this amounts to
 
 #. update the left hand sides from this rule and then repeat
 
-
 In other words, we are iterating using the rules
-
 
 .. math::
     :label: bell1001
 
     V_{n+1} (w_i) = u(w_i) + \beta [(1-\alpha)V_n (w_i) + \alpha U_n ]
-
 
 and
 
@@ -202,14 +182,12 @@ and
         \beta (1 - \gamma) U_n
          + \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
 
-
 starting from some initial conditions :math:`U_0, V_0`
 
 As before, the system always converges to the true solutions---in this case,
 the :math:`V` and :math:`U` that solve :eq:`bell01_mccall` and :eq:`bell02_mccall`
 
 A proof can be obtained via the Banach contraction mapping theorem
-
 
 Implementation
 ================
@@ -223,6 +201,11 @@ This helps to tidy up the code and provides an object that's easy to pass to fun
 
 The default utility function is a CRRA utility function
 
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
     :class: test
 
@@ -230,41 +213,38 @@ The default utility function is a CRRA utility function
 
 .. code-block:: julia
 
-    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
+    using Distributions, Expectations, NLsolve, Parameters, Plots
+
+    gr(fmt = :png)
+
+.. code-block:: julia
 
     # a default utility function
-    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) + (c <= 0)*(-10e6) # if c > 0, return utility; else, return large negative
+    u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -Inf # Really bad if consumption is not positive
 
-    # model objects
-    const n = 60                                           # n possible outcomes for wage
-    const default_w_vec = range(10, 20, length = n)        # wages between 10 and 20
-    const a, b = 600, 400                                  # shape parameters
-    const dist = BetaBinomial(n-1, a, b)                   # wage distribution
+A struct to organize the workflow
 
-    # constructor
-    McCallModel(;α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist) = (α = α, β = β, γ = γ, c = c, σ = σ, w_vec = w_vec, dist = dist)
+.. code-block:: julia
 
-    # update
-    function update_bellman(mcm, V, E)
+    McCallModel = @with_kw (α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = range(10, 20, length = 60), dist = BetaBinomial(59, 600, 400))
+
+.. code-block:: julia
+
+    @views function update_bellman(mcm, V, E)
         @unpack α, β, σ, c, γ, dist, w_vec = mcm # unpack model objects
         U = V[end] # U is at the end of V
-        V_new = similar(V) # create a new V
-
-        for (w_idx, w) in enumerate(mcm.w_vec)
-            # w_idx indexes the vector of possible wages
-            V_new[w_idx] = u(w, σ) + β * ((1 - α) * V[w_idx] + α * U)
-        end
-
-        V_new[end] = u(c, σ) + β * (1 - γ) * U + β * γ * E*max.(U, V[1:end-1])
+        V_new = u.(w_vec, σ) + β * ((1 - α) * V[1:end - 1] .+ α * U)
+        push!(V_new, u(c, σ) + β * (1 - γ) * U + β * γ * E * max.(U, V[1:end - 1]))
         return V_new
     end
 
-    function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
-            V = ones(Float64, length(mcm.w_vec)+1)
-            E = expectation(mcm.dist)
-            sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero
-            return sol[1:end-1], sol[end] # returns (V, U)
-        end
+    @views function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
+        @unpack w_vec, dist = mcm
+        V = ones(length(w_vec) + 1)
+        E = expectation(dist)
+        sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero
+        return sol[1:end-1], sol[end] # returns (V, U)
+    end
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
 
@@ -274,34 +254,23 @@ Let's plot the approximate solutions :math:`U` and :math:`V` to see what they lo
 
 We'll use the default parameterizations found in the code above
 
-
 .. code-block:: julia
-
-    # plots setting
-    gr(fmt=:png)
 
     mcm = McCallModel()
     V, U = solve_mccall_model(mcm)
-    U_vec = U .* ones(length(mcm.w_vec))
+    U_vec = fill(U, length(mcm.w_vec))
 
-    plot(mcm.w_vec,
-        [V U_vec],
-        lw = 2,
-        α = 0.7,
-        label = ["V" "U"])
+    plot(mcm.w_vec, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"], legend = :topleft)
 
 .. code-block:: julia
     :class: test
-
 
     @testset "First Plot Tests" begin
         @test U ≈ 45.623746143470015 # U value
         @test V[3] ≈ 45.581170938855706 # Arbitrary V
     end
 
-
 The value :math:`V` is increasing because higher :math:`w` generates a higher wage flow conditional on staying employed
-
 
 The Reservation Wage
 =======================
@@ -326,23 +295,15 @@ Optimal behavior for the worker is characterized by :math:`\bar w`
 
 Here's a function called `compute_reservation_wage` that takes an instance of a McCall model and returns the reservation wage associated with a given model
 
-It uses `np.searchsorted <https://docs.scipy.org/doc/numpy/reference/generated/numpy.searchsorted.html>`__ to obtain the first :math:`w` in the set of possible wages such that :math:`V(w) > U`
-
-If :math:`V(w) < U` for all :math:`w`, then the function returns `np.inf`
-
 .. code-block:: julia
 
     function compute_reservation_wage(mcm; return_values = false)
         V, U = solve_mccall_model(mcm)
         w_idx = searchsortedfirst(V .- U, 0)
 
-        if w_idx == length(V)
-            w_bar = Inf
-        else
-            w_bar = mcm.w_vec[w_idx]
-        end
+        w_bar = w_idx == length(V) ? Inf : mcm.w_vec[w_idx]
 
-        if return_values == false
+        if !return_values
             return w_bar
         else
             return w_bar, V, U
@@ -352,7 +313,6 @@ If :math:`V(w) < U` for all :math:`w`, then the function returns `np.inf`
 Let's use it to look at how the reservation wage varies with parameters
 
 In each instance below we'll show you a figure and then ask you to reproduce it in the exercises
-
 
 The Reservation Wage and Unemployment Compensation
 ----------------------------------------------------
@@ -369,7 +329,6 @@ As expected, higher unemployment compensation causes the worker to hold out for 
 
 In effect, the cost of continuing job search is reduced
 
-
 The Reservation Wage and Discounting
 ----------------------------------------------------
 
@@ -383,14 +342,12 @@ The next figure plots the reservation wage associated with different values of
 
 Again, the results are intuitive: More patient workers will hold out for higher wages
 
-
 The Reservation Wage and Job Destruction
 ----------------------------------------------------
 
 Finally, let's look at how :math:`\bar w` varies with the job separation rate :math:`\alpha`
 
 Higher :math:`\alpha` translates to a greater chance that a worker will face termination in each period once employed
-
 
 .. figure:: /_static/figures/mccall_resw_alpha.png
     :scale: 100%
@@ -401,10 +358,8 @@ If the separation rate is high, then the benefit of holding out for a higher wag
 
 Hence the reservation wage is lower
 
-
 Exercises
 =============
-
 
 Exercise 1
 ----------------
@@ -420,12 +375,9 @@ Use
 
 .. code-block:: julia
 
-	grid_size = 25
-	γ_vals = range(0.05,  0.95, length = grid_size)
-
+	γ_vals = range(0.05,  0.95, length = 25)
 
 Interpret your results
-
 
 Solutions
 ==========
@@ -439,25 +391,13 @@ we can create an array for reservation wages for different values of :math:`c`,
 
 .. code-block:: julia
 
-    grid_size = 25
-    c_vals = range(2,  12, length = grid_size)
-    w_bar_vals = similar(c_vals)
+    c_vals = range(2,  12, length = 25)
 
-    mcm = McCallModel()
+    w_bar_vals = compute_reservation_wage.(McCallModel(c = c) for c in c_vals)
 
-    for (i, c) in enumerate(c_vals)
-        mcm = McCallModel(c = c)
-        w_bar = compute_reservation_wage(mcm)
-        w_bar_vals[i] = w_bar
-    end
-
-    plot(c_vals,
-         w_bar_vals,
-         lw = 2,
-         α = 0.7,
-         xlabel = "unemployment compensation",
-         ylabel = "reservation wage",
-         label = "w_bar as a function of c")
+    plot(c_vals, w_bar_vals, lw = 2, α = 0.7,
+         xlabel = "unemployment compensation", ylabel = "reservation wage",
+         label = "w_bar as a function of c", legend = :topleft)
 
 .. code-block:: julia
     :class: test
@@ -468,7 +408,6 @@ we can create an array for reservation wages for different values of :math:`c`,
         @test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791 # Just a sanity check on how these things relate.
     end
 
-
 Exercise 2
 ----------
 
@@ -476,30 +415,20 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 
 .. code-block:: julia
 
-    grid_size = 25
-    γ_vals = range(0.05,  0.95, length = grid_size)
-    w_bar_vals = similar(γ_vals)
+    γ_vals = range(0.05,  0.95, length = 25)
 
-    for (i, γ) in enumerate(γ_vals)
-        mcm = McCallModel(γ = γ)
-        w_bar = compute_reservation_wage(mcm)
-        w_bar_vals[i] = w_bar
-    end
+    w_bar_vals = compute_reservation_wage.(McCallModel(γ = γ) for γ in γ_vals)
 
-    plot(γ_vals,
-         w_bar_vals,
-         lw = 2,
-         α = 0.7,
-         xlabel = "job offer rate",
-         ylabel = "reservation wage",
-         label = "w_bar as a function of gamma")
+    plot(γ_vals, w_bar_vals, lw = 2, α = 0.7,
+         xlabel = "job offer rate", ylabel = "reservation wage",
+         label = "w_bar as a function of gamma", legend = :topleft)
 
 .. code-block:: julia
     :class: test
 
     @testset "Solutions 2 Tests" begin
         @test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
-        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == grid_size == 25
+        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == 25
     end
 
 As expected, the reservation wage increases in :math:`\gamma`
