@@ -258,12 +258,19 @@ We'll write our code as a function that takes the following three arguments
 .. code-block:: julia
 
     function mc_sample_path(P; init = 1, sample_size = 1000)
+        @assert size(P)[1] == size(P)[2] # square required      
+        N = size(P)[1] # should be square
+
+        # create vector of discrete RVs for each row
+        dists = [Categorical(P[i, :]) for i in 1:N] 
+        
+        # setup the simulation
         X = fill(0, sample_size) # allocate memory
         X[1] = init # set the initial state
-        rows = [P[i, :] for i in 1:size(P)[1]] # enumerate rows
-        dists = [Categorical(row) for row in rows] # create transition dists for each state
+        
         for t in 2:sample_size
-            X[t] = rand(dists[X[t-1]]) # fill the next state based on the previous state's transition distribution
+            dist = dists[X[t-1]] # get discrete RV from previous state's transition distribution 
+            X[t] = rand(dist) # draw new value
         end
         return X
     end
@@ -313,7 +320,7 @@ Here's an illustration using the same `P` as the preceding example
     P = [0.4 0.6; 0.2 0.8];
     mc = MarkovChain(P)
     X = simulate(mc, 100_000);
-    μ_2 = mean(isone, X)             # Should be close to 0.25
+    μ_2 = mean(isone, X)
 
 .. code-block:: julia
     :class: test
@@ -336,15 +343,15 @@ The following code illustrates
 .. code-block:: julia
 
     mc = MarkovChain(P, ["unemployed", "employed"])
-    simulate(mc, 4, init = 1)   # Start at state 1
+    simulate(mc, 4, init = 1) # start at state 1
 
 .. code-block:: julia
 
-    simulate(mc, 4, init = 2)  # Start at state 2
+    simulate(mc, 4, init = 2) # start at state 2
 
 .. code-block:: julia
 
-    simulate(mc, 4)          # Start with randomly chosen initial condition
+    simulate(mc, 4) # start with randomly chosen initial condition
 
 .. code-block:: julia
 
