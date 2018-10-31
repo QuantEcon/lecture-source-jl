@@ -166,20 +166,6 @@ and
       \beta (1 - \gamma) U
           + \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
-Formally, we can define a "Bellman operator" T which maps:
-
-.. math::
-    :label: bellman_operator
-          
-    TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U 
-          
-In which case we are searching for a fixed point
-    
-.. math::
-    :label: bellman_operator_fp
-          
-    TV^{*} = V^*              
-
 Solving the Bellman Equations
 -------------------------------
 
@@ -216,6 +202,21 @@ and
 
 
 starting from some initial conditions :math:`U_0, V_0`
+
+Formally, we can define a "Bellman operator" T which maps:
+
+.. math::
+    :label: bellman_operator
+          
+    TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U 
+          
+In which case we are searching for a fixed point
+    
+.. math::
+    :label: bellman_operator_fp
+          
+    TV^{*} = V^*              
+
 
 As before, the system always converges to the true solutions---in this case,
 the :math:`V` and :math:`U` that solve :eq:`bell01_mccall` and :eq:`bell02_mccall`
