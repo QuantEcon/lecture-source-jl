@@ -452,7 +452,7 @@ Note that we could've done the above in one pass (which would be important if, f
 
 .. code-block:: julia
 
-    w_bar_vals = [solve_mccall_model(mcm(c = cval)).w_bar for cval in c_vals] # doesn't allocate new arrays for models and solutions 
+    w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals]; # doesn't allocate new arrays for models and solutions 
 
 .. code-block:: julia
     :class: test
