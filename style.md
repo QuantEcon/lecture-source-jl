@@ -122,6 +122,27 @@ f(param)
 ```
 
 ## General Control Structures and Code Organization
+
+- **Return Named Tuples** from functions with multiple return arguments.  That is,
+
+```julia 
+# BAD
+function foo(x, y, z)
+    return (x, y, z) # Julia does this anyway 
+end 
+
+~, ~, z = foo(x, y, z) # when we want z
+
+# GOOD 
+function foo(x, y, z)
+    return (x = x, y = y, z = z)
+end
+
+# when we want z 
+@unpack z = foo(x, y, z)
+z = foo(x, y, z).z
+``` 
+
 - **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
 ```julia
 # BAD! (unless out is a preallocated and very large vector)
