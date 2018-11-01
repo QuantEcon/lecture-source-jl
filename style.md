@@ -424,7 +424,7 @@ f.(X)
 ```
 
 - **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
-```
+```julia
 # BAD! 
 x = 1:3
 mapreduce(xval -> xval^2, +, x)
@@ -487,7 +487,7 @@ val = g(1.1)
 @show val == nothing;
 ```
 - **Use similar patterns with the Optim and other libraries**
-```
+```julia
 # GOOD: make it easier to use, even if there are a few method merge warnings
 using Optim
 using Optim: converged, maximum, maximizer, minimizer, iterations
