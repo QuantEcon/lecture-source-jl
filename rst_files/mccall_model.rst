@@ -116,7 +116,7 @@ A crucial observation is that this function :math:`V` must satisfy the recursion
     V(w)
     = \max \left\{
             \frac{w}{1 - \beta}, \, c + \beta \sum_{i=1}^n V(w_i) p_i
-        \right\}
+        \right\}\quad\quad\quad
 
 for every possible :math:`w_i`  in :math:`w_1, \ldots, w_n`
 
@@ -175,7 +175,9 @@ We can also write this as
 where
 
 .. math::
-    \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}
+    :label: odu_barw
+
+    \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}\quad\quad\quad
 
 Here :math:`\bar w` is a constant depending on :math:`\beta, c` and the wage distribution, called the *reservation wage*
 
@@ -287,31 +289,36 @@ Setup
 
 .. code-block:: julia
 
-    using Distributions, Expectations, NLsolve, QuantEcon, Random, StatPlots
-
-    gr(fmt = :png)
+    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots
+    gr(fmt = :png);
 
 Here's the distribution of wage offers we'll work with
 
 .. code-block:: julia
 
-    n, a, b = 50, 200, 100
-    dist = BetaBinomial(n, a, b)
+    n = 50
+    dist = BetaBinomial(n, 200, 100) # probability distribution
+    w = range(10.0, 60.0, length = n+1) # linearly space wages
+    plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
-    plt = plot(dist, xlabel = "wages", ylabel = "probabilities", legend = false)
+We can explore taking expectations over this distribution
 
 .. code-block:: julia
-    :class: test
 
-    @testset begin
-        @test dist isa Distributions.BetaBinomial
-        @test dist.n == 50
-        @test dist.α == 200
-        @test dist.β == 100
-    end
+    E = expectation(dist) # expectation operator
 
-First let's have a look at the sequence of approximate value functions that
-the algorithm above generates
+    # exploring the properties of the operator
+    wage(i) = w[i+1] # +1 to map from support of 0
+    E_w = E(wage)
+    E_w_2 = E(i -> (w[i+1])^2 - E_w^2) # variance
+    @show E_w, E_w_2
+
+    # use operator with left-multiply
+    @show E * w; # identity
+
+
+To impllement our algorithm, let's have a look at the sequence of approximate value functions that
+this fixed point algorithm generates
 
 Default parameter values are embedded in the function
 
@@ -320,58 +327,54 @@ Our initial guess :math:`v` is the value of accepting at every given wage
 .. code:: julia
 
     # parameters and constant objects
-    w_min, w_max = 10, 60
-    w_vals = range(w_min, w_max, length = n + 1)
+ 
     c = 25
     β = 0.99
     num_plots = 6
-    E = expectation(dist)
 
-    # functions and matrix to plot
-    T(w, v) = max(w/(1 - β), c + β*E*v)
-    vs = zeros(n+1, 6) # data to fill
-    vs[:, 1] .= w_vals
+    # Operator
+    T(v) = max.(w/(1 - β), c + β * E*v) # (5)
 
-    # fill and plot
+    # fill in  matrix of vs
+    vs = zeros(n + 1, 6) # data to fill
+    vs[:, 1] .= w / (1-β) # initial guess of "accept all"
+
+    # manually applying operator 
     for col in 2:num_plots
-        vs[:, col] .= T.(w_vals, Ref(vs[:, col - 1])) # update using previous value function
+        v_last = vs[:, col - 1]
+        vs[:, col] .= T(v_last)  # apply operator
     end
     plot(vs)
 
-Here's more serious iteration effort, that continues until measured deviation
+One approach to solving the model is to directly implement this sort of iteration, and continues until measured deviation
 between successive iterates is below `tol`
 
 .. code-block:: julia 
-    :class: test 
 
-    function compute_reservation_wage(c, β;
-        max_iter = 500,
-        tol = 1e-6)
-        # first compute the value function
-        v = collect(w_vals ./ (1 - β))
+    function compute_reservation_wage_direct(c, β; v_iv = collect(w ./(1-β)), max_iter = 500, tol = 1e-6)
+        v = copy(v_iv) # start at initial value
         v_next = similar(v)
         i = 0
-        error = tol + 1
+        error = Inf
         while i < max_iter && error > tol
-            for (j, w) in enumerate(w_vals)
-                stop_val = w / (1 - β)
-                cont_val = c + β * sum(v .* p_vals)
-                v_next[j] = max(stop_val, cont_val)
-            end
-            error = maximum(abs(a - b) for (a, b) in zip(v_next, v))
+            v_next .= T(v) # (4)
+            error = norm(v_next - v)
             i += 1
-            v[:] .= v_next  # copy contents into v
+            v .= v_next  # copy contents into v
         end
         # now compute the reservation wage
-        return (1 - β) * (c + β * sum(v .* p_vals))
+        return (1 - β) * (c + β * E*v) # (3)
     end
+
+As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone 
+
+In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Julia by Example lecture <julia_by_example>`  to find the fixed point of the :math:`T` operator
 
 .. code-block:: julia
 
-  function compute_reservation_wage(c, β; max_iter = 500, tol = 1e-6)
-      v = w_vals ./(1-β)
-      v_star = fixedpoint(v -> T.(w_vals, Ref(v)), v, inplace = false).zero
-      return (1 - β) * (c + β * E*v)
+  function compute_reservation_wage(c, β; v_iv = collect(w ./(1-β)), iterations = 500, ftol = 1e-6, m = 6)
+      v_star = fixedpoint(T, v_iv, inplace = false, iterations = iterations, ftol = ftol, m = 6).zero # (5)
+      return (1 - β) * (c + β * E*v_star) # (3)
   end
 
 Let's compute the reservation wage at the default parameters
@@ -386,7 +389,8 @@ Let's compute the reservation wage at the default parameters
     :class: test
 
     @testset "Reservation Wage Tests" begin
-        @test compute_reservation_wage(c, β) ≈ 43.15000000000235
+        @test compute_reservation_wage(c, β) ≈ 47.316499766546215
+        @test compute_reservation_wage_direct(c, β) ≈ 47.31649975736077
     end
 
 Comparative Statics
@@ -452,8 +456,7 @@ That is,
 
     \psi
     = c + \beta
-        \sum_{i=1}^n V(w_i) p_i
-    \quad
+        \sum_{i=1}^n V(w_i) p_i\quad\quad\quad
 
 where :math:`V` is the value function
 
@@ -474,12 +477,13 @@ Substituting this last equation into :eq:`j1` gives
         \sum_{i=1}^n
         \max \left\{
             \frac{w_i}{1 - \beta}, \psi
-        \right\}  p_i
-    \quad
+        \right\}  p_i\quad\quad\quad
+
+Which we could also write as :math:`\psi = T_{\psi}(\psi)` for the appropriate operator
 
 This is a nonlinear equation that we can solve for :math:`\psi`
 
-The natural solution method for this kind of nonlinear equation is iterative
+One solution method for this kind of nonlinear equation is iterative
 
 That is,
 
@@ -495,8 +499,7 @@ Step 2: compute the update :math:`\psi'` via
         \sum_{i=1}^n
         \max \left\{
             \frac{w_i}{1 - \beta}, \psi
-        \right\}  p_i
-    \quad
+        \right\}  p_i\quad\quad\quad
 
 Step 3: calculate the deviation :math:`|\psi - \psi'|`
 
@@ -512,14 +515,25 @@ Here's an implementation:
 
 .. code-block:: julia
 
-    function compute_reservation_wage_two(c; β = 0.99, max_iter = 500, tol = 1e-5)
-        ψ = E * w_vals ./ (1 - β)
-        s(ψ) = max.((w_vals ./ (1 - β)), ψ)
-        ψ_star = fixedpoint(ψ -> [c + β * E * s(ψ[1])], [ψ], inplace = false).zero[1]
-        return (1 - β) * (c + β * ψ_star)
+    function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
+        T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7), using vectors since fixedpoint doesn't support scalar
+        ψ_star = fixedpoint(T_ψ, [ψ_iv], inplace = false).zero[1]
+        return (1 - β) * (c + β * ψ_star) # (2)
     end
+    compute_reservation_wage_ψ(c, β)
 
 You can use this code to solve the exercise below
+
+Another option is to solve for the root of the  :math:`T_{\psi}(\psi) - \psi` equation
+
+.. code-block:: julia
+
+    function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
+        root_ψ(ψ) = c + β * E*max.((w ./ (1 - β)), ψ) - ψ # (7)
+        ψ_star = find_zero(root_ψ, ψ_iv)
+        return (1 - β) * (c + β * ψ_star) # (2)
+    end
+    compute_reservation_wage_ψ2(c, β)
 
 Exercises
 =========
@@ -553,11 +567,11 @@ Here's one solution
         Random.seed!(seed)
         stopping_time = 0
         t = 1
-        @assert length(w_vals) - 1 ∈ support(dist) && w_bar <= w_vals[end] # make sure the constraint is sometimes binding
+        @assert length(w) - 1 ∈ support(dist) && w_bar <= w[end] # make sure the constraint is sometimes binding
         while true
             # Generate a wage draw
-            w = w_vals[rand(dist)] # the wage dist set up earlier
-            if w ≥ w_bar
+            w_val = w[rand(dist)] # the wage dist set up earlier
+            if w_val ≥ w_bar
                 stopping_time = t
                 break
             else
@@ -571,8 +585,9 @@ Here's one solution
     c_vals = range(10,  40, length = 25)
     stop_times = similar(c_vals)
 
+    beta = 0.99
     for (i, c) in enumerate(c_vals)
-        w_bar = compute_reservation_wage_two(c)
+        w_bar = compute_reservation_wage_ψ(c, beta)
         stop_times[i] = compute_mean_stopping_time(w_bar)
     end
 

@@ -491,13 +491,19 @@ specified as the convex combination of three different beta densities
             y[:,col] += rand([-0.5, 0.6, -1.1], k)
         end
         y = (y .- mean(distribution)) ./ std(distribution)
-        y = cumsum(y, dims = 2) ./ sqrt.(1:5)'
-        return density(y, labels = (1:5)', xlab = "Y", ylab = "Density")
+        y = cumsum(y, dims = 2) ./ sqrt.(1:5)' # return grid of data
     end
 
 .. code-block:: julia
 
-    simulation2()
+    ys = simulation2()
+    plots = [] # would preallocate in optimized code
+    for i in 1:size(ys, 2)
+        p = density(ys[:, i], linealpha = i, title = "n = $i")
+        push!(plots, p)
+    end
+
+    plot(plots..., legend = false)
 
 As expected, the distribution smooths out into a bell curve as :math:`n` increases
 

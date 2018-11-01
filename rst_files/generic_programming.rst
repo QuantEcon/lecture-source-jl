@@ -25,7 +25,6 @@ In this lecture we delve more deeply into the structure of Julia, and in particu
 
 * the role of generic interfaces in Julia performance
 
-
 Understanding them will help you
 
 * Design code that matches the "white-board" mathematics
@@ -41,10 +40,8 @@ Setup
 
 .. literalinclude:: /_static/includes/deps.jl
 
-
 Exploring Type Trees
 ==================================================
-
 
 At the root of all types is ``Any``
 
@@ -108,7 +105,6 @@ Using this function, we can see all of the current types in memory below ``Numbe
 
 For the most part, all of the "leaves" will be concrete types
 
-
 Unlearning Object Oriented (OO) Programming
 -------------------------------------------
 (see `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types)
@@ -141,7 +137,6 @@ In particular, previous OO knowledge may lead you to write code such as
         m.a = a
     end
 
-
     m = MyModel(2.0, 3.0)
     x = 0.1
     set_a(m, 4.1)
@@ -160,15 +155,12 @@ As its essence, the key difference is that you will start with creating algorith
 
 This design process is in direct contrast to object-oriented design and analysis, where you start by specifying a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
 
-
 Iterative Design of Abstractions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A crucial part of the process of designing interfaces and abstractions is that it is iterative
 
-
 This lecture is intended to help you walk through some of the logic behind existing generic implementations in Julia
-
 
 Distributions
 ----------------------------------------------
@@ -177,7 +169,7 @@ First, lets consider working with "distributions"
 
 If we consider mathematical "distributions" that we will use in our algorithms, they may include (1) drawing random numbers for Monte-carlo methods; (2) using the pdf or cdf in various calculations
 
-In that sense, some code may be useful in distributions where a `pdf` is not necessarily defined or meaningful
+In that sense, some code may be useful in distributions where a ``pdf`` is not necessarily defined or meaningful
 
 The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl` package
 
@@ -269,8 +261,6 @@ To demonstrate this, lets create our own distribution type
     Distributions.maximum(d::OurTruncatedExponential) = d.xmax
     # ... should do all of them, but this was enough
 
-
-
 To demonstrate this
 
 .. code-block:: julia
@@ -292,11 +282,9 @@ In the background, the ``Distributions.jl`` package  has something like the foll
 
 Hence, since ``OurTruncatedExponential <: Distribution``, and we implemented ``minimum`` and ``maximum``, calls to ``support`` gets this implementation
 
-
 Of course, while we should implement more of the func
 
 That turns out to be enough for us to use the ``StatPlots`` package
-
 
     plot(d) # uses the generic code!
 
@@ -319,7 +307,6 @@ Which, of course, is also written in terms of the generic type
     d = Truncated(OurTruncatedExponential(1.0,2.0), 0.1, 1.5) # truncate again!
     @show typeof(d)
     plot(d)
-
 
 Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of different packages that have simply agreed on a set of appropriate functions and abstract types
 
@@ -353,7 +340,6 @@ Let ``typeof(a) = typeof(b) = T <: Number``, then under an implicit definition o
 * an additive identity: ``zero(T)`` or ``zero(a)`` for convenience
 * a multiplicative identity: ``one(T)`` or ``one(a)`` for convenience
 
-
 The core of generic programmig is that, given the knowledge that a value is of type ``Number``, we can write to that generic interface
 
 To demonstrate these for a complex number or a big integer (i.e., two types other than the standard ``Float64`` ``Int64`` you may associate with numbers)
@@ -383,7 +369,6 @@ To demonstrate these for a complex number or a big integer (i.e., two types othe
     @show a - b
     @show zero(a)
     @show one(a);
-
 
 Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_(mathematics)>`_ is an `Ring` with a few additional properties, among them
 * a multiplicative inverse: :math:`a^{-1}`
@@ -430,7 +415,6 @@ For example, floating point numbers all have a machine precision below which the
     @show eps(Float64)
     @show eps(BigFloat);
 
-
 Limitations of these Structures in Julia
 ------------------------------------------
 
@@ -442,12 +426,10 @@ For example, a semigroup type would be very useful for a writing generic code (e
 
 In the future, the way to implement this is with a feature called traits
 
-
 Example: ``isless``
 -------------------
 
 The ``isless`` function also has multiple methods
-
 
 First let's try with integers
 
@@ -464,7 +446,6 @@ If we go to the provided link in the source, we see the entirety of the function
 
     isless(x::Real, y::Real) = x<y
 
-
 That is, for any values where ``typeof(x) <: Real`` and ``typeof(y) <: Real``, the definition relies on ``<``
 
 We know that ``<`` is defined for the types because it is part of the informal interface for the ``Real`` abstract type
@@ -477,7 +458,6 @@ Of course, in order to generate fast code,
 
     isless(1.0, 2.0)  # Applied to two floats
 
-
 .. code-block:: julia
 
     @which isless(1.0, 2.0)
@@ -488,7 +468,6 @@ Understanding Multiple Dispatch in Julia
 ===============================================
 
 This section provides more background on how methods, functions, and types are connected
-
 
 Methods and Functions
 ----------------------
@@ -507,13 +486,11 @@ When an operation like addition is requested, the Julia compiler inspects the ty
 
 This process is called **multiple dispatch**
 
-
 Like all "infix" operators, `1 + 1` has the alternative syntax `+(1, 1)`
 
 .. code-block:: julia
 
     +(1, 1)
-
 
 This operator `+` is itself a function with multiple methods
 
@@ -524,7 +501,6 @@ We can investigate them using the `@which` macro, which shows the method to whic
     x, y = 1.0, 1.0
     @which +(x, y)
 
-
 We see that the operation is sent to the ``+`` method that specializes in adding
 floating point numbers
 
@@ -534,7 +510,6 @@ Here's the integer case
 
     x, y = 1, 1
     @which +(x, y)
-
 
 This output says that the call has been dispatched to the `+` method
 responsible for handling integer values
@@ -547,7 +522,6 @@ Here's another example, with complex numbers
 
     x, y = 1.0 + 1.0im, 1.0 + 1.0im
     @which +(x, y)
-
 
 Again, the call has been dispatched to a `+` method specifically designed for handling the given data type
 
@@ -589,7 +563,6 @@ For example, we can't at present add an integer and a string in Julia (i.e. ``10
 
 This is sensible behavior, but if you want to change it there's nothing to stop you:
 
-
 .. code-block:: julia
 
     import Base: +  #  Gives access to + so that we can add a method
@@ -598,7 +571,6 @@ This is sensible behavior, but if you want to change it there's nothing to stop 
 
     @show +(100, "100")
     @show 100 + "100"; #equivalent
-
 
 .. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory
 ..
@@ -612,15 +584,11 @@ This is sensible behavior, but if you want to change it there's nothing to stop 
 ..
 .. Subsequent calls will be routed automatically to the most appropriate method
 
-
 .. Comments on Efficiency
 .. ------------------------
 ..
 ..
 .. We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`
-
-
-
 
 Understanding the Compilation Process
 ---------------------------------------
@@ -641,16 +609,13 @@ If not, it looks to see whether the pair ``(S, T)`` matches any method defined f
 For example, if ``S`` is ``Float64`` and ``T`` is ``ComplexF32`` then the
 immediate parents are ``AbstractFloat`` and ``Number`` respectively
 
-
 .. code-block:: julia
 
     supertype(Float64)
 
-
 .. code-block:: julia
 
     supertype(ComplexF32)
-
 
 Hence the interpreter looks next for a method of the form ``f(x::AbstractFloat, y::Number)``
 
@@ -665,7 +630,6 @@ This is the process that leads to the following error
 .. code-block:: julia
 
     +(100, "100")
-
 
 Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the *most specific method* available
 
@@ -682,7 +646,6 @@ exactly this kind of data
 
 The second method is probably more of a "catch all" method that handles other
 data in a less optimal way
-
 
 Here's another simple example, involving a user-defined function
 
@@ -707,16 +670,13 @@ above
 
     f(3)
 
-
 .. code-block:: julia
 
     f(3.0)
 
-
 .. code-block:: julia
 
     f("foo")
-
 
 Since
 
@@ -736,7 +696,6 @@ Analyzing Function Return Types
 For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
 
 We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
-
 
 .. code-block:: julia
 
@@ -784,7 +743,6 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
 
     f(x) = x > 0.0 ? x : zero(x)
     @code_warntype f(1.0)
-
 
 ..
 .. User-Defined Types
