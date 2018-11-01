@@ -445,12 +445,13 @@ end
 The exception, of course, is when dealing with parallel programming where functional patterns are essential.
 
 ## Error Handling
-- **Call the return from optimizers/etc. `results` when possible**
-- **Can Add `converged`, etc. with `using` into the namespace to make the code easier to read**
+- **Consistent naming of result**
+  - Call the results of optimizers/etc. `result` when possible
+- **Add `converged`, etc. with `using` into the namespace to make the code easier to read**
   - And can safely ignore the conflicting method errors, until smarter method merging becomes possible.
 - **Can use the || idiom for error handling**.
   - Eventually people will need to get used to it.  But minimize its use outside of that case
-- **Don't ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
+- **Never ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
 ```julia
 using NLsolve
 f(x) = x
