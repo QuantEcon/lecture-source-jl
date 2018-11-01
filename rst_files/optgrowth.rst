@@ -781,8 +781,11 @@ The discount factors are ``discount_factors = (0.8, 0.9, 0.98)``
 We have also dialed down the shocks a bit
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
 
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
