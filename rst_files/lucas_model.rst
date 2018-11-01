@@ -547,7 +547,7 @@ Here's the resulting price function
 
     using Plots
     gr(fmt=:png)
-    
+
     plot(tree.grid, price_vals, lw=2, label="p*(y)")
     plot!(xlabel="y", ylabel="price", legend=:topleft)
 
@@ -594,8 +594,11 @@ Solutions
 
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
 
     plot()
     for β in (.95, 0.98)

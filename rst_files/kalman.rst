@@ -660,8 +660,11 @@ Exercise 3
 ----------
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(41)  # reproducible results
+    Random.seed!(42);  # reproducible results
+
+.. code-block:: julia
 
     # define A, Q, G, R
     G = Matrix{Float64}(I, 2, 2)
