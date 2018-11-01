@@ -6,10 +6,6 @@
 Introduction to Git and Version Control
 ******************************************
 
-.. epigraph:: 
-
-    The ridiculous things people name their documents to do versioning, like "proposal v2 good revised NEW 11-15-06.doc", continue to crack me up. ---- Drew Houston, Founder of Dropbox
-
 An essential part of modern software engineering is using version control
 
 We use version control because 
@@ -102,12 +98,12 @@ Creating a Repository
 In general, we will always want to make new repos using the following dropdown 
 
 .. figure:: /_static/figures/git/git-makerepo.png
-    :scale: 50%
+    :scale: 120%
 
 We can then configure repository options as such 
 
-.. figure:: /_static/figures/git/git-makerepofull.png
-    :scale: 50%
+.. figure:: /_static/figures/git/git-makerepo-full.png
+    :scale: 120%
 
 In this case, we're making a public repo ``github.com/arnavs/git-setup``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
 
@@ -117,7 +113,7 @@ Cloning a Repository
 The next step is to get this to our local machine 
 
 .. figure:: /_static/figures/git/git-clone.png
-    :scale: 50%
+    :scale: 120%
 
 This dropdown gives us a few options 
 
@@ -135,14 +131,14 @@ For example, let's say that we've amended the ``README.md`` (using our editor of
 Returning to GitHub Desktop, we should see something like 
 
 .. figure:: /_static/figures/git/git-desktop-commit.png
-    :scale: 50%
+    :scale: 120%
 
 To select individual files for commit, we can use the check boxes to the left of each file 
 
 Let's say you select only the README to commit. Going to the history tab should show you our change 
 
 .. figure:: /_static/figures/git/git-desktop-commit2.png
-    :scale: 50%
+    :scale: 120%
 
 The Julia file is unchanged 
 
@@ -168,7 +164,7 @@ Sometimes, however, we want to not only inspect what happened before, but go bac
 * If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, as above 
 
 .. figure:: /_static/figures/git/git-revert-commit.png
-    :scale: 50%
+    :scale: 120%
 
 Working across Machines
 --------------------------------------
@@ -180,7 +176,7 @@ The key is to push changes from one machine, and then to pull changes from the o
 Pushing can be done as above. To pull, simply click pull under the "repository" dropdown at the top of the screen 
 
 .. figure:: /_static/figures/git/git-pull.png
-    :scale: 50%
+    :scale: 120%
 
 Collaborative Work
 ==================================
@@ -193,7 +189,7 @@ First, let's add a collaborator to the ``arnavs/git-setup`` lecture we created e
 We can do this by clicking "settings => collaborators," as follows
 
 .. figure:: /_static/figures/git/git-collab.png
-    :scale: 50%
+    :scale: 120%
 
 Project Management 
 --------------------------------
@@ -203,7 +199,7 @@ GitHub's website also comes with project management tools to coordinate work bet
 The key issue is an *issue*, which we can create from the issues tab. You should see something like this
 
 .. figure:: /_static/figures/git/git-issue.png
-    :scale: 50%
+    :scale: 120%
 
 Let's unpack the different components 
 
@@ -226,7 +222,7 @@ There are a few different ways to review people's code in GitHub
 * You can also review individual line-items or commits by opening commits in the granular view as above 
 
 .. figure:: /_static/figures/git/git-review.png
-    :scale: 50%
+    :scale: 120%
 
 Merge Conflicts
 ----------------------------
@@ -240,7 +236,7 @@ Note that this means that two people touching the same file is OK, so long as th
 A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes. GitHub will give us the following window 
 
 .. figure:: /_static/figures/git/git-merge-conflict.png
-    :scale: 50%
+    :scale: 120%
 
 * The warning symbol next to the file indicates the existence of a merge conflict 
 * The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
@@ -248,12 +244,12 @@ A common use case is when we try to push changes to the server, but someone else
 To fix the conflict, we can go into a text editor (such as Atom or VS Code). Here's an image of what we see in Atom 
 
 .. figure:: /_static/figures/git/atom-merge-conflict.png
-    :scale: 50%
+    :scale: 120%
 
 Let's say we click "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
 
 .. figure:: /_static/figures/git/git-merge-commit.png
-    :scale: 50%
+    :scale: 120%
 
 Open-source Projects 
 ======================================
@@ -270,7 +266,7 @@ GitHub's website provides an online editor for quick-and-dirty changes, such as 
 To use it, open a file in GitHub and click the small pencil to the upper right 
 
 .. figure:: /_static/figures/git/git-quick-pr.png
-    :scale: 50%
+    :scale: 120%
 
 Here, we're trying to add the QuantEcon link to the Julia project's README
 
@@ -308,14 +304,14 @@ Eventually, you will want to upstream your changes into the main repository
 The first thing you want to do is go to the pull requests menu and click "New Pull Request." You'll see something like 
 
 .. figure:: /_static/figures/git/git-create-pr.png
-    :scale: 50%
+    :scale: 120%
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
 Clicking through gives us a window like 
 
 .. figure:: /_static/figures/git/git-create-pr-2.png
-    :scale: 50%
+    :scale: 120%
 
 The key pieces are 
 
