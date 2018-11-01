@@ -19,7 +19,7 @@ In this lecture we delve more deeply into the structure of Julia, and in particu
 
 * abstract and concrete types
 
-* the type tree 
+* the type tree
 
 * designing and using generic interfaces
 
@@ -28,7 +28,7 @@ In this lecture we delve more deeply into the structure of Julia, and in particu
 
 Understanding them will help you
 
-* Design code that matches the "white-board" mathematics 
+* Design code that matches the "white-board" mathematics
 
 * Create code that can use (and be used) by a variety of other packages
 
@@ -74,15 +74,15 @@ Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing 
     show_supertypes(Int64)
 
 .. code-block:: julia
-    
+
     show_supertypes(typeof(ones(2,2))
 
 .. code-block:: julia
-    
+
     show_supertypes(typeof(Normal()))
 
 .. code-block:: julia
-    
+
     subtypes(Integer)
 
 Using the ``subtypes`` function, we can traverse the type tree below a particular type
@@ -106,11 +106,11 @@ Using this function, we can see all of the current types in memory below ``Numbe
 
     subtypetree(Number) # warning: Don't use this function on ``Any``!
 
-For the most part, all of the *leaves" will be concrete types
+For the most part, all of the "leaves" will be concrete types
 
 
 Unlearning Object Oriented (OO) Programming
-------------------------------------------
+-------------------------------------------
 (see `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types)
 
 If you have never used programming languages such as C++, Java, Python, etc., then this section may seem unfamilar and abstract
@@ -179,9 +179,9 @@ If we consider mathematical "distributions" that we will use in our algorithms, 
 
 In that sense, some code may be useful in distributions where a `pdf` is not necessarily defined or meaningful
 
-The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl`package
+The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl` package
 
-Lets examine the tree of types for a ``Normal`` distribution
+Lets examine the tree of types for a `Normal` distribution
 
 .. code-block:: julia
 
@@ -216,7 +216,7 @@ For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where :math:
 
 ..    # @show simulateprocess(0.0, d=Normal(0.2, 2.0)); #add example of something without pdf
 
-The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else  
+The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else
 
 Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has certain functions we would expect to operate with it
 
@@ -242,7 +242,7 @@ These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, max
     @show maximum(d1)
     @show maximum(d2);
 
-You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_  
+You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_
 
 If you fulfill all of the conditions of a particular interface, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
 
@@ -392,7 +392,7 @@ Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org
 
 where the  `total ordering <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_  operation would fulfill the requirements for a Totally Ordered Field
 
-This type gives some motivation for the operations and properties of the ``Real`` type 
+This type gives some motivation for the operations and properties of the ``Real`` type
 
 Of course, ``Complex{Float64} <: Number`` but not ``Real``, which makes sense since those operations are not defined for the basic Complex number type in mathematics
 
@@ -471,7 +471,7 @@ We know that ``<`` is defined for the types because it is part of the informal i
 
 Note that this is not defined for ``Number`` because not all ``Number`` types have the ``<`` operator defined (e.g. ``Complex``)
 
-Of course, in order to generate fast code, 
+Of course, in order to generate fast code,
 
 .. code-block:: julia
 
@@ -551,34 +551,34 @@ Here's another example, with complex numbers
 
 Again, the call has been dispatched to a `+` method specifically designed for handling the given data type
 
-.. 
+..
 ..  Example 3
 ..  ^^^^^^^^^^^^^^
-.. 
-.. 
+..
+..
 .. The function ``isfinite()`` has multiple methods too
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     @which isfinite(1) # Call isfinite on an integer
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     @which isfinite(1.0) # Call isfinite on a float
-.. 
-.. 
+..
+..
 .. Here ``AbstractFloat`` is another abstract data type, this time encompassing all floats
-.. 
+..
 .. We can list all the methods of ``isfinite`` as follows
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     methods(isfinite)
-.. 
-.. 
+..
+..
 .. We'll discuss some of the more complicated data types you see here later on
-.. 
+..
 
 Adding Methods
 ^^^^^^^^^^^^^^^^^^
@@ -601,22 +601,22 @@ This is sensible behavior, but if you want to change it there's nothing to stop 
 
 
 .. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory
-.. 
+..
 .. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their floating point versions
-.. 
+..
 .. If we next call it with integer arguments, the process will be repeated but now
 .. specialized to integers
-.. 
+..
 .. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their integer versions
-.. 
-.. 
+..
+..
 .. Subsequent calls will be routed automatically to the most appropriate method
 
 
 .. Comments on Efficiency
 .. ------------------------
-.. 
-.. 
+..
+..
 .. We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`
 
 
@@ -773,7 +773,7 @@ On the other hand, if we use change the function to return ``0`` if `x <= 0`, it
     f(x) = x > 0.0 ? x : 0
     @code_warntype f(1.0)
 
-The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x`` 
+The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x``
 n the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
 
 .. code-block:: julia
@@ -786,353 +786,353 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
     @code_warntype f(1.0)
 
 
-.. 
+..
 .. User-Defined Types
 .. ==============================
-.. 
+..
 .. Let's have a look at defining our own data types
-.. 
-.. 
+..
+..
 .. Motivation
 .. ----------------------
-.. 
+..
 .. At our respective homes we both have draws full of fishing gear
-.. 
+..
 .. Of course we have draws full of other things too, like kitchen utensils, or clothes
-.. 
+..
 .. Are these draws really necessary?
-.. 
+..
 .. Perhaps not, but who wants to search the whole house for their fishing reel when the fish are biting?
-.. 
+..
 .. Certainly not us
-.. 
+..
 .. Just as it's convenient to store household values in draws, it's also
 .. convenient to organize the values in your program into
 .. designated "containers"
-.. 
+..
 .. The first step is to design and build the containers
-.. 
+..
 .. We do this by declaring and using our own types
-.. 
+..
 .. For example,
-.. 
+..
 .. * a ``Firm`` type might store parameters for values that represent firms in a given model
-.. 
+..
 .. * an ``EstimationResults`` type might store output from some statistical procedure, etc.
-.. 
-.. 
+..
+..
 .. Once those types are declared, we can create instances of the type
-.. 
+..
 .. For example,
-.. 
+..
 ..   ``results = EstimationResults(y, X)``
-.. 
+..
 .. might create an instances of ``EstimationResults`` that stores estimated coefficients and other information from a given regression exercise involving data `y, X`
 
-.. 
+..
 .. Adding Methods
 .. --------------
-.. 
+..
 .. We can now create functions that act on instances of ``Foo``
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     foofunc(x::Foo) = "onefoo"
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     foofunc(foo)
-.. 
-.. 
+..
+..
 .. Or we can add new methods for acting on Foos to existing functions, such as `+`
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     +(x::Foo, y::Foo) = "twofoos"
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     foo1, foo2 = Foo(), Foo()  # Create two Foos
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     +(foo1, foo2)
-.. 
-.. 
+..
+..
 .. A Less Trivial Example
 .. -------------------------
-.. 
+..
 .. Let's say we are doing a lot of work with AR(1) processes, which
 .. are random sequences :math:`\{X_t\}` that follow the law of motion
-.. 
+..
 .. .. math::
 ..     X_{t+1} = a X_t + b + \sigma W_{t+1}
 ..     :label: tm_ar1
-.. 
+..
 .. Here
-.. 
+..
 .. * :math:`a`, :math:`b` and :math:`\sigma` are scalars and
-.. 
+..
 .. * :math:`\{W_t\}` is an iid sequence of shocks with some given distribution :math:`\phi`
-.. 
+..
 .. Let's take these primitives :math:`a`, :math:`b`, :math:`\sigma` and :math:`\phi`
 .. and organize them into a single entity like so
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     mutable struct AR1
 ..         a
 ..         b
 ..         σ
 ..         ϕ
 ..     end
-.. 
-.. 
+..
+..
 .. Here ``mutable`` means that we can change (mutate) data while the value is live in memory -- see below
-.. 
-.. 
+..
+..
 .. For the distribution ``ϕ`` we'll assign a ``Distribution`` from the `Distributions <https://github.com/JuliaStats/Distributions.jl>`__ package
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     using Distributions
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m = AR1(0.9, 1, 1, Beta(5, 5))
-.. 
-.. 
+..
+..
 .. In this call to the constructor we've created an instance of ``AR1`` and bound the name ``m`` to it
-.. 
+..
 .. We can access the fields of ``m`` using their names and "dotted attribute" notation
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.a
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.b
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.σ
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.ϕ
-.. 
-.. 
+..
+..
 .. For example, the attribute ``m.ϕ`` points to an instance of ``Beta``, which is in turn a subtype of ``Distribution`` as defined in the Distributions package
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof(m.ϕ)
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.ϕ isa Distribution
-.. 
-.. 
+..
+..
 .. We can reach into ``m`` and change this if we want to
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.ϕ = Exponential(0.5)
-.. 
-.. 
+..
+..
 .. .. _spec_field_types:
-.. 
-.. 
+..
+..
 .. Specifying Field Types
 .. ^^^^^^^^^^^^^^^^^^^^^^^^^
-.. 
-.. 
+..
+..
 .. In our type definition we can be explicit that we want ``ϕ`` to be a
 .. ``Distribution`` and the other elements to be floats
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_explicit
 ..         a::Float64
 ..         b::Float64
 ..         σ::Float64
 ..         ϕ::Distribution
 ..     end
-.. 
+..
 .. (In this case, ``mutable`` is removed since we do not intend to make any changes to the elements of ``AR1_explicit``)
-.. 
+..
 .. Now the constructor will complain if we try to use the wrong data type
-.. 
+..
 .. .. code-block:: julia
 ..     :class: no-execute
-.. 
+..
 ..     m = AR1_explicit(0.9, 1, "foo", Beta(5, 5))
-.. 
-.. 
+..
+..
 .. This can be useful in terms of failing early on incorrect data, rather than
 .. deeper into execution
-.. 
+..
 .. At the same time, `AR1_explicit` is not as generic as `AR1`, and hence less flexible
-.. 
+..
 .. For example, suppose that we want to allow `a`, `b` and `σ` to take any
 .. value that is `<: Real`
-.. 
+..
 .. We could achieve this by the new definition
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_real
 ..         a::Real
 ..         b::Real
 ..         σ::Real
 ..         ϕ::Distribution
 ..     end
-.. 
-.. 
+..
+..
 .. But it turns out that using abstract types inside user-defined types adversely
 .. affects performance --- more about that :doc:`soon <need_for_speed>`
-.. 
+..
 .. Fortunately, there's another approach that both
-.. 
+..
 .. * preserves the use of concrete types for internal data and
-.. 
+..
 .. * allows flexibility across multiple concrete data types
-.. 
+..
 .. This approach uses *type parameters*, a topic we turn to now
-.. 
-.. 
+..
+..
 .. Type Parameters
 .. -------------------
-.. 
+..
 .. Consider the following output
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof([10, 20, 30])
-.. 
-.. 
+..
+..
 .. Here ``Array`` is one of Julia's predefined types (``Array <: DenseArray <: AbstractArray <: Any``)
-.. 
+..
 .. The ``Int64,1`` in curly brackets are **type parameters**
-.. 
+..
 .. In this case they are the element type and the dimension
-.. 
+..
 .. Many other types have type parameters too
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof(1.0 + 1.0im)
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof(1 + 1im)
-.. 
-.. 
+..
+..
 .. Types with parameters are therefore in fact an indexed family of types, one for each possible value of the parameter
-.. 
-.. 
+..
+..
 .. We can use parametric types in our own type definitions, as the next example shows
-.. 
-.. 
+..
+..
 .. Back to the AR1 Example
 .. -------------------------
-.. 
+..
 .. Recall our AR(1) example, where we considered different restrictions on internal data
-.. 
+..
 .. For the coefficients `a`, `b` and `σ`  we considered
-.. 
+..
 .. * allowing them to be any type
-.. 
+..
 .. * forcing them to be of type `Float64`
-.. 
+..
 .. * allowing them to be any `Real`
-.. 
+..
 .. The last option is a nice balance between specific and flexible
-.. 
+..
 .. For example, using `Real` in the type definition tells us that, while these values should be scalars, integer values and floats are both OK
-.. 
+..
 .. However, as mentioned above, using abstract types for fields of user-defined types impacts negatively on performance
-.. 
+..
 .. For now it suffices to observe that we can achieve flexibility and eliminate
 .. abstract types on `a`, `b`, `σ`, and `ϕ` by the following declaration
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_best{T <: Real, D <: Distribution}
 ..         a::T
 ..         b::T
 ..         σ::T
 ..         ϕ::D
 ..     end
-.. 
+..
 .. If we create an instance using `Float64` values and a `Beta` distribution then the instance has type
 .. `AR1_best{Float64,Beta}`
-.. 
+..
 .. It is worth nothing that under this definition, the instance can only be created by
 .. providing `a`, `b`, and `σ` of the same type. One could make it flexible enough to
 .. parameterize on different values or providing a constructor that converts the inputs
 .. to the same type (e.g., using `promote_type`)
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m = AR1_best(0.9, 1.0, 1.0, Beta(5, 5))
-.. 
-.. 
+..
+..
 .. Exercises
 .. ===========
-.. 
-.. 
+..
+..
 .. Exercise 1
 .. ---------------
-.. 
+..
 .. Write a function with the signature ``simulate(m::AR1, n::Integer, x0::Real)``
 .. that takes as arguments
-.. 
+..
 .. * an instance ``m`` of ``AR1`` (see above)
 .. * an integer ``n``
 .. * a real number ``x0``
-.. 
+..
 .. and returns an array containing a time series of length ``n`` generated according to :eq:`tm_ar1` where
-.. 
+..
 .. * the primitives of the AR(1) process are as specified in ``m``
-.. 
+..
 .. * the initial condition :math:`X_0` is set equal to ``x0``
-.. 
+..
 .. Hint: If ``d`` is an instance of ``Distribution`` then ``rand(d)`` generates one random draw from the distribution specified in ``d``
-.. 
-.. 
+..
+..
 .. Solutions
 .. ==========
-.. 
-.. 
+..
+..
 .. Exercise 1
 .. ----------
-.. 
+..
 .. Let's start with the AR1 definition as specified in the lecture
-.. .. 
+.. ..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_ex1{T <: Real, D <: Distribution}
 ..         a::T
 ..         b::T
 ..         σ::T
 ..         ϕ::D
 ..     end
-.. 
+..
 .. Now let's write the function to simulate AR1s
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     function simulate(m::AR1_ex1, n::Integer, x0::Real)
 ..         X = zeros(n)
 ..         X[1] = x0
@@ -1141,22 +1141,20 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
 ..         end
 ..         return X
 ..     end
-.. 
-.. 
+..
+..
 .. Let's test it out on the AR(1) process discussed in the lecture
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m = AR1_ex1(0.9, 1.0, 1.0, Beta(5, 5))
 ..     X = simulate(m, 100, 0.0)
-.. 
-.. 
+..
+..
 .. Next let's plot the time series to see what it looks like
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     using Plots
 ..     gr(fmt=:png)
 ..     plot(X, legend=:none)
-
-

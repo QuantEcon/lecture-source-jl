@@ -942,12 +942,12 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
     plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 
 .. code-block:: julia
-   :class: test
+    :class: test
 
-  @testset "eigvals" begin
-    @test eig_1[2,2] ≈ 0.7071067811865475
-    @test eig_2[2,2] ≈ 0.7071067811865475
-  end
+    @testset "eigvals" begin
+        @test eig_1[2,2] ≈ 0.7071067811865475
+        @test eig_2[2,2] ≈ 0.7071067811865475
+    end
 
 The eigenvalue equation is equivalent to :math:`(A - \lambda I) v = 0`, and
 this has a nonzero solution :math:`v` only when the columns of :math:`A -
