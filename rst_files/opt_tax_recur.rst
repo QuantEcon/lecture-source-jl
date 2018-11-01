@@ -692,10 +692,10 @@ Sequence Implementation
 
 The above steps are implemented in a type called `SequentialAllocation`
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
   :class: collapse
@@ -1512,8 +1512,8 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
 .. code-block:: julia
 
-    using Random 
-    Random.seed!(42) # For reproducible results. 
+    using Random
+    Random.seed!(42) # For reproducible results.
 
     M_time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
                                   Θ=ones(6))            # Θ can in principle be random
@@ -1557,15 +1557,15 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     end
     plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
     @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
     @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
     @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
-  end 
+  end
 
 **Tax smoothing**
 
@@ -1676,8 +1676,12 @@ The figure below plots the Ramsey tax rates and gross interest rates at time
 above)
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42) # For reproducible results. 
+    Random.seed!(42); # For reproducible results.
+
+
+.. code-block:: julia
 
     M2 = crra_utility(G=[0.15], Π=ones(1, 1), Θ=[1.0])
 
@@ -1696,14 +1700,14 @@ above)
     end
     plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test B_vec[3] ≈ -1.4494949494949494
     @test taxpolicy[2, 2] ≈ 0.0020700125847712414
     @test interest_rate[3, 1] ≈ 1.113064964490116
-  end 
+  end
 
 The figure indicates  that if the government enters with  positive debt, it sets
 a tax rate at :math:`t=0` that is less than all later tax rates
@@ -1819,8 +1823,12 @@ To compute the tax rate, we will use both the sequential and recursive approache
 The figure below plots a sample path of the Ramsey tax rate
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42) # For reproducible results. 
+    Random.seed!(42); # For reproducible results.
+
+
+.. code-block:: julia
 
     M1 = log_utility()
     μ_grid = range(-0.6,  0.0, length = 200)
@@ -1856,10 +1864,10 @@ The figure below plots a sample path of the Ramsey tax rate
     end
     plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test sim_seq_plot[1][14] ≈ 0.38396935397869975
     @test sim_seq_plot[2][14] ≈ 0.5839693539786998
     @test sim_seq_plot[3][14] ≈ 0.3951985593686047
@@ -1869,7 +1877,7 @@ The figure below plots a sample path of the Ramsey tax rate
     @test sim_bel_plot[3][5] ≈ 0.5230509296608254
     @test sim_bel_plot[5][7] == 0.1
     @test sim_bel_plot[2][3] ≈ 0.5402933557593538
-  end 
+  end
 
 As should be expected, the recursive and sequential solutions produce almost
 identical allocations

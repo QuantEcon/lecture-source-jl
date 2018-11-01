@@ -424,7 +424,7 @@ f.(X)
 ```
 
 - **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
-```
+```julia
 # BAD! 
 x = 1:3
 mapreduce(xval -> xval^2, +, x)
@@ -443,6 +443,75 @@ for i in 1:3
 end
 ```
 The exception, of course, is when dealing with parallel programming where functional patterns are essential.
+
+## Error Handling
+- **Consistent naming of result**
+  - Call the results of optimizers/etc. `result` when possible
+- **Add `converged`, etc. with `using` into the namespace to make the code easier to read**
+  - And can safely ignore the conflicting method errors, until smarter method merging becomes possible.
+- **Can use the || idiom for error handling**.
+  - Eventually people will need to get used to it.  But minimize its use outside of that case
+- **Never ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
+```julia
+using NLsolve
+f(x) = x
+x_iv = [1.0]
+#f(x) = 1.1 * x # fixed-point blows
+
+# BAD!
+xstar = fixedpoint(f, x_iv, inplace=false).zero # assumes convergence
+xsol = nlsolve(f, x_iv, inplace=false).zero # assumes convergence
+
+# GOOD!
+result = fixedpoint(f, x_iv, inplace=false)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xstar = result.zero
+
+result = nlsolve(f, x_iv, inplace=false)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xsol = result.zero
+```
+- **Handle errors by returning nothing**.  But if you won't handle, prefer to throw errors.
+```julia
+function g(a)
+    f(x) = a * x # won't succeed if a > 1
+    result = fixedpoint(f, [1.0], inplace = false)
+    converged(result) || return nothing
+    xstar = result.zero
+    
+    #do calculations...
+    return xstar
+end
+val = g(0.8)
+@show val == nothing
+val = g(1.1)
+@show val == nothing;
+```
+- **Use similar patterns with the Optim and other libraries**
+  - Although there is (currently) an inconsistency in the usage of the minimum and maximum in Optim.
+```julia
+# GOOD: make it easier to use, even if there are a few method merge warnings
+using Optim
+using Optim: converged, maximum, maximizer, minimizer, iterations
+
+# BAD
+xmin = optimize(x-> x^2, -2.0, 1.0).minimum
+
+# GOOD
+result = optimize(x-> x^2, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = result.minimizer
+result.minimum
+
+
+# GOOD
+f(x) = -x^2
+result = maximize(f, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = maximizer(result)
+fmax = maximum(result)
+```
+
 
 ## Dependencies
 
