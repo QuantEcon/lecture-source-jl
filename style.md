@@ -445,7 +445,11 @@ end
 The exception, of course, is when dealing with parallel programming where functional patterns are essential.
 
 ## Error Handling
-- **Can use the || idiom for error handling**.  Eventually people will need to get used to it.  But minimize its use outside of that case
+- **Call the return from optimizers/etc. `results` when possible**
+- **Can Add `converged`, etc. with `using` into the namespace to make the code easier to read**
+  - And can safely ignore the conflicting method errors, until smarter method merging becomes possible.
+- **Can use the || idiom for error handling**.
+  - Eventually people will need to get used to it.  But minimize its use outside of that case
 - **Don't ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
 ```julia
 using NLsolve
@@ -481,6 +485,29 @@ val = g(0.8)
 @show val == nothing
 val = g(1.1)
 @show val == nothing;
+```
+- **Use similar patterns with the Optim and other libraries**
+```
+# GOOD: make it easier to use, even if there are a few method merge warnings
+using Optim
+using Optim: converged, maximum, maximizer, minimizer, iterations
+
+# BAD
+xmin = optimize(x-> x^2, -2.0, 1.0).minimum
+
+#GOOD
+result = optimize(x-> x^2, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = minimizer(result)
+minimum(result)
+
+using Optim: converged, maximum, maximizer, minimizer, iterations
+f(x) = -x^2
+result = maximize(f, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = maximizer(result)
+fmax = maximum(result)
+
 ```
 
 
