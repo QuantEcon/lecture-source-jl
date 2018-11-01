@@ -783,7 +783,7 @@ We have also dialed down the shocks a bit
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
 
 .. code-block:: julia
 

@@ -863,7 +863,7 @@ Our solution is as follows
 .. code-block:: julia
     :class: test
 
-    Random.seed!(0)
+    Random.seed!(0);
 
 .. code-block:: julia
 

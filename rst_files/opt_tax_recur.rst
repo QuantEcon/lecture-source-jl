@@ -1678,7 +1678,7 @@ above)
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42) # For reproducible results.
+    Random.seed!(42); # For reproducible results.
 
 .. code-block:: julia
 
@@ -1824,7 +1824,7 @@ The figure below plots a sample path of the Ramsey tax rate
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42) # For reproducible results.
+    Random.seed!(42); # For reproducible results.
 
 .. code-block:: julia
 
