@@ -378,7 +378,11 @@ Setup
 
 .. code-block:: julia
 
-    using QuantEcon, Interpolations, Roots, Parameters, BenchmarkTools
+    using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
+
+    gr(fmt = :png)
+
+.. code-block:: julia
 
     function coleman_operator!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
 
@@ -496,22 +500,20 @@ theory
 
 .. code-block:: julia
 
-    using Plots
-
     function verify_true_policy(m, shocks, c_star)
-        # Compute (Kc^*)
+        # Compute (Kc_star)
         @unpack grid, β, ∂u∂c, f, f′ = m
         c_star_new = coleman_operator(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
-        # Plot c^* and Kc^* #
-        plot(grid, c_star, label = "optimal policy c^*")
-        plot!(grid, c_star_new, label = "Kc^*")
+        # Plot c_star and Kc_star #
+        plot(grid, c_star, label = "optimal policy cc_star")
+        plot!(grid, c_star_new, label = "Kc_star")
         plot!(legend = :topleft)
     end
 
 .. code-block:: julia
 
-    c_star = (1 - m.α * m.β) * m.grid     # True policy (c^*)
+    c_star = (1 - m.α * m.β) * m.grid     # True policy (c_star)
     verify_true_policy(m, shocks, c_star)
 
 .. code-block:: julia
@@ -545,7 +547,7 @@ The initial condition we'll use is the one that eats the whole pie: :math:`c(y) 
             plot!(grid, g, lw = 2, alpha = 0.6, label = "")
         end
         plot!(grid, c_star, color = :black, lw = 2, alpha = 0.8,
-              label = "true policy function c^*")
+              label = "true policy function c_star")
         plot!(legend = :topleft)
     end
 
@@ -739,7 +741,7 @@ Here's the code, which will execute if you've run all the code above
 
 .. code-block:: julia
 
-    function exercise3(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
+    function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
                        sim_length = 20)
 
         @unpack grid, β, u, ∂u∂c, f, f′ = m
