@@ -1421,7 +1421,7 @@ where
 
 * :math:`w_{t+1}` is distributed ``Normal(0,1)``
 * :math:`\gamma=1, \sigma=1, y_0 = 0`
-* :math:`\theta \in \Theta \equiv \{0.1, 0.5, 0.98\}`
+* :math:`\theta \in \Theta \equiv \{0.8, 0.9, 0.98\}`
 
 Given these parameters
 
@@ -1433,7 +1433,7 @@ Given these parameters
     \frac{1}{\tau}\sum_{t=1}^{\tau}y_T
 
 * simulate :math:`N=200` paths of the stochastic process above to the :math:`T`, for each :math:`\theta \in \Theta`, where we refer to an element of a particular simulation as :math:`y^n_t`
-* overlay plots a histogram of the stationary distribution of :math:`y_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``
+* overlay plots a histogram of the stationary distribution of the final :math:`y^n_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``) or use ``stephist(vals)`` to show just the step function for the histogram
 * numerically find the mean and variance of this as an ensemble average, i.e. :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
 
 Later, we will interpret some of these in :doc:`this lecture <lln_clt>`

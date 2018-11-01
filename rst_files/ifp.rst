@@ -450,7 +450,7 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
                 function obj(c)
                     EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
-                    return u(c)   β * EV
+                    return u(c) +  β * EV
                 end
                 res = optimize(obj, opt_lb, R .* a .+ z .+ b)
                 c_star = Optim.minimizer(res)
@@ -625,7 +625,7 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 
     using Plots
     gr(fmt=:png)
-    
+
     # === solve for optimal consumption === #
 
     m = ConsumerProblem(r=0.03, grid_max=4)
@@ -836,6 +836,10 @@ Exercise 3
 
 Exercise 4
 ----------
+.. code-block:: julia
+    :class: test
+
+    Random.seed!(42);  # For reproducibility
 
 .. code-block:: julia
 
@@ -845,7 +849,6 @@ Exercise 4
     xs = []
     ys = []
     legends = []
-    Random.seed!(42) # For reproducibility
     for b in [1.0, 3.0]
         asset_mean = zeros(M)
         for (i, r_val) in enumerate(r_vals)

@@ -395,8 +395,11 @@ The intersection gives equilibrium interest rates and capital
 
 
 .. code-block:: julia
+    :class: test
 
     Random.seed!(42)
+
+.. code-block:: julia
 
     # Firms' parameters
     const A = 1
