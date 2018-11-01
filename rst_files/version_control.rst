@@ -6,179 +6,318 @@
 Introduction to Git and Version Control
 ******************************************
 
-An essential part of modern software engineering is using version control
+.. epigraph:: 
 
     The ridiculous things people name their documents to do versioning, like "proposal v2 good revised NEW 11-15-06.doc", continue to crack me up. ---- Drew Houston, Founder of Dropbox
 
-In this lecture, we'll discuss how it works on the GitHub platform 
+An essential part of modern software engineering is using version control
+
+We use version control because 
+
+* Not all iterations on a file are perfect 
+* We want to be able to see who has changed what and how 
+* We want a uniform version scheme to do this between people and machines 
+
+In this lecture, we'll discuss how it works on the GitHub platform
 
 .. contents:: :depth: 2
 
-Overview
-============
+Overview 
+=====================
 
-Topics:
+Topics: 
 
-* Installing Git and a GitHub Client
-* Structure of a Git Repo
-* Collaborating with GitHub  
-* Firefighting and Debugging 
+* Setup  
+* Basic Objects 
+* Individual Workflow
+* Collaborative Work 
+* Open-Source Projects 
+* Additional Resources and Troubleshooting
 
+Setup 
+==================
 
-Installing Git and a GitHub Client
-===================================
+First, make sure you create an account on `GitHub.com <http://github.com/>`_
 
-First, make sure you install and setup `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
+If you are a student, be sure to use the GitHub `Student Developer Pack <https://education.github.com/pack/>`_
 
-Note that git is pre-installed if you're using the `docker image <https://hub.docker.com/r/quantecon/base/>`_
+Otherwise, see if you qualify for a free `Non-Profit/Academic Plan <https://help.github.com/articles/about-github-education-for-educators-and-researchers/>`_
 
-You might also consider installing a client like `GitHub desktop <https://desktop.github.com>`_ 
+Next, install ``git`` and the GitHub Desktop application 
 
-Lastly, make sure that you register for an account on `GitHub.com <https://www.github.com>`_ 
+1. Follow the instructions for installing `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-Structure of a Git Repo
-=================================
+2. Follow the instructions for installing `GitHub Desktop <https://desktop.github.com/>`
 
-The central object in GitHub is a *repository* (or repo). For an example of one, see the `QuantEcon Expectations Package <https://github.com/QuantEcon/Expectations.jl>`_ 
+Basic Objects 
+========================
 
-Every repository comes with a few standard files: 
+Repositories
+------------------------
 
-* A `README.md` file, which is what GitHub displays for page visitors. This contains information about the project, how to contribute, etc. 
+The fundamental object in GitHub is a *repository* (or "repo.") This is the master directory for a project 
 
-* A `LICENSE.md` file, which describes the terms under which the code is made available
+One example of a repo is the QuantEcon `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ package 
 
-* A `.gitignore` file, which tells GitHub not to move certain files (like `.aux` files from LaTeX) to and from the server
+On the machine, a repo is a normal directory, along with a subdirectory called ``.git`` which contains the history of changes 
 
-The distinguishing feature of a git repo is that it has history:
-
-Git repos are represented as a sequence of *commits*, each corresponding to a *diff* from the previous state 
-
-For example, see `this commit <https://github.com/QuantEcon/Expectations.jl/commit/22d1e3c11f012dbcd4878d03f66cb3b39529d781>`_, which makes some changes to the documentation in the `Expectations.jl`
- 
-The process of uploading commits to the server (and thus adding to history) is called *pushing*. Likewise, updating your local machine to match what's on the server (which acts as the "ground truth" for git) is called *pulling*
-
-Each commit has a unique identifier, like `22d1e3c11f012dbcd4878d03f66cb3b39529d781`, which is an SHA-1 hash. It also has some METADATA, such as the time it was created, the identity of the committer, and a message left by the committer 
-
-Git repositories also support parallel development, with objects called *branches*: 
-
-* The main branch is called *master*, and cannot be deleted
-
-* People can "check out" branches from a given state of *master* (or some other branch), in much the same way that two rivers can diverge downstream after sharing the same history. They can eventually be merged using an object called a *pull request*, covered below  
-
-Lastly, it is possible to "tag" see of a git repo (see "releases" of the `QuantEcon/Expectations.jl`), which is akin to publishing archival copies for future reference or cleanup 
-
-Collaborating with GitHub 
-==============================
-
-Instantianting a Repository Locally 
---------------------------------------
-
-First, you'll need to "clone" a copy of the repository locally. You can do this in GitHub Desktop, or via the command line 
-
-.. code-block:: none 
-
-    git clone https://github.com/QuantEcon/Expectations.jl 
-
-This will create a folder with the repository name (`Expectations.jl`), and all its contents, along with a `.git` repository that contains the commit sequence 
-
-If you don't have write access to the repository, you can create a "fork" on your account, which tells GitHub to copy the current state and all history 
-
-Check Out a Branch 
--------------------
-
-Before starting work, it's best to check out a new branch, to avoid contaminating the `master` of your repo 
-
-You can do this either using the intuitive interface in GitHub Desktop, or by running 
-
-.. code-block:: none 
-
-    git checkout -b myBranchName 
-
-Your branch name should be something descriptive, like `add-tests` or `plot-fixes`
-
-Make Your Changes 
------------------------
-
-You're now ready to edit your files as you would normally (see our "tools and editors" lecture). When working on adding a feature to code, a submission isn't complete unless it has all of:
-
-* The actual feature you're implementing 
-
-* Documentation
-
-* Tests 
-
-Commit Your Changes 
+Commits
 ----------------------
 
-As you work, you should add to the sequence of commits (as opposed to making one monolithic commit with all your work)
+GitHub stores history as a sequence of changes to text, called *commits* 
 
-As before, you can do this either in GitHub Desktop, or by running
+Here is an example of a commit, which revises the style guide in a QuantEcon repo (`link <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92/>`_)
 
-.. code-block:: none 
+In particular, commits have the following features
 
-    git add * # "Stages" files to GitHub 
-    git commit -m "My commit message." # Commits with a message 
+* An ID (formally, an "SHA-1 hash")
+* Content (i.e., a before and after state)
+* Metadata (author, timestamp, commit message, etc.)
 
-The goal is that each commit should represent an atomic change in code which can be parseable by a human reviewer 
+It is crucial to remember that commits represent differences in text, as opposed to repository states 
 
-Push Your Commits
+The ideal commit is small enough to be scanned by a human being in this window 
+
+Common Files 
+-----------------------------------------
+
+In addition, each GitHub repository comes with a few standard text files 
+
+* A ``.gitignore`` file, which lists files/extensions/directories that GitHub shouldn't try to track (e.g., LaTeX compilation byproducts)
+* A ``README.md`` file, which is a Markdown file which GitHub puts on the repository website 
+* A ``LICENSE.txt`` file, which describes the terms under which the repository's contents are made available 
+
+For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo linked above 
+
+Individual Workflow
+====================================
+
+In this section, we'll describe how to use GitHub to version your own projects 
+
+Much of this will carry over to the collaborative section 
+
+Creating a Repository 
+---------------------------------
+
+In general, we will always want to make new repos using the following dropdown 
+
+[git-makerepo]
+
+We can then configure repository options as such 
+
+[git-makerepofull]
+
+In this case, we're making a public repo ``github.com/arnavs/git-setup``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
+
+Cloning a Repository 
+---------------------------------------
+
+The next step is to get this to our local machine 
+
+[git-clone]
+
+This dropdown gives us a few options 
+
+* "Open in Desktop" will call to the GitHub Desktop application that we've installed 
+* "Download Zip" will download the directory *without the .git* subfolder. 
+* The copy/paste button next to the link lets us use the command line, i.e. ``git clone https://github.com/arnavs/git-setup.git``. 
+
+Making and Managing Changes 
+-------------------------------------------
+
+Now that we have the repository, we can start working with it 
+
+For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on 
+
+Returning to GitHub Desktop, we should see something like 
+
+[git-desktop-commit]
+
+To select individual files for commit, we can use the check boxes to the left of each file 
+
+Let's say you select only the README to commit. Going to the history tab should show you our change 
+
+[git-desktop-commit2]
+
+The Julia file is unchanged 
+
+Pushing to the Server 
+--------------------------------
+
+As of now, this commit lives only on our local machine. To upload it to the server, simply click the "Push Origin" button atop the screen
+
+The small "1^" to the right of the text indicates we have one commit to upload 
+
+Reading and Reverting History 
+-----------------------------------------
+
+As mentioned, one of the key features of GitHub is the ability to scan through history 
+
+By clicking the "commits" tab on the repo front page, for example, we see `this page <https://github.com/arnavs/git-setup/commits/master/>`_
+
+Clicking an individual commit gives us the granular view, (e.g., `here <https://github.com/arnavs/git-setup/commit/5ed516c7949dee5c60ec12be10d26e1bdee23ca5/>`_)
+
+Sometimes, however, we want to not only inspect what happened before, but go back to it 
+
+* If you haven't made the commit yet, just right-click the file and hit "discard changes" to reset the file to the last known commit 
+* If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, as above 
+
+[git-revert-commit]
+
+Working across Machines
+--------------------------------------
+
+Oftentimes, you will want to work on the same project across multiple machines (e.g., a home laptop and a lab workstation)
+
+The key is to push changes from one machine, and then to pull changes from the other machine 
+
+Pushing can be done as above. To pull, simply click pull under the "repository" dropdown at the top of the screen 
+
+
+[git-pull]
+
+Collaborative Work
+==================================
+
+Adding Collaborators
+----------------------------
+
+First, let's add a collaborator to the ``arnavs/git-setup`` lecture we created earlier 
+
+We can do this by clicking "settings => collaborators," as follows
+
+[git-collab]
+
+Project Management 
+--------------------------------
+
+GitHub's website also comes with project management tools to coordinate work between people 
+
+The key issue is an *issue*, which we can create from the issues tab. You should see something like this
+
+[git-issue]
+
+Let's unpack the different components 
+
+* The *assignees* dropdown lets you select people tasked to work on the issue 
+
+* The *labels* dropdown lets you tag the issue with labels visible from the issues page, such as "high priority" or "feature request" 
+
+* It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments. This is part of what's called *GitHub-Flavored Markdown* 
+
+For an example of an issue, see ``here <https://github.com/arnavs/git-setup/issues/1/>`_ 
+
+The checkbox idiom is a common one to manage projects in GitHub 
+
+Reviewing Code 
+------------------------------
+
+There are a few different ways to review people's code in GitHub 
+
+* Whenever people push to a project you're working on, you'll receive an email notification
+* You can also review individual line-items or commits by opening commits in the granular view as above 
+
+[git-review]
+
+Merge Conflicts
+----------------------------
+
+Any project management tool needs to figure out how to reconcile conflicting changes between people
+
+In GitHub, this event is called a "merge conflict," and occurs whenever people make conflicting changes to the same *line* of code 
+
+Note that this means that two people touching the same file is OK, so long as the differences are compatible 
+
+A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes. GitHub will give us the following window 
+
+[git-merge-conflict]
+
+* The warning symbol next to the file indicates the existence of a merge conflict 
+* The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
+
+To fix the conflict, we can go into a text editor (such as Atom or VS Code). Here's an image of what we see in Atom 
+
+[atom-merge-conflict]
+
+Let's say we click "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
+
+[git-merge-commit]
+
+Open-source Projects 
+======================================
+
+One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which (generally) anyone has rights to modify or work with 
+
+You can use GitHub to work on such projects 
+
+Quick Fixes
 --------------------
 
-Once you have a sequence of commits you're happy with, it's time to upload them to the server 
+GitHub's website provides an online editor for quick-and-dirty changes, such as fixing typos 
 
-In GitHub Desktop, you can do this by clicking "publish branch." In the command line, it's 
+To use it, open a file in GitHub and click the small pencil to the upper right 
 
-.. code-block:: none 
+[git-quick-pr]
 
-    git push -u origin myBranchName 
+Here, we're trying to add the QuantEcon link to the Julia project's README
 
+After making our changes, we can then describe them and propose them for review by maintainers 
 
-Merging your Work 
------------------------
+But what if we want to make more in-depth changes? 
 
-Now, it's time to incorporate your changes into `master` (either in your fork, or in a central repo) 
+Forking and Pull Requests 
+-------------------------------------
 
-To do this, we open what's called a "pull request." It's best to do this via that GitHub website, e.g. `here <https://github.com/quantecon/expectations.jl/pulls>`_ 
+The first problem to solve is that we don't have write access (usually) to open-source repos 
 
-The pull request will have one of two outcomes: 
+To work around this, we can click the "Fork" button that lives in the top-right of every repo's main page 
 
-* Automatically mergeable, if the history you created and the history created in `master` since then don't conflict (i.e., you don't try to change the same text in two ways)
+This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/git-setup/>`_ is a fork of our original `git setup <https://github.com/arnavs/git-setup/>`_ 
 
-* The opposite. In this case, you will need to use the GitHub website's conflict resolution tool to manually indicate which set of diffs (those you applied, or those in `master`) should be applied to a file
+Making Changes 
+----------------------------
 
-Syncing with the Server 
---------------------------
+We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
 
-An additional part, not part of the above workflow, is syncing your command with the server. This is useful so that your local directory doesn't get out of date 
+In particular, we can follow the same process of: 
 
-The GitHub Desktop button for this is fairly simple, so we'll give the command line instructions below
+* Updating the fork via sequences of commits, which we push and pull using GitHub Desktop 
 
-.. code-block:: none 
+* Collaborating with other people using issues 
 
-    git fetch origin # Updates git's "history book" of commits, but doesn't apply the new ones to your branch(es)
-    git pull # Applies the history gained 
+* Looking at history using the GitHub website
 
-Firefighting and Debugging 
-==============================
+The Pull Request 
+---------------------------
 
-Sometimes, if things were misconfigured somewhere, `git` will complain about operations you ask it to perform. This section attempts to categorize and solve such errors
+Eventually, you will want to upstream your changes into the main repository 
 
-    I want to reset my local branch against what's on the server 
+The first thing you want to do is go to the pull requests menu and click "New Pull Request." You'll see something like 
 
-To do this, run `git reset --hard origin/master`. This will reset each file `git` knows about to its state in the `master` on the server. But, it won't delete untracked files
+[git-create-pr]
 
-    I want to delete untracked files 
+This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
-Run `git clean -nf` to see what files would be deleted, and `git clean -f` to carry out the operation. 
+Clicking through gives us a window like 
 
-    I ran `git pull` and it's asking me to "merge"?
+[git-create-pr-2]
 
-This is normal, and happens when `git` wants to apply upstream changes to your local copy. Just enter a commit message (see our lecture on vim) and hit enter 
+The key pieces are 
 
-    Git can't merge because of a merge conflict 
+* A list of the commits we're proposing 
+* A list of reviewers, who we can ask to approve or modify our changes 
+* Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
 
-This is because the conflict described above with PRs (two conflicting diffs attempted on the same piece of text) is happening locally. To resolve it, you can do the following using Visual Studio Code: 
+For an example of a PR, see `here <https://github.com/arnavs/git-setup/pull/2#pullrequestreview-170918768/>`_
 
-[PUT IMAGES HERE]
+To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
-For more information, and debugging tips for nearly any conceivable scenario, see this `excellent git repo <https://github.com/k88hudson/git-flight-rules>`_ 
+Additional Resources and Troubleshooting
+================================================
+
+You may want to go beyond the scope of this tutorial when working with GitHub. For example, perhaps you run into a bug, or you're working with a setup (like the QuantEcon Docker image) that doesn't have GitHub Desktop installed 
+
+Here are some resources to help 
+
+* Kate Hudson's excellent `git flight rules <https://github.com/k88hudson/git-flight-rules/>`_, which is a near-exhaustive list of situations you could encounter, and command-line fixes 
+* The GitHub `Learning Lab <https://lab.github.com/>`_, an interactive sandbox environment for git 
