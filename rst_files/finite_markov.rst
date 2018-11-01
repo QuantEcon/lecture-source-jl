@@ -258,18 +258,18 @@ We'll write our code as a function that takes the following three arguments
 .. code-block:: julia
 
     function mc_sample_path(P; init = 1, sample_size = 1000)
-        @assert size(P)[1] == size(P)[2] # square required      
+        @assert size(P)[1] == size(P)[2] # square required
         N = size(P)[1] # should be square
 
         # create vector of discrete RVs for each row
-        dists = [Categorical(P[i, :]) for i in 1:N] 
-        
+        dists = [Categorical(P[i, :]) for i in 1:N]
+
         # setup the simulation
         X = fill(0, sample_size) # allocate memory
         X[1] = init # set the initial state
-        
+
         for t in 2:sample_size
-            dist = dists[X[t-1]] # get discrete RV from previous state's transition distribution 
+            dist = dists[X[t-1]] # get discrete RV from previous state's transition distribution
             X[t] = rand(dist) # draw new value
         end
         return X
@@ -293,8 +293,12 @@ As we'll see later, for a long series drawn from ``P``, the fraction of the samp
 If you run the following code you should get roughly that answer
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);  # for result reproducibility
+
+.. code-block:: julia
+
     P = [0.4 0.6; 0.2 0.8]
     X = mc_sample_path(P, sample_size = 100_000);
     μ_1 = mean(X .== 1)
@@ -315,8 +319,12 @@ As discussed above, `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ has
 Here's an illustration using the same `P` as the preceding example
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);  # For reproducibility
+
+.. code-block:: julia
+
     P = [0.4 0.6; 0.2 0.8];
     mc = MarkovChain(P)
     X = simulate(mc, 100_000);
@@ -1242,8 +1250,11 @@ Compute the fraction of time that the worker spends unemployed, and compare it
 to the stationary probability.
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);  # For reproducibility
+
+.. code-block:: julia
 
     α = 0.1 # probability of getting hired
     β = 0.1 # probability of getting fired
