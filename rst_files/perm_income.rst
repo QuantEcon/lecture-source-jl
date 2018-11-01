@@ -558,8 +558,11 @@ The figure below shows the consumption paths of 250 consumers with independent i
 
 
 .. code-block:: julia
+    :class: test
 
-  Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
 
   time_paths = []
   n = 250
