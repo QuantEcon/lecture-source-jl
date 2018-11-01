@@ -292,25 +292,11 @@ Here's the value function
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
   # === plot value function === #
-  tg, eg = meshgrid(wp.θ, wp.ϵ)
-  tg = Matrix(tg)
-  eg = Matrix(eg)
+
+  surface(wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon")
 
 
-  surf(tg,
-      eg,
-      Matrix(transpose(v)),
-      rstride=2,
-      cstride=2,
-      cmap="jet",
-      alpha=0.5,
-      linewidth=0.25)
-
-  ax = plt[:gca]()
-  ax[:set_zlim](150, 200)
-  ax[:set_xlabel]("θ")
-  ax[:set_ylabel]("ϵ")
-  ax[:view_init](ax[:elev], 225)
+surface(wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon")
 
 
 The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
@@ -445,13 +431,15 @@ Exercise 1
         return wp.θ[θ_ind], wp.ϵ[ϵ_ind]
     end
 
-    fig, axes = plt[:subplots](2, 1, figsize=(10, 8))
-    for ax in axes
+    plot_array = Any[]
+    for i in 1:2
         θ_path, ϵ_path = gen_path()
-        ax[:plot](ϵ_path, label="ϵ")
-        ax[:plot](θ_path, label="θ")
-        ax[:legend](loc="lower right")
+        plt = plot(ϵ_path, label="epsilon")
+        plot!(plt, θ_path, label="theta")
+        plot!(plt, legend=:bottomright)
+        push!(plot_array, plt)
     end
+    plot(plot_array..., layout = (2,1))
 
 .. code-block:: julia
   :class: test
@@ -531,16 +519,15 @@ Here's the code to reproduce the original figure
 
 .. code-block:: julia
 
-  fig, ax = plt[:subplots](figsize=(6, 6))
-
   lvls = [0.5, 1.5, 2.5, 3.5]
-  ax[:contourf](Matrix(tg), Matrix(eg), Matrix(optimal_policy'), levels=lvls, cmap="winter", alpha=0.5)
-  ax[:contour](Matrix(tg), Matrix(eg), Matrix(optimal_policy'), colors="k", levels=lvls, linewidths=2)
-  ax[:set_xlabel]("θ", fontsize=14)
-  ax[:set_ylabel]("ϵ", fontsize=14)
-  ax[:text](1.8, 2.5, "new life", fontsize=14)
-  ax[:text](4.5, 2.5, "new job", fontsize=14, rotation="vertical")
-  ax[:text](4.0, 4.5, "stay put", fontsize=14)
+  x_grid = range(0, 5, length = 50)
+  y_grid = range(0, 5, length = 50)
+
+  contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues, fillalpha=1, cbar = false)
+  contour!(xlabel="theta", ylabel="epsilon")
+  annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
+  annotate!([(4.5,2.5, text("new job", 14, :center))])
+  annotate!([(4.0,4.5, text("stay put", 14, :center))])
 
 
 Now we want to set ``G_a = G_b = 100`` and generate a new figure with
