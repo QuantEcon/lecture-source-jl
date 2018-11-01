@@ -310,21 +310,21 @@ We can explore taking expectations over this distribution
     # exploring the properties of the operator
     wage(i) = w[i+1] # +1 to map from support of 0
     E_w = E(wage)
-    E_w_2 = E(i -> (w[i+1])^2 - E_w^2) # variance
+    E_w_2 = E(i -> (wage(i)- E_w^2) # variance
     @show E_w, E_w_2
 
     # use operator with left-multiply
     @show E * w; # identity
 
 
-To impllement our algorithm, let's have a look at the sequence of approximate value functions that
+To implement our algorithm, let's have a look at the sequence of approximate value functions that
 this fixed point algorithm generates
 
 Default parameter values are embedded in the function
 
 Our initial guess :math:`v` is the value of accepting at every given wage
 
-.. code:: julia
+.. code-block:: julia
 
     # parameters and constant objects
  
