@@ -444,6 +444,47 @@ end
 ```
 The exception, of course, is when dealing with parallel programming where functional patterns are essential.
 
+## Error Handling
+- **Can use the || idiom for error handling**.  Eventually people will need to get used to it.  But minimize its use outside of that case
+- **Don't ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
+```julia
+using NLsolve
+f(x) = x
+x_iv = [1.0]
+#f(x) = 1.1 * x # fixed-point blows
+
+# BAD!
+xstar = fixedpoint(f, x_iv, inplace=false).zero # assumes convergence
+xsol = nlsolve(f, x_iv, inplace=false).zero # assumes convergence
+
+# GOOD!
+result = fixedpoint(f, x_iv, inplace=false)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xstar = result.zero
+
+result = nlsolve(f, x_iv, inplace=false)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xsol = result.zero
+```
+- **Handle errors by returning nothing**.  But if you won't handle, prefer to throw errors.
+```julia
+function g(a)
+    f(x) = a * x # won't succeed if a > 1
+    result = fixedpoint(f, [1.0], inplace = false)
+    converged(result) || return nothing
+    xstar = result.zero
+    
+    #do calculations...
+    return xstar
+end
+val = g(0.8)
+@show val == nothing
+val = g(1.1)
+@show val == nothing;
+```
+
+
+
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)

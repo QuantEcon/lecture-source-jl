@@ -1680,6 +1680,7 @@ above)
 
     Random.seed!(42); # For reproducible results.
 
+
 .. code-block:: julia
 
     M2 = crra_utility(G=[0.15], Π=ones(1, 1), Θ=[1.0])
@@ -1825,6 +1826,7 @@ The figure below plots a sample path of the Ramsey tax rate
     :class: test
 
     Random.seed!(42); # For reproducible results.
+
 
 .. code-block:: julia
 
