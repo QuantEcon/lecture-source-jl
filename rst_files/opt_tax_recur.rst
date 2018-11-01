@@ -1879,8 +1879,7 @@ Unlike outcomes with CRRA preferences, the tax rate is not perfectly smoothed
 Instead the government raises the tax rate when :math:`g_t` is high
 
 Further Comments
----------------------------------------
-
+======================
 
 A :doc:`related lecture <amss>` describes an extension of the Lucas-Stokey model
 by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`
