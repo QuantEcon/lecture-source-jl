@@ -908,8 +908,11 @@ A common way to compare distributions visually is with `boxplots <https://en.wik
 To illustrate, let's generate three artificial data sets and compare them with a boxplot
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42) # For determinism
+    Random.seed!(42); # For determinism
+
+.. code-block:: julia
 
     n = 500
     x = randn(n)        # N(0, 1)
@@ -1003,13 +1006,17 @@ and :math:`\xi_t \sim N(0,1)`. Try running at n = 10, 100, 1000, 10000
 to get an idea of the speed of convergence.
 
 .. code-block:: julia
+    :class: test
+
+    Random.seed!(42);  # reproducible results
+
+.. code-block:: julia
 
     ϕ = Normal()
     n = 500
     θ = 0.8
     d = sqrt(1.0 - θ^2)
     δ = θ / d
-    Random.seed!(42)  # reproducible results
 
     # true density of TAR model
     ψ_star(y) = 2 .* pdf.(ϕ, y) .* cdf.(ϕ, δ * y)
@@ -1046,6 +1053,11 @@ Exercise 2
 Here's one program that does the job.
 
 .. code-block:: julia
+    :class: test
+
+    Random.seed!(42);  # reproducible results
+
+.. code-block:: julia
 
     s = 0.2
     δ = 0.1
@@ -1053,7 +1065,6 @@ Here's one program that does the job.
     α = 0.4    # We set f(k) = k**α
     ψ_0 = Beta(5.0, 5.0)  # Initial distribution
     ϕ = LogNormal(0.0, a_σ)
-    Random.seed!(42)  # reproducible results
 
 
     function p_growth(x, y)
@@ -1120,11 +1131,15 @@ Note the way we use vectorized code to simulate the :math:`k` time
 series for one boxplot all at once.
 
 .. code-block:: julia
+    :class: test
+
+    Random.seed!(42);  # reproducible results
+
+.. code-block:: julia
 
     n = 20
     k = 5000
     J = 6
-    Random.seed!(42)  # reproducible results
 
     θ = 0.9
     d = sqrt(1 - θ^2)

@@ -785,8 +785,12 @@ Exercise 1
 Here is one solution
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(0)
+    Random.seed!(0);
+
+.. code-block:: julia
+
     function exercise1(distribution = Uniform(0, π/2); n = 250, k = 10_000, g = sin, g′ = cos)
         μ, σ = mean(distribution), std(distribution)
         y = rand(distribution, n, k)
@@ -857,8 +861,12 @@ Now we turn to the simulation exercise
 Our solution is as follows
 
 .. code-block:: julia
+    :class: test
 
     Random.seed!(0)
+
+.. code-block:: julia
+
     function exercise2(;n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 2))
         vw = var(dw)
         vu = var(du)
