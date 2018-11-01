@@ -488,6 +488,7 @@ val = g(1.1)
 @show val == nothing;
 ```
 - **Use similar patterns with the Optim and other libraries**
+  - Although there is (currently) an inconsistency in the usage of the minimum and maximum in Optim.
 ```julia
 # GOOD: make it easier to use, even if there are a few method merge warnings
 using Optim
@@ -496,21 +497,20 @@ using Optim: converged, maximum, maximizer, minimizer, iterations
 # BAD
 xmin = optimize(x-> x^2, -2.0, 1.0).minimum
 
-#GOOD
+# GOOD
 result = optimize(x-> x^2, -2.0, 1.0)
 converged(result) || error("Failed to converge in $(iterations(result)) iterations")
-xmin = minimizer(result)
-minimum(result)
+xmin = result.minimizer
+result.minimum
 
-using Optim: converged, maximum, maximizer, minimizer, iterations
+
+# GOOD
 f(x) = -x^2
 result = maximize(f, -2.0, 1.0)
 converged(result) || error("Failed to converge in $(iterations(result)) iterations")
 xmin = maximizer(result)
 fmax = maximum(result)
-
 ```
-
 
 
 ## Dependencies
