@@ -101,11 +101,13 @@ Creating a Repository
 
 In general, we will always want to make new repos using the following dropdown 
 
-[git-makerepo]
+.. figure:: /_static/figures/git/git-makerepo.png
+    :scale: 50%
 
 We can then configure repository options as such 
 
-[git-makerepofull]
+.. figure:: /_static/figures/git/git-makerepofull.png
+    :scale: 50%
 
 In this case, we're making a public repo ``github.com/arnavs/git-setup``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
 
@@ -114,7 +116,8 @@ Cloning a Repository
 
 The next step is to get this to our local machine 
 
-[git-clone]
+.. figure:: /_static/figures/git/git-clone.png
+    :scale: 50%
 
 This dropdown gives us a few options 
 
@@ -131,13 +134,15 @@ For example, let's say that we've amended the ``README.md`` (using our editor of
 
 Returning to GitHub Desktop, we should see something like 
 
-[git-desktop-commit]
+.. figure:: /_static/figures/git/git-desktop-commit.png
+    :scale: 50%
 
 To select individual files for commit, we can use the check boxes to the left of each file 
 
 Let's say you select only the README to commit. Going to the history tab should show you our change 
 
-[git-desktop-commit2]
+.. figure:: /_static/figures/git/git-desktop-commit2.png
+    :scale: 50%
 
 The Julia file is unchanged 
 
@@ -162,7 +167,8 @@ Sometimes, however, we want to not only inspect what happened before, but go bac
 * If you haven't made the commit yet, just right-click the file and hit "discard changes" to reset the file to the last known commit 
 * If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, as above 
 
-[git-revert-commit]
+.. figure:: /_static/figures/git/git-revert-commit.png
+    :scale: 50%
 
 Working across Machines
 --------------------------------------
@@ -173,8 +179,8 @@ The key is to push changes from one machine, and then to pull changes from the o
 
 Pushing can be done as above. To pull, simply click pull under the "repository" dropdown at the top of the screen 
 
-
-[git-pull]
+.. figure:: /_static/figures/git/git-pull.png
+    :scale: 50%
 
 Collaborative Work
 ==================================
@@ -186,7 +192,8 @@ First, let's add a collaborator to the ``arnavs/git-setup`` lecture we created e
 
 We can do this by clicking "settings => collaborators," as follows
 
-[git-collab]
+.. figure:: /_static/figures/git/git-collab.png
+    :scale: 50%
 
 Project Management 
 --------------------------------
@@ -195,7 +202,8 @@ GitHub's website also comes with project management tools to coordinate work bet
 
 The key issue is an *issue*, which we can create from the issues tab. You should see something like this
 
-[git-issue]
+.. figure:: /_static/figures/git/git-issue.png
+    :scale: 50%
 
 Let's unpack the different components 
 
@@ -217,7 +225,8 @@ There are a few different ways to review people's code in GitHub
 * Whenever people push to a project you're working on, you'll receive an email notification
 * You can also review individual line-items or commits by opening commits in the granular view as above 
 
-[git-review]
+.. figure:: /_static/figures/git/git-review.png
+    :scale: 50%
 
 Merge Conflicts
 ----------------------------
@@ -230,18 +239,21 @@ Note that this means that two people touching the same file is OK, so long as th
 
 A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes. GitHub will give us the following window 
 
-[git-merge-conflict]
+.. figure:: /_static/figures/git/git-merge-conflict.png
+    :scale: 50%
 
 * The warning symbol next to the file indicates the existence of a merge conflict 
 * The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
 
 To fix the conflict, we can go into a text editor (such as Atom or VS Code). Here's an image of what we see in Atom 
 
-[atom-merge-conflict]
+.. figure:: /_static/figures/git/atom-merge-conflict.png
+    :scale: 50%
 
 Let's say we click "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
 
-[git-merge-commit]
+.. figure:: /_static/figures/git/git-merge-commit.png
+    :scale: 50%
 
 Open-source Projects 
 ======================================
@@ -257,7 +269,8 @@ GitHub's website provides an online editor for quick-and-dirty changes, such as 
 
 To use it, open a file in GitHub and click the small pencil to the upper right 
 
-[git-quick-pr]
+.. figure:: /_static/figures/git/git-quick-pr.png
+    :scale: 50%
 
 Here, we're trying to add the QuantEcon link to the Julia project's README
 
@@ -294,13 +307,15 @@ Eventually, you will want to upstream your changes into the main repository
 
 The first thing you want to do is go to the pull requests menu and click "New Pull Request." You'll see something like 
 
-[git-create-pr]
+.. figure:: /_static/figures/git/git-create-pr.png
+    :scale: 50%
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
 Clicking through gives us a window like 
 
-[git-create-pr-2]
+.. figure:: /_static/figures/git/git-create-pr-2.png
+    :scale: 50%
 
 The key pieces are 
 
