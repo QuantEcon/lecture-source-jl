@@ -545,11 +545,11 @@ In the Julia console, a comparison of the operators can be made as follows
 
 .. code-block:: julia
 
-    @time bellman_operator(cp, v);
+    @btime bellman_operator(cp, v);
 
 .. code-block:: julia
 
-    @time coleman_operator(cp, c);
+    @btime coleman_operator(cp, c);
 
 .. _ifp_ex2:
 
