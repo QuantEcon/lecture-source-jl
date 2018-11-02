@@ -243,8 +243,8 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
                       u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function (can refer to previous args)
                       u_prime = c-> c^(-γ), # u'
                       f = k-> k^α, # production function 
-                      f_prime = k -> α*k^(α-1),
-                      grid = collect(range(grid_min, grid_max, length = grid_size))) # f'
+                      f_prime = k -> α*k^(α-1), # f'
+                      grid = collect(range(grid_min, grid_max, length = grid_size))) # grid
 
 Next we generate an instance
 
