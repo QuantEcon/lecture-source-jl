@@ -12,11 +12,14 @@ An essential part of modern software engineering is using version control
 
 We use version control because 
 
-* Not all iterations on a file are perfect 
+* Not all iterations on a file are perfect, and you may want to revert changes
 * We want to be able to see who has changed what and how 
-* We want a uniform version scheme to do this between people and machines 
+* We want a uniform version scheme to do this between people and machines
+* Concurrent editing on code is necessary for collaboration
+* Version control is an essential part of creating reproducible research
 
-In this lecture, we'll discuss how it works on the GitHub platform
+
+In this lecture, we'll discuss how to use Git and GitHub
 
 .. contents:: :depth: 2
 
@@ -33,9 +36,37 @@ These come with things like unlimited private repositories, testing support, etc
 
 Next, install ``git`` and the GitHub Desktop application 
 
-1. Follow the instructions for installing `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
+1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-2. Follow the instructions for installing `GitHub Desktop <https://desktop.github.com/>`
+2. Install the `GitHub Desktop <https://desktop.github.com/>`_
+
+Optionally (but strongly recommended):  On Windows, change the default line-ending by
+
+* Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
+
+* Run the following
+
+.. code-block:: none
+
+    git config --global core.eol lf
+    git config --global core.autocrlf false
+
+Git vs. GitHub vs. GitHub Desktop
+-----------------------------------
+
+To understand the relationship
+
+* Git is an infrastructure for versioning and merging files, and is neither specific to GitHub and does not even require an online server to function
+* GitHub provides a server to coordinate distributing the Git versions, and adds some additional features for managing projects
+* GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use
+
+Later, you may find yourself using alternatives
+
+* GitHub is the market leader for open-source projects and Julia, but there are other options, e.g. `GitLab <https://about.gitlab.com/>`_ and `Bitbucket <https://bitbucket.org>`_
+* Instead of the GitHub Desktop, you may directly use the Git `command-line <version_control_commandline>`_ , `GitKraken <https://www.gitkraken.com/>`_, or use the Git functionality built into editors such as `Atom <https://atom.io/>`_ or `VS Code <https://code.visualstudio.com/>`_
+
+Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct projects
+
 
 Basic Objects 
 ========================
@@ -77,7 +108,7 @@ In addition, each GitHub repository typically comes with a few standard text fil
 
 For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo linked above 
 
-Of these, the README is the most important
+Of these, the ``README.md`` is the most important, as GitHub will display it as `Markdown <https://guides.github.com/features/mastering-markdown/>`_ when accessing the repository online
 
 Individual Workflow
 ====================================
@@ -92,12 +123,12 @@ Creating a Repository
 In general, we will always want to make new repos using the following dropdown 
 
 .. figure:: /_static/figures/git-makerepo.png
-    :scale: 120%
+    :scale: 60%
 
 We can then configure repository options as such 
 
 .. figure:: /_static/figures/git-makerepo-full.png
-    :scale: 120%
+    :scale: 60%
 
 In this case, we're making a public repo ``github.com/quantecon_user/example_repository``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
 
@@ -107,7 +138,7 @@ Cloning a Repository
 The next step is to get this to our local machine 
 
 .. figure:: /_static/figures/git-clone.png
-    :scale: 120%
+    :scale: 60%
 
 This dropdown gives us a few options 
 
@@ -125,14 +156,14 @@ For example, let's say that we've amended the ``README.md`` (using our editor of
 Returning to GitHub Desktop, we should see something like 
 
 .. figure:: /_static/figures/git-desktop-commit.png
-    :scale: 120%
+    :scale: 60%
 
 To select individual files for commit, we can use the check boxes to the left of each file 
 
 Let's say you select only the README to commit. Going to the history tab should show you our change 
 
 .. figure:: /_static/figures/git-desktop-commit2.png
-    :scale: 120%
+    :scale: 60%
 
 The Julia file is unchanged 
 
@@ -150,7 +181,7 @@ As mentioned, one of the key features of GitHub is the ability to scan through h
 
 By clicking the "commits" tab on the repo front page, for example, we see `this page <https://github.com/quanteconuser/example_repository/commits/master>`_
 
-Clicking an individual commit gives us the granular view, (e.g., `here <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
+Clicking an individual commit gives us the granular view, (e.g., `example commit <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
 
 Sometimes, however, we want to not only inspect what happened before, but go back to it 
 
@@ -158,7 +189,7 @@ Sometimes, however, we want to not only inspect what happened before, but go bac
 * If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, as above 
 
 .. figure:: /_static/figures/git-revert-commit.png
-    :scale: 120%
+    :scale: 60%
 
 Working across Machines
 --------------------------------------
@@ -170,7 +201,7 @@ The key is to push changes from one machine, and then to pull changes from the o
 Pushing can be done as above. To pull, simply click pull under the "repository" dropdown at the top of the screen 
 
 .. figure:: /_static/figures/git-pull.png
-    :scale: 120%
+    :scale: 60%
 
 Collaborative Work
 ==================================
@@ -183,7 +214,7 @@ First, let's add a collaborator to the ``quanteconuser/example_repository`` lect
 We can do this by clicking "settings => collaborators," as follows
 
 .. figure:: /_static/figures/git-collab.png
-    :scale: 120%
+    :scale: 60%
 
 Project Management 
 --------------------------------
@@ -193,7 +224,7 @@ GitHub's website also comes with project management tools to coordinate work bet
 The main one is an *issue*, which we can create from the issues tab. You should see something like this
 
 .. figure:: /_static/figures/git-issue.png
-    :scale: 120%
+    :scale: 60%
 
 Let's unpack the different components 
 
@@ -203,14 +234,14 @@ Let's unpack the different components
 
 * It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments. This is part of what's called *GitHub-Flavored Markdown* 
 
-For an example of an issue, see `here <https://github.com/quanteconuser/example_repository/issues/1>`_ 
+For an example of an issue, see `example issue <https://github.com/quanteconuser/example_repository/issues/1>`_ 
 
 The checkbox idiom is a common one to manage projects in GitHub 
 
 You can see open issues at a glance from the general issues tab 
 
 .. figure:: /_static/figures/git-issue-tab.png
-    :scale: 120%
+    :scale: 60%
 
 Reviewing Code 
 ------------------------------
@@ -218,10 +249,10 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)>`_
+* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
 
 .. figure:: /_static/figures/git-review.png
-    :scale: 120%
+    :scale: 60%
 
 Merge Conflicts
 ----------------------------
@@ -235,7 +266,7 @@ Note that this means that two people touching the same file is OK, so long as th
 A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes. GitHub will give us the following window 
 
 .. figure:: /_static/figures/git-merge-conflict.png
-    :scale: 120%
+    :scale: 60%
 
 * The warning symbol next to the file indicates the existence of a merge conflict 
 * The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
@@ -243,12 +274,12 @@ A common use case is when we try to push changes to the server, but someone else
 To fix the conflict, we can go into a text editor (such as Atom or VS Code). Here's an image of what we see in Atom 
 
 .. figure:: /_static/figures/atom-merge-conflict.png
-    :scale: 120%
+    :scale: 60%
 
 Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
 
 .. figure:: /_static/figures/git-merge-commit.png
-    :scale: 120%
+    :scale: 60%
 
 Open-source Projects 
 ======================================
@@ -265,7 +296,7 @@ GitHub's website provides an online editor for quick-and-dirty changes, such as 
 To use it, open a file in GitHub and click the small pencil to the upper right 
 
 .. figure:: /_static/figures/git-quick-pr.png
-    :scale: 120%
+    :scale: 60%
 
 Here, we're trying to add the QuantEcon link to the Julia project's README
 
@@ -303,14 +334,14 @@ Eventually, you will want to upstream your changes into the main repository
 The first thing you want to do is go to the pull requests menu and click "New Pull Request." You'll see something like 
 
 .. figure:: /_static/figures/git-create-pr.png
-    :scale: 120%
+    :scale: 60%
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
 Let's fill out the form and then hit create. This opens a form like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
-    :scale: 120%
+    :scale: 60%
 
 The key pieces are 
 
@@ -318,24 +349,29 @@ The key pieces are
 * A list of reviewers, who can approve or modify our changes 
 * Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
 
-For an example of a PR, see `here <https://github.com/quanteconuser/example_repository/pull/3>`_
+For an example of a PR, see `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
 Additional Resources and Troubleshooting
 ================================================
 
-You may want to go beyond the scope of this tutorial when working with GitHub. For example, perhaps you run into a bug, or you're working with a setup (like the QuantEcon Docker image) that doesn't have GitHub Desktop installed 
+You may want to go beyond the scope of this tutorial when working with GitHub. For example, perhaps you run into a bug, or you're working with a setup that doesn't have GitHub Desktop installed 
 
 Here are some resources to help 
 
 * Kate Hudson's excellent `git flight rules <https://github.com/k88hudson/git-flight-rules/>`_, which is a near-exhaustive list of situations you could encounter, and command-line fixes 
 * The GitHub `Learning Lab <https://lab.github.com/>`_, an interactive sandbox environment for git 
 
+
+.. _version_control_commandline:
+
 Command-Line Basics
 ----------------------------------------
 
 Git also comes with a set of command-line tools. They're optional, but many people like using them
+
+Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the commandline
 
 * On Windows, downloading ``git`` will have installed a program called ``git bash``, which installs these tools along with a general Linux-style shell
 
@@ -347,13 +383,16 @@ See `here <https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/co
 
 As above, you can clone by grabbing the repo URL (say, GitHub's `site-policy repo <https://github.com/github/site-policy/>`_) and running ``git clone https://github.com/github/site-policy.git``
 
-This won't be connected to your GitHub Desktop, so you'd need to use it manually (``File => Add Local Repository``)
+This won't be connected to your GitHub Desktop, so you'd need to use it manually (``File => Add Local Repository``) or drag-and-drop from the file explorer onto the GitHub Desktop
 
 .. figure:: /_static/figures/git-add-local.png
-    :scale: 120%
+    :scale: 60%
 
-From here, you can pull by ``cd``-ing into the directory and running ``git pull`` 
+From here, you can get the latest files on the server by ``cd``-ing into the directory and running ``git pull`` 
 
-To do a hard reset of all tracked files, you can run ``git reset --hard origin/master``
+When you ``pull`` from the server, it will never overwrite your modified files, so it is impossible to lose local changes
 
-To remove files that aren't tracked by git (e.g., compilation byproducts and output directories), run ``git clean -fd``
+Instead, to do a hard reset of all files and overwrite any of your local changes, you can run ``git reset --hard origin/master``
+
+.. Removed this, since I have never done it!
+.. To remove files that aren't tracked by git (e.g., compilation byproducts and output directories), run ``git clean -fd``
