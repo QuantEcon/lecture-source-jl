@@ -402,22 +402,13 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
 .. code-block:: julia
 
-    using QuantEcon, Optim, LinearAlgebra, Random
+    using QuantEcon, Optim, LinearAlgebra, Random, Parameters
 
     # utility and marginal utility functions
     u(x) = log(x)
     du(x) = 1 / x
 
-    struct ConsumerProblem
-        r::Float64
-        R::Float64
-        β::Float64
-        b::Float64
-        Π::Matrix{Float64}
-        z_vals::Vector{Float64}
-        asset_grid::Vector{Float64}
-    end
-
+    # model 
     function ConsumerProblem(;r=0.01,
                             β=0.96,
                             Π=[0.6 0.4; 0.05 0.95],
@@ -428,15 +419,14 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
         R = 1 + r
         asset_grid = range(-b, grid_max, length = grid_size)
 
-        ConsumerProblem(r, R, β, b, Π, z_vals, asset_grid)
+        (r = r, R = R, β = β, b = b, Π = Π, z_vals = z_vals, asset_grid = asset_grid)
     end
 
 
     function bellman_operator!(cp, V, out; ret_policy = false)
 
-        # simplify names, set up arrays
-        R, Π, β, b = cp.R, cp.Π, cp.β, cp.b
-        asset_grid, z_vals = cp.asset_grid, cp.z_vals
+        # unpack input, set up arrays
+        @unpack R, Π, β, b, asset_grid, z_vals = cp
         z_idx = 1:length(z_vals)
 
         # value function when the shock index is z_i
@@ -477,8 +467,7 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
     function coleman_operator!(cp, c, out)
         # simplify names, set up arrays
-        R, Π, β, b = cp.R, cp.Π, cp.β, cp.b
-        asset_grid, z_vals = cp.asset_grid, cp.z_vals
+        @unpack R, Π, β, b, asset_grid, z_vals = cp
         z_idx = 1:length(z_vals)
         gam = R * β
 
@@ -506,10 +495,9 @@ Here's the code for a type called ``ConsumerProblem`` that stores primitives, as
 
     coleman_operator(cp, c) = coleman_operator!(cp, c, similar(c))
 
-    function initialize(cp::ConsumerProblem)
+    function initialize(cp)
         # simplify names, set up arrays
-        R, β, b = cp.R, cp.β, cp.b
-        asset_grid, z_vals = cp.asset_grid, cp.z_vals
+        @unpack R, β, b, asset_grid, z_vals = cp
         shape = length(asset_grid), length(z_vals)
         V, c = zeros(shape...), zeros(shape...)
 
@@ -803,7 +791,7 @@ Exercise 3
 .. code-block:: julia
 
     function compute_asset_series(cp, T=500000; verbose=false)
-        Π, z_vals, R = cp.Π, cp.z_vals, cp.R  # Simplify names
+        @unpack Π, z_vals, R = cp  # Simplify names
         z_idx = 1:length(z_vals)
         v_init, c_init = initialize(cp)
         c = compute_fixed_point(x -> coleman_operator(cp, x), c_init,
