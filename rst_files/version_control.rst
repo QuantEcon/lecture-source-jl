@@ -42,6 +42,8 @@ If you are a student, be sure to use the GitHub `Student Developer Pack <https:/
 
 Otherwise, see if you qualify for a free `Non-Profit/Academic Plan <https://help.github.com/articles/about-github-education-for-educators-and-researchers/>`_
 
+These come with things like unlimited private repositories, testing support, etc.
+
 Next, install ``git`` and the GitHub Desktop application 
 
 1. Follow the instructions for installing `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
@@ -80,13 +82,15 @@ The ideal commit is small enough to be scanned by a human being in this window
 Common Files 
 -----------------------------------------
 
-In addition, each GitHub repository comes with a few standard text files 
+In addition, each GitHub repository typically comes with a few standard text files 
 
 * A ``.gitignore`` file, which lists files/extensions/directories that GitHub shouldn't try to track (e.g., LaTeX compilation byproducts)
 * A ``README.md`` file, which is a Markdown file which GitHub puts on the repository website 
 * A ``LICENSE.txt`` file, which describes the terms under which the repository's contents are made available 
 
 For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo linked above 
+
+Of these, the README is the most important
 
 Individual Workflow
 ====================================
@@ -121,7 +125,7 @@ The next step is to get this to our local machine
 This dropdown gives us a few options 
 
 * "Open in Desktop" will call to the GitHub Desktop application that we've installed 
-* "Download Zip" will download the directory *without the .git* subfolder. 
+* "Download Zip" will download the directory *without the .git* subdirectory. 
 * The copy/paste button next to the link lets us use the command line, i.e. ``git clone https://github.com/arnavs/git-setup.git``. 
 
 Making and Managing Changes 
@@ -199,7 +203,7 @@ Project Management
 
 GitHub's website also comes with project management tools to coordinate work between people 
 
-The key issue is an *issue*, which we can create from the issues tab. You should see something like this
+The main one is an *issue*, which we can create from the issues tab. You should see something like this
 
 .. figure:: /_static/figures/git-issue.png
     :scale: 120%
@@ -212,7 +216,7 @@ Let's unpack the different components
 
 * It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments. This is part of what's called *GitHub-Flavored Markdown* 
 
-For an example of an issue, see ``here <https://github.com/arnavs/git-setup/issues/1/>`_ 
+For an example of an issue, see `here <https://github.com/arnavs/git-setup/issues/1/>`_ 
 
 The checkbox idiom is a common one to manage projects in GitHub 
 
@@ -222,7 +226,7 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as above 
+* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/arnavs/git-setup/commit/5ed516c7949dee5c60ec12be10d26e1bdee23ca5/>`_
 
 .. figure:: /_static/figures/git-review.png
     :scale: 120%
@@ -249,7 +253,7 @@ To fix the conflict, we can go into a text editor (such as Atom or VS Code). Her
 .. figure:: /_static/figures/atom-merge-conflict.png
     :scale: 120%
 
-Let's say we click "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
+Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
 
 .. figure:: /_static/figures/git-merge-commit.png
     :scale: 120%
@@ -345,7 +349,7 @@ Git also comes with a set of command-line tools. They're optional, but many peop
 
 * On Linux/macOS, these tools are integrated into your usual terminal
 
-To open the terminal in a folder, either right click and hit "open git bash" (in Windows), or use Linux commands like ``cd`` and ``ls`` to navigate 
+To open the terminal in a directory, either right click and hit "open git bash" (in Windows), or use Linux commands like ``cd`` and ``ls`` to navigate 
 
 See `here <https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101>`_ for a short introduction to the command line
 
@@ -356,7 +360,7 @@ This won't be connected to your GitHub Desktop, so you'd need to use it manually
 .. figure:: /_static/figures/git-add-local.png
     :scale: 120%
 
-From here, you can pull by ``cd``-ing into the folder and running ``git pull`` 
+From here, you can pull by ``cd``-ing into the directory and running ``git pull`` 
 
 To do a hard reset of all tracked files, you can run ``git reset --hard origin/master``
 
