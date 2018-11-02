@@ -425,9 +425,7 @@ Some code to implement the iterative computational procedure can be found below:
 
     using QuantEcon, Distributions, Interpolations
 
-    """
-    The Lucas asset pricing model --- parameters and grid data
-    """
+    # model object 
     struct LucasTree{TF<:AbstractFloat}
         γ::TF                 # coefficient of risk aversion
         β::TF                 # Discount factor in (0, 1)
@@ -439,9 +437,7 @@ Some code to implement the iterative computational procedure can be found below:
         h::Vector{TF}         # The h function represented as a vector
     end
 
-    """
-    Constructor for the Lucas asset pricing model
-    """
+    # model constructor 
     function LucasTree(;γ::AbstractFloat=2.0,
                     β::AbstractFloat=0.95,
                     α::AbstractFloat=0.9,
@@ -473,10 +469,7 @@ Some code to implement the iterative computational procedure can be found below:
     end
 
 
-    """
-    The approximate Lucas operator, which computes and returns updated function
-    Tf on the grid points.
-    """
+    # approximate Lucas operator, which returns the updated function Tf on the grid
     function lucas_operator(lt::LucasTree, f::Vector)
 
         # == unpack names == #
@@ -490,9 +483,7 @@ Some code to implement the iterative computational procedure can be found below:
     end
 
 
-    """
-    Compute the equilibrium price function associated with Lucas tree `lt`
-    """
+    # get equilibrium price for Lucas tree 
     function solve_lucas_model(lt::LucasTree;
                             tol::AbstractFloat=1e-6,
                             max_iter::Integer=500)
