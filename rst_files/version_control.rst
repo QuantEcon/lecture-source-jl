@@ -99,7 +99,7 @@ We can then configure repository options as such
 .. figure:: /_static/figures/git-makerepo-full.png
     :scale: 120%
 
-In this case, we're making a public repo ``github.com/arnavs/git-setup``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
+In this case, we're making a public repo ``github.com/quantecon_user/example_repository``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
 
 Cloning a Repository 
 ---------------------------------------
@@ -112,8 +112,8 @@ The next step is to get this to our local machine
 This dropdown gives us a few options 
 
 * "Open in Desktop" will call to the GitHub Desktop application that we've installed 
-* "Download Zip" will download the directory *without the .git* subdirectory. 
-* The copy/paste button next to the link lets us use the command line, i.e. ``git clone https://github.com/arnavs/git-setup.git``. 
+* "Download Zip" will download the directory *without the .git* subdirectory
+* The copy/paste button next to the link lets us use the command line, i.e. ``git clone https://github.com/quanteconuser/example_repository.git``
 
 Making and Managing Changes 
 -------------------------------------------
@@ -139,7 +139,7 @@ The Julia file is unchanged
 Pushing to the Server 
 --------------------------------
 
-As of now, this commit lives only on our local machine. To upload it to the server, simply click the "Push Origin" button atop the screen
+As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button atop the screen
 
 The small "1^" to the right of the text indicates we have one commit to upload 
 
@@ -148,9 +148,9 @@ Reading and Reverting History
 
 As mentioned, one of the key features of GitHub is the ability to scan through history 
 
-By clicking the "commits" tab on the repo front page, for example, we see `this page <https://github.com/arnavs/git-setup/commits/master/>`_
+By clicking the "commits" tab on the repo front page, for example, we see `this page <https://github.com/quanteconuser/example_repository/commits/master>`_
 
-Clicking an individual commit gives us the granular view, (e.g., `here <https://github.com/arnavs/git-setup/commit/5ed516c7949dee5c60ec12be10d26e1bdee23ca5/>`_)
+Clicking an individual commit gives us the granular view, (e.g., `here <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
 
 Sometimes, however, we want to not only inspect what happened before, but go back to it 
 
@@ -178,7 +178,7 @@ Collaborative Work
 Adding Collaborators
 ----------------------------
 
-First, let's add a collaborator to the ``arnavs/git-setup`` lecture we created earlier 
+First, let's add a collaborator to the ``quanteconuser/example_repository`` lecture we created earlier 
 
 We can do this by clicking "settings => collaborators," as follows
 
@@ -203,9 +203,14 @@ Let's unpack the different components
 
 * It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments. This is part of what's called *GitHub-Flavored Markdown* 
 
-For an example of an issue, see `here <https://github.com/arnavs/git-setup/issues/1/>`_ 
+For an example of an issue, see `here <https://github.com/quanteconuser/example_repository/issues/1>`_ 
 
 The checkbox idiom is a common one to manage projects in GitHub 
+
+You can see open issues at a glance from the general issues tab 
+
+.. figure:: /_static/figures/git-issue-tab.png
+    :scale: 120%
 
 Reviewing Code 
 ------------------------------
@@ -213,7 +218,7 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/arnavs/git-setup/commit/5ed516c7949dee5c60ec12be10d26e1bdee23ca5/>`_
+* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)>`_
 
 .. figure:: /_static/figures/git-review.png
     :scale: 120%
@@ -275,7 +280,7 @@ The first problem to solve is that we don't have write access (usually) to open-
 
 To work around this, we can click the "Fork" button that lives in the top-right of every repo's main page 
 
-This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/git-setup/>`_ is a fork of our original `git setup <https://github.com/arnavs/git-setup/>`_ 
+This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
 
 Making Changes 
 ----------------------------
@@ -302,7 +307,7 @@ The first thing you want to do is go to the pull requests menu and click "New Pu
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
-Clicking through gives us a window like 
+Let's fill out the form and then hit create. This opens a form like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
     :scale: 120%
@@ -310,10 +315,10 @@ Clicking through gives us a window like
 The key pieces are 
 
 * A list of the commits we're proposing 
-* A list of reviewers, who we can ask to approve or modify our changes 
+* A list of reviewers, who can approve or modify our changes 
 * Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
 
-For an example of a PR, see `here <https://github.com/arnavs/git-setup/pull/2#pullrequestreview-170918768/>`_
+For an example of a PR, see `here <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
