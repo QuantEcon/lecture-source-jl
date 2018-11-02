@@ -383,14 +383,7 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
 
 .. code-block:: julia
 
-    using QuantEcon, LinearAlgebra
-
-    struct ConsumptionProblem{TF<:AbstractFloat}
-        β::TF
-        y::Vector{TF}
-        b0::TF
-        P::Matrix{TF}
-    end
+    using QuantEcon, LinearAlgebra, Parameters
 
     function ConsumptionProblem(β = 0.96,
                                 y = [2.0, 1.5],
@@ -398,12 +391,12 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
                                 P = [0.8 0.2;
                                     0.4 0.6])
 
-        ConsumptionProblem(β, y, b0, P)
+        (β = β, y = y, b0 = b0, P = P)
     end
 
     function consumption_complete(cp)
 
-        β, P, y, b0 = cp.β, cp.P, cp.y, cp.b0   # Unpack
+        @unpack β, P, y, b0 = cp   # Unpack
 
         y1, y2 = y                              # extract income levels
         b1 = b0                                 # b1 is known to be equal to b0
@@ -421,22 +414,23 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
     function consumption_incomplete(cp;
                                     N_simul = 150)
 
-        β, P, y, b0 = cp.β, cp.P, cp.y, cp.b0  # Unpack
-        # For the simulation use the MarkovChain type
+        @unpack β, P, y, b0 = cp  # unpack
+
+        # for the simulation use the MarkovChain type
         mc = MarkovChain(P)
 
-        # Useful variables
+        # useful variables
         y = y''
         v = inv(I - β * P) * y
 
-        # Simulat state path
+        # simulate state path
         s_path = simulate(mc, N_simul, init=1)
 
-        # Store consumption and debt path
+        # store consumption and debt path
         b_path, c_path = ones(N_simul + 1), ones(N_simul)
         b_path[1] = b0
 
-        # Optimal decisions from (12) and (13)
+        # optimal decisions from (12) and (13)
         db = ((1 - β) * v - y) / β
 
         for (i, s) in enumerate(s_path)
