@@ -338,7 +338,7 @@ Here's the main body of code
 
 .. code-block:: julia
 
-    using Plots 
+    using Plots, Parameters
 
     gr(fmt=:png)
 
@@ -453,36 +453,19 @@ Here's the main body of code
         return time_2_sync
     end
 
-
-    # == Now we define a type for the model == #
-
-    struct MSGSync
-        s1::Float64
-        s2::Float64
-        s1_ρ::Float64
-        s2_ρ::Float64
-        θ::Float64
-        δ::Float64
-        ρ::Float64
-    end
-
+    # model 
     function MSGSync(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
         # Store other cutoffs and parameters we use
         s2 = 1 - s1
         s1_ρ = min((s1 - ρ * s2) / (1 - ρ), 1)
         s2_ρ = 1 - s1_ρ
 
-        model = MSGSync(s1, s2, s1_ρ, s2_ρ, θ, δ, ρ)
-
-        return model
+        (s1 = s1, s2 = s2, s1_ρ = s1_ρ, s2_ρ = s2_ρ, θ = θ, δ = δ, ρ = ρ)
     end
 
-    unpack_params(model::MSGSync) =
-        model.s1, model.s2, model.θ, model.δ, model.ρ, model.s1_ρ, model.s2_ρ
-
-    function simulate_n(model::MSGSync, n1_0, n2_0, T)
+    function simulate_n(model, n1_0, n2_0, T)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model 
 
         # Allocate space
         n1 = zeros(T)
@@ -498,21 +481,21 @@ Here's the main body of code
         return n1, n2
     end
 
-    function pers_till_sync(model::MSGSync, n1_0, n2_0,
+    function pers_till_sync(model, n1_0, n2_0,
                             maxiter = 500, npers = 3)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model 
 
         return pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2,
                             θ, δ, ρ, maxiter, npers)
     end
 
-    function create_attraction_basis(model::MSGSync;
+    function create_attraction_basis(model;
                                      maxiter=250,
                                      npers=3,
                                      npts=50)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model 
 
         ab = create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ,
                                     ρ, maxiter, npers, npts)
