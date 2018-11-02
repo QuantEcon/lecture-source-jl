@@ -20,19 +20,6 @@ In this lecture, we'll discuss how it works on the GitHub platform
 
 .. contents:: :depth: 2
 
-Overview 
-=====================
-
-Topics: 
-
-* Setup  
-* Basic Objects 
-* Individual Workflow
-* Collaborative Work 
-* Open-Source Projects 
-* Command Line Basics 
-* Additional Resources and Troubleshooting
-
 Setup 
 ==================
 
