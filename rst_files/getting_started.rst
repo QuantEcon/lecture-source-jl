@@ -200,7 +200,7 @@ In that ``julia`` terminal, type the following
 
 .. code-block:: julia
 
-    ] add IJulia InstantiateFromURL
+    ] add IJulia InstantiateFromURL Revise
 
 
 Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes),
@@ -212,6 +212,27 @@ To run Jupyter, in a terminal ``cd`` to the location you wish to modify local fi
 .. code-block:: none
 
     jupyter lab
+
+For convenience, you may find it useful on your operating system to change the directory where the REPL starts
+
+* On Windows, if you have a shortcut on your desktop or on the taskbar, you should: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
+
+
+.. _jl_startup_file:
+
+Creating a Startup File (Advanced)
+------------------------------------
+
+Whenever the Julia compiler or REPL starts, it will look for a file called ``startup.jl`` (see `Julia Manual <https://docs.julialang.org/en/v1/manual/getting-started/#man-getting-started-1>`_)
+
+The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
+
+To add one, first create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
+
+Next, either download the file `startup.jl </_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
+
+.. include:: /_static/includes/startup.jl.raw
+
 
 .. _jl_jupyter:
 
