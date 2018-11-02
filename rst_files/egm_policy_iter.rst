@@ -216,7 +216,6 @@ Let's test out the code above on some example parameterizations, after the follo
 
     using Plots
     gr(fmt=:png)
-    using LaTeXStrings
 
 
 Testing on the Log / Cobb--Douglas case
