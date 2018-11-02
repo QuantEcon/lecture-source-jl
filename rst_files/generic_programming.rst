@@ -906,7 +906,7 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
 ..     m.ϕ = Exponential(0.5)
 ..
 ..
-.. .. _spec_field_types:
+.. _spec_field_types:
 ..
 ..
 .. Specifying Field Types
