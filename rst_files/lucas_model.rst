@@ -423,21 +423,9 @@ Some code to implement the iterative computational procedure can be found below:
 
 .. code-block:: julia
 
-    using QuantEcon, Distributions, Interpolations
+    using QuantEcon, Distributions, Interpolations, Parameters
 
-    # model object 
-    struct LucasTree{TF<:AbstractFloat}
-        γ::TF                 # coefficient of risk aversion
-        β::TF                 # Discount factor in (0, 1)
-        α::TF                 # Correlation coefficient in the shock process
-        σ::TF                 # Volatility of shock process
-        ϕ::Distribution       # Distribution for shock process
-        grid::AbstractRange   # Grid of points on which to evaluate prices
-        shocks::Vector{TF}    # Draws of the shock
-        h::Vector{TF}         # The h function represented as a vector
-    end
-
-    # model constructor 
+    # model
     function LucasTree(;γ::AbstractFloat=2.0,
                     β::AbstractFloat=0.95,
                     α::AbstractFloat=0.9,
@@ -458,22 +446,15 @@ Some code to implement the iterative computational procedure can be found below:
             h[i] = β * mean((y^α .* shocks).^(1 - γ))
         end
 
-        return LucasTree(γ,
-                        β,
-                        α,
-                        σ,
-                        ϕ,
-                        grid,
-                        shocks,
-                        h)
+        return (γ = γ, β = β, α = α, σ = σ, ϕ = ϕ, grid = grid, shocks = shocks, h = h)
     end
 
 
     # approximate Lucas operator, which returns the updated function Tf on the grid
-    function lucas_operator(lt::LucasTree, f::Vector)
+    function lucas_operator(lt, f)
 
-        # == unpack names == #
-        grid, α, β, h = lt.grid, lt.α, lt.β, lt.h
+        # unpack input 
+        @unpack grid, α, β, h = lt
         z = lt.shocks
 
         Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
@@ -484,12 +465,12 @@ Some code to implement the iterative computational procedure can be found below:
 
 
     # get equilibrium price for Lucas tree 
-    function solve_lucas_model(lt::LucasTree;
-                            tol::AbstractFloat=1e-6,
-                            max_iter::Integer=500)
+    function solve_lucas_model(lt;
+                            tol=1e-6,
+                            max_iter=500)
 
-        # == simplify notation == #
-        grid, γ = lt.grid, lt.γ
+        
+        @unpack grid, γ = lt
 
         i = 0
         f = zero(grid)  # Initial guess of f
