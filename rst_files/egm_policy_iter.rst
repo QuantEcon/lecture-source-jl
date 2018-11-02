@@ -230,49 +230,22 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
 
 .. code-block:: julia
 
-    struct Model{TF <: AbstractFloat, TR <: Real, TI <: Integer}
-        α::TR              # Productivity parameter
-        β::TF              # Discount factor
-        γ::TR              # risk aversion
-        μ::TR              # First parameter in lognorm(μ, σ)
-        s::TR              # Second parameter in lognorm(μ, σ)
-        grid_min::TR       # Smallest grid point
-        grid_max::TR       # Largest grid point
-        grid_size::TI      # Number of grid points
-        u::Function        # utility function
-        u_prime::Function  # derivative of utility function
-        f::Function        # production function
-        f_prime::Function  # derivative of production function
-        grid::Vector{TR}   # grid
-    end
+    using Parameters 
 
-    function Model(;α = 0.65,                      # Productivity parameter
-                    β = 0.95,                      # Discount factor
-                    γ = 1.0,                       # risk aversion
-                    μ = 0.0,                       # First parameter in lognorm(μ, σ)
-                    s = 0.1,                       # Second parameter in lognorm(μ, σ)
-                    grid_min = 1e-6,               # Smallest grid point
-                    grid_max = 4.0,                # Largest grid point
-                    grid_size = 200,               # Number of grid points
-                    u =  c->(c^(1-γ)-1)/(1-γ),     # utility function
-                    u_prime = c-> c^(-γ),          # u'
-                    f = k-> k^α,                   # production function
-                    f_prime = k -> α*k^(α-1)       # f'
-                    )
-
-        grid = collect(range(grid_min, grid_max, length = grid_size))
-
-        if γ == 1                                       # when γ==1, log utility is assigned
-            u_log(c) = log(c)
-            m = Model(α, β, γ, μ, s, grid_min, grid_max,
-                    grid_size, u_log, u_prime, f, f_prime, grid)
-        else
-            m = Model(α, β, γ, μ, s, grid_min, grid_max,
-                    grid_size, u, u_prime, f, f_prime, grid)
-        end
-        return m
-    end
-
+    # model 
+    Model = @with_kw (α = 0.65, # productivity parameter 
+                      β = 0.95, # discount factor 
+                      γ = 1.0,  # risk aversion 
+                      μ = 0.0,  # lognorm(μ, σ) 
+                      s = 0.1,  # lognorm(μ, σ)
+                      grid_min = 1e-6, # smallest grid point  
+                      grid_max = 4.0,  # largest grid point 
+                      grid_size = 200, # grid size
+                      u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function (can refer to previous args)
+                      u_prime = c-> c^(-γ), # u'
+                      f = k-> k^α, # production function 
+                      f_prime = k -> α*k^(α-1),
+                      grid = collect(range(grid_min, grid_max, length = grid_size))) # f'
 
 Next we generate an instance
 
@@ -323,7 +296,7 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
 .. code-block:: julia
 
     function verify_true_policy(m, shocks, c_star)
-	     k_grid = m.grid
+	    k_grid = m.grid
         c_star_new = coleman_egm(c_star, k_grid, m.β, m.u_prime,
                                  m.u_prime, m.f, m.f_prime, shocks)
 
