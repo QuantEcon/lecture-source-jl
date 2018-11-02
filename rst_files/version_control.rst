@@ -326,30 +326,6 @@ For an example of a PR, see `here <https://github.com/arnavs/git-setup/pull/2#pu
 
 To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
-Command Line Basics 
-==============================
-
-Git also comes with a set of command-line tools. They're optional, but many people like using them
-
-* On Windows, downloading ``git`` will have installed a program called ``git bash``, which installs these tools along with a general Linux-style shell
-
-To open the terminal in a folder, either right click and hit "open git bash," or use Linux commands like ``cd`` and ``ls`` to navigate 
-
-See `here <https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101>`_ for a short introduction to the command line
-
-As above, you can clone by grabbing the repo URL (say, GitHub's `site-policy repo <https://github.com/github/site-policy>/`_) and running ``git clone https://github.com/github/site-policy.git``
-
-This won't be connected to your GitHub Desktop, so you'd need to use it manually (``File => Add Local Repository``)
-
-.. figure:: /_static/figures/git-add-local.png
-    :scale: 120%
-
-From here, you can pull by `cd` ing into the folder and running ``git pull`` 
-
-To do a hard reset of all tracked files, you can run ``git reset --hard origin/master``
-
-To remove files that aren't tracked by git (e.g., compilation byproducts and output directories), run ``git clean -fd``
-
 Additional Resources and Troubleshooting
 ================================================
 
@@ -359,3 +335,29 @@ Here are some resources to help
 
 * Kate Hudson's excellent `git flight rules <https://github.com/k88hudson/git-flight-rules/>`_, which is a near-exhaustive list of situations you could encounter, and command-line fixes 
 * The GitHub `Learning Lab <https://lab.github.com/>`_, an interactive sandbox environment for git 
+
+Command-Line Basics
+----------------------------------------
+
+Git also comes with a set of command-line tools. They're optional, but many people like using them
+
+* On Windows, downloading ``git`` will have installed a program called ``git bash``, which installs these tools along with a general Linux-style shell
+
+* On Linux/macOS, these tools are integrated into your usual terminal
+
+To open the terminal in a folder, either right click and hit "open git bash" (in Windows), or use Linux commands like ``cd`` and ``ls`` to navigate 
+
+See `here <https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101>`_ for a short introduction to the command line
+
+As above, you can clone by grabbing the repo URL (say, GitHub's `site-policy repo <https://github.com/github/site-policy/>`_) and running ``git clone https://github.com/github/site-policy.git``
+
+This won't be connected to your GitHub Desktop, so you'd need to use it manually (``File => Add Local Repository``)
+
+.. figure:: /_static/figures/git-add-local.png
+    :scale: 120%
+
+From here, you can pull by ``cd``-ing into the folder and running ``git pull`` 
+
+To do a hard reset of all tracked files, you can run ``git reset --hard origin/master``
+
+To remove files that aren't tracked by git (e.g., compilation byproducts and output directories), run ``git clean -fd``
