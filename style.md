@@ -243,21 +243,7 @@ y = [1; 2; 3]
 # GOOD!
 y = [1, 2, 3]
 ```
-- **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
-```julia
-x = [1 0; 0 1]
 
-# note, typeof(Q) ==  LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}
-Q, R = qr(x)
-
-
-# BAD!
-Q = Matrix(Q)
-val = Q * Q' # some calculation using Q and other things
-
-# GOOD!
-val = Q * Q' # directly, without any conversion
-```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
 # BAD!
