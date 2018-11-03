@@ -4,9 +4,9 @@
 
 .. highlight:: julia
 
-**********************************************
+**************************
 Multiplicative Functionals
-**********************************************
+**************************
 
 .. index::
     single: Models; Multiplicative functionals
@@ -16,7 +16,7 @@ Multiplicative Functionals
 Co-authored with Chase Coleman and Balint Szoke.
 
 Overview
-=========
+========
 
 This lecture is a sequel to the :doc:`lecture on additive functionals <additive_functionals>`
 
@@ -32,17 +32,10 @@ This lecture uses this special class to create and analyze two examples
 
 * A version of Robert E. Lucas's :cite:`Lucas_2003` and Thomas Tallarini's :cite:`Tall2000` approaches to measuring the benefits of moderating aggregate fluctuations
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
-
 A Log-Likelihood Process
-==========================
+========================
 
-Consider a vector of additive functionals :math:`\{y_t\}_{t=0}^\infty`
-described by
+Consider a vector of additive functionals :math:`\{y_t\}_{t=0}^\infty` described by
 
 .. math::
 
@@ -94,35 +87,31 @@ For the purposes of this exercise,  set :math:`\theta_o = (A, B, D, F) = (0.8, 1
 Set :math:`x_0 = y_0 = 0`
 
 Simulating sample paths
----------------------------
+-----------------------
 
 Let's write a program to simulate sample paths of :math:`\{ x_t, y_{t} \}_{t=0}^{\infty}`
 
 We'll do this by formulating the additive functional as a linear state space model and putting the `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ struct to work
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
+    using Test
 
 .. code-block:: julia
 
-    using QuantEcon, Distributions
+    using Distributions, Parameters, Plots, Random, QuantEcon
     import Distributions: loglikelihood
+    gr(fmt = :png)
 
-    mutable struct AMF_LSS_VAR
-        A::Float64
-        B::Float64
-        D::Float64
-        F::Float64
-        ν::Float64
-        lss::LSS
-    end
-    function AMF_LSS_VAR(A, B, D, F = 0.0, ν = 0.0)
-        # Construct BIG state space representation
-        lss = construct_ss(A, B, D, F, ν)
-        return AMF_LSS_VAR(A, B, D, F, ν, lss)
-    end
+.. code-block:: julia
+
+    AMF_LSS_VAR = @with_kw (A, B, D, F = 0.0, ν = 0.0, lss = construct_ss(A, B, D, F, ν))
 
     function construct_ss(A, B, D, F, ν)
         H, g = additive_decomp(A, B, D, F)
@@ -151,9 +140,7 @@ We'll do this by formulating the additive functional as a linear state space mod
         # Build LSS struct
         x0 = [0, 0, 0, 0, 0]
         S0 = zeros(5, 5)
-        lss = LSS(Abar, Bbar, Gbar, mu_0=x0, Sigma_0=S0)
-
-        return lss
+        return LSS(Abar, Bbar, Gbar, mu_0 = x0, Sigma_0 = S0)
     end
 
     function additive_decomp(A, B, D, F)
@@ -172,16 +159,15 @@ We'll do this by formulating the additive functional as a linear state space mod
     end
 
     function loglikelihood_path(amf, x, y)
-        A, B, D, F = amf.A, amf.B, amf.D, amf.F
+        @unpack A, B, D, F = amf
         T = length(y)
         FF = F^2
-        FFinv = 1/FF
+        FFinv = inv(FF)
         temp = y[2:end] - y[1:end-1] - D*x[1:end-1]
         obs =  temp .* FFinv .* temp
         obssum = cumsum(obs)
-        scalar = (log(FF) + log(2pi))*collect(1:T-1)
-
-        return (-0.5)*(obssum + scalar)
+        scalar = (log(FF) + log(2pi)) * (1:T-1)
+        return -0.5 * (obssum + scalar)
     end
 
     function loglikelihood(amf, x, y)
@@ -230,9 +216,10 @@ The following code adds some simple functions that make it straightforward to ge
             ymeans = x[2]
             xmean[tt] = ymeans[1]
             ymean[tt] = ymeans[2]
-            tt == T && break
+            if tt == T
+                break
+            end
         end
-
         return xmean, ymean
     end
 
@@ -246,13 +233,14 @@ Then we compute averages of :math:`\frac{1}{I} \sum_i x_t^i` and :math:`\frac{1}
 Here goes
 
 .. code-block:: julia
+    :class: test
 
-    using Plots, Random
-    gr(fmt=:png)
-    Random.seed!(42)
+    Random.seed!(42);
 
-    A, B, D, F = 0.8, 1.0, 0.5, 0.2
-    amf = AMF_LSS_VAR(A, B, D, F)
+.. code-block:: julia
+
+    F = 0.2
+    amf = AMF_LSS_VAR(A = 0.8, B = 1.0, D = 0.5, F = F)
 
     T = 150
     I = 5000
@@ -266,26 +254,26 @@ Here goes
     Xmean_pop, Ymean_pop = population_means(amf, T)
 
     # Plot sample means vs population means
-    plt_1 = plot(Matrix(Xmean_t'), color=:blue, label="1/I sum_i x_t^i")
-    plot!(plt_1, Xmean_pop, color=:black, label="E x_t")
-    plot!(plt_1, title="x_t", xlim=(0,T), legend=:bottomleft)
+    plt_1 = plot(Xmean_t', color = :blue, label = "1/I sum_i x_t^i")
+    plot!(plt_1, Xmean_pop, color = :black, label = "E x_t")
+    plot!(plt_1, title = "x_t", xlim = (0, T), legend = :bottomleft)
 
-    plt_2 = plot(Matrix(Ymean_t'), color=:blue, label="1/I sum_i x_t^i")
-    plot!(plt_2, Ymean_pop, color=:black, label="E y_t")
-    plot!(plt_2, title="y_t", xlim=(0,T), legend=:bottomleft)
+    plt_2 = plot(Ymean_t', color = :blue, label = "1/I sum_i x_t^i")
+    plot!(plt_2, Ymean_pop, color = :black, label = "E y_t")
+    plot!(plt_2, title = "y_t", xlim = (0, T), legend = :bottomleft)
 
-    plot(plt_1, plt_2, layout=(2,1), size=(800,500))
+    plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc.
-    @test Ymean_t'[100] ≈ -0.3351148038056963
-  end
+    @testset begin
+        @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc.
+        @test Ymean_t'[100] ≈ -0.3351148038056963
+    end
 
 Simulating log-likelihoods
----------------------------
+--------------------------
 
 Our next aim is to write a program to simulate :math:`\{\log L_t \mid \theta_o\}_{t=1}^T`
 
@@ -316,8 +304,7 @@ Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i 
         LLit = zeros(I, T-1)
 
         for i in 1:I
-            LLit[i, :] =
-                loglikelihood_path(amf, Xit[i, :], Yit[i, :])
+            LLit[i, :] = loglikelihood_path(amf, Xit[i, :], Yit[i, :])
         end
 
         return LLit
@@ -326,21 +313,20 @@ Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i 
     # Get likelihood from each path x^{i}, Y^{i}
     LLit = simulate_likelihood(amf, Xit, Yit)
 
-    LLT = 1/T * LLit[:, end]
+    LLT = 1 / T * LLit[:, end]
     LLmean_t = mean(LLT)
 
-    plot(seriestype=:histogram, LLT, label="")
-    plot!(title="Distribution of (I/T)log(L_T)|theta_0")
-    plot!(seriestype=:vline, [LLmean_t], linestyle=:dash, color=:black, lw=2, alpha=0.6, label="")
-
+    plot(seriestype = :histogram, LLT, label = "")
+    plot!(title = "Distribution of (I/T)log(L_T)|theta_0")
+    vline!([LLmean_t], linestyle = :dash, color = :black, lw = 2, alpha = 0.6, label = "")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test LLT[100] ≈ 0.237835678897198
-    @test LLmean_t ≈ 0.18834771174533427
-  end
+    @testset begin
+        @test LLT[100] ≈ 0.237835678897198
+        @test LLmean_t ≈ 0.18834771174533427
+    end
 
 Notice that the log likelihood is almost always nonnegative, implying that :math:`L_t` is typically bigger than 1
 
@@ -354,7 +340,7 @@ Let's see this in a simulation
 
 .. code-block:: julia
 
-    normdist = Normal(0,F)
+    normdist = Normal(0, F)
     mult = 1.175
     println("The pdf at +/- $mult sigma takes the value: $(pdf(normdist,mult*F))")
     println("Probability of dL being larger than 1 is approx: $(cdf(normdist,mult*F)-cdf(normdist,-mult*F))")
@@ -366,12 +352,12 @@ Let's see this in a simulation
     print("Fraction of dlogL being nonnegative in the sample is: $(frac_nonegative)")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test pdf(normdist,mult*F) ≈ 1.0001868966924388
-    @test pdf(normdist, F) ≈ 1.2098536225957168
-  end
+    @testset begin
+        @test pdf(normdist, mult * F) ≈ 1.0001868966924388
+        @test pdf(normdist, F) ≈ 1.2098536225957168
+    end
 
 Let's also plot the conditional pdf of :math:`\Delta y_{t+1}`
 
@@ -379,11 +365,11 @@ Let's also plot the conditional pdf of :math:`\Delta y_{t+1}`
 
     xgrid = range(-1,  1, length = 100)
     println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
-    plot(xgrid, pdf.(normdist, xgrid), label="")
-    plot!(title="Conditional pdf f(Delta y_(t+1) | x_t)")
+    plot(xgrid, pdf.(normdist, xgrid), label = "")
+    plot!(title = "Conditional pdf f(Delta y_(t+1) | x_t)")
 
 An alternative parameter vector
------------------------------------
+-------------------------------
 
 Now consider alternative parameter vector :math:`\theta_1 = [A, B, D, F] = [0.9, 1.0, 0.55, 0.25]`
 
@@ -427,8 +413,7 @@ Here's the code
 .. code-block:: julia
 
     # Create the second (wrong) alternative model
-    A2, B2, D2, F2 = [0.9, 1.0, 0.55, 0.25]   #  parameters for θ_1 closer to θ_0
-    amf2 = AMF_LSS_VAR(A2, B2, D2, F2)
+    amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for θ_1 closer to θ_0
 
     # Get likelihood from each path x^{i}, y^{i}
     LLit2 = simulate_likelihood(amf2, Xit, Yit)
@@ -436,27 +421,26 @@ Here's the code
     LLT2 = 1/(T-1) * LLit2[:, end]
     LLmean_t2 = mean(LLT2)
 
-    plot(seriestype=:histogram, LLT2, label="")
-    plot!(seriestype=:vline, [LLmean_t2], color=:black,
-          lw=2, linestyle=:dash, alpha=0.6, label="")
-    plot!(title="Distribution of (1/T)log(L_T) | theta_1)")
+    plot(seriestype = :histogram, LLT2, label = "")
+    vline!([LLmean_t2], color = :black, lw = 2, linestyle = :dash, alpha = 0.6, label = "")
+    plot!(title = "Distribution of (1/T)log(L_T) | theta_1)")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test LLT2[1] ≈ 0.08791248248646343
-    @test LLmean_t2 ≈ 0.09210776227743879
-  end
+    @testset begin
+        @test LLT2[1] ≈ 0.08791248248646343
+        @test LLmean_t2 ≈ 0.09210776227743879
+    end
 
 Let's see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)
 
 .. code-block:: julia
 
-    plot(seriestype=:histogram, LLT, bin=50, alpha=0.5, label="True", normed=true)
-    plot!(seriestype=:histogram, LLT2, bin=50, alpha=0.5, label="Alternative", normed=true)
-    plot!(seriestype=:vline, [mean(LLT)], color=:black, lw=2, linestyle=:dash, label="")
-    plot!(seriestype=:vline, [mean(LLT2)], color=:black, lw=2, linestyle=:dash, label="")
+    plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True", normed = true)
+    plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative", normed = true)
+    vline!([mean(LLT)], color = :black, lw = 2, linestyle = :dash, label = "")
+    vline!([mean(LLT2)], color = :black, lw = 2, linestyle = :dash, label = "")
 
 Now we'll plot the histogram of the difference in log likelihood ratio
 
@@ -464,15 +448,15 @@ Now we'll plot the histogram of the difference in log likelihood ratio
 
     LLT_diff = LLT - LLT2
 
-    plot(seriestype=:histogram, LLT_diff, bin=50, label="")
-    plot!(title="(1/T)[log(L_T^i | theta_0) - log(L_T^i |theta_1)]")
+    plot(seriestype = :histogram, LLT_diff, bin = 50, label = "")
+    plot!(title = "(1/T)[log(L_T^i | theta_0) - log(L_T^i |theta_1)]")
 
 Interpretation
--------------------
+--------------
 
 These histograms of  log likelihood ratios illustrate  important features of **likelihood ratio tests** as tools for discriminating between statistical models
 
-*  The log likeklihood is higher on average under the true model -- obviously a very useful property
+*  The loglikeklihood is higher on average under the true model -- obviously a very useful property
 
 *  Nevertheless, for a positive fraction of realizations, the log likelihood is higher for the incorrect than for the true model
 
@@ -483,7 +467,7 @@ These histograms of  log likelihood ratios illustrate  important features of **l
 (In a subsequent lecture, we'll use some of the code prepared in this lecture to illustrate mistake probabilities)
 
 Benefits from Reduced Aggregate Fluctuations
-===================================================
+============================================
 
 Now let's turn to a new example of multiplicative functionals
 
@@ -533,7 +517,7 @@ and
 Here :math:`\gamma \geq 1` is a risk-aversion coefficient and :math:`\delta > 0` is a rate of time preference
 
 Consumption as a multiplicative process
-----------------------------------------
+---------------------------------------
 
 We begin by showing that consumption is a **multiplicative functional** with representation
 
@@ -560,7 +544,7 @@ and
     \tilde e(x) = \exp[g(x)] = \exp \bigl[ D' (I - A)^{-1} x \bigr]
 
 Simulating a likelihood ratio process again
---------------------------------------------
+-------------------------------------------
 
 Next, we want a program to simulate the likelihood ratio process :math:`\{ \tilde{M}_t \}_{t=0}^\infty`
 
@@ -578,31 +562,30 @@ Here is code that accomplishes these tasks
 
 .. code-block:: julia
 
-    function simulate_martingale_components(amf, T = 1000, I = 5000)
+    function simulate_martingale_components(amf, T = 1_000, I = 5_000)
         # Get the multiplicative decomposition
-        ν, H, g = multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν)
+        @unpack A, B, D, F, ν, lss = amf
+        ν, H, g = multiplicative_decomp(A, B, D, F, ν)
 
         # Allocate space
         add_mart_comp = zeros(I, T)
 
         # Simulate and pull out additive martingale component
         for i in 1:I
-            foo, bar = simulate(amf.lss, T)
+            foo, bar = simulate(lss, T)
             # Martingale component is third component
             add_mart_comp[i, :] = bar[3, :]
         end
 
-        mul_mart_comp =
-            exp.(add_mart_comp' .- (collect(0:T-1) * H^2) / 2)'
+        mul_mart_comp = exp.(add_mart_comp' .- (0:T-1) * H^2 / 2)'
 
         return add_mart_comp, mul_mart_comp
     end
 
     # Build model
-    amf_2 = AMF_LSS_VAR(0.8, 0.001, 1.0, 0.01,.005)
+    amf_2 = AMF_LSS_VAR(A = 0.8, B = 0.001, D = 1.0, F = 0.01, ν = 0.005)
 
-    amc, mmc =
-        simulate_martingale_components(amf_2, 1000, 5000)
+    amc, mmc = simulate_martingale_components(amf_2, 1_000, 5_000)
 
     amcT = amc[:, end]
     mmcT = mmc[:, end]
@@ -614,16 +597,16 @@ Here is code that accomplishes these tasks
     println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test amcT[20] ≈ -0.5863300446739321
-    @test amc[14, 38] ≈ -0.07979871433963322
-    @test mmcT[250] ≈ 0.7443371221714455
-  end
+    @testset begin
+        @test amcT[20] ≈ -0.5863300446739321
+        @test amc[14, 38] ≈ -0.07979871433963322
+        @test mmcT[250] ≈ 0.7443371221714455
+    end
 
 Comments
-^^^^^^^^^^^^^^
+^^^^^^^^
 
 -  The preceding min, mean, and max of the cross-section of the date
    :math:`T` realizations of the multiplicative martingale component of
@@ -644,18 +627,18 @@ Here's a histogram of the additive martingale component
 
 .. code-block:: julia
 
-    plot(seriestype=:histogram, amcT, bin=25, normed=true, label="")
-    plot!(title="Histogram of Additive Martingale Component")
+    plot(seriestype = :histogram, amcT, bin = 25, normed = true, label = "")
+    plot!(title = "Histogram of Additive Martingale Component")
 
 Here's a histogram of the multiplicative martingale component
 
 .. code-block:: julia
 
-    plot(seriestype=:histogram, mmcT, bin=25, normed=true, label="")
-    plot!(title="Histogram of Multiplicative Martingale Component")
+    plot(seriestype = :histogram, mmcT, bin = 25, normed = true, label = "")
+    plot!(title = "Histogram of Multiplicative Martingale Component")
 
 Representing the likelihood ratio process
--------------------------------------------
+-----------------------------------------
 
 The likelihood ratio process :math:`\{\widetilde M_t\}_{t=0}^\infty` can be represented as
 
@@ -705,9 +688,9 @@ Here is some code that tackles these tasks
     function logMtilde_t_density(amf, t; xmin = -15.0, xmax = 15.0, npts = 5000)
 
         # Pull out the multiplicative decomposition
-        νtilde, H, g =
-            multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν)
-        H2 = H*H
+        @unpack A, B, D, F, ν = amf
+        νtilde, H, g = multiplicative_decomp(A, B, D, F, ν)
+        H2 = H * H
 
         # The distribution
         lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
@@ -717,20 +700,17 @@ Here is some code that tackles these tasks
         return x, p
     end
 
-    times_to_plot =
-        [10, 100, 500, 1000, 2500, 5000]
-    dens_to_plot =
-        [Mtilde_t_density(amf_2, t, xmin=1e-8, xmax=6.0) for t in times_to_plot]
-    ldens_to_plot =
-        [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
+    times_to_plot = [10, 100, 500, 1000, 2500, 5000]
+    dens_to_plot = [Mtilde_t_density(amf_2, t, xmin=1e-8, xmax=6.0) for t in times_to_plot]
+    ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
 
-    # plot_title="Densities of M_t^tilda" is required, however, plot_title is not yet supported in Plots
-    plots = plot(layout = (3,2), size=(600,800))
+    # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet supported in Plots
+    plots = plot(layout = (3,2), size = (600,800))
 
     for (it, dens_t) in enumerate(dens_to_plot)
         x, pdf = dens_t
-        plot!(plots[it], title="Density for time (time_to_plot[it])")
-        plot!(plots[it], pdf, fill_between=([0], pdf), label="")
+        plot!(plots[it], title = "Density for time (time_to_plot[it])")
+        plot!(plots[it], pdf, fill_between = ([0], pdf), label = "")
     end
     plot(plots)
 
@@ -741,7 +721,7 @@ These probability density functions illustrate a **peculiar property** of log li
 * They almost surely converge to zero
 
 Welfare benefits of reduced random aggregate fluctuations
----------------------------------------------------------------
+---------------------------------------------------------
 
 Suppose in the tradition of a strand of macroeconomics (for example Tallarini :cite:`Tall2000`, :cite:`Lucas_2003`) we want to estimate the welfare benefits from removing random fluctuations around trend growth
 
@@ -765,17 +745,17 @@ Here's our code
 .. code-block:: julia
 
     function Uu(amf, δ, γ)
-        A, B, D, F, ν = amf.A, amf.B, amf.D, amf.F, amf.ν
+        @unpack A, B, D, F, ν = amf
         ν_tilde, H, g = multiplicative_decomp(A, B, D, F, ν)
 
         resolv = 1 / (1 - exp(-δ) * A)
         vect = F + D * resolv * B
 
         U_risky = exp(-δ) * resolv * D
-        u_risky = (exp(-δ) / (1 - exp(-δ)) ) * (ν + 0.5 * (1 - γ) * (vect^2))
+        u_risky = exp(-δ) / (1 - exp(-δ)) * (ν + 0.5 * (1 - γ) * (vect^2))
 
         U_det = 0
-        u_det = (exp(-δ)/(1-exp(-δ)) )*ν_tilde
+        u_det = exp(-δ) / (1 - exp(-δ))  * ν_tilde
 
         return U_risky, u_risky, U_det, u_det
     end
@@ -829,8 +809,8 @@ Let's compute this
     perc_reduct
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @test perc_reduct ≈ 1.0809878812017448
+    @test perc_reduct ≈ 1.0809878812017448
 
 We find that the consumer would be willing to take a percentage reduction of initial consumption equal to around 1.081
