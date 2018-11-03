@@ -293,16 +293,17 @@ Setup
 .. code-block:: julia
     :class: test
 
-    using Test
+    using Test, Random
 
 .. code-block:: julia
 
-    using Parameters, Plots, QuantEcon, Random
+    using Parameters, Plots, QuantEcon
     gr(fmt = :png)
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42); # For reproducible results.
+    Random.seed!(42);
 
 .. code-block:: julia
 
