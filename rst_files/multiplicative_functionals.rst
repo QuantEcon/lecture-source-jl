@@ -101,11 +101,11 @@ Setup
 .. code-block:: julia
     :class: test
 
-    using Test
+    using Test, Random
 
 .. code-block:: julia
 
-    using Distributions, Parameters, Plots, Random, QuantEcon
+    using Distributions, Parameters, Plots, QuantEcon
     import Distributions: loglikelihood
     gr(fmt = :png)
 
@@ -292,7 +292,7 @@ Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i 
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42);  # For reproducibility
+    Random.seed!(42);
 
 .. code-block:: julia
 
@@ -408,7 +408,7 @@ Here's the code
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42);  # For reproducibility
+    Random.seed!(42);
 
 .. code-block:: julia
 
