@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 ******************************************
-Generic Programming and Design
+Generic Programming
 ******************************************
 
 .. contents:: :depth: 2
@@ -43,9 +43,9 @@ From ``Mathematics to Generic Programming`` (Stefanov and Rose)
 
     Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency.
 
-In that sense, it is important to think of generic programming not as a set of rules to apply about decomposing taxonomies of structure, but rather as an interactive approach in attempting to uncover generality without any performance overhead
+In that sense, it is important to think of generic programming not as a set of rules to apply about decomposing taxonomies of abstractions, but rather as an interactive approach in attempting to uncover generality without any performance overhead
 
-As we will see, the core approach is to treat data-structures and algorithms as loosely coupled as possible, is contradiction to the "isa" approach of object-oriented programming
+As we will see, the core approach is to treat data-structures and algorithms as loosely coupled, and is in direct contrast to the "isa" approach of object-oriented programming
 
 
 Setup
@@ -56,9 +56,9 @@ Setup
 Exploring Type Trees
 ==================================================
 
-The connection between datastructures and the algorithms which operate on them is handled the through the type system
+The connection between data-structures and the algorithms which operate on them is handled the through the type system
 
-In this sense, a concrete type (i.e. ``Float64`` or ``Array{Float64, 2}``) is the sort of datastructure we have in mind, while the abstract types we have seen before (e.g. ``Number`` and ``AbstractArray``) provide the mapping a particular set of data structures to a particular algorithm 
+Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) is the data-structure we have in mind for working with algorithms, and the  abstract types we have seen before (e.g. ``Number`` and ``AbstractArray``) provide the mapping a particular set of data structures to a particular algorithm 
 
 At the root of all types is ``Any``
 
@@ -86,14 +86,6 @@ Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing 
     using Base: show_supertypes # import the function from the `Base` package
 
     show_supertypes(Int64)
-
-.. code-block:: julia
-
-    show_supertypes(typeof(ones(2,2))
-
-.. code-block:: julia
-
-    show_supertypes(typeof(Normal()))
 
 .. code-block:: julia
 
@@ -126,7 +118,7 @@ Unlearning Object Oriented (OO) Programming (Advanced)
 ------------------------------------------------------------
 (see `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types)
 
- If you have never used programming languages such as C++, Java, Python, etc., then the type hiearchies above may seem unfamilar and abstract--but there is no need to read this section
+ If you have never used programming languages such as C++, Java, Python, etc., then the type hierarchies above may seem unfamiliar and abstract--but there is no need to read this section
 
 Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar
 
@@ -138,7 +130,7 @@ In particular, previous OO knowledge often leads people to write Julia code such
 
 .. code-block:: julia
 
-    #BAD Julia approaches
+    # BAD! Replicating an OO design in Julia
     mutable struct MyModel
         a::Float64
         b::Float64
@@ -161,7 +153,7 @@ In particular, previous OO knowledge often leads people to write Julia code such
     myalgorithm!(m, x)
     @show m.algorithmcalculation;
 
-You may think to yourself that the code is pretty much the same as OO, except that
+You may think to yourself that the above code is similar to OO, except that
 * reverse the first argument, i.e. ``myalgorithm!(m, x)`` instead of the object-oriented ``m.myalgorithm!(x)``
 * cannot control encapsulation of the fields ``a, b``, but you can add getter/setters like ``set_a``
 * do not have concrete inheritance
@@ -172,21 +164,21 @@ It may be helpful to review the traditional pillars of OOP
 * *`Abstraction <https://en.wikipedia.org/wiki/Abstraction_(computer_science)#Abstraction_in_object_oriented_programming>`_:* In OO one develops a taxonomy of hierarchical "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
 * *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly controlled since the class manages its own state
 * *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming)>`_* Code reuse in OO is achieved through adding a new class to the tree and inheriting some of the behavior of the parent class.
-* *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>`_:*  The abstract `isa` relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
+* *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
 
 With Julia
 * You will realize you will do no "encapsulation" or "inheritance", and polymorphism will be fundamentally different
 * Abstraction is primarily achieved through keeping the data and algorithms that operate on them as orthogonal as possible--in contrast to OOP
-* The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism, but nothing to do with inheritance)
+* The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
 
 
 
 Iterative Design of Abstractions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As its essence, the design of generic software is that you will start with creating algorithms which are largely orthogonal to concrete types, and in the process you will discover commonality which leads to abstract types
+As its essence, the design of generic software is that you will start with creating algorithms which are largely orthogonal to concrete types, and in the process you will discover commonality which leads to abstract types with informally defined functions operating on them
 
-This design is in direct contrast to object-oriented design and analysis (`OOAD <https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design>`_), where you start by specifying a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
+This design is in direct contrast to object-oriented design and analysis (`OOAD <https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design>`_), where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
 
 In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the types came later
 .. However,  we apologize in the example we confuse things somewhat by jumping to the axioms first for expositoin
@@ -209,7 +201,7 @@ Lets examine the tree of types for a `Normal` distribution
     using Distributions
     d1 = Normal(1.0, 2.0) # an example type to explore
     @show d1
-    show_supertypes(d1)
+    show_supertypes(typeof(y))
 
 The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions, chiefly the ability to draw a random number
 
@@ -315,6 +307,8 @@ Of course, while we should implement more of the func
 
 That turns out to be enough for us to use the ``StatPlots`` package
 
+.. code-block:: julia
+    
     plot(d) # uses the generic code!
 
 A few things to point out
@@ -337,7 +331,7 @@ A few things to point out
 ..     @show typeof(d)
 ..     plot(d)
 .. 
-Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of different packages that have simply agreed on a set of appropriate functions and abstract types
+.. Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of different packages that have simply agreed on a set of appropriate functions and abstract types
 
 This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions
 
@@ -488,9 +482,9 @@ Note that the reason  ``Float64 <: Real``
 Functions, and Function-Like Types
 ------------------------------------
 
-Syntactically, we should consider a univariate "function" any ``f`` that can call an argument ``x`` as ``f(x)`` for a general ``x`` and ``f[x]`` where ``x <: Integer``
+Another common example of the separation between data structures and algorithms is the use of functions
 
-This is a powerful tool in generic computing, and we have used it throughout
+Syntactically, we should consider a univariate "function" any ``f`` that can call an argument ``x`` as ``f(x)`` for a general ``x``
 
 For example, we can use a standard function
 
@@ -517,6 +511,7 @@ Of course, polynomials are also functions in every important sense
 
     using Polynomials
     p = Poly([2, -5, 2], :x) # :x just gives a symbol for display
+    @show p
     @show p(1.0) # call like a function
 
     plotfunctions(p) # same generic function
@@ -835,8 +830,8 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
     f(x) = x > 0.0 ? x : zero(x)
     @code_warntype f(1.0)
 
-Functions
-------------
+.. Functions
+.. ------------
 
 .. s another common example of the separation between data structures and algorithms is the use of functions
 .. 
