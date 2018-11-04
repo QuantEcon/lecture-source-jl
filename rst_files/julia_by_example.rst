@@ -11,14 +11,16 @@ Introductory Examples
 Overview
 ==================
 
-We're now ready to start learning the Julia language itself 
+
+We're now ready to start learning the Julia language itself
+
 
 Level
 -------
 
 Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, Fortran, C or similar
 
-In particular, we assume you have some familiarity with fundamental programming concepts such as:
+In particular, we assume you have some familiarity with fundamental programming concepts such as
 
 * variables
 
@@ -49,7 +51,7 @@ Set Up
 
 We assume that you've worked your way through [our getting started lecture](getting_started.ipynb) already
 
-In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon notes is to go ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described [here](getting_started.ipynb)
+In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon notes is to go ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
 
 Other References
@@ -86,7 +88,7 @@ There are three ways to install packages and versions (where the first two metho
 
 #. directly ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
 #. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
-#. use the ``InstantiateFromURL`` package (like below):
+#. use the ``InstantiateFromURL`` package
 
 .. code-block:: julia
 
@@ -97,7 +99,7 @@ If you have never run this code on a particular computer, it is likely to take a
 
 This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_
 
-It is discussed more in `Julia Packages<https://docs.julialang.org/en/v0.6.3/manual/packages/>`_ , but these files provide a listing of packages and versions used by the code
+We will discuss it more in :ref:`Julia Packages <packages>`, but these files provide a listing of packages and versions used by the code
 
 This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
@@ -114,14 +116,14 @@ After the installation and activation, ``using`` provides a way to say that a pa
 Using Functions from a Package
 --------------------------------
 
-Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution mean 0 and variance 1 if given no parameters:
+Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution mean 0 and variance 1 if given no parameters
 
 .. code-block:: julia
 
     randn()
 
 
-Other functions require importing all of the names from an external library:
+Other functions require importing all of the names from an external library
  
 .. code-block:: julia
 
@@ -133,7 +135,7 @@ Other functions require importing all of the names from an external library:
     plot(1:n, ϵ)
 
 
-Let's break this down and see how it works:
+Let's break this down and see how it works
 
 The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available
 
@@ -143,7 +145,7 @@ The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries
 
 The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings
 
-The function ``randn(n)`` returns a column vector with *n* random draws from a normal distribution mean 0 and variance 1
+The function ``randn(n)`` returns a column vector with ``n`` random draws from a normal distribution mean 0 and variance 1
 
 Arrays
 --------
@@ -151,9 +153,9 @@ Arrays
 
 As a language intended for mathematical and scientific computing, Julia has strong support for using symbols in the source code
 
-In the above case, the *ϵ* and many other symbols can be typed in most Julia editor by providing the LaTeX + ``<TAB>``, i.e. ``\epsilon<TAB>`` 
+In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX + ``<TAB>``, i.e. ``\epsilon<TAB>`` 
 
-The type of a symbole is one of the most fundamental Julia data types: an array
+The return type is one of the most fundamental Julia data types: an array
 
 
 .. code-block:: julia
@@ -170,7 +172,7 @@ In Julia, one-dimensional arrays are interpreted as column vectors for purposes 
 
 The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ`` 
 
-Notice from the above that:
+Notice from the above that
 
 * array indices start at 1 (like MATLAB and Fortran, but unlike Python and C)
 
@@ -186,14 +188,14 @@ For Loops
 ---------------
 
 Although there's no need in terms of what we wanted to achieve with our
-previous code, for the sake of learning syntax let's rewrite our program to use a
-``for`` loop for generating the data. But before that:
+program, for the sake of learning syntax let's rewrite our program to use a
+``for`` loop for generating the data
 
 .. note::
     
-    In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the `REPL <https://docs.julialang.org/en/v1/stdlib/REPL/index.html>`_ or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions. For More Information go `here <https://discourse.julialang.org/t/repl-and-for-loops-scope-behavior-change/13514>`_
+    In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
 
-Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value:
+Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
 
 .. code-block:: julia
 
@@ -213,12 +215,13 @@ Like all code blocks in Julia, the end of the ``for`` loop code block (which is 
 
 The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
 
-The index variable is looped over for all integers from ``1:n``. 
-indices
+The index variable is looped over for all integers from ``1:n``--but this does not actually create a vector of those indices
 
-Note that this does not actually create a vector of those. Instead, it creates an **iterator** that is looped over the **range** of integers from ``1`` to ``n``
+Instead, it creates an **iterator** that is looped over --- in this case the **range** of integers from ``1`` to ``n``
 
-While in this example we specified the range of integers, there is a more memory efficient way:
+While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear.
+
+To fix this, use ``eachindex``
 
 .. code-block:: julia
 
