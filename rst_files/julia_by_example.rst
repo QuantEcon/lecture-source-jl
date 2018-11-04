@@ -11,9 +11,7 @@ Introductory Examples
 Overview
 ==================
 
-
-We're now ready to start learning the Julia language itself
-
+We're now ready to start learning the Julia language itself 
 
 Level
 -------
@@ -99,7 +97,7 @@ If you have never run this code on a particular computer, it is likely to take a
 
 This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_
 
-It is discussed more in `Julia Packages<(https://docs.julialang.org/en/v0.6.3/manual/packages/>`_ , but these files provide a listing of packages and versions used by the code
+It is discussed more in `Julia Packages<https://docs.julialang.org/en/v0.6.3/manual/packages/>`_ , but these files provide a listing of packages and versions used by the code
 
 This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
@@ -470,7 +468,7 @@ where
 .. math::
 
     f(v) := p + \beta v\quad
- 
+
 
 Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem
 
@@ -700,7 +698,7 @@ For instance, we can use the ``Anderson Acceleration`` (it is a method to calcul
     p = 1.0
     β = 0.9
     iv = [0.8]
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
@@ -709,7 +707,7 @@ Since Anderson iteration is doing more calculations in an iteration,  whether it
 
 But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
 
-The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
+The only other change in this function is the move from directly defining ``f(v)`` and using an **anonymous** function
 
 Similar to anonymous functions in Matlab, and lambda functions in Python, Julia enables the creation of small functions without any names
 
@@ -718,11 +716,11 @@ The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with
 Composing Packages
 ----------------------------
 
-A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source
+A key benefit of using Julia is that you can compose various packages, types, and techniques without making changes to your underlying source
 
-As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type,
+As an example, consider if we want to solve the model with a higher-precision as floating points cannot be distinguished beyond the machine epsilon for that type
 
-In Julia, this number can be calculated as
+In Julia, this number can be calculated as:
 
 .. code-block:: julia
 
@@ -731,7 +729,7 @@ In Julia, this number can be calculated as
 
 For many cases, this is sufficient precision--but consider that in iterative algorithms applied millions of times, those small differences can add up
 
-The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value
+The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value:
 
 .. code-block:: julia
 
@@ -741,7 +739,7 @@ The only change we will need to our model in order to use a different floating p
     iv = [BigFloat(0.8)] # higher precision
 
     # otherwise identical
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
@@ -754,7 +752,7 @@ Multivariate Fixed Point Maps
 
 The above example can be extended to multivariate maps without any modifications to the fixed point iteration code
 
-Using our own, homegrown iteration and simple passing in a bivariate map,
+Using our own, homegrown iteration and simple passing in a bivariate map:
 
 .. code-block:: julia
 
@@ -777,7 +775,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     iv =[0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
@@ -795,9 +793,9 @@ Finally, to demonstrate the importance of composing different libraries, use a `
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
 
-All macros in Julia are prefixed by ``@`` in the name, and manipulate the code prior to compilation
+All macros in Julia are prefixed by ``@`` in the name and manipulate the code prior to compilation
 
-We will see a variety of macros, and discuss the "metaprogramming" behind them in a later lecture
+We will see a variety of macros and discuss the "metaprogramming" behind them in a later lecture
 
 
 .. Composing Packages : Later, add in a auto-differentiation example when working with NLsolve forwarddiff or capstan
@@ -824,7 +822,7 @@ Write your own version of this function, called ``factorial2``, using a ``for`` 
 Exercise 2
 --------------
 
-The `binomial random variable <https://en.wikipedia.org/wiki/Binomial_distribution>`_ :math:`Y \sim Bin(n, p)` represents
+The `binomial random variable <https://en.wikipedia.org/wiki/Binomial_distribution>`_ :math:`Y \sim Bin(n, p)` represents:
 
 * number of successes in :math:`n` binary trials
 
@@ -851,7 +849,7 @@ Your hints are as follows:
 
 * If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
-* For a circle, area = π * radius^2
+* For a circle, area = π * :math:`radius^2`
 
 
 .. _jbe_ex4:
@@ -883,7 +881,7 @@ Simulate and plot the correlated time series
     \quad \text{and} \quad t = 0,\ldots,n
 
 
-The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+The sequence of shocks :math:`\{\epsilon_t\}_{t = 0}^{n}` is assumed to be iid and standard normal
 
 Set :math:`n = 200` and :math:`\alpha = 0.9`
 
@@ -893,7 +891,7 @@ Set :math:`n = 200` and :math:`\alpha = 0.9`
 Exercise 6
 ----------------------------------
 
-Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8` and :math:`\alpha = 0.98`
+Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8`, and :math:`\alpha = 0.98`
 
 (The figure will illustrate how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
 
@@ -913,12 +911,12 @@ Take a random walk, starting from :math:`x_0 = 1`
     \quad \text{and} \quad t = 0,\ldots,t_{\max}
 
 * Furthermore, assume that the :math:`x_{t_{\max}} = 0`  (i.e. at :math:`t_{\max}`, the value drops to zero, regardless of its current state)
-* The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+* The sequence of shocks :math:`\{\epsilon_t\}_{t=0}^{t_{\max}}` is assumed to be iid and standard normal
 * For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`
 
-Start :math:`\sigma = 0.2, \alpha = 1.0`
+Start :math:`\sigma = 0.2` and :math:`\alpha = 1.0`
 
-1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 200` and plot a histogram
+1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks to a :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
 
 Exercise 8(a)
@@ -926,26 +924,26 @@ Exercise 8(a)
 
 This exercise is more challenging
 
-The root of a univariate function is :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
+The root of a univariate function :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
 
 One solution method to find local roots of smooth functions is called Newton's method
 
-Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
+Starting with a guess, :math:`x_0`, a function :math:`f(\cdot)`, and the first-derivative :math:`f'(\cdot)` the algorithm is to repeat:
 
 .. math::
 
-    x^{n+1} = x^n - \frac{f(x^n}{f'(x^n)}
+    x^{n+1} = x^n - \frac{f(x^n)}{f'(x^n)}
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
-#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
+#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance,`` and ``maxiter``
 
 #.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
 
 Exercise 8(b)
 ---------------
 
-For those impatient to use more advanced features of Julia, implement a version where Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
+For those impatient to use more advanced features of Julia, implement a version where in Exercise 8(a), ``f_prime`` is calculated with auto-differentiation:
 
 .. code-block:: julia
 
@@ -1071,7 +1069,7 @@ Exercise 4
 
 
 We can simplify this somewhat using the **ternary operator**. Here's
-some examples
+some examples:
 
 .. code-block:: julia
 
@@ -1108,7 +1106,9 @@ Exercise 5
 Here's one solution
 
 .. code-block:: julia
-
+    using Plots
+    gr(fmt=:png)
+    
     α = 0.9
     n = 200
     x = zeros(n + 1)
