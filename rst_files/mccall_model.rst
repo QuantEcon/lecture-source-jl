@@ -289,7 +289,7 @@ Setup
 
 .. code-block:: julia
 
-    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots
+    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots, Parameters
     gr(fmt = :png);
 
 Here's the distribution of wage offers we'll work with
@@ -298,6 +298,7 @@ Here's the distribution of wage offers we'll work with
 
     n = 50
     dist = BetaBinomial(n, 200, 100) # probability distribution
+    @show support(dist)
     w = range(10.0, 60.0, length = n+1) # linearly space wages
     plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
@@ -306,25 +307,26 @@ We can explore taking expectations over this distribution
 .. code-block:: julia
 
     E = expectation(dist) # expectation operator
-
+    
     # exploring the properties of the operator
     wage(i) = w[i+1] # +1 to map from support of 0
     E_w = E(wage)
-    E_w_2 = E(i -> (w[i+1])^2 - E_w^2) # variance
+    E_w_2 = E(i -> wage(i)^2) - E_w^2 # variance
     @show E_w, E_w_2
 
     # use operator with left-multiply
-    @show E * w; # identity
+    @show E * w # the `w` are values assigned for the discrete states
+    @show dot(pdf.(dist, support(dist)), w); # identical calculation
 
 
-To impllement our algorithm, let's have a look at the sequence of approximate value functions that
+To implement our algorithm, let's have a look at the sequence of approximate value functions that
 this fixed point algorithm generates
 
 Default parameter values are embedded in the function
 
 Our initial guess :math:`v` is the value of accepting at every given wage
 
-.. code:: julia
+.. code-block:: julia
 
     # parameters and constant objects
  
@@ -333,7 +335,8 @@ Our initial guess :math:`v` is the value of accepting at every given wage
     num_plots = 6
 
     # Operator
-    T(v) = max.(w/(1 - β), c + β * E*v) # (5)
+    T(v) = max.(w/(1 - β), c + β * E*v) # (5) broadcasts over the w, fixes the v
+    # alternatively, T(v) = [max(wval/(1 - β), c + β * E*v) for wval in w]
 
     # fill in  matrix of vs
     vs = zeros(n + 1, 6) # data to fill
@@ -351,8 +354,13 @@ between successive iterates is below `tol`
 
 .. code-block:: julia 
 
-    function compute_reservation_wage_direct(c, β; v_iv = collect(w ./(1-β)), max_iter = 500, tol = 1e-6)
-        v = copy(v_iv) # start at initial value
+    function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500, tol = 1e-6)
+        @unpack c, β, w = params
+        
+        # create a closure for the T operator
+        T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
+        
+        v = copy(v_iv) # start at initial value.  copy to prevent v_iv modification
         v_next = similar(v)
         i = 0
         error = Inf
@@ -360,11 +368,21 @@ between successive iterates is below `tol`
             v_next .= T(v) # (4)
             error = norm(v_next - v)
             i += 1
-            v .= v_next  # copy contents into v
+            v .= v_next  # copy contents into v.  Also could have used v[:] = v_next
         end
         # now compute the reservation wage
-        return (1 - β) * (c + β * E*v) # (3)
+        return (1 - β) * (c + β * E*v) # (2)
     end
+
+In the above, we use ``v = copy(v_iv)`` rather than just ``v_iv = v``
+
+To understand why, first recall that ``v_iv`` is a function argument-- either defaulting to the given value, or passed into the function
+  * If we had gone ``v = v_iv`` instead, then it would have simply created a new name ``v`` which binds to whatever is located at ``v_iv``
+  * Since we later use ``v .= v_next`` later in the algorithm, the values in it would be modified
+  * Hence, we would be modifying the ``v_iv`` vector we were passed in, which may not be what the caller of the function wanted
+  * The big issue this creates are "side-effects" where you can call a function and strange things can happen outside of the function that you didn't expect
+  * If you intended for the modification to potentially occur, then the Julia style guide says that we should call the function ``compute_reservation_wage_direct!`` to make the possible side-effects clear
+
 
 As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone 
 
@@ -372,25 +390,28 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
 
 .. code-block:: julia
 
-  function compute_reservation_wage(c, β; v_iv = collect(w ./(1-β)), iterations = 500, ftol = 1e-6, m = 6)
-      v_star = fixedpoint(T, v_iv, inplace = false, iterations = iterations, ftol = ftol, m = 6).zero # (5)
-      return (1 - β) * (c + β * E*v_star) # (3)
-  end
+    function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500, ftol = 1e-6, m = 6)
+        @unpack c, β, w = params
+        T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
+        
+        v_star = fixedpoint(T, v_iv, inplace = false, iterations = iterations, ftol = ftol, m = 6).zero # (5)
+        return (1 - β) * (c + β * E*v_star) # (3)
+    end
 
 Let's compute the reservation wage at the default parameters
 
 .. code-block:: julia
 
-    c = 25.0
-    β = 0.99
-    compute_reservation_wage(c, β)
+    mcm = @with_kw (c=25.0, β=0.99, w=w) # named tuples
+
+    compute_reservation_wage(mcm()) # call with default parameters
 
 .. code-block:: julia
     :class: test
 
     @testset "Reservation Wage Tests" begin
-        @test compute_reservation_wage(c, β) ≈ 47.316499766546215
-        @test compute_reservation_wage_direct(c, β) ≈ 47.31649975736077
+        @test compute_reservation_wage(mcm()) ≈ 47.316499766546215
+        @test compute_reservation_wage_direct(mcm()) ≈ 47.31649975736077
     end
 
 Comparative Statics
@@ -412,7 +433,7 @@ In particular, let's look at what happens when we change :math:`\beta` and
 
     for (i, c) in enumerate(c_vals)
         for (j, β) in enumerate(β_vals)
-            R[i, j] = compute_reservation_wage(c, β)
+            R[i, j] = compute_reservation_wage(mcm(c=c, β=β)) # change from defaults
         end
     end
 

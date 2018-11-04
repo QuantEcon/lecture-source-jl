@@ -200,9 +200,9 @@ If we consider mathematical "distributions" that we will use in our algorithms, 
 
 In that sense, some code may be useful in distributions where a ``pdf`` is not necessarily defined or meaningful
 
-The process of using concrete distributions in these sorts of applications led to the creation of the ``Distributions.jl`` package
+The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl` package
 
-Lets examine the tree of types for a ``Normal`` distribution
+Lets examine the tree of types for a `Normal` distribution
 
 .. code-block:: julia
 
@@ -1030,7 +1030,7 @@ Functions
 ..     m.ϕ = Exponential(0.5)
 ..
 ..
-.. .. _spec_field_types:
+.. _spec_field_types:
 ..
 ..
 .. Specifying Field Types
