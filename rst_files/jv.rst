@@ -178,64 +178,53 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  using Distributions, QuantEcon
+  using Distributions, QuantEcon, Interpolations, Expectations
 
-  # NOTE: only brute-force approach is available in bellman operator.
-  # Waiting on a simple constrained optimizer to be written in pure Julia
+    # pending rewrite
+    struct JvWorker
+        A
+        α
+        β
+        x_grid
+        G
+        π_func
+        F
+        E
+        ϵ
+        
+        # inner constructor 
+        function JvWorker(;A = 1.4,
+                    α = 0.6,
+                    β = 0.96,
+                    grid_size = 50,
+                    ϵ = 1e-4)
 
-  struct JvWorker{TR <: Real,
-                  TF <: AbstractFloat,
-                  TUD <: UnivariateDistribution,
-                  TAV <: AbstractVector,
-                  TV <: Vector}
-      A::TR
-      α::TR
-      β::TF
-      x_grid::TAV
-      G::Function
-      π_func::Function
-      F::TUD
-      quad_nodes::TV
-      quad_weights::TV
-      ϵ::TF
+        G(x, ϕ) = A .* (x .* ϕ).^α
+        π_func = sqrt
+        F = Beta(2, 2)
 
-  end
+        # expectation operator
+        E = expectation(F)
 
-  function JvWorker(;A = 1.4,
-                     α = 0.6,
-                     β = 0.96,
-                     grid_size = 50,
-                     ϵ = 1e-4)
+        # Set up grid over the state space for DP
+        # Max of grid is the max of a large quantile value for F and the
+        # fixed point y = G(y, 1).
+        grid_max = max(A^(1.0 / (1.0 - α)), quantile(F, 1 - ϵ))
 
-      G(x, ϕ) = A .* (x .* ϕ).^α
-      π_func = sqrt
-      F = Beta(2, 2)
+        # range for range(ϵ, grid_max, grid_size). Needed for
+        # CoordInterpGrid below
+        x_grid = range(ϵ, grid_max, length = grid_size)
 
-      # integration bounds
-      a, b = quantile(F, 0.005), quantile(F, 0.995)
-
-      # quadrature nodes/weights
-      nodes, weights = qnwlege(21, a, b)
-
-      # Set up grid over the state space for DP
-      # Max of grid is the max of a large quantile value for F and the
-      # fixed point y = G(y, 1).
-      grid_max = max(A^(1.0 / (1.0 - α)), quantile(F, 1 - ϵ))
-
-      # range for range(ϵ, grid_max, grid_size). Needed for
-      # CoordInterpGrid below
-      x_grid = range(ϵ, grid_max, length = grid_size)
-
-      JvWorker(A, α, β, x_grid, G, π_func, F, nodes, weights, ϵ)
-  end
+        new(A, α, β, x_grid, G, π_func, F, E, ϵ)
+        end
+    end
 
   function bellman_operator!(jv::JvWorker,
                              V::AbstractVector,
                              new_V::AbstractVector)
 
       # simplify notation
-      G, π_func, F, β, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.ϵ
-      nodes, weights = jv.quad_nodes, jv.quad_weights
+      G, π_func, F, β, E, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.E, jv.ϵ
 
       # prepare interpoland of value function
       Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -251,8 +240,8 @@ The following code solves the DP problem described above
 
           function w(z)
               s, ϕ = z
-              h(u) = [Vf(max(G(x, ϕ), uval)) * pdf(F, uval) for uval in u]
-              integral = do_quad(h, nodes, weights)
+              h(u) = Vf(max(G(x, ϕ), u))
+              integral = E(h)
               q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, ϕ))
 
               return - x * (1.0 - ϕ - s) - β * q
@@ -276,8 +265,7 @@ The following code solves the DP problem described above
                              out::Tuple{AbstractVector, AbstractVector})
 
       # simplify notation
-      G, π_func, F, β, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.ϵ
-      nodes, weights = jv.quad_nodes, jv.quad_weights
+      G, π_func, F, β, E, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.E, jv.ϵ
 
       # prepare interpoland of value function
       Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -296,8 +284,8 @@ The following code solves the DP problem described above
 
           function w(z)
               s, ϕ = z
-              h(u) = [Vf(max(G(x, ϕ), uval)) * pdf(F, uval) for uval in u]
-              integral = do_quad(h, nodes, weights)
+              h(u) = Vf(max(G(x, ϕ), u))
+              integral = E(h)
               q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, ϕ))
 
               return - x * (1.0 - ϕ - s) - β * q
@@ -407,19 +395,20 @@ The code is as follows
 
 .. code-block:: julia
 
-    using Plots, LaTeXStrings
+    using Plots, NLsolve
     gr(fmt=:png)
-    
+
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
     f(x) = bellman_operator(wp, x)
-    V = compute_fixed_point(f, v_init, max_iter = 300)
+    V = fixedpoint(f, v_init, inplace = false)
+    sol_V = V.zero
 
-    s_policy, ϕ_policy = bellman_operator(wp, V, ret_policies = true)
+    s_policy, ϕ_policy = bellman_operator(wp, sol_V, ret_policies = true)
 
     # === plot solution === #
-    p = plot(wp.x_grid, [ϕ_policy s_policy V],
+    p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
              title = ["ϕ policy" "s policy" "value function"],
              color = [:orange :blue :green],
              xaxis = ("x", (0.0, maximum(wp.x_grid))),
@@ -526,11 +515,10 @@ Here's code to produce the 45 degree diagram
     G, π_func, F = wp.G, wp.π_func, wp.F       # Simplify names
 
     v_init = collect(wp.x_grid) * 0.5
-    println("Computing value function")
     f2(x) = bellman_operator(wp, x)
-    V = compute_fixed_point(f2, v_init, max_iter=300)
-    println("Computing policy functions")
-    s_policy, ϕ_policy = bellman_operator(wp, V, ret_policies=true)
+    V2 = fixedpoint(f2, v_init, inplace = false)
+    sol_V2 = V2.zero
+    s_policy, ϕ_policy = bellman_operator(wp, sol_V2, ret_policies=true)
 
     # Turn the policy function arrays into CoordInterpGrid objects for interpolation
     s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc=Line())
@@ -570,7 +558,7 @@ Here's code to produce the 45 degree diagram
 
     plot(plot_grid, plot_grid, color=:black, linestyle=:dash, legend=:none)
     scatter!(xs, ys, alpha=0.25, color=:green, lims=(0, plot_grid_max), ticks=ticks)
-    plot!(xlabel=L"x_t", ylabel=L"x_{t+1}", guidefont=font(16))
+    plot!(xlabel="x_t", ylabel="x_{t+1}", guidefont=font(16))
 
 .. code-block:: julia
   :class: test
@@ -608,7 +596,7 @@ Exercise 2
     ϕ_grid = range(0, 1, length = 100)
 
     plot(ϕ_grid, [xbar(ϕ) * (1 - ϕ) for ϕ in ϕ_grid], color = :blue,
-        label = L"$w^*(\phi)$", legendfont = font(12), xlabel = L"$\phi$",
+        label = "w^phi", legendfont = font(12), xlabel = "phi",
         guidefont = font(16), grid = false, legend = :topleft)
 
 
