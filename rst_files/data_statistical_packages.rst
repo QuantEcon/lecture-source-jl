@@ -89,7 +89,7 @@ Working with Missing
 
 As we discussed in `fundamental types <missing>`_, the semantics of ``missing`` are that mathematical operations will not silently ignore it
 
-In order to allow ``missing`` in a column, you can create/load the dataframe from a source with missings, or
+In order to allow ``missing`` in a column, you can create/load the dataframe from a source with missings, or call ``allowmissing!`` on a column 
 
 .. code-block:: julia
 
@@ -97,7 +97,7 @@ In order to allow ``missing`` in a column, you can create/load the dataframe fro
     push!(df2, (t=3, col1 = missing))
     push!(df2, (t=4, col1 = 5.1))
 
-We can see the propagation of ``missing`` to caller functions, as well the workaround
+We can see the propagation of ``missing`` to caller functions, as well the way to efficiently calculate with non-missing data
 
 .. code-block:: julia
 
@@ -199,6 +199,9 @@ Statistics
 
 While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing 
 
+General Linear Linear Models 
+------------------------------
+
 Many of the packages live in the `JuliaStats <https://github.com/JuliaStats/>`_ organizations
 
 A few to point out
@@ -219,7 +222,7 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
     ols = lm(@formula(y ~ x), df) # R-style notation
 
 
-To display the results in a useful tables for LaTex and the display, use `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_
+To display the results in a useful tables for LaTex and the display, use `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output similar to the Stata package `esttab` and the R package `stargazer`.
 
 .. code-block:: julia
 
@@ -227,13 +230,33 @@ To display the results in a useful tables for LaTex and the display, use `Regres
     regtable(ols)
     # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
 
-For a Fixed-Effect Model, taking the example directly from the documentation
+Fixed Effects
+----------------
+
+While Julia may be overkill for estimating a simple linear regression, fixed-effect estimation with dummies for multiple variables are much more computationally intensive
+
+
+For a 2-way fixed-effect, taking the example directly from the documentation using `Cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
 
 .. code-block:: julia
 
     using FixedEffectModels
-    df = dataset("plm", "Cigar")
-    df[:StateCategorical] =  categorical(df[:State])
-    df[:YearCategorical] =  categorical(df[:Year])
-    fixedeffectresults = reg(df, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical, weights = Pop, vcov = cluster(StateCategorical)))
+    cigar = dataset("plm", "Cigar")
+    cigar[:StateCategorical] =  categorical(cigar[:State])
+    cigar[:YearCategorical] =  categorical(cigar[:Year])
+    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical, weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
+
+To explore the data use the interactive DataVoyager
+
+.. code-bloc:: julia
+
+    cigar |> Voyager()
+
+    cigar |> @vlplot(
+        :point,
+        x=:Price,
+        y=:Sales,
+        color=:Year,
+        size=:NDI
+    )
