@@ -2,6 +2,7 @@
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
+
 *****************************************
 The Julia Data and Statistical Ecosystem
 *****************************************
@@ -202,7 +203,7 @@ While Julia is not intended as a replacement for R, Stata, and similar specialty
 General Linear Linear Models 
 ------------------------------
 
-Many of the packages live in the `JuliaStats <https://github.com/JuliaStats/>`_ organizations
+Many of the packages live in the `JuliaStats organization <https://github.com/JuliaStats/>`_
 
 A few to point out
 
@@ -229,6 +230,20 @@ To display the results in a useful tables for LaTex and the display, use `Regres
     using RegressionTables
     regtable(ols)
     # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
+.. 
+.. 
+.. To print a full dataframe, and other functions, use the `LatexPrint <https://github.com/scheinerman/LatexPrint.jl#the-tabular-function>`_ package
+.. 
+.. .. code-block:: julia
+.. 
+..     using LatexPrint
+.. 
+..     id = [1, 2, 3, 4]
+..     y = ["old", "young", "young", "old"]
+..     y = CategoricalArray(y)
+..     df = DataFrame(id=id, y=y)
+..     tabular(df)
+..     
 
 Fixed Effects
 ----------------
@@ -236,7 +251,7 @@ Fixed Effects
 While Julia may be overkill for estimating a simple linear regression, fixed-effect estimation with dummies for multiple variables are much more computationally intensive
 
 
-For a 2-way fixed-effect, taking the example directly from the documentation using `Cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
+For a 2-way fixed-effect, taking the example directly from the documentation using `cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
 
 .. code-block:: julia
 
@@ -249,7 +264,7 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
 
 To explore the data use the interactive DataVoyager
 
-.. code-bloc:: julia
+.. code-block:: julia
 
     cigar |> Voyager()
 

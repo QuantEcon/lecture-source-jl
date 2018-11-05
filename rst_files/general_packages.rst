@@ -12,7 +12,7 @@ Overview
 ============
 
 
-.. I am not sure I agree... Many pacakges are more s
+.. I am not sure I agree... The size of the ecosystem depends on what kind of package you are thinking of
 .. While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
 Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs-of-concept
@@ -74,130 +74,170 @@ Setup
 .. Several multivariate distributions are also implemented
 
 
-.. .. _df:
-.. Interpolation
-.. =============================
-.. 
-.. In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of .. points)
-.. 
-.. We also need such representations to be fast and efficient
-.. 
-.. The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
-.. 
-.. One downside of Interpolations.jl is that the code to set up simple interpolation objects is relatively verbose
-.. 
-.. The upside is that the routines have excellent performance
-.. 
-.. The package is also well written and well maintained
-.. 
-.. Another alternative, if using univariate linear interpolation, is `LinInterp` from `QuantEcon.jl .. <https://github.com/QuantEcon/QuantEcon.jl>`_
-.. 
-.. As we show below, the syntax for this function is much simpler
-.. 
-.. 
-.. Univariate Interpolation
-.. ---------------------------
-.. 
-.. Let's start with the univariate case
-.. 
-.. We begin by creating some data points, using a sine function
-.. 
-.. .. code-block:: julia
-.. 
-..     using Interpolations
-..     using Plots
-..     gr(fmt=:png)
-.. 
-..     x = -7:7             # x points, coase grid
-..     y = sin.(x)          # corresponding y points
-.. 
-..     xf = -7:0.1:7        # fine grid
-..     plot(xf, sin.(xf), label = "sine function")
-..     scatter!(x, y, label = "sampled data", markersize = 4)
-.. 
-.. 
-.. We can implement linear interpolation easily using QuantEcon's `LinInterp`
-.. 
-.. 
-.. .. code-block:: julia
-.. 
-..     using QuantEcon
-.. 
-..     li = LinInterp(x, y)        # create LinInterp object
-..     li(0.3)                     # evaluate at a single point
-..     y_linear_qe = li.(xf)       # evaluate at multiple points
-.. 
-..     plot(xf, y_linear_qe, label = "linear")
-..     scatter!(x, y, label = "sampled data", markersize = 4)
-.. 
-.. 
-.. The syntax is simple and the code is efficient, but for other forms of
-.. interpolation we need a more sophisticated set of routines
-.. 
-.. 
-.. As an example, let's employ `Interpolations.jl` to interpolate the sampled data points using piecewise constant, .. piecewise linear and cubic interpolation
-.. 
-.. 
-.. .. code-block:: julia
-.. 
-..     itp_const = scale(interpolate(y, BSpline(Constant()), OnGrid()), x)
-..     itp_linear = scale(interpolate(y, BSpline(Linear()), OnGrid()), x)
-..     itp_cubic = scale(interpolate(y, BSpline(Cubic(Line())), OnGrid()), x)
-.. 
-.. 
-.. When we want to evaluate them at points in their domain (i.e., between
-.. ``min(x)`` and ``max(x)``) we can do so as follows
-.. 
-.. 
-.. .. code-block:: julia
-.. 
-..     itp_cubic[0.3]
-.. 
-.. 
-.. Note the use of square brackets, rather than parentheses!
-.. 
-.. Let's plot these objects created above
-.. 
-.. .. code-block:: julia
-.. 
-..     xf = -7:0.1:7
-..     y_const = [ itp_const[x] for x ∈ xf ]
-..     y_linear = [ itp_linear[x] for x ∈ xf ]
-..     y_cubic = [ itp_cubic[x] for x ∈ xf ]
-.. 
-..     plot(xf, [y_const y_linear y_cubic], label = ["constant" "linear" "cubic"])
-..     scatter!(x, y, label = "sampled data", markersize = 4)
-.. 
-.. 
-.. 
-.. Univariate with Irregular Grid
-.. ---------------------------------
-.. 
-.. The `LinInterp` from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ works the same whether or not the grid .. is regular (i.e., evenly spaced)
-.. 
-.. The `Interpolations.jl` code is a bit more picky
-.. 
-.. Here's an example of the latter with an irregular grid
-.. 
-.. .. code-block:: julia
-.. 
-..     x = log.(range(1,  exp(4), length = 10)) .+ 1  # Uneven grid
-..     y = log.(x)                            # Corresponding y points
-.. 
-..     itp_const = interpolate((x, ), y, Gridded(Constant()))
-..     itp_linear = interpolate((x, ), y, Gridded(Linear()))
-.. 
-..     xf = log.(range(1,  exp(4), length = 100)) .+ 1
-..     y_const = [ itp_const[x] for x ∈ xf ]
-..     y_linear = [ itp_linear[x] for x ∈ xf ]
-..     y_true = [ log(x) for x ∈ xf ]
-.. 
-..     labels = ["piecewise constant" "linear" "true function"]
-..     plot(xf, [y_const y_linear y_true], label = labels)
-..     scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
-.. 
-.. 
-.. Multivariate Interpolation
+
+Numerical Integration
+=============================
+
+Many applications require directly calculating a numerical derivative and calculating expectations
+
+Adaptive Quadrature
+---------------------
+
+A high accuracy solution for calculating numerical integrals is `QuadGK <https://github.com/JuliaMath/QuadGK.jl>`_ 
+ 
+.. code-block:: julia
+ 
+     using QuadGK
+     @show quadgk(cos, -2π, 2π);
+ 
+ 
+This is an adaptive Gauss-Kronrod integration technique that's relatively accurate for smooth functions
+
+However, its adaptive implementation makes it slow and not well suited to inner loops
+
+Gaussian Quadrature
+----------------------
+
+Alternatively, many integrals can be done efficiently with (non-adaptive) `Gaussian quadrature <https://en.wikipedia.org/wiki/Gaussian_quadrature>`_
+
+For example, using `FastGaussQuadrature.jl <https://github.com/ajt60gaibb/FastGaussQuadrature.jl>`_
+
+.. code-block:: julia
+
+    using FastGaussQuadrature
+    nodes, weights = gausslegendre( 100_000 ); # i.e. find 100,000 nodes
+
+    # integrates f(x) = x^2 from -1 to 1
+    f(x) = x^2
+    @show weights ⋅ f.(nodes); # calculate
+
+The only problem with the ``FastGaussQuadrature`` package is that you will need to deal with affine transformations to the non-default domains yourself
+
+Alternatively, ``QuantEcon.jl`` has routines for Gaussian quadrature that translate the domains
+
+.. code-block:: julia
+
+    using QuantEcon
+
+    nodes, weights = qnwlege(65, -2π, 2π);
+    @show weights ⋅ cos.(nodes); # i.e. on [-2π, 2π] domain
+
+Expectations
+---------------
+
+If the calculations of the numerical integral is simply for calculating mathematical expectations of a particular distribution, then `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_ provides a convenient interface
+
+Under the hood, it is finding the appropriate Gaussian quadrature scheme for the distribution and using `FastGaussQuadrature`
+
+.. code-block:: julia
+
+    using Distributions, Expectations
+    dist = Normal()
+    E = expectation(dist)
+    f(x) = x
+    @show E(f) #i.e. identity
+
+    # Or using as a linear operator
+    f(x) = x^2
+    x = E.nodes
+    w = E.weights
+    E * f.(E.nodes) == f.(x) ⋅ w
+
+
+Interpolation
+=============================
+
+In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of .. points)
+
+The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
+
+There are a variety of options, but we will only demonstrate the convenience notation
+
+Univariate with a Regular Grid
+--------------------------------
+
+Let's start with the univariate case
+
+We begin by creating some data points, using a sine function
+
+.. code-block:: julia
+
+    using Interpolations
+    using Plots
+    gr(fmt=:png)
+
+    x = -7:7 # x points, coase grid
+    y = sin.(x) # corresponding y points
+
+    xf = -7:0.1:7        # fine grid
+    plot(xf, sin.(xf), label = "sin function")
+    scatter!(x, y, label = "sampled data", markersize = 4)
+
+
+To implement linear and cubic spline interpolation
+
+
+.. code-block:: julia
+
+    li = LinearInterpolation(x, y)
+    li_spline = CubicSplineInterpolation(x, y)
+
+    @show li(0.3) # evaluate at a single point
+
+    scatter(x, y, label = "sampled data", markersize = 4)
+    plot!(xf, li.(xf), label = "linear")
+    plot!(xf, li_spline.(xf), label = "spline")
+
+
+Univariate with Irregular Grid
+---------------------------------
+
+In the above, the ``LinearInterpolation`` function uses a specialized function for regular grids since the ``x`` is a Range type
+
+For an arbitrary, irregular grid
+
+
+.. code-block:: julia
+    
+    x = log.(range(1, exp(4), length = 10)) .+ 1  # uneven grid
+    y = log.(x) # corresponding y points
+
+    interp = LinearInterpolation(x, y)
+    
+    xf = log.(range(1,  exp(4), length = 100)) .+ 1 # finer grid
+
+    plot(xf, interp.(xf), label = "linear")
+    scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
+
+At this point, ``Interpolations.jl`` does not have support for cubic splines with irregular grids, but there are plenty of other packages that do (e.g. `Dierckx.jl <https://github.com/kbarbary/Dierckx.jl>`_ )
+
+Multivariate Interpolation
+--------------------------------
+
+Interpolating a regular multivariate function uses the same function
+
+.. code-block:: julia
+
+    f(x,y) = log(x+y)
+    xs = 1:0.2:5
+    ys = 2:0.1:5
+    A = [f(x,y) for x in xs, y in ys]
+
+    # linear interpolation
+    interp_linear = LinearInterpolation((xs, ys), A)
+    @show interp_linear(3, 2) # exactly log(3 + 2)
+    @show interp_linear(3.1, 2.1) # approximately log(3.1 + 2.1)
+
+    # cubic spline interpolation
+    interp_cubic = CubicSplineInterpolation((xs, ys), A)
+    @show interp_cubic(3, 2) # exactly log(3 + 2)
+    @show interp_cubic(3.1, 2.1) # approximately log(3.1 + 2.1);
+
+See `Interpolations.jl documentation <https://github.com/JuliaMath/Interpolations.jl#convenience-notation>`_ for more details on options and settings
+
+
+
+
 .. -----------------------------
 .. 
 .. We can also interpolate in higher dimensions
@@ -249,41 +289,6 @@ Setup
 .. Other Topics
 .. =================
 .. 
-.. Numerical Integration
-.. -----------------------
-.. 
-.. The `QuadGK <https://github.com/JuliaMath/QuadGK.jl>`_ library contains a function called ``quadgk()`` that performs
-.. Gaussian quadrature
-.. 
-.. .. code-block:: julia
-.. 
-..     using QuadGK
-..     quadgk(cos, -2π, 2π)
-.. 
-.. 
-.. This is an adaptive Gauss-Kronrod integration technique that's relatively accurate for smooth functions
-.. 
-.. However, its adaptive implementation makes it slow and not well suited to inner loops
-.. 
-.. For this kind of integration you can use the quadrature routines from QuantEcon
-.. 
-.. .. code-block:: julia
-.. 
-..     nodes, weights = qnwlege(65, -2π, 2π);
-..     integral = do_quad(x -> cos.(x), nodes, weights)
-.. 
-.. 
-.. Let's time the two implementations
-.. 
-.. .. code-block:: julia
-.. 
-..     using BenchmarkTools
-..     @btime quadgk(x -> cos.(x), -2π, 2π)
-..     @btime do_quad(x -> cos.(x), $nodes, $weights)
-.. 
-.. 
-.. We get similar accuracy with a speed up factor approaching three orders of magnitude
-.. 
 .. More numerical integration (and differentiation) routines can be found in the
 .. package `Calculus <https://github.com/JuliaMath/Calculus.jl>`_
 .. 
@@ -317,7 +322,7 @@ General Tools
 LaTeXStrings.jl
 ------------------
 
-When you need to properly escape latex code, for things like equation labels, always use `LaTeXStrings.jl <https://github.com/stevengj/LaTeXStrings.jl>`_
+When you need to properly escape latex code (E.G. FOR equation labels), use `LaTeXStrings.jl <https://github.com/stevengj/LaTeXStrings.jl>`_
 
 .. code-block:: julia
 

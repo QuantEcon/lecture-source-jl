@@ -19,8 +19,8 @@ This part of the course provides a more details on the Julia programming languag
     :maxdepth: 2
 
     generic_programming
+    general_packages
     data_statistical_packages
     optimization_solver_packages
     need_for_speed
 
-..    general_packages
