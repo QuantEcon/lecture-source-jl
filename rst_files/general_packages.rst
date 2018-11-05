@@ -1,18 +1,18 @@
-.. _data_packages:
+.. _general_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 *************************
-The Julia Data Ecosystem
+General Purpose Packages
 *************************
 
 .. contents:: :depth: 2
 
-Overview
+Overview 
 ============
 
 
-.. I am not sure I agree... Many pacakges are more mature
+.. I am not sure I agree... Many pacakges are more s
 .. While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
 Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs-of-concept
@@ -25,127 +25,56 @@ Not only does this make the libraries more portable, it makes them much easier t
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics
 
+Also see :doc:`data and statistical packages <data_statistical_packages>` and :doc:`optimization, solver, and related packages <optimization_solver_packages>` for more domain specific packages
+
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/all_deps.jl
+.. literalinclude:: /_static/includes/alldeps.jl
 
-Distributions
-=====================
-
-Functions for manipulating probability distributions and generating random
-variables are supplied by the excellent `Distributions.jl <https://github.com/JuliaStats/Distributions.jl>`_ package
-
-We'll restrict ourselves to a few simple examples (the package itself has `detailed documentation <https://juliastats.github.io/Distributions.jl/latest/index.html>`_)
-
-* ``d = Normal(m, s)`` creates a normal distribution with mean :math:`m` and standard deviation :math:`s`
-
-    * defaults are ``m = 0`` and ``s = 1``
-
-* ``d = Uniform(a, b)`` creates a uniform distribution on interval :math:`[a, b]`
-
-    * defaults are ``a = 0`` and ``b = 1``
-
-* ``d = Binomial(n, p)`` creates a binomial over :math:`n` trials with success probability :math:`p`
-
-* defaults are ``n = 1`` and ``p = 0.5``
-
-Distributions.jl defines various methods for acting on these instances in order to obtain
-
-* random draws
-
-* evaluations of pdfs (densities), cdfs (distribution functions), quantiles, etc.
-
-* mean, variance, kurtosis, etc.
-
-For example,
-
-* To generate ``k`` draws from the instance ``d`` use ``rand(d, k)``
-
-* To obtain the mean of the distribution use ``mean(d)``
-
-* To evaluate the probability density function of ``d`` at ``x`` use ``pdf(d, x)``
-
-Further details on the interface can be found `here <https://juliastats.github.io/Distributions.jl/latest/univariate.html#Common-Interface-1>`__
-
-Several multivariate distributions are also implemented
-
-
-.. _df:
-
-Working with Data
-========================
-
-A useful package for working with data is `DataFrames <https://github.com/JuliaStats/DataFrames.jl>`_
-
-The most important data type provided is a ``DataFrame``, a two dimensional array for storing heterogeneous data
-
-Although data can be heterogeneous within a ``DataFrame``, the contents of the columns must be homogeneous
-
-This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) or, more loosely, a spreadsheet in Excel
-
-Here's an example
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-.. code-block:: julia
-
-    using DataFrames
-
-.. code-block:: julia
-
-    commodities = ["crude", "gas", "gold", "silver"]
-
-.. code-block:: julia
-
-    last_price = [4.2, 11.3, 12.1, missing]
-
-.. code-block:: julia
-
-    df = DataFrame(commod = commodities, price = last_price)
+.. We have seen more detail on this package than this, so probably best to rewrite
+.. Distributions
+.. =====================
+.. 
+.. Functions for manipulating probability distributions and generating random
+.. variables are supplied by the excellent `Distributions.jl <https://github.com/JuliaStats/Distributions.jl>`_ package
+.. 
+.. We'll restrict ourselves to a few simple examples (the package itself has `detailed documentation <https://juliastats.github.io/Distributions.jl/latest/index.html>`_)
+.. 
+.. * ``d = Normal(m, s)`` creates a normal distribution with mean :math:`m` and standard deviation :math:`s`
+.. 
+..     * defaults are ``m = 0`` and ``s = 1``
+.. 
+.. * ``d = Uniform(a, b)`` creates a uniform distribution on interval :math:`[a, b]`
+.. 
+..     * defaults are ``a = 0`` and ``b = 1``
+.. 
+.. * ``d = Binomial(n, p)`` creates a binomial over :math:`n` trials with success probability :math:`p`
+.. 
+.. * defaults are ``n = 1`` and ``p = 0.5``
+.. 
+.. Distributions.jl defines various methods for acting on these instances in order to obtain
+.. 
+.. * random draws
+.. 
+.. * evaluations of pdfs (densities), cdfs (distribution functions), quantiles, etc.
+.. 
+.. * mean, variance, kurtosis, etc.
+.. 
+.. For example,
+.. 
+.. * To generate ``k`` draws from the instance ``d`` use ``rand(d, k)``
+.. 
+.. * To obtain the mean of the distribution use ``mean(d)``
+.. 
+.. * To evaluate the probability density function of ``d`` at ``x`` use ``pdf(d, x)``
+.. 
+.. Further details on the interface can be found `here <https://juliastats.github.io/Distributions.jl/latest/univariate.html#Common-Interface-1>`__
+.. 
+.. Several multivariate distributions are also implemented
 
 
-Columns of the DataFrame can be accessed by name
-
-
-.. code-block:: julia
-
-    df[:price]
-
-
-.. code-block:: julia
-
-    df[:commod]
-
-
-The DataFrames package provides a number of methods for acting on DataFrames
-
-A simple one is ``describe()``
-
-.. code-block:: julia
-
-    describe(df)
-
-
-There are also functions for splitting, merging and other data munging
-operations
-
-Data can be read from and written to CSV files using the CSV package
-
-.. code-block:: julia
-    :class: no-execute
-
-    using CSV
-    df = CSV.read("data_file.csv")
-    CSV.write("data_file.csv", df)
-
-Other packages for working with data can be found at `JuliaStats <https://github.com/JuliaStats>`_ and `JuliaQuant <https://github.com/JuliaQuant>`_
-
-
+.. .. _df:
 .. Interpolation
 .. =============================
 .. 
@@ -316,68 +245,6 @@ Other packages for working with data can be found at `JuliaStats <https://github
 .. 
 .. The original function is in blue, while the linear interpolant is shown in green
 .. 
-
-Optimization, Roots and Fixed Points
-=========================================
-
-
-Let's look briefly at the optimization and root finding algorithms
-
-
-Roots
------------------
-
-A root of a real function :math:`f` on :math:`[a,b]` is an :math:`x \in [a, b]` such that :math:`f(x)=0`
-
-For example, if we plot the function
-
-.. math::
-    :label: root_f
-
-    f(x) = \sin(4 (x - 1/4)) + x + x^{20} - 1
-
-
-with :math:`x \in [0,1]` we get
-
-.. _root_fig:
-
-
-The unique root is approximately 0.408
-
-The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
-
-.. code-block:: julia
-
-    using Roots
-
-.. code-block:: julia
-
-    f(x) = sin(4 * (x - 1/4)) + x + x^20 - 1
-
-.. code-block:: julia
-
-    fzero(f, 0, 1)
-
-
-Optimization
----------------------
-
-For constrained, univariate minimization a useful option is ``maximize()`` from the
-`Optim <https://github.com/JuliaOpt/Optim.jl>`_ package
-
-This function defaults to a robust hybrid optimization routine called Brent's method
-
-.. code-block:: julia
-
-    using Optim
-
-    maximize(x -> x^2, -1.0, 1.0)
-
-
-For other optimization routines, including least squares and multivariate optimization, see `the documentation <https://github.com/JuliaOpt/Optim.jl/blob/master/README.md>`_
-
-A number of alternative packages for optimization can be found at `JuliaOpt <http://www.juliaopt.org/>`_
-
 .. 
 .. Other Topics
 .. =================
@@ -421,25 +288,42 @@ A number of alternative packages for optimization can be found at `JuliaOpt <htt
 .. package `Calculus <https://github.com/JuliaMath/Calculus.jl>`_
 .. 
 .. 
-.. Linear Algebra
-.. -----------------
-.. 
-.. The standard library contains many useful routines for linear algebra, in
-.. addition to standard functions such as ``det()``, ``inv()``, ``factorize()``, etc.
-.. 
-.. Routines are available for
-.. 
-.. * Cholesky factorization
-.. 
-.. * LU decomposition
-.. 
-.. * Singular value decomposition,
-.. 
-.. * Schur factorization, etc.
-.. 
-.. See `here <https://docs.julialang.org/en/stable/manual/linear-algebra/>`__ for further details
-.. 
-.. 
+
+Linear Algebra
+==================
+
+Standard Library
+------------------
+
+The standard library contains many useful routines for linear algebra, in
+addition to standard functions such as ``det()``, ``inv()``, ``factorize()``, etc.
+
+Routines are available for
+
+* Cholesky factorization
+
+* LU decomposition
+
+* Singular value decomposition,
+
+* Schur factorization, etc.
+
+See `here <https://docs.julialang.org/en/stable/manual/linear-algebra/>`__ for further details
+
+
+General Tools
+=================================
+
+LaTeXStrings.jl
+------------------
+
+When you need to properly escape latex code, for things like equation labels, always use `LaTeXStrings.jl <https://github.com/stevengj/LaTeXStrings.jl>`_
+
+.. code-block:: julia
+
+    using LaTeXStrings
+    L"an equation: $1 + \alpha^2$"
+
 .. Further Reading
 .. ===================
 .. 
