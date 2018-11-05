@@ -769,9 +769,12 @@ relatively more weight on later consumption values
 
 
 .. code-block:: julia
-  :class: collapse
+    :class: test
 
-  Random.seed!(42) # For reproducible results.
+    Random.seed!(42); # For reproducible results.
+
+.. code-block:: julia
+  :class: collapse
 
   # compute solutions and simulate
   lq = LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)

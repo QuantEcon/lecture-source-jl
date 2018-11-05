@@ -269,14 +269,14 @@ With some thought, you will agree that :math:`J` should satisfy the Bellman equa
 where :math:`p'` is the random variable defined by
 
 .. math::
-    :label: new2
+    :label: wf-new2
 
     p' = \frac{ p f_0(z)}{ p f_0(z) + (1-p) f_1 (z) }
 
 when :math:`p` is fixed and :math:`z` is drawn from the current best guess, which is the distribution :math:`f` defined by
 
 .. math::
-    :label: new3
+    :label: wf-new3
 
     f(v) = p f_0(v) + (1-p) f_1 (v)
 

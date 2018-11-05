@@ -282,20 +282,20 @@ The span is a 2 dimensional plane passing through these two points and the origi
 .. code-block:: julia
     :class: collapse
 
-    # Fixed linear function, to generate a plane
+    # fixed linear function, to generate a plane
     f(x, y) = 0.2x + 0.1y
 
-    # Lines to vectors
+    # lines to vectors
     x_vec = [0 0; 3 3]
     y_vec = [0 0; 4 -4]
     z_vec = [0 0; f(3, 4) f(3, -4)]
 
-    # Draw the plane
+    # draw the plane
     n = 20
     grid = range(-5, 5, length = n)
     z2 = [ f(grid[row], grid[col]) for row in 1:n, col in 1:n ]
-    surface(grid, grid, z2, fill = :blues)
-    plot!(x_vec, y_vec, z_vec, color = [:yellow :pink], labels = "")
+    wireframe(grid, grid, z2, fill = :blues, gridalpha =1 )
+    plot!(x_vec, y_vec, z_vec, color = [:blue :green], linewidth = 3, labels = "", colorbar = false)
 
 .. code-block:: julia
     :class: test
@@ -942,12 +942,12 @@ As expected, the image :math:`Av` of each :math:`v` is just a scaled version of 
     plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 
 .. code-block:: julia
-   :class: test
+    :class: test
 
-  @testset "eigvals" begin
-    @test eig_1[2,2] ≈ 0.7071067811865475
-    @test eig_2[2,2] ≈ 0.7071067811865475
-  end
+    @testset "eigvals" begin
+        @test eig_1[2,2] ≈ 0.7071067811865475
+        @test eig_2[2,2] ≈ 0.7071067811865475
+    end
 
 The eigenvalue equation is equivalent to :math:`(A - \lambda I) v = 0`, and
 this has a nonzero solution :math:`v` only when the columns of :math:`A -
