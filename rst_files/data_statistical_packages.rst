@@ -140,7 +140,7 @@ For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/
 
 
 Visualization, Querying, and Plots
-====================================
+-------------------------------------
 
 The DataFrame (and similar types that fulfill a standard generic interface) can fit into a variety of packages
 
@@ -192,18 +192,48 @@ Another useful tool for exploring tabular data is `DataVoyager.jl <https://githu
     using DataVoyager
     iris |> Voyager()
 
-Note that this creates a separate window
+The ``Voyager()`` function creates a separate window for analysis
 
-.. There are also functions for splitting, merging and other data munging
-.. operations
+Statistics
+====================
 
-.. Data can be read from and written to CSV files using the CSV package
-.. 
-.. .. code-block:: julia
-..     :class: no-execute
-.. 
-..     using CSV
-..     df = CSV.read("data_file.csv")
-..     CSV.write("data_file.csv", df)
-.. 
-.. and `JuliaQuant <https://github.com/JuliaQuant>`_
+While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing 
+
+Many of the packages live in the `JuliaStats <https://github.com/JuliaStats/>`_ organizations
+
+A few to point out
+
+* `StatsBase <https://github.com/JuliaStats/StatsBase.jl>`_ has basic statistical functions such as geometric and harmonic means, auto-correlations, robust statistics, etc.
+* `StatSFuns <https://github.com/JuliaStats/StatsFuns.jl>`_ has a variety of mathematical functions and constants such as `pdf` and `cdf` of many distributions, `softmax`, etc.
+
+
+To run linear regressions and similar statistics, use the `GLM <http://juliastats.github.io/GLM.jl/latest/>`_ package
+
+.. code-block:: julia
+
+    using GLM
+
+    x = randn(100)
+    y = 0.9 .* x + 0.5 * rand(100)
+    df = DataFrame(x=x, y=y)
+    ols = lm(@formula(y ~ x), df) # R-style notation
+
+
+To display the results in a useful tables for LaTex and the display, use `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_
+
+.. code-block:: julia
+
+    using RegressionTables
+    regtable(ols)
+    # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
+
+For a Fixed-Effect Model, taking the example directly from the documentation
+
+.. code-block:: julia
+
+    using FixedEffectModels
+    df = dataset("plm", "Cigar")
+    df[:StateCategorical] =  categorical(df[:State])
+    df[:YearCategorical] =  categorical(df[:Year])
+    fixedeffectresults = reg(df, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical, weights = Pop, vcov = cluster(StateCategorical)))
+    regtable(fixedeffectresults)
