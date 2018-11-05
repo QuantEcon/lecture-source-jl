@@ -35,13 +35,7 @@ For supplementary reading, see :cite:`Sargent1987` or :cite:`CryerChan2008`.
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 .. _periodograms:
 
@@ -521,6 +515,7 @@ Exercise 1
 ----------
 
 .. code-block:: julia
+    :class: test
 
     using Random
     Random.seed!(42);  # reproducible results
@@ -580,10 +575,13 @@ Exercise 1
 
 Exercise 2
 ----------
+.. code-block:: julia
+    :class: test
+
+    Random.seed!(42);  # reproducible results
 
 .. code-block:: julia
 
-    Random.seed!(42) # For reproducible results.
     lp2 = ARMA(-0.9, 0.0, 1.0)
     wl = 65
     p = plot(layout=(3,1))

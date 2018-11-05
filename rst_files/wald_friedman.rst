@@ -4,7 +4,6 @@
 
 .. highlight:: julia
 
-
 ***********************************************
 :index:`A Problem that Stumped Milton Friedman`
 ***********************************************
@@ -15,7 +14,6 @@
     single: Models; Sequential analysis
 
 .. contents:: :depth: 2
-
 
 Co-authored with Chase Coleman.
 
@@ -47,19 +45,6 @@ Key ideas in play will be:
 -  The **critical region** of a statistical test
 
 -  A **uniformly most powerful test**
-
-
-
-Setup
-------------------
-
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 Origin of the problem
 ======================
@@ -95,7 +80,7 @@ officer like Schyler were on the premises, he would see after the first
 few thousand or even few hundred [rounds] that the experiment need not
 be completed either because the new method is obviously inferior or
 because it is obviously superior beyond what was hoped for
-:math:`\ldots` "
+:math:`\ldots` ''
 
 Friedman and Wallis struggled with the problem but, after realizing that
 they were not able to solve it,  described the problem to  Abraham Wald
@@ -103,8 +88,6 @@ they were not able to solve it,  described the problem to  Abraham Wald
 That started Wald on the path that led him  to *Sequential Analysis* :cite:`Wald47`
 
 We'll formulate the problem using dynamic programming
-
-
 
 A dynamic programming approach
 ================================
@@ -128,7 +111,6 @@ To help formalize the problem, let :math:`x \in \{x_0, x_1\}` be a hidden state 
         f_1(v) & \mbox{if } x = x_1
     \end{cases}
 
-
 Before observing any outcomes, the decision maker believes that the probability that :math:`x = x_0` is
 
 .. math::
@@ -136,13 +118,11 @@ Before observing any outcomes, the decision maker believes that the probability 
     p_{-1} =
     \mathbb P \{ x=x_0 \mid \textrm{ no observations} \} \in (0, 1)
 
-
 After observing :math:`k+1` observations :math:`z_k, z_{k-1}, \ldots, z_0`, he updates this value to
 
 .. math::
 
     p_k = \mathbb P \{ x = x_0 \mid z_k, z_{k-1}, \ldots, z_0 \},
-
 
 which is calculated recursively by applying Bayes' law:
 
@@ -151,13 +131,11 @@ which is calculated recursively by applying Bayes' law:
     p_{k+1} = \frac{ p_k f_0(z_{k+1})}{ p_k f_0(z_{k+1}) + (1-p_k) f_1 (z_{k+1}) },
     \quad k = -1, 0, 1, \ldots
 
-
 After observing :math:`z_k, z_{k-1}, \ldots, z_0`, the decision maker believes that :math:`z_{k+1}` has probability distribution
 
 .. math::
 
     f(v) = p_k f_0(v) + (1-p_k) f_1 (v)
-
 
 This is a mixture of distributions :math:`f_0` and :math:`f_1`, with the weight on :math:`f_0` being the posterior probability that :math:`x = x_0` [#f1]_
 
@@ -171,12 +149,16 @@ The density of a beta probability distribution with parameters :math:`a` and :ma
     \quad \text{where} \quad
     \Gamma(t) := \int_{0}^{\infty} x^{t-1} e^{-x} dx
 
-
 We'll discretize this distribution to make it more straightforward to work with
 
 The next figure shows two discretized beta distributions in the top panel
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
+
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
     :class: test
@@ -185,56 +167,24 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 
 .. code-block:: julia
 
-  using Distributions, Plots, LaTeXStrings, LinearAlgebra, QuantEcon, Printf, Interpolations
-
-
-  f0 = pdf.(Ref(Beta(1, 1)), range(0,  1, length = 50))
-  f0 = f0 / sum(f0)
-  f1 = pdf.(Ref(Beta(9, 9)), range(0,  1, length = 50))
-  f1 = f1 / sum(f1)  # Make sure sums to 1
-
-  a = plot([f0 f1],
-      xlabel=L"$k$ Values",
-      ylabel=L"Probability of $z_k$",
-      labels=[L"$f_0$" L"$f_1$"],
-      linewidth=2,
-      ylims=[0.;0.07],
-      title="Original Distributions")
-
-  mix = zeros(50, 3)
-  labels = Vector{String}(undef, 3)
-  p_k = [0.25; 0.5; 0.75]
-  for i in 1:3
-      mix[:, i] = p_k[i] * f0 + (1 - p_k[i]) * f1
-      labels[i] = string(L"$p_k$ = ", p_k[i])
-  end
-
-  b = plot(mix,
-           xlabel = L"$k$ Values",
-           ylabel = L"Probability of $z_k$",
-           labels = labels,
-           linewidth = 2,
-           ylims = [0.;0.06],
-           title = "Mixture of Original Distributions")
-
-  plot(a, b, layout = (2, 1), size = (800, 600))
+    using Distributions, Parameters, Printf, Random, Roots, StatPlots, Plots
 
 .. code-block:: julia
-    :class: test
 
-    @testset "First Plot Tests" begin
-        @test mix[7] ≈ 0.005059526866095018
-        @test all(isequal(0.02), f0)
-        @test f1[10] ≈ 0.0011405494355950728
+    begin
+        base_dist = [Beta(1, 1), Beta(3, 3)]
+        mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
+        plot(plot(base_dist, labels = ["f_0", "f_1"], title = "Original Distributions"),
+             plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"], title = "Distribution Mixtures"),
+             ylab = "Density", ylim = (0, 2), layout = (2, 1) # Global settings across both plots
+             )
     end
-
 
 Losses and costs
 -------------------
 
 After observing :math:`z_k, z_{k-1}, \ldots, z_0`, the decision maker
 chooses among three distinct actions:
-
 
 -  He decides that :math:`x = x_0` and draws no more :math:`z`'s
 
@@ -255,7 +205,6 @@ kinds of losses:
 -  A cost :math:`c` if he postpones deciding and chooses instead to draw
    another :math:`z`
 
-
 Digression on type I and type II errors
 ----------------------------------------
 
@@ -274,7 +223,6 @@ So when we treat :math:`x=x_0` as the null hypothesis
 -  We can think of :math:`L_0` as the loss associated with a type II
    error
 
-
 Intuition
 -------------------
 
@@ -291,8 +239,7 @@ Finally, if :math:`p` is in the middle of the interval :math:`[0, 1]`, then we h
 This reasoning suggests a decision rule such as the one shown in the figure
 
 .. figure:: /_static/figures/wald_dec_rule.png
-    :scale: 40%
-
+    :scale: 50%
 
 As we'll see, this is indeed the correct form of the decision rule
 
@@ -319,20 +266,19 @@ With some thought, you will agree that :math:`J` should satisfy the Bellman equa
             c + \mathbb E [ J (p') ]
         \right\}
 
-
 where :math:`p'` is the random variable defined by
 
 .. math::
+    :label: wf-new2
 
     p' = \frac{ p f_0(z)}{ p f_0(z) + (1-p) f_1 (z) }
-
 
 when :math:`p` is fixed and :math:`z` is drawn from the current best guess, which is the distribution :math:`f` defined by
 
 .. math::
+    :label: wf-new3
 
     f(v) = p f_0(v) + (1-p) f_1 (v)
-
 
 In the Bellman equation, minimization is over three actions:
 
@@ -343,18 +289,18 @@ In the Bellman equation, minimization is over three actions:
 Let
 
 .. math::
+    :label: new4
 
     A(p)
     := \mathbb E [ J (p') ]
 
-
 Then we can represent the  Bellman equation as
 
 .. math::
+    :label: new5
 
     J(p) =
     \min \left\{ (1-p) L_0, \; p L_1, \; c + A(p) \right\}
-
 
 where :math:`p \in [0,1]`
 
@@ -368,30 +314,28 @@ Here
 
 -  :math:`c + A(p)` is the expected cost associated with drawing one more :math:`z`
 
-
-
 The optimal decision rule is characterized by two numbers :math:`\alpha, \beta \in (0,1) \times (0,1)` that satisfy
 
 .. math::
+    :label: new6
 
     (1- p) L_0 < \min \{ p L_1, c + A(p) \}  \textrm { if } p \geq \alpha
-
 
 and
 
 .. math::
+    :label: new7
 
     p L_1 < \min \{ (1-p) L_0,  c + A(p) \} \textrm { if } p \leq \beta
-
 
 The optimal decision rule is then
 
 .. math::
+    :label: new8
 
     \textrm { accept } x=x_0 \textrm{ if } p \geq \alpha \\
     \textrm { accept } x=x_1 \textrm{ if } p \leq \beta \\
     \textrm { draw another }  z \textrm{ if }  \beta \leq p \leq \alpha
-
 
 Our aim is to compute the value function :math:`J`, and from it the associated cutoffs :math:`\alpha`
 and :math:`\beta`
@@ -401,461 +345,211 @@ that appear on the right side of the Bellman equation as separate functions
 
 Later, doing this will help us obey **the don't repeat yourself (DRY)** golden rule of coding
 
-
 Implementation
 ==================
 
-Let's code this problem up and solve it
+Let's code this problem up and solve it.
 
-To approximate the value function that solves Bellman equation :eq:`new1`, we
-use value function iteration
+We implement the cost functions for each choice considered in the
+Bellman equation :eq:`new3`
 
-* For earlier examples of this technique see the :doc:`shortest path <short_path>`, :doc:`job search <mccall_model>` or :doc:`optimal growth <optgrowth>` lectures
+First, consider the cost associated to accepting either distribution and
+compare the minimum of the two to the expected benefit of drawing again
 
-As in the :doc:`optimal growth lecture <optgrowth>`, to approximate a continuous value function
+Drawing again will only be worthwhile if the expected marginal benefit of
+learning from an additional draw is greater than the explicit cost
 
-* We iterate at a finite grid of possible values of :math:`p`
+For every belief :math:`p`, we can compute the difference between accepting a
+distribution and choosing to draw again
 
-* When we evaluate :math:`A(p)` between grid points, we use linear interpolation
+The solution :math:`\alpha`, :math:`\beta` occurs at indifference points
 
-This means that to evaluate :math:`J(p)` where :math:`p` is not a grid point, we must use two points:
+Define the cost function be the minimum of the pairwise differences in cost among
+the choices
 
-* First, we use the largest of all the grid points smaller than :math:`p`, and call it :math:`p_i`
+Then we can find the indifference points when the cost function is zero
 
-* Second, we use the grid point immediately after :math:`p`, named :math:`p_{i+1}`, to approximate the function value as
+We can use any roots finding algorithm to solve for the solutions in the
+interval [0, 1]
 
-.. math::
-
-    J(p) = J(p_i) + (p - p_i) \frac{J(p_{i+1}) - J(p_i)}{p_{i+1} - p_{i}}
-
-
-In one dimension, you can think of this as simply drawing a line between each pair of points on the grid
+Lastly, verify which indifference points correspond to the definition of a permanent
+transition between the accept and reject space for each choice
 
 Here's the code
 
 .. code-block:: julia
 
-    expect_loss_choose_0(p, L0) = (1 - p) * L0
-
-    expect_loss_choose_1(p, L1) = p * L1
-
-    function EJ(p, f0, f1, J)
-        # Get the current distribution we believe (p * f0 + (1 - p) * f1)
-        curr_dist = p * f0 + (1 - p) * f1
-
-        # Get tomorrow's expected distribution through Bayes law
-        tp1_dist = clamp.((p * f0) ./ (p * f0 + (1 - p) * f1), 0, 1)
-
-        # Evaluate the expectation
-        EJ = dot(curr_dist, J.(tp1_dist))
-
-        return EJ
-    end
-
-    expect_loss_cont(p, c, f0, f1, J) = c + EJ(p, f0, f1, J)
-
-    function bellman_operator(pgrid, c, f0, f1, L0, L1, J)
-        m = length(pgrid)
-        @assert m == length(J)
-
-        J_out = zeros(m)
-        J_interp = LinearInterpolation(pgrid, J) # The method from Interpolations.jl
-
-        for (p_ind, p) in enumerate(pgrid)
-            # Payoff of choosing model 0
-            p_c_0 = expect_loss_choose_0(p, L0)
-            p_c_1 = expect_loss_choose_1(p, L1)
-            p_con = expect_loss_cont(p, c, f0, f1, J_interp)
-
-            J_out[p_ind] = min(p_c_0, p_c_1, p_con)
-        end
-
-        return J_out
-    end
-
-    # Create two distributions over 50 values for k
-    # We are using a discretized beta distribution
-
-    p_m1 = range(0,  1, length = 50)
-    f0 = clamp.(pdf.(Ref(Beta(1, 1)), p_m1), 1e-8, Inf)
-    f0 = f0 / sum(f0)
-    f1 = clamp.(pdf.(Ref(Beta(9, 9)), p_m1), 1e-8, Inf)
-    f1 = f1 / sum(f1)
-
-    # To solve
-    pg = range(0,  1, length = 251)
-    J1 = compute_fixed_point(x -> bellman_operator(pg, 0.5, f0, f1, 5.0, 5.0, x),
-        zeros(length(pg)), err_tol = 1e-6, print_skip = 5);
-
-.. code-block:: julia
-    :class: test
-
-    @testset "Second Block Tests" begin
-        @test J1[19] == 0.36
-        @test f1[40] ≈ 0.002163769345396983
-        @test length(pg) == 251 && pg[1] == 0 && pg[end] == 1
-    end
-
-Running it produces the following output on our machine
-
-
-The distance column shows the maximal distance between successive iterates
-
-This converges to zero quickly, indicating a successful iterative procedure
-
-Iteration terminates when the distance falls below some threshold
-
-
-A more sophisticated implementation
--------------------------------------
-
-Now for some gentle criticisms of the preceding code
-
-By writing the code in terms of functions, we have to pass around
-some things that are constant throughout the problem
-
-* :math:`c`, :math:`f_0`, :math:`f_1`, :math:`L_0`, and :math:`L_1`
-
-So now let's turn our simple script into a type
-
-This will allow us to simplify the function calls and make the code more reusable
-
-
-We shall construct two types that
-
-* store all of our parameters for us internally
-
-* represent the solution to our Bellman equation alongside the :math:`\alpha` and :math:`\beta` decision cutoffs
-
-* accompany many of the same functions used above which now act on the type directly
-
-* allow us, in addition, to simulate draws and the decision process under different prior beliefs
-
-
-.. code-block:: julia
-
-    mutable struct WFSolution{TAV <: AbstractVector, TR<:Real}
-        J::TAV
-        lb::TR
-        ub::TR
-    end
-
-    struct WaldFriedman{TR <: Real,
-                        TI <: Integer,
-                        TAV1 <: AbstractVector,
-                        TAV2 <: AbstractVector}
-        c::TR
-        L0::TR
-        L1::TR
-        f0::TAV1
-        f1::TAV1
-        m::TI
-        pgrid::TAV2
-        sol::WFSolution
-    end
-
-    function WaldFriedman(c, L0, L1, f0, f1; m = 25)
-
-        pgrid = range(0.0,  1.0, length = m)
-
-        # Renormalize distributions so nothing is "too" small
-        f0 = clamp.(f0, 1e-8, 1-1e-8)
-        f1 = clamp.(f1, 1e-8, 1-1e-8)
-        f0 = f0 / sum(f0)
-        f1 = f1 / sum(f1)
-        J = zeros(m)
-        lb = 0.
-        ub = 0.
-
-        WaldFriedman(c, L0, L1, f0, f1, m, pgrid, WFSolution(J, lb, ub))
-    end
-
-    current_distribution(wf::WaldFriedman, p::Real) = p * wf.f0 + (1 - p) * wf.f1
-
-    function bayes_update_k(wf, p, k)
-        f0_k = wf.f0[k]
-        f1_k = wf.f1[k]
-
-        p_tp1 = p * f0_k / (p * f0_k + (1 - p) * f1_k)
-
-        return clamp(p_tp1, 0, 1)
-    end
-
-    bayes_update_all(wf, p) = clamp.(p * wf.f0 ./ (p * wf.f0 + (1 - p) * wf.f1), 0, 1)
-
-    payoff_choose_f0(wf, p) = (1 - p) * wf.L0
-
-    payoff_choose_f1(wf, p) = p * wf.L1
-
-    function EJ(wf, p, J)
-        # Pull out information
-        f0, f1 = wf.f0, wf.f1
-
-        # Get the current believed distribution and tomorrows possible dists
-        # Need to clip to make sure things don't blow up (go to infinity)
-        curr_dist = current_distribution(wf, p)
-        tp1_dist = bayes_update_all(wf, p)
-
-        # Evaluate the expectation
-        EJ = dot(curr_dist, J.(tp1_dist))
-
-        return EJ
-    end
-
-    payoff_continue(wf, p, J) = wf.c + EJ(wf, p, J)
-
-    function bellman_operator(wf, J)
-        c, L0, L1, f0, f1 = wf.c, wf.L0, wf.L1, wf.f0, wf.f1
-        m, pgrid = wf.m, wf.pgrid
-
-        J_out = similar(J)
-        J_interp = LinearInterpolation(pgrid, J)
-
-        for (p_ind, p) in enumerate(pgrid)
-            # Payoff of choosing model 0
-            p_c_0 = payoff_choose_f0(wf, p)
-            p_c_1 = payoff_choose_f1(wf, p)
-            p_con = payoff_continue(wf, p, J_interp)
-
-            J_out[p_ind] = min(p_c_0, p_c_1, p_con)
-        end
-
-        return J_out
-    end
-
-    function find_cutoff_rule(wf, J)
-        m, pgrid = wf.m, wf.pgrid
-
-        # Evaluate cost at all points on grid for choosing a model
-        p_c_0 = payoff_choose_f0.(Ref(wf), pgrid)
-        p_c_1 = payoff_choose_f1.(Ref(wf), pgrid)
-
-        # The cutoff points can be found by differencing these costs with
-        # the Bellman equation (J is always less than or equal to p_c_i)
-        lb = pgrid[searchsortedlast(p_c_1 - J, 1e-10)]
-        ub = pgrid[searchsortedlast(J - p_c_0, -1e-10)]
-
-        return lb, ub
-    end
-
-    function solve_model!(wf; tol = 1e-7)
-        bell_op(x) = bellman_operator(wf, x)
-        J =  compute_fixed_point(bell_op, zeros(wf.m), err_tol=tol, print_skip=5)
-
-        wf.sol.J = J
-        wf.sol.lb, wf.sol.ub = find_cutoff_rule(wf, J)
-        return J
-    end
-
-    function simulate(wf, f; p0 = 0.5)
-        # Check whether vf is computed
-        if sum(abs, wf.sol.J) < 1e-8
-            solve_model!(wf)
-        end
-
-        # Unpack useful info
-        lb, ub = wf.sol.lb, wf.sol.ub
-        drv = DiscreteRV(f)
-
-        # Initialize a couple useful variables
-        decision = 0
-        p = p0
-        t = 0
-
-        while true
-            # Maybe should specify which distribution is correct one so that
-            # the draws come from the "right" distribution
-            k = rand(drv)
-            t = t + 1
-            p = bayes_update_k(wf, p, k)
-            if p < lb
-                decision = 1
-                break
-            elseif p > ub
-                decision = 0
+    accept_x0(p, L0) = (one(p) - p) * L0
+    accept_x1(p, L1) = p * L1
+    bayes_update(p, d0, d1) = p * pdf(d0, p) / pdf(MixtureModel([d0, d1], [p, one(p) - p]), p)
+    function draw_again(p, d0, d1, L0, L1, c, target)
+        candidate = 0.0
+        cost = 0.0
+        while candidate < target
+            p = bayes_update(p, d0, d1)
+            cost += c
+            candidate = min(accept_x0(p, L0), accept_x1(p, L1)) + cost
+            if candidate >= target
                 break
             end
+            target = candidate
         end
-
-        return decision, p, t
+        return candidate
     end
-
-    abstract type HiddenDistribution end
-    struct F0 <: HiddenDistribution end
-    struct F1 <: HiddenDistribution end
-
-    function simulate_tdgp(wf, f; p0 = 0.5)
-        decision, p, t = simulate(wf, wf.f0; p0=p0)
-
-        correct = (decision == 0)
-
-        return correct, p, t
-    end
-
-    function simulate_tdgp(wf, f; p0 = 0.5)
-        decision, p, t = simulate(wf, wf.f1; p0=p0)
-
-        correct = (decision == 1)
-
-        return correct, p, t
-    end
-
-    function stopping_dist(wf; ndraws = 250, f = F0())
-        # Allocate space
-        tdist = fill(0, ndraws)
-        cdist = fill(false, ndraws)
-
-        for i in 1:ndraws
-            correct, p, t = simulate_tdgp(wf, f)
-            tdist[i] = t
-            cdist[i] = correct
+    function choice(p, d0, d1, L0, L1, c)
+        if isone(p)
+            output = (1, 0)
+        elseif iszero(p)
+            output = (2, 0)
+        elseif zero(p) < p < one(p)
+            target, option = findmin([accept_x0(p, L0), accept_x1(p, L1)])
+            candidate = draw_again(p, d0, d1, L0, L1, c, target)
+            if candidate < target
+                target, option = (candidate, 3)
+            end
+            output = (option, target)
+        else
+            throw(ArgumentError("p must be ∈ [0, 1]"))
         end
-
-        return cdist, tdist
+        return output
     end
 
-
-Now let's use our type to solve Bellman equation :eq:`new1` and verify that it gives similar output
-
+Next we solve a problem by finding the α, β values for the decision rule
 
 .. code-block:: julia
 
-    # Create two distributions over 50 values for k
-    # We are using a discretized beta distribution
+    function decision_rule(d0, d1, L0, L1, c)
+        function cost(p, d0, d1, L0, L1, c)
+            if c < zero(c)
+                throw(ArgumentError("Cost must be non-negative"))
+            end
+            x0 = accept_x0(p, L0)
+            x1 = accept_x1(p, L1)
+            draw = draw_again(p, d0, d1, L0, L1, c, min(x0, x1))
+            output = min(abs(draw - x0), abs(draw - x1), abs(x1 - x0))
+            return output
+        end
+        # Find the indifference points
+        roots = find_zeros(p -> cost(p, d0, d1, L0, L1, c), 0 + eps(), 1 - eps())
+        # Compute the choice at both sides
+        left = first.(choice.(roots .- eps(), d0, d1, L0, L1, c))
+        right = first.(choice.(roots .+ eps(), d0, d1, L0, L1, c))
+        # Find β by checking for a permanent transition from the area accepting to
+        # x₁ to never again accepting x₁ at the various indifference points
+        # Find α by checking for a permanent transition from the area accepting of
+        # x₀ to never again accepting x₀ at the various indifference points
+        β = findlast((left .== 2) .& (right .≠ 2)) |> (x -> isa(x, Int) ? roots[x] : 0)
+        α = findfirst((left .≠ 1) .& (right .== 1)) |> (x -> isa(x, Int) ? roots[x] : 1)
+        if β < α
+            @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
+        else
+            x0 = accept_x0(β, L0)
+            x1 = accept_x1(β, L1)
+            draw = draw_again(β, d0, d1, L0, L1, c, min(x0, x1))
+            if draw == min(x0, x1, draw)
+                @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
+            else
+                @printf("Accept x1 if p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, α)
+            end
+        end
+        return (α, β)
+    end
 
-    p_m1 = range(0,  1, length = 50)
-    f0 = clamp.(pdf.(Ref(Beta(1, 1)), p_m1), 1e-8, Inf)
-    f0 = f0 / sum(f0)
-    f1 = clamp.(pdf.(Ref(Beta(9, 9)), p_m1), 1e-8, Inf)
-    f1 = f1 / sum(f1);
+We can simulate an agent facing a problem and the outcome with the following function
 
-    wf = WaldFriedman(0.5, 5.0, 5.0, f0, f1; m=251)
-    J2 = compute_fixed_point(x -> bellman_operator(wf, x), zeros(wf.m), err_tol=1e-6, print_skip=5)
+.. code-block:: julia
 
-    @printf("If this is true then both approaches gave same answer:\n")
-    print(isapprox(J1, J2; atol=1e-5))
+    function simulation(problem)
+        @unpack d0, d1, L0, L1, c, p, n, return_output = problem
+        α, β = decision_rule(d0, d1, L0, L1, c)
+        outcomes = fill(false, n)
+        costs = fill(0.0, n)
+        trials = fill(0, n)
+        for trial in 1:n
+            # Nature chooses
+            truth = rand(1:2)
+            # The true distribution and loss are defined based on the truth
+            d = (d0, d1)[truth]
+            l = (L0, L1)[truth]
+            t = 0
+            choice = 0
+            while iszero(choice)
+                t += 1
+                outcome = rand(d)
+                p = bayes_update(p, d0, d1)
+                if p <= β
+                    choice = 1
+                elseif p >= α
+                    choice = 2
+                end
+            end
+            correct = choice == truth
+            cost = t * c + (correct ? 0 : l)
+            outcomes[trial] = correct
+            costs[trial] = cost
+            trials[trial] = t
+        end
+        @printf("\nCorrect: %.2f\nAverage Cost: %.2f\nAverage number of trials: %.2f",
+                mean(outcomes), mean(costs), mean(trials))
+        return return_output ? (α, β, outcomes, costs, trials) : nothing
+    end
+
+    Problem = @with_kw (d0 = Beta(1,1), d1 = Beta(9,9),
+                        L0 = 2, L1 = 2,
+                        c = 0.2, p = 0.5,
+                        n = 100, return_output = false);
+
 
 .. code-block:: julia
     :class: test
 
-    @testset "Second Calculation Tests" begin
-        @test J1 ≈ J2 atol = 1e-5
+    @testset "Verifying Output" begin
+        Random.seed!(0)
+        @unpack d0, d1, L0, L1, c = Problem()
+        α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
+        @test α ≈ 0.57428237
+        @test β ≈ 0.352510338
+        @test mean(outcomes) ≈ 0.58
+        @test mean(costs) ≈ 1.12
+        @test mean(trials) ≈ 1.4
+        choices = first.(choice.((clamp(β - eps(), 0, 1),
+                                  clamp(β + eps(), 0, 1),
+                                  clamp(α - eps(), 0, 1),
+                                  clamp(α + eps(), 0, 1)),
+                                  d0, d1, L0, L1, c))
+        @test choices[1] == 2
+        @test choices[2] ≠ 2
+        @test choices[3] ≠ 1
+        @test choices[4] == 1
     end
-
-We get the same output in terms of distance
-
-
-The approximate value functions produced are also the same
-
-Rather than discuss this further, let's go ahead and use our code to generate some results
-
-
-Analysis
-=====================
-
-Now that our routines are working, let's inspect the solutions
-
-We'll start with the following parameterization
-
 
 .. code-block:: julia
 
-  function analysis_plot(;c = 1.25, L0 = 27.0, L1 = 27.0, a0 = 2.5, b0 = 2.0,
-                         a1 = 2.0, b1 = 2.5, m = 251)
-      f0 = pdf.(Ref(Beta(a0, b0)), range(0,  1, length = m))
-      f0 = f0 / sum(f0)
-      f1 = pdf.(Ref(Beta(a1, b1)), range(0,  1, length = m))
-      f1 = f1 / sum(f1)  # Make sure sums to 1
-
-      # Create an instance of our WaldFriedman class
-      wf = WaldFriedman(c, L0, L1, f0, f1; m = m);
-
-      # Solve and simulate the solution
-      cdist, tdist = stopping_dist(wf; ndraws = 5000)
-
-      a = plot([f0 f1],
-          xlabel = L"$k$ Values",
-          ylabel = L"Probability of $z_k$",
-          labels = [L"$f_0$" L"$f_1$"],
-          linewidth = 2,
-          title= " Distributions over Outcomes")
-
-      b = plot(wf.pgrid, wf.sol.J,
-               xlabel = L"$p_k$",
-               ylabel = "Value of Bellman",
-               linewidth = 2,
-               title = "Bellman Equation")
-      plot!(fill(wf.sol.lb, 2), [minimum(wf.sol.J); maximum(wf.sol.J)],
-            linewidth = 2, color = :black, linestyle = :dash, label = "",
-            ann = (wf.sol.lb-0.05, 5., L"\beta"))
-      plot!(fill(wf.sol.ub, 2), [minimum(wf.sol.J); maximum(wf.sol.J)],
-            linewidth = 2, color = :black, linestyle = :dash, label = "",
-            ann = (wf.sol.ub+0.02, 5., L"\alpha"), legend = :none)
-
-      counts = [sum(tdist .== i) for i in 1:maximum(tdist)]
-
-      c = bar(counts,
-              xticks = 0:1:maximum(tdist),
-              xlabel = "Time",
-              ylabel = "Frequency",
-              title = "Stopping Times",
-              legend = :none)
-
-      counts = [sum(cdist .== i-1) for i in 1:2]
-
-      d = bar([0; 1],
-              counts,
-              xticks = [0; 1],
-              title = "Correct Decisions",
-              ann = (0.0, 0.6 * sum(cdist),
-                     "Percent Correct = $(sum(cdist)/length(cdist))"),
-              legend = :none)
-
-      plot(a, b, c, d, layout = (2, 2), size = (1200, 800))
-  end
-
-  analysis_plot()
+    Random.seed!(0);
+    simulation(Problem());
 
 .. code-block:: julia
     :class: test
 
-    # These tests need to be eyeballed, AFAIK, since the function above doesn't return anything.
-
-
-The code to generate this figure can be found in `wald_solution_plots.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/wald_friedman/wald_solution_plots.jl>`__
-
-Value Function
------------------
-
-In the top left subfigure we have the two beta distributions, :math:`f_0` and :math:`f_1`
-
-In the top right we have corresponding value function :math:`J`
-
-It equals :math:`p L_1` for :math:`p \leq \beta`, and :math:`(1-p )L_0` for :math:`p
-\geq \alpha`
-
-The slopes of the two linear pieces of the value function are determined by :math:`L_1`
-and :math:`- L_0`
-
-The value function is smooth in the interior region, where the posterior
-probability assigned to :math:`f_0` is in the indecisive region :math:`p \in (\beta, \alpha)`
-
-The decision maker continues to sample until the probability that he attaches to model :math:`f_0` falls below :math:`\beta` or above :math:`\alpha`
-
-
-Simulations
------------------
-
-The bottom two subfigures show the outcomes of 500 simulations of the decision process
-
-On the left is a histogram of the stopping times, which equal the number of draws of :math:`z_k` required to make a decision
-
-The average number of draws is around 6.6
-
-On the right is the fraction of correct decisions at the stopping time
-
-In this case the decision maker is correct 80% of the time
-
+    @testset "Comparative Statics" begin
+        Random.seed!(0)
+        @unpack d0, d1, L0, L1, c = Problem()
+        α, β, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
+        @test α ≈ 0.53551172
+        @test β ≈ 0.41244737
+        @test mean(outcomes) ≈ 0.57
+        @test mean(costs) ≈ 1.348
+        @test mean(trials) ≈ 1.22
+        choices = first.(choice.((clamp(β - eps(), 0, 1),
+                                  clamp(β + eps(), 0, 1),
+                                  clamp(α - eps(), 0, 1),
+                                  clamp(α + eps(), 0, 1)),
+                                  d0, d1, L0, L1, 2c))
+        @test choices[1] == 2
+        @test choices[2] ≠ 2
+        @test choices[3] ≠ 1
+        @test choices[4] == 1
+    end
 
 Comparative statics
 ----------------------
@@ -870,40 +564,20 @@ Before you look, think about what will happen:
 
 -  Will he make decisions sooner or later?
 
-
 .. code-block:: julia
 
-  analysis_plot(c = 2.5)
+    Random.seed!(0);
+    simulation(Problem(c = 0.4));
 
+Notice what happens?
 
-Notice what happens
+The average number of trials decreased.
 
-The stopping times dropped dramatically!
+Increased cost per draw has induced the decision maker to decide in 0.18 less trials on average.
 
-Increased cost per draw has induced the decision maker usually to take only 1 or 2 draws before deciding
+Because he decides with less experience, the percentage of time he is correct drops.
 
-Because he decides with less, the percentage of time he is correct drops
-
-This leads to him having a higher expected loss when he puts equal weight on both models
-
-
-A notebook implementation
----------------------------
-
-
-To facilitate comparative statics, we provide a `Jupyter notebook <http://nbviewer.jupyter.org/github/QuantEcon/QuantEcon.notebooks/blob/master/Wald_Friedman_jl.ipynb>`__ that generates the same plots, but with sliders
-
-
-With these sliders you can adjust parameters and immediately observe
-
-*  effects on the smoothness of the value function in the indecisive middle range as we increase the number of grid points in the piecewise linear  approximation.
-
-* effects of different settings for the cost parameters :math:`L_0, L_1, c`, the parameters of two beta distributions :math:`f_0` and :math:`f_1`, and the number of points and linear functions :math:`m` to use in the piece-wise continuous approximation to the value function.
-
-* various simulations from :math:`f_0` and associated distributions of waiting times to making a decision
-
-* associated histograms of correct and incorrect decisions
-
+This leads to him having a higher expected loss when he puts equal weight on both models.
 
 Comparison with Neyman-Pearson formulation
 =============================================
@@ -913,9 +587,8 @@ that Navy Captain G. S. Schuyler had been told to use and that led him
 to approach Milton Friedman and Allan Wallis to convey his conjecture
 that superior practical procedures existed
 
-Evidently, the Navy had told
-Captail Schuyler to use what it knew to be a state-of-the-art
-Neyman-Pearson test
+Evidently, the Navy had told Captail Schuyler to use what it knew to be a
+state-of-the-art Neyman-Pearson test
 
 We'll rely on Abraham Wald's :cite:`Wald47` elegant summary of Neyman-Pearson theory
 
@@ -1043,16 +716,14 @@ Wald summarizes Neyman and Pearson's setup as follows:
 -  Neyman and Pearson show that a region consisting of all samples
    :math:`(z_1, z_2, \ldots, z_n)` which satisfy the inequality
 
-    .. math::
+   .. math::
 
         \frac{ f_1(z_1) \cdots f_1(z_n)}{f_0(z_1) \cdots f_1(z_n)} \geq k
-
 
    is a most powerful critical region for testing the hypothesis
    :math:`H_0` against the alternative hypothesis :math:`H_1`. The term
    :math:`k` on the right side is a constant chosen so that the region
    will have the required size :math:`\alpha`.
-
 
 Wald goes on to discuss Neyman and Pearson's concept of *uniformly most
 powerful* test.

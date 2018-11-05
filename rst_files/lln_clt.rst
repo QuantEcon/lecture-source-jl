@@ -34,20 +34,7 @@ In addition, we examine several useful extensions of the classical theorems, suc
 
 * The multivariate case
 
-
 Some of these extensions are presented as exercises
-
-Setup
-------------------
-
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
 
 Relationships
 ==================
@@ -57,7 +44,6 @@ The CLT refines the LLN
 The LLN gives conditions under which sample moments converge to population moments as sample size increases
 
 The CLT provides information about the rate at which sample moments converge to population moments as sample size increases
-
 
 .. _lln_mr:
 
@@ -89,13 +75,11 @@ When it exists, let :math:`\mu` denote the common mean of this sample:
 
     \mu := \mathbb E X = \int x F(dx)
 
-
 In addition, let
 
 .. math::
 
     \bar X_n := \frac{1}{n} \sum_{i=1}^n X_i
-
 
 Kolmogorov's strong law states that, if :math:`\mathbb E |X|` is finite, then
 
@@ -103,7 +87,6 @@ Kolmogorov's strong law states that, if :math:`\mathbb E |X|` is finite, then
     :label: lln_as
 
     \mathbb P \left\{ \bar X_n \to \mu \text{ as } n \to \infty \right\} = 1
-
 
 What does this last expression mean?
 
@@ -139,7 +122,6 @@ then, for any :math:`\epsilon > 0`, we have
     \quad \text{as} \quad
     n \to \infty
 
-
 (This version is weaker because we claim only `convergence in probability <https://en.wikipedia.org/wiki/Convergence_of_random_variables#Convergence_in_probability>`_ rather than `almost sure convergence <https://en.wikipedia.org/wiki/Convergence_of_random_variables#Almost_sure_convergence>`_, and assume a finite second moment)
 
 To see that this is so, fix :math:`\epsilon > 0`, and let :math:`\sigma^2` be the variance of each :math:`X_i`
@@ -151,7 +133,6 @@ Recall the `Chebyshev inequality <https://en.wikipedia.org/wiki/Chebyshev%27s_in
 
     \mathbb P \left\{ | \bar X_n - \mu | \geq \epsilon \right\}
     \leq \frac{\mathbb E [ (\bar X_n - \mu)^2]}{\epsilon^2}
-
 
 Now observe that
 
@@ -170,7 +151,6 @@ Now observe that
         & = \frac{\sigma^2}{n} \nonumber
     \end{aligned}
 
-
 Here the crucial step is at the third equality, which follows from
 independence
 
@@ -185,7 +165,6 @@ Combining our last result with :eq:`lln_cheb`, we come to the estimate
 
     \mathbb P \left\{ | \bar X_n - \mu | \geq \epsilon \right\}
     \leq \frac{\sigma^2}{n \epsilon^2}
-
 
 The claim in :eq:`lln_ip` is now clear
 
@@ -223,81 +202,58 @@ The dots represent the underlying observations :math:`X_i` for :math:`i = 1, \ld
 
 In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occurs as predicted
 
-.. code-block:: julia 
-    :class: test 
+Setup
+------------------
 
-    using Test 
+.. literalinclude:: /_static/includes/deps.jl
+
+.. code-block:: julia
+    :class: test
+
+    using Test
 
 .. code-block:: julia
 
-    using Plots, Distributions, LaTeXStrings, Random, Statistics
-    gr(fmt=:png)
-    
-    n = 100
-    Random.seed!(42)  # reproducible results
+    using StatPlots, Distributions, Random, Statistics
+    gr(fmt = :png, size = (900, 500))
 
-    # == Arbitrary collection of distributions == #
-    distributions = Dict("student's t with 10 degrees of freedom" => TDist(10),
-        "β(2, 2)" => Beta(2.0, 2.0),
-        "lognormal LN(0, 1/2)" => LogNormal(0.5),
-        "γ(5, 1/2)" => Gamma(5.0, 2.0),
-        "poisson(4)" => Poisson(4),
-        "exponential with lambda = 1" => Exponential(1))
+.. code-block:: julia
 
-    num_plots = 3
-    dist_data = zeros(num_plots, n)
-    sample_means = []
-    dist_means = []
-    titles = []
-    for i ∈ 1:num_plots
-        dist_names = collect(keys(distributions))
-        # == Choose a randomly selected distribution == #
-        name = dist_names[rand(1:length(dist_names))]
-        dist = pop!(distributions, name)
-
-        # == Generate n draws from the distribution == #
-        data = rand(dist, n)
-
-        # == Compute sample mean at each n == #
-        sample_mean = zeros(n)
-        for j ∈ 1:n
-            sample_mean[j] = mean(data[1:j])
+    function ksl(distribution, n = 100)
+        title = nameof(typeof(distribution))
+        observations = rand(distribution, n)
+        sample_means = cumsum(observations) ./ (1:n)
+        μ = mean(distribution)
+        plot(repeat((1:n)', 2),
+             [zeros(1, n); observations'], label = "", color = :grey, alpha = 0.5)
+        plot!(1:n, observations, color = :grey, markershape = :circle,
+              alpha = 0.5, label = "", linewidth = 0)
+        if !isnan(μ)
+            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false, label = ["Mean"])
         end
-
-        m = mean(dist)
-
-        dist_data[i, :] = data'
-        push!(sample_means, sample_mean)
-        push!(dist_means, m * ones(n))
-        push!(titles, name)
-
+        plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green, label = "Sample mean")
+        return plot!(title = title)
     end
 
-    # == Plot == #
-    N = repeat(reshape(repeat(1:n, 1, num_plots)', 1, n * num_plots), 2, 1)
-    heights = [zeros(1, n * num_plots); reshape(dist_data, 1, n * num_plots)]
-    plot(N, heights, layout = (3, 1), label = "", color = :grey, alpha = 0.5)
-    plot!(1:n, dist_data', layout = (3, 1), color = :grey, markershape=:circle,
-        alpha = 0.5, label = "", linewidth = 0)
-    plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green, legend = :topleft,
-        layout = (3, 1), label = [LaTeXString("\$\\bar{X}_n\$") "" ""])
-    plot!(1:n, dist_means, color = :black, linewidth = 1.5, layout = (3, 1),
-        linestyle = :dash, grid = false, label = [LaTeXString("\$\\mu\$") "" ""])
-    plot!(title = reshape(titles, 1, length(titles)))
+.. code-block:: julia
 
-.. code-block:: julia 
-    :class: test 
+    distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5), Exponential(1)]
 
-    @testset "First block" begin
-        @test sample_means[1][3] ≈ 0.3028346957143721 atol = 1e-10
-        @test titles == Any["exponential with lambda = 1", "lognormal LN(0, 1/2)", "β(2, 2)"]
-        @test dist_data[3, 5] ≈ 0.12935926689122224 atol = 1e-10
-    end 
+Here is in an example for the standard normal distribution
 
+.. code-block:: julia
 
-The three distributions are chosen at random from a selection stored in the dictionary ``distributions``
+    ksl(Normal())
 
+.. code-block:: julia
 
+    Random.seed!(0); # reproducible results
+
+.. code-block:: julia
+
+    plot(ksl.(sample(distributions, 3, replace = false))..., layout = (3, 1), legend = false)
+
+The three distributions are chosen at random from `distributions`
 
 Infinite Mean
 ----------------
@@ -311,66 +267,35 @@ known example is the Cauchy distribution, which has density
 
     f(x) = \frac{1}{\pi (1 + x^2)} \qquad (x \in \mathbb R)
 
-
 The next figure shows 100 independent draws from this distribution
-
-
 
 .. code-block:: julia
 
-  Random.seed!(12)  # reproducible results
-  n = 200
-  dist = Cauchy()
-  data = rand(dist, n)
+    Random.seed!(0); # reproducible results
 
-  function plot_draws()
-      t = "$n observations from the Cauchy distribution"
-      N = repeat(1.0:n, 1, 2)'
-      heights = [zeros(1,n); data']
-      plot(1:n, data, color = :blue, markershape=:circle,
-           alpha = 0.5, title = t, legend = :none, linewidth = 0)
-      plot!(N, heights, linewidth = 0.5, color = :blue)
-  end
+.. code-block:: julia
 
-  plot_draws()
-
-.. code-block:: julia 
-    :class: test 
-
-    @testset "Second block" begin
-        @test data[100] ≈ 0.0034392986762718037 atol = 1e-10
-        @test isa(dist, Cauchy) # Make sure dist is bound correctly. 
-    end 
-
+    ksl(Cauchy())
 
 Notice how extreme observations are far more prevalent here than the previous figure
 
 Let's now have a look at the behavior of the sample mean
 
+.. code-block:: julia
 
+    Random.seed!(0); # reproducible results
 
 .. code-block:: julia
 
-  function plot_means()
-      # == Compute sample mean at each n == #
-      sample_mean = zeros(n)
-      for i ∈ 1:n
-          sample_mean[i] = mean(data[1:i])
-      end
+    function plot_means(n = 1000)
+        sample_mean = cumsum(rand(Cauchy(), n)) ./ (1:n)
+        plot(1:n, sample_mean, color = :red, alpha = 0.6, label = "Sample Mean", linewidth = 3)
+        return hline!([0], color = :black, linestyle = :dash, label = "", grid = false)
+    end
 
-      # == Plot == #
-      plot(1:n, sample_mean, color = :red,
-           alpha = 0.6, label = L"$\bar{X}_n$",
-           linewidth = 3, legendfont = font(12))
-      plot!(1:n, zeros(n), color = :black,
-            linewidth = 1, linestyle = :dash, label = "", grid = false)
-  end
+    plot_means()
 
-  plot_means()
-
-
-Here we've increased :math:`n` to 1000, but the sequence still shows no sign
-of converging
+Here we've increased :math:`n` to 1000, but the sequence still shows no sign of converging
 
 Will convergence become visible if we take :math:`n` even larger?
 
@@ -382,7 +307,6 @@ To see this, recall that the `characteristic function <https://en.wikipedia.org/
     :label: lln_cch
 
     \phi(t) = \mathbb E e^{itX} = \int e^{i t x} f(x) dx = e^{-|t|}
-
 
 Using independence, the characteristic function of the sample mean becomes
 
@@ -398,13 +322,11 @@ Using independence, the characteristic function of the sample mean becomes
         = [\phi(t/n)]^n
     \end{aligned}
 
-
 In view of :eq:`lln_cch`, this is just :math:`e^{-|t|}`
 
 Thus, in the case of the Cauchy distribution, the sample mean itself has the very same Cauchy distribution, regardless of :math:`n`
 
 In particular, the sequence :math:`\bar X_n` does not converge to a point
-
 
 CLT
 ==================
@@ -413,7 +335,6 @@ CLT
     single: Central Limit Theorem
 
 Next we turn to the central limit theorem, which tells us about the distribution of the deviation between sample averages and population means
-
 
 Statement of the Theorem
 ---------------------------
@@ -433,7 +354,6 @@ If the sequence :math:`X_1, \ldots, X_n` is IID, with common mean
     \sqrt{n} ( \bar X_n - \mu ) \stackrel { d } {\to} N(0, \sigma^2)
     \quad \text{as} \quad
     n \to \infty
-
 
 Here :math:`\stackrel { d } {\to} N(0, \sigma^2)` indicates `convergence in distribution <https://en.wikipedia.org/wiki/Convergence_of_random_variables#Convergence_in_distribution>`_ to a centered (i.e, zero mean) normal with standard deviation :math:`\sigma`
 
@@ -468,31 +388,14 @@ The next figure plots the probability mass function of :math:`Y_n` for :math:`n 
 
 .. code-block:: julia
 
-  Random.seed!(42)  # reproducible results
-    ns = [1, 2, 4, 8]
-    dom = 0:9
+    binomial_pdf(n) =
+        bar(0:n, pdf.(Binomial(n), 0:n),
+            xticks = 0:10, ylim = (0, 1), yticks = 0:0.1:1,
+            label = "Binomial($n, 0.5)", legend = :topleft)
 
-    pdfs = []
-    titles = []
-    for n ∈ ns
-        b = Binomial(n, 0.5)
-        push!(pdfs, pdf.(Ref(b), dom))
-        t = LaTeXString("\$n = $n\$")
-        push!(titles, t)
-    end
+.. code-block:: julia
 
-    bar(dom, pdfs, layout = 4, alpha = 0.6, xlims = (-0.5, 8.5), ylims = (0, 0.55),
-        xticks = dom, yticks = [0.0, 0.2, 0.4], legend = :none,
-        title = reshape(titles, 1, length(titles)))
-
-.. code-block:: julia 
-    :class: test 
-
-    @testset "CLT Tests" begin
-        @test pdfs[4][3] ≈ 0.10937500000000006 atol = 1e-10
-        @test dom ⊆ 0:9 && 0:9 ⊆ dom # Ensure that this set is invariant. 
-    end 
-
+    plot(binomial_pdf.((1,2,4,8))...)
 
 When :math:`n = 1`, the distribution is flat --- one success or no successes
 have the same probability
@@ -519,7 +422,6 @@ If we continue, the bell-shaped curve becomes ever more pronounced
 
 We are witnessing the `binomial approximation of the normal distribution <https://en.wikipedia.org/wiki/De_Moivre%E2%80%93Laplace_theorem>`_
 
-
 Simulation 1
 ----------------
 
@@ -540,49 +442,25 @@ Here's some code that does exactly this for the exponential distribution
 
 (Please experiment with other choices of :math:`F`, but remember that, to conform with the conditions of the CLT, the distribution must have finite second moment)
 
+.. code-block:: julia
+
+    function simulation1(distribution, n = 250, k = 10_000)
+        σ = std(distribution)
+        y = rand(distribution, n, k)
+        y .-= mean(distribution)
+        y = mean(y, dims = 1)
+        y = √n * vec(y)
+        density(y, label = "Empirical Distribution")
+        return plot!(Normal(0, σ), linestyle = :dash, color = :black, label = "Normal(0.00, $(σ^2))")
+    end
 
 .. code-block:: julia
 
-  # == Set parameters == #
-  Random.seed!(42)  # reproducible results
-
-    n = 250    # Choice of n
-    k = 10000  # Number of draws of Y_n
-    dist = Exponential(1 ./ 2.)  # Exponential distribution, lambda = 1/2
-    μ, s = mean(dist), std(dist)
-
-    # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
-    data = rand(dist, k, n)
-
-    # == Compute mean of each row, producing k draws of \bar X_n == #
-    sample_means = mean(data, dims = 2)
-
-    # == Generate observations of Y_n == #
-    Y = sqrt(n) * (sample_means .- μ)
-
-    # == Plot == #
-    xmin, xmax = -3 * s, 3 * s
-    histogram(Y, nbins = 60, alpha = 0.5, xlims = (xmin, xmax),
-            norm = true, label = "")
-    xgrid = range(xmin, xmax, length = 200)
-    plot!(xgrid, pdf.(Ref(Normal(0.0, s)), xgrid), color = :black,
-        linewidth = 2, label = LaTeXString("\$N(0, \\sigma^2=$(s^2))\$"),
-        legendfont = font(12))
-
-.. code-block:: julia 
-    :class: test 
-
-    @testset "Histogram tests" begin
-        @test Y[5] ≈ 0.040522717350285495 atol = 1e-10
-        @test xmin == -1.5 && xmax == 1.5 # Ensure this doesn't change. 
-        @test μ == 0.5 && s == 0.5 # Ensure this is immune to reparametrization, etc. 
-    end 
-
+    simulation1(Exponential(0.5))
 
 The fit to the normal density is already tight, and can be further improved by increasing ``n``
 
 You can also experiment with other specifications of :math:`F`
-
 
 Simulation 2
 --------------
@@ -605,95 +483,35 @@ specified as the convex combination of three different beta densities
 
 (Taking a convex combination is an easy way to produce an irregular shape for :math:`f`)
 
-In the figure, the closest density is that of :math:`Y_1`, while the furthest is that of
-:math:`Y_5`
+.. code-block:: julia
+
+    function simulation2(distribution = Beta(2, 2), n = 5, k = 10_000)
+        y = rand(distribution, k, n)
+        for col in 1:n
+            y[:,col] += rand([-0.5, 0.6, -1.1], k)
+        end
+        y = (y .- mean(distribution)) ./ std(distribution)
+        y = cumsum(y, dims = 2) ./ sqrt.(1:5)' # return grid of data
+    end
 
 .. code-block:: julia
 
-  using KernelDensity
-
-  beta_dist = Beta(2.0, 2.0)
-
-
-  function gen_x_draws(k)
-      bdraws = rand(beta_dist, 3, k)
-
-      # == Transform rows, so each represents a different distribution == #
-      bdraws[1, :] .-= 0.5
-      bdraws[2, :] .+= 0.6
-      bdraws[3, :] .-= 1.1
-
-      # == Set X[i] = bdraws[j, i], where j is a random draw from {1, 2, 3} == #
-      js = rand(1:3, k)
-      X = zeros(k)
-      for i ∈ 1:k
-          X[i]=  bdraws[js[i], i]
-      end
-
-      # == Rescale, so that the random variable is zero mean == #
-      m, sigma = mean(X), std(X)
-      return (X .- m) ./ sigma
-  end
-
-    nmax = 5
-    reps = 100000
-    ns = 1:nmax
-
-    # == Form a matrix Z such that each column is reps independent draws of X == #
-    Z = zeros(reps, nmax)
-    for i ∈ ns
-        Z[:, i] = gen_x_draws(reps)
+    ys = simulation2()
+    plots = [] # would preallocate in optimized code
+    for i in 1:size(ys, 2)
+        p = density(ys[:, i], linealpha = i, title = "n = $i")
+        push!(plots, p)
     end
 
-    # == Take cumulative sum across columns
-    S = cumsum(Z, dims = 2)
+    plot(plots..., legend = false)
 
-    # == Multiply j-th column by sqrt j == #
-    Y = S .* (1. ./ sqrt.(ns))'
-
-    # == Plot == #
-    a, b = -3, 3
-    gs = 100
-    xs = range(a, b, length = gs)
-
-    x_vec = []
-    y_vec = []
-    z_vec = []
-    colors = []
-    for n ∈ ns
-        kde_est = kde(Y[:, n])
-        _xs, ys = kde_est.x, kde_est.density
-        push!(x_vec, collect(_xs))
-        push!(y_vec, ys)
-        push!(z_vec, collect(n*ones( length(_xs))))
-        push!(colors, RGBA(0, 0, 0, 1-(n-1)/nmax))
-    end
-
-    plot(x_vec, z_vec, y_vec, color = reshape(colors,1,length(colors)),
-        legend = :none)
-    plot!(xlims = (a,b), xticks = [-3; 0; 3], ylims = (1, nmax), yticks = ns,
-        ylabel = "n", xlabel = "\$ Y_n \$", zlabel = "\$ p(y_n) \$",
-        zlims=(0, 0.4), zticks=[0.2; 0.4])
-
-.. code-block:: julia 
-    :class: test 
-
-    @testset "Kernel Density tests" begin
-        @test Y[4] ≈ -0.4011927141138582 atol = 1e-10
-        @test x_vec[1][3] ≈ -2.0682375953288794 atol = 1e-10
-        @test length(xs) == 100 && xs[1] == -3.0 && xs[end] == 3.0
-    end 
-
-
-As expected, the distribution smooths out into a bell curve as :math:`n`
-increases
+As expected, the distribution smooths out into a bell curve as :math:`n` increases
 
 We leave you to investigate its contents if you wish to know more
 
 If you run the file from the ordinary Julia or IJulia shell, the figure should pop up in a
 window that you can rotate with your mouse, giving different views on the
 density sequence
-
 
 .. _multivariate_clt:
 
@@ -705,7 +523,6 @@ The Multivariate Case
 
 .. index::
     single: Central Limit Theorem; Multivariate Case
-
 
 The law of large numbers and central limit theorem work just as nicely in multidimensional settings
 
@@ -722,7 +539,6 @@ A collection of random vectors :math:`\mathbf X_1, \ldots, \mathbf X_n` is calle
     \mathbb P\{\mathbf X_1 \leq \mathbf x_1,\ldots, \mathbf X_n \leq \mathbf x_n \}
     = \mathbb P\{\mathbf X_1 \leq \mathbf x_1 \}
     \times \cdots \times \mathbb P\{ \mathbf X_n \leq \mathbf x_n \}
-
 
 (The vector inequality :math:`\mathbf X \leq \mathbf x` means that :math:`X_j \leq x_j` for :math:`j = 1,\ldots,k`)
 
@@ -753,7 +569,6 @@ The expectation :math:`\mathbb E [\mathbf X]` of :math:`\mathbf X` is defined to
     \right)
     =: \boldsymbol \mu
 
-
 The *variance-covariance matrix* of random vector :math:`\mathbf X` is defined as
 
 .. math::
@@ -761,7 +576,6 @@ The *variance-covariance matrix* of random vector :math:`\mathbf X` is defined a
     \Var[\mathbf X]
     := \mathbb E
     [ (\mathbf X - \boldsymbol \mu) (\mathbf X - \boldsymbol \mu)']
-
 
 Expanding this out, we get
 
@@ -781,7 +595,6 @@ Expanding this out, we get
     \end{array}
     \right)
 
-
 The :math:`j,k`-th term is the scalar covariance between :math:`X_j` and
 :math:`X_k`
 
@@ -800,14 +613,12 @@ Interpreting vector addition and scalar multiplication in the usual way (i.e., p
 
     \bar{\mathbf X}_n := \frac{1}{n} \sum_{i=1}^n \mathbf X_i
 
-
 In this setting, the LLN tells us that
 
 .. math::
     :label: lln_asmv
 
     \mathbb P \left\{ \bar{\mathbf X}_n \to \boldsymbol \mu \text{ as } n \to \infty \right\} = 1
-
 
 Here :math:`\bar{\mathbf X}_n \to \boldsymbol \mu` means that :math:`\| \bar{\mathbf X}_n - \boldsymbol \mu \| \to 0`, where :math:`\| \cdot \|` is the standard Euclidean norm
 
@@ -820,10 +631,8 @@ The CLT tells us that, provided :math:`\Sigma` is finite,
     \quad \text{as} \quad
     n \to \infty
 
-
 Exercises
 =============
-
 
 .. _lln_ex1:
 
@@ -844,7 +653,6 @@ If :math:`g \colon \mathbb R \to \mathbb R` is differentiable at :math:`\mu` and
     \quad \text{as} \quad
     n \to \infty
 
-
 This theorem is used frequently in statistics to obtain the asymptotic distribution of estimators --- many of which can be expressed as functions of sample means
 
 (These kinds of results are often said to use the "delta method")
@@ -858,7 +666,6 @@ Derive the asymptotic distribution of :math:`\sqrt{n} \{ g(\bar X_n) - g(\mu) \}
 What happens when you replace :math:`[0, \pi / 2]` with :math:`[0, \pi]`?
 
 What is the source of the problem?
-
 
 .. _lln_ex2:
 
@@ -882,7 +689,6 @@ Assume the setting of the multivariate CLT :ref:`discussed above <multivariate_c
 
     \sqrt{n} ( \bar{\mathbf X}_n - \boldsymbol \mu ) \stackrel { d } {\to} N(\mathbf 0, \Sigma)
 
-
 is valid
 
 In a statistical setting, one often wants the right hand side to be **standard** normal, so that confidence intervals are easily computed
@@ -896,14 +702,12 @@ First, if :math:`\mathbf X` is a random vector in :math:`\mathbb R^k` and :math:
     \Var[\mathbf A \mathbf X]
     = \mathbf A \Var[\mathbf X] \mathbf A'
 
-
 Second, by the `continuous mapping theorem <https://en.wikipedia.org/wiki/Continuous_mapping_theorem>`_, if :math:`\mathbf Z_n \stackrel{d}{\to} \mathbf Z` in :math:`\mathbb R^k` and :math:`\mathbf A` is constant and :math:`k \times k`, then
 
 .. math::
 
     \mathbf A \mathbf Z_n
     \stackrel{d}{\to} \mathbf A \mathbf Z
-
 
 Third, if :math:`\mathbf S` is a :math:`k \times k` symmetric positive definite matrix, then there
 exists a symmetric positive definite matrix :math:`\mathbf Q`, called the inverse
@@ -912,7 +716,6 @@ exists a symmetric positive definite matrix :math:`\mathbf Q`, called the invers
 .. math::
 
     \mathbf Q \mathbf S\mathbf Q' = \mathbf I
-
 
 Here :math:`\mathbf I` is the :math:`k \times k` identity matrix
 
@@ -925,7 +728,6 @@ Putting these things together, your first exercise is to show that if
     \stackrel{d}{\to}
     \mathbf Z \sim N(\mathbf 0, \mathbf I)
 
-
 Applying the continuous mapping theorem one more time tells us that
 
 .. math::
@@ -933,7 +735,6 @@ Applying the continuous mapping theorem one more time tells us that
     \| \mathbf Z_n \|^2
     \stackrel{d}{\to}
     \| \mathbf Z \|^2
-
 
 Given the distribution of :math:`\mathbf Z`, we conclude that
 
@@ -944,7 +745,6 @@ Given the distribution of :math:`\mathbf Z`, we conclude that
     \stackrel{d}{\to}
     \chi^2(k)
 
-
 where :math:`\chi^2(k)` is the chi-squared distribution with :math:`k` degrees
 of freedom
 
@@ -953,7 +753,6 @@ of freedom
 Your second exercise is to illustrate the convergence in :eq:`lln_ctc` with a simulation
 
 In doing so, let
-
 
 .. math::
 
@@ -966,7 +765,6 @@ In doing so, let
     \end{array}
     \right)
 
-
 where
 
 * each :math:`W_i` is an IID draw from the uniform distribution on :math:`[-1, 1]`
@@ -978,56 +776,31 @@ Hints:
 #. ``sqrt(A::AbstractMatrix{<:Number})`` computes the square root of ``A``.  You still need to invert it
 #. You should be able to work out :math:`\Sigma` from the proceeding information
 
-
 Solutions
 ==========
-
 
 Exercise 1
 ----------
 
 Here is one solution
 
-You might have to modify or delete the lines starting with ``rc``,
-depending on your configuration
+.. code-block:: julia
+    :class: test
+
+    Random.seed!(0);
 
 .. code-block:: julia
 
-    # == Set parameters == #
-    Random.seed!(42)   # reproducible results
-    n = 250     # Choice of n
-    k = 100000  # Number of draws of Y_n
-    dist = Uniform(0, π/2)
-    μ, s = mean(dist), std(dist)
-
-    g = sin
-    g′ = cos
-
-    # == Draw underlying RVs. Each row contains a draw of X_1,..,X_n == #
-    data = rand(dist, k, n)
-
-    # == Compute mean of each row, producing k draws of \bar X_n == #
-    sample_means = mean(data, dims = 2)
-
-    error_obs = sqrt(n) .* (g.(sample_means) .- g.(μ))
-
-    # == Plot == #
-    asymptotic_sd = g′(μ) .* s
-    xmin = -3 * g′(μ) * s
-    xmax = -xmin
-    histogram(error_obs, nbins = 60, alpha = 0.5, normed = true, label = "")
-    xgrid = range(xmin, xmax, length = 200)
-    plot!(xgrid, pdf.(Ref(Normal(0.0, asymptotic_sd)), xgrid), color = :black,
-        linewidth = 2, label = LaTeXString("\$N(0, g'(\\mu)^2\\sigma^2\$)"),
-        legendfont = font(12), xlims = (xmin, xmax), grid = false)
-
-.. code-block:: julia
-    :class: test 
-
-    @testset "Exercise 1 Tests" begin
-        @test asymptotic_sd ≈ 0.320637457540466 atol = 1e-10
-        @test error_obs[4] ≈ -0.08627184475065548 atol = 1e-10
-    end 
+    function exercise1(distribution = Uniform(0, π/2); n = 250, k = 10_000, g = sin, g′ = cos)
+        μ, σ = mean(distribution), std(distribution)
+        y = rand(distribution, n, k)
+        y = mean(y, dims = 1)
+        y = vec(y)
+        error_obs = sqrt(n) .* (g.(y) .- g.(μ))
+        density(error_obs, label = "Empirical Density")
+        return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic", color = :black)
+    end
+    exercise1()
 
 What happens when you replace :math:`[0, \pi / 2]` with
 :math:`[0, \pi]`?
@@ -1044,7 +817,6 @@ First we want to verify the claim that
 
 .. math::
 
-
        \sqrt{n} \mathbf Q ( \bar{\mathbf X}_n - \boldsymbol \mu )
        \stackrel{d}{\to}
        N(\mathbf 0, \mathbf I)
@@ -1055,7 +827,6 @@ Let
 
 .. math::
 
-
        \mathbf Y_n := \sqrt{n} ( \bar{\mathbf X}_n - \boldsymbol \mu )
        \quad \text{and} \quad
        \mathbf Y \sim N(\mathbf 0, \Sigma)
@@ -1063,7 +834,6 @@ Let
 By the multivariate CLT and the continuous mapping theorem, we have
 
 .. math::
-
 
        \mathbf Q \mathbf Y_n
        \stackrel{d}{\to}
@@ -1076,7 +846,6 @@ Its mean is clearly :math:`\mathbf 0`, and its variance covariance
 matrix is
 
 .. math::
-
 
        \mathrm{Var}[\mathbf Q \mathbf Y]
        = \mathbf Q \mathrm{Var}[\mathbf Y] \mathbf Q'
@@ -1092,51 +861,29 @@ Now we turn to the simulation exercise
 Our solution is as follows
 
 .. code-block:: julia
+    :class: test
 
-    # == Set parameters == #
-    n = 250
-    replications = 50000
-    dw = Uniform(-1, 1)
-    du = Uniform(-2, 2)
-    sw, su = std(dw), std(du)
-    vw, vu = sw^2, su^2
-    Σ = [vw    vw
-        vw vw+vu]
+    Random.seed!(0);
 
-    # == Compute Σ^{-1/2} == #
-    Q = inv(sqrt(Σ))
+.. code-block:: julia
 
-    # == Generate observations of the normalized sample mean == #
-    error_obs = zeros(2, replications)
-    for i ∈ 1:replications
-        # == Generate one sequence of bivariate shocks == #
-        X = zeros(2, n)
-        W = rand(dw, n)
-        U = rand(du, n)
-
-        # == Construct the n observations of the random vector == #
-        X[1, :] = W
-        X[2, :] = W + U
-
-        # == Construct the i-th observation of Y_n == #
-        error_obs[:, i] = sqrt(n) .* mean(X, dims = 2)
+    function exercise2(;n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 2))
+        vw = var(dw)
+        vu = var(du)
+        Σ = [vw    vw
+             vw vw + vu]
+        Q = inv(sqrt(Σ))
+        function generate_data(dw, du, n)
+            dw = rand(dw, n)
+            X = [dw dw + rand(du, n)]
+            return sqrt(n) * mean(X, dims = 1)
+        end
+        X = mapreduce(x -> generate_data(dw, du, n), vcat, 1:k)
+        X = Q * X'
+        X = sum(abs2, X, dims = 1)
+        X = vec(X)
+        density(X, label = "", xlim = (0, 10))
+        return plot!(Chisq(2), color = :black, linestyle = :dash,
+                     label = "Chi-squared with 2 degrees of freedom", grid = false)
     end
-
-    chisq_obs = dropdims(sum(abs2, Q * error_obs, dims = 1), dims = 1)
-
-    # == Plot == #
-    xmin, xmax = 0, 8
-    histogram(chisq_obs, nbins = 50, normed = true, label = "")
-    xgrid = range(xmin, xmax, length = 200)
-    plot!(xgrid, pdf.(Ref(Chisq(2)), xgrid), color = :black,
-        linewidth = 2, label = "Chi-squared with 2 degrees of freedom",
-        legendfont = font(12), xlims = (xmin, xmax), grid = false)
-
-.. code-block:: julia 
-    :class: test 
-
-    @testset "Exercise 2 Tests" begin
-        @test chisq_obs[14] ≈ 0.6562777108377652 atol = 1e-10
-        @test error_obs[2, 7] ≈ 1.1438399952303242 atol = 1e-10
-        @test length(xgrid) == 200 && xgrid[1] == 0.0 && xgrid[end] == 8.0
-    end  
+    exercise2()

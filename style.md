@@ -9,6 +9,7 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 1. Assume this may be the **first programming language** students learn
 2. Use **compact, script-style** code, organized into functions only when it is natural.  Best practices for writing packages and expository/exploratory/interactive code can be different.
 3. Keep things as **close to the whiteboard math** as possible, including in the code structure and notation
+4. **Don't be clever**, be clear.  Terse is not a virtue unless the terseness makes the code clearer, or closer to the whiteboard math
 4. Maintain this **correspondence between math and code** even if the code is less efficient.  Only optimize if it is really necessary.
 5. Ensure that all **code can be copied and pasted without modification** into functions for performance and modification without changes to scoping (e.g. no `local` or `global` ever required)
 6. **Avoid type annotations** unless they are required for dispatching
@@ -23,7 +24,7 @@ We want users to be able to say _"the code is clearer than Matlab, and even clos
 
 - **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
-    - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≦` when writing code.
+    - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
     - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.  **TODO** 
 - **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
@@ -121,6 +122,27 @@ f(param)
 ```
 
 ## General Control Structures and Code Organization
+
+- **Return Named Tuples** from functions with multiple return values.  That is,
+
+```julia 
+# BAD
+function foo(x, y, z)
+    return (x, y, z) # Julia does this anyway 
+end 
+
+~, ~, z = foo(x, y, z) # when we want z
+
+# GOOD 
+function foo(x, y, z)
+    return (x = x, y = y, z = z)
+end
+
+# when we want z 
+@unpack z = foo(x, y, z)
+z = foo(x, y, z).z
+``` 
+
 - **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
 ```julia
 # BAD! (unless out is a preallocated and very large vector)
@@ -213,21 +235,15 @@ A = zeros(N,N)
 y = similar(x, N) # keeps things generic.  The `N` here is not required if the same size
 A = similar(x, N, N) # same type but NxN size
 ```
-- **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
+- **Create vector literals with `,`** rather than `;` when possible
 ```julia
-x = [1 0; 0 1]
-
-# note, typeof(Q) ==  LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}
-Q, R = qr(x)
-
-
 # BAD!
-Q = Matrix(Q)
-val = Q * Q' # some calculation using Q and other things
+y = [1; 2; 3]
 
 # GOOD!
-val = Q * Q' # directly, without any conversion
+y = [1, 2, 3]
 ```
+
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
 # BAD!
@@ -297,8 +313,11 @@ for val in x
 end
 n
 
-# BEST!
+# BETTER!
 sum(xval -> xval^2, x) # i.e. transform each x and then reduce
+
+#BEST! keep it simple with broadcasting
+sum(x.^2)
 ```
 
 - **Use `eachindex`** to iterate through matrices and arrays of dimension > 2 as long as you don't need the actual index.  Otherwise,   For example,
@@ -348,15 +367,146 @@ range(0.0, 1.0, length=10)
 
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
+- **Square directly instead of abs2**. There are times where `abs2(x)` is faster than `x^2`, but they are rare, and it is harder to read.
+- **Do not use compehensions or generators simply to avoid a temporary**. That is
+```julia
+x = 1:3
+f(x) = x^2
+
+# BAD (even if sometimes faster)
+sum(f(xval) for xval in x)
+mean(f(xval) for xval in x)
+
+# GOOD!
+sum(f.(x))
+mean(f.(x))
+```
+- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematica, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
+```julia
+# BAD! Tough to mentally parse that this is a nested loop creating a single vector vs. a matrix
+[i + j for i in 1:3 for j in 1:3]
+
+# GOOD! easier to read that this creates an addition table
+[i + j for i in 1:3, j in 1:3]
+
+# OK, and easy enough to read
+X = 1:3
+[x + 1 for x in X]
+
+# BAD! Tough to read since multiple comprehensiosn
+X = 1:3
+Y = [1 2 3]
+
+[x^2 + sum(x * y + 1 for y in Y) for x in X]
+
+# BETTER! Put everything into a function
+f(x) = x^2 + sum(x * y + 1 for y in Y)
+[f(x) for x in X]
+
+#... but at that point?
+# BEST! remove the generator/comprehension and just use broadcasting
+f(x) = x^2 + sum(x * Y .+ 1)
+f.(X)
+```
+
+- **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
+```julia
+# BAD! 
+x = 1:3
+mapreduce(xval -> xval^2, +, x)
+
+# GOOD! Direct for this case
+sum(x.^2)
+
+# QUESTIONABLE! Explain carefully with a comment if using
+X = [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [5.0, 6.0, 7.0]]
+reduce(hcat, X)
+
+# GOOD, if verbose 
+Y = ones(3,3)
+for i in 1:3
+    Y[:,i] = X[i]
+end
+```
+The exception, of course, is when dealing with parallel programming where functional patterns are essential.
+
+## Error Handling
+- **Consistent naming of result**
+  - Call the results of optimizers/etc. `result` when possible
+- **Add `converged`, etc. with `using` into the namespace to make the code easier to read**
+  - And can safely ignore the conflicting method errors, until smarter method merging becomes possible.
+- **Can use the || idiom for error handling**.
+  - Eventually people will need to get used to it.  But minimize its use outside of that case
+- **Never ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
+```julia
+using NLsolve
+f(x) = x
+x_iv = [1.0]
+#f(x) = 1.1 * x # fixed-point blows
+
+# BAD!
+xstar = fixedpoint(f, x_iv, inplace=false).zero # assumes convergence
+xsol = nlsolve(f, x_iv, inplace=false).zero # assumes convergence
+
+# GOOD!
+result = fixedpoint(f, x_iv, inplace=false)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xstar = result.zero
+
+result = nlsolve(f, x_iv, inplace=false)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xsol = result.zero
+```
+- **Handle errors by returning nothing**.  But if you won't handle, prefer to throw errors.
+```julia
+function g(a)
+    f(x) = a * x # won't succeed if a > 1
+    result = fixedpoint(f, [1.0], inplace = false)
+    converged(result) || return nothing
+    xstar = result.zero
+    
+    #do calculations...
+    return xstar
+end
+val = g(0.8)
+@show val == nothing
+val = g(1.1)
+@show val == nothing;
+```
+- **Use similar patterns with the Optim and other libraries**
+  - Although there is (currently) an inconsistency in the usage of the minimum and maximum in Optim.
+```julia
+# GOOD: make it easier to use, even if there are a few method merge warnings
+using Optim
+using Optim: converged, maximum, maximizer, minimizer, iterations
+
+# BAD
+xmin = optimize(x-> x^2, -2.0, 1.0).minimum
+
+# GOOD
+result = optimize(x-> x^2, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = result.minimizer
+result.minimum
+
+
+# GOOD
+f(x) = -x^2
+result = maximize(f, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = maximizer(result)
+fmax = maximum(result)
+```
+
+
 ## Dependencies
 
 - **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
 - The following packages can be used as a dependency without any concerns: `QuantEcon, Parameters, Optim, Roots, Expectations, NLsolve, DataFrames, Plots, Compat`
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
-- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single place should have the `using` local to that use.
+- **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters, Compat`)  but packages used only in a single may have the `using` local to that use to ensure students know which package it comes from
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
-2. Simple error handling of reasonable failures (e.g. returning a union with `Nothing`, etc.)  I am not sure we want to teach them about exceptions, for example.

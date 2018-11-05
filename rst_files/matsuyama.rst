@@ -43,13 +43,7 @@ Below we review the model and replicate some of the results on synchronization o
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 Key Ideas
 ==========================
@@ -344,7 +338,9 @@ Here's the main body of code
 
 .. code-block:: julia
 
-    using PyPlot, PyCall
+    using Plots 
+
+    gr(fmt=:png)
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
@@ -536,39 +532,21 @@ Here's the function
 
 .. code-block:: julia
 
-    function plot_timeseries(n1_0, n2_0,
-                            s1=0.5, θ=2.5,
-                            δ=0.7, ρ=0.2;
-                            ax::PyCall.PyObject=subplots()[2])
-        """
-        Plot a single time series with initial conditions
-        """
-
-        # Create the MSG Model and simulate with initial conditions
+    function plot_timeseries(n1_0, n2_0, s1=0.5, θ=2.5, δ=0.7, ρ=0.2)
         model = MSGSync(s1, θ, δ, ρ)
         n1, n2 = simulate_n(model, n1_0, n2_0, 25)
-
-        ax[:plot](0:24, n1, label=L"$n_1$", lw=2)
-        ax[:plot](0:24, n2, label=L"$n_2$", lw=2)
-
-        ax[:legend]()
-        ax[:set_ylim](0.15, 0.8)
-
-        return ax
+        return [n1 n2]
     end
 
-    # Create figure
-    fig, ax = subplots(2, 1, figsize=(10, 8))
+    # Create figures
+    data_ns = plot_timeseries(0.15, 0.35)
+    data_s = plot_timeseries(0.4, 0.3)
 
-    plot_timeseries(0.15, 0.35, ax=ax[1])
-    plot_timeseries(0.4, 0.3, ax=ax[2])
+    plot(data_ns, title = "Not Synchronized", legend = false)
 
-    ax[1][:set_title]("Not Synchronized")
-    ax[2][:set_title]("Synchronized")
+.. code-block:: julia 
 
-    tight_layout()
-
-    show()
+     plot(data_s, title = "Synchronized", legend = false)
 
 In the first case, innovation in the two countries does not synchronize
 
@@ -599,13 +577,6 @@ As you can see, larger values of :math:`\rho` translate to more synchronization
 
 You are asked to replicate this figure in the exercises
 
-In the solution to the exercises, you'll also find a figure with sliders, allowing you to experiment with different parameters
-
-Here's one snapshot from the interactive figure
-
-.. figure:: /_static/figures/matsuyama_18.png
-   :scale: 80%
-
 Exercises
 ==============
 
@@ -622,106 +593,44 @@ Exercise 1
 
 .. code-block:: julia
 
-    function plot_attraction_basis(s1=0.5,
-                                   θ=2.5,
-                                   δ=0.7,
-                                   ρ=0.2;
-                                   npts=250,
-                                   ax=nothing)
-        if ax === nothing
-            fig, ax = subplots()
-        end
+    function plot_attraction_basis(s1=0.5, θ=2.5, δ=0.7, ρ=0.2; npts=250)
         # Create attraction basis
         unitrange = range(0,  1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
         ab = create_attraction_basis(model,npts=npts)
-        cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
-
-        return ab, cf
+        plt = Plots.heatmap(ab, legend = false)
     end
 
 
 .. code-block:: julia
 
-    fig = figure(figsize=(14, 12))
-
-    # Left - Bottom - Width - Height
-    ax1 = fig[:add_axes]((0.05, 0.475, 0.38, 0.35), label="axes0")
-    ax2 = fig[:add_axes]((0.5, 0.475, 0.38, 0.35), label="axes1")
-    ax3 = fig[:add_axes]((0.05, 0.05, 0.38, 0.35), label="axes2")
-    ax4 = fig[:add_axes]((0.5, 0.05, 0.38, 0.35), label="axes3")
-
     params = [[0.5, 2.5, 0.7, 0.2],
-              [0.5, 2.5, 0.7, 0.4],
-              [0.5, 2.5, 0.7, 0.6],
-              [0.5, 2.5, 0.7, 0.8]]
+            [0.5, 2.5, 0.7, 0.4],
+            [0.5, 2.5, 0.7, 0.6],
+            [0.5, 2.5, 0.7, 0.8]]
 
-
-    ab1, cf1 = plot_attraction_basis.(params[1][1],params[1][2],params[1][3],params[1][4], npts=500, ax=ax1)
-    ab2, cf2 = plot_attraction_basis.(params[2][1],params[2][2],params[2][3],params[2][4], npts=500, ax=ax2)
-    ab3, cf3 = plot_attraction_basis.(params[3][1],params[3][2],params[3][3],params[3][4], npts=500, ax=ax3)
-    ab4, cf4 = plot_attraction_basis.(params[4][1],params[4][2],params[4][3],params[4][4], npts=500, ax=ax4)
-
-
-    cbar_ax = fig[:add_axes]([0.9, 0.075, 0.03, 0.725])
-    colorbar(cf1, cax=cbar_ax)
-
-    ax1[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.2$",
-                  fontsize=22)
-    ax2[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.4$",
-                  fontsize=22)
-    ax3[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.6$",
-                  fontsize=22)
-    ax4[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.8$",
-                  fontsize=22)
-
-    fig[:suptitle]("Synchronized versus Asynchronized 2-cycles",
-                 x=0.475, y=0.915, size=26)
+    plots = [plot_attraction_basis(p...) for p in params]
+    plot(plots..., size = (1000, 1000))
 
 .. code-block:: julia 
   :class: julia 
 
-  @testset begin 
-    @test ab1[1:10, 1:4] == [0.0 163.0 189.0 250.0; 163.0 0.0 215.0 250.0; 189.0 215.0 0.0 188.0; 250.0 250.0 188.0 0.0; 250.0 250.0 182.0 164.0; 250.0 198.0 166.0 162.0; 250.0 188.0 170.0 156.0; 220.0 166.0 166.0 158.0; 196.0 150.0 160.0 154.0; 184.0 168.0 156.0 148.0]
-    @test ab2[1:4, 1:4] == [0.0 165.0 181.0 225.0; 165.0 0.0 203.0 250.0; 181.0 203.0 0.0 174.0; 225.0 250.0 174.0 0.0]
-    @test ab3[1:4, 1:4] == [0.0 167.0 183.0 201.0; 167.0 0.0 201.0 230.0; 183.0 201.0 0.0 172.0; 201.0 230.0 172.0 0.0]
-    @test ab4[1:4, 1:4] == [0.0 161.0 169.0 193.0; 161.0 0.0 193.0 210.0; 169.0 193.0 0.0 186.0; 193.0 210.0 186.0 0.0]
-  end 
-
-
-Exercise 2
-----------
-
-.. code-block:: julia
-
-    using Interact
-    function interact_attraction_basis(
-            ρ_min, ρ_step, ρ_max,
-            maxiter_min, maxiter_step, maxiter_max,
-            npts_min, npts_step, npts_max)
-
-        # Create the figure and axis that we will plot on
-        fig, ax = subplots(figsize=(12, 10))
-        @manipulate for ρ=ρ_min:ρ_step:ρ_max,
-            maxiter=maxiter_min:maxiter_step:maxiter_max,
-            npts=npts_min:npts_step:npts_max
-             withfig(fig, clear=false) do
-                ax[:cla]()
-
-                # Create model and attraction basis
-                s1, θ, δ = 0.5, 2.5, 0.75
-                model = MSGSync(s1, θ, δ, ρ)
-                ab = create_attraction_basis(model, maxiter=maxiter, npts=npts)
-
-                # Color map with colormesh
-                unitrange = range(0,  1, length = npts)
-                cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
-                cbar_ax = fig[:add_axes]([0.95, 0.15, 0.05, 0.7])
-                colorbar(cf, cax=cbar_ax)
-            end
-        end
+  function plot_attraction_basis(s1=0.5,
+                               θ=2.5,
+                               δ=0.7,
+                               ρ=0.2;
+                               npts=250)
+        # Create attraction basis
+        unitrange = range(0,  1, length = npts)
+        model = MSGSync(s1, θ, δ, ρ)
+        ab = create_attraction_basis(model,npts=npts)
     end
 
-.. code-block:: julia
+    abvec = plots = [plot_attraction_basis(p...) for p in params]
 
-    interact_attraction_basis( 0.00, 0.05, 1.0, 50, 50, 5000, 25, 25, 750)
+    @testset begin
+    @test abvec[1][5] == 194.0 
+    @test abvec[2][17] == 102.0 
+    @test abvec[3][50] == 76.0
+    @test abvec[4][end-1] == 86.0
+    end

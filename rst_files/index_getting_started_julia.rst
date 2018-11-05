@@ -21,8 +21,3 @@ This first part of the course provides a relatively fast-paced introduction to e
     julia_essentials
     fundamental_types
     introduction_to_types
-    more_types 
-    packages
-    testing
-    tools_editors
-    version_control

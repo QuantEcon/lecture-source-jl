@@ -56,14 +56,7 @@ Key tools for the lecture are
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
+.. literalinclude:: /_static/includes/deps.jl
 
 :index:`Pricing Models`
 =====================================
@@ -613,9 +606,7 @@ the type `AssetPriceModel`
     end
 
 
-    """
-    Stability test for a given matrix Q.
-    """
+    # test stability of matrix Q 
     function test_stability(ap::AssetPriceModel, Q::Matrix)
         sr = maximum(abs, eigvals(Q))
         if sr ≥ 1 / ap.β
@@ -625,10 +616,7 @@ the type `AssetPriceModel`
     end
 
 
-    """
-    Computes the price-dividend ratio of the Lucas tree.
-
-    """
+    # price/dividend ratio of the Lucas tree 
     function tree_price(ap::AssetPriceModel)
         # == Simplify names, set up matrices  == #
         β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
@@ -867,10 +855,7 @@ We can find the solution with the following function `call_option`
 
 .. code-block:: julia
 
-    """
-    Computes price of a perpetual call option on a consol bond.
-
-    """
+    # price of perpetual call on consol bond
     function call_option(ap::AssetPriceModel, ζ::AbstractFloat, p_s::AbstractFloat, ϵ=1e-7)
 
         # == Simplify names, set up matrices  == #

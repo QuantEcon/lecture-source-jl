@@ -55,13 +55,8 @@ Its many applications include:
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
+.. literalinclude:: /_static/includes/deps.jl
 
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
 
 
 The Linear State Space Model
@@ -1465,8 +1460,11 @@ Exercise 3
 ----------
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.1
@@ -1521,8 +1519,11 @@ Exercise 4
 ----------
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42); 
+
+.. code-block:: julia
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.1

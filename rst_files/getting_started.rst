@@ -15,219 +15,24 @@ In this lecture we will cover how to get up and running with Julia
 
 Topics:
 
-#. Installation
+#. Jupyter
 
-#. Interactive Julia sessions
-
-#. Running sample programs
+#. Choosing from different options
 
 #. Installation of libraries, including the Julia code that underpins these lectures
 
-
-Setup
-------------------
-
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-First Steps
-==============
-
-
-
-Installation
----------------
-
-To install Julia, get the current release from the `download page <http://julialang.org/downloads/>`_
-
-**Note:** In these lectures we assume you have version 0.6 or later
-
-Unless you have good reason to do otherwise, choose 
-
-* The current release rather than nightly build 
-  
-* The platform specific binary rather than source
-
-Assuming there were no problems, you should now be able to start Julia either by
-
-* Navigating to Julia through your menus or desktop icons (Windows, OSX), or
-
-* Opening a terminal and typing ``julia`` (Linux)
-
-Either way you should now be looking at something like this (modulo your operating system --- this is a Linux machine)
-
-
-.. figure:: /_static/figures/julia_term_1.png
-   :scale: 75%
-
-
-
-The REPL
------------
-
-The program that's running here is called the Julia REPL (Read Eval Print Loop) or Julia interpreter
-
-Let's try some basic commands
-
-.. figure:: /_static/figures/julia_term_2.png
-   :scale: 75%
-
-The Julia interpreter has the kind of nice features you expect from a modern REPL
-
-For example,
-
-* Pushing the up arrow key retrieves the previously typed command
-
-* If you type ``?`` the prompt will change to ``help?>`` and give you access to online documentation
-
-.. figure:: /_static/figures/julia_term_3.png
-   :scale: 75%
-
-You can also type ``;`` to get a shell prompt, at which you can enter shell
-commands
-
-.. figure:: /_static/figures/julia_term_4.png
-   :scale: 75%
-
-(Here ``ls`` is a UNIX style command that lists directory contents --- your shell commands depend on your operating system)
-
-Below we'll often show interactions with the interpreter as follows
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-.. code-block:: julia
-
-    x = 10
-
-
-.. code-block:: julia
-
-    2 * x
-
-
-
-Installing Packages
-=======================
-
-In these lectures you'll often see statements such as 
-
-.. code-block:: julia
-
-    using Plots
-
-or
-
-.. code-block:: julia
-
-    using QuantEcon
-
-These commands pull in code from some of Julia's `many external Julia code libraries <http://pkg.julialang.org/>`_
-
-For the code to run, you need to install the corresponding package first
-
-Fortunately this is easy using Julia's package management system
-
-For example, let's install `DataFrames <https://github.com/JuliaStats/DataFrames.jl>`_, which provides useful functions and data types for manipulating data sets
-
-.. code-block:: julia
-
-    Pkg.add("DataFrames")
-
-Assuming you have a working Internet connection this should install the DataFrames package
-
-Here's how it looks on our machine (which already has this package installed)
-
-
-.. figure:: /_static/figures/julia_term_addpkg.png
-   :scale: 75%
-
-If you now type ``Pkg.status()`` you'll see ``DataFrames`` and its version number
-
-To pull the functionality from ``DataFrames`` into the current session we type
-
-.. code-block:: julia
-
-    using DataFrames
-
-
-Now its functions are accessible
-
-
-.. code-block:: julia
-
-    df = DataFrame(x1=[1, 2], x2=["foo", "bar"])
-
-
-
-Keeping your Packages up to Date
------------------------------------
-
-Running
-
-.. code-block:: julia
-
-    Pkg.update()
-
-will update your installed packages and also update local information on the set of available packages
-
-We **assume throughout** that you keep your packages updated to the latest version!
-
-
-
-
-.. _gs_qe:
-
-QuantEcon 
----------------
-
-`QuantEcon <http://quantecon.org>`_ is an organization that facilitates development of open source code for economic modeling
-
-As well as these lectures, it supports `QuantEcon.jl <http://quantecon.org/julia_index.html>`__, a library for quantitative economic modeling in Julia
-
-The installation method is standard
-
-.. code-block:: julia
-
-    Pkg.add("QuantEcon")
-
-
-Here's an example, which creates a discrete approximation to an AR(1) process
-
-.. code-block:: julia
-
-    using QuantEcon: tauchen
-
-    tauchen(4, 0.9, 1.0)
-
-
-
-
-We'll learn more about the library as we go along
-
-
-.. _jl_jupyter:
-
 Jupyter
-================
+=========================
 
-To work with Julia in a scientific context we need at a minimum
+Like Python, and unlike Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a development environment
 
-#. An environment for editing and running Julia code
+Because of this, you will have different options for editing code on your local computer or in the cloud
 
-#. The ability to generate figures and graphics
+Several of the options rely on `Jupyter <http://jupyter.org/>`_  which provides a browser-based interface to access computational kernels for different languages (e.g. Julia, Python, R, etc.)
 
-One option that provides these features is `Jupyter <http://jupyter.org/>`_
+While you will eventually use other editors, there are some advantages of starting with Jupyter while learning the language
 
-As a bonus, Jupyter also provides
+* It requires no installation if you used a cloud-based solution
 
 * Nicely formatted output in the browser, including tables, figures, animation, video, etc.
 
@@ -237,69 +42,202 @@ As a bonus, Jupyter also provides
 
 Whether you end up using Jupyter as your primary work environment or not, you'll find learning about it an excellent investment
 
+Recommended Options
+-----------------------------
 
-Installing Jupyter 
-------------------------
+In order of priority, for those just getting started, we suggest
 
-There are two steps here:
+#. Use `Jupyter on the cloud or department server <jl_jupyterhub>`_ if it is available
+#. Install the pre-built `docker-based Jupyter <jl_jupyterdocker>`_ from QuantEcon
+#. Install `Anaconda and Julia locally <jl_jupyterlocal>`_ otherwise and manually install QuantEcon based packages
 
-#. Installing Jupyter itself
+Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
 
-#. Installing `IJulia <https://github.com/JuliaLang/IJulia.jl>`_, which serves as an interface between Jupyter notebooks and Julia
+.. _jl_jupyterhub:
 
-In fact you can get both by installing IJulia
+Using Jupyter Online
+---------------------------
 
-**However**, if you have the bandwidth, we recommend that you 
+If you have access to a cloud based solution for Jupyter, then that is typically the easiest solution
 
-#. Do the two steps separately
+.. * JuliaBox (currently having , once it's working. 
+..  For example, many Canadian students have access to syzygy.ca
+.. * Ask at your university .. 
+.. (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ )
 
-#. In the first step, when installing Jupyter, do this by installing the larger package `Anaconda Python <https://www.anaconda.com/what-is-anaconda/>`_
+* Students: ask your department if these resources are available 
+* Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared Jupyterhub instance with precompiled packages ready for these lecture notes
 
-The advantage of this approach is that Anaconda gives you not just Jupyter but the whole scientific Python ecosystem
+If you have are given an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
 
-This includes things like plotting tools we'll make use of later
+Otherwise, if there are errors when you attempt to use an online Jupyterhub, you will need to go open a Jupyter notebook and type
 
+.. code-block:: none
 
-
-Installing Anaconda
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _install_anaconda:
-
-Installing Anaconda is straightforward: `download the binary <https://www.anaconda.com/download/>`_ and follow the instructions
-
-If you are asked during the installation process whether you'd like to make Anaconda your default Python installation, say yes --- you can always remove it later
-
-Otherwise you can accept all of the defaults
-
-Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal
+    ] add InstantiateFromURL
 
 
-Installing IJulia
-^^^^^^^^^^^^^^^^^^^^^
+.. _jl_jupyterdocker:
 
-Now open up a Julia terminal and type
+Installing a Pre-built Jupyter Image
+======================================
+
+`Docker <https://www.docker.com/>`_ is a technology that you to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a minimal, self-contained operating system on another computer
+
+While it is largely used for running code in the cloud and in distributed computing, it is also convenient for using on local computers 
+
+In essence, it allows people to share a consistent and reproducible environment with no setup or tinkering required
+
+QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
+
+Setup
+-----------
+
+* Create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
+    
+Download and install
+
+* `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+* `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. **Do not** choose to use Windows containers
+
+Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
+
+.. To verify that there are no obvious errors in the installation, run 
+.. 
+.. Run ``docker version`` in the terminal to check there are no obvious errors
+
+Download the QuantEcon Docker image by running the following in your terminal (this may some time depending on your internet connection)
+
+.. code-block:: none
+
+    docker pull quantecon/base
+
+After this is finished, first clear any existing volumes and then create a persistent storage volume (ignoring any warnings from the ``rm`` step)
+
+.. code-block:: none
+
+    docker volume rm quantecon
+    docker volume create quantecon 
+
+Running in a Local Folder
+--------------------------
+
+The Docker image has can exchange files locally (and recursively below in the tree) to where it is run
+
+Open a terminal and ``cd`` to the directory you are interested in storing local files
+
+To run an image local to those files, type the following in the terminal (on Linux and OSX)
+
+.. code-block:: none
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
+
+And on Powershell on Window
+
+.. code-block:: none
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
+
+**Remark:** When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
+
+In the output, you should see some text near that bottom that looks like 
+
+.. code-block:: none
+
+    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b 
+
+Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
+
+In a browser, go to a URL like the following
+
+.. code-block:: none
+
+        http://127.0.0.1:8888/lab
+
+**Note**: ``Ctrl+C`` is also the keyboard shortcut you use to kill the container. So be sure to copy using the mouse. 
+
+Paste the text into ``Password or token:`` and choose ``Log in``
+
+Ensure you save any important files to the local notebooks in the ``local`` directory, which stores in the local filesystem where you ran the docker command
+
+
+A few useful maintenance features
+
+* If you forget your token number, you may need to stop and restart the container
+* To stop the container, use `Ctrl-C` or type ``docker stop $(docker ps -aq)`` in a different terminal
+* To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
+* To clean unnecessary Docker assets from your system, run ``docker system prune`` 
+
+.. _jl_jupyterlocal:
+
+Installing Julia and Dependencies Manually
+==============================================
+
+While using the Docker instance is convenient and error-proof, you may eventually want to install things locally
+
+The easiest way to do that is to install Anaconda for a full Python and Jupyter environment, 
+
+Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version) and install
+
+* Make sure you click yes to "add Anaconda to my PATH." If you'd rather do that later, see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_. 
+
+.. This could be in a separate section
+.. * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
+
+Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
+
+Assuming there were no problems, you should now be able to start Julia either by
+
+* Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+* Opening a terminal and typing ``julia`` (Linux, + OSX/git bash if you configure it)
+
+Either way you should now be looking at something like this (modulo your operating system --- this is a Linux machine)
+
+.. figure:: /_static/figures/julia_term_1.png
+   :scale: 75%
+
+In that ``julia`` terminal, type the following
 
 .. code-block:: julia
 
-    Pkg.add("IJulia")
-
-If you have problems, consult `the installation instructions <https://github.com/JuliaLang/IJulia.jl#installation>`_
+    ] add IJulia InstantiateFromURL Revise
 
 
+Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes),
+
+.. literalinclude:: /_static/includes/deps.jl    
+
+To run Jupyter, in a terminal ``cd`` to the location you wish to modify local files in and type 
+
+.. code-block:: none
+
+    jupyter lab
+
+For convenience, you may find it useful on your operating system to change the directory where the REPL starts
+
+* On Windows, if you have a shortcut on your desktop or on the taskbar, you should: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
 
 
-Other Requirements
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _jl_startup_file:
+
+Creating a Startup File (Advanced)
+------------------------------------
+
+Whenever the Julia compiler or REPL starts, it will look for a file called ``startup.jl`` (see `Julia Manual <https://docs.julialang.org/en/v1/manual/getting-started/#man-getting-started-1>`_)
+
+The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
+
+To add one, first create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
+
+Next, either download the file `startup.jl </_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
+
+.. include:: /_static/includes/startup.jl.raw
 
 
-Since IJulia runs in the browser it might be a good time to update your browser
+.. _jl_jupyter:
 
-One good option is to install a free modern browser such as `Chrome <https://www.google.com/chrome/browser/>`_ or `Firefox <https://www.mozilla.org/en-US/firefox/new/>`_
-
-In our experience Chrome plays well with IJulia
-
-
+Using Jupyter
+================
 
 
 .. _ipython_notebook:
@@ -307,12 +245,7 @@ In our experience Chrome plays well with IJulia
 Getting Started
 -----------------------
 
-Now either 
-
-#. search for and start the Jupyter notebook application on your machine or
-   
-#. open up a terminal (or `cmd` in Windows) and type ``jupyter notebook``
-
+After you have started Jupyter (either on the cloud, the docker, or locally installed on your computer)
 
 You should see something (not exactly) like this
 
@@ -334,8 +267,6 @@ Here's what your Julia notebook should look like
    :scale: 70%
 
 The notebook displays an *active cell*, into which you can type Julia commands
-
-
 
 Notebook Basics
 ------------------
@@ -404,20 +335,15 @@ The present working directory can be found by executing the command ``pwd()``
 
 
 
-
-
 Plots
 ^^^^^^^
 
 Let's generate some plots
 
-There are several options we'll :doc:`discuss in detail later <plots>` 
+First, ensure that you have activated a set of packages with
 
-For now lets start with ``Plots.jl``
+.. literalinclude:: /_static/includes/deps.jl    
 
-.. code-block:: julia
-
-    Pkg.add("Plots")
 
 Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
@@ -439,7 +365,6 @@ Working with the Notebook
 -----------------------------
 
 Let's go over some more Jupyter notebook features --- enough so that we can press ahead with programming
-
 
 
 Tab Completion
@@ -510,11 +435,16 @@ For example, ``;ls`` will execute the UNIX style shell command ``ls``, which ---
 These shell commands are handled by your default system shell and hence are platform specific
 
 
+Package Manager
+^^^^^^^^^^^^^^^^
+
+You can enter the package manager  prepending a ``]``
+
+For example, ``] st`` will give the the current status of installed pacakges in the current environment
 
 
 Sharing Notebooks
 ------------------------
-
 
 Notebook files are just text files structured in `JSON <https://en.wikipedia.org/wiki/JSON>`_ and typically end with ``.ipynb``
 
@@ -523,173 +453,31 @@ pass around the ``ipynb`` file
 
 To open an existing ``ipynb`` file, import it from the dashboard (the first browser page that opens when you start Jupyter notebook) and run the cells or edit as discussed above
 
-nbviewer
-^^^^^^^^^^^
-
-The Jupyter organization has a site for sharing notebooks called `nbviewer <http://nbviewer.jupyter.org/>`_
-
-The notebooks you see there are static HTML representations of notebooks
+The Jupyter organization has a site for sharing notebooks called `nbviewer <http://nbviewer.jupyter.org/>`_ which provides a static HTML representations of notebooks
 
 However, each notebook can be downloaded as an ``ipynb`` file by clicking on the download icon at the top right of its page
 
-Once downloaded you can open it as a notebook, as we discussed just above
 
-
-
-Alternatives to Jupyter
-========================
-
-
-In this lecture series we'll assume that you're using Jupyter
-
-Doing so allows us to make sure that everything works in at least one sensible environment
-
-But as you work more with Julia you will want to explore other environments as
-well
-
-Here are some notes on working with the REPL, text editors and other alternatives
-
-
-
-
-
-
-Editing Julia Scripts
------------------------
-
-You can run Julia scripts from the REPL using the ``include("filename")`` syntax
-
-The file needs to be in the present working directory, which you can determine by typing ``pwd()``
-
-
-You also need to know how to edit them --- let's discuss how to do this without Jupyter
-
-IDEs
-^^^^^
-
-`IDEs <https://en.wikipedia.org/wiki/Integrated_development_environment>`_  (Integrated Development Environments) combine an interpreter and text editing facilities in the one application
-
-For Julia one nice option is `Juno <http://junolab.org/>`_
-
-
-
-Text Editors
-^^^^^^^^^^^^^
-
-The beauty of text editors is that if you master one of them, you can use it
-for every coding task you come across, regardless of the language
-
-At a minimum, a text editor for coding should provide
-
-* Syntax highlighting for the languages you want to work with
-
-* Automatic indentation
-
-* Efficient text manipulation (search and replace, copy and paste, etc.)
-
-
-There are many text editors that speak Julia, and a lot of them are free
-
-Suggestions:
-
-* `Atom <https://atom.io/>`_ is a popular open source next generation text editor
-
-* `Sublime Text <http://www.sublimetext.com/>`_ is a modern, popular and highly regarded text editor with a relatively moderate learning curve (not free but trial period is unlimited)
-
-* `Emacs <http://www.gnu.org/software/emacs/>`_ is a high quality free editor with a sharper learning curve
-
-Finally, if you want an outstanding free text editor and don't mind a seemingly vertical learning curve plus long days of pain and suffering while all your neural pathways are rewired, try `Vim <http://www.vim.org/>`_
-
-
-
-
-
-Exercises
-===========
-
-Exercise 1
+The REPL
 ------------
 
-If Jupyter is still running, quit by using ``Ctrl-C`` at the terminal where you started it
+While we have not emphasized it, on any JupyterHub or locally installed Jupyter installation you will also have access to the Julia REPL
 
-Now launch again, but this time using ``jupyter notebook --no-browser``
+This is a Julia specific terminal disconnected from the graphical interface of Jupyter, and becomes increasingly important as you learn Julia
 
-This should start the kernel without launching the browser
+To start the REPL on a typical jupyterlab environment
 
-Note also the startup message: It should give you a URL such as ``http://localhost:8888`` where the notebook is running
+#. Choose "New Launcher"
+#. Choose a ``Julia 1.0`` Console
 
-Now
+Otherwise, if you  have a local installation, then  
 
-#. Start your browser --- or open a new tab if it's already running
+* Navigating to Julia through your menus or desktop icons (Windows, OSX), or
 
-#. Enter the URL from above (e.g. ``http://localhost:8888``) in the address bar at the top
+* Opening a terminal and typing ``julia`` (Linux)
 
-You should now be able to run a standard Jupyter notebook session
+The REPL is one of the best places to add and remove packages, so a good test is to see the current status of the package manager
 
-This is an alternative way to start the notebook that can also be handy
+.. code-block:: julia
 
-
-
-
-Exercise 2
-------------
-
-.. index:: 
-    single: Git
-
-This exercise will familiarize you with git and GitHub
-
-`Git <http://git-scm.com/>`_ is a *version control system* --- a piece of software used to manage digital projects such as code libraries
-
-In many cases the associated collections of files --- called *repositories* --- are stored on `GitHub <https://github.com/>`_
-
-GitHub is a wonderland of collaborative coding projects
-
-Git is an extremely powerful tool for distributed collaboration --- for
-example, we use it to share and synchronize all the source files for these
-lectures
-
-There are two main flavors of Git
-
-#. The plain vanilla `command line Git <http://git-scm.com/downloads>`_ version
-
-#. The various point-and-click GUI versions
-
-    * See, for example, the `GitHub version <https://desktop.github.com/>`_
-
-As an exercise, try 
-
-#. Installing Git
-   
-#. Getting a copy of `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ using Git
-
-For example, if you've installed the command line version, open up a terminal and enter
-
-.. code-block:: bash
-
-	git clone https://github.com/QuantEcon/QuantEcon.jl
-
-(This is just ``git clone`` in front of the URL for the repository)
-
-Even better, 
-
-#. Sign up to `GitHub <https://github.com/>`_ 
-
-#. Look into 'forking' GitHub repositories (forking means making your own copy of a GitHub repository, stored on GitHub)
-
-#. Fork `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_
-
-#. Clone your fork to some local directory, make edits, commit them, and push them back up to your forked GitHub repo
-
-#. If you made a valuable improvement, send us a `pull request <https://help.github.com/articles/about-pull-requests/>`_!
-
-For reading on these and other topics, try
-
-* `The official Git documentation <http://git-scm.com/doc>`_
-
-* Reading through the docs on `GitHub <https://github.com/>`_
-
-* `Pro Git Book <http://git-scm.com/book>`_ by Scott Chacon and Ben Straub
-
-* One of the thousands of Git tutorials on the Net
-
+    ] st

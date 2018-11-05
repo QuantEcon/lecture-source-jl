@@ -58,15 +58,7 @@ You will also need some basic :doc:`linear algebra <linear_algebra>` and probabi
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
-
-
+.. literalinclude:: /_static/includes/deps.jl
 
 The Model
 ==========
@@ -713,7 +705,7 @@ function of the unemployment compensation rate
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
     w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
     logw_dist = Normal(log(log_wage_mean), 1)
-    cdf_logw = cdf.(Ref(logw_dist), log.(w_vec))
+    cdf_logw = cdf.(logw_dist, log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2

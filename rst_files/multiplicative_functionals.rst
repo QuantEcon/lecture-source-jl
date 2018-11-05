@@ -35,13 +35,7 @@ This lecture uses this special class to create and analyze two examples
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 
 A Log-Likelihood Process
@@ -308,9 +302,11 @@ Then we to compare these objects
 Below we plot the histogram of :math:`\log L_T^i / T` for realizations :math:`i = 1, \ldots, 5000`
 
 .. code-block:: julia
+    :class: test
 
-    # For reproducibility.
-    Random.seed!(42)
+    Random.seed!(42);  # For reproducibility
+
+.. code-block:: julia
 
     function simulate_likelihood(amf, Xit, Yit)
         # Get size
@@ -424,9 +420,11 @@ We make three graphs
 Here's the code
 
 .. code-block:: julia
+    :class: test
 
-    # For reproducibility.
-    Random.seed!(42)
+    Random.seed!(42);  # For reproducibility
+
+.. code-block:: julia
 
     # Create the second (wrong) alternative model
     A2, B2, D2, F2 = [0.9, 1.0, 0.55, 0.25]   #  parameters for θ_1 closer to θ_0
@@ -574,6 +572,11 @@ After accomplishing this, we want to display a histogram of :math:`\tilde{M}_T^i
 Here is code that accomplishes these tasks
 
 .. code-block:: julia
+    :class: test
+
+    Random.seed!(42);
+
+.. code-block:: julia
 
     function simulate_martingale_components(amf, T = 1000, I = 5000)
         # Get the multiplicative decomposition
@@ -594,9 +597,6 @@ Here is code that accomplishes these tasks
 
         return add_mart_comp, mul_mart_comp
     end
-
-    # Seed RNG.
-    Random.seed!(42)
 
     # Build model
     amf_2 = AMF_LSS_VAR(0.8, 0.001, 1.0, 0.01,.005)
@@ -697,7 +697,7 @@ Here is some code that tackles these tasks
         # The distribution
         mdist = LogNormal(-t * H2 / 2, sqrt(t * H2))
         x = range(xmin,  xmax, length = npts)
-        p = pdf.(Ref(mdist), x)
+        p = pdf.(mdist, x)
 
         return x, p
     end
@@ -712,7 +712,7 @@ Here is some code that tackles these tasks
         # The distribution
         lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
         x = range(xmin,  xmax, length = npts)
-        p = pdf.(Ref(lmdist), x)
+        p = pdf.(lmdist, x)
 
         return x, p
     end

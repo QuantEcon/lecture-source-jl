@@ -14,7 +14,7 @@ Additive Functionals
 .. contents:: :depth: 2
 
 
-Co-authored with Chase Coleman and Balint Szoke. 
+Co-authored with Chase Coleman and Balint Szoke.
 
 Overview
 =============
@@ -48,13 +48,7 @@ We also consider fruitful decompositions of additive and multiplicative processe
 Setup
 ------------------
 
-Activate the ``QuantEconLecturePackages`` project environment and package versions
-
-.. code-block:: julia 
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages")
-    using LinearAlgebra, Statistics, Compat
+.. literalinclude:: /_static/includes/deps.jl
 
 A Particular Additive Functional
 ====================================
@@ -219,8 +213,8 @@ This system also constructs the components of the decompositions of :math:`y_t` 
 
 All of these objects are computed using the code below
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   using Test
 
@@ -939,8 +933,12 @@ Hansen and Sargent :cite:`Hans_Sarg_book_2016` (ch. 6) note that the martingale 
 The following simulation of many paths of :math:`\widetilde M_t` illustrates this property
 
 .. code-block:: julia
+    :class: test
 
     using Random
-    Random.seed!(10021987)
+    Random.seed!(10021987);
+
+.. code-block:: julia
+
     plt = plot_martingales(amf, 12000)
     plt[1]
