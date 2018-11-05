@@ -1,9 +1,9 @@
-.. _packages:
+.. _data_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
 
 *************************
-General Purpose Packages
+The Julia Data Ecosystem
 *************************
 
 .. contents:: :depth: 2

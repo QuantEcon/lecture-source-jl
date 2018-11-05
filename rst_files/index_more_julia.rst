@@ -21,3 +21,5 @@ This part of the course provides a more details on the Julia programming languag
     generic_programming
     need_for_speed
     packages
+    data_packages
+    optimization_solver_packages
