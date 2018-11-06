@@ -51,18 +51,23 @@ The first is to setup columns and construct a dataframe by assigning names
     last_price = [4.2, 11.3, 12.1, missing]
     df = DataFrame(commod = commodities, price = last_price)
 
-Columns of the DataFrame can be accessed by name
+Columns of the DataFrame can be accessed by name using a symbol or a ``.``
 
 
 .. code-block:: julia
 
     df[:price]
 
+.. code-block:: julia
+
+    df.price
+
+
 Note that the type of this array has values ``Union{Missing, Float64}`` since it was created with a ``missing`` value
 
 .. code-block:: julia
 
-    df[:commod]
+    df.commod
 
 The DataFrames package provides a number of methods for acting on DataFrames, such as ``describe``
 
@@ -102,14 +107,14 @@ We can see the propagation of ``missing`` to caller functions, as well the way t
 
 .. code-block:: julia
 
-    @show mean(df2[:col1])
-    @show mean(skipmissing(df2[:col1]))
+    @show mean(df2.col1)
+    @show mean(skipmissing(df2.col1))
 
 And to replace the missing,
 
 .. code-block:: julia
 
-    df2[:col1]  .= coalesce.(df2[:col1], 0.0) # replace all missing with 0.0
+    df2.col1  .= coalesce.(df2.col1, 0.0) # replace all missing with 0.0
 
 Manipulating and Transforming DataFrames
 ------------------------------------------
@@ -137,7 +142,7 @@ For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/
     
 .. code-block:: julia
 
-    levels(df[:y])
+    levels(df.y)
 
 
 Visualization, Querying, and Plots
@@ -257,8 +262,8 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
 
     using FixedEffectModels
     cigar = dataset("plm", "Cigar")
-    cigar[:StateCategorical] =  categorical(cigar[:State])
-    cigar[:YearCategorical] =  categorical(cigar[:Year])
+    cigar.StateCategorical =  categorical(cigar.State)
+    cigar.YearCategorical =  categorical(cigar.Year)
     fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical, weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
 
