@@ -371,7 +371,11 @@ Broadcasting above superficially looks like vectorizing functions in Matlab, or 
 
 Function ``plot!`` adds a graph to the existing plot
 
+<<<<<<< HEAD
 This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of its name
+=======
+This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
+>>>>>>> faezeh
 
 
 A Slightly More Useful Function
@@ -706,7 +710,7 @@ For instance, we can use the ``Anderson Acceleration`` (it is a method to calcul
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
 
-Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function
+Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the ``f`` function
 
 But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
 
@@ -791,7 +795,7 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     iv = @SVector  [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
@@ -852,7 +856,11 @@ Your hints are as follows:
 
 * If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
+<<<<<<< HEAD
 * For a circle, area = π * :math:`radius^2`
+=======
+* For a circle, area = π * :mat:`radius^2`
+>>>>>>> faezeh
 
 
 .. _jbe_ex4:
@@ -1110,8 +1118,12 @@ Here's one solution
 
 .. code-block:: julia
     using Plots
+<<<<<<< HEAD
     gr(fmt=:png)
     
+=======
+    gr(fmt=:png) # setting for easier display in jupyter notebooks
+>>>>>>> faezeh
     α = 0.9
     n = 200
     x = zeros(n + 1)
