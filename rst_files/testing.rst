@@ -23,24 +23,10 @@ Benefits include
 * Having GitHub test your project across operating systems, Julia versions, etc.
 
 Project Setup 
-==================================
+=======================
 
-Git Setup 
-----------------
-
-First, you need to configure your global GitHub information 
-
-You can do this by running the following in the terminal 
-
-.. code-block:: none 
-
-    git config --global user.name "QuantEcon User" # your real name goes here 
-    git config --global user.email "quanteconuser@gmail.com" # your github email goes here 
-    git config --global github.user "quanteconuser" # your github username goes here 
-
-Next, we want to make a new project from the Julia console 
-
-Let's load our Julia environment 
+Online Setup 
+--------------------
 
 Julia Setup 
 --------------------
@@ -55,9 +41,6 @@ We also want to add the `PkgTemplates <https://github.com/invenia/PkgTemplates.j
     pkg"add PkgTemplates"
     pkg"precompile"
 
-Template Creation 
------------------------
-
 Next, let's create a *template* for our project 
 
 This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
@@ -65,47 +48,27 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 .. code-block:: julia 
 
     using PkgTemplates 
-    ourTemplate = Template(;plugins = [TravisCI(), CodeCov()])
+    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
-You should see the following output
-
-.. code-block:: none 
-
-    julia> ourTemplate = Template(;plugins = [TravisCI(), CodeCov()])
-Template:
-  → User: quanteconuser
-  → Host: github.com
-  → License: MIT (QuantEcon User 2018)
-  → Package directory: ~\.julia\dev
-  → Minimum Julia version: v1.0
-  → SSH remote: No
-  → Plugins:
-    • CodeCov:
-      → Config file: None
-      → 3 gitignore entries: "*.jl.cov", "*.jl.*.cov", "*.jl.mem"
-    • TravisCI:
-      → Config file: Default
-      → 0 gitignore entries
-
-Next, let's create a specific project based off this template
+Let's create a specific project based off this template
 
 .. code-block:: julia 
 
     generate("ExamplePackage.jl", ourTemplate)
 
-If we navigate to ``~/.julia/dev`` (you can find the location of ``.julia`` by running ``Sys.BINDIR``), you should a directory like
+If we navigate to the package directory (shown in the output), we should see something like 
 
 .. figure:: /_static/figures/testing-dir.png
     :scale: 60%
 
 Adding Project to Git 
----------------------------------
+------------------------
 
 The next step is to add this project to Git version control 
 
 First, open the repository screen in your account as discussed previously. We'll want the following settings 
 
-.. figure:: /_static/figures/testing-gitrepo.png
+.. figure:: /_static/figures/testing-git1.png
     :scale: 60%
 
 In particular 
@@ -120,8 +83,36 @@ Click the "publish branch" button to upload your files to GitHub
 
 If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
 
-.. figure:: /_static/figures/testing-gitrepo2.png
+
+.. figure:: /_static/figures/testing-git2.png
     :scale: 60%
+
+Adding Project to Julia Package Manager 
+-------------------------------------------
+
+We also want Julia's package manager to be aware of the project
+
+In the ``ExamplePackage.jl`` directory, open a new terminal and run 
+
+.. code-block:: julia 
+
+    using Pkg 
+    pkg"dev ." 
+
+Now, from any Julia terminal on our machine, we can run 
+
+.. code-block:: julia 
+
+    using Pkg 
+    pkg"activate ExamplePackage" 
+
+To work with our project, and 
+
+.. code-block:: julia 
+
+    using ExamplePackage
+
+To use it 
 
 Project Structure 
 ==========================
@@ -151,7 +142,6 @@ Let's unpack the structure of the generated project
         # Write your own tests here.
     end
 
-
 In particular, the workflow is to export objects we want to test (``using ExamplePackage``), and test them using Julia's ``Test`` module 
 
 The other important text files for now are 
@@ -163,91 +153,165 @@ The other important text files for now are
 Project Workflow
 =========================
 
-Unit Testing Frameworks
+Dependency Management 
+----------------------------
+
+If you run 
+
+.. code-block:: julia 
+
+    pkg"st"
+
+You'll notice that the our project is now the "active environment" 
+
+This means that any dependencies we add, or package operations we execute, will be reflected in our ``ExamplePackage.jl`` directory's TOML 
+
+This allows us to share the project with others, who can exactly reproduce the state used to build and test it 
+
+See the `Pkg3 docs <https://docs.julialang.org/en/v1/stdlib/Pkg/>`_ for more information 
+
+For now, let's try adding a dependency 
+
+.. code-block:: julia 
+
+    pkg"add Expectations"
+
+Our ``Project.toml`` should now read something like::
+
+    name = "ExamplePackage"
+    uuid = "f85830d0-e1f0-11e8-2fad-8762162ab251"
+    authors = ["QuantEcon User <quanteconuser@gmail.com>"]
+    version = "0.1.0"
+
+    [deps]
+    Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
+
+    [extras]
+    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+    [targets]
+    test = ["Test"]
+
+The ``Manifest.toml`` (which tracks exact versions) has changed as well, to include a list of sub-dependencies and versions 
+
+.. figure:: /_static/figures/testing-atom-manifest.png
+    :scale: 60%
+
+Writing Code
+-----------------
+
+The basic idea is to work in ``tests/runtests.jl``, while reproducible functions should go in the ``src/ExamplePackage.jl``
+
+For example, let's say we add ``Distributions.jl`` and edit the source to read as follows::
+
+    module ExamplePackage
+
+    greet() = print("Hello World!")
+
+    using Expectations, Distributions
+
+    function foo(μ = 1., σ = 2.)
+        d = Normal(μ, σ)
+        E = expectation(d)
+        return E(x -> sin(x))
+    end
+
+    export foo 
+
+    end # module
+
+Let's try calling this from a fresh Julia REPL::
+
+    julia> using ExamplePackage
+    [ Info: Recompiling stale cache file C:\Users\Arnav Sood\.julia\compiled\v1.0\ExamplePackage\hpt8s.ji for ExamplePackage [f85830d0-e1f0-11e8-2fad-8762162ab251]
+
+    julia> foo()
+    0.11388071406436832
+
+Jupyter Workflow 
+------------------------
+
+We can also call this function from a Jupyter notebook 
+
+Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
+
+.. figure:: /_static/figures/testing-output.png
+    :scale: 60%
+
+From here, we can use our package's functions in the usual way. This lets us produce neat output examples, without re-defining everything 
+
+We can also edit it interactively inside the notebook 
+
+.. figure:: /_static/figures/testing-notebook.png
+    :scale: 60%
+
+The change will be reflected in the ``Project.toml`` file::
+
+    name = "ExamplePackage"
+    uuid = "f85830d0-e1f0-11e8-2fad-8762162ab251"
+    authors = ["QuantEcon User <quanteconuser@gmail.com>"]
+    version = "0.1.0"
+
+    [deps]
+    Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+    Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
+    Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+
+    [extras]
+    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+    [targets]
+    test = ["Test"]
+
+And the Manifest as well 
+
+Be sure to add ``output/.ipynb_checkpoints`` to your ``.gitignore`` file, so that's not checked in 
+
+Collaborative Work 
+--------------------------
+
+For someone else to get the package, they simply need to run 
+
+.. code-block:: julia 
+
+    using Pkg 
+    pkg"dev https://github.com/quanteconuser/ExamplePackage.jl.git"
+
+This will place the repository inside their ``~/.julia/dev`` folder, and they can drag-and-drop it to GitHub desktop in the usual way 
+
+They can then collaborate as they would on other git repositories 
+
+Unit Testing
 ====================================
 
-TODO
+It's important to make sure that your code is well-tested
+
+There are a few different kinds of test, each with different purposes
+
+#. *Unit testing* makes sure that individual pieces of a project function as expected
+
+#. *Integration testing* makes sure that they work together as expected 
+
+#. *Regression testing* makes sure that behavior is unchanged over time 
+
+In this lecture, we'll focus on unit testing 
+
+The ``Test`` Module
+-------------------------
+
+
 
 Continuous Integration with Travis
 ==========================================
 
-It's now time to enable continuous integration, so that GitHub runs these tests for us 
+TODO 
 
-The tool we'll use for this is called `Travis CI <https://travis-ci.org/>`_
+CodeCoverage 
+===================
 
-Travis Setup 
------------------------
+TODO 
 
-If you log on to the Travis site and are logged into GitHub in the same browser session, you should see a pane like 
+Benchmarking 
+==================
 
-.. figure:: /_static/figures/testing-travis-setup.png
-    :scale: 60%
-
-Click authorize 
-
-You should see a list of all your repositories, as follows 
-
-.. figure:: /_static/figures/testing-travis-repo-list.png
-    :scale: 60%
-
-To enable continuous integration on a repo, simply click the grey slider to move it to the right 
-
-You can then click the repo name to the left of the slider to get to the Travis page for the repo. Ours should look something like 
-
-.. figure:: /_static/figures/testing-travis-repo-page.png
-    :scale: 60%
-
-Code Coverage 
-==========================
-
-It's also important to be aware of *how much* of your code is covered by unit tests 
-
-To do this, we can enable the code coverage repo
-
-CodeCov Setup 
-------------------------------
-
-First, navigate to the `CodeCov website <https://codecov.io/>` and hit "sign up with GitHub":
-
-.. figure:: /_static/figures/testing-codecov-signup.png
-    :scale: 60%
-
-Clicking "authorize" on the resulting window should bring you to a screen like 
-
-.. figure:: /_static/figures/testing-codecov-signup-2.png
-    :scale: 60%
-
-Click "add repository," and then hit "add private scope" on the next page to allow CodeCov to plug in to your private projects
-
-Now, we can click through "add repository" again, and hit our repository name, to give us a screen like 
-
-.. figure:: /_static/figures/testing-codecov-token.png
-    :scale: 60%
-
-Next, we'll need to go to our ``.travis.yml`` file. You'll notice at the bottom it has something like
-
-.. code-block:: none 
-
-    after_success:
-        - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
-
-If the repo is public, this is all we need --- no changes are necessary 
-
-If the repo is private, we will need to set the token as a Travis environment variable 
-
-In a new tab, go to our repo's travis page and hit "settings" under "more options"
-
-.. figure:: /_static/figures/testing-travis-env.png
-    :scale: 60%
-
-Add our token as below 
-
-.. figure:: /_static/figures/testing-travis-token.png
-    :scale: 60%
-
-Our repo is now configured to have Travis call to CodeCov after its tests are complete
-
-Benchmarking
-=======================
-
-TODO [see `need for speed`, basically]
+TODO 
