@@ -99,7 +99,7 @@ If you have never run this code on a particular computer, it is likely to take a
 
 This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_ 
 
-We will discuss it more in :ref:`Julia Packages <packages>`, but these files provide a listing of packages and versions used by the code
+We will discuss it more in :ref:`Tools and Editors <tools_editors>`_, but these files provide a listing of packages and versions used by the code
 
 This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
