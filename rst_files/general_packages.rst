@@ -88,7 +88,7 @@ A high accuracy solution for calculating numerical integrals is `QuadGK <https:/
 .. code-block:: julia
  
      using QuadGK
-     @show quadgk(cos, -2π, 2π);
+     @show value, tol = quadgk(cos, -2π, 2π);
  
  
 This is an adaptive Gauss-Kronrod integration technique that's relatively accurate for smooth functions
@@ -105,11 +105,11 @@ For example, using `FastGaussQuadrature.jl <https://github.com/ajt60gaibb/FastGa
 .. code-block:: julia
 
     using FastGaussQuadrature
-    nodes, weights = gausslegendre( 100_000 ); # i.e. find 100,000 nodes
+    x, w = gausslegendre( 100_000 ); # i.e. find 100,000 nodes
 
     # integrates f(x) = x^2 from -1 to 1
     f(x) = x^2
-    @show weights ⋅ f.(nodes); # calculate
+    @show w ⋅ f.(x); # calculate integral
 
 The only problem with the ``FastGaussQuadrature`` package is that you will need to deal with affine transformations to the non-default domains yourself
 
@@ -119,8 +119,8 @@ Alternatively, ``QuantEcon.jl`` has routines for Gaussian quadrature that transl
 
     using QuantEcon
 
-    nodes, weights = qnwlege(65, -2π, 2π);
-    @show weights ⋅ cos.(nodes); # i.e. on [-2π, 2π] domain
+    x, w = qnwlege(65, -2π, 2π);
+    @show w ⋅ cos.(x); # i.e. on [-2π, 2π] domain
 
 Expectations
 ---------------
@@ -139,9 +139,9 @@ Under the hood, it is finding the appropriate Gaussian quadrature scheme for the
 
     # Or using as a linear operator
     f(x) = x^2
-    x = E.nodes
-    w = E.weights
-    E * f.(E.nodes) == f.(x) ⋅ w
+    x = nodes(E)
+    w = weights(E)
+    E * f.(x) == f.(x) ⋅ w
 
 
 Interpolation
@@ -209,7 +209,7 @@ For an arbitrary, irregular grid
     plot(xf, interp.(xf), label = "linear")
     scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
 
-At this point, ``Interpolations.jl`` does not have support for cubic splines with irregular grids, but there are plenty of other packages that do (e.g. `Dierckx.jl <https://github.com/kbarbary/Dierckx.jl>`_ )
+At this point, ``Interpolations.jl`` does not have support for cubic splines with irregular grids, but there are plenty of other packages that do (e.g. `Dierckx.jl <https://github.com/kbarbary/Dierckx.jl>`_  and `GridInterpolations.jl <https://github.com/sisl/GridInterpolations.jl>`_)
 
 Multivariate Interpolation
 --------------------------------
@@ -322,7 +322,7 @@ General Tools
 LaTeXStrings.jl
 ------------------
 
-When you need to properly escape latex code (E.G. FOR equation labels), use `LaTeXStrings.jl <https://github.com/stevengj/LaTeXStrings.jl>`_
+When you need to properly escape latex code (e.g. for equation labels), use `LaTeXStrings.jl <https://github.com/stevengj/LaTeXStrings.jl>`_
 
 .. code-block:: julia
 
