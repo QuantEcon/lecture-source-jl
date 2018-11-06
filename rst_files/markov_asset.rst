@@ -561,7 +561,8 @@ the type `AssetPriceModel`
     # price/dividend ratio of the Lucas tree
     function tree_price(ap; γ = ap.γ)
         # Simplify names, set up matrices
-        β, P, y = ap.β, ap.mc.p, ap.mc.state_values
+        @unpack β, mc = ap
+        P, y = mc.p, mc.state_values
         y = reshape(y, 1, ap.n)
         J = P .* ap.g.(y).^(1 - γ)
 
@@ -687,9 +688,10 @@ The above is implemented in the function `consol_price`
 
     function consol_price(ap, ζ)
         # Simplify names, set up matrices
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
-        y = reshape(y, 1, ap.n)
-        M = P .* ap.g.(y).^(-γ)
+        @unpack β, γ, mc, g, n = ap
+        P, y = mc.p, mc.state_values
+        y = reshape(y, 1, n)
+        M = P .* g.(y).^(-γ)
 
         # Make sure that a unique solution exists
         test_stability(ap, M)
@@ -775,9 +777,10 @@ We can find the solution with the following function `call_option`
     function call_option(ap, ζ, p_s, ϵ = 1e-7)
 
         # Simplify names, set up matrices
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
-        y = reshape(y, 1, ap.n)
-        M = P .* ap.g.(y).^(-γ)
+        @unpack β, γ, mc, g, n = ap
+        P, y = mc.p, mc.state_values
+        y = reshape(y, 1, n)
+        M = P .* g.(y).^(-γ)
 
         # Make sure that a unique console price exists
         test_stability(ap, M)
@@ -1015,7 +1018,8 @@ Here's a suitable function:
     function finite_horizon_call_option(ap, ζ, p_s, k)
 
         # Simplify names, set up matrices
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
+        @unpack β, γ, mc = ap
+        P, y = mc.p, mc.state_values
         y = y'
         M = P .* ap.g.(y).^(- γ)
 
