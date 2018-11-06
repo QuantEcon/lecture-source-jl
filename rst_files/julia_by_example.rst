@@ -372,7 +372,11 @@ Broadcasting above superficially looks like vectorizing functions in Matlab, or 
 Function ``plot!`` adds a graph to the existing plot
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of its name
+=======
+This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
+>>>>>>> faezeh
 =======
 This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
 >>>>>>> faezeh
@@ -857,7 +861,11 @@ Your hints are as follows:
 * If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 * For a circle, area = π * :math:`radius^2`
+=======
+* For a circle, area = π * :mat:`radius^2`
+>>>>>>> faezeh
 =======
 * For a circle, area = π * :mat:`radius^2`
 >>>>>>> faezeh
@@ -1119,8 +1127,12 @@ Here's one solution
 .. code-block:: julia
     using Plots
 <<<<<<< HEAD
+<<<<<<< HEAD
     gr(fmt=:png)
     
+=======
+    gr(fmt=:png) # setting for easier display in jupyter notebooks
+>>>>>>> faezeh
 =======
     gr(fmt=:png) # setting for easier display in jupyter notebooks
 >>>>>>> faezeh
