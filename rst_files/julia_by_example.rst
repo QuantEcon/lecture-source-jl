@@ -307,7 +307,7 @@ Let us make this example slightly better by "remembering" that ``randn`` can ret
     end
     data = generatedata(5)
 
-While better, the looping over the `i` index to square the results is difficult to read
+While better, the looping over the ``i`` index to square the results is difficult to read
 
 Instead of looping, we can instead **broadcast** the ``^2`` square function over a vector using a ``.``
 
@@ -373,7 +373,7 @@ While broadcasting above superficially looks like vectorizing functions in Matla
 
 The other additional function ``plot!`` adds a graph to the existing plot
 
-This follows a general convention in Julia, where an function which modifies the arguments or a global state has a ``!`` at the end of it the name
+This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
 
 
 A Slightly More Useful Function
@@ -447,7 +447,7 @@ In Julia these alternative versions of a function are called **methods**
 Example: Variations on Fixed-Points
 ================================================
 
-For our second example, we will start with a simple example of solving a fixed-points
+For our second example, we will start with a simple example of determining fixed-points of a function
 
 The goal is to start with code in a matlab style, and move towards a more **Julian** style with high mathematical clarity
 
@@ -704,16 +704,16 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     p = 1.0
     β = 0.9
     iv = [0.8]
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
 
-Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function
+Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the ``f`` function
 
 But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
 
-The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
+The only other change in this function is the move from directly defining ``f(v)`` and using an **anonymous** function
 
 Similar to anonymous functions in Matlab, and lambda functions in Python, Julia enables the creation of small functions without any names
 
@@ -745,7 +745,7 @@ The only change we will need to our model in order to use a different floating p
     iv = [BigFloat(0.8)] # higher precision
 
     # otherwise identical
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
@@ -781,7 +781,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     iv =[0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
@@ -794,7 +794,7 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     iv = @SVector  [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
@@ -855,7 +855,7 @@ Your hints are as follows:
 
 * If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
-* For a circle, area = π * radius^2
+* For a circle, area = π * :mat:`radius^2`
 
 
 .. _jbe_ex4:
@@ -1112,7 +1112,8 @@ Exercise 5
 Here's one solution
 
 .. code-block:: julia
-
+    using Plots
+    gr(fmt=:png) # setting for easier display in jupyter notebooks
     α = 0.9
     n = 200
     x = zeros(n + 1)
