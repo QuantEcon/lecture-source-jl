@@ -989,6 +989,11 @@ Here's an example that shows how in this setting the availability of insurance a
 allows the consumer completely to smooth consumption across time and across states of the world.
 
 .. code-block:: julia
+    :class: test
+
+    Random.seed!(42);
+
+.. code-block:: julia
 
     function complete_ss(β, b0, x0, A, C, S_y, T = 12)
 
@@ -1037,7 +1042,6 @@ allows the consumer completely to smooth consumption across time and across stat
     x0 = [1.0, α / (1 - ρ1), α / (1 - ρ1)]
 
     # Do simulation for complete markets
-    Random.seed!(42)
     out = complete_ss(β, b0, x0, A, C, S_y, 150)
     c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
 
