@@ -136,16 +136,17 @@ Setup
 .. code-block:: julia
     :class: test
 
-    using Test
+    using Test, Random
 
 .. code-block:: julia
 
-    using Parameters, Plots, Random
+    using Parameters, Plots
     gr(fmt = :png)
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42);  # set seed for random numbers. Reproducible output
+    Random.seed!(42);
 
 .. code-block:: julia
 
@@ -154,32 +155,40 @@ Setup
     draw_location!(a) = a.location .= rand(2)
 
     # distance is just 2 norm: uses our subtraction function
-    get_distance(a, o) = norm(a.location - o.location)
+    get_distance(a, agent) = norm(a.location - agent.location)
 
-    function is_happy(a, others, neighborhood_size, preference)
+    function is_happy(a)
         # True if sufficient number of nearest neighbors are of the same type.
         # distances is a list of pairs (d, agent), where d is distance from
         # agent to self
 
-        distances = get_distance.(Ref(a), others)
+        # Long-hand
+        # Compute the distances and agents pairs
+        distances = [(get_distance(a, agent), agent) for agent in agents]
+        # Sorts the collection closest first
+        sort!(distances)
+        # Selects the neighborhood by the `neighborhood_size` closest neighbors
+        neighbors = [agent for (d, agent) in distances[1:neighborhood_size]]
+        # Compute share of kind in neighborhood
+        share = mean(isequal(a.kind), other.kind for other in neighbors)
 
-        # Extract the neighboring agents
-        neighbors = agents[partialsortperm(distances, 1:neighborhood_size)]
+        # Short-hand
+        # share = mean(isequal(a.kind),
+        #              first(agents[idx]) for idx in
+        #              partialsortperm(get_distance.(Ref(a), agents),
+        #                              1:neighborhood_size))
 
-        # Count how many neighbors have the same type as self
-        num_same_type = sum(isequal(a.kind), other.kind for other in neighbors)
-
-        return num_same_type ≥ preference
+        return share ≥ preference
     end
 
-    function update!(a, others, neighborhood_size, preference)
+    function update!(a)
         # If not happy, then randomly choose new locations until happy.
-        while !is_happy(a, others, neighborhood_size, preference)
+        while !is_happy(a)
             draw_location!(a)
         end
     end
 
-    function plot_distribution(agents, cycle_num)
+    function plot_distribution(agents)
         x_vals_0, y_vals_0 = zeros(0), zeros(0)
         x_vals_1, y_vals_1 = zeros(0), zeros(0)
 
@@ -205,7 +214,7 @@ Setup
     num_of_type_0 = 250
     num_of_type_1 = 250
     neighborhood_size = 10 # Number of agents regarded as neighbors
-    preference = 5 # Want at least this many neighbors to be same type
+    preference = 0.5 # Want their kind to make at least this share of the neighborhood
 
     # Create a list of agents
     agents = vcat([Agent(kind = 0) for i in 1:num_of_type_0],
@@ -215,12 +224,11 @@ Setup
 
     # Loop until none wishes to move
     while true
-        println("Entering loop $count")
         push!(plot_array, plot_distribution(agents))
         no_one_moved = true
         for agent in agents
             old_location = copy(agent.location)
-            update!(agent, agents, neighborhood_size, preference)
+            update!(agent)
             if norm(old_location - agent.location) ≉ 0
                 no_one_moved = false
             end
@@ -229,11 +237,11 @@ Setup
             break
         end
     end
-
+    n = length(plot_array)
     plot(plot_array...,
-         layout = (length(plot_array), 1),
-         size = (600, 400 * length(plot_array)),
-         title = permutedims(string.("Cycle ", 1:length(plot_array))))
+         layout = (n, 1),
+         size = (600, 400n),
+         title = reshape(["Cycle $i" for i in 1:n], 1, n))
 
 .. code-block:: julia
     :class: test
