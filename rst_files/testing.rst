@@ -25,7 +25,7 @@ Benefits include
 Project Setup 
 =======================
 
-Online Setup 
+Account Setup 
 --------------------
 
 Travis CI 
@@ -35,11 +35,13 @@ As we'll see later, Travis is a service that automatically tests your project on
 
 First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov 
 
-**NOTE** As of May 2018, Travis is deprecating the ``travis-ci.org`` website. All users should use ``travis-ci.com``
+As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>_` if eligible 
 
 Navigate to the `Travis website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials 
 
 If you get stuck, see the `Travis tutorial <https://docs.travis-ci.com/user/tutorial/>`_
+
+**NOTE** As of May 2018, Travis is deprecating the ``travis-ci.org`` website. All users should use ``travis-ci.com``
 
 CodeCov 
 ^^^^^^^^^
@@ -49,14 +51,14 @@ CodeCov is a service that tells you how expansive your tests are (i.e., how much
 To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
 
 .. figure:: /_static/figures/codecov-1.png
-    :scale: 60%
+    :scale: 45%
 
 Next, click "add a repository" and *enable private scope* (this allows CodeCov to service your private projects)
 
 The result should be 
 
 .. figure:: /_static/figures/codecov-2.png
-    :scale: 60%
+    :scale: 45%
 
 This is all we need for now 
 
@@ -95,7 +97,7 @@ Let's create a specific project based off this template
 If we navigate to the package directory (shown in the output), we should see something like 
 
 .. figure:: /_static/figures/testing-dir.png
-    :scale: 60%
+    :scale: 45%
 
 Adding Project to Git 
 ------------------------
@@ -105,7 +107,7 @@ The next step is to add this project to Git version control
 First, open the repository screen in your account as discussed previously. We'll want the following settings 
 
 .. figure:: /_static/figures/testing-git1.png
-    :scale: 60%
+    :scale: 45%
 
 In particular 
 
@@ -120,7 +122,7 @@ Click the "publish branch" button to upload your files to GitHub
 If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
 
 .. figure:: /_static/figures/testing-git2.png
-    :scale: 60%
+    :scale: 45%
 
 Adding Project to Julia Package Manager 
 -------------------------------------------
@@ -149,19 +151,10 @@ Then, run
 
     ] dev . 
 
+Using the Package Manager 
+--------------------------------
+
 Now, from any Julia terminal in the future, we can run 
-
-.. code-block:: julia 
-
-    ] activate ExamplePackage
-
-To check the active status 
-
-.. code-block:: julia 
-
-    ] st
-
-To work with our project, and 
 
 .. code-block:: julia 
 
@@ -218,19 +211,27 @@ Project Workflow
 Dependency Management 
 ----------------------------
 
+Environments 
+^^^^^^^^^^^^^^^^
+
 For the following, make sure that you have an activated REPL (that is, a REPL where you've run ``pkg> activate ExamplePackage``, or the original REPL where we generated the package)
 
-If you go into ``Pkg`` mode (that is, hit ``]``), you'll notice that the ``(ExamplePackage)`` to the left of the ``pkg>`` prompt 
+This means that the ``ExamplePackage`` is our *active environment* 
 
-This means that the ``ExamplePackage`` if our *active environment* 
+Any package operations we execute will be reflected in our ``ExamplePackage.jl`` directory's TOML 
 
-Any dependencies we add, or package operations we execute, will be reflected in our ``ExamplePackage.jl`` directory's TOML 
+Likewise, the only packages Julia knows about are those in the ``ExamplePackage.jl`` TOML. For example
 
-Likewise, the only packages Julia knows about are those in the ``ExamplePackage.jl`` TOML 
+.. code-block:: julia 
+
+    using QuantEcon # fails, even though QuantEcon is on the machine 
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it 
 
 See the `Pkg3 docs <https://docs.julialang.org/en/v1/stdlib/Pkg/>`_ for more information 
+
+Pkg Operations
+^^^^^^^^^^^^^^^^^^^
 
 For now, let's just try adding a dependency 
 
@@ -257,7 +258,7 @@ Our ``Project.toml`` should now read something like::
 The ``Manifest.toml`` (which tracks exact versions) has changed as well, to include a list of sub-dependencies and versions 
 
 .. figure:: /_static/figures/testing-atom-manifest.png
-    :scale: 60%
+    :scale: 45%
 
 There are also other commands you can run from the activated environment 
 
@@ -298,13 +299,12 @@ For example, let's say we add ``Distributions.jl`` and edit the source to read a
 
     end # module
 
-Let's try calling this from a fresh Julia REPL::
+Let's try calling this from a fresh Julia REPL
 
-    julia> using ExamplePackage
-    [ Info: Recompiling stale cache file C:\Users\Arnav Sood\.julia\compiled\v1.0\ExamplePackage\hpt8s.ji for ExamplePackage [f85830d0-e1f0-11e8-2fad-8762162ab251]
+.. code-block:: julia 
 
-    julia> foo()
-    0.11388071406436832
+    using ExamplePackage 
+    foo()
 
 Jupyter Workflow 
 ------------------------
@@ -314,14 +314,14 @@ We can also call this function from a Jupyter notebook
 Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
 
 .. figure:: /_static/figures/testing-output.png
-    :scale: 60%
+    :scale: 45%
 
 From here, we can use our package's functions in the usual way. This lets us produce neat output examples, without re-defining everything 
 
 We can also edit it interactively inside the notebook 
 
 .. figure:: /_static/figures/testing-notebook.png
-    :scale: 60%
+    :scale: 45%
 
 The change will be reflected in the ``Project.toml`` file::
 
@@ -363,7 +363,11 @@ In particular, they can run
 .. code-block:: julia 
 
     ] activate ExamplePackage 
+
+.. code-block:: julia 
+
     ] instantiate 
+
 
 To make sure the right dependencies are installed on their machine 
 
@@ -406,19 +410,7 @@ If a test is failing, we should *flag it and move on*
 
 This way, we still have access to information about the test, instead of just deleting it or commenting it out 
 
-Lastly, we can test for type-stability 
-
-.. code-block:: julia 
-
-    foo = x -> x 
-    @inferred foo(3) # passes 
-
-.. code-block:: julia 
-
-    bar = x -> x > 0 ? "string" : 0 
-    @inferred bar(3) # fails 
-
-This is useful to check for type stability 
+There are other test macros, that check for things like error handling and type-stability. Advanced users can check the `Julia docs <https://docs.julialang.org/en/v1/stdlib/Test/>`_
 
 Example 
 -----------
@@ -433,13 +425,14 @@ Let's add some unit tests for the ``foo()`` function we defined earlier. Our ``t
     @test foo() == 0.11388071406436832
     @test foo(1, 1.5) == 0.2731856314283442
     @test_broken foo(1, 0) # tells us this is broken
-    @test_broken @inferred foo(3) # tells us we're type-unstable
 
 And run it by running 
 
 .. code-block:: julia 
 
-    (ExamplePackage) pkg> test 
+    ] test 
+
+from an activated REPL 
 
 Test Sets 
 -------------
@@ -459,7 +452,8 @@ There are a few different ways to run the tests for your package
 
 * From an activated REPL, simply run ``pkg> test`` (recall that you can activate with ``pkg> activate ExamplePackage``)
 
-* Hit shift-enter in Atom on the actual ``runtests.jl`` file (SEE EXAMPLE BELOW)
+* Hit shift-enter in Atom on the actual ``runtests.jl`` file (as below). Recall that we can get the path of the package by running ``using ExamplePackage; pathof(ExamplePackage)`` from an unactivated REPL
+
 
 Continuous Integration with Travis
 ==========================================
@@ -474,7 +468,7 @@ This includes private repos if you're on a student developer pack or an academic
 To change this, go to "settings" under your GitHub profile 
 
 .. figure:: /_static/figures/git-settings.png
-    :scale: 60%
+    :scale: 45%
 
 Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked 
 
@@ -516,21 +510,25 @@ As above, builds are triggered whenever we push changes or open a pull request
 For example, if we push our changes to the server and then click the Travis badge on the README, we should see something like 
 
 .. figure:: /_static/figures/travis-progress.png
-    :scale: 60%
+    :scale: 45%
 
 This gives us an overview of all the builds running for that commit 
 
 To inspect a build more closely (say, if it fails), we can click on it and expand the log options 
 
 .. figure:: /_static/figures/travis-log.png
-    :scale: 60%
+    :scale: 45%
+
+Note that the build times here aren't informative, because we can't generally control the hardware to which our job is allocated 
 
 We can also cancel specific jobs, either from their specific pages or by clicking the grey "x" button on the dashboard 
 
 Lastly, we can trigger builds manually (without a new commit or PR) from the Travis overview 
 
 .. figure:: /_static/figures/travis-trigger.png
-    :scale: 60%
+    :scale: 45%
+
+To commit *without* triggering a build, simply add [ci skip] somewhere inside the commit message 
 
 Travis and Pull Requests 
 ----------------------------
@@ -562,7 +560,7 @@ Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/
 Next, go to your travis settings and add an environment variable as below 
 
 .. figure:: /_static/figures/travis-settings.png
-    :scale: 60%
+    :scale: 45%
 
 Interpreting Results 
 ------------------------
@@ -571,12 +569,12 @@ Click the CodeCov badge to see the build page for your project
 
 This shows us that our tests cover 50 \% of our functions in ``src//``
 
-To get a more granular view, we can click the ``src//` and the resultant filename
+To get a more granular view, we can click the ``src//`` and the resultant filename
 
-.. figure:: /_static/figures/travis-settings.png
-    :scale: 60%
+.. figure:: /_static/figures/codecov.png
+    :scale: 45%
 
-This shows us precisely which methods (and parts of methods) are untseted 
+This shows us precisely which methods (and parts of methods) are untested 
 
 Benchmarking 
 ==================
