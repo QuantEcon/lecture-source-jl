@@ -295,7 +295,7 @@ To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.j
 
 Note that this has fewer iterations
 
-However, since no derivative was given, it had to use `finite-differences <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ to approximate the gradient of ``f(x)``
+As no derivative was given, it used `finite-differences <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ to approximate the gradient of ``f(x)``
 
 
 However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible
@@ -418,8 +418,8 @@ To see an example from the documentation,
 
 An example for `parallel execution <https://github.com/robertfeldt/BlackBoxOptim.jl/blob/master/examples/rosenbrock_parallel.jl>`_ of the objective is provided
 
-Systems of Equations
-===============================
+Systems of Equations and Least Squares
+========================================
 
 Roots.jl
 ------------------------------------
@@ -446,13 +446,7 @@ The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero(
 .. code-block:: julia
 
     using Roots
-
-.. code-block:: julia
-
     f(x) = sin(4 * (x - 1/4)) + x + x^20 - 1
-
-.. code-block:: julia
-
     fzero(f, 0, 1)
 
 NLsolve.jl
@@ -495,6 +489,63 @@ Providing a function with operates in-place (i.e. modifying an argument) may hel
 
     println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in $(results.iterations) iterations and $(results.f_calls) function calls")
 
+LeastSquaresOptim.jl
+======================
+
+Many optimization problems can be solved using linear or nonlinear least squares
+
+Let :math:`x \in R^N` and :math:`F(x) : R^N \to R^M` with :math:`M \geq N`, then the nonlinear least squares problem is 
+
+.. math::
+
+    \min_x F(x)^T F(x)
+
+While :math:`F(x)^T F(x) \to R`, and hence this problem could technically use any nonlinear optimizer, it is useful to exploit the structure of the problem
+
+In particular, the Jacobian of :math:`F(x)`, can be used to approximate the Hessian of the objective
+
+As with most nonlinear optimization problems, the benefits will typically become evident only when analytical or automatic differentiation is possible
+
+If :math:`M = N` and we know a root :math:`F(x^*) = 0` to the system of equations exists, then NLS is the defacto method for solving large **systems of equations**
+
+An implementation of NLS is given in `LeastSquaresOptim.jl <https://github.com/matthieugomez/LeastSquaresOptim.jl>`_ 
+
+.. code-block:: julia
+
+    ] add LeastSquaresOptim # temp until added to QELAP
+
+From the documentation of the package
+
+.. code-block:: julia
+
+    using LeastSquaresOptim
+    function rosenbrock(x)
+        [1 - x[1], 100 * (x[2]-x[1]^2)]
+    end
+    LeastSquaresOptim.optimize(rosenbrock, zeros(2), Dogleg())
+
+
+**Note:** Because there is a name clash between ``Optim.jl`` and this package, to use both we need to qualify the use of the ``optimize`` function (i.e. ``LeastSquaresOptim.optimize``)
+
+
+Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobian, but you could also provide your own calculation of the Jacobian (analytical or using finite differences) and/or calculate the function in-place
+
+.. code-block:: julia
+
+    function rosenbrock_f!(out, x)
+        out[1] = 1 - x[1]
+        out[2] = 100 * (x[2]-x[1]^2)
+    end
+    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), f! = rosenbrock_f!, output_length = 2))
+
+    # if you want to use gradient
+    function rosenbrock_g!(J, x)
+        J[1, 1] = -1
+        J[1, 2] = 0
+        J[2, 1] = -200 * x[1]
+        J[2, 2] = 100
+    end
+    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
 
 Exercises
 =============
