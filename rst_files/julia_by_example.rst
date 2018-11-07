@@ -704,7 +704,7 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     p = 1.0
     β = 0.9
     iv = [0.8]
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
