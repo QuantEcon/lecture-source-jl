@@ -394,7 +394,7 @@ These include sequence data types like arrays
 
     actions = ["surf", "ski"]
     for action in actions
-        println("Charlie doen't $action")
+        println("Charlie doesn't $action")
     end
 
 
