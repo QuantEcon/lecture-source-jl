@@ -82,7 +82,7 @@ Otherwise, if there are errors when you attempt to use an online Jupyterhub, you
 Installing a Pre-built Jupyter Image
 ======================================
 
-`Docker <https://www.docker.com/>`_ is a technology that you to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a minimal, self-contained operating system on another computer
+`Docker <https://www.docker.com/>`_ is a technology that you use to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a minimal, self-contained operating system on another computer
 
 While it is largely used for running code in the cloud and in distributed computing, it is also convenient for using on local computers 
 
@@ -106,7 +106,7 @@ Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
 .. 
 .. Run ``docker version`` in the terminal to check there are no obvious errors
 
-Download the QuantEcon Docker image by running the following in your terminal (this may some time depending on your internet connection)
+Download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
 
 .. code-block:: none
 
@@ -122,7 +122,7 @@ After this is finished, first clear any existing volumes and then create a persi
 Running in a Local Folder
 --------------------------
 
-The Docker image has can exchange files locally (and recursively below in the tree) to where it is run
+The Docker image can exchange files locally (and recursively below in the tree) to where it is run
 
 Open a terminal and ``cd`` to the directory you are interested in storing local files
 
@@ -415,10 +415,10 @@ Now we ``Shift + Enter`` to produce this
    :scale: 70%
 
    
-Inserting unicode (e.g., Greek letters)
+Inserting unicode (e.g. Greek letters)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Julia supports the use of `unicode characters <https://docs.julialang.org/en/release-0.4/manual/unicode-input/>`__
+Julia supports the use of `unicode characters <https://docs.julialang.org/en/v1/manual/unicode-input/>`__
 such as α and β in your code
 
 Unicode characters can be typed quickly in Jupyter using the `tab` key
@@ -438,7 +438,7 @@ These shell commands are handled by your default system shell and hence are plat
 Package Manager
 ^^^^^^^^^^^^^^^^
 
-You can enter the package manager  prepending a ``]``
+You can enter the package manager by prepending a ``]``
 
 For example, ``] st`` will give the the current status of installed pacakges in the current environment
 

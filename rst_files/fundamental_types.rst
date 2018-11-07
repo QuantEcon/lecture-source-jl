@@ -19,7 +19,7 @@ Arrays, Tuples, Ranges, and Other Fundamental Types
 Overview
 ============================
 
-In Julia, arrays and tuples are the most important data type sfor working with numerical data
+In Julia, arrays and tuples are the most important data type for working with numerical data
 
 In this lecture we give more details on
 
@@ -400,7 +400,7 @@ An alternative is to call the ``view`` function directly--though it is generally
 
 As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else
 
-Another important lesson about views is that they **are not** normal, dense arrays 
+Another important lesson about ``@views`` is that they **are not** normal, dense arrays 
 
 .. code-block:: julia
 
@@ -941,7 +941,7 @@ Nonetheless the syntax is convenient
 Linear Algebra
 -------------------
 
-(`See linear algebra documentation <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_)
+(`See linear algebra documentation <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/>`_)
 
 
 Julia provides some a great deal of additional functionality related to linear operations
@@ -1020,7 +1020,7 @@ Tuples and Named Tuples
 
 (`See tuples <https://docs.julialang.org/en/v1/manual/functions/#Tuples-1>`_ and `named tuples documentation <https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1>`_)
 
-We were introduced to Tuples earlier, which provide high-performance immutable sets of distinct types
+We were introduced two Tuples earlier, which provide high-performance immutable sets of distinct types
 
 .. code-block:: julia
 
@@ -1233,7 +1233,7 @@ An alternative to ``nothing``, which can be useful and sometimes higher performa
 
 Note that in this case, the return type is ``Float64`` regardless of the input for ``Float64`` input
 
-Keep in mind, though, that this only works if the return type of a function is a ``Float64``
+Keep in mind, though, that this only works if the return type of a function is ``Float64``
 
 
 Exceptions

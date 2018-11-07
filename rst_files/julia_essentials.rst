@@ -197,7 +197,7 @@ The ``$`` inside of a string is used to interpolate a variable
 
     "x = $x"
 
-With brackets, you can splice the results of expressions into strings as well
+With parentheses, you can splice the results of expressions into strings as well
 
 .. code-block:: julia
 
@@ -381,7 +381,7 @@ Iterating
 One of the most important tasks in computing is stepping through a
 sequence of data and performing a given action
 
-Julia's provides neat, flexible tools for iteration as we now discuss
+Julia's provides neat and flexible tools for iteration as we now discuss
 
 Iterables
 ----------------
@@ -394,7 +394,7 @@ These include sequence data types like arrays
 
     actions = ["surf", "ski"]
     for action in actions
-        println("Charlie don't $action")
+        println("Charlie doesn't $action")
     end
 
 
@@ -548,7 +548,7 @@ As we saw earlier, when testing for equality we use ``==``
     x == 2
 
 
-For "not equal" use ``!=`` or ``≠``
+For "not equal" use ``!=`` or ``≠`` (``\ne<TAB>``)
 
 .. code-block:: julia
 
@@ -850,7 +850,7 @@ Another place that you may use a ``Ref`` is to fix a function parameter you do n
 
 .. code-block:: julia
 
-    f(x, y) = [1, 2, 3] ⋅ x + y
+    f(x, y) = [1, 2, 3] ⋅ x + y # "⋅" can be typed by \cdot<tab>
     f([3, 4, 5], 2) # uses vector as first parameter
     f.(Ref([3,4, 5]), [2,3]) # broadcasting over 2nd parameter, fixing first
 
@@ -877,7 +877,7 @@ The scope of a variable name determines where it is valid to refer to it, and ho
 
 Think of the scope as having a list of all of the name bindings that variables would be relevant, where different scopes could have the same name mean different things
 
-An obvious place to start is to notice that functions introduce there own local names
+An obvious place to start is to notice that functions introduce their own local names
 
 .. code-block:: julia
 
@@ -1015,7 +1015,7 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
 Loops
 ---------------
 
-The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about then the same way you would a function/closure
+The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about them the same way you would a function/closure
 
 In particular
 
