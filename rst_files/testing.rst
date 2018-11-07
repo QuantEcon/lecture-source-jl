@@ -6,9 +6,9 @@
 Packages, Testing, and Continuous Integration 
 ***************************************************
 
-Co-authored with Arnav Sood
-
 .. contents:: :depth: 2
+
+Co-authored with Arnav Sood
 
 This lecture is about structuring your project as a Julia module, and testing it with tools from GitHub 
 
@@ -143,20 +143,32 @@ You can change the path of a Julia REPL by running
 
 .. code-block:: julia 
 
-    cd("path/to/file")
+    cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
 
 Then, run 
 
 .. code-block:: julia 
 
+    ] activate 
+
+To get into the main Julia environment, and 
+
+.. code-block:: julia 
+
     ] dev . 
+
+We see the change reflected in our default package list 
+
+.. code-block:: julia 
+
+    ] st 
 
 Using the Package Manager 
 --------------------------------
 
 Now, from any Julia terminal in the future, we can run 
 
-.. code-block:: julia 
+.. code-block:: none 
 
     using ExamplePackage
 
@@ -164,7 +176,7 @@ To use its exported functions
 
 We can also get the path to this by running 
 
-.. code-block:: julia 
+.. code-block:: none 
 
     using ExamplePackage
     pathof(ExamplePackage) # returns path to src/ExamplePackage.jl 
@@ -285,7 +297,17 @@ Writing Code
 
 The basic idea is to work in ``tests/runtests.jl``, while reproducible functions should go in the ``src/ExamplePackage.jl``
 
-For example, let's say we add ``Distributions.jl`` and edit the source to read as follows::
+For example, let's say we add ``Distributions.jl`` 
+
+.. code-block:: julia 
+
+    ] activate ExamplePackage 
+
+.. code-block:: julia 
+
+    ] add Distributions 
+
+and edit the source to read as follows::
 
     module ExamplePackage
 
@@ -308,7 +330,11 @@ Let's try calling this from a fresh Julia REPL
 .. code-block:: julia 
 
     using ExamplePackage 
-    foo()
+    ExamplePackage.greet()
+
+.. code-block:: julia 
+
+    foo() # exported, so don't need to qualify the namespace
 
 Jupyter Workflow 
 ------------------------
@@ -373,7 +399,6 @@ In particular, they can run
 .. code-block:: julia 
 
     ] instantiate 
-
 
 To make sure the right dependencies are installed on their machine 
 
