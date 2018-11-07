@@ -35,6 +35,9 @@ You can also use Julia variables from shell mode
 .. code-block:: julia 
 
     x = 2 
+
+.. code-block:: julia 
+
     ; echo $x 
 
 Package Mode 
@@ -133,7 +136,7 @@ The ``Documentation`` pane simply lets us query Julia documentation
 
 The ``Plots`` pane captures Julia plots output 
 
-.. figure:: /_static/figures/juno-docs.png
+.. figure:: /_static/figures/juno-plots.png
     :scale: 60%
 
 May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
