@@ -25,3 +25,4 @@ This part of the course provides a more details on the Julia programming languag
     version_control 
     need_for_speed
     testing 
+    tools_editors 
