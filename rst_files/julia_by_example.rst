@@ -781,7 +781,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     iv =[0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
