@@ -378,11 +378,11 @@ It's important to make sure that your code is well-tested
 
 There are a few different kinds of test, each with different purposes
 
-#. *Unit testing* makes sure that individual pieces of a project function as expected
+* *Unit testing* makes sure that individual pieces of a project function as expected
 
-#. *Integration testing* makes sure that they work together as expected 
+* *Integration testing* makes sure that they work together as expected 
 
-#. *Regression testing* makes sure that behavior is unchanged over time 
+* *Regression testing* makes sure that behavior is unchanged over time 
 
 In this lecture, we'll focus on unit testing 
 
