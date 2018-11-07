@@ -226,9 +226,7 @@ Dependency Management
 Environments 
 ^^^^^^^^^^^^^^^^
 
-For the following, make sure that you have an activated REPL (that is, a REPL where you've run ``pkg> activate ExamplePackage``, or the original REPL where we generated the package)
-
-This means that the ``ExamplePackage`` is our *active environment* 
+As before, the TOML files define an *environment* for our project 
 
 Any package operations we execute will be reflected in our ``ExamplePackage.jl`` directory's TOML 
 
@@ -255,36 +253,16 @@ For now, let's just try adding a dependency
 
     ] add Expectations
 
-Our ``Project.toml`` should now read something like::
+We can track changes in the TOML, as before
 
-    name = "ExamplePackage"
-    uuid = "f85830d0-e1f0-11e8-2fad-8762162ab251"
-    authors = ["QuantEcon User <quanteconuser@gmail.com>"]
-    version = "0.1.0"
-
-    [deps]
-    Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
-
-    [extras]
-    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-    [targets]
-    test = ["Test"]
-
-The ``Manifest.toml`` (which tracks exact versions) has changed as well, to include a list of sub-dependencies and versions 
+Here's the Manifest 
 
 .. figure:: /_static/figures/testing-atom-manifest.png
     :scale: 45%
 
-There are also other commands you can run from the activated environment 
+We can also run other operations, like ``] up``, ``] precompile``, etc.
 
-* ``pkg> up`` will update all dependencies to their latest versions 
-
-* ``pkg> instantiate`` will make sure the dependencies exist on the local machine 
-
-* ``pkg> rm PackageName`` will remove PackageName as a dependency 
-
-To quit the active environment and return to the base ``(v1.0)``, simply run 
+Recall that, to quit the active environment and return to the base ``(v1.0)``, simply run 
 
 .. code-block:: julia 
 
@@ -325,7 +303,11 @@ and edit the source to read as follows::
 
     end # module
 
-Let's try calling this from a fresh Julia REPL
+Let's try calling this from the top environment (to stand in for a fresh REPL)
+
+.. code-block:: julia 
+
+    ] activate 
 
 .. code-block:: julia 
 

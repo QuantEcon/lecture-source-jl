@@ -204,6 +204,17 @@ Let's make some changes to this
 
 To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
 
+The Project TOML should look something like this:: 
+
+    name = "ExampleEnvironment"
+    uuid = "14d3e79e-e2e5-11e8-28b9-19823016c34c"
+    authors = ["QuantEcon User <quanteconuser@gmail.com>"]
+    version = "0.1.0"
+
+    [deps]
+    Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
+    Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+
 We can also 
 
 .. code-block:: julia 
