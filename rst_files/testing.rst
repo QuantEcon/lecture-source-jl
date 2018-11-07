@@ -349,6 +349,8 @@ And the Manifest as well
 
 Be sure to add ``output/.ipynb_checkpoints`` to your ``.gitignore`` file, so that's not checked in 
 
+Make sure you've activated the project environment (``] activate ExamplePackage``) before you try to propagate changes
+
 Collaborative Work 
 --------------------------
 
