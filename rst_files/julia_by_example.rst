@@ -794,7 +794,7 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     iv = @SVector  [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 5)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
