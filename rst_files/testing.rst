@@ -224,6 +224,10 @@ Likewise, the only packages Julia knows about are those in the ``ExamplePackage.
 
 .. code-block:: julia 
 
+    ] activate ExamplePackage
+
+.. code-block:: julia 
+
     using QuantEcon # fails, even though QuantEcon is on the machine 
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it 
@@ -501,6 +505,8 @@ We can see ours by opening it in Atom
 This is telling Travis to build the project in Julia, on OSX and Linux, using Julia v1.0 and the latest ("nightly")
 
 It also says that if the nightly version doesn't work, that shouldn't register as a failure 
+
+**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift. You can delete those lines to speed up the build. Likewise for nightly Julia 
 
 Working with Builds 
 --------------------
