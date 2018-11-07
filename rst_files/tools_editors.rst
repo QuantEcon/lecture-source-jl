@@ -202,6 +202,8 @@ Let's make some changes to this
 
     ] add Expectations Parameters 
 
+Note the lack of commas 
+
 To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
 
 The Project TOML should look something like this:: 
@@ -242,4 +244,19 @@ Lastly, let's clean up
 .. code-block:: julia 
 
     ; rm -rf ExampleEnvironment
+
+InstantiateFromURL
+-----------------------
+
+With this knowledge, we can explain the operation of the setup block
+
+.. literalinclude:: /_static/includes/deps.jl
+
+What this ``activate_github`` function does is 
+
+#. Download the TOML from that repo to a directory called ``.projects`` 
+
+#. ``] activate`` that environment, and 
+
+#. ``] instantiate`` and ``] precompile``, if necessary 
 
