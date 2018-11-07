@@ -745,7 +745,7 @@ The only change we will need to our model in order to use a different floating p
     iv = [BigFloat(0.8)] # higher precision
 
     # otherwise identical
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 5)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
