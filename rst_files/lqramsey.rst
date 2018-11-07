@@ -915,8 +915,12 @@ The Discrete Case
 Our second example adopts a discrete Markov specification for the exogenous process
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
+
     # Parameters
     β = 1 / 1.05
     P = [0.8 0.2 0.0
@@ -992,8 +996,12 @@ Solutions
 ==========
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
+
     # Parameters
     β = 1 / 1.05
     ρ, mg = .95, .35

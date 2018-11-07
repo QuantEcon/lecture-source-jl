@@ -259,19 +259,19 @@ Let's implement this iterative process
 
         # value function iteration  
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv; inplace = false, iterations = iter, xtol = tol).zero 
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
         V = xstar[1:end-1]
         U = xstar[end]
         
         # compute the reservation wage 
         wbarindex = searchsortedfirst(V .- U, 0.0)
         if wbarindex >= length(w) # if this is true, you never want to accept
-            wbar = Inf
+            w_bar = Inf
         else
-            wbar = w[wbarindex] # otherwise, return the number
+            w_bar = w[wbarindex] # otherwise, return the number
         end
 
-        return V, U, wbar
+        return (V = V, U = U, w_bar = w_bar) # return a NamedTuple, so we can select values by name  
     end 
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
@@ -303,7 +303,7 @@ We'll use the default parameterizations found in the code above
     gr(fmt=:png)
 
     mcm = McCallModel()
-    V, U = solve_mccall_model(mcm)
+    @unpack V, U = solve_mccall_model(mcm)
     U_vec = fill(U, length(mcm.w))
 
     plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
@@ -438,8 +438,8 @@ we can create an array for reservation wages for different values of :math:`c`,
 
     models = [McCallModel(c = cval) for cval in c_vals]
     sols = solve_mccall_model.(models)
-    w_bar_vals = [sol[3] for sol in sols]
-
+    w_bar_vals = [sol.w_bar for sol in sols] 
+    
     plot(c_vals,
         w_bar_vals,
         lw = 2,
@@ -447,6 +447,12 @@ we can create an array for reservation wages for different values of :math:`c`,
         xlabel = "unemployment compensation",
         ylabel = "reservation wage",
         label = "w_bar as a function of c")
+
+Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large)
+
+.. code-block:: julia
+
+    w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals]; # doesn't allocate new arrays for models and solutions 
 
 .. code-block:: julia
     :class: test
@@ -469,7 +475,7 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
     
     models = [McCallModel(γ = γval) for γval in γ_vals]
     sols = solve_mccall_model.(models)
-    w_bar_vals = [sol[3] for sol in sols]
+    w_bar_vals = [sol.w_bar for sol in sols]
 
     plot(γ_vals, w_bar_vals, lw = 2, α = 0.7, xlabel = "job offer rate", ylabel = "reservation wage", label = "w_bar as a function of gamma")
 

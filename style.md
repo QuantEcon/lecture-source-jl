@@ -122,6 +122,27 @@ f(param)
 ```
 
 ## General Control Structures and Code Organization
+
+- **Return Named Tuples** from functions with multiple return values.  That is,
+
+```julia 
+# BAD
+function foo(x, y, z)
+    return (x, y, z) # Julia does this anyway 
+end 
+
+~, ~, z = foo(x, y, z) # when we want z
+
+# GOOD 
+function foo(x, y, z)
+    return (x = x, y = y, z = z)
+end
+
+# when we want z 
+@unpack z = foo(x, y, z)
+z = foo(x, y, z).z
+``` 
+
 - **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
 ```julia
 # BAD! (unless out is a preallocated and very large vector)
@@ -222,21 +243,7 @@ y = [1; 2; 3]
 # GOOD!
 y = [1, 2, 3]
 ```
-- **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
-```julia
-x = [1 0; 0 1]
 
-# note, typeof(Q) ==  LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}
-Q, R = qr(x)
-
-
-# BAD!
-Q = Matrix(Q)
-val = Q * Q' # some calculation using Q and other things
-
-# GOOD!
-val = Q * Q' # directly, without any conversion
-```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
 # BAD!
@@ -403,7 +410,7 @@ f.(X)
 ```
 
 - **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
-```
+```julia
 # BAD! 
 x = 1:3
 mapreduce(xval -> xval^2, +, x)
@@ -422,6 +429,75 @@ for i in 1:3
 end
 ```
 The exception, of course, is when dealing with parallel programming where functional patterns are essential.
+
+## Error Handling
+- **Consistent naming of result**
+  - Call the results of optimizers/etc. `result` when possible
+- **Add `converged`, etc. with `using` into the namespace to make the code easier to read**
+  - And can safely ignore the conflicting method errors, until smarter method merging becomes possible.
+- **Can use the || idiom for error handling**.
+  - Eventually people will need to get used to it.  But minimize its use outside of that case
+- **Never ignore errors from fixed-point or solvers**.  In the case below, we can just raise an error so it isn't ignored
+```julia
+using NLsolve
+f(x) = x
+x_iv = [1.0]
+#f(x) = 1.1 * x # fixed-point blows
+
+# BAD!
+xstar = fixedpoint(f, x_iv).zero # assumes convergence
+xsol = nlsolve(f, x_iv).zero # assumes convergence
+
+# GOOD!
+result = fixedpoint(f, x_iv)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xstar = result.zero
+
+result = nlsolve(f, x_iv)
+converged(result) || error("Failed to converge in $(result.iterations) iterations")
+xsol = result.zero
+```
+- **Handle errors by returning nothing**.  But if you won't handle, prefer to throw errors.
+```julia
+function g(a)
+    f(x) = a * x # won't succeed if a > 1
+    result = fixedpoint(f, [1.0])
+    converged(result) || return nothing
+    xstar = result.zero
+    
+    #do calculations...
+    return xstar
+end
+val = g(0.8)
+@show val == nothing
+val = g(1.1)
+@show val == nothing;
+```
+- **Use similar patterns with the Optim and other libraries**
+  - Although there is (currently) an inconsistency in the usage of the minimum and maximum in Optim.
+```julia
+# GOOD: make it easier to use, even if there are a few method merge warnings
+using Optim
+using Optim: converged, maximum, maximizer, minimizer, iterations
+
+# BAD
+xmin = optimize(x-> x^2, -2.0, 1.0).minimum
+
+# GOOD
+result = optimize(x-> x^2, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = result.minimizer
+result.minimum
+
+
+# GOOD
+f(x) = -x^2
+result = maximize(f, -2.0, 1.0)
+converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+xmin = maximizer(result)
+fmax = maximum(result)
+```
+
 
 ## Dependencies
 
