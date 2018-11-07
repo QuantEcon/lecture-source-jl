@@ -227,7 +227,7 @@ We can also
 
 You can think of the TOML as specifying demands for resources, which are supplied by the ``~/.julia`` user depot 
 
-To return to the deafult Julia environment, simply 
+To return to the default Julia environment, simply 
 
 .. code-block:: julia 
 
