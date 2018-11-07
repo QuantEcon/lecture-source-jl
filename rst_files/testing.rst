@@ -35,7 +35,7 @@ As we'll see later, Travis is a service that automatically tests your project on
 
 First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov 
 
-**NOTE::** As of May 2018, Travis is deprecating the ``travis-ci.org`` website. All users should use ``travis-ci.com``
+**NOTE** As of May 2018, Travis is deprecating the ``travis-ci.org`` website. All users should use ``travis-ci.com``
 
 Navigate to the `Travis website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials 
 
@@ -46,7 +46,7 @@ CodeCov
 
 CodeCov is a service that tells you how expansive your tests are (i.e., how much of your code is untested)
 
-To sign up, visit the ``CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
+To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
 
 .. figure:: /_static/figures/codecov-1.png
     :scale: 60%
@@ -69,8 +69,11 @@ We also want to add the `PkgTemplates <https://github.com/invenia/PkgTemplates.j
 
 .. code-block:: julia 
 
-    pkg> add PkgTemplates
-    pkg> precompile 
+    ] add PkgTemplates
+    
+.. code-block:: julia 
+    
+    ] precompile 
 
 To recall, you can get into the ``pkg>`` mode by hitting ``]`` in the REPL 
 
@@ -130,7 +133,9 @@ First, open a REPL in the newly created project directory, either by noting the 
 
     DEPOT_PATH  
 
-And navigating to the first element, then the subdirectory ``/dev/ExamplePackage.jl``
+And navigating to the first element, then the subdirectory ``/dev/ExamplePackage``
+
+Note the lack of ``.jl``!
 
 You can change the path of a Julia REPL by running 
 
@@ -142,13 +147,19 @@ Then, run
 
 .. code-block:: julia 
 
-    pkg> dev . 
+    ] dev . 
 
 Now, from any Julia terminal in the future, we can run 
 
 .. code-block:: julia 
 
-    pkg> activate ExamplePackage
+    ] activate ExamplePackage
+
+To check the active status 
+
+.. code-block:: julia 
+
+    ] st
 
 To work with our project, and 
 
@@ -225,7 +236,7 @@ For now, let's just try adding a dependency
 
 .. code-block:: julia 
 
-    pkg> add Expectations
+    ] add Expectations
 
 Our ``Project.toml`` should now read something like::
 
@@ -260,7 +271,7 @@ To quit the active environment and return to the base ``(v1.0)``, simply run
 
 .. code-block:: julia 
 
-    pkg> activate 
+    ] activate 
 
 Without any arguments
 
@@ -341,7 +352,7 @@ For someone else to get the package, they simply need to run
 
 .. code-block:: julia 
 
-    pkg> dev https://github.com/quanteconuser/ExamplePackage.jl.git
+    ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
 This will place the repository inside their ``~/.julia/dev`` folder, and they can drag-and-drop it to GitHub desktop in the usual way 
 
@@ -351,8 +362,8 @@ In particular, they can run
 
 .. code-block:: julia 
 
-    pkg> activate ExamplePackage 
-    pkg> instantiate 
+    ] activate ExamplePackage 
+    ] instantiate 
 
 To make sure the right dependencies are installed on their machine 
 
@@ -402,8 +413,10 @@ Lastly, we can test for type-stability
     foo = x -> x 
     @inferred foo(3) # passes 
 
+.. code-block:: julia 
+
     bar = x -> x > 0 ? "string" : 0 
-    @inferred foo(3) # fails 
+    @inferred bar(3) # fails 
 
 This is useful to check for type stability 
 
@@ -495,7 +508,7 @@ This is telling Travis to build the project in Julia, on OSX and Linux, using Ju
 
 It also says that if the nightly version doesn't work, that shouldn't register as a failure 
 
-Triggering Builds 
+Working with Builds 
 --------------------
 
 As above, builds are triggered whenever we push changes or open a pull request 
