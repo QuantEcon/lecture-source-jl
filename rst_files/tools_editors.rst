@@ -8,341 +8,197 @@ Julia Tools and Editors
 
 .. contents:: :depth: 2
 
-while Jupyter based notebooks are an easy way to get started with the language, you will eventually use a variety of tools and editors
+Co-authored with Arnav Sood
 
-Overview
-============
+While Jupyter notebooks are a great way to get started with the language, eventually you'll want to use more powerful Tools
 
-Topics:
-
-* Using the REPL
-* Using the Package managers
-* Setting up and Using Atom
-
+We assume you've already completed the :ref:`getting started <getting_started>` lecture 
 
 The REPL
-======================
-While we introduced the REPL in :doc:`earlier <getting_started>` TODO 
+=============
 
+Previously, we discussed basic use of the Julia REPL ("Read-Evaluate-Print Loop")
 
-First Steps
-==============
+Here, we'll consider some more advanced features
 
+Shell Mode 
+-----------------
 
+Hitting ``;`` brings you into shell mode, which lets you run OS commands 
 
-**Note:** In these lectures we assume you have version 0.6 or later
+On Windows, you should start Julia from inside ``git bash`` to get this functionality (see `here <https://github.com/JuliaLang/julia/issues/23597.>`_)
 
+.. code-block:: julia 
 
-Assuming there were no problems, you should now be able to start Julia either by
+    ; pwd 
 
-* Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+You can also use Julia variables from shell mode 
 
-* Opening a terminal and typing ``julia`` (Linux)
+.. code-block:: julia 
 
-Either way you should now be looking at something like this (modulo your operating system --- this is a Linux machine)
+    x = 2 
+    ; echo $x 
 
+Package Mode 
+-----------------
 
-.. figure:: /_static/figures/julia_term_1.png
-   :scale: 75%
+Hitting ``]`` brings you into package mode
 
+* ``] add Expectations`` will add a package (here, ``Expectations.jl``) 
 
+* Likewise, ``] rm Expectations`` will remove that package 
 
-The REPL
------------
+* ``] st`` will show you a snapshot of what you have installed 
 
-The program that's running here is called the Julia REPL (Read Eval Print Loop) or Julia interpreter
+* ``] up`` will (intelligently) upgrade versions of your packages 
 
-Let's try some basic commands
+* ``] precompile`` will precompile everytihng possible 
 
-.. figure:: /_static/figures/julia_term_2.png
-   :scale: 75%
+You can get a full list of package-mode commands by running 
 
-The Julia interpreter has the kind of nice features you expect from a modern REPL
+.. code-block:: julia 
 
-For example,
+    ] ? 
 
-* Pushing the up arrow key retrieves the previously typed command
-
-* If you type ``?`` the prompt will change to ``help?>`` and give you access to online documentation
-
-.. figure:: /_static/figures/julia_term_3.png
-   :scale: 75%
-
-You can also type ``;`` to get a shell prompt, at which you can enter shell
-commands
-
-.. figure:: /_static/figures/julia_term_4.png
-   :scale: 75%
-
-(Here ``ls`` is a UNIX style command that lists directory contents --- your shell commands depend on your operating system)
-
-Below we'll often show interactions with the interpreter as follows
-
-Activate the project environment, ensuring that ``Project.toml`` and ``Manifest.toml`` are in the same location as your notebook
-
-.. code-block:: julia
-
-    using Pkg; Pkg.activate(@__DIR__); #activate environment in the notebook's location
-
-.. code-block:: julia
-
-    x = 10
-
-
-.. code-block:: julia
-
-    2 * x
-
-
-
-Installing Packages
-=======================
-
-In these lectures you'll often see statements such as 
-
-.. code-block:: julia
-
-    using Plots
-
-or
-
-.. code-block:: julia
-
-    using QuantEcon
-
-These commands pull in code from some of Julia's `many external Julia code libraries <http://pkg.julialang.org/>`_
-
-For the code to run, you need to install the corresponding package first
-
-Fortunately this is easy using Julia's package management system
-
-For example, let's install `DataFrames <https://github.com/JuliaStats/DataFrames.jl>`_, which provides useful functions and data types for manipulating data sets
-
-.. code-block:: julia
-
-    Pkg.add("DataFrames")
-
-Assuming you have a working Internet connection this should install the DataFrames package
-
-Here's how it looks on our machine (which already has this package installed)
-
-
-.. figure:: /_static/figures/julia_term_addpkg.png
-   :scale: 75%
-
-If you now type ``Pkg.status()`` you'll see ``DataFrames`` and its version number
-
-To pull the functionality from ``DataFrames`` into the current session we type
-
-.. code-block:: julia
-
-    using DataFrames
-
-
-Now its functions are accessible
-
-
-.. code-block:: julia
-
-    df = DataFrame(x1=[1, 2], x2=["foo", "bar"])
-
-
-
-Keeping your Packages up to Date
------------------------------------
-
-Running
-
-.. code-block:: julia
-
-    Pkg.update()
-
-will update your installed packages and also update local information on the set of available packages
-
-We **assume throughout** that you keep your packages updated to the latest version!
-
-
-
-
-.. _gs_qe:
-
-QuantEcon 
+Help Mode 
 ---------------
 
-`QuantEcon <http://quantecon.org>`_ is an organization that facilitates development of open source code for economic modeling
+Hitting ``?`` will bring you into help mode 
 
-As well as these lectures, it supports `QuantEcon.jl <http://quantecon.org/julia_index.html>`__, a library for quantitative economic modeling in Julia
+The key use case is to find docstrings for functions and macros, e.g. 
 
-The installation method is standard
+.. code-block:: julia 
 
-.. code-block:: julia
+    ? print 
 
-    Pkg.add("QuantEcon")
+Note that objects must be loaded for Julia to return their documentation, e.g. 
 
+.. code-block:: julia 
 
-Here's an example, which creates a discrete approximation to an AR(1) process
+    ? @test 
 
-.. code-block:: julia
+will fail, but 
 
-    using QuantEcon: tauchen
+.. code-block:: julia 
 
-    tauchen(4, 0.9, 1.0)
+    using Test 
 
+.. code-block:: julia 
 
+    ? @test 
 
+will succeed 
 
-We'll learn more about the library as we go along
+Atom 
+=========
 
+As discussed `previously <getting_started>`_, eventually you'll want to use a full-fledged text editor 
 
+The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
 
-Alternatives to Jupyter
+Installation and Configuration 
+---------------------------------
+
+Instructions for basic setup and configuration can be found `here <https://github.com/econtoolkit/tutorials/blob/master/julia.md#installation-and-setup/>`_
+
+The key package to install is called `Juno <http://junolab.org.>`_ 
+
+Standard Layout  
+------------------
+
+If you follow the instructions, you should see something like this when you open a new file 
+
+If you don't, simply go to the command palette and type "Julia standard layout" 
+
+.. figure:: /_static/figures/juno-standard-layout.png
+    :scale: 60%
+
+The bottom pane is a standard REPL, which supports the different modes above 
+
+The "workspace" pane is a snapshot of currently-defined objects. For example, if we define an object in the REPL
+
+.. code-block:: julia 
+
+    x = 2
+
+Our workspace should read 
+
+.. figure:: /_static/figures/juno-workspace-1.png
+    :scale: 60%
+
+The ``ans`` variable simply captures the result of the last computation 
+
+The ``Documentation`` pane simply lets us query Julia documentation 
+
+.. figure:: /_static/figures/juno-docs.png
+    :scale: 60%
+
+The ``Plots`` pane captures Julia plots output 
+
+May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
+
+Other Features 
+-------------------
+
+* `` Shift + Enter `` will evaluate a highlighted selection or line 
+
+* The run symbol in the left sidebar (or ``Ctrl+Shift+Enter``) will run the whole file 
+
+* For more, see 
+
+Docker Integration 
+----------------------
+
+You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
+
+For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html/>_`
+
+Package Environments 
 ========================
 
+Julia's package manager lets you set up Python-style "virtualenvs," that draw from an underlying pool of assets on the machine 
 
-In this lecture series we'll assume that you're using Jupyter
+* An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
-Doing so allows us to make sure that everything works in at least one sensible environment
+* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull 
 
-But as you work more with Julia you will want to explore other environments as
-well
+* A ``depot`` is a directory, like ``~/.julia``, which contains assets (compile caches, registries, package source directories, etc.) 
 
-Here are some notes on working with the REPL, text editors and other alternatives
+Essentially, an environment is a dependency tree for a project, or a "frame of mind" for Julia's package manager 
 
+We can see the base (``v1.0``) environment as such 
 
-Editing Julia Scripts
------------------------
+.. code-block:: julia 
 
-You can run Julia scripts from the REPL using the ``include("filename")`` syntax
+    ] st 
 
-The file needs to be in the present working directory, which you can determine by typing ``pwd()``
+And we can switch environments as such 
 
+.. code-block:: julia 
 
-You also need to know how to edit them --- let's discuss how to do this without Jupyter
+    using InstantiateFromURL 
+    activate_github("arnavs/InstantiationTest")
 
-IDEs
-^^^^^
+.. code-block:: julia 
 
-`IDEs <https://en.wikipedia.org/wiki/Integrated_development_environment>`_  (Integrated Development Environments) combine an interpreter and text editing facilities in the one application
+    ] st 
 
-For Julia one nice option is `Juno <http://junolab.org/>`_
+We can edit environments, as before 
 
+.. code-block:: julia 
 
+    ] add Distributions 
 
-Text Editors
-^^^^^^^^^^^^^
+And this will propagate changes to the TOML 
 
-The beauty of text editors is that if you master one of them, you can use it
-for every coding task you come across, regardless of the language
+.. code-block:: julia 
 
-At a minimum, a text editor for coding should provide
+    Base.active_project()
 
-* Syntax highlighting for the languages you want to work with
+Lastly, we can return to the default environment by calling ``activate`` without args 
 
-* Automatic indentation
+.. code-block:: julia 
 
-* Efficient text manipulation (search and replace, copy and paste, etc.)
+    ] activate 
 
-
-There are many text editors that speak Julia, and a lot of them are free
-
-Suggestions:
-
-* `Atom <https://atom.io/>`_ is a popular open source next generation text editor
-
-* `Sublime Text <http://www.sublimetext.com/>`_ is a modern, popular and highly regarded text editor with a relatively moderate learning curve (not free but trial period is unlimited)
-
-* `Emacs <http://www.gnu.org/software/emacs/>`_ is a high quality free editor with a sharper learning curve
-
-Finally, if you want an outstanding free text editor and don't mind a seemingly vertical learning curve plus long days of pain and suffering while all your neural pathways are rewired, try `Vim <http://www.vim.org/>`_
-
-
-
-Exercises
-===========
-
-Exercise 1
-------------
-
-If Jupyter is still running, quit by using ``Ctrl-C`` at the terminal where you started it
-
-Now launch again, but this time using ``jupyter notebook --no-browser``
-
-This should start the kernel without launching the browser
-
-Note also the startup message: It should give you a URL such as ``http://localhost:8888`` where the notebook is running
-
-Now
-
-#. Start your browser --- or open a new tab if it's already running
-
-#. Enter the URL from above (e.g. ``http://localhost:8888``) in the address bar at the top
-
-You should now be able to run a standard Jupyter notebook session
-
-This is an alternative way to start the notebook that can also be handy
-
-
-
-
-Exercise 2
-------------
-
-.. index:: 
-    single: Git
-
-This exercise will familiarize you with git and GitHub
-
-`Git <http://git-scm.com/>`_ is a *version control system* --- a piece of software used to manage digital projects such as code libraries
-
-In many cases the associated collections of files --- called *repositories* --- are stored on `GitHub <https://github.com/>`_
-
-GitHub is a wonderland of collaborative coding projects
-
-Git is an extremely powerful tool for distributed collaboration --- for
-example, we use it to share and synchronize all the source files for these
-lectures
-
-There are two main flavors of Git
-
-#. The plain vanilla `command line Git <http://git-scm.com/downloads>`_ version
-
-#. The various point-and-click GUI versions
-
-    * See, for example, the `GitHub version <https://desktop.github.com/>`_
-
-As an exercise, try 
-
-#. Installing Git
-   
-#. Getting a copy of `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ using Git
-
-For example, if you've installed the command line version, open up a terminal and enter
-
-.. code-block:: bash
-
-	git clone https://github.com/QuantEcon/QuantEcon.jl
-
-(This is just ``git clone`` in front of the URL for the repository)
-
-Even better, 
-
-#. Sign up to `GitHub <https://github.com/>`_ 
-
-#. Look into 'forking' GitHub repositories (forking means making your own copy of a GitHub repository, stored on GitHub)
-
-#. Fork `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_
-
-#. Clone your fork to some local directory, make edits, commit them, and push them back up to your forked GitHub repo
-
-#. If you made a valuable improvement, send us a `pull request <https://help.github.com/articles/about-pull-requests/>`_!
-
-For reading on these and other topics, try
-
-* `The official Git documentation <http://git-scm.com/doc>`_
-
-* Reading through the docs on `GitHub <https://github.com/>`_
-
-* `Pro Git Book <http://git-scm.com/book>`_ by Scott Chacon and Ben Straub
-
-* One of the thousands of Git tutorials on the Net
-
+If our 
