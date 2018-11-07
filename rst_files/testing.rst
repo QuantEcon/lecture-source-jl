@@ -28,6 +28,38 @@ Project Setup
 Online Setup 
 --------------------
 
+Travis CI 
+^^^^^^^^^^^^^
+
+As we'll see later, Travis is a service that automatically tests your project on the GitHub server 
+
+First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov 
+
+**NOTE::** As of May 2018, Travis is deprecating the ``travis-ci.org`` website. All users should use ``travis-ci.com``
+
+Navigate to the `Travis website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials 
+
+If you get stuck, see the `Travis tutorial <https://docs.travis-ci.com/user/tutorial/>`_
+
+CodeCov 
+^^^^^^^^^
+
+CodeCov is a service that tells you how expansive your tests are (i.e., how much of your code is untested)
+
+To sign up, visit the ``CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
+
+.. figure:: /_static/figures/codecov-1.png
+    :scale: 60%
+
+Next, click "add a repository" and *enable private scope* (this allows CodeCov to service your private projects)
+
+The result should be 
+
+.. figure:: /_static/figures/codecov-2.png
+    :scale: 60%
+
+This is all we need for now 
+
 Julia Setup 
 --------------------
 
@@ -37,9 +69,10 @@ We also want to add the `PkgTemplates <https://github.com/invenia/PkgTemplates.j
 
 .. code-block:: julia 
 
-    using Pkg 
-    pkg"add PkgTemplates"
-    pkg"precompile"
+    pkg> add PkgTemplates
+    pkg> precompile 
+
+To recall, you can get into the ``pkg>`` mode by hitting ``]`` in the REPL 
 
 Next, let's create a *template* for our project 
 
@@ -83,7 +116,6 @@ Click the "publish branch" button to upload your files to GitHub
 
 If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
 
-
 .. figure:: /_static/figures/testing-git2.png
     :scale: 60%
 
@@ -92,19 +124,31 @@ Adding Project to Julia Package Manager
 
 We also want Julia's package manager to be aware of the project
 
-In the ``ExamplePackage.jl`` directory, open a new terminal and run 
+First, open a REPL in the newly created project directory, either by noting the path printed above, or by running
 
 .. code-block:: julia 
 
-    using Pkg 
-    pkg"dev ." 
+    DEPOT_PATH  
 
-Now, from any Julia terminal on our machine, we can run 
+And navigating to the first element, then the subdirectory ``/dev/ExamplePackage.jl``
+
+You can change the path of a Julia REPL by running 
 
 .. code-block:: julia 
 
-    using Pkg 
-    pkg"activate ExamplePackage" 
+    cd("path/to/file")
+
+Then, run 
+
+.. code-block:: julia 
+
+    pkg> dev . 
+
+Now, from any Julia terminal in the future, we can run 
+
+.. code-block:: julia 
+
+    pkg> activate ExamplePackage
 
 To work with our project, and 
 
@@ -112,7 +156,14 @@ To work with our project, and
 
     using ExamplePackage
 
-To use it 
+To use its exported functions
+
+We can also get the path to this by running 
+
+.. code-block:: julia 
+
+    using ExamplePackage
+    pathof(ExamplePackage) # returns path to src/ExamplePackage.jl 
 
 Project Structure 
 ==========================
@@ -156,25 +207,25 @@ Project Workflow
 Dependency Management 
 ----------------------------
 
-If you run 
+For the following, make sure that you have an activated REPL (that is, a REPL where you've run ``pkg> activate ExamplePackage``, or the original REPL where we generated the package)
 
-.. code-block:: julia 
+If you go into ``Pkg`` mode (that is, hit ``]``), you'll notice that the ``(ExamplePackage)`` to the left of the ``pkg>`` prompt 
 
-    pkg"st"
+This means that the ``ExamplePackage`` if our *active environment* 
 
-You'll notice that the our project is now the "active environment" 
+Any dependencies we add, or package operations we execute, will be reflected in our ``ExamplePackage.jl`` directory's TOML 
 
-This means that any dependencies we add, or package operations we execute, will be reflected in our ``ExamplePackage.jl`` directory's TOML 
+Likewise, the only packages Julia knows about are those in the ``ExamplePackage.jl`` TOML 
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it 
 
 See the `Pkg3 docs <https://docs.julialang.org/en/v1/stdlib/Pkg/>`_ for more information 
 
-For now, let's try adding a dependency 
+For now, let's just try adding a dependency 
 
 .. code-block:: julia 
 
-    pkg"add Expectations"
+    pkg> add Expectations
 
 Our ``Project.toml`` should now read something like::
 
@@ -196,6 +247,22 @@ The ``Manifest.toml`` (which tracks exact versions) has changed as well, to incl
 
 .. figure:: /_static/figures/testing-atom-manifest.png
     :scale: 60%
+
+There are also other commands you can run from the activated environment 
+
+* ``pkg> up`` will update all dependencies to their latest versions 
+
+* ``pkg> instantiate`` will make sure the dependencies exist on the local machine 
+
+* ``pkg> rm PackageName`` will remove PackageName as a dependency 
+
+To quit the active environment and return to the base ``(v1.0)``, simply run 
+
+.. code-block:: julia 
+
+    pkg> activate 
+
+Without any arguments
 
 Writing Code
 -----------------
@@ -274,12 +341,20 @@ For someone else to get the package, they simply need to run
 
 .. code-block:: julia 
 
-    using Pkg 
-    pkg"dev https://github.com/quanteconuser/ExamplePackage.jl.git"
+    pkg> dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
 This will place the repository inside their ``~/.julia/dev`` folder, and they can drag-and-drop it to GitHub desktop in the usual way 
 
 They can then collaborate as they would on other git repositories 
+
+In particular, they can run 
+
+.. code-block:: julia 
+
+    pkg> activate ExamplePackage 
+    pkg> instantiate 
+
+To make sure the right dependencies are installed on their machine 
 
 Unit Testing
 ====================================
@@ -296,22 +371,212 @@ There are a few different kinds of test, each with different purposes
 
 In this lecture, we'll focus on unit testing 
 
+
 The ``Test`` Module
 -------------------------
 
+Julia provides testing features through a built-in package called ``Test``, which we get by ``using Test`` 
 
+The basic object is the macro ``@test`` 
+
+.. code-block:: julia 
+
+    using Test 
+    @test 1 == 1 
+    @test 1 ≈ 1 
+
+Tests will pass if the condition is ``true``, or fail otherwise 
+
+If a test is failing, we should *flag it and move on* 
+
+.. code-block:: julia 
+
+    @test_broken 1 == 2 
+
+This way, we still have access to information about the test, instead of just deleting it or commenting it out 
+
+Lastly, we can test for type-stability 
+
+.. code-block:: julia 
+
+    foo = x -> x 
+    @inferred foo(3) # passes 
+
+    bar = x -> x > 0 ? "string" : 0 
+    @inferred foo(3) # fails 
+
+This is useful to check for type stability 
+
+Example 
+-----------
+
+Let's add some unit tests for the ``foo()`` function we defined earlier. Our ``tests/runtests.jl`` file should look like this 
+
+.. code-block:: julia 
+
+    using ExamplePackage
+    using Test
+
+    @test foo() == 0.11388071406436832
+    @test foo(1, 1.5) == 0.2731856314283442
+    @test_broken foo(1, 0) # tells us this is broken
+    @test_broken @inferred foo(3) # tells us we're type-unstable
+
+And run it by running 
+
+.. code-block:: julia 
+
+    (ExamplePackage) pkg> test 
+
+Test Sets 
+-------------
+
+By default, the ``runtests.jl`` folder starts off with a ``@testset``
+
+This is useful for organizing different batches of tests, but for now we can simply ignore it 
+
+To learn more about test sets, see `the docs <https://docs.julialang.org/en/v1/stdlib/Test/index.html#Working-with-Test-Sets-1/>`_
+
+Running Tests Locally 
+-----------------------
+
+There are a few different ways to run the tests for your package 
+
+* From a fresh REPL, run ``pkg> test ExamplePackage``
+
+* From an activated REPL, simply run ``pkg> test`` (recall that you can activate with ``pkg> activate ExamplePackage``)
+
+* Hit shift-enter in Atom on the actual ``runtests.jl`` file (SEE EXAMPLE BELOW)
 
 Continuous Integration with Travis
 ==========================================
 
-TODO 
+Setup 
+-------
+
+By default, Travis should have access to all your repositories and deploy automatically 
+
+This includes private repos if you're on a student developer pack or an academic plan (Travis detects this automatically)
+
+To change this, go to "settings" under your GitHub profile 
+
+.. figure:: /_static/figures/git-settings.png
+    :scale: 60%
+
+Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked 
+
+Build Options 
+----------------
+
+By default, Travis will run builds for new commits and PRs for every tracked repo with a ``.travis.yml`` file 
+
+We can see ours by opening it in Atom 
+
+.. code-block:: julia 
+
+    # Documentation: http://docs.travis-ci.com/user/languages/julia/
+    language: julia
+    os:
+    - linux
+    - osx
+    julia:
+    - 1.0
+    - nightly
+    matrix:
+    allow_failures:
+        - julia: nightly
+    fast_finish: true
+    notifications:
+    email: false
+    after_success:
+    - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+
+This is telling Travis to build the project in Julia, on OSX and Linux, using Julia v1.0 and the latest ("nightly")
+
+It also says that if the nightly version doesn't work, that shouldn't register as a failure 
+
+Triggering Builds 
+--------------------
+
+As above, builds are triggered whenever we push changes or open a pull request 
+
+For example, if we push our changes to the server and then click the Travis badge on the README, we should see something like 
+
+.. figure:: /_static/figures/travis-progress.png
+    :scale: 60%
+
+This gives us an overview of all the builds running for that commit 
+
+To inspect a build more closely (say, if it fails), we can click on it and expand the log options 
+
+.. figure:: /_static/figures/travis-log.png
+    :scale: 60%
+
+We can also cancel specific jobs, either from their specific pages or by clicking the grey "x" button on the dashboard 
+
+Lastly, we can trigger builds manually (without a new commit or PR) from the Travis overview 
+
+.. figure:: /_static/figures/travis-trigger.png
+    :scale: 60%
+
+Travis and Pull Requests 
+----------------------------
+
+One key feature of Travis is the ability to see at-a-glance whether PRs pass tests before merging them 
+
+This happens automatically when Travis is enabled on a repository 
+
+For an example of this feature, see `this PR <https://github.com/QuantEcon/Games.jl/pull/65/>`_ in the Games.jl repository 
 
 CodeCoverage 
 ===================
 
-TODO 
+Beyond the success or failure of our test suite, we also want to know how much of our code the tests cover 
+
+The tool we use to do this is called `CodeCov <http://codecov.io>`_
+
+Setup 
+---------
+
+You'll find that codecov is automatically enabled for public repos with Travis 
+
+For private ones, you'll need to first get an access token 
+
+Add private scope in the CodeCov website, just like we did for Travis
+
+Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/ExamplePackage.jl/settings`` for our repo) and copy the token 
+
+Next, go to your travis settings and add an environment variable as below 
+
+.. figure:: /_static/figures/travis-settings.png
+    :scale: 60%
+
+Interpreting Results 
+------------------------
+
+Click the CodeCov badge to see the build page for your project 
+
+This shows us that our tests cover 50 \% of our functions in ``src//``
+
+To get a more granular view, we can click the ``src//` and the resultant filename
+
+.. figure:: /_static/figures/travis-settings.png
+    :scale: 60%
+
+This shows us precisely which methods (and parts of methods) are untseted 
 
 Benchmarking 
 ==================
 
-TODO 
+Another goal of testing is to make sure that code doesn't slow down significantly from one version to the next 
+
+We can do this using tools provided by the ``BenchmarkTools.jl`` package 
+
+See the ``need for speed`` lecture for more details 
+
+Additional Notes 
+=======================
+
+* The `JuliaCI <https://github.com/JuliaCI/>`_ organization provides more Julia utilities for continuous integration and testing 
+
+* This `Salesforce document <https://developer.salesforce.com/page/How_to_Write_Good_Unit_Tests/>`_ has some good lessons about writing and testing code
