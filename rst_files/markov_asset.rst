@@ -4,10 +4,9 @@
 
 .. highlight:: julia
 
-
-**********************************************
+*********************************************
 :index:`Asset Pricing I: Finite State Models`
-**********************************************
+*********************************************
 
 .. index::
     single: Models; Markov Asset Pricing
@@ -22,10 +21,8 @@
 
     "Asset pricing is all about covariances" -- Lars Peter Hansen
 
-
-
 Overview
-=====================================
+========
 
 .. index::
     single: Markov Asset Pricing; Overview
@@ -40,7 +37,6 @@ The spot price of an asset depends primarily on
 
 * rates of time preference
 
-
 In this lecture we consider some standard pricing models and dividend stream specifications
 
 We study how prices and dividend-price ratios respond in these different scenarios
@@ -53,17 +49,11 @@ Key tools for the lecture are
 
 * a formula for predicting the discounted sum of future values of a Markov state
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 :index:`Pricing Models`
-=====================================
+=======================
 
 .. index::
     single: Models; Pricing
-
 
 In what follows let :math:`\{d_t\}_{t \geq 0}` be a stream of dividends
 
@@ -71,13 +61,11 @@ In what follows let :math:`\{d_t\}_{t \geq 0}` be a stream of dividends
 
 * A time-:math:`t` **ex-dividend** asset is a claim to the stream :math:`d_{t+1}, d_{t+2}, \ldots`
 
-
 Let's look at some equations that we expect to hold for prices of assets under ex-dividend contracts
 (we will consider cum-dividend pricing in the exercises)
 
-
 Risk Neutral Pricing
-------------------------
+--------------------
 
 .. index::
     single: Pricing Models; Risk Neutral
@@ -96,17 +84,12 @@ The basic risk-neutral asset pricing equation for pricing one unit of an ex-divi
 
     p_t = \beta {\mathbb E}_t [d_{t+1} + p_{t+1}]
 
-
 This is a simple "cost equals expected benefit" relationship
 
 Here :math:`{\mathbb E}_t [y]` denotes the best forecast of :math:`y`, conditioned on information available at time :math:`t`
 
-
-
-
-
 Pricing with Random Discount Factor
-------------------------------------
+-----------------------------------
 
 .. index::
     single: Pricing Models; Risk Aversion
@@ -122,7 +105,6 @@ settings the price of an ex-dividend asset obeys
 
     p_t = {\mathbb E}_t \left[ m_{t+1}  ( d_{t+1} + p_{t+1} ) \right]
 
-
 for some  **stochastic discount factor** :math:`m_{t+1}`
 
 The fixed discount factor :math:`\beta` in :eq:`rnapex` has been replaced by the random variable :math:`m_{t+1}`
@@ -135,10 +117,8 @@ This is because they pay well when the funds are more urgently needed
 
 We give examples of how the stochastic discount factor has been modeled below
 
-
-
 Asset Pricing and Covariances
-------------------------------
+-----------------------------
 
 Recall that, from the definition of a conditional covariance :math:`{\rm cov}_t (x_{t+1}, y_{t+1})`, we have
 
@@ -147,14 +127,12 @@ Recall that, from the definition of a conditional covariance :math:`{\rm cov}_t 
 
     {\mathbb E}_t (x_{t+1} y_{t+1}) = {\rm cov}_t (x_{t+1}, y_{t+1}) + {\mathbb E}_t x_{t+1} {\mathbb E}_t y_{t+1}
 
-
 If we apply this definition to the asset pricing equation :eq:`lteeqs0` we obtain
 
 .. math::
     :label: lteeqs102
 
     p_t = {\mathbb E}_t m_{t+1} {\mathbb E}_t (d_{t+1} + p_{t+1}) + {\rm cov}_t (m_{t+1}, d_{t+1}+ p_{t+1})
-
 
 It is useful to regard equation :eq:`lteeqs102`   as a generalization of equation :eq:`rnapex`
 
@@ -166,10 +144,8 @@ Equation :eq:`lteeqs102` asserts that the covariance of the stochastic discount 
 
 We give examples of some models of stochastic discount factors that have been proposed later in this lecture and also in a :doc:`later lecture <lucas_model>`
 
-
-
 The Price-Dividend Ratio
---------------------------
+------------------------
 
 Aside from prices, another quantity of interest is the **price-dividend ratio** :math:`v_t := p_t / d_t`
 
@@ -184,10 +160,8 @@ We can divide both sides of :eq:`lteeqs0` by :math:`d_t` to get
 
 Below we'll discuss the implication of this equation
 
-
-
 Prices in the Risk Neutral Case
-===================================
+===============================
 
 What can we say about price dynamics on the basis of the models described above?
 
@@ -199,10 +173,8 @@ The answer to this question depends on
 
 For now let's focus on the risk neutral case, where the stochastic discount factor is constant, and study how prices depend on the dividend process
 
-
-
 Example 1: Constant dividends
----------------------------------
+-----------------------------
 
 The simplest case is risk neutral pricing in the face of a constant, non-random dividend stream :math:`d_t = d > 0`
 
@@ -220,7 +192,6 @@ Removing the expectation from :eq:`rnapex` and iterating forward gives
             & = \beta (d + \beta d + \beta^2 d +  \cdots + \beta^{k-2} d + \beta^{k-1} p_{t+k})
     \end{aligned}
 
-
 Unless prices explode in the future, this sequence converges to
 
 .. math::
@@ -228,15 +199,13 @@ Unless prices explode in the future, this sequence converges to
 
     \bar p := \frac{\beta d}{1-\beta}
 
-
 This price is the equilibrium price in the constant dividend case
 
 Indeed, simple algebra shows that setting :math:`p_t = \bar p` for all :math:`t`
 satisfies the equilibrium condition :math:`p_t = \beta (d + p_{t+1})`
 
-
 Example 2: Dividends with deterministic growth paths
----------------------------------------------------------
+----------------------------------------------------
 
 Consider a growing, non-random dividend process :math:`d_{t+1} = g d_t`
 where :math:`0 < g \beta < 1`
@@ -259,7 +228,6 @@ The price is then
 
     p_t = \frac{\beta g}{1 - \beta g } d_t
 
-
 If, in this example, we take :math:`g = 1+\kappa` and let
 :math:`\rho := 1/\beta - 1`, then the price becomes
 
@@ -267,13 +235,12 @@ If, in this example, we take :math:`g = 1+\kappa` and let
 
     p_t = \frac{1 + \kappa}{ \rho - \kappa} d_t
 
-
 This is called the *Gordon formula*
 
 .. _mass_mg:
 
 Example 3: Markov growth, risk neutral pricing
-------------------------------------------------
+----------------------------------------------
 
 Next we consider a dividend process
 
@@ -282,13 +249,11 @@ Next we consider a dividend process
 
     d_{t+1} = g_{t+1} d_t
 
-
 The stochastic growth factor :math:`\{g_t\}` is given by
 
 .. math::
 
     g_t = g(X_t), \quad t = 1, 2, \ldots
-
 
 where
 
@@ -300,9 +265,7 @@ where
     P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}
     \qquad (x, y \in S)
 
-
 #. :math:`g` is a given function on :math:`S` taking positive values
-
 
 You can think of
 
@@ -314,7 +277,6 @@ You can think of
 
 * :math:`\ln g_t = \ln (d_{t+1} / d_t)` is the growth rate of dividends
 
-
 (For a refresher on notation and theory for finite Markov chains see :doc:`this lecture <finite_markov>`)
 
 The next figure shows a simulation, where
@@ -323,12 +285,27 @@ The next figure shows a simulation, where
 
 * :math:`g_t = \exp(X_t)`, so that :math:`\ln g_t = X_t` is the growth rate
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps.jl
+
+.. code-block:: julia
+    :class: test
+
+    using Test, Random
+
 .. code-block:: julia
 
-    using Test
+    using Parameters, Plots, QuantEcon
+    gr(fmt = :png)
 
-    using QuantEcon, Plots, LaTeXStrings, Random
-    Random.seed!(42) # For reproducible results.
+.. code-block:: julia
+    :class: test
+
+    Random.seed!(42);
+
+.. code-block:: julia
 
     n = 25
     mc = tauchen(n, 0.96, 0.25)
@@ -339,21 +316,21 @@ The next figure shows a simulation, where
     d_series = cumprod(g_series) # assumes d_0 = 1
 
     series = [x_series g_series d_series log.(d_series)]
-    labels = [L"$X_t$" L"$g_t$" L"$d_t$" L"$log (d_t)$"]
+    labels = ["X_t" "g_t" "d_t" "ln(d_t)"]
     plot(series, layout = 4, labels = labels)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test x_series[4] ≈ -0.669642857142857
-    @test g_series[5] ≈ 0.4094841251523643
-    @test d_series[9] ≈ 0.03514706070454392 # Near the inflection point.
-    @test log.(d_series)[72] ≈ -29.24107142857142 # Something near the end.
-  end
+    @testset begin
+        @test x_series[4] ≈ -0.669642857142857
+        @test g_series[5] ≈ 0.4094841251523643
+        @test d_series[9] ≈ 0.03514706070454392 # Near the inflection point.
+        @test log.(d_series)[72] ≈ -29.24107142857142 # Something near the end.
+    end
 
 Pricing
-^^^^^^^^^^^^
+^^^^^^^
 
 To obtain asset prices in this setting, let's adapt our analysis from the case of deterministic growth
 
@@ -369,13 +346,11 @@ We can substitute this guess into :eq:`pdex` to get
 
     v(X_t) = \beta {\mathbb E}_t [ g(X_{t+1}) (1 + v(X_{t+1})) ]
 
-
 If we condition on :math:`X_t = x`, this becomes
 
 .. math::
 
     v(x) = \beta \sum_{y \in S}  g(y) (1 + v(y)) P(x, y)
-
 
 or
 
@@ -386,7 +361,6 @@ or
     \quad \text{where} \quad
     K(x, y) := g(y) P(x, y)
 
-
 Suppose that there are :math:`n` possible states :math:`x_1, \ldots, x_n`
 
 We can then think of :eq:`pstack` as :math:`n` stacked equations, one for each state, and write it in matrix form as
@@ -395,7 +369,6 @@ We can then think of :eq:`pstack` as :math:`n` stacked equations, one for each s
     :label: vcumrn
 
     v = \beta K (\mathbb 1 + v)
-
 
 Here
 
@@ -418,9 +391,8 @@ The solution is then
 
     v = (I - \beta K)^{-1} \beta K{\mathbb 1}
 
-
 Code
------
+----
 
 Let's calculate and plot the price-dividend ratio at a set of parameters
 
@@ -428,11 +400,8 @@ As before, we'll generate :math:`\{X_t\}`  as a :ref:`discretized AR1 process <m
 
 Here's the code, including a test of the spectral radius condition
 
-
-
 .. code-block:: julia
 
-    using LinearAlgebra
     n = 25  # size of state space
     β = 0.9
     mc = tauchen(n, 0.96, 0.02)
@@ -442,25 +411,24 @@ Here's the code, including a test of the spectral radius condition
     v = (I - β * K) \  (β * K * ones(n, 1))
 
     plot(mc.state_values,
-        v,
-        lw = 2,
-        ylabel = "price-dividend ratio",
-        xlabel = "state",
-        alpha = 0.7,
-        label = L"$v$")
+         v,
+         lw = 2,
+         ylabel = "price-dividend ratio",
+         xlabel = "state",
+         alpha = 0.7,
+         label = "v")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test v[2] == 3.4594684257743284
-    @test v[1] == 3.2560393349907755
-    @test v[5] ≈ 4.526909446326235
-    @test K[8] ≈ 8.887213530262768e-10
-  end
+    @testset begin
+        @test v[2] == 3.4594684257743284
+        @test v[1] == 3.2560393349907755
+        @test v[5] ≈ 4.526909446326235
+        @test K[8] ≈ 8.887213530262768e-10
+    end
 
 Why does the price-dividend ratio increase with the state?
-
 
 The reason is that this Markov process is positively correlated, so high
 current states suggest high future states
@@ -469,10 +437,8 @@ Moreover, dividend growth is increasing in the state
 
 Anticipation of high future dividend growth leads to a high price-dividend ratio
 
-
 Asset Prices under Risk Aversion
-==================================
-
+================================
 
 Now let's turn to the case where agents are risk averse
 
@@ -484,16 +450,13 @@ We'll price several distinct assets, including
 
 * Call options on a consol
 
-
 Pricing a Lucas tree
----------------------------
+--------------------
 
 .. index::
     single: Finite Markov Asset Pricing; Lucas Tree
 
-
 Let's start with a version of the celebrated asset pricing model of Robert E. Lucas, Jr. :cite:`Lucas1978`
-
 
 As in :cite:`Lucas1978`, suppose that the stochastic discount factor takes the form
 
@@ -502,9 +465,7 @@ As in :cite:`Lucas1978`, suppose that the stochastic discount factor takes the f
 
     m_{t+1} = \beta \frac{u'(c_{t+1})}{u'(c_t)}
 
-
 where :math:`u` is a concave utility function and :math:`c_t` is time :math:`t` consumption of a representative consumer
-
 
 (A derivation of this expression is given in a :doc:`later lecture <lucas_model>`)
 
@@ -523,7 +484,6 @@ specification
 
     u(c) = \frac{c^{1-\gamma}}{1 - \gamma} \ {\rm with} \ \gamma > 0
 
-
 When :math:`\gamma =1` we let :math:`u(c) = \ln c`
 
 Inserting the CRRA specification into :eq:`lucsdf` and using :math:`c_t = d_t` gives
@@ -534,7 +494,6 @@ Inserting the CRRA specification into :eq:`lucsdf` and using :math:`c_t = d_t` g
     m_{t+1}
     = \beta \left(\frac{c_{t+1}}{c_t}\right)^{-\gamma}
     = \beta g_{t+1}^{-\gamma}
-
 
 Substituting this into :eq:`pdex` gives the price-dividend ratio
 formula
@@ -547,7 +506,6 @@ formula
         g(X_{t+1})^{1-\gamma} (1 + v(X_{t+1}) )
     \right]
 
-
 Conditioning on :math:`X_t = x`, we can write this as
 
 .. math::
@@ -555,20 +513,17 @@ Conditioning on :math:`X_t = x`, we can write this as
     v(x)
     = \beta \sum_{y \in S} g(y)^{1-\gamma} (1 + v(y) ) P(x, y)
 
-
 If we let
 
 .. math::
 
     J(x, y) := g(y)^{1-\gamma}  P(x, y)
 
-
 then we can rewrite in vector form as
 
 .. math::
 
     v = \beta J ({\mathbb 1} + v )
-
 
 Assuming that the spectral radius of :math:`J` is strictly less than :math:`\beta^{-1}`, this equation has the unique solution
 
@@ -580,7 +535,6 @@ Assuming that the spectral radius of :math:`J` is strictly less than :math:`\bet
 We will define a function `tree_price` to solve for $v$ given parameters stored in
 the type `AssetPriceModel`
 
-
 .. code-block:: julia
 
     # A default Markov chain for the state process
@@ -589,25 +543,14 @@ the type `AssetPriceModel`
     n = 25
     default_mc = tauchen(n, ρ, σ)
 
-    mutable struct AssetPriceModel{TF<:AbstractFloat, TI<:Integer}
-        β::TF            # Discount factor
-        γ::TF            # Coefficient of risk aversion
-        mc::MarkovChain  # State process
-        n::TI            # Number of states
-        g::Function      # Function mapping states into growth rates
-    end
+    AssetPriceModel = @with_kw (β = 0.96,
+                                γ = 2.0,
+                                mc = default_mc,
+                                n = size(mc.p)[1],
+                                g = exp)
 
-    function AssetPriceModel(;β::AbstractFloat = 0.96,
-                              γ::AbstractFloat = 2.0,
-                              mc::MarkovChain = default_mc,
-                              g::Function = exp)
-        n = size(mc.p)[1]
-        return AssetPriceModel(β, γ, mc, n, g)
-    end
-
-
-    # test stability of matrix Q 
-    function test_stability(ap::AssetPriceModel, Q::Matrix)
+    # test stability of matrix Q
+    function test_stability(ap, Q)
         sr = maximum(abs, eigvals(Q))
         if sr ≥ 1 / ap.β
             msg = "Spectral radius condition failed with radius = $sr"
@@ -615,30 +558,25 @@ the type `AssetPriceModel`
         end
     end
 
-
-    # price/dividend ratio of the Lucas tree 
-    function tree_price(ap::AssetPriceModel)
-        # == Simplify names, set up matrices  == #
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
+    # price/dividend ratio of the Lucas tree
+    function tree_price(ap; γ = ap.γ)
+        # Simplify names, set up matrices
+        @unpack β, mc = ap
+        P, y = mc.p, mc.state_values
         y = reshape(y, 1, ap.n)
         J = P .* ap.g.(y).^(1 - γ)
 
-        # == Make sure that a unique solution exists == #
+        # Make sure that a unique solution exists
         test_stability(ap, J)
 
-        # == Compute v == #
-        Ones = ones(ap.n)
-        v = (I - β * J) \ (β * J * Ones)
+        # Compute v
+        v = (I - β * J) \ sum(β * J, dims = 2)
 
         return v
     end
 
-
-
 Here's a plot of :math:`v` as a function of the state for several values of :math:`\gamma`,
 with a positively correlated Markov process and :math:`g(x) = \exp(x)`
-
-
 
 .. code-block:: julia
 
@@ -649,10 +587,9 @@ with a positively correlated Markov process and :math:`g(x) = \exp(x)`
     lines = []
     labels = []
 
-    for γ ∈ γs
-        ap.γ = γ
-        v = tree_price(ap)
-        label = "γ = $γ"
+    for γ in γs
+        v = tree_price(ap, γ = γ)
+        label = "gamma = $γ"
         push!(labels, label)
         push!(lines, v)
     end
@@ -664,15 +601,14 @@ with a positively correlated Markov process and :math:`g(x) = \exp(x)`
          xlabel = "state")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test lines[2][4] ≈ 33.36574362637905
-    @test lines[3][12] ≈ 28.52560591264372
-    @test lines[4][18] ≈ 22.38597470787489
-    @test lines[5][24] ≈ 15.81947255704859
-  end
-
+    @testset begin
+        @test lines[2][4] ≈ 33.36574362637905
+        @test lines[3][12] ≈ 28.52560591264372
+        @test lines[4][18] ≈ 22.38597470787489
+        @test lines[5][24] ≈ 15.81947255704859
+    end
 
 Notice that :math:`v` is decreasing in each case
 
@@ -681,9 +617,8 @@ This is because, with a positively correlated state process, higher states sugge
 In the stochastic discount factor :eq:`lucsdf2`, higher growth decreases the
 discount factor, lowering the weight placed on future returns
 
-
 Special cases
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 In the special case :math:`\gamma =1`, we have :math:`J = P`
 
@@ -695,19 +630,15 @@ Recalling that :math:`P^i {\mathbb 1} = {\mathbb 1}` for all :math:`i` and apply
     = \beta \sum_{i=0}^{\infty} \beta^i P^i {\mathbb 1}
     = \beta \frac{1}{1 - \beta} {\mathbb 1}
 
-
 Thus, with log preferences, the price-dividend ratio for a Lucas tree is constant
-
 
 Alternatively, if :math:`\gamma = 0`, then :math:`J = K` and we recover the
 risk neutral solution :eq:`rned`
 
 This is as expected, since :math:`\gamma = 0` implies :math:`u(c) = c` (and hence agents are risk neutral)
 
-
-
 A Risk-Free Consol
--------------------
+------------------
 
 Consider the same pure exchange representative agent economy
 
@@ -727,7 +658,6 @@ The price satisfies :eq:`lteeqs0` with :math:`d_t = \zeta`, or
 
     p_t = {\mathbb E}_t \left[ m_{t+1}  ( \zeta + p_{t+1} ) \right]
 
-
 We maintain the stochastic discount factor :eq:`lucsdf2`, so this becomes
 
 .. math::
@@ -736,7 +666,6 @@ We maintain the stochastic discount factor :eq:`lucsdf2`, so this becomes
     p_t
     = {\mathbb E}_t \left[ \beta g_{t+1}^{-\gamma}  ( \zeta + p_{t+1} ) \right]
 
-
 Guessing a solution of the form :math:`p_t = p(X_t)` and conditioning on
 :math:`X_t = x`, we get
 
@@ -744,7 +673,6 @@ Guessing a solution of the form :math:`p_t = p(X_t)` and conditioning on
 
     p(x)
     = \beta \sum_{y \in S}  g(y)^{-\gamma} (\zeta + p(y)) P(x, y)
-
 
 Letting :math:`M(x, y) = P(x, y) g(y)^{-\gamma}` and rewriting in vector notation
 yields the solution
@@ -756,34 +684,29 @@ yields the solution
 
 The above is implemented in the function `consol_price`
 
-
 .. code-block:: julia
 
-    function consol_price(ap::AssetPriceModel, ζ::AbstractFloat)
-        # == Simplify names, set up matrices  == #
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
-        y = reshape(y, 1, ap.n)
-        M = P .* ap.g.(y).^(-γ)
+    function consol_price(ap, ζ)
+        # Simplify names, set up matrices
+        @unpack β, γ, mc, g, n = ap
+        P, y = mc.p, mc.state_values
+        y = reshape(y, 1, n)
+        M = P .* g.(y).^(-γ)
 
-        # == Make sure that a unique solution exists == #
+        # Make sure that a unique solution exists
         test_stability(ap, M)
 
-        # == Compute price == #
-        Ones = ones(ap.n)
-        p = (I - β * M) \ ( β * ζ * M * Ones)
-
-        return p
+        # Compute price
+        return (I - β * M) \ sum(β * ζ * M, dims = 2)
     end
-
 
 Pricing an Option to Purchase the Consol
 ----------------------------------------
 
 Let's now price options of varying maturity that give the right to purchase a consol at a price :math:`p_S`
 
-
 An infinite horizon call option
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We want to price an infinite horizon  option to purchase a consol at a price :math:`p_S`
 
@@ -814,7 +737,6 @@ Recalling that :math:`p(X_t)` is the value of the consol when the initial growth
              p(X_t) - p_S
     \right\}
 
-
 The first term on the right is the value of waiting, while the second is the value of exercising now
 
 We can also write this as
@@ -829,7 +751,6 @@ We can also write this as
         p(x) - p_S
     \right\}
 
-
 With :math:`M(x, y) = P(x, y) g(y)^{-\gamma}` and :math:`w` as the vector of
 values :math:`(w(x_i), p_S)_{i = 1}^n`, we can express :eq:`FEoption0` as the nonlinear vector equation
 
@@ -837,7 +758,6 @@ values :math:`(w(x_i), p_S)_{i = 1}^n`, we can express :eq:`FEoption0` as the no
     :label: FEoption
 
     w = \max \{ \beta M w, \; p - p_S {\mathbb 1} \}
-
 
 To solve :eq:`FEoption`, form the operator :math:`T` mapping vector :math:`w`
 into vector :math:`Tw` via
@@ -847,41 +767,38 @@ into vector :math:`Tw` via
     T w
     = \max \{ \beta M w,\; p - p_S {\mathbb 1} \}
 
-
 Start at some initial :math:`w` and iterate to convergence with :math:`T`
 
 We can find the solution with the following function `call_option`
 
-
 .. code-block:: julia
 
     # price of perpetual call on consol bond
-    function call_option(ap::AssetPriceModel, ζ::AbstractFloat, p_s::AbstractFloat, ϵ=1e-7)
+    function call_option(ap, ζ, p_s, ϵ = 1e-7)
 
-        # == Simplify names, set up matrices  == #
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
-        y = reshape(y, 1, ap.n)
-        M = P .* ap.g.(y).^(-γ)
+        # Simplify names, set up matrices
+        @unpack β, γ, mc, g, n = ap
+        P, y = mc.p, mc.state_values
+        y = reshape(y, 1, n)
+        M = P .* g.(y).^(-γ)
 
-        # == Make sure that a unique console price exists == #
+        # Make sure that a unique console price exists
         test_stability(ap, M)
 
-        # == Compute option price == #
+        # Compute option price
         p = consol_price(ap, ζ)
         w = zeros(ap.n, 1)
         error = ϵ + 1
         while (error > ϵ)
-            # == Maximize across columns == #
+            # Maximize across columns
             w_new = max.(β * M * w, p .- p_s)
-            # == Find maximal difference of each component and update == #
+            # Find maximal difference of each component and update
             error = maximum(abs, w - w_new)
             w = w_new
         end
 
         return w
     end
-
-
 
 Here's a plot of :math:`w` compared to the consol price when :math:`P_S = 40`
 
@@ -899,12 +816,12 @@ Here's a plot of :math:`w` compared to the consol price when :math:`P_S = 40`
     plot!(x, w, color = "green", lw = 2, label = "value of call option")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test p[17] ≈ 9.302197030956606
-    @test w[20] ≈ 0.46101660813737866
-  end
+    @testset begin
+        @test p[17] ≈ 9.302197030956606
+        @test w[20] ≈ 0.46101660813737866
+    end
 
 In large states the value of the option is close to zero
 
@@ -914,22 +831,20 @@ where the consol prices is high --- will eventually be visited
 The reason is that :math:`\beta=0.9`, so the future is discounted relatively rapidly
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test x[2] == -0.126178653628809
-    @test p[5] == 52.85568616593254
-  end
-
+    @testset begin
+        @test x[2] ≈ -0.126178653628809
+        @test p[5] ≈ 52.85568616593254
+    end
 
 Risk Free Rates
------------------
+---------------
 
 Let's look at risk free interest rates over different periods
 
-
 The one-period risk-free interest rate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As before, the stochastic discount factor is :math:`m_{t+1} = \beta g_{t+1}^{-\gamma}`
 
@@ -939,32 +854,26 @@ It follows that the reciprocal :math:`R_t^{-1}` of the gross risk-free interest 
 
     {\mathbb E}_t m_{t+1} = \beta \sum_{y \in S} P(x, y) g(y)^{-\gamma}
 
-
 We can write this as
 
 .. math::
 
     m_1 = \beta M {\mathbb 1}
 
-
 where the :math:`i`-th  element of :math:`m_1` is the reciprocal of the one-period gross risk-free interest rate in state :math:`x_i`
 
-
 Other terms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 
 Let :math:`m_j` be an :math:`n \times 1` vector whose :math:`i` th component is the reciprocal of the :math:`j` -period gross risk-free interest rate in state :math:`x_i`
 
-
 Then :math:`m_1 = \beta M`, and :math:`m_{j+1} = M m_j` for :math:`j \geq 1`
 
-
-
 Exercises
-==============
+=========
 
 Exercise 1
------------
+----------
 
 In the lecture, we considered **ex-dividend assets**
 
@@ -980,22 +889,18 @@ With a growing, non-random dividend process :math:`d_t = g d_t` where :math:`0 <
 what is the equilibrium price of a cum-dividend asset?
 
 Exercise 2
-------------
+----------
 
 Consider the following primitives
-
-
 
 .. code-block:: julia
 
     n = 5
-    P = 0.0125 .* ones(n, n)
-    P .+= diagm(0 => repeat([0.95 - 0.0125], 5))
+    P = fill(0.0125, n, n) + (0.95 - 0.0125)I
     s = [1.05, 1.025, 1.0, 0.975, 0.95]
     γ = 2.0
     β = 0.94
     ζ = 1.0
-
 
 Let :math:`g` be defined by :math:`g(x) = x`  (that is, :math:`g` is the identity map)
 
@@ -1007,10 +912,8 @@ Do the same for
 
 * the call option on the consol when :math:`\zeta = 1` and :math:`p_S = 150.0`
 
-
-
 Exercise 3
------------
+----------
 
 Let's consider finite horizon call options, which are more common than the
 infinite horizon variety
@@ -1036,7 +939,6 @@ It obeys
         p(x) - p_S
     \right\}
 
-
 where :math:`w(x, 0) = 0` for all :math:`x`
 
 We can express the preceding as the sequence of nonlinear vector equations
@@ -1047,17 +949,14 @@ We can express the preceding as the sequence of nonlinear vector equations
       \quad k =1, 2, \ldots
       \quad \text{with } w_0 = 0
 
-
 Write a function that computes :math:`w_k` for any given :math:`k`
 
 Compute the value of the option with ``k = 5`` and ``k = 25`` using parameter values as in Exercise 1
 
 Is one higher than the other?  Can you give intuition?
 
-
 Solutions
-==========
-
+=========
 
 Exercise 2
 ----------
@@ -1065,8 +964,7 @@ Exercise 2
 .. code-block:: julia
 
     n = 5
-    P = 0.0125 .* ones(n, n)
-    P .+= diagm(0 => repeat([0.95 - 0.0125], 5))
+    P = fill(0.0125, n, n) + (0.95 - 0.0125)I
     s = [0.95, 0.975, 1.0, 1.025, 1.05]  # state values
     mc = MarkovChain(P, s)
 
@@ -1075,14 +973,11 @@ Exercise 2
     ζ = 1.0
     p_s = 150.0
 
-
 Next we'll create an instance of `AssetPriceModel` to feed into the functions.
-
 
 .. code-block:: julia
 
-    ap = AssetPriceModel(β=β, mc=mc, γ=γ, g=x -> x)
-
+    ap = AssetPriceModel(β = β, mc = mc, γ = γ, g = x -> x)
 
 .. code-block:: julia
 
@@ -1090,29 +985,28 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
     println("Lucas Tree Prices: $v\n")
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test v[2] == 21.935706611219704
-  end
+    @testset begin
+        @test v[2] == 21.935706611219704
+    end
 
 .. code-block:: julia
 
     v_consol = consol_price(ap, 1.0)
     println("Consol Bond Prices: $(v_consol)\n")
 
-
 .. code-block:: julia
 
     w = call_option(ap, ζ, p_s)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test v_consol[1] ≈ 753.8710047641985
-    @test w[2][1] ≈ 176.83933430191294
-  end
+    @testset begin
+        @test v_consol[1] ≈ 753.8710047641985
+        @test w[2][1] ≈ 176.83933430191294
+    end
 
 Exercise 3
 ----------
@@ -1121,24 +1015,22 @@ Here's a suitable function:
 
 .. code-block:: julia
 
-    function finite_horizon_call_option(ap::AssetPriceModel,
-                                        ζ::AbstractFloat,
-                                        p_s::AbstractFloat,
-                                        k::Int)
+    function finite_horizon_call_option(ap, ζ, p_s, k)
 
-        # == Simplify names, set up matrices  == #
-        β, γ, P, y = ap.β, ap.γ, ap.mc.p, ap.mc.state_values
+        # Simplify names, set up matrices
+        @unpack β, γ, mc = ap
+        P, y = mc.p, mc.state_values
         y = y'
         M = P .* ap.g.(y).^(- γ)
 
-        # == Make sure that a unique console price exists == #
+        # Make sure that a unique console price exists
         test_stability(ap, M)
 
-        # == Compute option price == #
+        # Compute option price
         p = consol_price(ap, ζ)
         w = zeros(ap.n, 1)
-        for i ∈ 1:k
-            # == Maximize across columns == #
+        for i in 1:k
+            # Maximize across columns
             w = max.(β * M * w, p .- p_s)
         end
 
@@ -1146,18 +1038,18 @@ Here's a suitable function:
     end
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test p[3] == 70.00064625026326
-    @test w[2] == 176.83933430191294
-  end
+    @testset begin
+        @test p[3] ≈ 70.00064625026326
+        @test w[2] ≈ 176.83933430191294
+    end
 
 .. code-block:: julia
 
     lines = []
     labels = []
-    for k ∈ [5, 25]
+    for k in [5, 25]
         w = finite_horizon_call_option(ap, ζ, p_s, k)
         push!(lines, w)
         push!(labels, "k = $k")
@@ -1165,12 +1057,12 @@ Here's a suitable function:
     plot(lines, labels = reshape(labels, 1, length(labels)))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test lines[1][4] ≈ 29.859285398252347
-    @test lines[2][2] ≈ 147.00074548801277
-  end
+    @testset begin
+        @test lines[1][4] ≈ 29.859285398252347
+        @test lines[2][2] ≈ 147.00074548801277
+    end
 
 Not surprisingly, the option has greater value with larger :math:`k`.
 This is because the owner has a longer time horizon over which he or she
