@@ -24,3 +24,4 @@ This part of the course provides a more details on the Julia programming languag
     optimization_solver_packages
     version_control 
     need_for_speed
+    testing 
