@@ -24,9 +24,7 @@ Here, we'll consider some more advanced features
 Shell Mode 
 -----------------
 
-Hitting ``;`` brings you into shell mode, which lets you run OS commands 
-
-On Windows, you should start Julia from inside ``git bash`` to get this functionality (see `here <https://github.com/JuliaLang/julia/issues/23597.>`_)
+Hitting ``;`` brings you into shell mode, which lets you run bash commands (PowerShell on Windows)
 
 .. code-block:: julia 
 
@@ -135,16 +133,17 @@ The ``Documentation`` pane simply lets us query Julia documentation
 
 The ``Plots`` pane captures Julia plots output 
 
+.. figure:: /_static/figures/juno-docs.png
+    :scale: 60%
+
 May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
 
 Other Features 
 -------------------
 
-* `` Shift + Enter `` will evaluate a highlighted selection or line 
+* `` Shift + Enter `` will evaluate a highlighted selection or line (as above)
 
 * The run symbol in the left sidebar (or ``Ctrl+Shift+Enter``) will run the whole file 
-
-* For more, see 
 
 Docker Integration 
 ----------------------
@@ -200,5 +199,3 @@ Lastly, we can return to the default environment by calling ``activate`` without
 .. code-block:: julia 
 
     ] activate 
-
-If our 
