@@ -65,7 +65,7 @@ This is all we need for now
 Julia Setup 
 --------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/alldeps.jl
 
 We also want to add the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
 
