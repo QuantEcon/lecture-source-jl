@@ -349,7 +349,7 @@ For nonlinear problems, the modelling language may make things difficult for com
 
 See the `quickstart guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
 
-The following is an example of 
+The following is an example of calling a linear objective with a nonlinear constraint (provided by an external function)
 
 .. code-block:: julia
 
@@ -463,7 +463,7 @@ From the documentation, to solve for a system of equations without providing a j
     f(x) = [(x[1]+3)*(x[2]^3-7)+18
             sin(x[2]*exp(x[1])-1)] # returns an array
 
-    results = nlsolve(f, [ 0.1; 1.2], inplace=false) # the inplace will not be necessary in future versions
+    results = nlsolve(f, [ 0.1; 1.2])
 
 In the above case, the algorithm used finite-differences to calculate the jacobian
 
@@ -471,7 +471,7 @@ Alternatively, if ``f(x)`` is written generically, you can use auto-differentiat
 
 .. code-block:: julia
 
-    results = nlsolve(f, [ 0.1; 1.2], autodiff=:forward, inplace=false)
+    results = nlsolve(f, [ 0.1; 1.2], autodiff=:forward)
     
     println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in $(results.iterations) iterations and $(results.f_calls) function calls")
 
@@ -510,11 +510,7 @@ If :math:`M = N` and we know a root :math:`F(x^*) = 0` to the system of equation
 
 An implementation of NLS is given in `LeastSquaresOptim.jl <https://github.com/matthieugomez/LeastSquaresOptim.jl>`_ 
 
-.. code-block:: julia
-
-    ] add LeastSquaresOptim # temp until added to QELAP
-
-From the documentation of the package
+From the documentation
 
 .. code-block:: julia
 

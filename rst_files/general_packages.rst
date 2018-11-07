@@ -329,7 +329,19 @@ When you need to properly escape latex code (e.g. for equation labels), use `LaT
     using LaTeXStrings
     L"an equation: $1 + \alpha^2$"
 
-.. Further Reading
-.. ===================
-.. 
-.. The full set of libraries available under the Julia packaging system can be browsed at `pkg.julialang.org .. <http://pkg.julialang.org/>`_
+ProgressMeter.jl
+------------------
+
+For long-running operations, you can use the `ProgressMeter.jl <https://github.com/timholy/ProgressMeter.jl>`_ package
+
+To use the package, you simply put a macro in front of ``for`` loops, etc.
+
+From the documentation
+
+.. code-block:: julia
+
+    using ProgressMeter
+
+    @showprogress 1 "Computing..." for i in 1:50
+        sleep(0.1) # some computation....
+    end

@@ -394,7 +394,7 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
         @unpack c, β, w = params
         T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
         
-        v_star = fixedpoint(T, v_iv, inplace = false, iterations = iterations, ftol = ftol, m = 6).zero # (5)
+        v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol, m = 6).zero # (5)
         return (1 - β) * (c + β * E*v_star) # (3)
     end
 
@@ -538,7 +538,7 @@ Here's an implementation:
 
     function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
         T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7), using vectors since fixedpoint doesn't support scalar
-        ψ_star = fixedpoint(T_ψ, [ψ_iv], inplace = false).zero[1]
+        ψ_star = fixedpoint(T_ψ, [ψ_iv]).zero[1]
         return (1 - β) * (c + β * ψ_star) # (2)
     end
     compute_reservation_wage_ψ(c, β)

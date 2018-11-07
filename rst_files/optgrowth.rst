@@ -706,7 +706,7 @@ We can write a function that computes the exact fixed point
 
     function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
         Tw = similar(grid_y)
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero # gets returned
+        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w).zero # gets returned
     end
 
 We can check our result by plotting it against the true value
@@ -829,7 +829,7 @@ Here's one solution (assuming as usual that you've executed everything above)
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero
+        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w).zero
         Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks, compute_policy = true)
         σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
@@ -848,7 +848,7 @@ Here's one solution (assuming as usual that you've executed everything above)
 
     Tw = similar(grid_y)
     initial_w = 5 * log.(grid_y)
-    v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero
+    v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w.zero
     Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks, compute_policy = true)
     σ_func = LinearInterpolation(grid_y, σ)
     y = simulate_og(σ_func);

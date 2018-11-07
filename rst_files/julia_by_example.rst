@@ -90,16 +90,13 @@ There are three ways to install packages and versions (where the first two metho
 #. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
 #. use the ``InstantiateFromURL`` package
 
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
+.. literalinclude:: /_static/includes/deps.jl
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
 
 This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_ 
 
-We will discuss it more in :ref:`Tools and Editors <tools_editors>`_, but these files provide a listing of packages and versions used by the code
+We will discuss it more in :ref:`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code
 
 This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
@@ -686,7 +683,7 @@ But best of all is to avoid writing code altogether
     p = 1.0
     β = 0.9     
     f(v) = p .+ β * v # broadcast the +
-    sol = fixedpoint(f, [0.8], inplace = false)
+    sol = fixedpoint(f, [0.8])
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 
@@ -704,7 +701,7 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     p = 1.0
     β = 0.9
     iv = [0.8]
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, method = :anderson, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
@@ -745,7 +742,7 @@ The only change we will need to our model in order to use a different floating p
     iv = [BigFloat(0.8)] # higher precision
 
     # otherwise identical
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
@@ -781,7 +778,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     iv =[0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, method = :anderson, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
@@ -794,7 +791,7 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     iv = @SVector  [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv, method = :anderson, m = 3)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector

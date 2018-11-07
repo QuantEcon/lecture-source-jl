@@ -402,7 +402,7 @@ The code is as follows
     v_init = collect(wp.x_grid) .* 0.5
 
     f(x) = bellman_operator(wp, x)
-    V = fixedpoint(f, v_init, inplace = false)
+    V = fixedpoint(f, v_init)
     sol_V = V.zero
 
     s_policy, ϕ_policy = bellman_operator(wp, sol_V, ret_policies = true)
@@ -516,7 +516,7 @@ Here's code to produce the 45 degree diagram
 
     v_init = collect(wp.x_grid) * 0.5
     f2(x) = bellman_operator(wp, x)
-    V2 = fixedpoint(f2, v_init, inplace = false)
+    V2 = fixedpoint(f2, v_init)
     sol_V2 = V2.zero
     s_policy, ϕ_policy = bellman_operator(wp, sol_V2, ret_policies=true)
 

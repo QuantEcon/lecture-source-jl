@@ -445,15 +445,15 @@ x_iv = [1.0]
 #f(x) = 1.1 * x # fixed-point blows
 
 # BAD!
-xstar = fixedpoint(f, x_iv, inplace=false).zero # assumes convergence
-xsol = nlsolve(f, x_iv, inplace=false).zero # assumes convergence
+xstar = fixedpoint(f, x_iv).zero # assumes convergence
+xsol = nlsolve(f, x_iv).zero # assumes convergence
 
 # GOOD!
-result = fixedpoint(f, x_iv, inplace=false)
+result = fixedpoint(f, x_iv)
 converged(result) || error("Failed to converge in $(result.iterations) iterations")
 xstar = result.zero
 
-result = nlsolve(f, x_iv, inplace=false)
+result = nlsolve(f, x_iv)
 converged(result) || error("Failed to converge in $(result.iterations) iterations")
 xsol = result.zero
 ```
@@ -461,7 +461,7 @@ xsol = result.zero
 ```julia
 function g(a)
     f(x) = a * x # won't succeed if a > 1
-    result = fixedpoint(f, [1.0], inplace = false)
+    result = fixedpoint(f, [1.0])
     converged(result) || return nothing
     xstar = result.zero
     
