@@ -227,7 +227,7 @@ Here's the code:
         A = [(1-λ) * (1-d) + b  (1-d) * α + b; # carry out intermediate calculations
             (1-d) * λ          (1-d) * (1-α)]
         A_hat = A ./ (1 + g)
-        (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
+        return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
     rate_steady_state(lm) = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5], inplace = false).zero
@@ -640,73 +640,65 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 Fiscal Policy Code
 -----------------------
 
-We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
-
-The first piece of code, repeated below, implements value function iteration
+We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`
 
 .. code-block:: julia
 
-    using Distributions, LinearAlgebra, Compat, Expectations
+    # deps 
+    using Distributions, Expectations
 
-    # model objects
-    n = 60                                           # n possible outcomes for wage
-    default_w_vec = range(10, 20, length = n) # wages between 10 and 20
-    a, b = 600, 400                                  # shape parameters
-    dist = BetaBinomial(n-1, a, b)
+    # a default utility function
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ)
 
-    u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e6 # return the utility if c > 0, large negative number otherwise
+    # model constructor
+    McCallModel = @with_kw (α = 0.2,
+        β = 0.98, # discount rate
+        γ = 0.7,
+        c = 6.0, # unemployment compensation
+        σ = 2.0,
+        u = u, # utility function
+        w = range(10, 20, length = 60), # wage values
+        dist = BetaBinomial(59, 600, 400)) # distribution over wage values
 
-    # constructor
-    McCallModel(;α = 0.2, β = 0.98, γ = 0.7, c = 6.0, σ = 2.0, w_vec = default_w_vec, dist = dist) = (α = α, β = β, γ = γ, c = c, σ = σ, w_vec = w_vec, dist = dist)
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, iter = 2_000)
+        # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
+        @unpack α, β, σ, c, γ, w, dist, u = mcm
 
-    # update
-    function update_bellman(mcm, V, E)
-        @unpack α, β, σ, c, γ, dist, w_vec = mcm # unpack model objects
-        U = V[end] # U is at the end of V
-        V_new = similar(V) # create a new V
+        # parameter validation
+        @assert c > 0.0
+        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here
 
-        for (w_idx, w) in enumerate(mcm.w_vec)
-            # w_idx indexes the vector of possible wages
-            V_new[w_idx] = u(w, σ) + β * ((1 - α) * V[w_idx] + α * U)
+        # necessary objects
+        u_w = u.(w, σ)
+        u_c = u(c, σ)
+        E = expectation(dist, w) # expectation operator for wage distribution
+
+        # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
+        function T(x)
+            V = x[1:end-1]
+            U = x[end]
+            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
         end
 
-        V_new[end] = u(c, σ) + β * (1 - γ) * U + β * γ * E*max.(U, V[1:end-1])
-        return V_new
-    end
+        # value function iteration
+        x_iv = [V_iv; U_iv] # initial x val
+        xstar = fixedpoint(T, x_iv; inplace = false, iterations = iter, xtol = tol).zero
+        V = xstar[1:end-1]
+        U = xstar[end]
 
-    function solve_mccall_model(mcm; tol = 1e-5, max_iter = 2000)
-        V = ones(Float64, length(mcm.w_vec)+1)    # initial guess of V and U (at the end)
-        E = expectation(mcm.dist, mcm.w_vec) # create an expectation operator for the distribution and nodes
-        sol = fixedpoint(V -> update_bellman(mcm, V, E), V, inplace = false).zero # grab the fixed point
-        return sol[1:end-1], sol[end] # returns (V, U)
-    end
-
-The second piece of code repeated from :doc:`the McCall model lecture <mccall_model>` is used to complete the reservation wage
-
-
-.. code-block:: julia
-
-    function compute_reservation_wage(mcm; return_values = false)
-        V, U = solve_mccall_model(mcm)
-        w_idx = searchsortedfirst(V .- U, 0)
-
-        if w_idx == length(V)
-            w_bar = Inf
+        # compute the reservation wage
+        wbarindex = searchsortedfirst(V .- U, 0.0)
+        if wbarindex >= length(w) # if this is true, you never want to accept
+            wbar = Inf
         else
-            w_bar = mcm.w_vec[w_idx]
+            wbar = w[wbarindex] # otherwise, return the number
         end
 
-        if return_values == false
-            return w_bar
-        else
-            return w_bar, V, U
-        end
+        return (V = V, U = U, wbar = wbar)
     end
-
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
-
 
 .. code-block:: julia
 
@@ -721,24 +713,25 @@ function of the unemployment compensation rate
 
     dist = Truncated(LogNormal(20), 0, 170) # the default wage distribution: a truncated log normal
     w_vec = range(1e-3, 170, length = 201)
+    E = expectation(dist, w_vec)
 
     function compute_optimal_quantities(c, τ)
-        mcm = McCallModel(α = α_q, β = β, γ = γ, c = c - τ, σ = σ, w_vec = w_vec, dist = dist)
-        w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
-        λ = γ * E(wage -> wage - τ > w_bar ? 1 : 0) # find probability of wage τ higher than w_bar
-        return w_bar, λ, V, U
+        mcm = McCallModel(α = α_q, β = β, γ = γ, c = c - τ, σ = σ, w = w_vec .- τ, dist = dist)
+        @unpack wbar, V, U = solve_mccall_model(mcm)
+        λ = γ * E(wage -> wage - τ > wbar ? 1 : 0) # find probability of wage τ higher than wbar
+        return (wbar = wbar, λ = λ, V = V, U = U)
     end
 
     function compute_steady_state_quantities(c, τ)
-        w_bar, λ, V, U = compute_optimal_quantities(c, τ)
+        @unpack wbar, λ, V, U = compute_optimal_quantities(c, τ)
         lm = LakeModel(λ = λ, α = α_q, b = b, d = d)
         x = rate_steady_state(lm)
         u_rate, e_rate = x
 
         # compute welfare
-        expected_accept = E(wage -> wage - τ > w_bar ? n : 0)/E(wage -> wage - τ > w_bar ? 1 : 0) # expected wage conditional on accepting
-        w = sum(V .* expected_accept)
-        welfare = e_rate .* w + u_rate .* U
+        expected_accept = E(wage -> wage - τ > wbar ? wage : 0)/E(wage -> wage - τ > wbar ? 1 : 0) # expected wage conditional on accepting
+        w = sum(V * expected_accept)
+        welfare = e_rate * w + u_rate * U
         return u_rate, e_rate, welfare
     end
 
