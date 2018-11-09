@@ -566,7 +566,7 @@ All of these objects are computed using the code below
     function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
                               horline = 0.0, show_trend = true)
 
-        allocate space
+        # allocate space
         trange = 1:T
 
         # allocate transpose
