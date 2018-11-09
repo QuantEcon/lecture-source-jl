@@ -361,8 +361,6 @@ Here's the value function:
 
 .. code-block:: julia
 
-  using LaTeXStrings
-
   # Set up the problem and initial guess, solve by VFI
   sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
   v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
@@ -384,7 +382,7 @@ Here's the value function:
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
                 fill=true, size=(400, 400), c=:lightrainbow)
-    plot!(xlabel=L"$\pi$", ylabel="2", xguidefont=font(12))
+    plot!(xlabel="pi", ylabel="2", xguidefont=font(12))
     return p
   end
 
@@ -403,7 +401,7 @@ The optimal policy:
       Z = [pf[w_plot_grid[j], π_plot_grid[i]]
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
       p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, size=(400, 400), c=:coolwarm)
-      plot!(xlabel=L"$\pi$", ylabel="wage", xguidefont=font(12), cbar=false)
+      plot!(xlabel="pi", ylabel="wage", xguidefont=font(12), cbar=false)
       annotate!(0.4, 1.0, "reject")
       annotate!(0.7, 1.8, "accept")
       return p
