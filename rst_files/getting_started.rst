@@ -200,7 +200,7 @@ In that ``julia`` terminal, type the following
 
 .. code-block:: julia
 
-    ] add IJulia InstantiateFromURL Revise
+    ] add IJulia InstantiateFromURL Revise REPL
 
 
 Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes),
