@@ -940,7 +940,8 @@ Similarly to the named arguments, the local scope also works with named tuples
 
     x = 0.1
     y = 2
-    (x = x, y = y) # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    (x = x, y = y) 
 
 As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
 

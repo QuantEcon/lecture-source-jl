@@ -291,7 +291,8 @@ To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.j
 .. code-block:: julia
 
     results = optimize(f, x_iv, LBFGS())
-    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in $(results.iterations) iterations")    
+    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in $"*
+    "(results.iterations) iterations")    
 
 Note that this has fewer iterations
 
@@ -305,7 +306,8 @@ However, since most of the algorithms require derivatives, you will often want t
     f(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
     x_iv = [0.0, 0.0]
     results = optimize(f, x_iv, LBFGS(), autodiff=:forward) # i.e. use ForwardDiff.jl
-    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in $(results.iterations) iterations")    
+    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in"*
+    "$(results.iterations) iterations")    
 
 Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `tips and trick <generic_tips_tricks>`_ )
 
