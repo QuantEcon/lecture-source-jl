@@ -399,17 +399,17 @@ The code can be found below:
                                 vf, vd, vc, policy, q, defprob)
     end
 
-    u(ae::ArellanoEconomy, c) = c^(1 - ae.γ) / (1 - ae.γ)
-    _unpack(ae::ArellanoEconomy) =
+    u(ae, c) = c^(1 - ae.γ) / (1 - ae.γ)
+    _unpack(ae) =
         ae.β, ae.γ, ae.r, ae.ρ, ae.η, ae.θ, ae.ny, ae.nB
-    _unpackgrids(ae::ArellanoEconomy) =
+    _unpackgrids(ae) =
         ae.ygrid, ae.ydefgrid, ae.Bgrid, ae.Π, ae.vf, ae.vd, ae.vc, ae.policy, ae.q, ae.defprob
 
 
-    function one_step_update!(ae::ArellanoEconomy,
-                              EV::Matrix{TF},
-                              EVd::Matrix{TF},
-                              EVc::Matrix{TF}) where TF<:AbstractFloat
+    function one_step_update!(ae,
+                              EV,
+                              EVd,
+                              EV) 
 
         # Unpack stuff
         β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
@@ -501,10 +501,10 @@ The code can be found below:
     end
 
     function QuantEcon.simulate(ae,
-                                capT::TI = 5000;
-                                y_init::TF = mean(ae.ygrid),
-                                B_init::TF = mean(ae.Bgrid)
-                                ) where {TI<:Integer, TF<:AbstractFloat}
+                                capT = 5000;
+                                y_init = mean(ae.ygrid),
+                                B_init = mean(ae.Bgrid)
+                                ) 
 
         # Get initial indices
         zero_index = searchsortedfirst(ae.Bgrid, 0.)
