@@ -172,8 +172,8 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
-  using Distributions
-  using Plots
+  using Distributions, Plots, QuantEcon, Interpolations
+
   gr(fmt=:png)
 
   w_max = 2
@@ -224,8 +224,6 @@ The code is as follows
 .. _odu_vfi_code:
 
 .. code-block:: julia
-
-  using QuantEcon, Interpolations
 
   struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
                       TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
@@ -327,7 +325,7 @@ The code is as follows
       f, g, β, c = sp.f, sp.g, sp.β, sp.c
 
       # Construct interpolator over π_grid, given ϕ
-      ϕ_f = LinInterp(sp.π_grid, ϕ)
+      ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())
 
       # set up quadrature nodes/weights
       q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
