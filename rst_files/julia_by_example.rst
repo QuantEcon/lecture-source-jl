@@ -1109,6 +1109,7 @@ Exercise 5
 Here's one solution
 
 .. code-block:: julia
+
     using Plots
     gr(fmt=:png) # setting for easier display in jupyter notebooks
     α = 0.9
