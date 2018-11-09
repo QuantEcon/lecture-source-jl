@@ -61,11 +61,6 @@ This lecture displays these principles within the tractable framework of linear 
 
 It is based on chapter 19 of :cite:`Ljungqvist2012`
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The Stackelberg Problem
 =======================
 
@@ -910,6 +905,12 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
   :class: test 
 
   using Test 
+
+
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
 
