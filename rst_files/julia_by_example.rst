@@ -178,8 +178,25 @@ Notice from the above that
 To get **help and examples** in Jupyter or other julia editor, use the ``?`` before a function name or syntax
 
 .. code-block:: julia
+    :class: no-execute
  
     ?typeof
+
+    search: typeof typejoin TypeError
+
+    Get the concrete type of x.
+
+    Examples
+
+    julia> a = 1//2;
+
+    julia> typeof(a)
+    Rational{Int64}
+
+    julia> M = [1 2; 3.5 4];
+
+    julia> typeof(M)
+    Array{Float64,2}    
 
 For Loops
 ---------------
