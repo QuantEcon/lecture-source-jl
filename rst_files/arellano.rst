@@ -506,7 +506,7 @@ Setup
                 default_today = ae.vc[Bi, yi] < ae.vd[yi] ? true : false
 
                 if default_today
-                    # Default values
+                    # default values
                     default_status[t] = true
                     default_status[t+1] = true
                     y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
