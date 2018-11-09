@@ -384,7 +384,7 @@ Setup
                               EVd,
                               EVc) 
 
-        # Unpack stuff
+        # unpack stuff
         @unpack β, γ, r, ρ, η, θ, ny, nB = ae
         @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
         zero_ind = searchsortedfirst(Bgrid, 0.)
@@ -393,7 +393,7 @@ Setup
             y = ae.ygrid[iy]
             ydef = ae.ydefgrid[iy]
 
-            # Value of being in default with income y
+            # value of being in default with income y
             defval = u(ae, ydef) + β*(θ*EVc[zero_ind, iy] + (1-θ)*EVd[1, iy])
             ae.vd[1, iy] = defval
 
@@ -413,7 +413,7 @@ Setup
 
                 end
 
-                # Update value and policy functions
+                # update value and policy functions
                 ae.vc[ib, iy] = current_max
                 ae.policy[ib, iy] = pol_ind
                 ae.vf[ib, iy] = defval > current_max ? defval : current_max
@@ -446,23 +446,23 @@ Setup
         it = 0
         dist = 10.
 
-        # Allocate memory for update
+        # allocate memory for update
         V_upd = similar(ae.vf)
 
         while dist > tol && it < maxit
             it += 1
 
-            # Compute expectations for this iterations
-            # (We need Π' because of order value function dimensions)
+            # compute expectations for this iterations
+            # (we need Π' because of order value function dimensions)
             copyto!(V_upd, ae.vf)
             EV = ae.vf * Πt
             EVd = ae.vd * Πt
             EVc = ae.vc * Πt
 
-            # Update Value Function
+            # update value function
             one_step_update!(ae, EV, EVd, EVc)
 
-            # Update prices
+            # update prices
             compute_prices!(ae)
 
             dist = maximum(abs, V_upd - ae.vf)
@@ -479,16 +479,16 @@ Setup
                                 B_init = mean(ae.Bgrid)
                                 ) 
 
-        # Get initial indices
+        # get initial indices
         zero_index = searchsortedfirst(ae.Bgrid, 0.)
         y_init_ind = searchsortedfirst(ae.ygrid, y_init)
         B_init_ind = searchsortedfirst(ae.Bgrid, B_init)
 
-        # Create a QE MarkovChain
+        # create a QE MarkovChain
         mc = MarkovChain(ae.Π)
         y_sim_indices = simulate(mc, capT+1; init=y_init_ind)
 
-        # Allocate and Fill output
+        # allocate and fill output
         y_sim_val = zeros(Float64, capT+1)
         B_sim_val, q_sim_val = similar(y_sim_val), similar(y_sim_val)
         B_sim_indices = zeros(Int64, capT+1)
@@ -497,11 +497,11 @@ Setup
         y_sim_val[1], B_sim_val[1] = ae.ygrid[y_init_ind], ae.Bgrid[B_init_ind]
 
         for t in 1:capT
-            # Get today's indexes
+            # get today's indexes
             yi, Bi = y_sim_indices[t], B_sim_indices[t]
             defstat = default_status[t]
 
-            # If you are not in default
+            # if you are not in default
             if !defstat
                 default_today = ae.vc[Bi, yi] < ae.vd[yi] ? true : false
 
@@ -521,14 +521,14 @@ Setup
                     q_sim_val[t] = ae.q[B_sim_indices[t+1], y_sim_indices[t]]
                 end
 
-            # If you are in default
+            # if you are in default
             else
                 B_sim_indices[t+1] = zero_index
                 B_sim_val[t+1] = 0.
                 y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
                 q_sim_val[t] = ae.q[zero_index, y_sim_indices[t]]
 
-                # With probability θ exit default status
+                # with probability θ exit default status
                 if rand() < ae.θ
                     default_status[t+1] = false
                 else
@@ -650,17 +650,17 @@ Compute the bond price schedule as seen in figure 3 of Arellano (2008)
 
 .. code-block:: julia
 
-    # Create "Y High" and "Y Low" values as 5% devs from mean
+    # create "Y High" and "Y Low" values as 5% devs from mean
     high, low = mean(ae.ygrid)*1.05, mean(ae.ygrid)*.95
     iy_high, iy_low = map(x->searchsortedfirst(ae.ygrid, x), (high, low))
 
-    # Extract a suitable plot grid
+    # extract a suitable plot grid
     x = Float64[]
     q_low = Float64[]
     q_high = Float64[]
     for i in 1:ae.nB
         b = ae.Bgrid[i]
-        if -0.35 ≤ b ≤ 0  # To match fig 3 of Arellano
+        if -0.35 ≤ b ≤ 0  # to match fig 3 of Arellano
             push!(x, b)
             push!(q_low, ae.q[i, iy_low])
             push!(q_high, ae.q[i, iy_high])
