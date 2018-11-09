@@ -379,6 +379,7 @@ Setup
 .. code-block:: julia
 
     using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
+    using Optim: converged, maximum, maximizer, minimizer, iterations
     gr(fmt = :png)
 
 .. code-block:: julia
@@ -420,13 +421,13 @@ Setup
                     EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
                     return u(c) +  β * EV
                 end
-                res = optimize(obj, opt_lb, R .* a .+ z .+ b)
-                c_star = Optim.minimizer(res)
+                res = maximize(obj, opt_lb, R .* a .+ z .+ b)
+                converged(res) || error("Didn't converge") # important to check
 
                 if ret_policy
-                    out[i_a, i_z] = c_star
+                    out[i_a, i_z] = maximizer(res)
                 else
-                    out[i_a, i_z] = - Optim.minimum(res)
+                    out[i_a, i_z] = maximum(res)
                 end
 
             end
@@ -465,7 +466,7 @@ Setup
                 opt_ub = R*a + z + b  # addresses issue #8 on github
                 res = optimize(h, min(opt_lb, opt_ub - 1e-2), opt_ub,
                                method = Optim.Brent())
-                out[i_a, i_z] = Optim.minimizer(res)
+                out[i_a, i_z] = minimizer(res)
             end
         end
         return out
