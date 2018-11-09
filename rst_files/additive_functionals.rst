@@ -222,18 +222,6 @@ All of these objects are computed using the code below
 
     using QuantEcon, Plots, Distributions, LinearAlgebra
 
-    struct AMF_LSS_VAR
-        A::Matrix{Float64}
-        B::Matrix{Float64}
-        D::Matrix{Float64}
-        F::Matrix{Float64}
-        ν::Matrix{Float64}
-        nx::Int
-        nk::Int
-        nm::Int
-        lss::LSS
-    end
-
     function AMF_LSS_VAR(A, B, D, F = nothing; ν = nothing)
 
         if B isa AbstractVector
@@ -253,14 +241,14 @@ All of these objects are computed using the code below
             D = reshape(D, 1, length(D))
         end
 
-        # Set F
+        # set F
         if F === nothing
             F = zeros(nk, 1)
         elseif ndims(F) == 1
             F = reshape(F, length(F), 1)
         end
 
-        # Set ν
+        # set ν
         if ν === nothing
             ν = zeros(nm, 1)
         elseif ndims(ν) == 1
@@ -276,7 +264,7 @@ All of these objects are computed using the code below
         # Construct BIG state space representation
         lss = construct_ss(A, B, D, F, ν, nx, nk, nm)
 
-        return AMF_LSS_VAR(A, B, D, F, ν, nx, nk, nm, lss)
+        return (A = A, B = B, D = D, F = F, ν = ν, nx = nx, nk = nk, nm = nm, lss = lss)
     end
 
     AMF_LSS_VAR(A, B, D) =
@@ -289,7 +277,7 @@ All of these objects are computed using the code below
 
         H, g = additive_decomp(A, B, D, F, nx)
 
-        # Auxiliary blocks with 0's and 1's to fill out the lss matrices
+        # auxiliary blocks with 0's and 1's to fill out the lss matrices
         nx0c = zeros(nx, 1)
         nx0r = zeros(1, nx)
         nx1 = ones(1, nx)
@@ -300,28 +288,28 @@ All of these objects are computed using the code below
         ny0m = zeros(nm, nm)
         nyx0m = similar(D)
 
-        # Build A matrix for LSS
-        # Order of states is: [1, t, xt, yt, mt]
-        A1 = hcat(1, 0, nx0r, ny0r, ny0r)          # Transition for 1
-        A2 = hcat(1, 1, nx0r, ny0r, ny0r)          # Transition for t
-        A3 = hcat(nx0c, nx0c, A, nyx0m', nyx0m')   # Transition for x_{t+1}
-        A4 = hcat(ν, ny0c, D, ny1m, ny0m)          # Transition for y_{t+1}
-        A5 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)   # Transition for m_{t+1}
+        # build A matrix for LSS
+        # order of states is: [1, t, xt, yt, mt]
+        A1 = hcat(1, 0, nx0r, ny0r, ny0r)          # transition for 1
+        A2 = hcat(1, 1, nx0r, ny0r, ny0r)          # transition for t
+        A3 = hcat(nx0c, nx0c, A, nyx0m', nyx0m')   # transition for x_{t+1}
+        A4 = hcat(ν, ny0c, D, ny1m, ny0m)          # transition for y_{t+1}
+        A5 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)   # transition for m_{t+1}
         Abar = vcat(A1, A2, A3, A4, A5)
 
-        # Build B matrix for LSS
+        # build B matrix for LSS
         Bbar = vcat(nk0, nk0, B, F, H)
 
-        # Build G matrix for LSS
-        # Order of observation is: [xt, yt, mt, st, tt]
-        G1 = hcat(nx0c, nx0c, I, nyx0m', nyx0m')          # Selector for x_{t}
-        G2 = hcat(ny0c, ny0c, nyx0m, ny1m, ny0m)          # Selector for y_{t}
-        G3 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)          # Selector for martingale
-        G4 = hcat(ny0c, ny0c, -g, ny0m, ny0m)             # Selector for stationary
-        G5 = hcat(ny0c, ν, nyx0m, ny0m, ny0m)             # Selector for trend
+        # build G matrix for LSS
+        # order of observation is: [xt, yt, mt, st, tt]
+        G1 = hcat(nx0c, nx0c, I, nyx0m', nyx0m')          # selector for x_{t}
+        G2 = hcat(ny0c, ny0c, nyx0m, ny1m, ny0m)          # selector for y_{t}
+        G3 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)          # selector for martingale
+        G4 = hcat(ny0c, ny0c, -g, ny0m, ny0m)             # selector for stationary
+        G5 = hcat(ny0c, ν, nyx0m, ny0m, ny0m)             # selector for trend
         Gbar = vcat(G1, G2, G3, G4, G5)
 
-        # Build LSS type
+        # build LSS type
         x0 = hcat(1, 0, nx0r, ny0r, ny0r)
         S0 = zeros(length(x0), length(x0))
         lss = LSS(Abar, Bbar, Gbar, zeros(nx+4nm, 1), x0, S0)
@@ -366,10 +354,10 @@ All of these objects are computed using the code below
 
     function plot_additive(amf, T; npaths = 25, show_trend = true)
 
-        # Pull out right sizes so we know how to increment
+        # pull out right sizes so we know how to increment
         nx, nk, nm = amf.nx, amf.nk, amf.nm
 
-        # Allocate space (nm is the number of additive functionals - we want npaths for each)
+        # allocate space (nm is the number of additive functionals - we want npaths for each)
         mpath = zeros(nm*npaths, T)
         mbounds = zeros(nm*2, T)
         spath = zeros(nm*npaths, T)
@@ -377,15 +365,15 @@ All of these objects are computed using the code below
         tpath = zeros(nm*npaths, T)
         ypath = zeros(nm*npaths, T)
 
-        # Simulate for as long as we wanted
+        # simulate for as long as we wanted
         moment_generator = moment_sequence(amf.lss)
 
-        # Pull out population moments
+        # pull out population moments
         for (t, x) in enumerate(moment_generator)
             ymeans = x[2]
             yvar = x[4]
 
-            # Lower and upper bounds - for each additive functional
+            # lower and upper bounds - for each additive functional
             for ii in 1:nm
                 li, ui = (ii-1)*2+1, ii*2
                 if sqrt(yvar[nx+nm+ii, nx+nm+ii]) != 0.0
@@ -413,7 +401,7 @@ All of these objects are computed using the code below
             t == T && break
         end
 
-        # Pull out paths
+        # pull out paths
         for n in 1:npaths
             x, y = simulate(amf.lss,T)
             for ii in 0:nm-1
@@ -439,12 +427,12 @@ All of these objects are computed using the code below
     end
 
     function plot_multiplicative(amf, T, npaths = 25, show_trend = true)
-        # Pull out right sizes so we know how to increment
+        # pull out right sizes so we know how to increment
         nx, nk, nm = amf.nx, amf.nk, amf.nm
-        # Matrices for the multiplicative decomposition
+        # matrices for the multiplicative decomposition
         H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
 
-        # Allocate space (nm is the number of functionals - we want npaths for each)
+        # allocate space (nm is the number of functionals - we want npaths for each)
         mpath_mult = zeros(nm*npaths, T)
         mbounds_mult = zeros(nm*2, T)
         spath_mult = zeros(nm*npaths, T)
@@ -452,15 +440,15 @@ All of these objects are computed using the code below
         tpath_mult = zeros(nm*npaths, T)
         ypath_mult = zeros(nm*npaths, T)
 
-        # Simulate for as long as we wanted
+        # simulate for as long as we wanted
         moment_generator = moment_sequence(amf.lss)
 
-        # Pull out population moments
+        # pull out population moments
         for (t, x) in enumerate(moment_generator)
             ymeans = x[2]
             yvar = x[4]
 
-            # Lower and upper bounds - for each multiplicative functional
+            # lower and upper bounds - for each multiplicative functional
             for ii in 1:nm
                 li, ui = (ii-1)*2+1, ii*2
                 if yvar[nx+nm+ii, nx+nm+ii] != 0.0
@@ -489,7 +477,7 @@ All of these objects are computed using the code below
             t == T && break
         end
 
-        # Pull out paths
+        # pull out paths
         for n in 1:npaths
             x, y = simulate(amf.lss,T)
             for ii in 0:nm-1
@@ -599,7 +587,7 @@ All of these objects are computed using the code below
         plot!(plots[1], title = "One Path of All Variables", legend=:topleft)
 
 
-        # Plot Martingale Component
+        # plot martingale component
         plot!(plots[2], trange, mpath[1, :], color=:magenta, label="")
         plot!(plots[2], trange, mpathᵀ, alpha=0.45, color=:magenta, label="")
         ub = mbounds[2, :]
@@ -609,7 +597,7 @@ All of these objects are computed using the code below
         plot!(plots[2], title="Martingale Components for Many Paths")
 
 
-        # Plot Stationary Component
+        # plot stationary component
         plot!(plots[3], spath[1, :], color=:green, label="")
         plot!(plots[3], Matrix(spath'), alpha=0.25, color=:green, label="")
         ub = sbounds[2, :]
@@ -618,7 +606,7 @@ All of these objects are computed using the code below
         plot!(plots[3], seriestype=:hline, [horline], color=:black, linestyle=:dash, label="")
         plot!(plots[3], title="Stationary Components for Many Paths")
 
-        # Plot Trend Component
+        # plot trend component
         if show_trend == true
             plot!(plots[4], Matrix(tpath'), color=:red, label="")
         end
@@ -630,13 +618,13 @@ All of these objects are computed using the code below
 
     function plot_martingale_paths(T, mpath, mbounds;
                                horline = 1, show_trend = false)
-        # Allocate space
+        # allocate space
         trange = 1:T
 
-        # Create the plot
+        # create the plot
         plt = plot()
 
-        # Plot Martingale Component
+        # plot martingale component
         ub = mbounds[2, :]
         lb = mbounds[1, :]
         plot!(plt, lb, fill_between=(lb, ub), alpha = 0.25, color=:magenta, label="")
@@ -651,14 +639,17 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
 
 .. _addfunc_egcode:
 
-.. code-block:: julia
+.. code-block:: julia 
+    :class: test 
 
     using Random
-    Random.seed!(42) # For reproducible results.
+    Random.seed!(42) # for reproducible results
+
+.. code-block:: julia
 
     ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
     σ = 0.01
-    ν = 0.01 # Growth rate
+    ν = 0.01 # growth rate
 
     # A matrix should be n x n
     A = [ϕ_1 ϕ_2 ϕ_3 ϕ_4;
