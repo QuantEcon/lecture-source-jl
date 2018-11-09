@@ -852,7 +852,7 @@ Your hints are as follows:
 
 * If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
-* For a circle, area = π * :mat:`radius^2`
+* For a circle, area = π * :math:`radius^2`
 
 
 .. _jbe_ex4:
