@@ -928,12 +928,12 @@ Setup
                         h = 0.2,
                         beta = 0.95)
 
-        # Left-hand side of (37)
+        # left-hand side of (37)
         Alhs = Matrix{Float64}(I, 5, 5)
         Alhs[5, :] = [a0-d 1 -a1 -a1-h c]
         Alhsinv = inv(Alhs)
 
-        # Right-hand side of (37)
+        # right-hand side of (37)
         Brhs = [0; 0; 1; 0; 0]
         Arhs = Matrix{Float64}(I, 5, 5)
         Arhs[2, 2] = rho
@@ -979,20 +979,20 @@ Setup
 
     function solve_for_opt_policy(olig, eta0 = 0.0, Q0 = 0.0, q0 = 0.0)
 
-        # Step 1/2: Formulate/solve the optimal linear regulator
+        # step 1 & 2: formulate/solve the optimal linear regulator
         P, F, d, Pf, Ff, df = find_PFd(olig)
 
-        # Step 3: Convert implementation into state variables (find coeffs)
+        # step 3: convert implementation into state variables (find coeffs)
         P22 = P[end, end]
         P21 = transpose(P[end, 1:end-1])
         P22inv = P22^(-1)
 
-        # Step 4: Find optimal x_0 and \mu_{x, 0}
+        # step 4: find optimal x_0 and \mu_{x, 0}
         z0 = [1; eta0; Q0; q0]
         x0 = -P22inv*P21*z0
         D0 = -P22inv*P21
 
-        # Return -F and -Ff because we use u_t = -F y_t
+        # return -F and -Ff because we use u_t = -F y_t
         return P, -F, D0, Pf, -Ff
 
     end
@@ -1000,8 +1000,8 @@ Setup
     olig = Oligopoly()
     P, F, D0, Pf, Ff = solve_for_opt_policy(olig)
 
-    # Checking time-inconsistency
-    # Arbitrary initial z_0
+    # checking time-inconsistency
+    # arbitrary initial z_0
     y0 = [1; 0; 25; 46]
     # optimal x_0 = i_0
     i0 = D0*y0
@@ -1019,7 +1019,7 @@ Setup
   :class: test 
 
   @testset begin 
-    @test i1_1 ≈ 1.1038392392871046 # Think this is the most important value. 
+    @test i1_1 ≈ 1.1038392392871046 # think this is the most important value. 
     @test i1_0 ≈ 0.24833302229796866
     @test i0 ≈ 1.4288731635600485
     @test y1[3] ≈ 21.829608211752173
