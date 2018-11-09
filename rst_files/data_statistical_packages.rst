@@ -263,7 +263,8 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
     cigar = dataset("plm", "Cigar")
     cigar.StateCategorical =  categorical(cigar.State)
     cigar.YearCategorical =  categorical(cigar.Year)
-    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical, weights = Pop, vcov = cluster(StateCategorical)))
+    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical,
+                                weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
 
 To explore the data use the interactive DataVoyager

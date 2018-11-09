@@ -76,7 +76,7 @@ There are a (very limited) set of operations which are available for ``Any``, in
     @show typeof(x)
     @show typeof(y)
     @show supertype(typeof(x))
-    @show typeof(x) |> supertype # pipe operator(|>), just applies a function to another function
+    @show typeof(x) |> supertype # pipe operator(|>), applies a function to another function
     @show supertype(typeof(y));
 
 We will investigate some of the sub-types of ``Any``

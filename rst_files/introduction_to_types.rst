@@ -323,7 +323,8 @@ To give an example of the declaration of types, the following are equivalent
 
 .. code-block:: julia
 
-    function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64} # argument and return types
+    function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64} 
+    # argument and return types
         b::Vector{Float64} = [5.0, 6.0]
         return A * x .+ b
     end
@@ -604,7 +605,7 @@ A few simple programming patterns will ensure that this is possible
 
         # ACCEPTABLE
         function g(x::AbstractFloat)
-            return x + 1.0 # Assumes that `1.0` can be converted to something compatible with typeof(x)
+            return x + 1.0 # Assumes `1.0` can be converted to something compatible with typeof(x)
         end
         x = BigFloat(1.0)
         @show typeof(g(x)); # This has "promoted" the 1.0 to a BigFloat
@@ -822,9 +823,10 @@ There are also many functions that can use any ``AbstractArray``, such as ``diff
 
     search: diff symdiff setdiff symdiff! setdiff! Cptrdiff_t
 
-    diff(A::AbstractVector)
-    diff(A::AbstractMatrix; dims::Integer)
-    Finite difference operator of matrix or vector A. If A is a matrix, specify the dimension over which to operate with the dims keyword argument.
+    diff(A::AbstractVector) # Finite difference operator of matrix or vector A
+    # If A is a matrix, specify the dimension over which to operate with the dims keyword argument.
+    diff(A::AbstractMatrix; dims::Integer)  
+    
 
 Hence, we can call this function for anything of type ``AbstractVector``
 
@@ -865,7 +867,8 @@ Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can n
 
 .. code-block:: julia
 
-    derivatives(f::Function, x::AbstractArray) = diff(f.(x))./diff(x) # broadcasts over the diff
+    # broadcasts over the diff
+    derivatives(f::Function, x::AbstractArray) = diff(f.(x))./diff(x) 
 
     d_f = derivatives(f, x)
     @show d_f[1];

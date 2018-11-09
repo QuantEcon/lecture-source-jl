@@ -998,7 +998,7 @@ But care should be taken if the terminal node is not a multiple of the set sizes
     maxval = 1.0
     minval = 0.0
     stepsize = 0.15
-    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ... ??? Not 1.0
+    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ...
     maximum(a) == maxval
 
 To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
@@ -1008,7 +1008,8 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maxval = 1.0
     minval = 0.0
     numpoints = 10
-    a = range(minval, maxval, length=numpoints) # or range(minval, stop=maxval, length=numpoints)
+    a = range(minval, maxval, length=numpoints) 
+    # or range(minval, stop=maxval, length=numpoints)
 
     maximum(a) == maxval
 

@@ -940,7 +940,8 @@ Similarly to the named arguments, the local scope also works with named tuples
 
     x = 0.1
     y = 2
-    (x = x, y = y) # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    (x = x, y = y) 
 
 As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
 
@@ -1324,7 +1325,8 @@ Exercise 5
 .. code-block:: julia
 
     function linapprox(f, a, b, n, x)
-        # evaluates the piecewise linear interpolant of f at x on the interval [a, b], with n evenly spaced grid points.
+        # evaluates the piecewise linear interpolant of f at x, 
+        # on the interval [a, b], with n evenly spaced grid points.
 
         length_of_interval = b - a
         num_subintervals = n - 1
