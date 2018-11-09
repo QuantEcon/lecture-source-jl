@@ -158,21 +158,12 @@ Setup
     get_distance(a, agent) = norm(a.location - agent.location)
 
     function is_happy(a)
-        # True if sufficient number of nearest neighbors are of the same type.
-        # distances is a list of pairs (d, agent), where d is distance from
-        # agent to self
-
-        # Long-hand
-        # Compute the distances and agents pairs
         distances = [(get_distance(a, agent), agent) for agent in agents]
-        # Sorts the collection closest first
         sort!(distances)
-        # Selects the neighborhood by the `neighborhood_size` closest neighbors
         neighbors = [agent for (d, agent) in distances[1:neighborhood_size]]
-        # Compute share of kind in neighborhood
         share = mean(isequal(a.kind), other.kind for other in neighbors)
 
-        # Short-hand
+        # can also do
         # share = mean(isequal(a.kind),
         #              first(agents[idx]) for idx in
         #              partialsortperm(get_distance.(Ref(a), agents),
