@@ -74,7 +74,6 @@ Setup
 .. Several multivariate distributions are also implemented
 
 
-
 Numerical Integration
 =============================
 
