@@ -650,7 +650,8 @@ To enable this, Julia has two features:  named function parameters, and named tu
     f(v) = p + β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = 0.8, tolerance = 1.0E-8) # don't need to pass 
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+    "iterations")
 
 In this example, all function parameters after the ``;`` in the list, must be called by name
 
@@ -666,7 +667,8 @@ To show the flexibilty of this code, we can use it to find a fixed-point of the 
     f(x) = r * x * (1 - x)
 
     sol = fixedpointmap(f, iv = 0.8)
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+    "iterations")
 
 
 Using a Package
@@ -684,7 +686,8 @@ But best of all is to avoid writing code altogether
     β = 0.9     
     f(v) = p .+ β * v # broadcast the +
     sol = fixedpoint(f, [0.8])
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $"*
+    "(sol.iterations) iterations")
 
 
 The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed-point iteration scheme above
@@ -702,7 +705,8 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     β = 0.9
     iv = [0.8]
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $"*
+    "(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
 
@@ -743,7 +747,8 @@ The only change we will need to our model in order to use a different floating p
 
     # otherwise identical
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $"*
+    "(sol.iterations) iterations")
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
 
@@ -765,7 +770,8 @@ Using our own, homegrown iteration and simple passing in a bivariate map,
     f(v) = p .+ β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+    "iterations")
 
 This also works without any modifications with the ``fixedpoint`` library function
 
@@ -779,7 +785,8 @@ This also works without any modifications with the ``fixedpoint`` library functi
     f(v) = p .+ β * v
 
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $"*
+    "(sol.iterations) iterations")
 
 Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
 
@@ -792,7 +799,8 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     f(v) = p .+ β * v
 
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $"*
+    "(sol.iterations) iterations")
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
 
