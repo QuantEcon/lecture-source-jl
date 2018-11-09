@@ -34,7 +34,8 @@ Understanding them will help you
 * Write "well organized" Julia code that's easy to read, modify, maintain and debug
 
 * Improve the speed at which your code runs
- 
+
+The approach is inspired by :cite:`stepanov_mathematics_2014`
 
 Generic Programming as an Attitude
 -----------------------------------------------
