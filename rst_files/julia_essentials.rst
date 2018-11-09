@@ -1324,7 +1324,8 @@ Exercise 5
 .. code-block:: julia
 
     function linapprox(f, a, b, n, x)
-        # evaluates the piecewise linear interpolant of f at x on the interval [a, b], with n evenly spaced grid points.
+        # evaluates the piecewise linear interpolant of f at x, 
+        # on the interval [a, b], with n evenly spaced grid points.
 
         length_of_interval = b - a
         num_subintervals = n - 1
