@@ -49,11 +49,6 @@ This can lead to
 
 Such dynamics are consistent with experiences of many countries
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 Structure
 ===============
 
@@ -335,6 +330,12 @@ The code can be found below:
 
 (Results and discussion follow the code)
 
+
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
     :class: test
 
@@ -342,7 +343,7 @@ The code can be found below:
 
 .. code-block:: julia
 
-    using QuantEcon
+    using QuantEcon, Parameters 
 
     function ArellanoEconomy(;β = .953,
                               γ = 2.,
@@ -366,9 +367,9 @@ The code can be found below:
         vf = zeros(nB, ny)
         vd = zeros(1, ny)
         vc = zeros(nB, ny)
-        policy = zeros(TF, nB, ny)
+        policy = zeros(Float64, nB, ny)
         q = ones(nB, ny) .* (1 / (1 + r))
-        defprob = zeros(TF, nB, ny)
+        defprob = zeros(Float64, nB, ny)
 
         return (β = β, γ = γ, r = r, ρ = ρ, η = η, θ = θ, ny = ny, 
                 nB = nB, ygrid = ygrid, ydefgrid = ydefgrid, 
@@ -381,7 +382,7 @@ The code can be found below:
     function one_step_update!(ae,
                               EV,
                               EVd,
-                              EV) 
+                              EVc) 
 
         # Unpack stuff
         @unpack β, γ, r, ρ, η, θ, ny, nB = ae
@@ -488,9 +489,9 @@ The code can be found below:
         y_sim_indices = simulate(mc, capT+1; init=y_init_ind)
 
         # Allocate and Fill output
-        y_sim_val = zeros(TF, capT+1)
+        y_sim_val = zeros(Float64, capT+1)
         B_sim_val, q_sim_val = similar(y_sim_val), similar(y_sim_val)
-        B_sim_indices = zeros(TI, capT+1)
+        B_sim_indices = zeros(Int64, capT+1)
         default_status = fill(false, capT+1)
         B_sim_indices[1], default_status[1] = B_init_ind, false
         y_sim_val[1], B_sim_val[1] = ae.ygrid[y_init_ind], ae.Bgrid[B_init_ind]
@@ -618,7 +619,7 @@ Solutions
 
 .. code-block:: julia
 
-    using Plots, Compose, ColorTypes, DataFrames
+    using Plots, DataFrames
     gr(fmt=:png)
 
 Compute the value function, policy and equilibrium prices
