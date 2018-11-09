@@ -344,49 +344,24 @@ The code can be found below:
 
     using QuantEcon
 
-    struct ArellanoEconomy{TF<:AbstractFloat, TI<:Integer}
-        # Model Parameters
-        β::TF
-        γ::TF
-        r::TF
-        ρ::TF
-        η::TF
-        θ::TF
+    function ArellanoEconomy(;β = .953,
+                              γ = 2.,
+                              r = 0.017,
+                              ρ = 0.945,
+                              η = 0.025,
+                              θ = 0.282,
+                              ny = 21,
+                              nB = 251) 
 
-        # Grid Parameters
-        ny::TI
-        nB::TI
-        ygrid::Vector{TF}
-        ydefgrid::Vector{TF}
-        Bgrid::Vector{TF}
-        Π::Matrix{TF}
-
-        # Value function
-        vf::Matrix{TF}
-        vd::Matrix{TF}
-        vc::Matrix{TF}
-        policy::Matrix{TF}
-        q::Matrix{TF}
-        defprob::Matrix{TF}
-    end
-
-    function ArellanoEconomy(;β::TF = .953,
-                              γ::TF = 2.,
-                              r::TF = 0.017,
-                              ρ::TF = 0.945,
-                              η::TF = 0.025,
-                              θ::TF = 0.282,
-                              ny::Integer = 21,
-                              nB::Integer = 251) where TF<:AbstractFloat
-
-        # Create grids
+        # create grids
         Bgrid = collect(range(-.4, .4, length = nB))
         mc = tauchen(ny, ρ, η)
         Π = mc.p
         ygrid = exp.(mc.state_values)
         ydefgrid = min.(.969 * mean(ygrid), ygrid)
 
-        # Define value functions (Notice ordered different than Python to take
+        # define value functions 
+        # notice ordered different than Python to take
         # advantage of column major layout of Julia)
         vf = zeros(nB, ny)
         vd = zeros(1, ny)
@@ -395,16 +370,13 @@ The code can be found below:
         q = ones(nB, ny) .* (1 / (1 + r))
         defprob = zeros(TF, nB, ny)
 
-        return ArellanoEconomy(β, γ, r, ρ, η, θ, ny, nB, ygrid, ydefgrid, Bgrid, Π,
-                                vf, vd, vc, policy, q, defprob)
+        return (β = β, γ = γ, r = r, ρ = ρ, η = η, θ = θ, ny = ny, 
+                nB = nB, ygrid = ygrid, ydefgrid = ydefgrid, 
+                Bgrid = Bgrid, Π = Π, vf = vf, vd = vd, vc = vc, 
+                policy = policy, q = q, defprob = defprob)
     end
 
     u(ae, c) = c^(1 - ae.γ) / (1 - ae.γ)
-    _unpack(ae) =
-        ae.β, ae.γ, ae.r, ae.ρ, ae.η, ae.θ, ae.ny, ae.nB
-    _unpackgrids(ae) =
-        ae.ygrid, ae.ydefgrid, ae.Bgrid, ae.Π, ae.vf, ae.vd, ae.vc, ae.policy, ae.q, ae.defprob
-
 
     function one_step_update!(ae,
                               EV,
@@ -412,8 +384,8 @@ The code can be found below:
                               EV) 
 
         # Unpack stuff
-        β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
-        ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = _unpackgrids(ae)
+        @unpack β, γ, r, ρ, η, θ, ny, nB = ae
+        @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
         zero_ind = searchsortedfirst(Bgrid, 0.)
 
         for iy in 1:ny
@@ -449,14 +421,14 @@ The code can be found below:
     end
 
     function compute_prices!(ae)
-        # Unpack parameters
-        β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
+        # unpack parameters
+        @unpack β, γ, r, ρ, η, θ, ny, nB = ae
 
-        # Create default values with a matching size
+        # create default values with a matching size
         vd_compat = repeat(ae.vd, nB)
         default_states = vd_compat .> ae.vc
 
-        # Update default probabilities and prices
+        # update default probabilities and prices
         copyto!(ae.defprob, default_states * ae.Π')
         copyto!(ae.q, (1 .- ae.defprob) / (1 + r))
         return
@@ -464,9 +436,9 @@ The code can be found below:
 
     function vfi!(ae; tol = 1e-8, maxit = 10000)
 
-        # Unpack stuff
-        β, γ, r, ρ, η, θ, ny, nB = _unpack(ae)
-        ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = _unpackgrids(ae)
+        # unpack stuff
+        @unpack β, γ, r, ρ, η, θ, ny, nB = ae
+        @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
         Πt = Π'
 
         # Iteration stuff
