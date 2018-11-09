@@ -527,15 +527,6 @@ The following code sets up these objects for us
 
 .. code-block:: julia
 
-    struct SimpleOG
-        B :: Integer
-        M :: Integer
-        α :: Real
-        β :: Real
-        R :: AbstractArray
-        Q :: AbstractArray
-    end
-
     function SimpleOG(;B = 10, M = 5, α = 0.5, β = 0.9)
 
         u(c) = c^α
@@ -552,7 +543,7 @@ The following code sets up these objects for us
             end
         end
 
-        return SimpleOG(B, M, α, β, R, Q)
+        return (B = B, M = M, α = α, β = β, R = R, Q = Q)
     end
 
 
