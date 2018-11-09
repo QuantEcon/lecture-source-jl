@@ -227,7 +227,7 @@ All of these objects are computed using the code below
         if B isa AbstractVector
             B = reshape(B, length(B), 1)
         end
-        # Unpack required elements
+        # unpack required elements
         nx, nk = size(B)
 
         # checking the dimension of D (extended from the scalar case)
@@ -261,7 +261,7 @@ All of these objects are computed using the code below
             error("The size of ν is inconsistent with D!")
         end
 
-        # Construct BIG state space representation
+        # construct BIG state space representation
         lss = construct_ss(A, B, D, F, ν, nx, nk, nm)
 
         return (A = A, B = B, D = D, F = F, ν = ν, nx = nx, nk = nk, nm = nm, lss = lss)
@@ -505,25 +505,25 @@ All of these objects are computed using the code below
         return mult_figs
     end
 
-    function plot_martingales(amf::AMF_LSS_VAR, T, npaths = 25)
+    function plot_martingales(amf, T, npaths = 25)
 
-        # Pull out right sizes so we know how to increment
+        # pull out right sizes so we know how to increment
         nx, nk, nm = amf.nx, amf.nk, amf.nm
-        # Matrices for the multiplicative decomposition
+        # matrices for the multiplicative decomposition
         H, g, ν_tilde = multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν, amf.nx)
 
-        # Allocate space (nm is the number of functionals - we want npaths for each)
+        # allocate space (nm is the number of functionals - we want npaths for each)
         mpath_mult = zeros(nm*npaths, T)
         mbounds_mult = zeros(nm*2, T)
 
-        # Simulate for as long as we wanted
+        # simulate for as long as we wanted
         moment_generator = moment_sequence(amf.lss)
-        # Pull out population moments
+        # pull out population moments
         for (t, x) in enumerate(moment_generator)
             ymeans = x[2]
             yvar = x[4]
 
-            # Lower and upper bounds - for each functional
+            # lower and upper bounds - for each functional
             for ii in 1:nm
                 li, ui = (ii-1)*2+1, ii*2
                 if yvar[nx+nm+ii, nx+nm+ii] != 0.0
@@ -541,7 +541,7 @@ All of these objects are computed using the code below
             t == T && break
         end
 
-        # Pull out paths
+        # pull out paths
         for n in 1:npaths
             x, y = simulate(amf.lss, T)
             for ii in 0:nm-1
@@ -566,16 +566,16 @@ All of these objects are computed using the code below
     function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
                               horline = 0.0, show_trend = true)
 
-        # Allocate space
+        allocate space
         trange = 1:T
 
-        # Allocate transpose
+        # allocate transpose
         mpathᵀ = Matrix(mpath')
 
-        # Create figure
+        # create figure
         plots=plot(layout=(2,2), size=(800,800))
 
-        # Plot all paths together
+        # plot all paths together
 
         plot!(plots[1], trange, ypath[1, :], label="y_t", color=:black)
         plot!(plots[1], trange, mpath[1, :], label="m_t", color=:magenta)
@@ -684,7 +684,7 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
   @testset begin
     @test y[79] ≈ -0.07268127992877046
     @test y[amf.nx+1, :][19] ≈ 0.09115348523102862
-    @test F == 0.01 && T == 150 # A few constants.
+    @test F == 0.01 && T == 150 # a few constants.
   end
 
 Notice the irregular but persistent growth in :math:`y_t`
