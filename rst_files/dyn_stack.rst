@@ -915,23 +915,6 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
     using QuantEcon, Roots, LinearAlgebra
 
-    struct Oligopoly{TF<:AbstractFloat}
-        a0 :: TF
-        a1 :: TF
-        rho :: TF
-        c_eps :: TF
-        c :: TF
-        d :: TF
-        e :: TF
-        g :: TF
-        h :: TF
-        beta :: TF
-        A :: Matrix{TF}
-        B :: Array{TF}
-        Q :: TF
-        R :: Matrix{TF}
-        Rf :: Matrix{TF}
-    end
 
     function Oligopoly(;a0 = 100.0,
                         a1 = 1.0,
@@ -974,8 +957,9 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
         A = Alhsinv*Arhs
         B = Alhsinv*Brhs
 
-        return Oligopoly(a0, a1, rho, c_eps, c, d,
-                        e, g, h, beta, A, B, Q, R, Rf)
+        return (a0 = a0, a1 = a1, rho = rho, c_eps = c_eps, 
+                c = c, d = d, e = e, g = g, h = h, beta = beta, 
+                A = A, B = B, Q = Q, R = R, Rf = Rf)
 
     end
 
