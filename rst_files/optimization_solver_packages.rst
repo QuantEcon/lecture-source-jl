@@ -291,8 +291,8 @@ To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.j
 .. code-block:: julia
 
     results = optimize(f, x_iv, LBFGS())
-    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in $"*
-    "(results.iterations) iterations")    
+    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
+    "$(results.iterations) iterations")    
 
 Note that this has fewer iterations
 
@@ -323,7 +323,8 @@ Alternatively, with an analytical gradient
     end
 
     results = optimize(f, g!, x0, LBFGS()) # or ConjugateGradient()
-    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in $(results.iterations) iterations")    
+    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
+    "$(results.iterations) iterations")    
 
 For derivative-free methods, you can change the algorithm--and have no need to provide a gradient
 
@@ -475,7 +476,8 @@ Alternatively, if ``f(x)`` is written generically, you can use auto-differentiat
 
     results = nlsolve(f, [ 0.1; 1.2], autodiff=:forward)
     
-    println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in $(results.iterations) iterations and $(results.f_calls) function calls")
+    println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in "*
+    "$(results.iterations) iterations and $(results.f_calls) function calls")
 
 
 Providing a function with operates in-place (i.e. modifying an argument) may help performance for large systems of equations (and hurt it for small ones)
@@ -489,7 +491,8 @@ Providing a function with operates in-place (i.e. modifying an argument) may hel
 
     results = nlsolve(f!, [ 0.1; 1.2], autodiff=:forward)
 
-    println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in $(results.iterations) iterations and $(results.f_calls) function calls")
+    println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in "*
+    "$(results.iterations) iterations and $(results.f_calls) function calls")
 
 LeastSquaresOptim.jl
 ======================
@@ -534,7 +537,8 @@ Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobia
         out[1] = 1 - x[1]
         out[2] = 100 * (x[2]-x[1]^2)
     end
-    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), f! = rosenbrock_f!, output_length = 2))
+    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), 
+                                    f! = rosenbrock_f!, output_length = 2))
 
     # if you want to use gradient
     function rosenbrock_g!(J, x)
@@ -543,7 +547,8 @@ Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobia
         J[2, 1] = -200 * x[1]
         J[2, 2] = 100
     end
-    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
+    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), 
+                                    f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
 
 Exercises
 =============
