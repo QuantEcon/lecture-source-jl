@@ -129,7 +129,9 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     two_args_to_pdf(dist) = (x, y) -> pdf(dist, [x, y]) # returns a function to be plotted
 
     # plot
-    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = true, levels = 6, color = :lightrainbow, alpha = 0.6, cbar = false) # saves us the trouble of reshaping a data matrix to be a Cartesian grid
+    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = true, levels = 6, 
+            color = :lightrainbow, alpha = 0.6, cbar = false) 
+            # saves us the trouble of reshaping a data matrix to be a Cartesian grid
 
 .. code-block:: julia
     :class: test
@@ -219,14 +221,17 @@ The original density is left in as contour lines for comparison
 
     # plot the new density on the old plot
     newdist = MvNormal(x_hat_F, Symmetric(Σ_F)) # because Σ_F
-    contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 6, color = :grays, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 6, 
+             color = :grays, cbar = false)
 
 .. code-block:: julia
     :class: test
 
     @testset "Updated Belief Tests" begin
-        @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 1.1102230246251565e-16 0.6666666666666667]
-        @test Σ_F ≈ [0.13333333333333325 0.09999999999999992; 0.09999999999999998 0.15000000000000002]
+        @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 
+                   1.1102230246251565e-16 0.6666666666666667]
+        @test Σ_F ≈ [0.13333333333333325 0.09999999999999992;
+                     0.09999999999999998 0.15000000000000002]
     end
 
 Our new density twists the prior :math:`p(x)` in a direction determined by  the new
@@ -325,7 +330,8 @@ the update has used parameters
     predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
 
     # Plot Density 3
-    contour!(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, levels = 6, color = :grays, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, levels = 6, 
+             color = :grays, cbar = false)
 
 .. code-block:: julia
     :class: test
@@ -610,7 +616,7 @@ Exercise 1
 
     labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
     plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
-            title = "First 5 densities when theta = $θ")
+         title = "First 5 densities when theta = $θ")
 
 .. code-block:: julia
     :class: test
@@ -646,7 +652,8 @@ Exercise 2
     update!(kalman, θ + randn())
     end
 
-    plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,xlims=(0, T), legend = false)
+    plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,xlims=(0, T),
+         legend = false)
 
 .. code-block:: julia
     :class: test
@@ -710,16 +717,18 @@ Exercise 3
         e2[t] = sum((a - b)^2 for (a, b) in zip(x, Ax))
     end
 
-    plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", grid = false)
-    plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, label = "conditional expectation error")
+    plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", 
+         grid = false)
+    plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, 
+          label = "conditional expectation error")
 
 .. code-block:: julia
     :class: test
 
     @testset "Solution 3 Tests" begin
-        @test e1[2] == 5.123448550499836
-        @test e2[19] == 0.03717649374189149
-        @test x[1] == 0.9619597742127561 && x[2] == 0.8669993304801348
+        @test e1[2] == 2.3089149699078493
+        @test e2[19] == 0.0059756062750286705
+        @test x[1] == 0.35144174682463053 && x[2] == 0.5818007751668824
     end
 
 .. rubric:: Footnotes

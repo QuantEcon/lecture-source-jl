@@ -444,7 +444,7 @@ In particular, let's look at what happens when we change :math:`\beta` and
     :class: test
 
     @testset "Comparative Statics Tests" begin
-        @test R[4, 4] ≈ 40.59687500000215 # Arbitrary reservation wage.
+        @test R[4, 4] ≈ 41.15851842606614 # Arbitrary reservation wage.
         @test grid_size == 25 # grid invariance.
         @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0
         @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99
@@ -609,7 +609,9 @@ Here's one solution
         return stopping_time
     end
 
-    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
+    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> 
+                                                             compute_stopping_time(w_bar, 
+                                                             seed = i), 1:num_reps)
     c_vals = range(10,  40, length = 25)
     stop_times = similar(c_vals)
 
