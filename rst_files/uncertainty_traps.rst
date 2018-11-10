@@ -3,15 +3,14 @@
 .. include:: /_static/includes/lecture_howto_jl.raw
     :class: collapse
 
-***************************************
+*****************
 Uncertainty Traps
-***************************************
+*****************
 
 .. highlight:: julia
 
-
 Overview
-============
+========
 
 In this lecture we study a simplified version of an uncertainty traps model of Fajgelbaum, Schaal and Taschereau-Dumouchel :cite:`fun`
 
@@ -33,7 +32,6 @@ In the model,
 
 * Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via :doc:`Kalman filtering <kalman>`
 
-
 Uncertainty traps emerge because:
 
 * High uncertainty discourages entrepreneurs from becoming active
@@ -44,20 +42,15 @@ Uncertainty traps emerge because:
 
 Uncertainty traps stem from a positive externality: high aggregate economic activity levels generates valuable information
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The Model
-===============
+=========
 
 The original model described in :cite:`fun` has many interesting moving parts
 
 Here we examine a simplified version that nonetheless captures many of the key ideas
 
 Fundamentals
---------------
+------------
 
 The evolution of the fundamental process :math:`\{\theta_t\}` is given by
 
@@ -74,7 +67,7 @@ where
 The random variable :math:`\theta_t` is not observable at any time
 
 Output
------------
+------
 
 There is a total :math:`\bar M` of risk averse entrepreneurs
 
@@ -88,7 +81,6 @@ time :math:`t`, is equal to
     \quad \text{where} \quad
     \epsilon_m \sim N \left(0, \gamma_x^{-1} \right)
 
-
 Here the time subscript has been dropped to simplify notation
 
 The inverse of the shock variance, :math:`\gamma_x`, is called the shock's **precision**
@@ -98,7 +90,7 @@ The higher is the precision, the more informative :math:`x_m` is about the funda
 Output shocks are independent across time and firms
 
 Information and Beliefs
-----------------------------
+-----------------------
 
 All entrepreneurs start with identical beliefs about :math:`\theta_0`
 
@@ -121,12 +113,10 @@ Let
 
 With this notation and primes for next period values, we can write the updating of the mean and precision via
 
-
 .. math::
     :label: update_mean
 
     \mu' = \rho \frac{\gamma \mu + M \gamma_x X}{\gamma + M \gamma_x}
-
 
 .. math::
     :label: update_prec
@@ -135,7 +125,6 @@ With this notation and primes for next period values, we can write the updating 
         \left(
         \frac{\rho^2}{\gamma + M \gamma_x} + \sigma_\theta^2
         \right)^{-1}
-
 
 These are standard Kalman filtering results applied to the current setting
 
@@ -162,7 +151,7 @@ Thus, if one of these values for :math:`M` remains fixed, a corresponding steady
 In practice, as we'll see, the number of active firms fluctuates stochastically
 
 Participation
-----------------
+-------------
 
 Omitting time subscripts once more, entrepreneurs enter the market in the current period if
 
@@ -188,7 +177,6 @@ The utility function has the constant absolute risk aversion form
 
     u(x) = \frac{1}{a} \left(1 - \exp(-a x) \right)
 
-
 where :math:`a` is a positive parameter
 
 Combining :eq:`pref1` and :eq:`pref2`, entrepreneur :math:`m` participates in the market (or is said to be active) when
@@ -202,7 +190,6 @@ Combining :eq:`pref1` and :eq:`pref2`, entrepreneur :math:`m` participates in th
                     \right) ]
         \right\}
             > c
-
 
 Using standard formulas for expectations of `lognormal <https://en.wikipedia.org/wiki/Log-normal_distribution>`_ random variables, this is equivalent to the condition
 
@@ -222,7 +209,7 @@ Using standard formulas for expectations of `lognormal <https://en.wikipedia.org
             > 0
 
 Implementation
-===============
+==============
 
 We want to simulate this economy
 
@@ -240,71 +227,65 @@ The method to evaluate the number of active firms generates :math:`F_1,
 
 The function `UncertaintyTrapEcon` encodes as default values the parameters we'll use in the simulations below
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
+    using Test, Random
 
 .. code-block:: julia
 
-    mutable struct UncertaintyTrapEcon{TF<:AbstractFloat, TI<:Integer}
-        a::TF          # Risk aversion
-        γ_x::TF        # Production shock precision
-        ρ::TF          # Correlation coefficient for θ
-        σ_θ::TF        # Standard dev of θ shock
-        num_firms::TI  # Number of firms
-        σ_F::TF        # Std dev of fixed costs
-        c::TF          # External opportunity cost
-        μ::TF          # Initial value for μ
-        γ::TF          # Initial value for γ
-        θ::TF          # Initial value for θ
-        σ_x::TF        # Standard deviation of shock
-    end
+    using DataFrames, Parameters, Plots
 
-    function UncertaintyTrapEcon(;a = 1.5,
-                                  γ_x = 0.5,
-                                  ρ = 0.99,
-                                  σ_θ = 0.5,
-                                  num_firms = 100,
-                                  σ_F = 1.5,
-                                  c = -420.0,
-                                  μ_init = 0.0,
-                                  γ_init = 4.0,
-                                  θ_init = 0.0)
-        σ_x = sqrt(a / γ_x)
-        UncertaintyTrapEcon(a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init,
-                            γ_init, θ_init, σ_x)
+.. code-block:: julia
 
+    @with_kw mutable struct UncertaintyTrapEcon
+        a = 1.5             # Risk aversion
+        γ_x = 0.5           # Production shock precision
+        ρ = 0.99            # Correlation coefficient for θ
+        σ_θ = 0.5           # Standard dev of θ shock
+        num_firms = 100     # Number of firms
+        σ_F = 1.5           # Std dev of fixed costs
+        c = -420.0          # External opportunity cost
+        μ = 0.0             # Initial value for μ
+        γ = 4.0             # Initial value for γ
+        θ = 0.0             # Initial value for θ
+        σ_x = sqrt(a / γ_x) # Standard deviation of shock
     end
 
     function ψ(uc, F)
-        temp1 = -uc.a * (uc.μ - F)
-        temp2 = 0.5 * uc.a^2 * (1 / uc.γ + 1 / uc.γ_x)
-        return (1 / uc.a) * (1 - exp(temp1 + temp2)) - uc.c
+        @unpack a, μ, γ_x, c, γ = uc
+        temp1 = -a * (μ - F)
+        temp2 = 0.5 * a^2 / (γ + γ_x)
+        return (1 - exp(temp1 + temp2)) / a - c
     end
 
     function update_beliefs!(uc, X, M)
         # Simplify names
-        γ_x, ρ, σ_θ = uc.γ_x, uc.ρ, uc.σ_θ
+        @unpack γ, γ_x, ρ, σ_θ,μ = uc
 
         # Update μ
-        temp1 = ρ * (uc.γ * uc.μ + M * γ_x * X)
-        temp2 = uc.γ + M * γ_x
+        temp1 = ρ * (γ * μ + M * γ_x * X)
+        temp2 = γ + M * γ_x
         uc.μ =  temp1 / temp2
 
         # Update γ
-        uc.γ = 1 / (ρ^2 / (uc.γ + M * γ_x) + σ_θ^2)
+        uc.γ = 1 / (ρ^2 / (γ + M * γ_x) + σ_θ^2)
     end
 
-    update_θ!(uc, w) =
-        (uc.θ = uc.ρ * uc.θ + uc.σ_θ * w)
+    update_θ!(uc, w) = (uc.θ = uc.ρ * uc.θ + uc.σ_θ * w)
 
     function gen_aggregates(uc)
-        F_vals = uc.σ_F * randn(uc.num_firms)
+        @unpack σ_F, num_firms, θ, σ_x = uc
+        F_vals = σ_F * randn(num_firms)
 
         M = sum(ψ.(Ref(uc), F_vals) .> 0)  # Counts number of active firms
-        if M > 0
-            x_vals = uc.θ .+ uc.σ_x * randn(M)
+        if any(ψ(uc, f) > 0 for f in F_vals) # ∃ an active firms
+            x_vals = θ .+ σ_x * randn(M)
             X = mean(x_vals)
         else
             X = 0.0
@@ -315,7 +296,7 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
 In the results below we use this code to simulate time series for the major variables
 
 Results
-===============
+=======
 
 Let's look first at the dynamics of :math:`\mu`, which the agents use to track :math:`\theta`
 
@@ -346,12 +327,12 @@ Notice how the traps only take hold after a sequence of bad draws for the fundam
 Thus, the model gives us a *propagation mechanism* that maps bad random draws into long downturns in economic activity
 
 Exercises
-==============
+=========
 
 .. _uncertainty_traps_ex1:
 
 Exercise 1
-------------
+----------
 
 Fill in the details behind :eq:`update_mean` and :eq:`update_prec` based on
 the following standard result (see, e.g., p. 24 of :cite:`young2005`)
@@ -375,7 +356,7 @@ where
     \gamma_0 = \gamma + M \gamma_x
 
 Exercise 2
-------------
+----------
 
 Modulo randomness, replicate the simulation figures shown above
 
@@ -430,32 +411,28 @@ different values of :math:`M`
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, DataFrames
-
-.. code-block:: julia
-
     econ = UncertaintyTrapEcon()
-    ρ, σ_θ, γ_x = econ.ρ, econ.σ_θ, econ.γ_x # simplify names
+    @unpack ρ, σ_θ, γ_x = econ # simplify names
 
     # grid for γ and γ_{t+1}
-    γ = range(1e-10,  3, length = 200)
+    γ = range(1e-10, 3, length = 200)
     M_range = 0:6
     γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
 
     labels = ["0", "1", "2", "3", "4", "5", "6"]
 
-    plot(γ,γ, lw=2, label = "45 Degree")
-    plot!(γ, γp, lw=2, label=labels)
-    plot!(xlabel="Gamma", ylabel="Gamma'", legend_title="M", legend=:bottomright)
+    plot(γ, γ, lw = 2, label = "45 Degree")
+    plot!(γ, γp, lw = 2, label = labels)
+    plot!(xlabel = "Gamma", ylabel = "Gamma'", legend_title = "M", legend = :bottomright)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test γp[2,2] ≈ 0.46450522950184053
-      @test γp[3,3] ≈ 0.8323524432613787
-      @test γp[5,5] ≈ 1.3779664509290432
-  end
+    @testset begin
+        @test γp[2,2] ≈ 0.46450522950184053
+        @test γp[3,3] ≈ 0.8323524432613787
+        @test γp[5,5] ≈ 1.3779664509290432
+    end
 
 The points where the curves hit the 45 degree lines are the long run
 steady states corresponding to each :math:`M`, if that value of
@@ -467,16 +444,14 @@ is, the number of active firms and average output.
 
 .. code-block:: julia
 
-    function QuantEcon.simulate(uc::UncertaintyTrapEcon{TF, TI},
-                                capT::TI = 2000
-                                ) where {TF <: AbstractFloat, TI <: Integer}
+    function simulate!(uc, capT = 2_000)
 
         # allocate memory
-        μ_vec = zeros(TF, capT)
-        θ_vec = zeros(TF, capT)
-        γ_vec = zeros(TF, capT)
-        X_vec = zeros(TF, capT)
-        M_vec = zeros(TI, capT)
+        μ_vec = zeros(capT)
+        θ_vec = zeros(capT)
+        γ_vec = zeros(capT)
+        X_vec = zeros(capT)
+        M_vec = fill(0, capT)
 
         # set initial using fields from object
         μ_vec[1] = uc.μ
@@ -511,46 +486,49 @@ First let's see how well :math:`\mu` tracks :math:`\theta` in these
 simulations
 
 .. code-block:: julia
+    :class: test
 
-    using Random
-    Random.seed!(42)  # set random seed for reproducible results
-    μ_vec, γ_vec, θ_vec, X_vec, M_vec = simulate(econ)
-
-    plot(1:length(μ_vec), μ_vec, lw=2, label="Mu")
-    plot!(1:length(θ_vec), θ_vec, lw=2, label="Theta")
-    plot!(xlabel="x", ylabel="y", legend_title="Variable", legend=:bottomright)
+    Random.seed!(42);  # set random seed for reproducible results
 
 .. code-block:: julia
-  :class: test
 
-  @testset begin
-      @test θ_vec[1000] ≈ -7.122237942560729 rtol = 1e-4
-      @test θ_vec[1500] ≈ 0.9768886175345713 rtol = 1e-4
-      @test θ_vec[1750] ≈ 3.8193327654508775 rtol = 1e-4
-  end
+    μ_vec, γ_vec, θ_vec, X_vec, M_vec = simulate!(econ)
+
+    plot(eachindex(μ_vec), μ_vec, lw = 2, label = "Mu")
+    plot!(eachindex(θ_vec), θ_vec, lw = 2, label = "Theta")
+    plot!(xlabel = "x", ylabel = "y", legend_title = "Variable", legend = :bottomright)
+
+.. code-block:: julia
+    :class: test
+
+    @testset begin
+        @test θ_vec[1000] ≈ -7.122237942560729 rtol = 1e-4
+        @test θ_vec[1500] ≈ 0.9768886175345713 rtol = 1e-4
+        @test θ_vec[1750] ≈ 3.8193327654508775 rtol = 1e-4
+    end
 
 Now let's plot the whole thing together
 
 .. code-block:: julia
 
-    mdf = DataFrame(t=1:length(θ_vec), θ=θ_vec, μ=μ_vec, γ=γ_vec, M=M_vec)
+    mdf = DataFrame(t = eachindex(θ_vec), θ = θ_vec, μ = μ_vec, γ = γ_vec, M = M_vec)
 
-    len = 1:length(θ_vec)
+    len = eachindex(θ_vec)
     yvals = [θ_vec, μ_vec, γ_vec, M_vec]
     vars = ["Theta", "Mu", "Gamma", "M"]
 
-    plt = plot(layout = (4,1), size=(600,600))
+    plt = plot(layout = (4,1), size = (600, 600))
 
-    for i = 1:4
-        plot!(plt[i], len, yvals[i], xlabel="t", ylabel=vars[i], label="")
+    for i in 1:4
+        plot!(plt[i], len, yvals[i], xlabel = "t", ylabel = vars[i], label = "")
     end
 
     plot(plt)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test stack(mdf, collect(2:5))[:value][3] ≈ -0.49742498224730913
-      @test stack(mdf, collect(2:5))[:value][30] ≈ -3.674770452701049
-  end
+    @testset begin
+        @test stack(mdf, collect(2:5))[:value][3] ≈ -0.49742498224730913
+        @test stack(mdf, collect(2:5))[:value][30] ≈ -3.674770452701049
+    end
