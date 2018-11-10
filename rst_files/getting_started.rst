@@ -348,7 +348,7 @@ Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
     using Plots
     gr(fmt=:png)
-    plot(sin, -2pi, pi, label="sine function")
+    plot(sin, -2π, 2π, label="sin(x)")
 
 You'll see something like this (although the style of plot depends on your
 installation --- more on this later)
