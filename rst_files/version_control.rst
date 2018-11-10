@@ -1,6 +1,7 @@
 .. _version_control:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 ******************************************
 Introduction to Git and Version Control

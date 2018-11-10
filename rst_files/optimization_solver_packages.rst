@@ -1,6 +1,7 @@
 .. _optimization_solver_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 ***************************************************
 Solvers, Optimizers, and Automatic Differentiation

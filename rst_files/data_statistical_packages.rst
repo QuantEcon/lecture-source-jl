@@ -1,7 +1,7 @@
 .. _data_statistical_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-
+    :class: collapse
 
 *****************************************
 The Julia Data and Statistical Ecosystem
