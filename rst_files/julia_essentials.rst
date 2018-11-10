@@ -1013,6 +1013,69 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
     end
     solvemodel(0.1)
 
+Higher-Order Functions
+-------------------------
+
+One of the benefits of working with closures and functions is that you can return them from other functions
+
+This leads to some natural programming patters we have already been using, where we can use **functions of functions** and **functions returning functions** (or closures)
+
+To see a simple example, consider functions that accept other functions (including closures)
+
+.. code-block:: julia
+
+    twice(f,x) = f(f(x)) # i.e. applies f to itself twice
+    f(x) = x^2
+    @show twice(f, 2.0)
+    twice(x -> x^2, 2.0)
+    a = 5
+    g(x) = a * x
+    @show twice(g, 2.0); # using a closure 
+
+This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic 
+
+One example of using this in a library is `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_, where we can pass a function to the ``expectation`` function
+
+.. code-block:: julia
+
+    using Expectations, Distributions
+    @show d = Exponential(2.0)
+    f(x) = x^2
+    @show expectation(f, d); # i.e. E(f(x))
+
+Another example is for a function that returns a closure itself
+
+.. code-block:: julia
+
+    function multiplyit(a, g)
+        return x -> a * g(x) # a function with `g` used in the closure
+    end
+    f(x) = x^2
+    h = multiplyit(2.0, f) #Use our quadratic, returns a new function which doubles the result
+    h(2) # the returned function is like any other function
+
+You can create and define using ``function`` as well
+
+.. code-block:: julia
+
+    function snapabove(g, a)
+        function f(x)
+            if x > a # the "a" is captured in the closure f
+                return g(x)
+            else
+                return g(a)
+            end
+        end
+        return f # closure with the embedded a
+    end
+    f(x) = x^2
+    h = snapabove(f, 2.0)
+
+    using Plots
+    gr(fmt=:png)
+    plot(h, 0.0:0.1:3.0)
+   
+
 
 Loops
 ---------------
@@ -1355,9 +1418,6 @@ Let's test it
 
 .. code-block:: julia
 
-    using Plots
-    gr(fmt=:png)
-    
     x_grid = range(-1.0, 1.0, length = 100)
     y_vals = f_ex5.(x_grid)
     y = g_ex5.(x_grid)
