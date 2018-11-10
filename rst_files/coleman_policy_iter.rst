@@ -385,13 +385,12 @@ Setup
 .. code-block:: julia
 
     function coleman_operator!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
-
-        # This function requires the container of the output value as argument Kg
-
-        # Construct linear interpolation object #
+    # This function requires the container of the output value as argument Kg
+        
+        # Construct linear interpolation object
         g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
 
-        # solve for updated consumption value #
+        # solve for updated consumption value
         for (i, y) in enumerate(grid)
             function h(c)
                 vals = ∂u∂c.(g_func.(f(y - c) * shocks)) .* f′(y - c) .* shocks
@@ -482,10 +481,10 @@ We also need some shock draws for Monte Carlo integration
 .. code-block:: julia
 
     using Random
-    Random.seed!(42) # For reproducible results.
+    Random.seed!(42) # for reproducible results.
 
-    shock_size = 250                                       # Number of shock draws in Monte Carlo integral
-    shocks = collect(exp.(m.μ .+ m.s * randn(shock_size)))  # generate shocks
+    shock_size = 250 # number of shock draws in Monte Carlo integral
+    shocks = collect(exp.(m.μ .+ m.s * randn(shock_size))) # generate shocks
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the
 theory
@@ -501,11 +500,11 @@ theory
 .. code-block:: julia
 
     function verify_true_policy(m, shocks, c_star)
-        # Compute (Kc_star)
+        # compute (Kc_star)
         @unpack grid, β, ∂u∂c, f, f′ = m
         c_star_new = coleman_operator(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
-        # Plot c_star and Kc_star #
+        # plot c_star and Kc_star
         plot(grid, c_star, label = "optimal policy cc_star")
         plot!(grid, c_star_new, label = "Kc_star")
         plot!(legend = :topleft)
@@ -513,7 +512,7 @@ theory
 
 .. code-block:: julia
 
-    c_star = (1 - m.α * m.β) * m.grid     # True policy (c_star)
+    c_star = (1 - m.α * m.β) * m.grid # true policy (c_star)
     verify_true_policy(m, shocks, c_star)
 
 .. code-block:: julia
@@ -535,12 +534,10 @@ The initial condition we'll use is the one that eats the whole pie: :math:`c(y) 
 
 .. code-block:: julia
 
-    function check_convergence(m, shocks, c_star, g_init;
-                               n_iter = 15)
+    function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
         @unpack grid, β, ∂u∂c, f, f′ = m
         g = g_init;
-        plot(m.grid, g, lw = 2,
-              alpha = 0.6, label = "intial condition c(y) = y")
+        plot(m.grid, g, lw = 2, alpha = 0.6, label = "intial condition c(y) = y")
         for i in 1:n_iter
             new_g = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
             g = new_g
@@ -575,8 +572,7 @@ discussed above
 
 .. code-block:: julia
 
-    function iterate_updating(func, arg_init;
-                              sim_length = 20)
+    function iterate_updating(func, arg_init; sim_length = 20)
         arg = arg_init;
         for i in 1:sim_length
             new_arg = func(arg)
@@ -585,13 +581,12 @@ discussed above
         return arg
     end
 
-    function compare_error(m, shocks, g_init, w_init;
-                           sim_length = 20)
+    function compare_error(m, shocks, g_init, w_init; sim_length = 20)
         @unpack grid, β, u, ∂u∂c, f, f′ = m
         g, w = g_init, w_init
-        ## two functions for simplification
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
 
+        # two functions for simplification
+        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
         coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
 
         g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
@@ -736,13 +731,12 @@ Here's the code, which will execute if you've run all the code above
 .. code-block:: julia
 
     # Model instance with risk aversion = 1.5
-    # others are same as the previous instance
+    # others are the same as the previous instance
     m_ex = Model(γ = 1.5)
 
 .. code-block:: julia
 
-    function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
-                       sim_length = 20)
+    function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid); sim_length = 20)
 
         @unpack grid, β, u, ∂u∂c, f, f′ = m
         # initial policy and value
