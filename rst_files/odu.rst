@@ -5,15 +5,14 @@
 
 .. highlight:: julia
 
-******************************************
+************************************
 Job Search III: Search with Learning
-******************************************
+************************************
 
 .. contents:: :depth: 2
 
 Overview
-============
-
+========
 
 In this lecture we consider an extension of the :doc:`previously studied <mccall_model>` job search model of McCall :cite:`McCall1970`
 
@@ -25,37 +24,27 @@ In the McCall model, an unemployed worker decides when to accept a permanent pos
 
 * the distribution from which wage offers are drawn
 
-
-
 In the version considered below, the wage distribution is unknown and must be learned
 
 * The following is based on the presentation in :cite:`Ljungqvist2012`, section 6.6
 
-
 Model features
-----------------
+--------------
 
 * Infinite horizon dynamic programming with two states and one binary control
 
 * Bayesian updating to learn the unknown distribution
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 Model
-========
+=====
 
 .. index::
     single: Models; McCall
 
 Let's first review the basic McCall model :cite:`McCall1970` and then add the variation we want to consider
 
-
-
 The Basic McCall Model
-------------------------
+----------------------
 
 .. index::
     single: McCall Model
@@ -82,13 +71,11 @@ The function :math:`V` satisfies the recursion
     \frac{w}{1 - \beta}, \, c + \beta \int V(w')h(w') dw'
     \right\}
 
-
 The optimal policy has the form :math:`\mathbf{1}\{w \geq \bar w\}`, where
 :math:`\bar w` is a constant depending called the *reservation wage*
 
-
 Offer Distribution Unknown
-----------------------------
+--------------------------
 
 Now let's extend the model by considering the variation presented in :cite:`Ljungqvist2012`, section 6.6
 
@@ -113,7 +100,6 @@ Update rule: worker's time :math:`t` estimate of the distribution is :math:`\pi_
     \pi_{t+1}
     = \frac{\pi_t f(w_{t+1})}{\pi_t f(w_{t+1}) + (1 - \pi_t) g(w_{t+1})}
 
-
 This last expression follows from Bayes' rule, which tells us that
 
 .. math::
@@ -124,9 +110,7 @@ This last expression follows from Bayes' rule, which tells us that
     \quad \text{and} \quad
     \mathbb{P}\{W = w\} = \sum_{\psi \in \{f, g\}} \mathbb{P}\{W = w \,|\, h = \psi\} \mathbb{P}\{h = \psi\}
 
-
 The fact that :eq:`odu_pi_rec` is recursive allows us to progress to a recursive solution method
-
 
 Letting
 
@@ -135,7 +119,6 @@ Letting
     h_{\pi}(w) := \pi f(w) + (1 - \pi) g(w)
     \quad \text{and} \quad
     q(w, \pi) := \frac{\pi f(w)}{\pi f(w) + (1 - \pi) g(w)}
-
 
 we can express the value function for the unemployed worker recursively as
 follows
@@ -150,11 +133,10 @@ follows
     \quad \text{where} \quad
     \pi' = q(w', \pi)
 
-
 Notice that the current guess :math:`\pi` is a state variable, since it affects the worker's perception of probabilities for future rewards
 
 Parameterization
-------------------
+----------------
 
 Following  section 6.6 of :cite:`Ljungqvist2012`, our baseline parameterization will be
 
@@ -166,34 +148,41 @@ Following  section 6.6 of :cite:`Ljungqvist2012`, our baseline parameterization 
 
 With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following shape
 
-.. code-block:: julia
-  :class: test
+Setup
+-----
 
-  using Test # At the head of every lecture.
-
-.. code-block:: julia
-
-  using Distributions, Plots, QuantEcon, Interpolations
-
-  gr(fmt=:png)
-
-  w_max = 2
-  x = range(0,  w_max, length = 200)
-
-  G = Beta(3, 1.6)
-  F = Beta(1, 1)
-  plot(x, pdf.(G, x/w_max)/w_max, label="g")
-  plot!(x, pdf.(F, x/w_max)/w_max, label="f")
+.. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  # Just eyeball these plots.
+    using Test
+
+.. code-block:: julia
+
+    using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
+    import QuantEcon.bellman_operator
+    gr(fmt=:png)
+
+.. code-block:: julia
+
+    w_max = 2
+    x = range(0, w_max, length = 200)
+
+    G = Beta(3, 1.6)
+    F = Beta(1, 1)
+    plot(x, pdf.(G, x / w_max) / w_max, label = "g")
+    plot!(x, pdf.(F, x / w_max) / w_max, label = "f")
+
+.. code-block:: julia
+    :class: test
+
+    # Just eyeball these plots.
 
 .. _looking_forward:
 
 Looking Forward
-------------------
+---------------
 
 What kind of optimal policy might result from :eq:`odu_mvf` and the parameterization specified above?
 
@@ -212,9 +201,8 @@ Thus larger :math:`\pi` depresses the worker's assessment of her future prospect
 :math:`\mathbb 1\{w \geq \bar w(\pi) \}` for some decreasing function
 :math:`\bar w`
 
-
 Take 1: Solution by VFI
-==================================
+=======================
 
 Let's set about solving the model and see how our results match with our intuition
 
@@ -226,124 +214,122 @@ The code is as follows
 
 .. code-block:: julia
 
-  struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
-                      TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
-      β::TR
-      c::TR
-      F::Distribution
-      G::Distribution
-      f::Function
-      g::Function
-      n_w::TI
-      w_max::TR
-      w_grid::TAVw
-      n_π::TI
-      π_min::TR
-      π_max::TR
-      π_grid::TAVpi
-      quad_nodes::Vector{TF}
-      quad_weights::Vector{TF}
-  end
+    struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
+                         TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
+        β::TR
+        c::TR
+        F::Distribution
+        G::Distribution
+        f::Function
+        g::Function
+        n_w::TI
+        w_max::TR
+        w_grid::TAVw
+        n_π::TI
+        π_min::TR
+        π_max::TR
+        π_grid::TAVpi
+        quad_nodes::Vector{TF}
+        quad_weights::Vector{TF}
+    end
 
-  # use key word argment
-  function SearchProblem(;β = 0.95, c = 0.6, F_a = 1, F_b = 1,
-                         G_a = 3, G_b = 1.2, w_max = 2.0,
-                         w_grid_size = 40, π_grid_size = 40)
+    # use key word argment
+    function SearchProblem(;β = 0.95, c = 0.6, F_a = 1, F_b = 1,
+                            G_a = 3, G_b = 1.2, w_max = 2.0,
+                            w_grid_size = 40, π_grid_size = 40)
 
-      F = Beta(F_a, F_b)
-      G = Beta(G_a, G_b)
+        F = Beta(F_a, F_b)
+        G = Beta(G_a, G_b)
 
-      # NOTE: the x./w_max)./w_max in these functions makes our dist match
-      #       the scipy one with scale=w_max given
-      f(x) = pdf.(F, x/w_max)/w_max
-      g(x) = pdf.(G, x/w_max)/w_max
+        # NOTE: the x./w_max)./w_max in these functions makes our dist match
+        #       the scipy one with scale=w_max given
+        f(x) = pdf.(F, x/w_max)/w_max
+        g(x) = pdf.(G, x/w_max)/w_max
 
-      π_min = 1e-3  # avoids instability
-      π_max = 1 - π_min
+        π_min = 1e-3  # avoids instability
+        π_max = 1 - π_min
 
-      w_grid = range(0,  w_max, length = w_grid_size)
-      π_grid = range(π_min,  π_max, length = π_grid_size)
+        w_grid = range(0, w_max, length = w_grid_size)
+        π_grid = range(π_min, π_max, length = π_grid_size)
 
-      nodes, weights = qnwlege(21, 0.0, w_max)
+        nodes, weights = qnwlege(21, 0.0, w_max)
 
-      SearchProblem(β, c, F, G, f, g,
-                  w_grid_size, w_max, w_grid,
-                  π_grid_size, π_min, π_max, π_grid, nodes, weights)
-  end
+        SearchProblem(β, c, F, G, f, g,
+                      w_grid_size, w_max, w_grid,
+                      π_grid_size, π_min, π_max, π_grid, nodes, weights)
+    end
 
-  function q(sp, w, π_val)
-      new_π = 1.0 / (1 + ((1 - π_val) * sp.g(w)) / (π_val * sp.f(w)))
+    function q(sp, w, π_val)
+        new_π = 1.0 / (1 + ((1 - π_val) * sp.g(w)) / (π_val * sp.f(w)))
 
-      # Return new_π when in [π_min, π_max] and else end points
-      return clamp(new_π, sp.π_min, sp.π_max)
-  end
+        # Return new_π when in [π_min, π_max] and else end points
+        return clamp(new_π, sp.π_min, sp.π_max)
+    end
 
-  function bellman_operator!(sp, v, out;
-                             ret_policy = false)
-      # Simplify names
-      f, g, β, c = sp.f, sp.g, sp.β, sp.c
-      nodes, weights = sp.quad_nodes, sp.quad_weights
+    function bellman_operator!(sp, v, out;
+                               ret_policy = false)
+        # Simplify names
+        @unpack f, g, β, c = sp
+        nodes, weights = sp.quad_nodes, sp.quad_weights
 
-      vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
-                      Gridded(Linear())), Flat())
+        vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
+                         Gridded(Linear())), Flat())
 
-      # set up quadrature nodes/weights
-      # q_nodes, q_weights = qnwlege(21, 0.0, sp.w_max)
+        # set up quadrature nodes/weights
+        # q_nodes, q_weights = qnwlege(21, 0.0, sp.w_max)
 
-      for (w_i, w) in enumerate(sp.w_grid)
-          # calculate v1
-          v1 = w / (1 - β)
+        for (w_i, w) in enumerate(sp.w_grid)
+            # calculate v1
+            v1 = w / (1 - β)
 
-          for (π_j, _π) in enumerate(sp.π_grid)
-              # calculate v2
-              integrand(m) = [vf[m[i], q.(Ref(sp), m[i], _π)] *
-                          (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
-              integral = do_quad(integrand, nodes, weights)
-              # integral = do_quad(integrand, q_nodes, q_weights)
-              v2 = c + β * integral
+            for (π_j, _π) in enumerate(sp.π_grid)
+                # calculate v2
+                integrand(m) = [vf[m[i], q.(Ref(sp), m[i], _π)] *
+                                (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
+                integral = do_quad(integrand, nodes, weights)
+                # integral = do_quad(integrand, q_nodes, q_weights)
+                v2 = c + β * integral
 
-              # return policy if asked for, otherwise return max of values
-              out[w_i, π_j] = ret_policy ? v1 > v2 : max(v1, v2)
-          end
-      end
-      return out
-  end
+                # return policy if asked for, otherwise return max of values
+                out[w_i, π_j] = ret_policy ? v1 > v2 : max(v1, v2)
+            end
+        end
+        return out
+    end
 
-  function bellman_operator(sp, v;
-                            ret_policy = false)
-      out_type = ret_policy ? Bool : Float64
-      out = zeros(out_type, sp.n_w, sp.n_π)
-      bellman_operator!(sp, v, out, ret_policy=ret_policy)
-  end
+    function bellman_operator(sp, v;
+                              ret_policy = false)
+        out_type = ret_policy ? Bool : Float64
+        out = zeros(out_type, sp.n_w, sp.n_π)
+        bellman_operator!(sp, v, out, ret_policy=ret_policy)
+    end
 
+    get_greedy!(sp, v, out) = bellman_operator!(sp, v, out, ret_policy = true)
 
-  get_greedy!(sp, v, out) = bellman_operator!(sp, v, out, ret_policy = true)
+    get_greedy(sp, v) = bellman_operator(sp, v, ret_policy = true)
 
-  get_greedy(sp, v) = bellman_operator(sp, v, ret_policy = true)
+    function res_wage_operator!(sp, ϕ, out)
+        # Simplify name
+        @unpack f, g, β, c = sp
 
-  function res_wage_operator!(sp, ϕ, out)
-      # Simplify name
-      f, g, β, c = sp.f, sp.g, sp.β, sp.c
+        # Construct interpolator over π_grid, given ϕ
+        ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())
 
-      # Construct interpolator over π_grid, given ϕ
-      ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())
+        # set up quadrature nodes/weights
+        q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
 
-      # set up quadrature nodes/weights
-      q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
+        for (i, _π) in enumerate(sp.π_grid)
+            integrand(x) = max.(x, ϕ_f.(q.(Ref(sp), x, _π))) .* (_π * f(x) + (1 - _π) * g(x))
+            integral = do_quad(integrand, q_nodes, q_weights)
+            out[i] = (1 - β) * c + β * integral
+        end
+    end
 
-      for (i, _π) in enumerate(sp.π_grid)
-          integrand(x) = max.(x, ϕ_f.(q.(Ref(sp), x, _π))) .* (_π * f(x) + (1 - _π) * g(x))
-          integral = do_quad(integrand, q_nodes, q_weights)
-          out[i] = (1 - β) * c + β * integral
-      end
-  end
-
-  function res_wage_operator(sp, ϕ)
-      out = similar(ϕ)
-      res_wage_operator!(sp, ϕ, out)
-      return out
-  end
-
+    function res_wage_operator(sp, ϕ)
+        out = similar(ϕ)
+        res_wage_operator!(sp, ϕ, out)
+        return out
+    end
 
 The type ``SearchProblem`` is used to store parameters and methods needed to compute optimal actions
 
@@ -360,32 +346,32 @@ Here's the value function:
 
 .. code-block:: julia
 
-  # Set up the problem and initial guess, solve by VFI
-  sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
-  v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
-  f(x) = bellman_operator(sp, x)
-  v = compute_fixed_point(f, v_init)
-  policy = get_greedy(sp, v)
+    # Set up the problem and initial guess, solve by VFI
+    sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
+    v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
+    f(x) = bellman_operator(sp, x)
+    v = compute_fixed_point(f, v_init)
+    policy = get_greedy(sp, v)
 
-  # Make functions for the linear interpolants of these
-  vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v, Gridded(Linear())),
-                  Flat())
-  pf = extrapolate(interpolate((sp.w_grid, sp.π_grid), policy,
-                  Gridded(Linear())), Flat())
+    # Make functions for the linear interpolants of these
+    vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v, Gridded(Linear())),
+                     Flat())
+    pf = extrapolate(interpolate((sp.w_grid, sp.π_grid), policy,
+                     Gridded(Linear())), Flat())
 
-  function plot_value_function(;w_plot_grid_size = 100,
-                              π_plot_grid_size = 100)
-    π_plot_grid = range(0.001,  0.99, length =  π_plot_grid_size)
-    w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
-    Z = [vf[w_plot_grid[j], π_plot_grid[i]]
-            for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-    p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
-                fill=true, size=(400, 400), c=:lightrainbow)
-    plot!(xlabel="pi", ylabel="2", xguidefont=font(12))
-    return p
-  end
+    function plot_value_function(;w_plot_grid_size = 100,
+                                  π_plot_grid_size = 100)
+        π_plot_grid = range(0.001,  0.99, length =  π_plot_grid_size)
+        w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
+        Z = [vf[w_plot_grid[j], π_plot_grid[i]]
+        for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
+        p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
+                    fill=true, size=(400, 400), c=:lightrainbow)
+        plot!(xlabel = "pi", ylabel = "2", xguidefont=font(12))
+        return p
+    end
 
-  plot_value_function()
+    plot_value_function()
 
 .. _odu_pol_vfi:
 
@@ -393,21 +379,21 @@ The optimal policy:
 
 .. code-block:: julia
 
-  function plot_policy_function(;w_plot_grid_size = 100,
-                                π_plot_grid_size = 100)
-      π_plot_grid = range(0.001,  0.99, length = π_plot_grid_size)
-      w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
-      Z = [pf[w_plot_grid[j], π_plot_grid[i]]
-              for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-      p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, size=(400, 400), c=:coolwarm)
-      plot!(xlabel="pi", ylabel="wage", xguidefont=font(12), cbar=false)
-      annotate!(0.4, 1.0, "reject")
-      annotate!(0.7, 1.8, "accept")
-      return p
-  end
+    function plot_policy_function(;w_plot_grid_size = 100,
+                                   π_plot_grid_size = 100)
+        π_plot_grid = range(0.001, 0.99, length = π_plot_grid_size)
+        w_plot_grid = range(0, sp.w_max, length = w_plot_grid_size)
+        Z = [pf[w_plot_grid[j], π_plot_grid[i]]
+             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
+        p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6,
+                    fill=true, size=(400, 400), c=:coolwarm)
+        plot!(xlabel = "pi", ylabel = "wage", xguidefont=font(12), cbar=false)
+        annotate!(0.4, 1.0, "reject")
+        annotate!(0.7, 1.8, "accept")
+        return p
+    end
 
-  plot_policy_function()
-
+    plot_policy_function()
 
 The code takes several minutes to run
 
@@ -417,9 +403,8 @@ The results fit well with our intuition from section :ref:`looking forward <look
 
 * It is decreasing as expected
 
-
 Take 2: A More Efficient Method
-==================================
+===============================
 
 Our implementation of VFI can be optimized to some degree
 
@@ -435,9 +420,8 @@ As a consequence, the algorithm is orders of magnitude faster than VFI
 This section illustrates the point that when it comes to programming, a bit of
 mathematical analysis goes a long way
 
-
 Another Functional Equation
------------------------------
+---------------------------
 
 To begin, note that when :math:`w = \bar w(\pi)`, the worker is indifferent
 between accepting and rejecting
@@ -450,7 +434,6 @@ Hence the two choices on the right-hand side of :eq:`odu_mvf` have equal value:
     \frac{\bar w(\pi)}{1 - \beta}
     = c + \beta \int V(w', \pi') \, h_{\pi}(w') \, dw'
 
-
 Together, :eq:`odu_mvf` and :eq:`odu_mvf2` give
 
 .. math::
@@ -462,7 +445,6 @@ Together, :eq:`odu_mvf` and :eq:`odu_mvf2` give
         \frac{w}{1 - \beta} ,\, \frac{\bar w(\pi)}{1 - \beta}
     \right\}
 
-
 Combining :eq:`odu_mvf2` and :eq:`odu_mvf3`, we obtain
 
 .. math::
@@ -473,7 +455,6 @@ Combining :eq:`odu_mvf2` and :eq:`odu_mvf3`, we obtain
     \right\}
     \, h_{\pi}(w') \, dw'
 
-
 Multiplying by :math:`1 - \beta`, substituting in :math:`\pi' = q(w', \pi)` and using :math:`\circ` for composition of functions yields
 
 .. math::
@@ -483,15 +464,13 @@ Multiplying by :math:`1 - \beta`, substituting in :math:`\pi' = q(w', \pi)` and 
     = (1 - \beta) c +
     \beta \int \max \left\{ w', \bar w \circ q(w', \pi) \right\} \, h_{\pi}(w') \, dw'
 
-
 Equation :eq:`odu_mvf4` can be understood as a functional equation, where :math:`\bar w` is the unknown function
 
 * Let's call it the *reservation wage functional equation* (RWFE)
 * The solution :math:`\bar w` to the RWFE is the object that we wish to compute
 
-
 Solving the RWFE
---------------------------------
+----------------
 
 To solve the RWFE, we will first show that its solution is the
 fixed point of a `contraction mapping <https://en.wikipedia.org/wiki/Contraction_mapping>`_
@@ -503,14 +482,12 @@ To this end, let
 
 Consider the operator :math:`Q` mapping :math:`\psi \in b[0,1]` into :math:`Q\psi \in b[0,1]` via
 
-
 .. math::
     :label: odu_dq
 
     (Q \psi)(\pi)
     = (1 - \beta) c +
     \beta \int \max \left\{ w', \psi \circ q(w', \pi) \right\} \, h_{\pi}(w') \, dw'
-
 
 Comparing :eq:`odu_mvf4` and :eq:`odu_dq`, we see that the set of fixed points of :math:`Q` exactly coincides with the set of solutions to the RWFE
 
@@ -530,14 +507,12 @@ triangle inequality for integrals tells us that
     \right|
     \, h_{\pi}(w') \, dw'
 
-
 Working case by case, it is easy to check that for real numbers :math:`a, b, c` we always have
 
 .. math::
     :label: odu_nt2
 
     | \max\{a, b\} - \max\{a, c\}| \leq | b - c|
-
 
 Combining :eq:`odu_nt` and :eq:`odu_nt2` yields
 
@@ -550,7 +525,6 @@ Combining :eq:`odu_nt` and :eq:`odu_nt2` yields
     \, h_{\pi}(w') \, dw'
     \leq \beta \| \psi - \phi \|
 
-
 Taking the supremum over :math:`\pi` now gives us
 
 .. math::
@@ -558,7 +532,6 @@ Taking the supremum over :math:`\pi` now gives us
 
     \|Q \psi - Q \phi\|
     \leq \beta \| \psi - \phi \|
-
 
 In other words, :math:`Q` is a contraction of modulus :math:`\beta` on the
 complete metric space :math:`(b[0,1], \| \cdot \|)`
@@ -569,7 +542,7 @@ Hence
 * :math:`Q^k \psi \to \bar w` uniformly as :math:`k \to \infty`, for any :math:`\psi \in b[0,1]`
 
 Implementation
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 These ideas are implemented in the ``.res_wage_operator()`` method from ``odu.jl`` as shown above
 
@@ -577,14 +550,13 @@ The method corresponds to action of the operator :math:`Q`
 
 The following exercise asks you to exploit these facts to compute an approximation to :math:`\bar w`
 
-
 Exercises
-=============
+=========
 
 .. _odu_ex1:
 
 Exercise 1
-------------
+----------
 
 Use the default parameters and the ``.res_wage_operator()`` method to compute an optimal policy
 
@@ -593,10 +565,8 @@ Your result should coincide closely with the figure for the optimal policy :ref:
 Try experimenting with different parameters, and confirm that the change in
 the optimal policy coincides with your intuition
 
-
 Solutions
-==========
-
+=========
 
 Exercise 1
 ----------
@@ -608,19 +578,19 @@ time is much shorter than that of the value function approach in
 
 .. code-block:: julia
 
-  sp = SearchProblem(π_grid_size = 50)
+    sp = SearchProblem(π_grid_size = 50)
 
-  ϕ_init = ones(sp.n_π)
-  f_ex1(x) = res_wage_operator(sp, x)
-  w_bar = compute_fixed_point(f_ex1, ϕ_init)
+    ϕ_init = ones(sp.n_π)
+    f_ex1(x) = res_wage_operator(sp, x)
+    w_bar = compute_fixed_point(f_ex1, ϕ_init)
 
-  plot(sp.π_grid, w_bar, linewidth = 2, color=:black,
-       fill_between = 0, fillalpha = 0.15, fillcolor = :blue)
-  plot!(sp.π_grid, 2 * ones(length(w_bar)), linewidth = 0, fill_between = w_bar,
-        fillalpha = 0.12, fillcolor = :green, legend = :none)
-  plot!(ylims = (0, 2), annotations = [(0.42, 1.2, "reject"),
-                                       (0.7, 1.8, "accept")])
-
+    plot(sp.π_grid, w_bar, linewidth = 2, color=:black,
+         fill_between = 0, fillalpha = 0.15, fillcolor = :blue)
+    plot!(sp.π_grid, fill(2, length(w_bar)), linewidth = 0,
+          fill_between = w_bar, fillalpha = 0.12, fillcolor = :green,
+          legend = :none)
+    plot!(ylims = (0, 2), annotations = [(0.42, 1.2, "reject"),
+                                         (0.7, 1.8, "accept")])
 
 The next piece of code is not one of the exercises from QuantEcon -- it's
 just a fun simulation to see what the effect of a change in the
@@ -635,72 +605,71 @@ The code takes a few minutes to run.
 
 .. code-block:: julia
 
-  # Determinism and random objects.
-  using Random
-  Random.seed!(42)
+    # Determinism and random objects.
+    Random.seed!(42)
 
-  # Set up model and compute the function w_bar
-  sp = SearchProblem(π_grid_size = 50, F_a = 1, F_b = 1)
-  ϕ_init = ones(sp.n_π)
-  g(x) = res_wage_operator(sp, x)
-  w_bar_vals = compute_fixed_point(g, ϕ_init)
-  w_bar = extrapolate(interpolate((sp.π_grid, ), w_bar_vals,
-                      Gridded(Linear())), Flat())
+    # Set up model and compute the function w_bar
+    sp = SearchProblem(π_grid_size = 50, F_a = 1, F_b = 1)
+    ϕ_init = ones(sp.n_π)
+    g(x) = res_wage_operator(sp, x)
+    w_bar_vals = compute_fixed_point(g, ϕ_init)
+    w_bar = extrapolate(interpolate((sp.π_grid, ), w_bar_vals,
+                        Gridded(Linear())), Flat())
 
-  # Holds the employment state and beliefs of an individual agent.
-  mutable struct Agent
-      _π
-      employed
-  end
+    # Holds the employment state and beliefs of an individual agent.
+    mutable struct Agent
+        _π
+        employed
+    end
 
-  Agent(_π=1e-3) = Agent(_π, 1)
+    Agent(_π=1e-3) = Agent(_π, 1)
 
-  function update!(ag, H)
-      if ag.employed == 0
-          w = rand(H) * 2   # account for scale in julia
-          if w ≥ w_bar[ag._π]
-              ag.employed = 1
-          else
-              ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
-          end
-      end
-      nothing
-  end
+    function update!(ag, H)
+        if ag.employed == 0
+            w = rand(H) * 2   # account for scale in julia
+            if w ≥ w_bar[ag._π]
+                ag.employed = 1
+            else
+                ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
+            end
+        end
+        nothing
+    end
 
-  num_agents = 5000
-  separation_rate = 0.025  # Fraction of jobs that end in each period
-  separation_num = round(Int, num_agents * separation_rate)
-  agent_indices = collect(1:num_agents)
-  agents = [Agent() for i=1:num_agents]
-  sim_length = 600
-  H = sp.G                 # Start with distribution G
-  change_date = 200        # Change to F after this many periods
-  unempl_rate = zeros(sim_length)
+    num_agents = 5000
+    separation_rate = 0.025  # Fraction of jobs that end in each period
+    separation_num = round(Int, num_agents * separation_rate)
+    agent_indices = collect(1:num_agents)
+    agents = [Agent() for i in 1:num_agents]
+    sim_length = 600
+    H = sp.G          # Start with distribution G
+    change_date = 200 # Change to F after this many periods
+    unempl_rate = zeros(sim_length)
 
-  for i in 1:sim_length
-      if i % 20 == 0
-          println("date = $i")
-      end
+    for i in 1:sim_length
+        if i % 20 == 0
+            println("date = $i")
+        end
 
-      if i == change_date
-          H = sp.F
-      end
+        if i == change_date
+            H = sp.F
+        end
 
-      # Randomly select separation_num agents and set employment status to 0
-      shuffle!(agent_indices)
-      separation_list = agent_indices[1:separation_num]
+        # Randomly select separation_num agents and set employment status to 0
+        shuffle!(agent_indices)
+        separation_list = agent_indices[1:separation_num]
 
-      for agent in agents[separation_list]
-          agent.employed = 0
-      end
+        for agent in agents[separation_list]
+            agent.employed = 0
+        end
 
-      # update agents
-      for agent in agents
-          update!(agent, H)
-      end
-      employed = Int[agent.employed for agent in agents]
-      unempl_rate[i] = 1.0 - mean(employed)
-  end
+        # update agents
+        for agent in agents
+            update!(agent, H)
+        end
+        employed = Int[agent.employed for agent in agents]
+        unempl_rate[i] = 1 - mean(employed)
+    end
 
-  plot(unempl_rate, linewidth = 2, label = "unemployment rate")
-  vline!([change_date], color = :red, label = "")
+    plot(unempl_rate, linewidth = 2, label = "unemployment rate")
+    vline!([change_date], color = :red, label = "")
