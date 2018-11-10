@@ -4,14 +4,14 @@
 
 .. highlight:: julia
 
-***************************************
+************************************
 Default Risk and Income Fluctuations
-***************************************
+************************************
 
 .. contents:: :depth: 2
 
 Overview
-============
+========
 
 This lecture computes versions of  Arellano's  :cite:`arellano2008default` model of sovereign default
 
@@ -50,12 +50,12 @@ This can lead to
 Such dynamics are consistent with experiences of many countries
 
 Structure
-===============
+=========
 
 In this section we describe the main features of the model
 
 Output, Consumption and Debt
------------------------------
+----------------------------
 
 A small open economy is endowed with an exogenous stochastically fluctuating potential output stream :math:`\{y_t\}`
 
@@ -87,7 +87,7 @@ The government is the only domestic actor with access to foreign credit
 Because household are averse to consumption fluctuations, the government will try to smooth consumption by borrowing from (and lending to) foreign creditors
 
 Asset Markets
----------------
+-------------
 
 The only credit instrument available to the government is a one-period bond traded in international credit markets
 
@@ -122,7 +122,7 @@ To rule out Ponzi schemes, we also require that :math:`B \geq -Z` in every perio
 * :math:`Z` is chosen to be sufficiently large that the constraint never binds in equilibrium
 
 Financial Markets
--------------------
+-----------------
 
 Foreign creditors
 
@@ -148,7 +148,7 @@ Therefore, the discounted expected value of a promise to pay :math:`B` next peri
 Next we turn to how the government in effect chooses the default probability :math:`\delta`
 
 Government's decisions
------------------------
+----------------------
 
 At each point in time :math:`t`, the government chooses between
 
@@ -169,14 +169,14 @@ But a sovereign default has two consequences:
 #. The country loses access to foreign credit markets
 
 Reentering international credit market
----------------------------------------
+--------------------------------------
 
 While in a state of default, the economy regains access to
 foreign credit in each subsequent period with probability
 :math:`\theta`
 
 Equilibrium
-===============
+===========
 
 Informally, an equilibrium is a sequence of interest rates on its sovereign debt, a stochastic sequence of government default decisions  and an implied flow of household consumption such that
 
@@ -191,7 +191,6 @@ Informally, an equilibrium is a sequence of interest rates on its sovereign debt
    * consequences of defaulting now for future net output and future borrowing and lending opportunities
 
 #. The interest rate on the government's debt includes a risk-premium sufficient to make foreign creditors expect on average to earn the constant risk-free international interest rate
-
 
 To express these ideas more precisely, consider first the choices of the
 government, which
@@ -266,7 +265,7 @@ the bond price function:
     q(B', y) = \frac{1 - \delta(B', y)}{1 + r}
 
 Definition of equilibrium
----------------------------
+-------------------------
 
 An *equilibrium* is
 
@@ -287,7 +286,7 @@ such that
 * The price function :math:`q(B',y)` satisfies equation :eq:`bondprice`
 
 Computation
-===============
+===========
 
 Let's now compute an equilibrium of Arellano's model
 
@@ -330,9 +329,8 @@ The code can be found below:
 
 (Results and discussion follow the code)
 
-
 Setup
-------------------
+-----
 
 .. literalinclude:: /_static/includes/deps.jl
 
@@ -343,7 +341,9 @@ Setup
 
 .. code-block:: julia
 
-    using QuantEcon, Parameters 
+    using Parameters, QuantEcon
+    
+.. code-block:: julia
 
     function ArellanoEconomy(;β = .953,
                               γ = 2.,
@@ -394,7 +394,7 @@ Setup
             ydef = ae.ydefgrid[iy]
 
             # value of being in default with income y
-            defval = u(ae, ydef) + β*(θ*EVc[zero_ind, iy] + (1-θ)*EVd[1, iy])
+            defval = u(ae, ydef) + β * (θ * EVc[zero_ind, iy] + (1-θ) * EVd[1, iy])
             ae.vd[1, iy] = defval
 
             for ib in 1:nB
@@ -465,9 +465,9 @@ Setup
             # update prices
             compute_prices!(ae)
 
-            dist = maximum(abs, V_upd - ae.vf)
+            dist = maximum(abs(x - y) for (x, y) in zip(V_upd, ae.vf))
 
-            if it%25 == 0
+            if it % 25 == 0
                 println("Finished iteration $(it) with dist of $(dist)")
             end
         end
@@ -476,7 +476,7 @@ Setup
     function QuantEcon.simulate(ae,
                                 capT = 5000;
                                 y_init = mean(ae.ygrid),
-                                B_init = mean(ae.Bgrid)
+                                B_init = mean(ae.Bgrid),
                                 ) 
 
         # get initial indices
@@ -486,13 +486,13 @@ Setup
 
         # create a QE MarkovChain
         mc = MarkovChain(ae.Π)
-        y_sim_indices = simulate(mc, capT+1; init=y_init_ind)
+        y_sim_indices = simulate(mc, capT + 1; init = y_init_ind)
 
         # allocate and fill output
-        y_sim_val = zeros(Float64, capT+1)
+        y_sim_val = zeros(capT+1)
         B_sim_val, q_sim_val = similar(y_sim_val), similar(y_sim_val)
-        B_sim_indices = zeros(Int64, capT+1)
-        default_status = fill(false, capT+1)
+        B_sim_indices = fill(0, capT + 1)
+        default_status = fill(false, capT + 1)
         B_sim_indices[1], default_status[1] = B_init_ind, false
         y_sim_val[1], B_sim_val[1] = ae.ygrid[y_init_ind], ae.Bgrid[B_init_ind]
 
@@ -503,37 +503,33 @@ Setup
 
             # if you are not in default
             if !defstat
-                default_today = ae.vc[Bi, yi] < ae.vd[yi] ? true : false
+                default_today = ae.vc[Bi, yi] < ae.vd[yi]
 
                 if default_today
                     # default values
                     default_status[t] = true
-                    default_status[t+1] = true
+                    default_status[t + 1] = true
                     y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
-                    B_sim_indices[t+1] = zero_index
+                    B_sim_indices[t + 1] = zero_index
                     B_sim_val[t+1] = 0.
                     q_sim_val[t] = ae.q[zero_index, y_sim_indices[t]]
                 else
                     default_status[t] = false
                     y_sim_val[t] = ae.ygrid[y_sim_indices[t]]
-                    B_sim_indices[t+1] = ae.policy[Bi, yi]
-                    B_sim_val[t+1] = ae.Bgrid[B_sim_indices[t+1]]
-                    q_sim_val[t] = ae.q[B_sim_indices[t+1], y_sim_indices[t]]
+                    B_sim_indices[t + 1] = ae.policy[Bi, yi]
+                    B_sim_val[t + 1] = ae.Bgrid[B_sim_indices[t + 1]]
+                    q_sim_val[t] = ae.q[B_sim_indices[t + 1], y_sim_indices[t]]
                 end
 
             # if you are in default
             else
-                B_sim_indices[t+1] = zero_index
+                B_sim_indices[t + 1] = zero_index
                 B_sim_val[t+1] = 0.
                 y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
                 q_sim_val[t] = ae.q[zero_index, y_sim_indices[t]]
 
                 # with probability θ exit default status
-                if rand() < ae.θ
-                    default_status[t+1] = false
-                else
-                    default_status[t+1] = true
-                end
+                default_status[t + 1] = rand() ≥ ae.θ
             end
         end
 
@@ -542,7 +538,7 @@ Setup
     end
 
 Results
-===============
+=======
 
 Let's start by trying to replicate the results obtained in :cite:`arellano2008default`
 
@@ -601,12 +597,12 @@ One notable feature of the simulated data is the nonlinear response of interest 
 Periods of relative stability are followed by sharp spikes in the discount rate on government debt
 
 Exercises
-==============
+=========
 
 .. _arellano_ex1:
 
 Exercise 1
-------------
+----------
 
 To the extent that you can, replicate the figures shown above
 
@@ -615,11 +611,11 @@ To the extent that you can, replicate the figures shown above
 * The time series will of course vary depending on the shock draws
 
 Solutions
-==========
+=========
 
 .. code-block:: julia
 
-    using Plots, DataFrames
+    using DataFrames, Plots
     gr(fmt=:png)
 
 Compute the value function, policy and equilibrium prices
@@ -639,25 +635,25 @@ Compute the value function, policy and equilibrium prices
     vfi!(ae)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test ae.ygrid[5] ≈ 0.871460195968125
-      @test ae.Bgrid[5] ≈ -0.3872
-  end
+    @testset begin
+        @test ae.ygrid[5] ≈ 0.871460195968125
+        @test ae.Bgrid[5] ≈ -0.3872
+    end
 
 Compute the bond price schedule as seen in figure 3 of Arellano (2008)
 
 .. code-block:: julia
 
     # create "Y High" and "Y Low" values as 5% devs from mean
-    high, low = mean(ae.ygrid)*1.05, mean(ae.ygrid)*.95
-    iy_high, iy_low = map(x->searchsortedfirst(ae.ygrid, x), (high, low))
+    high, low = 1.05 * mean(ae.ygrid), 0.95 * mean(ae.ygrid)
+    iy_high, iy_low = map(x -> searchsortedfirst(ae.ygrid, x), (high, low))
 
     # extract a suitable plot grid
-    x = Float64[]
-    q_low = Float64[]
-    q_high = Float64[]
+    x = zeros(0)
+    q_low = zeros(0)
+    q_high = zeros(0)
     for i in 1:ae.nB
         b = ae.Bgrid[i]
         if -0.35 ≤ b ≤ 0  # to match fig 3 of Arellano
@@ -668,36 +664,38 @@ Compute the bond price schedule as seen in figure 3 of Arellano (2008)
     end
 
     # generate plot
-    plot(x, q_low, label="Low")
-    plot!(x, q_high, label="High")
-    plot!(title="Bond price schedule q(y, B')",
-        xlabel="B'", ylabel="q", legend_title="y")
+    plot(x, q_low, label = "Low")
+    plot!(x, q_high, label = "High")
+    plot!(title = "Bond price schedule q(y, B')",
+          xlabel = "B'", ylabel = "q", legend_title = "y", legend = :topleft)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test q_high[4] ≈ 0.2664149144450229
-    @test q_low[20] ≈ 2.2418853380628388e-5
-    @test x[17] == -0.2976
-  end
+    @testset begin
+        @test q_high[4] ≈ 0.2664149144450229
+        @test q_low[20] ≈ 2.2418853380628388e-5
+        @test x[17] == -0.2976
+    end
 
 Draw a plot of the value functions
 
 .. code-block:: julia
 
-    plot(ae.Bgrid, ae.vf[:, iy_low], label="Low")
-    plot!(ae.Bgrid, ae.vf[:, iy_high], label="High")
-    plot!(xlabel="B", ylabel="V(y,B)", title="Value functions", legend_title="y")
+    plot(ae.Bgrid, ae.vf[:, iy_low], label = "Low")
+    plot!(ae.Bgrid, ae.vf[:, iy_high], label = "High")
+    plot!(xlabel = "B", ylabel = "V(y,B)", title = "Value functions",     
+          legend_title="y", legend = :topleft))
 
 Draw a heat map for default probability
 
 .. code-block:: julia
 
-    plot(seriestype=:heatmap, ae.Bgrid[1:end-1],
+    plot(seriestype = :heatmap, ae.Bgrid[1:end-1],
           ae.ygrid[2:end],
-          clamp.(vec(ae.defprob[1:end-1, 1:end-1]), 0, 1))
-    plot!(xlabel="B'", ylabel="y", title="Probability of default")
+          clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1))
+    plot!(xlabel = "B'", ylabel = "y", title = "Probability of default",
+          legend = :topleft))
 
 Plot a time series of major variables simulated from the model
 
@@ -720,30 +718,29 @@ Plot a time series of major variables simulated from the model
     y_vals = [y_vec, B_vec, q_vec]
     titles = ["Output", "Foreign assets", "Bond price"]
 
-    plots = plot(layout=(3,1), size=(700,800))
+    plots = plot(layout = (3, 1), size = (700, 800))
 
     # Plot the three variables, and for each each variable shading the period(s) of default in grey
     for i in 1:3
-        plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel="time", label="", lw=2)
+        plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel = "time", label = "", lw = 2)
         for j in 1:length(def_start)
-            plot!(plots[i], [def_start[j], def_end[j]], [maximum(y_vals[i]), maximum(y_vals[i])],
-                  fill_between=(minimum(y_vals[i]), maximum(y_vals[i])), fcolor=:grey, falpha=0.3,
-                  label = "")
+            plot!(plots[i], [def_start[j], def_end[j]], fill(maximum(y_vals[i]), 2),
+                  fill_between = extrema(y_vals[i]), fcolor = :grey, falpha = 0.3, label = "")
         end
     end
 
     plot(plots)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test def_end == [62, 157, 198]
-    @test def_start == [60, 154, 196]
-    @test def_breaks == Bool[false, false, true, false, false, false, true, false, false]
-    @test defs == [60, 61, 62, 154, 155, 156, 157, 196, 197, 198]
-    @test y_vec[4] ≈ 1.0712139563752547
-    @test B_vec[40] == -0.0768
-    @test q_vec[140] ≈ 0.9738927780828847
-    @test default_vec[240] == false
-  end
+    @testset begin
+        @test def_end == [62, 157, 198]
+        @test def_start == [60, 154, 196]
+        @test def_breaks == Bool[false, false, true, false, false, false, true, false, false]
+        @test defs == [60, 61, 62, 154, 155, 156, 157, 196, 197, 198]
+        @test y_vec[4] ≈ 1.0712139563752547
+        @test B_vec[40] == -0.0768
+        @test q_vec[140] ≈ 0.9738927780828847
+        @test default_vec[240] == false
+    end
