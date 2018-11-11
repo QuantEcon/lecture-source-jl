@@ -111,6 +111,8 @@ For an example of all three, see the `Expectations.jl <https://github.com/quante
 
 Of these, the ``README.md`` is the most important, as GitHub will display it as `Markdown <https://guides.github.com/features/mastering-markdown/>`_ when accessing the repository online
 
+.. _new_repo_workflow:
+
 Individual Workflow
 ====================================
 
@@ -255,6 +257,8 @@ There are a few different ways to review people's code in GitHub
 .. figure:: /_static/figures/git-review.png
     :scale: 60%
 
+.. merge_conflict:
+
 Merge Conflicts
 ----------------------------
 
@@ -397,3 +401,57 @@ Instead, to do a hard reset of all files and overwrite any of your local changes
 
 .. Removed this, since I have never done it!
 .. To remove files that aren't tracked by git (e.g., compilation byproducts and output directories), run ``git clean -fd``
+
+
+Exercises
+============
+
+Exercise 1a
+---------------
+
+Follow the instructions to create a `new repository <new new_repo_workflow>`_ for one of your github accounts
+In this repository
+* Take the code from one of your previous assignments, such as 
+`Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
+* Put in a ``README.jl`` with some text
+* Put in a ``.gitignore`` file, ignoring the Jupyter files ``.ipynb_checkpoints`` and the project files, ``.projects``
+
+Exercise 1b
+----------------
+
+Pair-up with another student who has done Exercise 1a and find out their github ID, and each do the following
+* Add the github ID as a collaborators on your repository
+* Clone the repositories to your local desktop
+* Assign each other an issue
+* Submit a commit from GitHub desktop which references the issue by number
+* Comment on the commits
+* Ensure you can run their code without any modifications
+
+Exercise 1c
+--------------
+
+Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the ``README.md`` file for your repository that you have both setup as collaborators
+
+Start by ensuring there are multiple lines in the file so that some changes may have conflicts, and some may not
+
+* Clone the repository to your local desktops
+* Modify **different** lines of code in the file and both commit and push to the server (prior to pulling from each other)--and see how it merges things "automatically"
+* Modify **the same** line of code in the file, and deal with the `merge conflict <merge_conflict>`_
+
+Exercise 4a
+----------------
+
+Just using the GitHub's web interface, submit a Pull Request for a simple change of documentation to a public repository
+
+The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl`` 
+
+Note: The source for that repository is in ``.rst`` files, but you should be able to find spelling mistakes/etc. without much effort
+
+Exercise 4b
+-------------------------
+
+Following the instructions for cloning a public repository to your local desktop, submit a Pull Request to a public repository
+
+Again, you could submit it for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl``, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
+
+If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!)

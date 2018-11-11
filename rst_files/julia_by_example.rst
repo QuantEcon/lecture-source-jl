@@ -948,6 +948,8 @@ Start :math:`\sigma = 0.2, \alpha = 1.0`
 1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
 
+.. _jbe_ex8a:
+
 Exercise 8(a)
 ---------------
 
