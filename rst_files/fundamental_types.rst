@@ -1,6 +1,7 @@
 .. _fundamental_types:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 *****************************************************
 Arrays, Tuples, Ranges, and Other Fundamental Types
@@ -998,7 +999,7 @@ But care should be taken if the terminal node is not a multiple of the set sizes
     maxval = 1.0
     minval = 0.0
     stepsize = 0.15
-    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ... ??? Not 1.0
+    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ...
     maximum(a) == maxval
 
 To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
@@ -1008,7 +1009,8 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maxval = 1.0
     minval = 0.0
     numpoints = 10
-    a = range(minval, maxval, length=numpoints) # or range(minval, stop=maxval, length=numpoints)
+    a = range(minval, maxval, length=numpoints) 
+    # or range(minval, stop=maxval, length=numpoints)
 
     maximum(a) == maxval
 
@@ -1122,7 +1124,7 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
         end
 
         # later, can do check `x`
-        if x == nothing
+        if x === nothing
             println("x was not set")
         else
             println("x = $x")
@@ -1150,8 +1152,8 @@ Similarly, if need-be, you can return a ``nothing`` from a function to indicate 
     y1 = f(x1)
     y2 = f(x2)
 
-    # check results with == nothing
-    if y1 == nothing
+    # check results with === nothing
+    if y1 === nothing
         println("f($x2) successful")
     else
         println("f($x2) failed");
@@ -1205,7 +1207,7 @@ Finally, ``nothing`` is a good way to indicate an optional parameter in a functi
 
     function f(x; z = nothing)
 
-        if(z == nothing)
+        if(z === nothing)
             println("No z given with $x")
         else
             println("z = $z given with $x")
