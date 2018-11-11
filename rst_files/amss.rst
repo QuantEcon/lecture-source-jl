@@ -489,9 +489,9 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             c = z[1:S]
             n = z[S+1:2S]
             Ξ = z[2S+1:end]
-            out[1:S] = Uc(c, n) - μ * (Ucc(c, n) .* c + Uc(c, n)) - Ξ            # FOC c
-            out[S+1:2S] = Un(c, n) - μ * (Unn(c, n) .* n + Un(c, n)) + Θ .* Ξ    # FOC n
-            out[2S+1:end] = Θ .* n - c - G                                       # Resource constraint
+            out[1:S] = Uc(c, n) - μ * (Ucc(c, n) .* c + Uc(c, n)) - Ξ # FOC c
+            out[S+1:2S] = Un(c, n) - μ * (Unn(c, n) .* n + Un(c, n)) + Θ .* Ξ # FOC n
+            out[2S+1:end] = Θ .* n - c - G # resource constraint
             return out
         end
         # Find the root of the FOC
@@ -606,7 +606,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 
 
     function BellmanEquation(model::Model, xgrid::AbstractVector, policies0::Vector)
-        S = size(model.Π, 1)                                                     # Number of states
+        S = size(model.Π, 1) # number of states
         xbar = [minimum(xgrid), maximum(xgrid)]
         time_0 = false
         cf, nf, xprimef = policies0
@@ -1096,7 +1096,8 @@ The recursive formulation is implemented as follows
 
             diff = 0.0
             for s=1:S
-                diff = max(diff, maximum(abs, (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./ Vf[s].(xgrid)))
+                diff = max(diff, maximum(abs, (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./ 
+                                                Vf[s].(xgrid)))
             end
 
             println("diff = $diff")
@@ -1109,7 +1110,7 @@ The recursive formulation is implemented as follows
 
     function fit_policy_function{TF<:AbstractFloat}(T::BellmanEquation_Recursive,
                                                     PF::Function,
-                            xgrid::AbstractVector{TF})
+                                                    xgrid::AbstractVector{TF})
         S = T.S
         # preallocation
         PFvec = Array{TF}(4S + 1, length(xgrid))
@@ -1521,7 +1522,7 @@ triangle denote war
 .. code-block:: julia
 
     time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
-                                Θ = ones(6))                       # Θ can in principle be random
+                                Θ = ones(6)) # Θ can in principle be random
 
     time_example.Π = [ 0.0 1.0 0.0 0.0 0.0 0.0;
                        0.0 0.0 1.0 0.0 0.0 0.0;
@@ -1533,8 +1534,8 @@ triangle denote war
     # Initialize μgrid for value function iteration
     μgrid = linspace(-0.7, 0.01, 200)
 
-    time_example.transfers = true                                 # Government can use transfers
-    time_sequential = SequentialAllocation(time_example)          # Solve sequential problem
+    time_example.transfers = true  # Government can use transfers
+    time_sequential = SequentialAllocation(time_example) # Solve sequential problem
 
     time_bellman = RecursiveAllocation(time_example, μgrid)
 
