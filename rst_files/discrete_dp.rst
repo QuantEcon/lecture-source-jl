@@ -583,7 +583,8 @@ can easily simulate it, compute its stationary distribution and so on
 
     @testset "Stationary Distributions Test" begin
         @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
-        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 # Only one element of this `mc` field.
+        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 
+        # Only one element of this `mc` field.
     end
 
 Here's the same information in a bar graph
