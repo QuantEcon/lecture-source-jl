@@ -119,7 +119,7 @@ Then, drag and drop your folder from your ``~/.julia/dev`` directory to GitHub D
 
 Click the "publish branch" button to upload your files to GitHub 
 
-If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
+If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
 
 .. figure:: /_static/figures/testing-git2.png
     :scale: 45%
@@ -483,7 +483,7 @@ There are a few different ways to run the tests for your package
 
 * From an activated REPL, simply run ``pkg> test`` (recall that you can activate with ``pkg> activate ExamplePackage``)
 
-* Hit shift-enter in Atom on the actual ``runtests.jl`` file (as below). Recall that we can get the path of the package by running ``using ExamplePackage; pathof(ExamplePackage)`` from an unactivated REPL
+* Hit shift-enter in Atom on the actual ``runtests.jl`` file. Recall that we can get the path of the package by running ``using ExamplePackage; pathof(ExamplePackage)`` from an unactivated REPL
 
 
 Continuous Integration with Travis
@@ -540,7 +540,7 @@ Working with Builds
 
 As above, builds are triggered whenever we push changes or open a pull request 
 
-For example, if we push our changes to the server and then click the Travis badge on the README, we should see something like 
+For example, if we push our changes to the server and then click the Travis badge on the README in the Travis website, we should see something like 
 
 .. figure:: /_static/figures/travis-progress.png
     :scale: 45%
