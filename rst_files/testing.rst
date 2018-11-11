@@ -23,6 +23,8 @@ Benefits include
 
 * Having GitHub test your project across operating systems, Julia versions, etc.
 
+.. _project_setup:
+
 Project Setup 
 =======================
 
@@ -607,3 +609,39 @@ Additional Notes
 * The `JuliaCI <https://github.com/JuliaCI/>`_ organization provides more Julia utilities for continuous integration and testing 
 
 * This `Salesforce document <https://developer.salesforce.com/page/How_to_Write_Good_Unit_Tests/>`_ has some good lessons about writing and testing code
+
+Exercises
+============
+
+Exercise 1
+---------------
+
+Following the `instructions for a new project <project_setup>`_, create a new package on your github account called ``NewtonsMethod.jl``
+
+In this package, you should create a simple package to do Newton's Method using the code you did in the 
+`Newton's method <jbe_ex8a>`_ exercise in `Julia by example <julia_by_example>`_
+
+In particular, within your package you should have two functions
+* ``newtonroot(f, f′; x₀, tol = 1E-7, maxiter = 1000)``
+* ``newtonroot(f; x₀, tol = 1E-7, maxiter = 1000)``
+
+Where the second function one uses Automatic Differentiation to call the first.
+
+The package should include
+* implementations of those functions in the ``/src`` directory
+* comprehensive set of tests
+* project and manifest files to replicate your development environment
+* automated running of the tests with Travis CI in GitHub 
+
+For the tests, you should have at the very minimum
+* a way to handle non-convergence (e.g. return back ``nothing`` as discussed in `error handling <error_handling>`_
+* several ``@test`` for the root of a known function, given the ``f`` and analytical ``f'`` derivatives
+* tests of those roots using the automatic differentiation version of the function
+* test of finding those roots with a ``BigFloat`` and not just a ``Float64``
+* test of non-convergence for a function without a root (e.g. :math:`f(x) = 2 + x^2` )
+* test to ensure that the ``maxiter`` is working (e.g. what happens if you call ``maxiter = 5``
+* test to ensure that ``tol`` is working
+
+And anything else you can think of.  You should be able to run ``] test`` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI
+
+Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build
