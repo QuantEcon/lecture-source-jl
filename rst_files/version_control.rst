@@ -170,7 +170,7 @@ The Julia file is unchanged
 Pushing to the Server 
 --------------------------------
 
-As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button atop the screen
+As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button at the top the screen
 
 The small "1^" to the right of the text indicates we have one commit to upload 
 
@@ -249,7 +249,7 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
+* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_
 
 .. figure:: /_static/figures/git-review.png
     :scale: 60%
@@ -318,7 +318,7 @@ Making Changes
 
 We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
 
-In particular, we can follow the same process of: 
+In particular, we can follow the same process of 
 
 * Updating the fork via sequences of commits, which we push and pull using GitHub Desktop 
 
@@ -371,7 +371,7 @@ Command-Line Basics
 
 Git also comes with a set of command-line tools. They're optional, but many people like using them
 
-Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the commandline
+Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the command-line
 
 * On Windows, downloading ``git`` will have installed a program called ``git bash``, which installs these tools along with a general Linux-style shell
 
