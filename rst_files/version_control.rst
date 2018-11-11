@@ -152,7 +152,7 @@ Making and Managing Changes
 
 Now that we have the repository, we can start working with it 
 
-For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on (made these changes in the repository folder on your system where GitHub Desktop saved them)
+For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on (make these changes in the repository folder on your system where GitHub Desktop saved them)
 
 Returning to GitHub Desktop, we should see something like 
 
