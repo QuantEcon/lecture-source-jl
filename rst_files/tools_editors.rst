@@ -135,7 +135,15 @@ The ``Documentation`` pane simply lets us query Julia documentation
 .. figure:: /_static/figures/juno-docs.png
     :scale: 60%
 
-The ``Plots`` pane captures Julia plots output 
+The ``Plots`` pane captures Julia plots output (the code is as follows)
+
+.. code-block:: julia
+    :class: no-execute
+
+    using Plots 
+    gr(fmt = :png)
+    data = rand(10, 10)
+    h = heatmap(data)
 
 .. figure:: /_static/figures/juno-plots.png
     :scale: 60%
@@ -154,7 +162,7 @@ Docker Integration
 
 You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
 
-For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html/>_`
+For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html>`_
 
 Package Environments 
 ========================
