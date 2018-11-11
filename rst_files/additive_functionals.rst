@@ -621,7 +621,7 @@ Setup
         lb = mbounds[1, :]
         plot!(plt, lb, fill_between = (lb, ub), alpha = 0.25, color = :magenta, label = "")
         plot!(plt, seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
-        plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")#, color="#4c4c4c")
+        plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")
 
         return plt
     end
@@ -663,7 +663,8 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
     plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
     plot!(plots[1], title =  "A particular path of y_t")
     plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
-    plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot, label = "")
+    plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot, 
+          label = "")
     plot!(plots[2], title = "Associated path of x_t")
 
     plot(plots)
