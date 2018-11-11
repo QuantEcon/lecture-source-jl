@@ -35,7 +35,7 @@ As we'll see later, Travis is a service that automatically tests your project on
 
 First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov 
 
-As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>_` if eligible 
+As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>`_ if eligible 
 
 Navigate to the `Travis website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials 
 
@@ -616,7 +616,7 @@ Another goal of testing is to make sure that code doesn't slow down significantl
 
 We can do this using tools provided by the ``BenchmarkTools.jl`` package 
 
-See the ``need for speed`` lecture for more details 
+See the :doc:`need for speed <need_for_speed>` lecture for more details
 
 Additional Notes 
 =======================

@@ -153,12 +153,12 @@ Docker Integration
 
 You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
 
-For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html/>_`
+For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html/>`_
 
 Package Environments 
 ========================
 
-Julia's package manager lets you set up Python-style "virtualenvs," that draw from an underlying pool of assets on the machine 
+Julia's package manager lets you set up Python-style "virtualenvs", that draw from an underlying pool of assets on the machine
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
