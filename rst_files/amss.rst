@@ -1215,7 +1215,7 @@ The recursive formulation is implemented as follows
                                                             xgrid::AbstractVector{TF},
                                                             policies0::Array)
 
-        S = size(model.Π, 1)                                # number of states
+        S = size(model.Π, 1) # number of states
         xbar = [minimum(xgrid), maximum(xgrid)]
         time_0 = false
         z0 = Array{Array}(length(xgrid), S)
@@ -1388,8 +1388,9 @@ The recursive formulation is implemented as follows
 
         (minf, minx, ret) = optimize(opt, init)
 
-        if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED && ret != :FTOL_REACHED
-            error("optimization failed: ret = $ret")
+        if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
+            ret != :FTOL_REACHED
+                error("optimization failed: ret = $ret")
         end
 
         if model.transfers == true
