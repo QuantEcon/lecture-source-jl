@@ -489,7 +489,7 @@ Click "Applications," then "Travis CI," then "Configure," and choose the repos y
 Build Options 
 ----------------
 
-By default, Travis will run builds for new commits and PRs for every tracked repo with a ``.travis.yml`` file 
+By default, Travis will compile and test your project (i.e., "build" it) for new commits and PRs for every tracked repo with a ``.travis.yml`` file 
 
 We can see ours by opening it in Atom 
 
