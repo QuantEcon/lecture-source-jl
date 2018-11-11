@@ -1,7 +1,7 @@
 .. _data_statistical_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-
+    :class: collapse
 
 *****************************************
 The Julia Data and Statistical Ecosystem
@@ -200,21 +200,20 @@ Another useful tool for exploring tabular data is `DataVoyager.jl <https://githu
 
 The ``Voyager()`` function creates a separate window for analysis
 
-Statistics
-====================
+Statistics and Econometrics
+=============================
 
-While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing 
-
-General Linear Linear Models 
-------------------------------
+While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing number of packages aimed at statistics and econometrics
 
 Many of the packages live in the `JuliaStats organization <https://github.com/JuliaStats/>`_
 
 A few to point out
 
 * `StatsBase <https://github.com/JuliaStats/StatsBase.jl>`_ has basic statistical functions such as geometric and harmonic means, auto-correlations, robust statistics, etc.
-* `StatSFuns <https://github.com/JuliaStats/StatsFuns.jl>`_ has a variety of mathematical functions and constants such as `pdf` and `cdf` of many distributions, `softmax`, etc.
+* `StatsFuns <https://github.com/JuliaStats/StatsFuns.jl>`_ has a variety of mathematical functions and constants such as `pdf` and `cdf` of many distributions, `softmax`, etc.
 
+General Linear Models 
+------------------------------
 
 To run linear regressions and similar statistics, use the `GLM <http://juliastats.github.io/GLM.jl/latest/>`_ package
 
@@ -264,7 +263,8 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
     cigar = dataset("plm", "Cigar")
     cigar.StateCategorical =  categorical(cigar.State)
     cigar.YearCategorical =  categorical(cigar.Year)
-    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical, weights = Pop, vcov = cluster(StateCategorical)))
+    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical,
+                                weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
 
 To explore the data use the interactive DataVoyager

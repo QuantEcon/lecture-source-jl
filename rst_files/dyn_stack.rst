@@ -1,15 +1,16 @@
 .. _dyn_stack:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
-******************************
+****************************
 Dynamic Stackelberg Problems
-******************************
+****************************
 
 .. contents:: :depth: 2
 
 Overview
-==================
+========
 
 Previous lectures including :doc:`LQ dynamic programming <lqcontrol>`, :doc:`rational expectations equilibrium <rational_expectations>`, and :doc:`Markov perfect equilibrium <markov_perf>`  lectures have studied  decision problems that are recursive in what we can call "natural" state variables, such as
 
@@ -61,11 +62,6 @@ This lecture displays these principles within the tractable framework of linear 
 
 It is based on chapter 19 of :cite:`Ljungqvist2012`
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The Stackelberg Problem
 =======================
 
@@ -111,7 +107,6 @@ The government makes policy in light of the model
     \begin{bmatrix} I & 0 \\ G_{21} & G_{22} \end{bmatrix}
     \begin{bmatrix}    z_{t+1} \\  x_{t+1} \end{bmatrix}
     = \begin{bmatrix}  \hat A_{11}  &  \hat A_{12} \\ \hat A_{21} & \hat A_{22}  \end{bmatrix} \begin{bmatrix}  z_t \\ x_t \end{bmatrix} + \hat B u_t
-
 
 We assume that the matrix on the left is invertible, so that we can multiply both sides of :eq:`new2` by its inverse to obtain
 
@@ -212,7 +207,7 @@ Solving the Stackelberg Problem
 ===============================
 
 Some Basic Notation
---------------------
+-------------------
 
 For any vector :math:`a_t`, define :math:`\vec a_t = [a_t, a_{t+1}, \ldots]`.
 
@@ -227,7 +222,7 @@ Note that in the definition of :math:`\Omega(y_0)`, :math:`y_0` is taken as give
 Eventually, the  :math:`x_0` component of :math:`y_0` will be chosen, though it is taken as given in :math:`\Omega(y_0)`
 
 Two Subproblems
-----------------------
+---------------
 
 Once again we use backward induction
 
@@ -238,7 +233,7 @@ Subproblem 1 is solved by a **continuation Stackelberg leader** at each date :ma
 Subproblem 2 is solved the **Stackelberg leader** at :math:`t=0`
 
 Subproblem 1
-^^^^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. math::
     :label: stacksub1
@@ -246,7 +241,7 @@ Subproblem 1
     v(y_0) = \max_{(\vec y_1, \vec u_0) \in \Omega(y_0)} - \sum_{t=0}^\infty \beta^t r(y_t, u_t)
 
 Subproblem 2
-^^^^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. math::
     :label: stacksub2
@@ -261,12 +256,12 @@ The value function :math:`w(z_0)` tells the value of the Stackelberg plan as a f
 :math:`z_0`
 
 Two Bellman equations
-----------------------
+---------------------
 
 We now describe Bellman equations for :math:`v(y)` and :math:`w(z_0)`
 
 Subproblem 1
---------------
+------------
 
 The value function :math:`v(y)` in  subproblem 1 satisfies the Bellman equation
 
@@ -312,7 +307,7 @@ where the optimal decision rule is
     u_t = - F y_t.
 
 Subproblem 2
---------------
+------------
 
 The value function :math:`v(y_0)` satisfies
 
@@ -361,7 +356,7 @@ We solve the Stackelberg problem by
 * then partitioning :math:`P` to obtain representation :eq:`king6x0`
 
 Manifestation of time inconsistency
-------------------------------------
+-----------------------------------
 
 We have seen that for :math:`t \geq 0` the optimal decision rule for the Stackelberg leader has the form
 
@@ -401,7 +396,7 @@ All of this means that  the Stackelberg leader's decision rule at :math:`t \geq 
 As indicated at the beginning of this lecture, this difference is a symptom of the *time inconsistency* of the optimal Stackelberg plan
 
 Shadow prices
-==============
+=============
 
 The history dependence of the government's plan can be expressed in the dynamics of Lagrange multipliers :math:`\mu_x` on the last :math:`n_x` equations of :eq:`new2` or :eq:`new3`
 
@@ -623,7 +618,7 @@ the evolution of :math:`y`  under the Stackelberg plan as
 where :math:`\overline y_t = \begin{bmatrix}  1 & v_t & Q_t & \overline q_t & \overline i_t  \end{bmatrix}'`
 
 Recursive formulation of a follower's problem
-----------------------------------------------
+---------------------------------------------
 
 We now make use of a "Big :math:`K`, little :math:`k`" trick (see  :doc:`rational expectations equilibrium <rational_expectations>`)  to formulate a recursive version of a follower's problem cast in terms of an ordinary Bellman equation
 
@@ -674,7 +669,6 @@ The firm takes :math:`\overline y_t` as an exogenous process and  chooses an out
 .. math::
 
     E_0 \sum_{t=0}^\infty \beta^t \left\{ p_t q_t - \sigma_t \right\}, \quad \beta \in(0,1)
-
 
 subject to :math:`q_0` given the law of motion :eq:`oli20` and the price function :eq:`oli22` and where the costs are still :math:`\sigma_t= d q_t + .5 h q_t^2 + .5 c (q_{t+1} - q_t)^2`
 
@@ -906,32 +900,19 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
 .. [#f10] These calculations were performed by these functions:
 
-.. code-block:: julia 
-  :class: test 
+Setup
+-----
 
-  using Test 
+.. literalinclude:: /_static/includes/deps.jl
+
+.. code-block:: julia
+    :class: test
+
+    using Test
 
 .. code-block:: julia
 
-    using QuantEcon, Roots, LinearAlgebra
-
-    struct Oligopoly{TF<:AbstractFloat}
-        a0 :: TF
-        a1 :: TF
-        rho :: TF
-        c_eps :: TF
-        c :: TF
-        d :: TF
-        e :: TF
-        g :: TF
-        h :: TF
-        beta :: TF
-        A :: Matrix{TF}
-        B :: Array{TF}
-        Q :: TF
-        R :: Matrix{TF}
-        Rf :: Matrix{TF}
-    end
+    using QuantEcon, Roots
 
     function Oligopoly(;a0 = 100.0,
                         a1 = 1.0,
@@ -944,39 +925,39 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
                         h = 0.2,
                         beta = 0.95)
 
-        # Left-hand side of (37)
+        # left-hand side of (37)
         Alhs = Matrix{Float64}(I, 5, 5)
         Alhs[5, :] = [a0-d 1 -a1 -a1-h c]
         Alhsinv = inv(Alhs)
 
-        # Right-hand side of (37)
+        # right-hand side of (37)
         Brhs = [0; 0; 1; 0; 0]
         Arhs = Matrix{Float64}(I, 5, 5)
         Arhs[2, 2] = rho
         Arhs[4, 5] = 1
         Arhs[5, 5] = c / beta
 
-        R = [0 0 (a0-e)/2 0 0;
-            0 0 1/2 0 0;
-            (a0-e)/2 1/2 -a1-0.5*g -a1/2 0;
-            0 0 -a1/2 0 0;
-            0 0 0 0 0]
+        R = [0 0 (a0-e) / 2 0 0
+             0 0 1/2 0 0
+             (a0-e) / 2 1 / 2 -a1 - g / 2 -a1 / 2 0
+             0 0 -a1 / 2 0 0
+             0 0 0 0 0]
 
-        Rf = [0 0 0 0 0 (a0-d)/2;
-            0 0 0 0 0 1/2;
-            0 0 0 0 0 -a1/2;
-            0 0 0 0 0 -a1/2;
-            0 0 0 0 0 0;
-            (a0-d)/2 1/2 -a1/2 -a1/2 0 -h/2]
+        Rf = [0 0 0 0 0 (a0-d) / 2
+              0 0 0 0 0 1/2
+              0 0 0 0 0 -a1/2
+              0 0 0 0 0 -a1/2
+              0 0 0 0 0 0
+              (a0-d) / 2 1 / 2 -a1 / 2 -a1 / 2 0 -h / 2]
 
-        Q = c/2
+        Q = c / 2
 
-        A = Alhsinv*Arhs
-        B = Alhsinv*Brhs
+        A = Alhsinv * Arhs
+        B = Alhsinv * Brhs
 
-        return Oligopoly(a0, a1, rho, c_eps, c, d,
-                        e, g, h, beta, A, B, Q, R, Rf)
-
+        return (a0 = a0, a1 = a1, rho = rho, c_eps = c_eps,
+                c = c, d = d, e = e, g = g, h = h, beta = beta,
+                A = A, B = B, Q = Q, R = R, Rf = Rf)
     end
 
     function find_PFd(olig)
@@ -994,20 +975,20 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
     function solve_for_opt_policy(olig, eta0 = 0.0, Q0 = 0.0, q0 = 0.0)
 
-        # Step 1/2: Formulate/solve the optimal linear regulator
+        # step 1 & 2: formulate/solve the optimal linear regulator
         P, F, d, Pf, Ff, df = find_PFd(olig)
 
-        # Step 3: Convert implementation into state variables (find coeffs)
+        # step 3: convert implementation into state variables (find coeffs)
         P22 = P[end, end]
         P21 = transpose(P[end, 1:end-1])
-        P22inv = P22^(-1)
+        P22inv = inv(P22)
 
-        # Step 4: Find optimal x_0 and \mu_{x, 0}
+        # step 4: find optimal x_0 and \mu_{x, 0}
         z0 = [1; eta0; Q0; q0]
-        x0 = -P22inv*P21*z0
-        D0 = -P22inv*P21
+        x0 = -P22inv * P21 * z0
+        D0 = -P22inv * P21
 
-        # Return -F and -Ff because we use u_t = -F y_t
+        # return -F and -Ff because we use u_t = -F y_t
         return P, -F, D0, Pf, -Ff
 
     end
@@ -1015,30 +996,30 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
     olig = Oligopoly()
     P, F, D0, Pf, Ff = solve_for_opt_policy(olig)
 
-    # Checking time-inconsistency
-    # Arbitrary initial z_0
+    # checking time-inconsistency
+    # arbitrary initial z_0
     y0 = [1; 0; 25; 46]
     # optimal x_0 = i_0
-    i0 = D0*y0
+    i0 = D0 * y0
     # iterate one period using the closed-loop system
-    y1 = (olig.A + olig.B*F)*[y0; i0]
+    y1 = (olig.A + olig.B * F) * [y0; i0]
     # the last element of y_1 is x_1 = i_1
     i1_0 = y1[end, 1]
 
     # compare this to the case when the leader solves a Stackelberg problem
     # in period 1. if in period 1 the leader could choose i1 given
     # (1, v_1, Q_1, \bar{q}_1)
-    i1_1 = D0*y1[1:end-1, 1]
+    i1_1 = D0 * y1[1:end - 1, 1]
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+    :class: test
 
-  @testset begin 
-    @test i1_1 ≈ 1.1038392392871046 # Think this is the most important value. 
-    @test i1_0 ≈ 0.24833302229796866
-    @test i0 ≈ 1.4288731635600485
-    @test y1[3] ≈ 21.829608211752173
-  end 
+    @testset begin
+        @test i1_1 ≈ 1.1038392392871046 # think this is the most important value.
+        @test i1_0 ≈ 0.24833302229796866
+        @test i0 ≈ 1.4288731635600485
+        @test y1[3] ≈ 21.829608211752173
+    end
 
 .. [#f12] For another application of the techniques in this lecture and how they related to the method recommended by :cite:`KydlandPrescott1980`, please see :doc:`this lecture <hist_dep_policies>` .
 

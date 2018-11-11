@@ -1,6 +1,7 @@
 .. _generic_programming:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 ******************************************
 Generic Programming
@@ -34,7 +35,8 @@ Understanding them will help you
 * Write "well organized" Julia code that's easy to read, modify, maintain and debug
 
 * Improve the speed at which your code runs
- 
+
+The approach is inspired by :cite:`stepanov_mathematics_2014`
 
 Generic Programming as an Attitude
 -----------------------------------------------
@@ -75,7 +77,7 @@ There are a (very limited) set of operations which are available for ``Any``, in
     @show typeof(x)
     @show typeof(y)
     @show supertype(typeof(x))
-    @show typeof(x) |> supertype # pipe operator(|>), just applies a function to another function
+    @show typeof(x) |> supertype # pipe operator(|>), applies a function to another function
     @show supertype(typeof(y));
 
 We will investigate some of the sub-types of ``Any``

@@ -1,6 +1,7 @@
 .. _tools_editors:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 ******************************************
 Julia Tools and Editors
@@ -168,37 +169,95 @@ Julia's package manager lets you set up Python-style "virtualenvs", that draw fr
 
 Essentially, an environment is a dependency tree for a project, or a "frame of mind" for Julia's package manager 
 
-We can see the base (``v1.0``) environment as such 
+We can see the default (``v1.0``) environment as such 
 
 .. code-block:: julia 
 
     ] st 
 
-And we can switch environments as such 
+We can also create and activate a new environment 
 
 .. code-block:: julia 
 
-    using InstantiateFromURL 
-    activate_github("arnavs/InstantiationTest")
+    ] generate ExampleEnvironment
+
+will create a directory with fresh TOML files, and 
 
 .. code-block:: julia 
 
-    ] st 
+    ; cd ExampleEnvironment
 
-We can edit environments, as before 
+will go there 
 
-.. code-block:: julia 
-
-    ] add Distributions 
-
-And this will propagate changes to the TOML 
+To activate the directory, simply 
 
 .. code-block:: julia 
 
-    Base.active_project()
+    ] activate . 
 
-Lastly, we can return to the default environment by calling ``activate`` without args 
+where "." stands in for the "present working directory"
+
+Let's make some changes to this 
+
+.. code-block:: julia 
+
+    ] add Expectations Parameters 
+
+Note the lack of commas 
+
+To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
+
+The Project TOML should look something like this:: 
+
+    name = "ExampleEnvironment"
+    uuid = "14d3e79e-e2e5-11e8-28b9-19823016c34c"
+    authors = ["QuantEcon User <quanteconuser@gmail.com>"]
+    version = "0.1.0"
+
+    [deps]
+    Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
+    Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+
+We can also 
+
+.. code-block:: julia 
+
+    ] precompile
+
+**Note** The TOML files are independent of the actual assets (which live in ``~/.julia/packages``, ``~/.julia/dev``, and ``~/.julia/compiled``)
+
+You can think of the TOML as specifying demands for resources, which are supplied by the ``~/.julia`` user depot 
+
+To return to the default Julia environment, simply 
 
 .. code-block:: julia 
 
     ] activate 
+
+without any arguments 
+
+Lastly, let's clean up 
+
+.. code-block:: julia 
+
+    ; cd .. 
+
+.. code-block:: julia 
+
+    ; rm -rf ExampleEnvironment
+
+InstantiateFromURL
+-----------------------
+
+With this knowledge, we can explain the operation of the setup block
+
+.. literalinclude:: /_static/includes/deps.jl
+
+What this ``activate_github`` function does is 
+
+#. Download the TOML from that repo to a directory called ``.projects`` 
+
+#. ``] activate`` that environment, and 
+
+#. ``] instantiate`` and ``] precompile``, if necessary 
+

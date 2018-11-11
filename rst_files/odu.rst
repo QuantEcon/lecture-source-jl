@@ -1,6 +1,7 @@
 .. _odu:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 .. highlight:: julia
 
@@ -172,8 +173,8 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
-  using Distributions
-  using Plots
+  using Distributions, Plots, QuantEcon, Interpolations
+
   gr(fmt=:png)
 
   w_max = 2
@@ -224,8 +225,6 @@ The code is as follows
 .. _odu_vfi_code:
 
 .. code-block:: julia
-
-  using QuantEcon, Interpolations
 
   struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
                       TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
@@ -327,7 +326,7 @@ The code is as follows
       f, g, β, c = sp.f, sp.g, sp.β, sp.c
 
       # Construct interpolator over π_grid, given ϕ
-      ϕ_f = LinInterp(sp.π_grid, ϕ)
+      ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())
 
       # set up quadrature nodes/weights
       q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
@@ -361,8 +360,6 @@ Here's the value function:
 
 .. code-block:: julia
 
-  using LaTeXStrings
-
   # Set up the problem and initial guess, solve by VFI
   sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
   v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
@@ -384,7 +381,7 @@ Here's the value function:
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
                 fill=true, size=(400, 400), c=:lightrainbow)
-    plot!(xlabel=L"$\pi$", ylabel="2", xguidefont=font(12))
+    plot!(xlabel="pi", ylabel="2", xguidefont=font(12))
     return p
   end
 
@@ -403,7 +400,7 @@ The optimal policy:
       Z = [pf[w_plot_grid[j], π_plot_grid[i]]
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
       p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, size=(400, 400), c=:coolwarm)
-      plot!(xlabel=L"$\pi$", ylabel="wage", xguidefont=font(12), cbar=false)
+      plot!(xlabel="pi", ylabel="wage", xguidefont=font(12), cbar=false)
       annotate!(0.4, 1.0, "reject")
       annotate!(0.7, 1.8, "accept")
       return p

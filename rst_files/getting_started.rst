@@ -1,6 +1,7 @@
 .. _getting_started:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 *************************************
 Setting up Your Julia Environment
@@ -191,7 +192,7 @@ Assuming there were no problems, you should now be able to start Julia either by
 * Navigating to Julia through your menus or desktop icons (Windows, OSX), or
 * Opening a terminal and typing ``julia`` (Linux, + OSX/git bash if you configure it)
 
-Either way you should now be looking at something like this (modulo your operating system --- this is a Linux machine)
+Either way you should now be looking at something like this (modulo your operating system)
 
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 75%
@@ -200,8 +201,7 @@ In that ``julia`` terminal, type the following
 
 .. code-block:: julia
 
-    ] add IJulia InstantiateFromURL Revise
-
+    ] add IJulia InstantiateFromURL Revise REPL
 
 Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes),
 
@@ -254,12 +254,9 @@ You should see something (not exactly) like this
 
 The page you are looking at is called the "dashboard"
 
-The address ``localhost:8888/tree`` you see in the image indicates that the browser is communicating with a Julia session via port 8888 of the local machine
+The address ``localhost:8888/lab`` you see in the image indicates that the browser is communicating with a Jupyter lab session via port 8888 of the local machine
 
-If you click on "New" you should have the option to start a Julia notebook
-
-.. figure:: /_static/figures/starting_nb_julia_options.png
-   :scale: 70%
+If you click on "Julia 1.0.1" you should have the option to start a Julia notebook
 
 Here's what your Julia notebook should look like
 
@@ -351,8 +348,7 @@ Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
     using Plots
     gr(fmt=:png)
-    plot(sin, -2pi, pi, label="sine function")
-
+    plot(sin, -2π, 2π, label="sin(x)")
 
 You'll see something like this (although the style of plot depends on your
 installation --- more on this later)
