@@ -1,6 +1,7 @@
 .. _coleman_policy_iter:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 .. highlight:: julia
 
@@ -450,7 +451,7 @@ As we :doc:`did for value function iteration <optgrowth>`, let's start by
 testing our method in the presence of a model that does have an analytical
 solution
 
-Here's a struct containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
+Here's an object containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
 
 .. code-block:: julia
 

@@ -1,6 +1,7 @@
 .. _general_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
+    :class: collapse
 
 *************************
 General Purpose Packages
@@ -72,7 +73,6 @@ Setup
 .. Further details on the interface can be found `here <https://juliastats.github.io/Distributions.jl/latest/univariate.html#Common-Interface-1>`__
 .. 
 .. Several multivariate distributions are also implemented
-
 
 
 Numerical Integration

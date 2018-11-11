@@ -1,7 +1,7 @@
 .. _data_statistical_packages:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-
+    :class: collapse
 
 *****************************************
 The Julia Data and Statistical Ecosystem
@@ -210,7 +210,7 @@ Many of the packages live in the `JuliaStats organization <https://github.com/Ju
 A few to point out
 
 * `StatsBase <https://github.com/JuliaStats/StatsBase.jl>`_ has basic statistical functions such as geometric and harmonic means, auto-correlations, robust statistics, etc.
-* `StatSFuns <https://github.com/JuliaStats/StatsFuns.jl>`_ has a variety of mathematical functions and constants such as `pdf` and `cdf` of many distributions, `softmax`, etc.
+* `StatsFuns <https://github.com/JuliaStats/StatsFuns.jl>`_ has a variety of mathematical functions and constants such as `pdf` and `cdf` of many distributions, `softmax`, etc.
 
 General Linear Models 
 ------------------------------
