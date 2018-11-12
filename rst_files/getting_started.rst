@@ -52,7 +52,7 @@ In order of priority, for those just getting started, we suggest
 #. Install the pre-built `docker-based Jupyter <jl_jupyterdocker>`_ from QuantEcon
 #. Install `Anaconda and Julia locally <jl_jupyterlocal>`_ otherwise and manually install QuantEcon based packages
 
-Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
+Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using Jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
 
 .. _jl_jupyterhub:
 
@@ -69,7 +69,7 @@ If you have access to a cloud based solution for Jupyter, then that is typically
 * Students: ask your department if these resources are available 
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared Jupyterhub instance with precompiled packages ready for these lecture notes
 
-If you have are given an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
+If you are given an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
 
 Otherwise, if there are errors when you attempt to use an online Jupyterhub, you will need to go open a Jupyter notebook and type
 
@@ -96,10 +96,10 @@ Setup
 
 * Create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
     
-Download and install
+Download and install for
 
 * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
-* `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_. **Do not** choose to use Windows containers
+* `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
 
 Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
 
@@ -155,7 +155,7 @@ In a browser, go to a URL like the following
 
         http://127.0.0.1:8888/lab
 
-**Note**: ``Ctrl+C`` is also the keyboard shortcut you use to kill the container. So be sure to copy using the mouse. 
+**Note**: ``Ctrl+C`` is also the keyboard shortcut you use to kill the container, so be sure to copy using the mouse
 
 Paste the text into ``Password or token:`` and choose ``Log in``
 
@@ -176,11 +176,13 @@ Installing Julia and Dependencies Manually
 
 While using the Docker instance is convenient and error-proof, you may eventually want to install things locally
 
-The easiest way to do that is to install Anaconda for a full Python and Jupyter environment, 
+The easiest way to do that is to install Anaconda for a full Python and Jupyter environment
 
-Install Anaconda by: `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version) and install
+Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
 
-* Make sure you click yes to "add Anaconda to my PATH." If you'd rather do that later, see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_. 
+* Make sure you click yes to "add Anaconda to my PATH." - if you'd rather do that later, 
+  see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and
+  `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_.
 
 .. This could be in a separate section
 .. * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
@@ -203,7 +205,7 @@ In that ``julia`` terminal, type the following
 
     ] add IJulia InstantiateFromURL Revise REPL
 
-Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes),
+Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes)
 
 .. literalinclude:: /_static/includes/deps.jl    
 
@@ -461,7 +463,7 @@ While we have not emphasized it, on any JupyterHub or locally installed Jupyter 
 
 This is a Julia specific terminal disconnected from the graphical interface of Jupyter, and becomes increasingly important as you learn Julia
 
-To start the REPL on a typical jupyterlab environment
+To start the REPL in a typical Jupyter lab environment
 
 #. Choose "New Launcher"
 #. Choose a ``Julia 1.0`` Console
