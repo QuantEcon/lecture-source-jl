@@ -1,7 +1,6 @@
 .. _types_methods:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 ******************************************
 The Need for Speed

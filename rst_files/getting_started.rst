@@ -1,7 +1,6 @@
 .. _getting_started:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 *************************************
 Setting up Your Julia Environment

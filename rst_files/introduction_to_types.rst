@@ -1,7 +1,6 @@
 .. _introduction_to_types:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 **********************************************
 Introduction to Types and Generic Programming

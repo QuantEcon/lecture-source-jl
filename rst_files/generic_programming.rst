@@ -1,7 +1,6 @@
 .. _generic_programming:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 ******************************************
 Generic Programming

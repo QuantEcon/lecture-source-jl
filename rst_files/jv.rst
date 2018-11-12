@@ -1,7 +1,6 @@
 .. _jv:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 .. highlight:: julia
 

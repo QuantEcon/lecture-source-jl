@@ -1,8 +1,6 @@
 .. _learning_julia:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
-
 
 *********************************
 Getting Started with Julia

@@ -1,8 +1,6 @@
 .. _more_julia:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
-
 
 **************************************************************
 Introduction to Packages and Software Engineering in Julia

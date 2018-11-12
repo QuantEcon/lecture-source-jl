@@ -1,7 +1,6 @@
 .. _lu_tricks:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 ****************************************************
 Classical Control with Linear Algebra

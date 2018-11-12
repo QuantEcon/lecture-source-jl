@@ -1,8 +1,6 @@
 .. _topics_in_economic_dynamics:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-  :class: collapse
-
 
 ***************************************
 Dynamic Programming Squared

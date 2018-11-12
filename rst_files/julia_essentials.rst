@@ -1,7 +1,6 @@
 .. _julia_essentials:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 ******************************************
 Julia Essentials

@@ -1,7 +1,6 @@
 .. _ree:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 *********************************************
 :index:`Rational Expectations Equilibrium`

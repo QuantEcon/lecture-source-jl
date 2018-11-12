@@ -1,7 +1,6 @@
 .. _opt_tax_recur:
 
 .. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
 
 *********************************************
 Optimal Taxation with State-Contingent Debt
