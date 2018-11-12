@@ -1,6 +1,6 @@
 .. _version_control:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
 Introduction to Git and Version Control

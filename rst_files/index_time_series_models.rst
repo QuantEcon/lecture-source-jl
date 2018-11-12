@@ -1,4 +1,4 @@
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***************************************
 Time Series Models

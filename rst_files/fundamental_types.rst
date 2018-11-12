@@ -1,6 +1,6 @@
 .. _fundamental_types:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *****************************************************
 Arrays, Tuples, Ranges, and Other Fundamental Types

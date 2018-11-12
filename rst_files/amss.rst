@@ -1,6 +1,6 @@
 .. _opt_tax_AMSS:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *****************************************************
 Optimal Taxation without State-Contingent Debt

@@ -1,6 +1,6 @@
 .. _ree:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *********************************************
 :index:`Rational Expectations Equilibrium`

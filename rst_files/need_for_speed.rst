@@ -1,6 +1,6 @@
 .. _types_methods:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
 The Need for Speed

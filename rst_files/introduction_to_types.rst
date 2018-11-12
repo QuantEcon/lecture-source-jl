@@ -1,6 +1,6 @@
 .. _introduction_to_types:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 **********************************************
 Introduction to Types and Generic Programming
