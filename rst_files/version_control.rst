@@ -330,7 +330,7 @@ This will create a repo under account with the same name, contents, and history 
 
 We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
 
-.. figure:: /_static/figures/git-fork-edit-fork.png
+.. figure:: /_static/figures/git-fork-edit.png
     :scale: 60%
 
 Here, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
