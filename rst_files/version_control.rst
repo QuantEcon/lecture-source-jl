@@ -56,8 +56,8 @@ Git vs. GitHub vs. GitHub Desktop
 
 To understand the relationship
 
-* Git is an infrastructure for versioning and merging files, and is neither specific to GitHub and does not even require an online server to function
-* GitHub provides a server to coordinate distributing the Git versions, and adds some additional features for managing projects
+* Git is an infrastructure for versioning and merging files (it is notspecific to GitHub and does not even require an online server)
+* GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects
 * GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use
 
 Later, you may find yourself using alternatives
@@ -65,7 +65,7 @@ Later, you may find yourself using alternatives
 * GitHub is the market leader for open-source projects and Julia, but there are other options, e.g. `GitLab <https://about.gitlab.com/>`_ and `Bitbucket <https://bitbucket.org>`_
 * Instead of the GitHub Desktop, you may directly use the Git `command-line <version_control_commandline>`_ , `GitKraken <https://www.gitkraken.com/>`_, or use the Git functionality built into editors such as `Atom <https://atom.io/>`_ or `VS Code <https://code.visualstudio.com/>`_
 
-Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct projects
+Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products
 
 
 Basic Objects 
@@ -145,7 +145,7 @@ The next step is to get this to our local machine
 This dropdown gives us a few options 
 
 * "Open in Desktop" will call to the GitHub Desktop application that we've installed 
-* "Download Zip" will download the directory *without the .git* subdirectory
+* "Download Zip" will download the directory *without the .git* subdirectory (avoid this option)
 * The copy/paste button next to the link lets us use the command line, i.e. ``git clone https://github.com/quanteconuser/example_repository.git``
 
 Making and Managing Changes 
@@ -288,13 +288,19 @@ Let's say we click the first "use me" (to indicate that my changes should win ou
 Collaboration via Pull Request
 =====================================
 
-One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which (generally) anyone has rights to modify or work with 
+One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which anyone can access and use
 
-You can use GitHub to work on such projects 
+However, while anyone can make a copy of the source-code, not everyone has access to modify the particular version stored on GitHub
 
-The key object is a *pull request* ("PR"), which is a request for a project maintainer to merge ("pull") changes you've worked on into their repository 
+A maintainer (i.e. someone with "write" access to directly modify a repository) might consider different contributions and "merge" the changes into the main repository if the changes meet her criteria
+
+To make it possible for **any** outsiders to suggest changes to open-source repositories, GitHub introduced the *pull request* ("PR")
+
+The PR is a request for a project maintainer to merge ("pull") changes you've worked on into their repository 
 
 There are a few different workflows for creating and handling PRs, which we'll walk through below 
+
+**Note:** If the changes are for a Julia Package, you will need to follow a different workflow--described in the `testing lecture <testing_>`
 
 .. _web_interface:
 
@@ -319,16 +325,16 @@ But what if we want to make more in-depth changes?
 No-Access Case 
 -----------------------
 
-A common problem is when we don't have write access to the repo in question
+A common problem is when we don't have write access (i.e. we can't directly modify)  the repo in question
 
-To work around this, we can click the "Fork" button that lives in the top-right of every repo's main page 
+In that case, click the "Fork" button that lives in the top-right of every repo's main page 
 
 .. figure:: /_static/figures/git-fork-button.png
     :scale: 60%
 
 This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
 
-We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
+Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo on our account we have write access to)
 
 That is, click the "clone" button on our fork 
 
@@ -351,14 +357,14 @@ We should make confirm that these changes are on the server
 .. figure:: /_static/figures/git-fork-history.png
     :scale: 60%
 
-Next, we go to the pull requests menu and click "New Pull Request." You'll see something like 
+Next, go to the pull requests menu and click "New Pull Request." You'll see something like 
 
 .. figure:: /_static/figures/git-create-pr.png
     :scale: 60%
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
-Let's fill out the form and then hit create. This opens a form like this on the main repo
+Fill in the details hit create. This opens a form like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
     :scale: 60%
@@ -371,14 +377,26 @@ The key pieces are
 
 For an example of a PR, see `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
-To edit a PR, simply push changes to the fork that you opened the PR from
+To edit a PR, simply push changes to the fork you cloned to your desktop
+
+For example, let's say we push a new change to the README *after* we create the PR 
+
+.. figure:: /_static/figures/git-pr-modification.png
+    :scale: 60%
+
+And push it to the server, we can then see the change reflected in the PR `webpage <https://github.com/quanteconuser/example_repository/pull/3>`_
+
+.. figure:: /_static/figures/git-pr-expost.png
+    :scale: 60%
 
 That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
 Write Access Case 
 ----------------------
 
-In this case, we don't need to create a fork, but will rather work with a *git branch* 
+As you become more familiar with github, and work on larger projects, you will find yourself making PRs even when it isn't strictly required
+
+If you are a maintainer of the repo (e.g. you created it or are a collaborator) then you don't need to create a fork, but will rather work with a *git branch* 
 
 Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge 
 
@@ -415,7 +433,7 @@ Julia Package Case
 
 One special case is when the repo in question is actually a Julia project or package 
 
-We cover that (along with package workflow in general) in the ``testing`` lecture 
+We cover that (along with package workflow in general) in the `testing lecture <testing>`_  
 
 Additional Resources and Troubleshooting
 ================================================

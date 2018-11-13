@@ -593,6 +593,13 @@ To get a more granular view, we can click the ``src//`` and the resultant filena
 
 This shows us precisely which methods (and parts of methods) are untested 
 
+Pull Requests to Julia Packages 
+=====================================
+
+As mentioned in ``version control``, sometimes we'll want to work on external repos that are also Julia projects 
+
+The first thing is to ``] dev`` the git URL, which will both clone the git repo and sync it with the Julia package manager
+
 Benchmarking 
 ==================
 
