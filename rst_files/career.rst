@@ -1,6 +1,6 @@
 .. _career:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -220,7 +220,7 @@ The code for solving the DP problem described above is found below:
       # new life. This is a function of the distribution parameters and is
       # always constant. No need to recompute it in the loop
       v3 = (cp.G_mean + cp.F_mean .+ cp.β .*
-            cp.F_probs' * v * cp.G_probs)[1]        # don't need 1 element array
+            cp.F_probs' * v * cp.G_probs)[1] # do not need 1 element array
 
       for j in 1:cp.N
           for i in 1:cp.N
@@ -229,7 +229,7 @@ The code for solving the DP problem described above is found below:
 
               # new job
               v2 = (cp.θ[i] .+ cp.G_mean .+ cp.β .*
-                    v[i, :]' * cp.G_probs)[1]       # don't need a single element array
+                    v[i, :]' * cp.G_probs)[1] # do not need a single element array
 
               if ret_policy
                   if v1 > max(v2, v3)
@@ -290,28 +290,9 @@ Here's the value function
   v_init = fill(100.0, wp.N, wp.N)
   func(x) = update_bellman(wp, x)
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
-
-  # === plot value function === #
-  tg, eg = meshgrid(wp.θ, wp.ϵ)
-  tg = Matrix(tg)
-  eg = Matrix(eg)
-
-
-  surf(tg,
-      eg,
-      Matrix(transpose(v)),
-      rstride=2,
-      cstride=2,
-      cmap="jet",
-      alpha=0.5,
-      linewidth=0.25)
-
-  ax = plt[:gca]()
-  ax[:set_zlim](150, 200)
-  ax[:set_xlabel]("θ")
-  ax[:set_ylabel]("ϵ")
-  ax[:view_init](ax[:elev], 225)
-
+ 
+  plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
+       seriescolor=:plasma, gridalpha = 1)
 
 The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
 
@@ -434,9 +415,9 @@ Exercise 1
 
         for t=1:T
             # do nothing if stay put
-            if optimal_policy[i, j] == 2      # new job
+            if optimal_policy[i, j] == 2 # new job
                 j = rand(G)[1]
-            elseif optimal_policy[i, j] == 3  # new life
+            elseif optimal_policy[i, j] == 3 # new life
                 i, j = rand(F)[1], rand(G)[1]
             end
             push!(θ_ind, i)
@@ -445,13 +426,15 @@ Exercise 1
         return wp.θ[θ_ind], wp.ϵ[ϵ_ind]
     end
 
-    fig, axes = plt[:subplots](2, 1, figsize=(10, 8))
-    for ax in axes
+    plot_array = Any[]
+    for i in 1:2
         θ_path, ϵ_path = gen_path()
-        ax[:plot](ϵ_path, label="ϵ")
-        ax[:plot](θ_path, label="θ")
-        ax[:legend](loc="lower right")
+        plt = plot(ϵ_path, label="epsilon")
+        plot!(plt, θ_path, label="theta")
+        plot!(plt, legend=:bottomright)
+        push!(plot_array, plt)
     end
+    plot(plot_array..., layout = (2,1))
 
 .. code-block:: julia
   :class: test
@@ -473,11 +456,11 @@ The median for the original parameterization can be computed as follows
       t = 0
       i = j = 1
       while true
-          if optimal_policy[i, j] == 1      # Stay put
+          if optimal_policy[i, j] == 1 # Stay put
               return t
-          elseif optimal_policy[i, j] == 2  # New job
+          elseif optimal_policy[i, j] == 2 # New job
               j = rand(G)[1]
-          else                              # New life
+          else # New life
               i, j = rand(F)[1], rand(G)[1]
           end
           t += 1
@@ -531,16 +514,16 @@ Here's the code to reproduce the original figure
 
 .. code-block:: julia
 
-  fig, ax = plt[:subplots](figsize=(6, 6))
-
   lvls = [0.5, 1.5, 2.5, 3.5]
-  ax[:contourf](Matrix(tg), Matrix(eg), Matrix(optimal_policy'), levels=lvls, cmap="winter", alpha=0.5)
-  ax[:contour](Matrix(tg), Matrix(eg), Matrix(optimal_policy'), colors="k", levels=lvls, linewidths=2)
-  ax[:set_xlabel]("θ", fontsize=14)
-  ax[:set_ylabel]("ϵ", fontsize=14)
-  ax[:text](1.8, 2.5, "new life", fontsize=14)
-  ax[:text](4.5, 2.5, "new job", fontsize=14, rotation="vertical")
-  ax[:text](4.0, 4.5, "stay put", fontsize=14)
+  x_grid = range(0, 5, length = 50)
+  y_grid = range(0, 5, length = 50)
+
+  contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
+          fillalpha=1, cbar = false)
+  contour!(xlabel="theta", ylabel="epsilon")
+  annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
+  annotate!([(4.5,2.5, text("new job", 14, :center))])
+  annotate!([(4.0,4.5, text("stay put", 14, :center))])
 
 
 Now we want to set ``G_a = G_b = 100`` and generate a new figure with

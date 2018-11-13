@@ -1,6 +1,6 @@
 .. _lssm:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -1460,8 +1460,11 @@ Exercise 3
 ----------
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.1
@@ -1516,8 +1519,11 @@ Exercise 4
 ----------
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42); 
+
+.. code-block:: julia
 
     ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
     σ = 0.1

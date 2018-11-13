@@ -1,6 +1,6 @@
 .. _matsuyama:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -39,11 +39,6 @@ On the technical side, the paper introduces the concept of `coupled oscillators 
 As we will see, coupled oscillators arise endogenously within the model
 
 Below we review the model and replicate some of the results on synchronization of innovation across countries
-
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
 
 Key Ideas
 ==========================
@@ -108,7 +103,6 @@ via
 
     Y_{k, t} = C_{k, t} = \left( \frac{X^o_{k, t}}{1 - \alpha} \right)^{1-\alpha} \left( \frac{X_{k, t}}{\alpha} \right)^{\alpha}
 
-
 Here :math:`X^o_{k, t}` is a homogeneous input which can be produced from labor using a linear, one-for-one technology
 
 It is freely tradeable, competitively supplied, and homogeneous across countries
@@ -120,7 +114,6 @@ The good :math:`X_{k, t}` is a composite, built from many differentiated goods v
 .. math::
 
     X_{k, t}^{1 - \frac{1}{\sigma}} = \int_{\Omega_t} \left[ x_{k, t}(\nu) \right]^{1 - \frac{1}{\sigma}} d \nu
-
 
 Here :math:`x_{k, t}(\nu)` is the total amount of a differentiated good :math:`\nu \in \Omega_t` that is produced
 
@@ -252,7 +245,6 @@ the dynamic equation for the measure of firms becomes
 
     N_{j, t+1}^c = \delta (N_{j, t}^c + N_{j, t}^m) = \delta (N_{j, t}^c + \theta(M_{j, t} - N_{j, t}^c))
 
-
 We will work with a normalized measure of varieties
 
 .. math::
@@ -331,14 +323,22 @@ For some parameterizations, synchronization will occur for "most" initial condit
 
 Here's the main body of code
 
-.. code-block:: julia 
-  :class: test 
+Setup
+-----
 
-  using Test 
+.. literalinclude:: /_static/includes/deps.jl
+
+.. code-block:: julia
+    :class: test
+
+    using Test
 
 .. code-block:: julia
 
-    using PyPlot, PyCall
+    using Plots, Parameters
+    gr(fmt = :png)
+
+.. code-block:: julia
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
@@ -442,45 +442,27 @@ Here's the main body of code
         for (i, n1_0) in enumerate(unit_range)
             for (j, n2_0) in enumerate(unit_range)
                 synchronized, pers_2_sync = pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ,
-                                                            s1, s2, θ, δ, ρ,
-                                                            maxiter, npers)
+                                                           s1, s2, θ, δ, ρ,
+                                                           maxiter, npers)
                 time_2_sync[i, j] = pers_2_sync
             end
         end
-
         return time_2_sync
     end
 
-
-    # == Now we define a type for the model == #
-
-    struct MSGSync
-        s1::Float64
-        s2::Float64
-        s1_ρ::Float64
-        s2_ρ::Float64
-        θ::Float64
-        δ::Float64
-        ρ::Float64
-    end
-
+    # model
     function MSGSync(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
         # Store other cutoffs and parameters we use
         s2 = 1 - s1
         s1_ρ = min((s1 - ρ * s2) / (1 - ρ), 1)
         s2_ρ = 1 - s1_ρ
 
-        model = MSGSync(s1, s2, s1_ρ, s2_ρ, θ, δ, ρ)
-
-        return model
+        return (s1 = s1, s2 = s2, s1_ρ = s1_ρ, s2_ρ = s2_ρ, θ = θ, δ = δ, ρ = ρ)
     end
 
-    unpack_params(model::MSGSync) =
-        model.s1, model.s2, model.θ, model.δ, model.ρ, model.s1_ρ, model.s2_ρ
-
-    function simulate_n(model::MSGSync, n1_0, n2_0, T)
+    function simulate_n(model, n1_0, n2_0, T)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
         # Allocate space
         n1 = zeros(T)
@@ -496,24 +478,24 @@ Here's the main body of code
         return n1, n2
     end
 
-    function pers_till_sync(model::MSGSync, n1_0, n2_0,
+    function pers_till_sync(model, n1_0, n2_0,
                             maxiter = 500, npers = 3)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
         return pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2,
                             θ, δ, ρ, maxiter, npers)
     end
 
-    function create_attraction_basis(model::MSGSync;
-                                     maxiter=250,
-                                     npers=3,
-                                     npts=50)
+    function create_attraction_basis(model;
+                                     maxiter = 250,
+                                     npers = 3,
+                                     npts = 50)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
         ab = create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ,
-                                    ρ, maxiter, npers, npts)
+                                     ρ, maxiter, npers, npts)
         return ab
     end
 
@@ -530,39 +512,21 @@ Here's the function
 
 .. code-block:: julia
 
-    function plot_timeseries(n1_0, n2_0,
-                            s1=0.5, θ=2.5,
-                            δ=0.7, ρ=0.2;
-                            ax::PyCall.PyObject=subplots()[2])
-        """
-        Plot a single time series with initial conditions
-        """
-
-        # Create the MSG Model and simulate with initial conditions
+    function plot_timeseries(n1_0, n2_0, s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
         model = MSGSync(s1, θ, δ, ρ)
         n1, n2 = simulate_n(model, n1_0, n2_0, 25)
-
-        ax[:plot](0:24, n1, label=L"$n_1$", lw=2)
-        ax[:plot](0:24, n2, label=L"$n_2$", lw=2)
-
-        ax[:legend]()
-        ax[:set_ylim](0.15, 0.8)
-
-        return ax
+        return [n1 n2]
     end
 
-    # Create figure
-    fig, ax = subplots(2, 1, figsize=(10, 8))
+    # Create figures
+    data_ns = plot_timeseries(0.15, 0.35)
+    data_s = plot_timeseries(0.4, 0.3)
 
-    plot_timeseries(0.15, 0.35, ax=ax[1])
-    plot_timeseries(0.4, 0.3, ax=ax[2])
+    plot(data_ns, title = "Not Synchronized", legend = false)
 
-    ax[1][:set_title]("Not Synchronized")
-    ax[2][:set_title]("Synchronized")
+.. code-block:: julia
 
-    tight_layout()
-
-    show()
+    plot(data_s, title = "Synchronized", legend = false)
 
 In the first case, innovation in the two countries does not synchronize
 
@@ -587,7 +551,7 @@ Dark colors indicate synchronization, while light colors indicate failure to syn
 .. _matsrep:
 
 .. figure:: /_static/figures/matsuyama_14.png
-   :scale: 60%
+    :scale: 60%
 
 As you can see, larger values of :math:`\rho` translate to more synchronization
 
@@ -609,68 +573,45 @@ Exercise 1
 
 .. code-block:: julia
 
-    function plot_attraction_basis(s1=0.5,
-                                   θ=2.5,
-                                   δ=0.7,
-                                   ρ=0.2;
-                                   npts=250,
-                                   ax=nothing)
-        if ax === nothing
-            fig, ax = subplots()
-        end
+    function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
         # Create attraction basis
         unitrange = range(0,  1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
         ab = create_attraction_basis(model,npts=npts)
-        cf = ax[:pcolormesh](unitrange, unitrange, ab, cmap="viridis")
-
-        return ab, cf
+        plt = Plots.heatmap(ab, legend = false)
     end
 
-
 .. code-block:: julia
-
-    fig = figure(figsize=(14, 12))
-
-    # Left - Bottom - Width - Height
-    ax1 = fig[:add_axes]((0.05, 0.475, 0.38, 0.35), label="axes0")
-    ax2 = fig[:add_axes]((0.5, 0.475, 0.38, 0.35), label="axes1")
-    ax3 = fig[:add_axes]((0.05, 0.05, 0.38, 0.35), label="axes2")
-    ax4 = fig[:add_axes]((0.5, 0.05, 0.38, 0.35), label="axes3")
 
     params = [[0.5, 2.5, 0.7, 0.2],
               [0.5, 2.5, 0.7, 0.4],
               [0.5, 2.5, 0.7, 0.6],
               [0.5, 2.5, 0.7, 0.8]]
 
+    plots = (plot_attraction_basis(p...) for p in params)
+    plot(plots..., size = (1000, 1000))
 
-    ab1, cf1 = plot_attraction_basis.(params[1][1],params[1][2],params[1][3],params[1][4], npts=500, ax=ax1)
-    ab2, cf2 = plot_attraction_basis.(params[2][1],params[2][2],params[2][3],params[2][4], npts=500, ax=ax2)
-    ab3, cf3 = plot_attraction_basis.(params[3][1],params[3][2],params[3][3],params[3][4], npts=500, ax=ax3)
-    ab4, cf4 = plot_attraction_basis.(params[4][1],params[4][2],params[4][3],params[4][4], npts=500, ax=ax4)
+.. code-block:: julia
 
+    function plot_attraction_basis(s1 = 0.5,
+                                   θ = 2.5,
+                                   δ = 0.7,
+                                   ρ = 0.2;
+                                   npts = 250)
+        # Create attraction basis
+        unitrange = range(0,  1, length = npts)
+        model = MSGSync(s1, θ, δ, ρ)
+        ab = create_attraction_basis(model, npts = npts)
+    end
 
-    cbar_ax = fig[:add_axes]([0.9, 0.075, 0.03, 0.725])
-    colorbar(cf1, cax=cbar_ax)
+    abvec = [plot_attraction_basis(p...) for p in params]
 
-    ax1[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.2$",
-                  fontsize=22)
-    ax2[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.4$",
-                  fontsize=22)
-    ax3[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.6$",
-                  fontsize=22)
-    ax4[:set_title](L"$s_1=0.5$, $\theta=2.5$, $\delta=0.7$, $\rho=0.8$",
-                  fontsize=22)
+.. code-block:: julia
+    :class: test
 
-    fig[:suptitle]("Synchronized versus Asynchronized 2-cycles",
-                 x=0.475, y=0.915, size=26)
-
-.. code-block:: julia 
-  :class: julia 
-
-  @testset begin 
-    @test ab1[1:10, 1:4] == [0.0 163.0 189.0 250.0; 163.0 0.0 215.0 250.0; 189.0 215.0 0.0 188.0; 250.0 250.0 188.0 0.0; 250.0 250.0 182.0 164.0; 250.0 198.0 166.0 162.0; 250.0 188.0 170.0 156.0; 220.0 166.0 166.0 158.0; 196.0 150.0 160.0 154.0; 184.0 168.0 156.0 148.0]
-    @test ab2[1:4, 1:4] == [0.0 165.0 181.0 225.0; 165.0 0.0 203.0 250.0; 181.0 203.0 0.0 174.0; 225.0 250.0 174.0 0.0]
-    @test ab3[1:4, 1:4] == [0.0 167.0 183.0 201.0; 167.0 0.0 201.0 230.0; 183.0 201.0 0.0 172.0; 201.0 230.0 172.0 0.0]
-    @test ab4[1:4, 1:4] == [0.0 161.0 169.0 193.0; 161.0 0.0 193.0 210.0; 169.0 193.0 0.0 186.0; 193.0 210.0 186.0 0.0]
-  end 
+    @testset begin
+        @test abvec[1][5] == 194.0
+        @test abvec[2][17] == 102.0
+        @test abvec[3][50] == 76.0
+        @test abvec[4][end-1] == 86.0
+    end

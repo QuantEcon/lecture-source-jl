@@ -393,7 +393,7 @@ jupyter_kernels = {
     },
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 1.0.0",
+            "display_name": "Julia 1.0",
             "language": "julia",
             "name": "julia-1.0"
             },

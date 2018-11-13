@@ -1,20 +1,17 @@
 .. _smoothing:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
-
 
 *******************************************************************
 Consumption and Tax Smoothing with Complete and Incomplete Markets
 *******************************************************************
 
-
 .. index::
     single: Consumption; Tax
 
 .. contents:: :depth: 2
-
 
 Overview
 ========
@@ -70,7 +67,6 @@ interpretation, the government's exogenous expenditure process):
 
 We'll spend most of this lecture studying the finite-state Markov specification, but will briefly treat the linear state space specification before concluding
 
-
 Relationship to Other Lectures
 ------------------------------
 
@@ -85,11 +81,6 @@ The key difference between those lectures and this one is
 * In :doc:`lqramsey` and :doc:`opt_tax_recur`, the decision maker -- the government in the case of these lectures -- recognizes that his decisions affect prices
 
 So these later lectures are partly about how the government should  manipulate prices of government debt
-
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
 
 Background
 ==========
@@ -120,10 +111,8 @@ These state-contingent securities are commonly called Arrow securities, after `K
 
 In the incomplete markets version of the model, the consumer can buy and sell only one security each period, a risk-free bond with gross return :math:`\beta^{-1}`
 
-
 Finite State Markov Income Process
 ----------------------------------
-
 
 In each version of the consumption-smoothing model, nonfinancial income is governed by a two-state Markov chain (it's easy to generalize this to an :math:`N` state Markov chain)
 
@@ -134,7 +123,6 @@ a Markov chain with transition probability matrix
 
     P_{ij} = \mathbb P \{s_{t+1} = \bar s_j \,|\, s_t = \bar s_i \}
 
-
 Nonfinancial income :math:`\{y_t\}` obeys
 
 .. math::
@@ -144,7 +132,6 @@ Nonfinancial income :math:`\{y_t\}` obeys
         \bar y_1 & \quad \text{if } s_t = \bar s_1 \\
         \bar y_2 & \quad \text{if } s_t = \bar s_2
     \end{cases}
-
 
 A consumer wishes to maximize
 
@@ -161,10 +148,8 @@ A consumer wishes to maximize
     \quad \text{and} \quad
      0 < \beta < 1
 
-
 Remark About Isomorphism
 ^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 We can regard these as Barro :cite:`Barro1979`  tax-smoothing models if we set
 :math:`c_t = T_t` and :math:`G_t = y_t`, where :math:`T_t` is total tax
@@ -186,13 +171,8 @@ Watch how these differences in opportunities affect
 -  how the consumer chooses to make his levels of indebtedness behave
    over time and across Markov states
 
-
-
-
 Model 1 (Complete Markets)
 ==========================
-
-
 
 At each date :math:`t \geq 0`, the consumer trades **one-period ahead
 Arrow securities**
@@ -218,7 +198,6 @@ state :math:`s_t` is
     \leq y(s_t) +
     \sum_j  q(\bar s_j \,|\, s_t ) \, b_{t+1}(\bar s_j \,|\, s_t)
 
-
 where :math:`b_t` is the consumer's one-period debt that falls due at time :math:`t` and  :math:`b_{t+1}(\bar s_j\,|\, s_t)` are the consumer's time
 :math:`t` sales of the  time :math:`t+1` consumption good in Markov state :math:`\bar s_j`, a source of time :math:`t` revenues
 
@@ -230,7 +209,6 @@ interest rate is :math:`\beta^{-1}` is
 
     q(\bar s_j \,|\, \bar s_i) = \beta P_{ij}
 
-
 To understand this, observe that in state :math:`\bar s_i` it costs :math:`\sum_j q(\bar s_j \,|\, \bar s_i)`  to purchase one unit of consumption next period *for sure*, i.e., meaning no matter what state of the world  occurs at :math:`t+1`
 
 Hence the implied price of a risk-free claim on one unit of consumption next
@@ -239,7 +217,6 @@ period is
 .. math::
 
     \sum_j q(\bar s_j \,|\, \bar s_i) =  \sum_j \beta P_{ij} =  \beta
-
 
 This confirms that :eq:`cs_2` is a natural analogue of Hall's assumption about the
 risk-free one-period interest rate
@@ -251,14 +228,12 @@ First-order necessary conditions for maximizing the consumer's expected utility 
     \beta \frac{u'(c_{t+1})}{u'(c_t) } \mathbb P\{s_{t+1}\,|\, s_t \}
         = q(s_{t+1} \,|\, s_t)
 
-
 or, under our assumption :eq:`cs_2` on Arrow security prices,
 
 .. math::
     :label: cs_3
 
     c_{t+1} = c_t
-
 
 Thus, our consumer sets :math:`c_t = \bar c` for all :math:`t \geq 0` for some value :math:`\bar c` that it is our job now to determine
 
@@ -269,7 +244,6 @@ Thus, our consumer sets :math:`c_t = \bar c` for all :math:`t \geq 0` for some v
 
     b_{t+1}(\bar s_j \,|\, s_t = \bar s_i) = b(\bar s_j) ,
             \quad i=1,2; \;\; j= 1,2
-
 
 so that the amount borrowed today turns out to depend only on *tomorrow's* Markov state. (Why is this is a plausible guess?)
 
@@ -284,7 +258,6 @@ For :math:`t \geq 1`, these imply
         \bar c + b(\bar s_1) & = y(\bar s_1) + q(\bar s_1\,|\, \bar s_1) b(\bar s_1) + q(\bar s_2 \,|\, \bar s_1)  b(\bar s_2) \cr
         \bar c + b(\bar s_2) & = y(\bar s_2) + q(\bar s_1\,|\, \bar s_2) b(\bar s_1) + q(\bar s_2 \,|\, \bar s_2) b(\bar s_2),
     \end{aligned}
-
 
 or
 
@@ -308,7 +281,6 @@ or
         b(\bar s_1) \cr b(\bar s_2)
     \end{bmatrix}
 
-
 These are :math:`2` equations in the :math:`3` unknowns
 :math:`\bar c, b(\bar s_1), b(\bar s_2)`
 
@@ -323,7 +295,6 @@ Then the budget constraint at time :math:`t=0` is
 
     \bar c + b_0 = y(\bar s_1) + q(\bar s_1 \,|\, \bar s_1) b(\bar s_1) + q(\bar s_2\,|\,\bar s_1) b(\bar s_2)
 
-
 If we substitute  :eq:`cs_5` into the first equation of :eq:`cs_4a` and rearrange, we
 discover that
 
@@ -332,7 +303,6 @@ discover that
 
     b(\bar s_1) = b_0
 
-
 We can then use the second equation of :eq:`cs_4a`  to deduce the restriction
 
 .. math::
@@ -340,7 +310,6 @@ We can then use the second equation of :eq:`cs_4a`  to deduce the restriction
 
     y(\bar s_1) - y(\bar s_2) + [q(\bar s_1\,|\, \bar s_1) - q(\bar s_1\,|\, \bar s_2) - 1 ] b_0
       + [q(\bar s_2\,|\,\bar s_1) + 1 - q(\bar s_2 \,|\, \bar s_2) ] b(\bar s_2) = 0 ,
-
 
 an equation in the unknown :math:`b(\bar s_2)`
 
@@ -355,7 +324,6 @@ of our model, we obtain the following striking results:
 *  The consumer chooses to make consumption perfectly constant across
    time and Markov states
 
-
 We computed the constant level of consumption :math:`\bar c` and indicated how that level depends on the underlying specifications of preferences, Arrow securities prices,  the stochastic process of exogenous nonfinancial income, and the initial debt level :math:`b_0`
 
 *  The consumer's debt neither accumulates, nor decumulates, nor drifts.
@@ -367,14 +335,17 @@ We computed the constant level of consumption :math:`\bar c` and indicated how t
 
 We computed how one of those debt levels depends entirely on initial debt -- it equals it -- and how the other value depends on virtually all  remaining parameters of the model
 
-
-
 Code
 -----
 
 Here's some code that, among other things, contains a function called `consumption_complete()`
 
 This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes given a set of parameters, under the assumption of complete markets
+
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
 
 .. code-block:: julia
   :class: test
@@ -383,27 +354,20 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
 
 .. code-block:: julia
 
-    using QuantEcon, LinearAlgebra
+    using Parameters, Plots, QuantEcon, Random
+    gr(fmt = :png)
 
-    struct ConsumptionProblem{TF<:AbstractFloat}
-        β::TF
-        y::Vector{TF}
-        b0::TF
-        P::Matrix{TF}
-    end
+.. code-block:: julia
 
-    function ConsumptionProblem(β = 0.96,
-                                y = [2.0, 1.5],
-                                b0 = 3.0,
-                                P = [0.8 0.2;
-                                    0.4 0.6])
-
-        ConsumptionProblem(β, y, b0, P)
-    end
+    ConsumptionProblem = @with_kw (β = 0.96,
+                                   y = [2.0, 1.5],
+                                   b0 = 3.0,
+                                   P = [0.8 0.2
+                                        0.4 0.6])
 
     function consumption_complete(cp)
 
-        β, P, y, b0 = cp.β, cp.P, cp.y, cp.b0   # Unpack
+        @unpack β, P, y, b0 = cp   # Unpack
 
         y1, y2 = y                              # extract income levels
         b1 = b0                                 # b1 is known to be equal to b0
@@ -413,43 +377,41 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
         b2 = (y2 - y1 - (Q[1, 1] - Q[2, 1] - 1) * b1) / (Q[1, 2] + 1 - Q[2, 2])
 
         # Using equation (5) calculae c_bar
-        c_bar = y1 - b0 + ([b1 b2] * Q[1, :] )[1]
+        c_bar = y1 - b0 + ([b1 b2] * Q[1, :])[1]
 
         return c_bar, b1, b2
     end
 
-    function consumption_incomplete(cp;
-                                    N_simul = 150)
+    function consumption_incomplete(cp; N_simul = 150)
 
-        β, P, y, b0 = cp.β, cp.P, cp.y, cp.b0  # Unpack
-        # For the simulation use the MarkovChain type
+        @unpack β, P, y, b0 = cp  # unpack
+
+        # for the simulation use the MarkovChain type
         mc = MarkovChain(P)
 
-        # Useful variables
-        y = y''
+        # useful variables
+        y = y
         v = inv(I - β * P) * y
 
-        # Simulat state path
+        # simulate state path
         s_path = simulate(mc, N_simul, init=1)
 
-        # Store consumption and debt path
+        # store consumption and debt path
         b_path, c_path = ones(N_simul + 1), ones(N_simul)
         b_path[1] = b0
 
-        # Optimal decisions from (12) and (13)
+        # optimal decisions from (12) and (13)
         db = ((1 - β) * v - y) / β
 
         for (i, s) in enumerate(s_path)
-            c_path[i] = (1 - β) * (v - b_path[i] * ones(2, 1))[s, 1]
+            c_path[i] = (1 - β) * (v[s, 1] - b_path[i])
             b_path[i + 1] = b_path[i] + db[s, 1]
         end
 
-        return c_path, b_path[1:end-1], y[s_path], s_path
+        return c_path, b_path[1:end - 1], y[s_path], s_path
     end
 
 Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget constraint
-
-
 
 .. code-block:: julia
 
@@ -458,25 +420,22 @@ Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget co
     debt_complete = [b1, b2]
     isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
 
-
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Budget Constraint Tests" begin
-    @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0) # Assert that the object above is always true.
-    @test c_bar ≈ 1.7241558441558444 # Default example invariance.
-    @test debt_complete[2] ≈ 2.188311688311688 # One of the other objects.
-  end
-
+    @testset "Budget Constraint Tests" begin
+        # assert that the object above is always true
+        @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0) 
+        @test c_bar ≈ 1.7241558441558444 # default example invariance
+        @test debt_complete[2] ≈ 2.188311688311688 # one of the other objects
+    end
 
 Below, we'll take the outcomes produced by this code -- in particular the implied
 consumption and debt paths -- and compare them with outcomes
 from an incomplete markets model in the spirit of Hall :cite:`Hall1978` and Barro :cite:`Barro1979` (and also, for those who love history, Gallatin (1807) :cite:`Gallatin`)
 
-
 Model 2 (One-Period Risk Free Debt Only)
 ========================================
-
 
 This is a version of the original models of Hall (1978) and Barro (1979)
 in which the decision maker's ability to substitute intertemporally is
@@ -491,7 +450,6 @@ consumer faces a sequence of budget constraints
 
     c_t + b_t = y_t + \beta b_{t+1}, \quad t \geq 0
 
-
 where :math:`\beta` is the price at time :math:`t` of a risk-free claim
 on one unit of time consumption at time :math:`t+1`
 
@@ -501,14 +459,12 @@ First-order conditions for the consumer's  problem are
 
     \sum_{j} u'(c_{t+1,j}) P_{ij} = u'(c_{t, i})
 
-
 For our assumed quadratic utility function this implies
 
 .. math::
     :label: cs_8
 
     \sum_j c_{t+1,j} P_{ij} = c_{t,i}    ,
-
 
 which is Hall's (1978) conclusion that consumption follows a random walk
 
@@ -519,7 +475,6 @@ As we saw in our first lecture on the :doc:`permanent income model <perm_income>
 
     b_t = \mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j} - (1 -\beta)^{-1} c_t
 
-
 and
 
 .. math::
@@ -529,7 +484,6 @@ and
         \left[
             \mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j} - b_t
         \right]   .
-
 
 Equation :eq:`cs_10` expresses :math:`c_t` as a net interest rate factor :math:`1 - \beta` times the sum
 of the expected present value of nonfinancial income :math:`\mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j}` and financial wealth :math:`-b_t`
@@ -543,7 +497,6 @@ Substituting :eq:`cs_10`  into the one-period budget constraint and rearranging 
     = \beta^{-1} \left[ (1-\beta)
     \mathbb E_t \sum_{j=0}^\infty\beta^j y_{t+j} - y_t    \right]
 
-
 Now let's do a useful calculation that will yield a convenient expression for the key term :math:`\mathbb E_t \sum_{j=0}^\infty\beta^j y_{t+j}` in our finite Markov chain setting
 
 Define
@@ -551,7 +504,6 @@ Define
 .. math::
 
     v_t := \mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j}
-
 
 In our finite Markov chain setting, :math:`v_t = v(1)` when :math:`s_t= \bar s_1` and :math:`v_t = v(2)` when :math:`s_t=\bar s_2`
 
@@ -571,7 +523,6 @@ or
 
     \vec v = \vec y + \beta P \vec v
 
-
 where  :math:`\vec v =    \begin{bmatrix} v(1) \cr v(2) \end{bmatrix}` and  :math:`\vec y =  \begin{bmatrix} y(1) \cr y(2) \end{bmatrix}`
 
 We can also write the last expression as
@@ -580,7 +531,6 @@ We can also write the last expression as
 
     \vec v = (I - \beta P)^{-1} \vec y
 
-
 In our finite Markov chain setting, from expression  :eq:`cs_10`,  consumption at date :math:`t` when debt is :math:`b_t` and the Markov state today is :math:`s_t = i` is evidently
 
 .. math::
@@ -588,14 +538,12 @@ In our finite Markov chain setting, from expression  :eq:`cs_10`,  consumption a
 
     c(b_t, i) =  (1 - \beta) \left( [(I - \beta P)^{-1} \vec y]_i - b_t \right)
 
-
 and the increment in debt is
 
 .. math::
     :label: cs_13
 
     b_{t+1} - b_t = \beta^{-1} [ (1- \beta) v(i) - y(i) ]
-
 
 Summary of Outcomes
 -------------------
@@ -616,10 +564,8 @@ markets model
    current consumption on today's debt level account for the drift over
    time in consumption
 
-
 The Incomplete Markets Model
 -------------------------------------
-
 
 The code above also contains a function called `consumption_incomplete()` that uses :eq:`cs_12` and :eq:`cs_13` to
 
@@ -631,9 +577,6 @@ Let's try this, using the same parameters in both complete and incomplete market
 
 .. code-block:: julia
 
-    using Plots, Random
-    gr(fmt=:png)
-
     Random.seed!(42)
     N_simul = 150
     cp = ConsumptionProblem()
@@ -643,29 +586,28 @@ Let's try this, using the same parameters in both complete and incomplete market
 
     c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul=N_simul)
 
+    plt_cons = plot(title = "Consumption paths", xlabel = "Periods", ylim = [1.4,2.1])
+    plot!(plt_cons, 1:N_simul, c_path, label = "incomplete market", lw = 2)
+    plot!(plt_cons, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+    plot!(plt_cons, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6, linestyle = :dash)
+    plot!(plt_cons, legend = :bottom)
 
-    plt_cons = plot(title = "Consumption paths", xlabel="Periods", ylim=[1.4,2.1])
-    plot!(plt_cons, 1:N_simul, c_path, label="incomplete market", lw=2)
-    plot!(plt_cons, 1:N_simul, c_bar * ones(N_simul), label="complete market", lw=2)
-    plot!(plt_cons, 1:N_simul, y_path, label = "income", lw=2, alpha=0.6, linestyle =:dash)
-    plot!(plt_cons, legend=:bottom)
+    plt_debt = plot(title = "Debt paths", xlabel = "Periods")
+    plot!(plt_debt, 1:N_simul, debt_path, label = "incomplete market")
+    plot!(plt_debt, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
+    plot!(plt_debt, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6, linestyle = :dash)
+    plot!(plt_debt, legend = :bottomleft)
 
-    plt_debt = plot(title = "Debt paths", xlabel="Periods")
-    plot!(plt_debt, 1:N_simul, debt_path, label="incomplete market")
-    plot!(plt_debt, 1:N_simul, debt_complete[s_path], label="complete market", lw=2)
-    plot!(plt_debt, 1:N_simul, y_path, label = "income", lw=2, alpha=0.6, linestyle =:dash)
-    plot!(plt_debt, legend=:bottomleft)
-
-    plot(plt_cons, plt_debt, layout=(1,2), size=(800,400))
+    plot(plt_cons, plt_debt, layout = (1,2), size = (800, 400))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "First Plot Tests" begin
-    @test c_path[4] ≈ 1.7436363636363656
-    @test debt_path[2] ≈ 2.8376623376623398
-    @test debt_complete ≈  [3.0, 2.188311688311688]
-  end
+    @testset "First Plot Tests" begin
+        @test c_path[4] ≈ 1.7436363636363656
+        @test debt_path[2] ≈ 2.8376623376623398
+        @test debt_complete ≈  [3.0, 2.188311688311688]
+    end
 
 In the graph on the left, for the same sample path of nonfinancial
 income :math:`y_t`, notice that
@@ -677,38 +619,31 @@ income :math:`y_t`, notice that
    consumer's debt drifts in a "unit root" fashion in the incomplete
    markets economy
 
-
 Using the Isomorphism
 ^^^^^^^^^^^^^^^^^^^^^
 
-
 We can simply relabel variables to acquire tax-smoothing interpretations of our two models
-
 
 .. code-block:: julia
 
-    #fig, ax = subplots(1, 2, figsize=(15, 5))
+    plt_tax = plot(title = "Tax collection paths", x_label = "Periods", ylim = [1.4,2.1])
+    plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
+    plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+    plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, 
+          lw = 2)
 
-    plt_tax = plot(title="Tax collection paths", x_label = "Periods", ylim=[1.4,2.1])
-    plot!(plt_tax, 1:N_simul, c_path, label="incomplete market", lw=2)
-    plot!(plt_tax, 1:N_simul, c_bar * ones(N_simul), label="complete market", lw=2)
-    plot!(plt_tax, 1:N_simul, y_path, label="govt expenditures", alpha=.6, linestyle=:dash, lw=2)
-
-    plt_gov = plot(title="Government assets paths", x_label = "Periods")
-    plot!(plt_gov, 1:N_simul, debt_path, label="incomplete market", lw=2)
-    plot!(plt_gov, 1:N_simul, debt_complete[s_path], label="complete market", lw=2)
-    plot!(plt_gov, 1:N_simul, y_path, label="govt expenditures", alpha=.6, linestyle=:dash, lw=2)
-    plot!(plt_gov, [0], linetype=:hline, linestyle=:dash, color=:black, lw=2, label="")
-
-    plot(plt_tax, plt_gov, layout = (1,2), size=(800,400))
-
-
+    plt_gov = plot(title = "Government assets paths", x_label = "Periods")
+    plot!(plt_gov, 1:N_simul, debt_path, label = "incomplete market", lw = 2)
+    plot!(plt_gov, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
+    plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, 
+          lw = 2)
+    hline!(plt_gov, [0], linestyle = :dash, color = :black, lw = 2, label = "")
+    plot(plt_tax, plt_gov, layout = (1,2), size = (800, 400))
 
 .. code-block:: julia
   :class: test
 
   # This is the same plot as the above, simply relabeled.
-
 
 Example: Tax Smoothing with Complete Markets
 ============================================
@@ -728,13 +663,11 @@ The government budget constraint in Markov state :math:`i` is
 
     T_i + b_i = G_i + \sum_j Q_{ij} b_j
 
-
 where
 
 .. math::
 
     Q_{ij} = \beta P_{ij}
-
 
 is the price of one unit of output next period in state :math:`j` when
 today's Markov state is :math:`i` and :math:`b_i` is the government's
@@ -757,7 +690,7 @@ Here's our code to compute a quantitative example with zero debt in peace time:
     y = [1.0, 2.0]
     b0 = 0.0
     P = [0.8 0.2;
-        0.4 0.6]
+         0.4 0.6]
 
     cp = ConsumptionProblem(β, y, b0, P)
     Q = β * P
@@ -791,14 +724,12 @@ Here's our code to compute a quantitative example with zero debt in peace time:
     TB2 = c_bar + b2
     println("T+b in war = $TB2")
 
-
     println("\n")
     println("Total government spending in peace and war")
     G1= y[1] + AS1
     G2 = y[2] + AS2
     println("total govt spending in peace = $G1")
     println("total govt spending in war = $G2")
-
 
     println("\n")
     println("Let's see ex post and ex ante returns on Arrow securities")
@@ -809,17 +740,16 @@ Here's our code to compute a quantitative example with zero debt in peace time:
     exant = Π .* P
     println("Ex ante returns to purchase of Arrow securities = $exant")
 
-
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Peace and War Debt Tests" begin
-    @test c_bar ≈ 1.3116883116883118
-    @test G2 ≈ 2.9350649350649354
-    @test G1 ≈ 1.3116883116883118
-    @test AS2 ≈ 0.9350649350649349
-    @test AS1 ≈ 0.3116883116883117
-  end
+    @testset "Peace and War Debt Tests" begin
+        @test c_bar ≈ 1.3116883116883118
+        @test G2 ≈ 2.9350649350649354
+        @test G1 ≈ 1.3116883116883118
+        @test AS2 ≈ 0.9350649350649349
+        @test AS1 ≈ 0.3116883116883117
+    end
 
 Explanation
 -----------
@@ -849,13 +779,9 @@ the possibility that war breaks out or continues
            .2 & .8
         \end{bmatrix}
 
-
 Also, start the system in Markov state :math:`2` (war) with initial
 government assets :math:`- 10`, so that the government starts the
 war in debt and :math:`b_2 = -10`
-
-
-
 
 Linear State Space Version of Complete Markets Model
 =====================================================
@@ -880,7 +806,6 @@ space system
          y_t & = S_y x_t
     \end{aligned}
 
-
 where :math:`x_t` is an :math:`n \times 1` vector and :math:`w_{t+1} \sim {\cal N}(0,I)` is IID over time
 
 Again, as a counterpart of the Hall-Barro assumption that the risk-free
@@ -891,7 +816,6 @@ of one-period ahead Arrow securities are
     :label: cs_14
 
     p_{t+1}(x_{t+1} \,|\, x_t) = \beta \phi(x_{t+1} \,|\, A x_t, CC')
-
 
 where :math:`\phi(\cdot \,|\, \mu, \Sigma)` is a multivariate Gaussian
 distribution with mean vector :math:`\mu` and covariance matrix
@@ -907,7 +831,6 @@ Using the pricing function assumed in :eq:`cs_14`, the value at
 
     \beta \int b(x_{t+1}) \phi(x_{t+1} \,|\, A x_t, CC') d x_{t+1} = \beta  \mathbb E_t b_{t+1}
 
-
 In the complete markets setting, the consumer faces a sequence of budget
 constraints
 
@@ -915,13 +838,11 @@ constraints
 
     c_t + b_t = y_t + \beta \mathbb E_t b_{t+1}, t \geq 0
 
-
 We can solve the time :math:`t` budget constraint forward to obtain
 
 .. math::
 
     b_t = \mathbb E_t  \sum_{j=0}^\infty \beta^j (y_{t+j} - c_{t+j} )
-
 
 We assume as before that the consumer cares about the expected value
 of
@@ -930,7 +851,6 @@ of
 
     \sum_{t=0}^\infty \beta^t u(c_t), \quad 0 < \beta < 1
 
-
 In the incomplete markets version of the model, we assumed that
 :math:`u(c_t) = - (c_t -\gamma)^2`, so that the above utility functional
 became
@@ -938,7 +858,6 @@ became
 .. math::
 
     - \sum_{t=0}^\infty \beta^t ( c_t - \gamma)^2, \quad 0 < \beta < 1
-
 
 But in the complete markets version, we can assume a more general form
 of utility function that satisfies :math:`u' > 0` and :math:`u'' < 0`
@@ -950,7 +869,6 @@ markets and our assumption about Arrow securities prices is
 
     u'(c_{t+1}) = u'(c_t) \quad \text{for all }  t\geq 0
 
-
 which again implies :math:`c_t = \bar c` for some :math:`\bar c`
 
 So it follows that
@@ -959,7 +877,6 @@ So it follows that
 
     b_t = \mathbb E_t \sum_{j=0}^\infty \beta^j (y_{t+j} - \bar c)
 
-
 or
 
 .. math::
@@ -967,14 +884,12 @@ or
 
     b_t = S_y (I - \beta A)^{-1} x_t - \frac{1}{1-\beta} \bar c
 
-
 where the value of :math:`\bar c` satisfies
 
 .. math::
     :label: cs_16
 
     \bar b_0 = S_y (I - \beta A)^{-1} x_0 - \frac{1}{1 - \beta } \bar c
-
 
 where :math:`\bar b_0` is an initial level of the consumer's debt, specified
 as a parameter of the problem
@@ -984,9 +899,13 @@ model, :math:`c_t = \bar c, \forall t \geq 0` is determined by :eq:`cs_16`
 and the consumer's debt is a fixed function of
 the state :math:`x_t` described by :eq:`cs_15`
 
-
 Here's an example that shows how in this setting the availability of insurance against fluctuating nonfinancial income
 allows the consumer completely to smooth consumption across time and across states of the world.
+
+.. code-block:: julia
+    :class: test
+
+    Random.seed!(42);
 
 .. code-block:: julia
 
@@ -1017,7 +936,6 @@ allows the consumer completely to smooth consumption across time and across stat
         x_hist, y_hist = simulate(lss, T)
         b_hist = (S_y * rm * x_hist .- cbar[1] / (1.0 - β))
 
-
         return c_hist, vec(b_hist), vec(y_hist), x_hist
     end
 
@@ -1029,45 +947,41 @@ allows the consumer completely to smooth consumption across time and across stat
     # N_simul = 1
     # T = N_simul
     A = [1.0 0.0 0.0;
-        α    ρ1  ρ2;
-        0.0 1.0 0.0]
+         α    ρ1  ρ2;
+         0.0 1.0 0.0]
     C = [0.0, σ, 0.0]
     S_y = [1.0 1.0 0.0]
     β, b0 = 0.95, -10.0
     x0 = [1.0, α / (1 - ρ1), α / (1 - ρ1)]
 
     # Do simulation for complete markets
-    Random.seed!(42)
     out = complete_ss(β, b0, x0, A, C, S_y, 150)
     c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
 
-
-
-
     # Consumption plots
-    plt_cons = plot(title="Cons and income", xlabel = "Periods", ylim =[-5.0, 110])
-    plot!(plt_cons, 1:N_simul, c_hist_com, label="consumption",lw=2)
-    plot!(plt_cons, 1:N_simul, y_hist_com, label="income",
-                lw=2, alpha=0.6, linestyle=:dash)
+    plt_cons = plot(title = "Cons and income", xlabel = "Periods", ylim = [-5.0, 110])
+    plot!(plt_cons, 1:N_simul, c_hist_com, label = "consumption", lw = 2)
+    plot!(plt_cons, 1:N_simul, y_hist_com, label = "income",
+          lw = 2, alpha = 0.6, linestyle = :dash)
 
     # Debt plots
-    plt_debt = plot(title = "Debt and income", xlabel="Periods")
-    plot!(plt_debt, 1:N_simul, b_hist_com, label="debt", lw=2)
-    plot!(plt_debt, 1:N_simul, y_hist_com, label="Income",
-                lw=2, alpha=0.6, linestyle=:dash)
-    plot!(plt_debt, [0], linetype=:hline, color=:black, linestyle=:dash,lw=2, label="")
-
-    plot(plt_cons, plt_debt, layout = (1,2), size = (800,400))
+    plt_debt = plot(title = "Debt and income", xlabel = "Periods")
+    plot!(plt_debt, 1:N_simul, b_hist_com, label = "debt", lw = 2)
+    plot!(plt_debt, 1:N_simul, y_hist_com, label = "Income",
+          lw = 2, alpha = 0.6, linestyle = :dash)
+    hline!(plt_debt, [0], color = :black, linestyle = :dash, lw = 2, label = "")
+    plot(plt_cons, plt_debt, layout = (1,2), size = (800, 400))
+    plot!(legend = :bottomleft)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset "Final Plot Tests" begin
-    @test y_hist_com[3] ≈ 102.50832541673434
-    @test c_hist_com[3] ≈ 101.50000000000003
-    @test b_hist_com[3] ≈ 0.4022442533400863
-    @test x_hist_com[3] ≈ 100.00000000000003
-  end
+    @testset "Final Plot Tests" begin
+        @test y_hist_com[3] ≈ 102.50832541673434
+        @test c_hist_com[3] ≈ 101.50000000000003
+        @test b_hist_com[3] ≈ 0.4022442533400863
+        @test x_hist_com[3] ≈ 100.00000000000003
+    end
 
 Interpretation of Graph
 -----------------------
@@ -1087,7 +1001,6 @@ In the above graph, please note that:
 Incomplete Markets Version
 --------------------------
 
-
 The incomplete markets version of the model with nonfinancial income being governed by a linear state space system
 is described in the first lecture on the :doc:`permanent income model <perm_income>` and the followup
 lecture on  the :doc:`permanent income model <perm_income_cons>`
@@ -1095,8 +1008,6 @@ lecture on  the :doc:`permanent income model <perm_income_cons>`
 In that version, consumption follows a random walk and the consumer's debt follows a process with a unit root
 
 We leave it to the reader to apply the usual isomorphism to deduce the corresponding implications for a tax-smoothing model like Barro's :cite:`Barro1979`
-
-
 
 Government Manipulation of  Arrow Securities Prices
 ----------------------------------------------------

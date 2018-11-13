@@ -1,6 +1,6 @@
 .. _wald_friedman:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -175,8 +175,10 @@ Setup
         base_dist = [Beta(1, 1), Beta(3, 3)]
         mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
         plot(plot(base_dist, labels = ["f_0", "f_1"], title = "Original Distributions"),
-             plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"], title = "Distribution Mixtures"),
-             ylab = "Density", ylim = (0, 2), layout = (2, 1) # Global settings across both plots
+             plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"],
+                  title = "Distribution Mixtures"),
+             # Global settings across both plots
+             ylab = "Density", ylim = (0, 2), layout = (2, 1) 
              )
     end
 
@@ -269,14 +271,14 @@ With some thought, you will agree that :math:`J` should satisfy the Bellman equa
 where :math:`p'` is the random variable defined by
 
 .. math::
-    :label: new2
+    :label: wf-new2
 
     p' = \frac{ p f_0(z)}{ p f_0(z) + (1-p) f_1 (z) }
 
 when :math:`p` is fixed and :math:`z` is drawn from the current best guess, which is the distribution :math:`f` defined by
 
 .. math::
-    :label: new3
+    :label: wf-new3
 
     f(v) = p f_0(v) + (1-p) f_1 (v)
 
@@ -441,13 +443,15 @@ Next we solve a problem by finding the α, β values for the decision rule
         β = findlast((left .== 2) .& (right .≠ 2)) |> (x -> isa(x, Int) ? roots[x] : 0)
         α = findfirst((left .≠ 1) .& (right .== 1)) |> (x -> isa(x, Int) ? roots[x] : 1)
         if β < α
-            @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
+            @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 
+                     if p ≥ %.2f", β, β, α, α)
         else
             x0 = accept_x0(β, L0)
             x1 = accept_x1(β, L1)
             draw = draw_again(β, d0, d1, L0, L1, c, min(x0, x1))
             if draw == min(x0, x1, draw)
-                @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
+                @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p 
+                         ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
             else
                 @printf("Accept x1 if p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, α)
             end

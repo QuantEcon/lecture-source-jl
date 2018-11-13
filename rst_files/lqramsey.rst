@@ -1,6 +1,6 @@
 .. _lqramsey:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -854,11 +854,11 @@ Here's the code
 
 .. code-block:: julia
 
-    # For reproducible results
+    # for reproducible results
     using Random
     Random.seed!(42)
 
-    # == Parameters == #
+    # parameters
     β = 1 / 1.05
     ρ, mg = .7, .35
     A = Matrix{Float64}(I, 2, 2)
@@ -881,15 +881,15 @@ Here's the code
   :class: test
 
   @testset begin
-    @test path.p[3] ≈ 1.5395294981420302 # Randomness check.
-    @test path.g[31] ≈ 0.31995784745763833 # Stuff we plot. --
+    @test path.p[3] ≈ 1.5395294981420302 # randomness check.
+    @test path.g[31] ≈ 0.31995784745763833 # stuff we plot
     @test path.c[36] ≈ 0.6387556584133354
     @test path.B[9] ≈ 0.07442403655989423
     @test path.rvn[27] ≈ 0.35087848425010165
     @test path.π[31] ≈ 0.002863930880184773
     @test path.R[43] ≈ 1.055269758955539
     @test path.ξ[43] ≈ 0.9867651305840917
-    @test path.Π[43] ≈ -0.18634133373855144 # -- Plot tests
+    @test path.Π[43] ≈ -0.18634133373855144 # plot tests
   end
 
 The legends on the figures indicate the variables being tracked
@@ -915,8 +915,12 @@ The Discrete Case
 Our second example adopts a discrete Markov specification for the exogenous process
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
+
     # Parameters
     β = 1 / 1.05
     P = [0.8 0.2 0.0
@@ -949,11 +953,14 @@ Our second example adopts a discrete Markov specification for the exogenous proc
   @testset begin
     @test path.p[3] ≈ 1.5852129146694405
     @test path.B[13] ≈ 0.003279632025474284
-    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
+    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 
+                     0.25, 0.25]
     @test path.rvn[7] ≈ 0.3188722725349599
     @test path.c[2] ≈ 0.6147870853305598
-    @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05]
-    @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05, 
+                    1.05, 1.05, 1.05, 1.05, 1.05]
+    @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0, 
+                    1.0, 1.0, 1.0]
   end
 
 The call ``gen_fig_2(path)`` generates
@@ -992,8 +999,12 @@ Solutions
 ==========
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
+
     # Parameters
     β = 1 / 1.05
     ρ, mg = .95, .35

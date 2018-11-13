@@ -1,6 +1,6 @@
 .. _fundamental_types:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *****************************************************
 Arrays, Tuples, Ranges, and Other Fundamental Types
@@ -19,7 +19,7 @@ Arrays, Tuples, Ranges, and Other Fundamental Types
 Overview
 ============================
 
-In Julia, arrays and tuples are the most important data type sfor working with numerical data
+In Julia, arrays and tuples are the most important data type for working with numerical data
 
 In this lecture we give more details on
 
@@ -400,7 +400,7 @@ An alternative is to call the ``view`` function directly--though it is generally
 
 As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else
 
-Another important lesson about views is that they **are not** normal, dense arrays 
+Another important lesson about ``@views`` is that they **are not** normal, dense arrays 
 
 .. code-block:: julia
 
@@ -941,7 +941,7 @@ Nonetheless the syntax is convenient
 Linear Algebra
 -------------------
 
-(`See linear algebra documentation <https://docs.julialang.org/en/stable/manual/linear-algebra/>`_)
+(`See linear algebra documentation <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/>`_)
 
 
 Julia provides some a great deal of additional functionality related to linear operations
@@ -998,7 +998,7 @@ But care should be taken if the terminal node is not a multiple of the set sizes
     maxval = 1.0
     minval = 0.0
     stepsize = 0.15
-    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ... ??? Not 1.0
+    a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ...
     maximum(a) == maxval
 
 To evenly space points where the maximum value is important, i.e., ``linspace`` in other languages 
@@ -1008,7 +1008,8 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     maxval = 1.0
     minval = 0.0
     numpoints = 10
-    a = range(minval, maxval, length=numpoints) # or range(minval, stop=maxval, length=numpoints)
+    a = range(minval, maxval, length=numpoints) 
+    # or range(minval, stop=maxval, length=numpoints)
 
     maximum(a) == maxval
 
@@ -1020,7 +1021,7 @@ Tuples and Named Tuples
 
 (`See tuples <https://docs.julialang.org/en/v1/manual/functions/#Tuples-1>`_ and `named tuples documentation <https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1>`_)
 
-We were introduced to Tuples earlier, which provide high-performance immutable sets of distinct types
+We were introduced two Tuples earlier, which provide high-performance immutable sets of distinct types
 
 .. code-block:: julia
 
@@ -1122,7 +1123,7 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
         end
 
         # later, can do check `x`
-        if x == nothing
+        if x === nothing
             println("x was not set")
         else
             println("x = $x")
@@ -1150,8 +1151,8 @@ Similarly, if need-be, you can return a ``nothing`` from a function to indicate 
     y1 = f(x1)
     y2 = f(x2)
 
-    # check results with == nothing
-    if y1 == nothing
+    # check results with === nothing
+    if y1 === nothing
         println("f($x2) successful")
     else
         println("f($x2) failed");
@@ -1205,7 +1206,7 @@ Finally, ``nothing`` is a good way to indicate an optional parameter in a functi
 
     function f(x; z = nothing)
 
-        if(z == nothing)
+        if(z === nothing)
             println("No z given with $x")
         else
             println("z = $z given with $x")
@@ -1233,7 +1234,7 @@ An alternative to ``nothing``, which can be useful and sometimes higher performa
 
 Note that in this case, the return type is ``Float64`` regardless of the input for ``Float64`` input
 
-Keep in mind, though, that this only works if the return type of a function is a ``Float64``
+Keep in mind, though, that this only works if the return type of a function is ``Float64``
 
 
 Exceptions
@@ -1282,6 +1283,7 @@ Occasionally you will want to catch these errors and try to recover, as we did a
     f(0.0)
     f(-1.0)
 
+.. _missing::
 
 Missing
 ----------------------------------
@@ -1421,7 +1423,7 @@ where
 
 * :math:`w_{t+1}` is distributed ``Normal(0,1)``
 * :math:`\gamma=1, \sigma=1, y_0 = 0`
-* :math:`\theta \in \Theta \equiv \{0.1, 0.5, 0.98\}`
+* :math:`\theta \in \Theta \equiv \{0.8, 0.9, 0.98\}`
 
 Given these parameters
 
@@ -1433,7 +1435,7 @@ Given these parameters
     \frac{1}{\tau}\sum_{t=1}^{\tau}y_T
 
 * simulate :math:`N=200` paths of the stochastic process above to the :math:`T`, for each :math:`\theta \in \Theta`, where we refer to an element of a particular simulation as :math:`y^n_t`
-* overlay plots a histogram of the stationary distribution of :math:`y_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``
+* overlay plots a histogram of the stationary distribution of the final :math:`y^n_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``) or use ``stephist(vals)`` to show just the step function for the histogram
 * numerically find the mean and variance of this as an ensemble average, i.e. :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
 
 Later, we will interpret some of these in :doc:`this lecture <lln_clt>`

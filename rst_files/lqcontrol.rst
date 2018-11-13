@@ -1,6 +1,6 @@
 .. _lqc:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -709,8 +709,7 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     Q = 1.0
     R = zeros(2, 2)
     Rf = zeros(2, 2); Rf[1, 1] = q
-    A = [1.0+r -c_bar+μ;
-        0.0  1.0]
+    A = [1.0+r -c_bar+μ; 0.0  1.0]
     B = [-1.0; 0.0]
     C = [σ; 0.0]
 
@@ -720,13 +719,14 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     xp, up, wp = compute_sequence(lq, x0)
 
     # convert back to assets, consumption and income
-    assets = vec(xp[1, :])               # a_t
-    c = vec(up .+ c_bar)                  # c_t
-    income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
+    assets = vec(xp[1, :]) # a_t
+    c = vec(up .+ c_bar) # c_t
+    income = vec(σ * wp[1, 2:end] .+ μ) # y_t
 
     # plot results
     p = plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
-             lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
+             lab = ["assets" "consumption" "" "non-financial income" 
+                    "cumulative unanticipated income"],
              color = [:blue :green :black :orange :red],
              xaxis = ("Time"), layout = (2, 1),
              bottom_margin = 20mm, size = (600, 600))
@@ -735,8 +735,8 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
   :class: test
 
   @testset "First Plots Tests" begin
-    @test income[3] ≈ 0.9812822443525681 # Test determinism and intermediate calculations.
-    @test up[4] ≈ -1.010200105783321 # Test downstream invariance.
+    @test income[3] ≈ 0.9812822443525681 # test determinism and intermediate calculations
+    @test up[4] ≈ -1.010200105783321 # test downstream invariance
   end
 
 The top panel shows the time path of consumption :math:`c_t` and income :math:`y_t` in the simulation
@@ -769,9 +769,12 @@ relatively more weight on later consumption values
 
 
 .. code-block:: julia
-  :class: collapse
+    :class: test
 
-  Random.seed!(42) # For reproducible results.
+    Random.seed!(42); # For reproducible results.
+
+.. code-block:: julia
+  :class: collapse
 
   # compute solutions and simulate
   lq = LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)
@@ -779,13 +782,14 @@ relatively more weight on later consumption values
   xp, up, wp = compute_sequence(lq, x0)
 
   # convert back to assets, consumption and income
-  assets = vec(xp[1, :])               # a_t
-  c = vec(up .+ c_bar)                  # c_t
-  income = vec(σ * wp[1, 2:end] .+ μ)   # y_t
+  assets = vec(xp[1, :]) # a_t
+  c = vec(up .+ c_bar) # c_t
+  income = vec(σ * wp[1, 2:end] .+ μ) # y_t
 
   # plot results
   p = plot(Vector[assets, c, zeros(T + 1), income, cumsum(income .- μ)],
-           lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
+           lab = ["assets" "consumption" "" "non-financial income" 
+                  "cumulative unanticipated income"],
            color = [:blue :green :black :orange :red],
            xaxis = ("Time"), layout = (2, 1),
            bottom_margin = 20mm, size = (600, 600))
@@ -1412,11 +1416,11 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     x0 = [0.0; 1.0; 0.0; 0.0]
     xp, up, wp = compute_sequence(lq, x0)
 
-    # == Convert results back to assets, consumption and income == #
-    ap = vec(xp[1, 1:end])                                  # Assets
-    c = vec(up .+ c_bar)                                     # Consumption
+    # convert results back to assets, consumption and income
+    ap = vec(xp[1, 1:end]) # assets
+    c = vec(up .+ c_bar) # consumption
     time = 1:T
-    income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2   # Income
+    income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2 # income
 
     # plot results
     p1 = plot(Vector[income, ap, c, zeros(T + 1)],
@@ -1442,7 +1446,7 @@ the lecture.
 
 .. code-block:: julia
 
-    # == Model parameters == #
+    # model parameters
     r = 0.05
     β = 1/(1 + r)
     T = 60
@@ -1468,11 +1472,12 @@ the lecture.
 
     # initialize LQ instance for retired agent
     lq_retired = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
-    lq_retired_proxy = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)                # since update_values!() changes its argument
-                                                                                # in place, we need another identical
-                                                                                # instance just to get the correct value
-                                                                                # function
 
+    # since update_values!() changes its argument in place, we need another identical instance
+    # just to get the correct value function
+    lq_retired_proxy = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
+                    
+    
     # iterate back to start of retirement, record final value function
     for i in 1:(T-K)
         update_values!(lq_retired_proxy)
@@ -1501,13 +1506,13 @@ the lecture.
 
     # convert results back to assets, consumption and income
     xp = [xp_w xp_r[:, 2:end]]
-    assets = vec(xp[1, :])               # Assets
+    assets = vec(xp[1, :]) # assets
 
     up = [up_w up_r]
-    c = vec(up .+ c_bar)                  # Consumption
+    c = vec(up .+ c_bar) # consumption
 
     time = 1:K
-    income_w = σ * vec(wp_w[1, 2:K+1]) + m1 .* time + m2 .* time.^2   # Income
+    income_w = σ * vec(wp_w[1, 2:K+1]) + m1 .* time + m2 .* time.^2 # income
     income_r = ones(T-K) * s
     income = [income_w; income_r]
 
@@ -1577,25 +1582,21 @@ Our solution code is
     c = 2.0
     T = 120
 
-    # == Useful constants == #
+    # useful constants
     m0 = (a0-c)/(2 * a1)
     m1 = 1/(2 * a1)
 
     # formulate LQ problem
     Q = γ
-    R = [a1 -a1 0;
-         -a1 a1 0;
-         0   0  0]
-    A = [ρ 0 m0*(1-ρ);
-         0 1 0;
-         0 0 1]
+    R = [a1 -a1 0; -a1 a1 0; 0 0 0]
+    A = [ρ 0 m0*(1-ρ); 0 1 0; 0 0 1]
 
     B = [0.0; 1.0; 0.0]
     C = [m1 * σ; 0.0; 0.0]
 
     lq = LQ(Q, R, A, B, C; bet=β)
 
-    # == Simulate state / control paths == #
+    # simulate state / control paths
     x0 = [m0; 2.0; 1.0]
     xp, up, wp = compute_sequence(lq, x0, 150)
     q_bar = vec(xp[1, :])

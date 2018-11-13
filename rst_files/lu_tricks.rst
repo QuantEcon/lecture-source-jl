@@ -1,6 +1,6 @@
 .. _lu_tricks:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ****************************************************
 Classical Control with Linear Algebra
@@ -937,8 +937,10 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
     # == Plot simulation results == #
 
     time = 1:length(y)
-    plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle,  markersize = 2, label="a_t")
-    plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8, label="y_t")
+    plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle, 
+               markersize = 2, label="a_t")
+    plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8,      
+          label="y_t")
     plot!(plt, xlabel="Time", grid=true, xlim=(0,maximum(time)), legend=:bottomleft)
   end
 
