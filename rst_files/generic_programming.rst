@@ -35,20 +35,20 @@ Understanding them will help you
 
 * Improve the speed at which your code runs
 
-The approach is inspired by :cite:`stepanov_mathematics_2014`
+(Special thank you to Jeffrey Sarnoff)
 
-Generic Programming as an Attitude
+Generic Programming is an Attitude
 -----------------------------------------------
 
-From ``Mathematics to Generic Programming`` (Stefanov and Rose)
+From ``Mathematics to Generic Programming`` :cite:`stepanov_mathematics_2014`
 
     Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency... Generic programming is more of an *attitude* toward programming than a particular set of tools.
-
 
 In that sense, it is important to think of generic programming not as a set of rules to apply about decomposing taxonomies of abstractions, but rather as an interactive approach in attempting to uncover generality without any performance overhead
 
 As we will see, the core approach is to treat data-structures and algorithms as loosely coupled, and is in direct contrast to the "isa" approach of object-oriented programming
 
+This lecture has the dual role of giving an introduction into the design of generic algorithms, and describing how Julia helps make that possible
 
 Setup
 ------
@@ -60,26 +60,23 @@ Exploring Type Trees
 
 The connection between data-structures and the algorithms which operate on them is handled the through the type system
 
-Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) is the data-structure we have in mind for working with algorithms, and the  abstract types we have seen before (e.g. ``Number`` and ``AbstractArray``) provide the mapping a particular set of data structures to a particular algorithm 
+Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) are the data-structures we have in mind for working with algorithms, and the abstract types we have seen before (e.g. ``Number`` and ``AbstractArray``) provide the mapping a particular set of data structures to a particular algorithm 
 
-At the root of all types is ``Any``
-
-There are a (very limited) set of operations which are available for ``Any``, including a ``show`` function and ``typeof``
 
 .. code-block:: julia
 
     using Distributions
     x = 1
     y = Normal()
-    @show x #
-    @show y
-    @show typeof(x)
-    @show typeof(y)
+    z = "foo"
+    @show x, y, z
+    @show typeof(x), typeof(y), typeof(z)
     @show supertype(typeof(x))
-    @show typeof(x) |> supertype # pipe operator(|>), applies a function to another function
-    @show supertype(typeof(y));
+    @show typeof(x) |> supertype  # pipe operator(|>), just applies a function to another function
+    @show supertype(typeof(y))
+    @show typeof(z) |> supertype
+    @show typeof(x) <: Any;
 
-We will investigate some of the sub-types of ``Any``
 
 Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing the tree of types were discussed in `this lecture <introduction_to_types>`_
 
@@ -97,14 +94,14 @@ Using the ``subtypes`` function, we can traverse the type tree below a particula
 
 .. code-block:: julia
 
-    # From https://github.com/JuliaLang/julia/issues/24741
+    #  from https://github.com/JuliaLang/julia/issues/24741
     function subtypetree(t, level=1, indent=4)
             if level == 1
                 println(t)
             end
             for s in subtypes(t)
-                println(join(fill(" ", level * indent)) * string(s)) # print type
-                subtypetree(s, level+1, indent) #recursively print the next types, indenting
+                println(join(fill(" ", level * indent)) * string(s))  # print type
+                subtypetree(s, level+1, indent)  # recursively print the next types, indenting
             end
         end
 
@@ -112,21 +109,94 @@ Using this function, we can see all of the current types in memory below ``Numbe
 
 .. code-block:: julia
 
-    subtypetree(Number) # warning: Don't use this function on ``Any``!
+    subtypetree(Number) # warning: do not use this function on ``Any``!
 
 For the most part, all of the "leaves" will be concrete types
 
+
+Any
+-------
+
+At the root of all types is ``Any``
+
+There are a number of operations which are available for ``Any``, including a ``show`` function and ``typeof``
+
+There are a few functions that work in the "most generalized" context: usable with anything that you can construct or access from other packages
+
+We have already called ``typeof`` and ``supertype`` on a number of types, and this will work by default for custom types
+
+.. code-block:: julia
+
+    # custom type
+    struct MyType
+        a::Float64
+    end
+
+    myval = MyType(2.0)
+    @show myval
+    @show typeof(myval)
+    @show supertype(typeof(myval))
+    @show typeof(myval) <: Any;
+
+
+Here we see an important example of generic programming: every type ``<: Any`` supports the ``@show`` macro, which in turn, relies on the ``show`` function
+
+What does the ``@show`` macro do?  It (1) prints the expression as a string; (2) evaluates the expression; and (3) calls the ``show`` function on the returned types
+
+To see this with built-in types
+
+.. code-block:: julia
+
+    x = [1, 2]
+    show(x)    
+
+The ``Any`` type is useful, because it provides a fall-back implementation for a variety of functions, such as the ``show``
+
+.. code-block:: julia
+
+    myval = MyType(2.0)
+    show(myval)
+
+The default implementation used by Julia would look something like
+
+.. code-block:: julia
+    :class: no-execute
+
+    function show(io::IO, x::MyType)
+        str = string(x)
+        print(io, str)
+    end
+
+To implement a "best practice" and provide a specialized implementation of the ``show`` function for our type rather than the fllback
+
+.. code-block:: julia
+
+    import Base.show  # to extend an existing method
+
+    function show(io::IO, x::MyType)
+        str = "(MyType.a = $(x.a))"
+        print(io, str)
+    end
+    show(myval)  # it creates an IO value first and then calls the above show
+
+At that point, the ``@show`` macro works by calling the ``show`` function
+
+.. code-block:: julia
+
+    @show myval;
+
+
 Unlearning Object Oriented (OO) Programming (Advanced)
 ------------------------------------------------------------
-(see `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types)
+See `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types
 
- If you have never used programming languages such as C++, Java, Python, etc., then the type hierarchies above may seem unfamiliar and abstract--but there is no need to read this section
+If you have never used programming languages such as C++, Java, Python, etc., then the type hierarchies above may seem unfamiliar and abstract--but there is no need to read this section
 
 Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar
 
 **Don't be fooled!**
 
-The superficial similarity can lead to misuse: types are *not* just classes with poor encapsulation, and methods are not simply the equivalent to member functions with the order of arguments swapped
+The superficial similarity can lead to misuse: types are *not* just classes with poor encapsulation, and methods are *not* simply the equivalent to member functions with the order of arguments swapped
 
 In particular, previous OO knowledge often leads people to write Julia code such as
 
@@ -155,7 +225,7 @@ In particular, previous OO knowledge often leads people to write Julia code such
     myalgorithm!(m, x)
     @show m.algorithmcalculation;
 
-You may think to yourself that the above code is similar to OO, except that
+You may think to yourself that the above code is similar to OO, except that you
 * reverse the first argument, i.e. ``myalgorithm!(m, x)`` instead of the object-oriented ``m.myalgorithm!(x)``
 * cannot control encapsulation of the fields ``a, b``, but you can add getter/setters like ``set_a``
 * do not have concrete inheritance
@@ -163,17 +233,16 @@ You may think to yourself that the above code is similar to OO, except that
 While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming
 
 It may be helpful to review the traditional pillars of OOP 
-* *`Abstraction <https://en.wikipedia.org/wiki/Abstraction_(computer_science)#Abstraction_in_object_oriented_programming>`_:* In OO one develops a taxonomy of hierarchical "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
-* *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly controlled since the class manages its own state
-* *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming)>`_* Code reuse in OO is achieved through adding a new class to the tree and inheriting some of the behavior of the parent class.
-* *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
+* *`Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_:* In OO one develops a taxonomy of hierarchical "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
+* *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly controlled since the class manages its own state
+* *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_* Code reuse in OO is achieved through adding a new class to the tree and inheriting some of the behavior of the parent class.
+* *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
 
-With Julia
-* You will realize you will do no "encapsulation" or "inheritance", and polymorphism will be fundamentally different
+When programming in Julia
+* There will be no encapsulation or inheritance, most custom types you create will be immutable, and polymorphism will be fundamentally different
 * Abstraction is primarily achieved through keeping the data and algorithms that operate on them as orthogonal as possible--in contrast to OOP
 * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
-
-
+* The looseness that accompanies keeping algorithms and data-structures as orthogonal as possible makes it easier to discover commonality in the design
 
 Iterative Design of Abstractions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -182,11 +251,11 @@ As its essence, the design of generic software is that you will start with creat
 
 This design is in direct contrast to object-oriented design and analysis (`OOAD <https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design>`_), where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
 
-In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the types came later
+In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the abstact types came later
 .. However,  we apologize in the example we confuse things somewhat by jumping to the axioms first for expositoin
 
 Distributions
-----------------------------------------------
+=====================
 
 First, lets consider working with "distributions"
 
@@ -282,7 +351,7 @@ To demonstrate this, lets create our own distribution type
     Distributions.pdf(d::OurTruncatedExponential, x) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
     Distributions.minimum(d::OurTruncatedExponential) = 0
     Distributions.maximum(d::OurTruncatedExponential) = d.xmax
-    # ... should do all of them, but this was enough
+    # ... should implement all of them, but this was enough
 
 To demonstrate this
 
@@ -340,9 +409,7 @@ This is the power of generic programming in general, and Julia in particular: yo
 Number, Real, and Algebraic Structures
 =======================================
 
-(Special thank you to Jeffrey Sarnoff)
-
-In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is a set with two binary operators (:math:`+` and :math:`\cdot`, called the additive and multiplicative operators) where there is an
+In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_\(mathematics\)>`_ is a set with two binary operators (:math:`+` and :math:`\cdot`, called the additive and multiplicative operators) where there is an
 * additive operator is associative and commutative
 * multiplicative operator is associative and and distributive with respect to the additive operator
 * additive identity element, usually denoted ``0`` such that :math:`a + 0 = a` for any :math:`a` in the set
@@ -354,10 +421,12 @@ This is skipping over a few other key parts of the definition, but it is also us
 * A multiplicative inverse is not required
 
 This algebraic structure provides motivation for the abstract ``Number`` type in Julia
+
 **Remark** We use motivation here because they are not formally connected and the mapping is imperfect
+
 * The main difficulty when dealing with numbers that can be concretely created on a computer is that the closure requirements are difficult to ensure (e.g. floating points have finite numbers of bits of information)
 
-Let ``typeof(a) = typeof(b) = T <: Number``, then under an implicit definition of the **generic interfac** for ``Number`` the following must be defined
+Let ``typeof(a) = typeof(b) = T <: Number``, then under an implicit definition of the **generic interface** for ``Number`` the following must be defined
 * the additive operator: ``a + b``
 * the multiplicative operator: ``a * b``
 * an additive inverse operator: ``-a``
@@ -395,7 +464,7 @@ To demonstrate these for a complex number or a big integer (i.e., two types othe
     @show zero(a)
     @show one(a);
 
-Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_(mathematics)>`_ is an `Ring` with a few additional properties, among them
+Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
 * a multiplicative inverse: :math:`a^{-1}`
 * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
 * a (not strictly required) total ordering operation: :math:`a < b`
@@ -429,7 +498,7 @@ To demonstrate with the ``Rational`` type
 * However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
 * This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e. it can be independent of the type hierarchy)
 
-We should not think of the breaks in the connection between the underlying algebraic structures and the code as a failure of the language or design, but rather that the underlying algorithms for use on a computer do not perfectly fit the algebraic structures
+Do not think of the break in the connection between the underlying algebraic structures and the code as a failure of the language or design, but rather that the underlying algorithms for use on a computer do not perfectly fit the algebraic structures in this instance
 
 Moving further down the tree of types provides more operations, which start to become more tied to the computational implementation than the mathematics
 
@@ -442,8 +511,6 @@ For example, floating point numbers all have a machine precision below which the
     @show eps(Float64)
     @show eps(BigFloat);
 
-Example: ``isless``
--------------------
 
 The ``isless`` function also has multiple methods
 
@@ -482,7 +549,7 @@ Note that the reason  ``Float64 <: Real``
 
 
 Functions, and Function-Like Types
-------------------------------------
+======================================
 
 Another common example of the separation between data structures and algorithms is the use of functions
 
@@ -493,30 +560,30 @@ For example, we can use a standard function
 .. code-block:: julia
 
     using QuadGK
-    const integrate = quadgk # example of setting an alias
+    const integrate = quadgk  # example of setting an alias
     f(x) = x^2
-    @show integrate(f, 0.0, 1.0) #integral 
+    @show integrate(f, 0.0, 1.0)  # integral 
 
     function plotfunctions(f)
-        intf(x) = integrate(f, 0.0, x)[1] #int_0^x f(x) dx
+        intf(x) = integrate(f, 0.0, x)[1]  # int_0^x f(x) dx
 
         x = 0:0.1:1.0
         f_x = f.(x)
         plot(x, f_x, label="f")
         plot!(x, intf.(x), label="intf")
     end
-    plotfunctions(f) # call with our f
+    plotfunctions(f)  # call with our f
 
 Of course, polynomials are also functions in every important sense
 
 .. code-block:: julia
 
     using Polynomials
-    p = Poly([2, -5, 2], :x) # :x just gives a symbol for display
+    p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
     @show p
     @show p(1.0) # call like a function
 
-    plotfunctions(p) # same generic function
+    plotfunctions(p)  # same generic function
 
 Or Interpolations
 
@@ -525,10 +592,10 @@ Or Interpolations
     using Interpolations
     x = 0.0:0.2:1.0
     f(x) = x^2
-    f_int = LinearInterpolation(x, f.(x)) # interpolating those points
-    @show f_int(1.0) # call like a function
+    f_int = LinearInterpolation(x, f.(x))  # interpolating those points
+    @show f_int(1.0)  # call like a function
 
-    plotfunctions(f_int) # same generic function
+    plotfunctions(f_int)  # same generic function
 
 Note that the same generic ``plotfunctions`` could use any variable passed to it that "looks" like a function, i.e. can call ``f(x)``
 
@@ -536,8 +603,8 @@ This sort of typing and design--generic but without any declarations--is usually
 
 If you need to make an existing type callable, see `Function Like Objects <https://docs.julialang.org/en/v1/manual/methods/#Function-like-objects-1>`_
 
-Limitations of these Structures in Julia
-------------------------------------------
+Limitations of Dispatching on Abstract Types
+==================================================
 
 You will notice that types in Julia represent a tree with ``Any`` at the root
 
@@ -653,12 +720,12 @@ This is sensible behavior, but if you want to change it there's nothing to stop 
 
 .. code-block:: julia
 
-    import Base: +  #  Gives access to + so that we can add a method
+    import Base: +  # enables extension of the + function
 
     +(x::Integer, y::String) = x + parse(Int, y)
 
     @show +(100, "100")
-    @show 100 + "100"; #equivalent
+    @show 100 + "100";  # equivalent
 
 .. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory
 ..
@@ -739,8 +806,8 @@ Here's another simple example, involving a user-defined function
 
 .. code-block:: julia
 
-    function f(x)
-        println("Generic function invoked")
+    function f(x)  # or f(x::Any)
+        println("Default (Any) method invoked")
     end
 
     function f(x::Number)
@@ -766,17 +833,13 @@ above
 
     f("foo")
 
-Since
-
-* ``3`` is an ``Int64`` and ``Int64 <: Integer <: Number``
-
-the call ``f(3)`` proceeds up the tree to ``Integer`` and invokes ``f(x::Integer)``
+Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``f(3)`` proceeds up the tree to ``Integer`` and invokes ``f(x::Integer)``
 
 On the other hand, ``3.0`` is a ``Float64``, which is not a subtype of  ``Integer``
 
 Hence the call ``f(3.0)`` continues up to ``f(x::Number)``
 
-Finally, ``f("foo")`` is handled by the generic function, since ``String`` is not a subtype of ``Number``
+Finally, ``f("foo")`` is handled by the most function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``
 
 Analyzing Function Return Types
 -------------------------------------------
