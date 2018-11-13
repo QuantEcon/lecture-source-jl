@@ -343,7 +343,8 @@ Let's see this in a simulation
     normdist = Normal(0, F)
     mult = 1.175
     println("The pdf at +/- $mult sigma takes the value: $(pdf(normdist,mult*F))")
-    println("Probability of dL being larger than 1 is approx: $(cdf(normdist,mult*F)-cdf(normdist,-mult*F))")
+    println("Probability of dL being larger than 1 is approx: "*
+            "$(cdf(normdist,mult*F)-cdf(normdist,-mult*F))")
 
     # Compare this to the sample analogue:
     L_increment = LLit[:,2:end] - LLit[:,1:end-1]
@@ -438,7 +439,8 @@ Let's see a histogram of the log-likelihoods under the true and the alternative 
 .. code-block:: julia
 
     plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True", normed = true)
-    plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative", normed = true)
+    plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative", 
+          normed = true)
     vline!([mean(LLT)], color = :black, lw = 2, linestyle = :dash, label = "")
     vline!([mean(LLT2)], color = :black, lw = 2, linestyle = :dash, label = "")
 
@@ -704,7 +706,8 @@ Here is some code that tackles these tasks
     dens_to_plot = [Mtilde_t_density(amf_2, t, xmin=1e-8, xmax=6.0) for t in times_to_plot]
     ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
 
-    # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet supported in Plots
+    # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet 
+    # supported in Plots
     plots = plot(layout = (3,2), size = (600,800))
 
     for (it, dens_t) in enumerate(dens_to_plot)

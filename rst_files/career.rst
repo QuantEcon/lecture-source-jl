@@ -220,7 +220,7 @@ The code for solving the DP problem described above is found below:
       # new life. This is a function of the distribution parameters and is
       # always constant. No need to recompute it in the loop
       v3 = (cp.G_mean + cp.F_mean .+ cp.β .*
-            cp.F_probs' * v * cp.G_probs)[1]        # don't need 1 element array
+            cp.F_probs' * v * cp.G_probs)[1] # do not need 1 element array
 
       for j in 1:cp.N
           for i in 1:cp.N
@@ -229,7 +229,7 @@ The code for solving the DP problem described above is found below:
 
               # new job
               v2 = (cp.θ[i] .+ cp.G_mean .+ cp.β .*
-                    v[i, :]' * cp.G_probs)[1]       # don't need a single element array
+                    v[i, :]' * cp.G_probs)[1] # do not need a single element array
 
               if ret_policy
                   if v1 > max(v2, v3)
@@ -290,9 +290,9 @@ Here's the value function
   v_init = fill(100.0, wp.N, wp.N)
   func(x) = update_bellman(wp, x)
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
-
-  # plot 
-  plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon", seriescolor=:plasma, gridalpha = 1)
+ 
+  plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
+       seriescolor=:plasma, gridalpha = 1)
 
 The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
 
@@ -415,9 +415,9 @@ Exercise 1
 
         for t=1:T
             # do nothing if stay put
-            if optimal_policy[i, j] == 2      # new job
+            if optimal_policy[i, j] == 2 # new job
                 j = rand(G)[1]
-            elseif optimal_policy[i, j] == 3  # new life
+            elseif optimal_policy[i, j] == 3 # new life
                 i, j = rand(F)[1], rand(G)[1]
             end
             push!(θ_ind, i)
@@ -456,11 +456,11 @@ The median for the original parameterization can be computed as follows
       t = 0
       i = j = 1
       while true
-          if optimal_policy[i, j] == 1      # Stay put
+          if optimal_policy[i, j] == 1 # Stay put
               return t
-          elseif optimal_policy[i, j] == 2  # New job
+          elseif optimal_policy[i, j] == 2 # New job
               j = rand(G)[1]
-          else                              # New life
+          else # New life
               i, j = rand(F)[1], rand(G)[1]
           end
           t += 1
@@ -518,7 +518,8 @@ Here's the code to reproduce the original figure
   x_grid = range(0, 5, length = 50)
   y_grid = range(0, 5, length = 50)
 
-  contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues, fillalpha=1, cbar = false)
+  contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
+          fillalpha=1, cbar = false)
   contour!(xlabel="theta", ylabel="epsilon")
   annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
   annotate!([(4.5,2.5, text("new job", 14, :center))])

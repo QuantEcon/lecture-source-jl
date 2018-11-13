@@ -354,7 +354,8 @@ between successive iterates is below `tol`
 
 .. code-block:: julia 
 
-    function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500, tol = 1e-6)
+    function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500, 
+                                             tol = 1e-6)
         @unpack c, β, w = params
         
         # create a closure for the T operator
@@ -390,11 +391,13 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
 
 .. code-block:: julia
 
-    function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500, ftol = 1e-6, m = 6)
+    function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500, 
+                                      ftol = 1e-6, m = 6)
         @unpack c, β, w = params
         T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
         
-        v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol, m = 6).zero # (5)
+        v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol, 
+                            m = 6).zero # (5)
         return (1 - β) * (c + β * E*v_star) # (3)
     end
 
@@ -443,8 +446,8 @@ In particular, let's look at what happens when we change :math:`\beta` and
     @testset "Comparative Statics Tests" begin
         @test R[4, 4] ≈ 41.15851842606614 # Arbitrary reservation wage.
         @test grid_size == 25 # grid invariance.
-        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance.
-        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance.
+        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0
+        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99
     end
 
 .. code-block:: julia
@@ -536,8 +539,10 @@ Here's an implementation:
 
 .. code-block:: julia
 
-    function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
-        T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7), using vectors since fixedpoint doesn't support scalar
+    function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, 
+                                        tol = 1e-5) 
+        T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7)
+        # using vectors since fixedpoint doesn't support scalar 
         ψ_star = fixedpoint(T_ψ, [ψ_iv]).zero[1]
         return (1 - β) * (c + β * ψ_star) # (2)
     end
@@ -549,7 +554,8 @@ Another option is to solve for the root of the  :math:`T_{\psi}(\psi) - \psi` eq
 
 .. code-block:: julia
 
-    function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
+    function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, 
+                                         tol = 1e-5)
         root_ψ(ψ) = c + β * E*max.((w ./ (1 - β)), ψ) - ψ # (7)
         ψ_star = find_zero(root_ψ, ψ_iv)
         return (1 - β) * (c + β * ψ_star) # (2)
@@ -588,7 +594,8 @@ Here's one solution
         Random.seed!(seed)
         stopping_time = 0
         t = 1
-        @assert length(w) - 1 ∈ support(dist) && w_bar <= w[end] # make sure the constraint is sometimes binding
+        # make sure the constraint is sometimes binding
+        @assert length(w) - 1 ∈ support(dist) && w_bar <= w[end] 
         while true
             # Generate a wage draw
             w_val = w[rand(dist)] # the wage dist set up earlier
@@ -602,7 +609,9 @@ Here's one solution
         return stopping_time
     end
 
-    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
+    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> 
+                                                             compute_stopping_time(w_bar, 
+                                                             seed = i), 1:num_reps)
     c_vals = range(10,  40, length = 25)
     stop_times = similar(c_vals)
 

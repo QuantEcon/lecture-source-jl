@@ -785,9 +785,9 @@ The above steps are implemented in a type called `SequentialAllocation`
           c = z[1:S]
           n = z[S+1:2S]
           Ξ = z[2S+1:end]
-          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ         # FOC c
-          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ    # FOC n
-          out[2S+1:end] = Θ .* n - c - G                                       # Resource constraint
+          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ # FOC c
+          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ # FOC n
+          out[2S+1:end] = Θ .* n - c - G # Resource constraint
           return out
       end
       # Find the root of the FOC
@@ -1562,9 +1562,13 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
   @testset begin
     @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
+    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 
+                                                       0.9945696863679917, 0.9945696863679917, 
+                                                       0.9945696863679917, 0.9945696863679917, 
+                                                       0.9945696863679917]
     @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
-    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
+    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434,
+                            1.111111111111111, 1.111111111111111, 1.111111111111111]
   end
 
 **Tax smoothing**
@@ -1687,9 +1691,9 @@ above)
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
 
-    B_vec = range(-1.5,  1.0, length = 100)
+    B_vec = range(-1.5, 1.0, length = 100)
     taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...)')
-    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
+    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
 
     titles = ["Tax Rate" "Gross Interest Rate"]
     labels = [["Time , t = 0", "Time , t >= 0"], ""]

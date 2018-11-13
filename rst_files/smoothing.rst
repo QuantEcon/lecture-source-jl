@@ -424,9 +424,10 @@ Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget co
     :class: test
 
     @testset "Budget Constraint Tests" begin
-        @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0) # Assert that the object above is always true.
-        @test c_bar ≈ 1.7241558441558444 # Default example invariance.
-        @test debt_complete[2] ≈ 2.188311688311688 # One of the other objects.
+        # assert that the object above is always true
+        @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0) 
+        @test c_bar ≈ 1.7241558441558444 # default example invariance
+        @test debt_complete[2] ≈ 2.188311688311688 # one of the other objects
     end
 
 Below, we'll take the outcomes produced by this code -- in particular the implied
@@ -628,12 +629,14 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
     plt_tax = plot(title = "Tax collection paths", x_label = "Periods", ylim = [1.4,2.1])
     plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
     plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
-    plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, lw = 2)
+    plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, 
+          lw = 2)
 
     plt_gov = plot(title = "Government assets paths", x_label = "Periods")
     plot!(plt_gov, 1:N_simul, debt_path, label = "incomplete market", lw = 2)
     plot!(plt_gov, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
-    plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, lw = 2)
+    plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, 
+          lw = 2)
     hline!(plt_gov, [0], linestyle = :dash, color = :black, lw = 2, label = "")
     plot(plt_tax, plt_gov, layout = (1,2), size = (800, 400))
 

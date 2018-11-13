@@ -229,15 +229,18 @@ Setup
         plot!(1:n, observations, color = :grey, markershape = :circle,
               alpha = 0.5, label = "", linewidth = 0)
         if !isnan(μ)
-            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false, label = ["Mean"])
+            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false, 
+                   label = ["Mean"])
         end
-        plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green, label = "Sample mean")
+        plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green,
+              label = "Sample mean")
         return plot!(title = title)
     end
 
 .. code-block:: julia
 
-    distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5), Exponential(1)]
+    distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5),
+                     Exponential(1)]
 
 Here is in an example for the standard normal distribution
 
@@ -451,7 +454,8 @@ Here's some code that does exactly this for the exponential distribution
         y = mean(y, dims = 1)
         y = √n * vec(y)
         density(y, label = "Empirical Distribution")
-        return plot!(Normal(0, σ), linestyle = :dash, color = :black, label = "Normal(0.00, $(σ^2))")
+        return plot!(Normal(0, σ), linestyle = :dash, color = :black, 
+                     label = "Normal(0.00, $(σ^2))")
     end
 
 .. code-block:: julia
@@ -798,7 +802,8 @@ Here is one solution
         y = vec(y)
         error_obs = sqrt(n) .* (g.(y) .- g.(μ))
         density(error_obs, label = "Empirical Density")
-        return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic", color = :black)
+        return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic",
+                     color = :black)
     end
     exercise1()
 

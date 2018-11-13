@@ -265,15 +265,15 @@ As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the theor
     :class: test
 
     @testset "Fixed-Point Tests" begin
-        @test [c1, c2, c3, c4] ≈ [-19.22053251431091, -0.8952843908914377, 19.999999999999982, 2.61437908496732]
+        @test [c1, c2, c3, c4] ≈ [-19.22053251431091, -0.8952843908914377, 19.999999999999982,
+                                  2.61437908496732]
     end
 
 .. code-block:: julia
 
     function verify_true_policy(m, shocks, c_star)
         k_grid = m.grid
-        c_star_new = coleman_egm(c_star, k_grid, m.β, m.u′,
-                                 m.u′, m.f, m.f′, shocks)
+        c_star_new = coleman_egm(c_star, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
 
         plt = plot()
         plot!(plt, k_grid, c_star.(k_grid), lw = 2, label = "optimal policy c*")
@@ -310,8 +310,10 @@ In fact it's easy to see that the difference is essentially zero:
     :class: test
 
     @testset "Discrepancy Test" begin
-        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) ≈ 4.440892098500626e-16 # Check that the error is the same as it was before.
-        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-5 # Test that the error is objectively very small.
+        # check that the error is the same as it was before
+        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) ≈ 4.440892098500626e-16 
+        # test that the error is objectively very small
+        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-5 
     end
 
 Next let's try iterating from an arbitrary initial condition and see if we
@@ -329,10 +331,10 @@ Let's start from the consumption policy that eats the whole pie: :math:`c(y) = y
         plot!(plt, m.grid, g.(m.grid),
               color = RGBA(0,0,0,1), lw = 2, alpha = 0.6, label = "initial condition c(y) = y")
         for i in 1:n_iter
-            new_g = coleman_egm(g, k_grid,
-                                m.β, m.u′, m.u′, m.f, m.f′, shocks)
+            new_g = coleman_egm(g, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
             g = new_g
-            plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6, color = RGBA(0,0,(i / n_iter), 1), lw = 2, label = "")
+            plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6, color = RGBA(0,0,(i / n_iter), 1),
+                  lw = 2, label = "")
         end
 
         plot!(plt, k_grid, c_star.(k_grid),
@@ -365,15 +367,15 @@ Here's the model and some convenient functions
     :class: test
 
     @testset "U Prime Tests" begin
-        @test u′_inv(3) ≈ 0.4807498567691362 # Test that the behavior of this function is invariant.
+        # test that the behavior of this function is invariant
+        @test u′_inv(3) ≈ 0.4807498567691362
     end
 
 Here's the result
 
 .. code-block:: julia
 
-    crra_coleman(g, m, shocks) = coleman_operator(g, m.grid, m.β, m.u′,
-                                                  m.f, m.f′, shocks)
+    crra_coleman(g, m, shocks) = coleman_operator(g, m.grid, m.β, m.u′, m.f, m.f′, shocks)
     crra_coleman_egm(g, m, shocks) = coleman_egm(g, m.grid, m.β, m.u′,
                                                  u′_inv, m.f, m.f′, shocks)
     function coleman(m = m, shocks = shocks; sim_length = 20)
