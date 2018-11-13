@@ -593,12 +593,63 @@ To get a more granular view, we can click the ``src//`` and the resultant filena
 
 This shows us precisely which methods (and parts of methods) are untested 
 
-Pull Requests to Julia Packages 
-=====================================
+Pull Requests to External Julia Projects 
+===============================================
 
 As mentioned in ``version control``, sometimes we'll want to work on external repos that are also Julia projects 
 
-The first thing is to ``] dev`` the git URL, which will both clone the git repo and sync it with the Julia package manager
+The first thing is to ``] dev`` the git URL (or package name, if the project is registered), which will both clone the git repo and sync it with the Julia package manager
+
+For example, we can run 
+
+.. code-block:: julia 
+
+    ] dev Expectations
+
+Which will clone the repo to ``~/.julia/dev``, or 
+
+.. code-block:: julia 
+
+    using Expectations
+    pathof(Expectations) # points to our git clone 
+
+This means that, from now on, whenever we run ``using Expectations``, Julia will load our cloned copy 
+
+Next, drag that folder to GitHub Desktop 
+
+The next step is to fork the original (external) package, as before 
+
+.. figure:: /_static/figures/testing-fork.png
+    :scale: 45%
+
+Lastly, edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL 
+
+.. figure:: /_static/figures/testing-repo-settings.png
+    :scale: 45%
+
+We can then commit a change, as before 
+
+.. figure:: /_static/figures/testing-commit.png
+    :scale: 45%
+
+Here, for example, we're revising the README 
+
+And push to the server, from which point we can create a PR from our fork  
+
+.. figure:: /_static/figures/testing-pr2.png
+    :scale: 45%
+
+Case with Write Access
+---------------------------
+
+The only difference here is that we can forget about the GitHub website steps above (because we already have write access at the original URL)
+
+In order to work with a project locally, all we need to do is open it in a text editor (like Atom)
+
+.. figure:: /_static/figures/testing-atom-package.png
+    :scale: 45%
+
+From here, we can edit this package just like we created it ourselves
 
 Benchmarking 
 ==================
