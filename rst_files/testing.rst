@@ -613,11 +613,11 @@ Which will clone the repo to ``~/.julia/dev``, or
     using Expectations
     pathof(Expectations) # points to our git clone 
 
-This means that, from now on, whenever we run ``using Expectations``, Julia will load our cloned copy 
+After this, whenever we run ``using Expectations``, Julia will load our cloned copy from that location
 
 Next, drag that folder to GitHub Desktop 
 
-The next step is to fork the original (external) package, as before 
+The next step is to fork the original (external) package from the website to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case
 
 .. figure:: /_static/figures/testing-fork.png
     :scale: 45%
@@ -627,7 +627,10 @@ Lastly, edit the settings in GitHub Desktop (from the "Repository" dropdown) to 
 .. figure:: /_static/figures/testing-repo-settings.png
     :scale: 45%
 
-We can then commit a change, as before 
+For example, change ``https://github.com/QuantEcon/Expectations.jl.git`` to ``https://github.com/quanteconuser/Expectations.jl.git``
+
+
+We can then commit a change, as before, which is now modifying the copy of the package on your account
 
 .. figure:: /_static/figures/testing-commit.png
     :scale: 45%
@@ -642,14 +645,30 @@ And push to the server, from which point we can create a PR from our fork
 Case with Write Access
 ---------------------------
 
-The only difference here is that we can forget about the GitHub website steps above (because we already have write access at the original URL)
+As before, you can use `] dev` on a package name or the URL of the package.  
 
-In order to work with a project locally, all we need to do is open it in a text editor (like Atom)
+.. code-block:: julia 
+
+    ] dev Expectations 
+
+or `] dev https://github.com/quanteconuser/Expectations.jl.git` as an example for an unreleased package by URL
+
+Which will clone the repo to ``~/.julia/dev``, or 
+
+.. code-block:: julia 
+
+    using Expectations
+    pathof(Expectations) # points to our git clone 
+
+
+Next, drag that folder to GitHub Desktop 
+
+Then, in order to work with a project locally, all we need to do is open it in a text editor (like Atom)
 
 .. figure:: /_static/figures/testing-atom-package.png
     :scale: 45%
 
-From here, we can edit this package just like we created it ourselves
+From here, we can edit this package just like we created it ourselves and use GitHub Desktop for all package operations
 
 Benchmarking 
 ==================
