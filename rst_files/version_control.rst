@@ -285,17 +285,23 @@ Let's say we click the first "use me" (to indicate that my changes should win ou
 .. figure:: /_static/figures/git-merge-commit.png
     :scale: 60%
 
-Open-source Projects 
-======================================
+Collaboration via Pull Request
+=====================================
 
 One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which (generally) anyone has rights to modify or work with 
 
 You can use GitHub to work on such projects 
 
-Quick Fixes
---------------------
+The key object is a *pull request* ("PR"), which is a request for a project maintainer to merge ("pull") changes you've worked on into their repository 
 
-GitHub's website provides an online editor for quick-and-dirty changes, such as fixing typos 
+There are a few different workflows for creating and handling PRs, which we'll walk through below 
+
+.. _web_interface:
+
+Quick Fixes 
+---------------------
+
+GitHub's website provides an online editor for quick-and-dirty changes, such as fixing typos in documentation 
 
 To use it, open a file in GitHub and click the small pencil to the upper right 
 
@@ -308,34 +314,33 @@ After making our changes, we can then describe them and propose them for review 
 
 But what if we want to make more in-depth changes? 
 
-Forking and Pull Requests 
--------------------------------------
+.. _fork_workflow:
 
-The first problem to solve is that we don't have write access (usually) to open-source repos 
+No-Access Case 
+-----------------------
+
+A common problem is when we don't have write access to the repo in question
 
 To work around this, we can click the "Fork" button that lives in the top-right of every repo's main page 
 
-This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
+.. figure:: /_static/figures/git-fork-button.png
+    :scale: 60%
 
-Making Changes 
-----------------------------
+This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
 
 We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
 
-In particular, we can follow the same process of: 
+.. figure:: /_static/figures/git-fork-edit-fork.png
+    :scale: 60%
 
-* Updating the fork via sequences of commits, which we push and pull using GitHub Desktop 
+Here, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
 
-* Collaborating with other people using issues 
+We should make sure these changes are on the server 
 
-* Looking at history using the GitHub website
+.. figure:: /_static/figures/git-fork-history.png
+    :scale: 60%
 
-The Pull Request 
----------------------------
-
-Eventually, you will want to upstream your changes into the main repository 
-
-The first thing you want to do is go to the pull requests menu and click "New Pull Request." You'll see something like 
+Next, we go to the pull requests menu and click "New Pull Request." You'll see something like 
 
 .. figure:: /_static/figures/git-create-pr.png
     :scale: 60%
@@ -356,6 +361,48 @@ The key pieces are
 For an example of a PR, see `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
+
+Write Access Case 
+----------------------
+
+In this case, we don't need to create a fork, but will rather work with a *git branch* 
+
+Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge 
+
+First, load the repo in GitHub Desktop and use the branch dropdown 
+
+.. figure:: /_static/figures/git-pr-branch.png
+    :scale: 60%
+
+Click "New Branch" and choose an instructive name (make sure there are no spaces or special characters)
+
+This will "check out" a new branch with the same history as the old one (but new commits will be added only to this branch)
+
+We can see the active branch in the top dropdown 
+
+.. figure:: /_static/figures/git-branch.png
+    :scale: 60%
+
+For example, let's say we add some stuff to the Julia code file and commit it 
+
+.. figure:: /_static/figures/git-pr-edits.png
+    :scale: 60%
+
+To put this branch (with changes) on the server, we simply need to click "Publish Branch"
+
+Navigating to the repo page, we will see a suggestion about a new branch
+
+.. figure:: /_static/figures/git-new-branch.png
+    :scale: 60%
+
+At which point the workflow is identical to the previous case 
+
+Julia Package Case 
+-----------------------
+
+One special case is when the repo in question is actually a Julia project or package 
+
+We cover that (along with package workflow in general) in the ``testing`` lecture 
 
 Additional Resources and Troubleshooting
 ================================================
@@ -408,7 +455,7 @@ Exercises
 Exercise 1a
 ---------------
 
-Follow the instructions to create a `new repository <new new_repo_workflow>`_ for one of your github accounts
+Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your github accounts
 In this repository
 * Take the code from one of your previous assignments, such as 
 `Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
@@ -440,7 +487,7 @@ Start by ensuring there are multiple lines in the file so that some changes may 
 Exercise 4a
 ----------------
 
-Just using the GitHub's web interface, submit a Pull Request for a simple change of documentation to a public repository
+Just using the GitHub's `web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository
 
 The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl`` 
 
@@ -449,7 +496,7 @@ Note: The source for that repository is in ``.rst`` files, but you should be abl
 Exercise 4b
 -------------------------
 
-Following the instructions for cloning a public repository to your local desktop, submit a Pull Request to a public repository
+Following the `instructions <fork_workflow>`_ for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository
 
 Again, you could submit it for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl``, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
 
