@@ -709,7 +709,6 @@ Since the ``NLsolve`` library only accepts vector based inputs, we needed to mak
 
 While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements
 
-In particular, we can use the **Anderson acceleration** with a memory of 5 iterations, by changing a setting
 
 .. code-block:: julia
 
