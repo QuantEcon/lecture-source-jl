@@ -346,7 +346,7 @@ You'll see a new repo with the same name but different URL in your GitHub Deskto
 .. figure:: /_static/figures/git-repo-list.png
     :scale: 60%
 
-And commit some changes by selecting the files and writing a commit message 
+Commit some changes by selecting the files and writing a commit message 
 
 .. figure:: /_static/figures/git-fork-changes.png
     :scale: 60%
