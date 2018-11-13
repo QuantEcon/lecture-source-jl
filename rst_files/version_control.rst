@@ -330,12 +330,23 @@ This will create a repo under account with the same name, contents, and history 
 
 We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
 
+That is, click the "clone" button on our fork 
+
+.. figure:: /_static/figures/git-clone-fork.png
+    :scale: 60%
+
+And commit some changes by selecting the files and writing a commit message 
+
+.. figure:: /_static/figures/git-fork-changes.png
+    :scale: 60%
+
+Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
+ before 
+
 .. figure:: /_static/figures/git-edit-fork.png
     :scale: 60%
 
-Here, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
-
-We should make sure these changes are on the server 
+We should make confirm that these changes are on the server 
 
 .. figure:: /_static/figures/git-fork-history.png
     :scale: 60%
@@ -360,7 +371,9 @@ The key pieces are
 
 For an example of a PR, see `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
-To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
+To edit a PR, simply push changes to the fork that you opened the PR from
+
+That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
 Write Access Case 
 ----------------------
