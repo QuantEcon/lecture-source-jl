@@ -352,6 +352,7 @@ And commit some changes by selecting the files and writing a commit message
     :scale: 60%
 
 Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
+
 .. figure:: /_static/figures/git-edit-fork.png
     :scale: 60%
 
