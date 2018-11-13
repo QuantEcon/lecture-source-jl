@@ -807,7 +807,7 @@ Here's another simple example, involving a user-defined function
 .. code-block:: julia
 
     function f(x)  # or f(x::Any)
-        println("Any function invoked")
+        println("Default (Any) method invoked")
     end
 
     function f(x::Number)
