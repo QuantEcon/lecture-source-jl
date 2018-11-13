@@ -10,7 +10,7 @@ Julia Tools and Editors
 
 Co-authored with Arnav Sood
 
-While Jupyter notebooks are a great way to get started with the language, eventually you'll want to use more powerful Tools
+While Jupyter notebooks are a great way to get started with the language, eventually you'll want to use more powerful tools
 
 We assume you've already completed the :ref:`getting started <getting_started>` lecture 
 
