@@ -341,6 +341,11 @@ That is, click the "clone" button on our fork
 .. figure:: /_static/figures/git-clone-fork.png
     :scale: 60%
 
+You'll see a new repo with the same name but different URL in your GitHub Desktop repo list, along with a special icon to indicate that it's a fork 
+
+.. figure:: /_static/figures/git-repo-list.png
+    :scale: 60%
+
 And commit some changes by selecting the files and writing a commit message 
 
 .. figure:: /_static/figures/git-fork-changes.png
