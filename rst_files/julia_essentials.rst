@@ -133,7 +133,7 @@ A useful tool for displaying both expressions and code is to use the ``@show`` m
     @show 2x - 3y
     @show x + y;
 
-Here we have used the ``;`` to supress the output on the last line, which otherwise returns the results of ``x + y``
+Here we have used ``;`` to suppress the output on the last line, which otherwise returns the results of ``x + y``
 
 
 .. I don't think this is useful quite yet, though perhaps later with broadcasting
@@ -174,6 +174,9 @@ Strings
 ----------
 
 A string is a data type for storing a sequence of characters
+
+In Julia, strings are created using double quotation marks (single quotations are
+reserved for the character type)
 
 
 .. code-block:: julia
@@ -253,7 +256,7 @@ Julia has several basic types for storing collections of data
 
 We have already discussed arrays
 
-A related data type is **tuples**, which are immutable and can contain different types
+A related data type is a **tuple**, which is immutable and can contain different types
 
 .. code-block:: julia
 
@@ -270,7 +273,7 @@ An immutable value is one that cannot be altered once it resides in memory
 
 In particular, tuples do not support item assignment (i.e. ``x[1] = "test"`` would fail)
 
-Tuples can be constructed with or without parenthesis, which is used for returning multiple values from a function
+Tuples can be constructed with or without parentheses
 
 
 .. code-block:: julia
@@ -299,7 +302,7 @@ Tuples can also be unpacked directly into variables
     println("word = $word, val = $val")
 
 
-Tuples can be created with a hanging ``,``--which is used to create a tuple with one element
+Tuples can be created with a hanging ``,`` -- this is useful to create a tuple with one element
 
 .. code-block:: julia
 
@@ -366,7 +369,7 @@ Dictionaries are like arrays except that the items are named instead of numbered
 
 The strings ``name`` and ``age`` are called the **keys**
 
-The values that the keys are mapped to (``"Frodo"`` and ``33``) are called the **values**
+The keys are mapped to **values** (in this case ``"Frodo"`` and ``33``)
 
 They can be accessed via ``keys(d)`` and ``values(d)`` respectively
 
@@ -382,7 +385,7 @@ Iterating
 One of the most important tasks in computing is stepping through a
 sequence of data and performing a given action
 
-Julia's provides neat and flexible tools for iteration as we now discuss
+Julia provides neat and flexible tools for iteration as we now discuss
 
 Iterables
 ----------------
@@ -554,6 +557,13 @@ For "not equal" use ``!=`` or ``≠`` (``\ne<TAB>``)
 .. code-block:: julia
 
     x != 3
+    
+Julia can also test approximately equal with ``≈`` (``\approx<TAB>``)
+
+
+.. code-block:: julia
+
+    1 + 1E-8 ≈ 1
 
 .. I think this is a a bad practive
 .. We can chain inequalities:
@@ -740,9 +750,9 @@ For example, in the call
 
 .. code-block:: julia
 
-    f(x; a = 1) = exp(cos(a * x)) #Note the ; in the definition
+    f(x; a = 1) = exp(cos(a * x))  # Note the ; in the definition
 
-    f(pi, a = 2) #Calling with ; is usually optional and generally discouraged
+    f(pi, a = 2)                   # Calling with ; is usually optional and generally discouraged
 
 
 Broadcasting
@@ -790,7 +800,7 @@ In doing this we'll exploit the fact that, if we take ``k`` independent standard
     function chisq(k)
         @assert k > 0
         z = randn(k)
-        return sum(z -> z^2, z) # same as `sum(x^2 for x in z)`
+        return sum(z -> z^2, z)  # Same as `sum(x^2 for x in z)`
     end
 
 The macro ``@assert`` will check that the next expression evaluates to ``true``, and will stop and display an error otherwise
@@ -804,7 +814,7 @@ Note that calls with integers less than 1 will trigger an assertion failure insi
 the function body
 
 .. code-block:: julia
-    :class: no-execute
+    :class: skip-test
 
     chisq(-2)
 
@@ -822,7 +832,7 @@ The broadcasting notation is not simply vectorization, as it is able to "fuse" m
     x = 1.0:1.0:5.0
     y = [2.0, 4.0, 5.0, 6.0, 8.0]
     z = similar(y)
-    z .= x .+ y .- sin.(x) # generates efficient code instead of many temporaries
+    z .= x .+ y .- sin.(x)  # Generates efficient code instead of many temporaries
 
 A convenience macro for adding broadcasting on every function call is `@.`
 
@@ -831,17 +841,17 @@ A convenience macro for adding broadcasting on every function call is `@.`
     @. z = x + y - sin(x)
 
 
-Since the ``+,-,=`` operators are functions, beyind the scenes this is broadcasting against both the ``x`` and ``y`` vectors
+Since the ``+, -, =`` operators are functions, behind the scenes this is broadcasting against both the ``x`` and ``y`` vectors
 
 The compiler will fix anything which is a scalar, and otherwise iterate across every vector
 
 .. code-block:: julia
 
-    f(a, b) = a + b # bivariate function
+    f(a, b) = a + b  # Bivariate function
     a = [1 2 3]
     b = [4 5 6]
-    @show f.(a, b) # across both
-    @show f.(a, 2); # fix scalar for second
+    @show f.(a, b)   # Across both
+    @show f.(a, 2);  # Fix scalar for second
 
 The compiler is only able to detect "scalar" values in this way for a limited number of types (e.g. integers, floating points, etc) and some packages (e.g. Distributions)
 
@@ -851,9 +861,9 @@ Another place that you may use a ``Ref`` is to fix a function parameter you do n
 
 .. code-block:: julia
 
-    f(x, y) = [1, 2, 3] ⋅ x + y # "⋅" can be typed by \cdot<tab>
-    f([3, 4, 5], 2) # uses vector as first parameter
-    f.(Ref([3,4, 5]), [2,3]) # broadcasting over 2nd parameter, fixing first
+    f(x, y) = [1, 2, 3] ⋅ x + y   # "⋅" can be typed by \cdot<tab>
+    f([3, 4, 5], 2)               # Uses vector as first parameter
+    f.(Ref([3, 4, 5]), [2, 3])    # Broadcasting over 2nd parameter, fixing first
 
 
 Scoping and Closures
@@ -861,28 +871,33 @@ Scoping and Closures
 
 Since global variables are usually a bad idea, we will concentrate on understanding the role of good local scoping practice
 
-That said, many of the variables in a Jupyter notebook are global, even the whole text could be copied into a function
+That said, global variables are often convenient and easy to use in Jupyter notebooks
 
 **Warning**
-For/while loops and global variables in Jupyter vs. the REPL
+
+For/while loops and global variables in Jupyter vs. the REPL:
 * In the current version of Julia, there is a distinction between the use of scope in an interactive Jupyter environment
 * The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information on using globals outside of Jupyter, `see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_ , though these rules are likely to change in interactive modes in Julia 1.1
+For more information on using globals outside of Jupyter,
+ `see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_, 
+though these rules are likely to change in interactive modes in Julia 1.1
 
 Functions
 ---------------
 
 The scope of a variable name determines where it is valid to refer to it, and how clashes between names can occur
 
-Think of the scope as having a list of all of the name bindings that variables would be relevant, where different scopes could have the same name mean different things
+Think of the scope as a list of all of the name bindings of relevant variables
+
+Different scopes could contain the same name but be assigned to different things
 
 An obvious place to start is to notice that functions introduce their own local names
 
 .. code-block:: julia
 
-    f(x) = x^2 # local `x` in scope
+    f(x) = x^2  # local `x` in scope
 
     # x is not bound to anything in this outer scope
     y = 5
@@ -892,9 +907,9 @@ This would be roughly equivalent to
 
 .. code-block:: julia
 
-    function g() # scope within the `g` function
+    function g()    # scope within the `g` function
         
-        f(x) = x^2 # local `x` in scope
+        f(x) = x^2  # local `x` in scope
 
         # x is not bound to anything in this outer scope
         y = 5
@@ -906,17 +921,17 @@ This is also equivalent if the ``y`` was changed to ``x``, since it is a differe
 
 .. code-block:: julia
 
-    f(x) = x^2 # local `x` in scope
+    f(x) = x^2  # Local `x` in scope
 
     # x is not bound to anything in this outer scope
-    x = 5 # a different `x` than the local variable name
-    f(x) # calling `f` with `x`
+    x = 5       # A different `x` than the local variable name
+    f(x)        # Calling `f` with `x`
 
 The scoping also applies to named arguments in functions
 
 .. code-block:: julia
 
-    f(x; y = 1) = x + y # `x` and `y` are names local to the `f` function
+    f(x; y = 1) = x + y  # `x` and `y` are names local to the `f` function
     xval = 0.1
     yval = 2
     f(xval; y = yval)
@@ -926,10 +941,10 @@ Due to scoping, you could write this as
 
 .. code-block:: julia
 
-    f(x; y = 1) = x + y # `x` and `y` are names local to the `f` function
+    f(x; y = 1) = x + y  # `x` and `y` are names local to the `f` function
     x = 0.1
     y = 2
-    f(x; y = y) # the left hand `y` is the local name of the argument in the function
+    f(x; y = y)          # Left hand `y` is the local name of the argument in the function
 
 Similarly to the named arguments, the local scope also works with named tuples
 
@@ -937,11 +952,12 @@ Similarly to the named arguments, the local scope also works with named tuples
 
     xval = 0.1
     yval = 2
-    @show (x = xval, y = yval) # named tuple with names `x` and `y`
+    @show (x = xval, y = yval)  # Named tuple with names `x` and `y`
 
     x = 0.1
     y = 2
-    # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    
+    # Create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
     (x = x, y = y) 
 
 As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
@@ -952,11 +968,11 @@ Another example is with broadcasting
 
 .. code-block:: julia
 
-    f(x) = x^2 # local `x` in scope
+    f(x) = x^2  # Local `x` in scope
 
-    x = 1:5 # not an integer
+    x = 1:5     # Not an integer
 
-    f.(x) # i.e. broadcasts the x^2 function over the vector
+    f.(x)       # Broadcasts the x^2 function over the vector
 
 
 Closures
@@ -974,22 +990,22 @@ While the above was convenient, there are other times when you want to simply fi
 
 .. code-block:: julia
 
-    # f2(x) = q * x^2 # fails during compilation.  `q` is not defined
     a = 0.2
-    f(x) = a * x^2 # refers to the `a` in the outer scope
-    f(1) # univariate function
+    f(x) = a * x^2     # Refers to the `a` in the outer scope
+    f(1)               # Univariate function
 
-When the function ``f`` is parsed in julia, it will look to see if any of the variables are already defined in the current scope
+When the function ``f`` is parsed in Julia, it will look to see if any of the variables are already defined in the current scope
 
-In this case, it finds the ``a`` since it was defined previously, whereas if the code defined ``a = 0.2`` **after** the `f(x)` definition, it would fail
+In this case, it finds the ``a`` since it was defined previously, whereas if the 
+code defined ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
 
 This also works when embedded in other functions
 
 .. code-block:: julia
 
     function g(a)
-        f(x) = a * x^2 # refers to the `a` passed in the function
-        f(1) # univariate function
+        f(x) = a * x^2  # Refers to the `a` passed in the function
+        f(1)            # Univariate function
     end
     g(0.2)
 
@@ -997,6 +1013,7 @@ Comparing the two:  the key here is not that ``a`` is a global variable, but rat
 
 This is called a **closure**, and are used throughout the lectures
 
+**what does this mean**
 It is generally bad practice to modify the closure variable in the function, but otherwise the code becomes very clear
 
 One place where this can be helpful is in a string of dependent calculations
@@ -1009,8 +1026,9 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
         a = x^2
         b = 2 * a
         c = a + b
-        return (a = a, b = b, c = c) # note local scope of tuples!
+        return (a = a, b = b, c = c)  # Note local scope of tuples!
     end
+    
     solvemodel(0.1)
 
 Higher-Order Functions
@@ -1018,19 +1036,20 @@ Higher-Order Functions
 
 One of the benefits of working with closures and functions is that you can return them from other functions
 
-This leads to some natural programming patters we have already been using, where we can use **functions of functions** and **functions returning functions** (or closures)
+This leads to some natural programming patterns we have already been using, where we can use **functions of functions** and **functions returning functions** (or closures)
 
 To see a simple example, consider functions that accept other functions (including closures)
 
 .. code-block:: julia
 
-    twice(f,x) = f(f(x)) # i.e. applies f to itself twice
+    twice(f, x) = f(f(x))  # Applies f to itself twice
     f(x) = x^2
     @show twice(f, 2.0)
+    
     twice(x -> x^2, 2.0)
     a = 5
     g(x) = a * x
-    @show twice(g, 2.0); # using a closure 
+    @show twice(g, 2.0);   # Using a closure 
 
 This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic 
 
@@ -1039,20 +1058,23 @@ One example of using this in a library is `Expectations.jl <https://github.com/Q
 .. code-block:: julia
 
     using Expectations, Distributions
+    
     @show d = Exponential(2.0)
+    
     f(x) = x^2
-    @show expectation(f, d); # i.e. E(f(x))
+    @show expectation(f, d);  # E(f(x))
 
 Another example is for a function that returns a closure itself
 
 .. code-block:: julia
 
     function multiplyit(a, g)
-        return x -> a * g(x) # a function with `g` used in the closure
+        return x -> a * g(x)  # Function with `g` used in the closure
     end
+    
     f(x) = x^2
-    h = multiplyit(2.0, f) #Use our quadratic, returns a new function which doubles the result
-    h(2) # the returned function is like any other function
+    h = multiplyit(2.0, f)    # Use our quadratic, returns a new function which doubles the result
+    h(2)                      # Returned function is like any other function
 
 You can create and define using ``function`` as well
 
@@ -1060,18 +1082,20 @@ You can create and define using ``function`` as well
 
     function snapabove(g, a)
         function f(x)
-            if x > a # the "a" is captured in the closure f
+            if x > a         # "a" is captured in the closure f
                 return g(x)
             else
                 return g(a)
             end
         end
-        return f # closure with the embedded a
+        return f             # Closure with the embedded a
     end
+    
     f(x) = x^2
     h = snapabove(f, 2.0)
 
     using Plots
+    
     gr(fmt=:png)
     plot(h, 0.0:0.1:3.0)
    
@@ -1086,14 +1110,14 @@ In particular
 
 .. code-block:: julia
 
-    for i in 1:2 # introduces local i
+    for i in 1:2        # Introduces local i
         dval1 = i
         println(i)
     end
 
-    # @show (i, dval1) # would fail as neither exists in this scope
+    # @show (i, dval1)  # Would fail as neither exists in this scope
 
-    for i in 1:2 # introduces a different local i
+    for i in 1:2        # Introduces a different local i
         println(i)
     end
 
@@ -1101,11 +1125,12 @@ On the other hand just as with closures, if a variable is already defined it wil
 
 .. code-block:: julia
 
-    dval2 = 0 # introduces variables
-    for i in 1:2 # introduces local i
-        dval2= i # refers to outer variable
+    dval2 = 0      # Introduces variables
+    for i in 1:2   # Introduces local i
+        dval2 = i  # Refers to outer variable
     end
-    dval2 # still can't refer to `i`, though
+    
+    dval2          # Still can't refer to `i`
 
 Similarly, for while loops
 
@@ -1118,15 +1143,16 @@ Similarly, for while loops
         val = val / 2
         difference = val - old
     end
+    
     @show val;
-    # @show difference # fails, not in scope
+    # @show difference fails, not in scope
 
 A Quick Check for Scoping Design
 ---------------------------------------------
 
 While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout
 
-Here, the global variable are used in an interactive editor because they are convenient, and not because they are essential to the design of the functions
+Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of the functions
 
 A simple test of the difference is to take a segment of code and wrap it in a function, for example
 
@@ -1135,9 +1161,11 @@ A simple test of the difference is to take a segment of code and wrap it in a fu
     x = 2.0
     f(y) = x + y
     z = f(4.0)
+    
     for i in 1:3
         z += i
-    end        
+    end 
+           
     println("z = $z")
 
 Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``y``, and the global variable ``z`` is modified in the ``for`` loop
@@ -1150,11 +1178,14 @@ However, you can simply wrap the entire code in a function
         x = 2.0
         f(y) = x + y
         z = f(4.0)
+        
         for i in 1:3
             z += i
-        end        
+        end   
+             
         println("z = $z")
     end
+    
     wrapped()
 
 Now, there are no global variables
@@ -1433,7 +1464,7 @@ Exercise 6
     f_ex6 = open("us_cities.txt", "r")
     total_pop = 0
     for line in eachline(f_ex6)
-        city, population = split(line, ':') # tuple unpacking
+        city, population = split(line, ':')  # tuple unpacking
         total_pop += parse(Int, population)
     end
     close(f_ex6)
