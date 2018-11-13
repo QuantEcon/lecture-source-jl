@@ -66,7 +66,7 @@ We've already seen some Julia arrays in action
     a = [1.0, 2.0, 3.0]
 
 
-The REPL tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively
+The output tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively
 
 Here ``Int64`` and ``Float64`` are types for the elements inferred by the compiler
 
@@ -116,11 +116,11 @@ To see this, we can create a column vector and row vector more directly
 
 .. code-block:: julia
 
-    [1, 2, 3] == [1; 2; 3] #both column vectors
+    [1, 2, 3] == [1; 2; 3]  # Both column vectors
 
 .. code-block:: julia
 
-    [1 2 3] #a row vector is 2-dimensional
+    [1 2 3]  # A row vector is 2-dimensional
 
 As we've seen, in Julia we have both
 
@@ -130,9 +130,9 @@ As we've seen, in Julia we have both
 
 Why do we need both?
 
-On one hand, dimension matters when we come to matrix algebra
+On one hand, dimension matters for matrix algebra
 
-* Multiplying by a row vector is different to multiplication by a column vector
+* Multiplying by a row vector is different to multiplying by a column vector
 
 On the other, we use arrays in many settings that don't involve matrix algebra
 
@@ -183,13 +183,13 @@ If you need more control over the types, fill with a non-floating point
 
 .. code-block:: julia
 
-    fill(0, 2, 2) # fills with 0, not 0.0
+    fill(0, 2, 2)  # Fills with 0, not 0.0
     
 Or fill with a boolean type
 
 .. code-block:: julia
 
-    fill(false, 2, 2) # produces a boolean matrix
+    fill(false, 2, 2)  # Produces a boolean matrix
 
 
 
@@ -211,7 +211,7 @@ First, note that assignment in Julia binds a name to a value, but does not make 
     y[1] = 2
     x
 
-In the above, the ``y = x`` simply create a new named binding called ``y`` which refers to whatever ``x`` currently binds to
+In the above, ``y = x`` simply creates a new named binding called ``y`` which refers to whatever ``x`` currently binds to
 
 To copy the data, you need to be more explicit
 
@@ -231,19 +231,19 @@ However, rather than making a copy of ``x``, you may want to just have a similar
     y
 
 
-Similar can also be used to pre-allocate a vector with a different size, but the same shape
+We can also use ``similar`` to pre-allocate a vector with a different size, but the same shape
 
 .. code-block:: julia
 
     x = [1, 2, 3]
-    y = similar(x, 4) # make a vector of length 4
+    y = similar(x, 4)  # Make a vector of length 4
 
-Which generalized to higher dimensions
+Which generalizes to higher dimensions
 
 .. code-block:: julia
 
     x = [1, 2, 3]
-    y = similar(x, 2, 2) # make 2x2 matrix
+    y = similar(x, 2, 2)  # Make a 2x2 matrix
 
 Manual Array Definitions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -258,7 +258,7 @@ In two dimensions we can proceed as follows
 
 .. code-block:: julia
 
-    a = [10 20 30 40]  # two dimensional, shape is 1 x n
+    a = [10 20 30 40]  # Two dimensional, shape is 1 x n
 
 
 .. code-block:: julia
@@ -379,7 +379,7 @@ Using the ``:`` notation provides a slice of an array, copying the sub-array to 
     @show a
     @show b;
 
-A ``view`` on the other hand does not copy the value
+A **view** on the other hand does not copy the value
 
 .. code-block:: julia
 
@@ -419,7 +419,7 @@ Similarly
 .. code-block:: julia
 
     a = [1 2; 3 4]
-    b = a' # transpose
+    b = a'         # Transpose
     typeof(b)
 
 
@@ -429,14 +429,14 @@ To copy into a dense array
 
     a = [1 2; 3 4]
     b = a' # transpose
-    c = Matrix(b) # convert to matrix
-    d = collect(b) # also `collect` works on any iterable
+    c = Matrix(b)      # Convert to matrix
+    d = collect(b)     # Also `collect` works on any iterable
     c == d
 
 Special Matrices
 -----------------
 
-As we saw with the ``transpose``, sometimes types that look like matrices are not stored as a dense array
+As we saw with ``transpose``, sometimes types that look like matrices are not stored as a dense array
 
 As an example, consider creating a diagonal matrix 
 
@@ -449,7 +449,7 @@ As you can see, the type is ``2×2 Diagonal{Float64,Array{Float64,1}}``, which i
 
 The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations
 
-For example, this both behaves (and is, in an important sense) like any other Matrix
+However, this object still behaves like any other ``Matrix``
 
 .. code-block:: julia
 
@@ -462,22 +462,22 @@ Another example is in the construction of an identity matrix, where a naive impl
 .. code-block:: julia
 
     b = [1.0 2.0; 3.0 4.0]
-    b - Diagonal([1.0, 1.0]) # poor style, inefficient code
+    b - Diagonal([1.0, 1.0])  # Poor style, inefficient code
 
 Whereas you should instead use
 
 .. code-block:: julia
 
     b = [1.0 2.0; 3.0 4.0]
-    b - I # good style, and note the lack of dimensions of I
+    b - I  # Good style, and note the lack of dimensions of I
 
-While the implementation of ``I`` is a little abstract to go into at this point, a hint is that 
+While the implementation of ``I`` is a little abstract to go into at this point, a hint is: 
 
 .. code-block:: julia
 
     typeof(I)
 
-So that this is a ``UniformScaling`` type rather than an identity matrix, making it much more powerful and general
+This is a ``UniformScaling`` type rather than an identity matrix, making it much more powerful and general
 
 Assignment and Passing Arrays
 ------------------------------
@@ -487,16 +487,16 @@ As discussed above, in Julia, the left hand side of an assignment is a "binding"
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x # name y binds to whatever value `x` bound to
+    y = x  # Name `y` binds to whatever value `x` bound to
 
 The consequence of this, is that you can re-bind that name 
 
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x # name y binds to whatever `x` bound to
+    y = x        # Name `y` binds to whatever `x` bound to
     z = [2 3 4]
-    y = z # just changes name binding, not value!
+    y = z        # Only changes name binding, not value!
     @show (x, y, z);
 
 What this means is that if ``a`` is an array and we set ``b = a`` then ``a`` and ``b`` point to exactly the same data
@@ -506,9 +506,9 @@ In the above, suppose you had meant to change the value of ``x`` to the values o
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x # name y binds to whatever `x` bound to
+    y = x       # Name `y` binds to whatever `x` bound to
     z = [2 3 4]
-    y .= z # Now dispatches the assignment of each element
+    y .= z      # Now dispatches the assignment of each element
     @show (x, y, z);    
 
 Alternatively, you could have used ``y[:] = z``
@@ -520,8 +520,9 @@ First, define a simple function for a linear map
 .. code-block:: julia
 
     function f(x)
-        return [1 2; 3 4] * x # matrix * column vector
+        return [1 2; 3 4] * x  # Matrix * column vector
     end
+    
     val = [1, 2]
     f(val)
 
@@ -532,11 +533,14 @@ In general, these "out-of-place" functions are preferred to "in-place" functions
     function f(x)
         return [1 2; 3 4] * x # matrix * column vector
     end
+    
     val = [1, 2]
     y = similar(val)
+    
     function f!(out, x)
         out .= [1 2; 3 4] * x
     end
+    
     f!(y, val)
     y
     
@@ -547,13 +551,14 @@ We can also see a common mistake, where instead of modifying the arguments, the 
 .. code-block:: julia
 
     function f(x)
-        return [1 2; 3 4] * x # matrix * column vector
+        return [1 2; 3 4] * x  # Matrix * column vector
     end
+    
     val = [1, 2]
     y = similar(val)
 
     function f!(out, x)
-        out = [1 2; 3 4] * x # MISTAKE! should be .= or [:]
+        out = [1 2; 3 4] * x   # MISTAKE! Should be .= or [:]
     end
     f!(y, val)
     y
@@ -568,11 +573,11 @@ Note that scalars are always immutable, such that
 .. code-block:: julia
 
     y = [1 2]
-    y .-= 2 # ie. y .= y .- 2, no problem
+    y .-= 2    # y .= y .- 2, no problem
 
     x = 5
-    # x .-= 2 # fails!
-    x = x - 2 # subtle difference: creates a new value and rebinds the variable
+    # x .-= 2  # Fails!
+    x = x - 2  # Subtle difference - creates a new value and rebinds the variable
 
 
 In particular, there is no way to pass any immutable into a function and have it modified
@@ -580,10 +585,12 @@ In particular, there is no way to pass any immutable into a function and have it
 .. code-block:: julia
 
     x = 2
+    
     function f(x)
-        x = 3 # MISTAKE! does not modify x, creates a new value !
+        x = 3     # MISTAKE! Does not modify x, creates a new value!
     end
-    f(x) # cannot modify immutables in place
+    
+    f(x)          # Cannot modify immutables in place
     @show x;
 
 This is also true for other immutable types such as tuples, as well as some vector types
@@ -592,13 +599,13 @@ This is also true for other immutable types such as tuples, as well as some vect
 
     using StaticArrays
     xdynamic = [1, 2]
-    xstatic = @SVector [1, 2] # turns it into a highly optimized static vector
+    xstatic = @SVector [1, 2]  # Turns it into a highly optimized static vector
 
     f(x) = 2x
     @show f(xdynamic)
     @show f(xstatic)
 
-    # inplace version
+    # Inplace version
     function g(x)
         x .= 2x
         return "Success!"
@@ -606,7 +613,8 @@ This is also true for other immutable types such as tuples, as well as some vect
     @show xdynamic
     @show g(xdynamic)
     @show xdynamic;
-    # g(xstatic) # fails, static vectors are immutable
+    
+    # g(xstatic) # Fails, static vectors are immutable
 
 Operations on Arrays
 ================================
@@ -620,38 +628,37 @@ already seen
 .. code-block:: julia
 
     a = [-1, 0, 1]
-
-
+    
     @show length(a)
     @show sum(a)
     @show mean(a)
-    @show std(a) #standard deviation
-    @show var(a) # variance
+    @show std(a)      # Standard deviation
+    @show var(a)      # Variance
     @show maximum(a)
     @show minimum(a)
-    @show extrema(a) # (mimimum(a), maximum(a))
+    @show extrema(a)  # (mimimum(a), maximum(a))
 
 
 To sort an array
 
 .. code-block:: julia
 
-    b = sort(a, rev = true)  # returns new array, original not modified
+    b = sort(a, rev = true)  # Returns new array, original not modified
 
 
 .. code-block:: julia
 
-    b = sort!(a, rev = true)  # returns *modified original* array
+    b = sort!(a, rev = true)  # Returns *modified original* array
 
 
 .. code-block:: julia
 
-    b == a  # tests if have the same values
+    b == a  # Tests if have the same values
 
 
 .. code-block:: julia
 
-    b === a  # tests if arrays are identical (i.e share same memory)
+    b === a  # Tests if arrays are identical (i.e share same memory)
 
 
 Matrix Algebra
@@ -679,7 +686,7 @@ For two dimensional arrays, ``*`` means matrix multiplication
     b * a'
 
 
-To solve the linear system ``A X = B`` for ``X`` use ``A \ B``
+To solve the linear system :math:`A X = B` for :math:`X` use ``A \ B``
 
 .. code-block:: julia
 
@@ -706,19 +713,20 @@ Although the last two operations give the same result, the first one is numerica
 Multiplying two **one** dimensional vectors gives an error --- which is reasonable since the meaning is ambiguous
 
 .. code-block:: julia
-    :class: no-execute
+    :class: skip-test
 
     ones(2) * ones(2)
 
 
-If you want an inner product in this setting use ``dot()`` or the `` ``unicode ``\cdot<TAB>``
+If you want an inner product in this setting use ``dot()`` or the unicode ``\cdot<TAB>``
 
 .. code-block:: julia
 
     dot(ones(2), ones(2))
 
 
-Matrix multiplication using one dimensional vectors is a bit inconsistent --- pre-multiplication by the matrix is OK, but post-multiplication gives an error
+Matrix multiplication using one dimensional vectors is a bit inconsistent --- 
+pre-multiplication by the matrix is OK, but post-multiplication gives an error
 
 
 .. code-block:: julia
@@ -732,7 +740,7 @@ Matrix multiplication using one dimensional vectors is a bit inconsistent --- pr
 
 
 .. code-block:: julia
-    :class: no-execute
+    :class: skip-test
 
     ones(2) * b
 
@@ -775,7 +783,7 @@ However in practice some operations are mathematically valid without broadcastin
 
 .. code-block:: julia
 
-    ones(2, 2) + ones(2, 2)  # same as ones(2, 2) .+ ones(2, 2)
+    ones(2, 2) + ones(2, 2)  # Same as ones(2, 2) .+ ones(2, 2)
 
 
 Scalar multiplication is similar
@@ -787,7 +795,7 @@ Scalar multiplication is similar
 
 .. code-block:: julia
 
-    2 * A  # same as 2 .* A
+    2 * A  # Same as 2 .* A
 
 
 In fact you can omit the ``*`` altogether and just write ``2A``
@@ -797,8 +805,8 @@ Unlike matlab and other languages, scalar addition requires the ``.+`` in order 
 .. code-block:: julia
 
     x = [1, 2]
-    x .+ 1 # i.e. not x + 1 
-    x .- 1 # i.e. not x - 1
+    x .+ 1     # not x + 1 
+    x .- 1     # not x - 1
 
 
 Elementwise Comparisons
@@ -877,10 +885,10 @@ The primary function for changing the dimension of an array is ``reshape()``
     b
 
 
-Notice that this function returns a "view" on the existing array
+Notice that this function returns a view on the existing array
 
 This means that changing the data in the new array will modify the data in the
-old one:
+old one
 
 .. code-block:: julia
 
@@ -980,8 +988,8 @@ As with many other types, a ``Range`` can act as a vector
 
 .. code-block:: julia
 
-    a = 10:12 # a range, equivalent to 10:1:12
-    @show Vector(a) # can convert, but shouldn't
+    a = 10:12        # A range, equivalent to 10:1:12
+    @show Vector(a)  # Can convert, but shouldn't
 
     b = Diagonal([1.0, 2.0, 3.0])
     b * a .- [1.0; 2.0; 3.0]
@@ -990,7 +998,7 @@ Ranges can also be created with floating point numbers using the same notation
 
 .. code-block:: julia
 
-    a = 0.0:0.1:1.0 # 0.0, 0.1, 0.2, ... 1.0
+    a = 0.0:0.1:1.0  # 0.0, 0.1, 0.2, ... 1.0
 
 But care should be taken if the terminal node is not a multiple of the set sizes
 
@@ -1022,31 +1030,31 @@ Tuples and Named Tuples
 
 (`See tuples <https://docs.julialang.org/en/v1/manual/functions/#Tuples-1>`_ and `named tuples documentation <https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1>`_)
 
-We were introduced two Tuples earlier, which provide high-performance immutable sets of distinct types
+We were introduced to tuples earlier, which provide high-performance immutable sets of distinct types
 
 .. code-block:: julia
 
     t = (1.0, "test")
-    t[1] # access by index
-    a, b = t # unpack
-    # t[1] = 3.0 # would fail as tuples are immutable
+    t[1]            # Access by index
+    a, b = t        # Unpack
+    # t[1] = 3.0    # Would fail as tuples are immutable
     println("a = $a and b = $b")
 
-As well as Named Tuples, which extend tuples with names for each argument
+As well as **named tuples**, which extend tuples with names for each argument
 
 .. code-block:: julia
 
     t = (val1 = 1.0, val2 = "test")
-    t.val1 # access by index
-    #a, b = t # bad style  better to unpack by name with @unpack
-    println("val1 = $(t.val1) and val1 = $(t.val1)") # access by name
+    t.val1      # Access by index
+    # a, b = t  # Bad style, better to unpack by name with @unpack
+    println("val1 = $(t.val1) and val1 = $(t.val1)") # Access by name
 
 While immutable, it is possible to manipulate tuples and generate new ones
 
 .. code-block:: julia
 
     t2 = (val3 = 4, val4 = "test!!")
-    t3 = merge(t, t2) # new tuple
+    t3 = merge(t, t2)  # New tuple
 
 
 Named tuples are a convenient and high-performance way to manage and unpack sets of parameters
@@ -1055,9 +1063,10 @@ Named tuples are a convenient and high-performance way to manage and unpack sets
 .. code-block:: julia
 
     function f(parameters)
-        α, β = parameters.α, parameters.β # poor style, error prone if adding parameters
+        α, β = parameters.α, parameters.β  # Poor style, error prone if adding parameters
         return α + β
     end 
+    
     parameters = (α = 0.1, β = 0.2)
     f(parameters)
 
@@ -1067,10 +1076,12 @@ This functionality is aided by the ``Parameters.jl`` package and the ``@unpack``
 .. code-block:: julia
 
     using Parameters
+    
     function f(parameters)
-        @unpack α, β = parameters # good style, less sensitive to errors
+        @unpack α, β = parameters  # Good style, less sensitive to errors
         return α + β
     end 
+    
     parameters = (α = 0.1, β = 0.2)
     f(parameters)
 
@@ -1079,10 +1090,10 @@ In order to manage default values, use the ``@with_kw`` macro
 .. code-block:: julia
 
     using Parameters
-    paramgen = @with_kw (α = 0.1, β = 0.2) # creates named tuples with defaults
+    paramgen = @with_kw (α = 0.1, β = 0.2)  # Create named tuples with defaults
 
     # creates named tuples, replacing defaults
-    @show paramgen() # calling without arguments gives all defaults
+    @show paramgen()  # Calling without arguments gives all defaults
     @show paramgen(α = 0.2)
     @show paramgen(α = 0.2, β = 0.5);
 
@@ -1119,11 +1130,11 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
     function f(y)
         x = nothing
         if y > 0.0
-            # calculations to set x
+            # Calculations to set `x`
             x = y
         end
 
-        # later, can do check `x`
+        # Later, can check `x`
         if x === nothing
             println("x was not set")
         else
@@ -1131,12 +1142,13 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
         end
         x
     end
+    
     @show f(1.0)
     @show f(-1.0);
 
 While in general you want to keep a variable name bound to a single type in Julia, this is a notable exception
 
-Similarly, if need-be, you can return a ``nothing`` from a function to indicate that it did not calculate as expected
+Similarly, if needed, you can return a ``nothing`` from a function to indicate that it did not calculate as expected
 
 .. code-block:: julia
 
@@ -1159,13 +1171,16 @@ Similarly, if need-be, you can return a ``nothing`` from a function to indicate 
         println("f($x2) failed");
     end
 
-As an aside, an equivalent way to write the above function, which you will sometimes see if code, is to use the terse `ternary operator <https://docs.julialang.org/en/v1/manual/control-flow/index.html#man-conditional-evaluation-1>`_, which gives a compact if/then/else structure
+As an aside, an equivalent way to write the above function is to use the 
+`ternary operator <https://docs.julialang.org/en/v1/manual/control-flow/index.html#man-conditional-evaluation-1>`_, 
+which gives a compact if/then/else structure
 
 .. code-block:: julia
 
     function f(x)
-        x > 0.0 ? sqrt(x) : nothing # the "a ? b : c" pattern is the ternary 
+        x > 0.0 ? sqrt(x) : nothing  # The "a ? b : c" pattern is the ternary 
     end
+    
     f(1.0)
 
 We will sometimes use this form when it makes the code more clear (and it will occasionally make the code higher performance)
@@ -1182,14 +1197,14 @@ You will see this type directly if you use an array containing both types
 
 When considering error handling, whether you want a function to return ``nothing`` or simply fail depends on whether the code calling ``f(x)`` is carefully checking the results
 
-For example, if you were calling on an array of parameters where a-priori you were not sure which ones will succeed, then
+For example, if you were calling on an array of parameters where a priori you were not sure which ones will succeed, then
 
 .. code-block:: julia
 
     x = [0.1, -1.0, 2.0, -2.0]
     y = f.(x)
 
-    # presumably check `y`
+    # Presumably check `y`
 
 On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate
 
@@ -1199,6 +1214,7 @@ On the other hand, if the parameter passed is invalid and you would prefer not t
         @assert x > 0.0
         sqrt(x)
     end
+    
     f(1.0)
 
 Finally, ``nothing`` is a good way to indicate an optional parameter in a function
@@ -1213,10 +1229,12 @@ Finally, ``nothing`` is a good way to indicate an optional parameter in a functi
             println("z = $z given with $x")
         end
     end
+    
     f(1.0)
     f(1.0, z=3.0)
 
-An alternative to ``nothing``, which can be useful and sometimes higher performance, is to use the ``NaN`` to signal that a value is invalid returning from a function
+An alternative to ``nothing``, which can be useful and sometimes higher performance, 
+is to use ``NaN`` to signal that a value is invalid returning from a function
 
 .. code-block:: julia
 
@@ -1227,11 +1245,13 @@ An alternative to ``nothing``, which can be useful and sometimes higher performa
             return NaN
         end
     end
+    
     f(0.1)
     f(-1.0)
+    
     @show typeof(f(-1.0))
-    @show f(-1.0) == NaN # note, this fails!
-    @show isnan(f(-1.0)) # check with this
+    @show f(-1.0) == NaN  # Note, this fails!
+    @show isnan(f(-1.0))  # Check with this
 
 Note that in this case, the return type is ``Float64`` regardless of the input for ``Float64`` input
 
@@ -1253,20 +1273,20 @@ An example of an exception is a ``DomainError``, which signifies that a value pa
 
 .. code-block:: julia
 
-    # sqrt(-1.0) # throws exception, turned off to prevent breaking notebook
+    # sqrt(-1.0)                        # Throws exception, turned off to prevent breaking notebook
 
-    # to see the error
-    try sqrt(-1.0); catch err; err end # catches the exception and prints it.
+    # To see the error
+    try sqrt(-1.0); catch err; err end  # Catches the exception and prints it
     
 
 Another example you will see is when the compiler cannot convert between types
 
 .. code-block:: julia
 
-    # convert(Int64, 3.12) # throws exception, turned off to prevent breaking notebook
+    # convert(Int64, 3.12)                        # Throws exception, turned off to prevent breaking notebook
     
-    # to see the error
-    try convert(Int64, 3.12); catch err; err end # catches the exception and prints it.
+    # To see the error
+    try convert(Int64, 3.12); catch err; err end  # Catches the exception and prints it.
 
 If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error
 
@@ -1277,10 +1297,11 @@ Occasionally you will want to catch these errors and try to recover, as we did a
     function f(x)
         try
             sqrt(x)
-        catch err # enters if exception thrown
-            sqrt(complex(x, 0)) # convert to complex number
+        catch err                # Enters if exception thrown
+            sqrt(complex(x, 0))  # Convert to complex number
         end
     end
+    
     f(0.0)
     f(-1.0)
 
@@ -1304,11 +1325,12 @@ A key feature of ``missing`` is that it propagates through other function calls 
 .. code-block:: julia
 
     f(x) = x^2
+    
     @show missing + 1.0
     @show missing * 2
     @show missing * "test"
-    @show f(missing); # even user-defined functions
-    @show mean(x); # the vector
+    @show f(missing);      # Even user-defined functions
+    @show mean(x);
 
 The purpose of this is to ensure that failures do not silently fail and provide meaningless numerical results
 
@@ -1317,8 +1339,9 @@ This even applies for the comparison of values, which
 .. code-block:: julia
 
     x = missing
+    
     @show x == missing
-    @show x === missing # an exception 
+    @show x === missing  # An exception 
     @show ismissing(x);
 
 Where ``ismissing`` is the canonical way to test the value
@@ -1328,9 +1351,10 @@ In the case where you would like to calculate a value without the missing values
 .. code-block:: julia
 
     x = [1.0, missing, 2.0, missing, missing, 5.0]
+    
     @show mean(x)
     @show mean(skipmissing(x))
-    @show coalesce.(x, 0.0); # replace missing with 0.0;
+    @show coalesce.(x, 0.0);  # Replace missing with 0.0;
 
 As ``missing`` is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``
 
@@ -1343,9 +1367,11 @@ Exercises
 Exercise 1
 ----------------
 
-This exercise is on some matrix operations that arise in certain problems, including when dealing with linear stochastic difference equations
+This exercise uses matrix operations that arise in certain problems, 
+including when dealing with linear stochastic difference equations
 
-If you aren't familiar with all the terminology don't be concerned --- you can skim read the background discussion and focus purely on the matrix exercise
+If you aren't familiar with all the terminology don't be concerned --- you can 
+skim read the background discussion and focus purely on the matrix exercise
 
 With that said, consider the stochastic difference equation
 
@@ -1428,16 +1454,25 @@ where
 
 Given these parameters
 
-* simulate a single :math:`y_t` series for each :math:`\theta \in \Theta` for :math:`T = 150`.  Feel free to experiment with different :math:`T`
-* overlay plots of the rolling mean of the process for each :math:`\theta \in \Theta`, i.e. for each :math:`1 \leq \tau \leq T` plot
+* Simulate a single :math:`y_t` series for each :math:`\theta \in \Theta` 
+  for :math:`T = 150`.  Feel free to experiment with different :math:`T`
+* Overlay plots of the rolling mean of the process for each :math:`\theta \in \Theta`, 
+  i.e. for each :math:`1 \leq \tau \leq T` plot
 
 .. math::
 
     \frac{1}{\tau}\sum_{t=1}^{\tau}y_T
 
-* simulate :math:`N=200` paths of the stochastic process above to the :math:`T`, for each :math:`\theta \in \Theta`, where we refer to an element of a particular simulation as :math:`y^n_t`
-* overlay plots a histogram of the stationary distribution of the final :math:`y^n_T` for each :math:`\theta \in \Theta`.  Hint: pass the ``alpha`` to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``) or use ``stephist(vals)`` to show just the step function for the histogram
-* numerically find the mean and variance of this as an ensemble average, i.e. :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
+* Simulate :math:`N=200` paths of the stochastic process above to the :math:`T`, 
+  for each :math:`\theta \in \Theta`, where we refer to an element of a particular 
+  simulation as :math:`y^n_t`
+* Overlay plots a histogram of the stationary distribution of the final 
+  :math:`y^n_T` for each :math:`\theta \in \Theta`.  Hint: pass ``alpha`` 
+  to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``) or 
+  use ``stephist(vals)`` to show just the step function for the histogram
+* Numerically find the mean and variance of this as an ensemble average, i.e. 
+  :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and 
+  :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
 
 Later, we will interpret some of these in :doc:`this lecture <lln_clt>`
 
@@ -1452,18 +1487,20 @@ Let the data generating process for a variable be
 
 where :math:`y, x_1, x_2` are scalar observables, :math:`a,b,c,d` are parameters to estimate, and :math:`w` are iid normal with mean 0 and variance 1
 
-First, lets simulate data we can use to estimate the parameters
+First, let's simulate data we can use to estimate the parameters
 
-* draw :math:`N=50` values for :math:`x_1, x_2` from iid normal distributions
+* Draw :math:`N=50` values for :math:`x_1, x_2` from iid normal distributions
 
 Then, simulate with different :math:`w` 
-* draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1` 
-* repeat that so you have ``M = 20`` different simulations of the ``y`` for the ``N`` values
+* Draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1` 
+* Repeat that so you have ``M = 20`` different simulations of the ``y`` for the ``N`` values
 
-Finally, calculate order least squares manually (i.e., putting the observables into matrices and vectors, and directly using the equations for `OLS <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_ rather than a package).
+Finally, calculate order least squares manually (i.e., put the observables 
+into matrices and vectors, and directly use the equations for 
+`OLS <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_ rather than a package)
 
-* for each of the ``M=20`` simulations, calculate the OLS estimates for :math:`a, b, c, d, \sigma`
-* plot a histogram of these estimates for each variable.
+* For each of the ``M=20`` simulations, calculate the OLS estimates for :math:`a, b, c, d, \sigma`
+* Plot a histogram of these estimates for each variable
 
 
 Solutions
@@ -1476,11 +1513,11 @@ Here's the iterative approach
 
 .. code-block:: julia
 
-    function compute_asymptotic_var(A, Sigma;
-                                    S0 = Sigma * Sigma',
+    function compute_asymptotic_var(A, Σ;
+                                    S0 = Σ * Σ',
                                     tolerance = 1e-6,
                                     maxiter = 500)
-        V = Sigma * Sigma'
+        V = Σ * Σ'
         S = S0
         err = tolerance + 1
         i = 1
@@ -1496,25 +1533,26 @@ Here's the iterative approach
 
 .. code-block:: julia
 
-    A =     [0.8 -0.2;
-            -0.1 0.7]
-    Sigma = [0.5 0.4;
-             0.4 0.6]
+    A = [0.8  -0.2;
+         -0.1  0.7]
+         
+    Σ = [0.5 0.4;
+         0.4 0.6]
 
 
-Note that all eigenvalues of :math:`A` lie inside the unit disc:
+Note that all eigenvalues of :math:`A` lie inside the unit disc
 
 
 .. code-block:: julia
 
     maximum(abs, eigvals(A))
 
-Let's compute the asymptotic variance:
+Let's compute the asymptotic variance
 
 
 .. code-block:: julia
 
-    our_solution = compute_asymptotic_var(A, Sigma)
+    our_solution = compute_asymptotic_var(A, Σ)
 
 
 Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` function and check we get the same result
@@ -1523,5 +1561,6 @@ Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` functi
 .. code-block:: julia
 
     using QuantEcon
-    norm(our_solution - solve_discrete_lyapunov(A, Sigma * Sigma'))
+    
+    norm(our_solution - solve_discrete_lyapunov(A, Σ * Σ'))
 
