@@ -647,11 +647,12 @@ Case with Write Access
 
 As before, you can use `] dev` on a package name or the URL of the package.  
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute
 
     ] dev Expectations 
 
-or `] dev https://github.com/quanteconuser/Expectations.jl.git` as an example for an unreleased package by URL
+or ``] dev https://github.com/quanteconuser/Expectations.jl.git`` as an example for an unreleased package by URL
 
 Which will clone the repo to ``~/.julia/dev``, or 
 
