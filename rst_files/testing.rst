@@ -656,7 +656,8 @@ or ``] dev https://github.com/quanteconuser/Expectations.jl.git`` as an example 
 
 Which will clone the repo to ``~/.julia/dev``, or 
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute
 
     using Expectations
     pathof(Expectations) # points to our git clone 
