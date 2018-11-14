@@ -708,7 +708,7 @@ To delete it entirely, simply run
 
     ] rm Expectations 
 
-From a fresh REPL 
+Both from a fresh REPL 
 
 Benchmarking 
 ==================
