@@ -736,7 +736,7 @@ Composing Packages
 
 A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source
 
-As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type
+As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type (recall that computers approximate real numbers to the nearest binary  of a given precision; the *machine epsilon* is the smallest nonzero magnitude)
 
 In Julia, this number can be calculated as
 
