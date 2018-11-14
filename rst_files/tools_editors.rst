@@ -10,7 +10,7 @@ Julia Tools and Editors
 
 Co-authored with Arnav Sood
 
-While Jupyter notebooks are a great way to get started with the language, eventually you'll want to use more powerful tools
+While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools
 
 We assume you've already completed the :ref:`getting started <getting_started>` lecture 
 
@@ -101,42 +101,54 @@ will succeed
 Atom 
 =========
 
-As discussed `previously <getting_started>`_, eventually you'll want to use a full-fledged text editor 
+As discussed `previously <getting_started>`_, eventually you will want to use a full-fledged text editor 
 
 The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
 
 Installation and Configuration 
 ---------------------------------
 
-Download Atom from the `Atom website <https://atom.io/>`_
+Installing Atom
+^^^^^^^^^^^^^^^^^^^
 
-Go to the ``Install`` menu, either by clicking the appropriate button on the welcome screen, or navigating to it after opening the settings pane (Cntrl, on Windows, and ⌘, on macOS)
+1. Download and Install Atom from the `Atom website <https://atom.io/>`_
 
-Type ``uber-juno`` into the search box and hit enter. Click install on the package that appears. This will typically take a while, as Juno installs dependencies. When it asks you whether or not to use the standard layout, click ``yes``
+2. (Optional, but Recommended) Change default Atom settings
 
-Sometimes, Juno will fail to find the Julia executable (say, if it's installed somewhere nonstandard, or you have multiple). To do this, go back to preferences, click on ``Packages``, type in ``julia-client``
+    * Use ``Ctrl-,`` to get the `Settings` pane
+    * Choose the `Packages` tab
+    * Type ``line-ending-selector`` into the Filter and then click "Settings" for that package
 
-You'll then see a setting called Julia path. Fill it with the result of running Sys.BINDIR in the REPL, with an addiional /julia at the end. For example, in an OSX REPL running that command yields:
+        * Change the default line ending to ``LF`` (only necessary on Windows)
+        
+    * Choose the `Editor` tab
+        * Turn on ``Soft Wrap``
+        * Set the ``Tab Length`` default to ``4``
 
-.. code-block:: none 
+Installing Juno
+^^^^^^^^^^^^^^^^^^^^^^^
 
-    /Applications/Julia-1.0.app/Contents/Resources/julia/bin
+1. Use ``Ctrl-,`` to get the `Settings` pane
+2. Go to the ``Install`` tab
+3. Type ``uber-juno`` into the search box and then click `Install` on the package that appears
+4. Wait while Juno installs dependencies
+5. When it asks you whether or not to use the standard layout, click ``yes``
 
-So you would type in /Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia (no quotes)
+At that point, you should see a built-in REPL at the bottom of the screen and be able to start using Julia and Atom
 
-To change a few Atom settings, with ``Shift-Ctrl-P`` go to ``Atom > Open Your Config`` to get your ``config.cson`` and add 
+Troubleshooting
+^^^^^^^^^^^^^^^^^^^
+Sometimes, Juno will fail to find the Julia executable (say, if it's installed somewhere nonstandard, or you have multiple)
 
-* ``softWrap: true`` in the ``editor`` section, and 
+To do this
+1. ``Ctrl-,`` to get `Settings` pane, and select the `Packages` tab
+2. Type in ``julia-client`` and choos `Settings`
+3. Find the `Julia Path`, and fill it in with the location of the Julia binary
 
-* The following block 
+    * To find, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
+    * e.g. ``C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe`` on Windows as ``/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia`` on OSX
 
-.. code-block:: none 
-
-    "line-ending-selector":
-        defaultLineEnding: "LF"
-
-
-See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have issues
+See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have further issues
 
 Standard Layout  
 ------------------
@@ -370,7 +382,7 @@ The basic, no-frills command is
 
 The ``rm`` instructs Docker to delete the container on exit, and the ``p`` flag is for browser access
 
-You'll see something like 
+You will see something like 
 
 .. figure:: /_static/figures/docker-basic-command.png
     :scale: 60%
