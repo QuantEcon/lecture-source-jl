@@ -267,7 +267,9 @@ In GitHub, this event is called a "merge conflict," and occurs whenever people m
 
 Note that this means that two people touching the same file is OK, so long as the differences are compatible 
 
-A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes. GitHub will give us the following window 
+A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes
+
+GitHub will give us the following window 
 
 .. figure:: /_static/figures/git-merge-conflict.png
     :scale: 60%
@@ -280,7 +282,9 @@ To fix the conflict, we can go into a text editor (such as Atom or VS Code). Her
 .. figure:: /_static/figures/atom-merge-conflict.png
     :scale: 60%
 
-Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
+Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file
+
+Returning to GitHub Desktop gives us a pre-formed commit to accept 
 
 .. figure:: /_static/figures/git-merge-commit.png
     :scale: 60%
@@ -332,7 +336,9 @@ In that case, click the "Fork" button that lives in the top-right of every repo'
 .. figure:: /_static/figures/git-fork-button.png
     :scale: 60%
 
-This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
+This will create a repo under account with the same name, contents, and history as the original
+
+For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
 
 Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo on our account we have write access to)
 
@@ -366,14 +372,18 @@ We should make confirm that these changes are on the server (which we can get to
 .. figure:: /_static/figures/git-fork-history.png
     :scale: 60%
 
-Next, go to the pull requests menu and click "New Pull Request." You'll see something like 
+Next, go to the pull requests menu and click "New Pull Request"
+
+You'll see something like this
 
 .. figure:: /_static/figures/git-create-pr.png
     :scale: 60%
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
-Fill in the details and hit create. This opens a form like this on the main repo
+Fill in the details and hit create
+
+This opens a form like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
     :scale: 60%
@@ -447,7 +457,9 @@ We cover that (along with package workflow in general) in the `testing lecture <
 Additional Resources and Troubleshooting
 ================================================
 
-You may want to go beyond the scope of this tutorial when working with GitHub. For example, perhaps you run into a bug, or you're working with a setup that doesn't have GitHub Desktop installed 
+You may want to go beyond the scope of this tutorial when working with GitHub 
+
+For example, perhaps you run into a bug, or you're working with a setup that doesn't have GitHub Desktop installed 
 
 Here are some resources to help 
 
@@ -460,7 +472,9 @@ Here are some resources to help
 Command-Line Basics
 ----------------------------------------
 
-Git also comes with a set of command-line tools. They're optional, but many people like using them
+Git also comes with a set of command-line tools
+
+They're optional, but many people like using them
 
 Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the commandline
 
