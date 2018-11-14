@@ -177,7 +177,7 @@ help us organize and work with related concrete types
 
 **can we think of a different subheading here, it's the same as above**
 
-The Type Hierarchy
+Subtypes and Supertypes
 ----------------------
 
 How exactly do abstract types organize or relate different concrete types?
