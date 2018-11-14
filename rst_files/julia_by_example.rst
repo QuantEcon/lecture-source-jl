@@ -666,7 +666,8 @@ To enable this, Julia has two features:  named function parameters, and named tu
     f(v) = p + β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv=0.8, tolerance=1.0E-8) # don't need to pass 
-    println("Fixed point=$(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+            " iterations")
 
 In this example, all function parameters after the ``;`` in the list, must be called by name
 
