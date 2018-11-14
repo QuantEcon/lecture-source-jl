@@ -449,7 +449,7 @@ As you can see, the type is ``2×2 Diagonal{Float64,Array{Float64,1}}``, which i
 
 The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations
 
-However, this object still behaves like any other ``Matrix``
+In every important sense, matrix types such as ``Diagonal`` are just as much a "matrix" as the dense matrices we have using (see the `introduction to types lecture <introduction_to_types>`_ for more))
 
 .. code-block:: julia
 
