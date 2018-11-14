@@ -100,9 +100,14 @@ The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
 Installation and Configuration 
 ---------------------------------
 
-Instructions for basic setup and configuration can be found `here <https://github.com/econtoolkit/tutorials/blob/master/julia.md#installation-and-setup/>`_
+We strongly suggest following the instructions to create a ``startup.jl`` (see the `getting started <jl_startup_file>`_  for more details)
+* Ensure you have key packages installed ``] add IJulia InstantiateFromURL Revise REPL``
+* Download the file `startup.jl </_static/includes/startup.jl>`_ into  ``~/.julia/config/``
 
-The key package to install is called `Juno <http://junolab.org.>`_ 
+**TODO** MERGE!
+Instructions for basic setup and configuration can be found `MERGE TUTORIAL <https://github.com/econtoolkit/tutorials/blob/master/julia.md#installation-and-setup/>`_
+
+See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have issues
 
 Standard Layout  
 ------------------
@@ -147,7 +152,8 @@ The ``Plots`` pane captures Julia plots output (the code is as follows)
 .. figure:: /_static/figures/juno-plots.png
     :scale: 60%
 
-May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
+.. This is for matplotlib?
+.. May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
 
 Other Features 
 -------------------
@@ -156,12 +162,14 @@ Other Features
 
 * The run symbol in the left sidebar (or ``Ctrl+Shift+Enter``) will run the whole file 
 
-Docker Integration 
-----------------------
+See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an exploration of features, and  the `FAQ <http://docs.junolab.org/latest/man/faq.html>`_ for more advanced steps (e.g. using with ``Docker``)
 
-You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
+.. Docker Integration 
+.. ----------------------
+.. 
+.. You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
+.. 
 
-For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html>`_
 
 Package Environments 
 ========================
@@ -214,7 +222,9 @@ Note the lack of commas
 
 To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
 
-The Project TOML should look something like this:: 
+The Project TOML should look something like this
+
+.. code-block:: none
 
     name = "ExampleEnvironment"
     uuid = "14d3e79e-e2e5-11e8-28b9-19823016c34c"
@@ -273,7 +283,7 @@ What this ``activate_github`` function does is
 Docker 
 ===========
 
-As discussed `earlier <jl_jupyterdocker>`_, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer 
+As discussed `earlier <jl_jupyterdocker>`_, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
 
 Here, we'll walk through the setup and installation steps, along with the main features of the ``quantecon/base`` Docker image 
 
@@ -287,9 +297,9 @@ Download and install for
 * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
 * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
 
-Note the following caveats for Windows 
+**Note:** For Windows 
 
-* Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (not Home or Mobile)
+* Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (**not Home or Mobile**)
 
 * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
 
