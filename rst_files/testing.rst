@@ -598,26 +598,34 @@ Pull Requests to External Julia Projects
 
 As mentioned in ``version control``, sometimes we'll want to work on external repos that are also Julia projects 
 
-The first thing is to ``] dev`` the git URL (or package name, if the project is registered), which will both clone the git repo and sync it with the Julia package manager
+The first thing is to ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo and sync it with the Julia package manager
 
-For example, we can run 
+For example, running 
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute
 
     ] dev Expectations
 
-Which will clone the repo to ``~/.julia/dev``, or 
+will clone the repo ``https://github.com/quantecon/Expectations.jl`` to ``~/.julia/dev``
+
+As a reminder, you can find the location of your ``~/.julia`` folder (called the "user depot"), by running 
 
 .. code-block:: julia 
+
+    DEPOT_PATH[1]
+
+The ``] dev`` command will also add the target to the package manager, so that whenever we run ``using Expectations``, Julia will load our cloned copy from that location
+
+.. code-block:: julia
+    :class: no-execute
 
     using Expectations
     pathof(Expectations) # points to our git clone 
 
-After this, whenever we run ``using Expectations``, Julia will load our cloned copy from that location
-
 Next, drag that folder to GitHub Desktop 
 
-The next step is to fork the original (external) package from the website to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case
+The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
 
 .. figure:: /_static/figures/testing-fork.png
     :scale: 45%
@@ -627,25 +635,33 @@ Lastly, edit the settings in GitHub Desktop (from the "Repository" dropdown) to 
 .. figure:: /_static/figures/testing-repo-settings.png
     :scale: 45%
 
-For example, change ``https://github.com/QuantEcon/Expectations.jl.git`` to ``https://github.com/quanteconuser/Expectations.jl.git``
+Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is 
 
-
-We can then commit a change, as before, which is now modifying the copy of the package on your account
+If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
 
 .. figure:: /_static/figures/testing-commit.png
     :scale: 45%
 
 Here, for example, we're revising the README 
 
-And push to the server, from which point we can create a PR from our fork  
+Committing and pushing to the server will push these changes to the fork you created on your account (which you can also access by viewing the commits `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the ``version_control`` lecture)
+
+.. figure:: /_static/figures/testing-expectations.png
+    :scale: 60%
+
+Clicking "Create PR" will create a pull request for project maintainers to review and approve 
 
 .. figure:: /_static/figures/testing-pr2.png
-    :scale: 45%
+    :scale: 60%
+
+For more on PRs, see the relevant section of the ``version_control`` lecture 
 
 Case with Write Access
 ---------------------------
 
-As before, you can use `] dev` on a package name or the URL of the package.  
+If you have write access to the repo, we can skip the preceding steps about forking and changing the URL 
+
+You can use `] dev` on a package name or the URL of the package.  
 
 .. code-block:: julia
     :class: no-execute
@@ -654,14 +670,13 @@ As before, you can use `] dev` on a package name or the URL of the package.
 
 or ``] dev https://github.com/quanteconuser/Expectations.jl.git`` as an example for an unreleased package by URL
 
-Which will clone the repo to ``~/.julia/dev``, or 
+Which will again clone the repo to ``~/.julia/dev``, and use it as a Julia package
 
 .. code-block:: julia
     :class: no-execute
 
     using Expectations
     pathof(Expectations) # points to our git clone 
-
 
 Next, drag that folder to GitHub Desktop 
 
@@ -670,7 +685,17 @@ Then, in order to work with a project locally, all we need to do is open it in a
 .. figure:: /_static/figures/testing-atom-package.png
     :scale: 45%
 
-From here, we can edit this package just like we created it ourselves and use GitHub Desktop for all package operations
+From here, we can edit this package just like we created it ourselves and use GitHub Desktop for all package operations (pushing, pulling, reverting, etc.)
+
+Removing a Julia Project 
+------------------------------
+
+To "un-dev" a Julia project (say, if we want to use our old ``Expectations.jl``), you can simply run 
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    ] free Expectations 
 
 Benchmarking 
 ==================
