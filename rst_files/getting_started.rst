@@ -82,91 +82,13 @@ Otherwise, if there are errors when you attempt to use an online Jupyterhub, you
 Installing a Pre-built Jupyter Image
 ======================================
 
-`Docker <https://www.docker.com/>`_ is a technology that you use to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a minimal, self-contained operating system on another computer
+`Docker <https://www.docker.com/>`_ is a technology that you use to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a software setup on another computer
 
-While it is largely used for running code in the cloud and in distributed computing, it is also convenient for using on local computers 
-
-In essence, it allows people to share a consistent and reproducible environment with no setup or tinkering required
+While it is largely used for running code in the cloud, it is also convenient for using on local computers 
 
 QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
 
-Setup
------------
-
-* Create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
-    
-Download and install for
-
-* `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
-* `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
-
-Open a terminal on OS/X and Linux, or a "Windows PowerShell" terminal on Windows
-
-.. To verify that there are no obvious errors in the installation, run 
-.. 
-.. Run ``docker version`` in the terminal to check there are no obvious errors
-
-Download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
-
-.. code-block:: none
-
-    docker pull quantecon/base
-
-After this is finished, first clear any existing volumes and then create a persistent storage volume (ignoring any warnings from the ``rm`` step)
-
-.. code-block:: none
-
-    docker volume rm quantecon
-    docker volume create quantecon 
-
-Running in a Local Folder
---------------------------
-
-The Docker image can exchange files locally (and recursively below in the tree) to where it is run
-
-Open a terminal and ``cd`` to the directory you are interested in storing local files
-
-To run an image local to those files, type the following in the terminal (on Linux and OSX)
-
-.. code-block:: none
-
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
-
-And on Powershell on Window
-
-.. code-block:: none
-
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
-
-**Remark:** When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
-
-In the output, you should see some text near that bottom that looks like 
-
-.. code-block:: none
-
-    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b 
-
-Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
-
-In a browser, go to a URL like the following
-
-.. code-block:: none
-
-        http://127.0.0.1:8888/lab
-
-**Note**: ``Ctrl+C`` is also the keyboard shortcut you use to kill the container, so be sure to copy using the mouse
-
-Paste the text into ``Password or token:`` and choose ``Log in``
-
-Ensure you save any important files to the local notebooks in the ``local`` directory, which stores in the local filesystem where you ran the docker command
-
-
-A few useful maintenance features
-
-* If you forget your token number, you may need to stop and restart the container
-* To stop the container, use `Ctrl-C` or type ``docker stop $(docker ps -aq)`` in a different terminal
-* To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
-* To clean unnecessary Docker assets from your system, run ``docker system prune`` 
+For instructions on how to set this up, see the `tools and editors <tools_editors>`_ lecture 
 
 .. _jl_jupyterlocal:
 
