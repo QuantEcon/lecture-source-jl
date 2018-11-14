@@ -69,17 +69,11 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
-We also want to add the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
+We'll use the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
 
 .. code-block:: julia 
 
-    ] add PkgTemplates
-    
-.. code-block:: julia 
-    
-    ] precompile 
-
-To recall, you can get into the ``pkg>`` mode by hitting ``]`` in the REPL 
+    using PkgTemplates 
 
 Next, let's create a *template* for our project 
 
@@ -87,7 +81,6 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
 .. code-block:: julia 
 
-    using PkgTemplates 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
 Let's create a specific project based off this template
