@@ -207,7 +207,7 @@ Julia's package manager lets you set up Python-style "virtualenvs," that draw fr
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
-* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull 
+* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see `version control <version_control>`)
 
 * A ``depot`` is a directory, like ``~/.julia``, which contains assets (compile caches, registries, package source directories, etc.) 
 
@@ -332,7 +332,7 @@ Download and install for
 
 * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
 
-To verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell/Git Bash (Windows) and run 
+To verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
 
 .. code-block:: none 
 
