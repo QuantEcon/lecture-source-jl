@@ -806,15 +806,15 @@ Here's another simple example, involving a user-defined function
 
 .. code-block:: julia
 
-    function f(x)  # or f(x::Any)
+    function q(x)  # or q(x::Any)
         println("Default (Any) method invoked")
     end
 
-    function f(x::Number)
+    function q(x::Number)
         println("Number method invoked")
     end
 
-    function f(x::Integer)
+    function q(x::Integer)
         println("Integer method invoked")
     end
 
@@ -823,23 +823,23 @@ above
 
 .. code-block:: julia
 
-    f(3)
+    q(3)
 
 .. code-block:: julia
 
-    f(3.0)
+    q(3.0)
 
 .. code-block:: julia
 
-    f("foo")
+    q("foo")
 
-Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``f(3)`` proceeds up the tree to ``Integer`` and invokes ``f(x::Integer)``
+Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``q(3)`` proceeds up the tree to ``Integer`` and invokes ``q(x::Integer)``
 
 On the other hand, ``3.0`` is a ``Float64``, which is not a subtype of  ``Integer``
 
-Hence the call ``f(3.0)`` continues up to ``f(x::Number)``
+Hence the call ``q(3.0)`` continues up to ``q(x::Number)``
 
-Finally, ``f("foo")`` is handled by the most function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``
+Finally, ``q("foo")`` is handled by the most function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``
 
 Analyzing Function Return Types
 -------------------------------------------
