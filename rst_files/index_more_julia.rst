@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl_full.raw
 
 **************************************************************
-Introduction to Packages and Software Engineering in Julia
+Packages and Software Engineering in Julia
 **************************************************************
 
 This part of the course provides a more details on the Julia programming language, its ecosystem, and core software engineering tools
@@ -22,7 +22,7 @@ This part of the course provides a more details on the Julia programming languag
     general_packages
     data_statistical_packages
     optimization_solver_packages
-    version_control 
     tools_editors 
+    version_control 
     testing 
     need_for_speed
