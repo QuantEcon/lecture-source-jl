@@ -435,7 +435,7 @@ Navigating to the `repo page <https://github.com/quanteconuser/example_repositor
 .. figure:: /_static/figures/git-new-branch.png
     :scale: 60%
 
-At which point the workflow is identical to the previous case 
+At which point the process of creating a PR is identical to the previous case 
 
 Julia Package Case 
 -----------------------
