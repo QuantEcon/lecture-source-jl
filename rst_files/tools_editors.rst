@@ -100,7 +100,32 @@ The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
 Installation and Configuration 
 ---------------------------------
 
-Instructions for basic setup and configuration can be found `here <https://github.com/econtoolkit/tutorials/blob/master/julia.md#installation-and-setup/>`_
+1. Download Atom from the `Atom website <https://atom.io/>`_
+
+2. Go to the ``Install`` menu, either by clicking the appropriate button on the welcome screen, or navigating to it after opening the settings pane (Cntrl, on Windows, and ⌘, on macOS)
+
+3. Type ``uber-juno`` into the search box and hit enter. Click install on the package that appears. This will typically take a while, as Juno installs dependencies. When it asks you whether or not to use the standard layout, click ``yes``
+
+4. Sometimes, Juno will fail to find the Julia executable (say, if it's installed somewhere nonstandard, or you have multiple). To do this, go back to preferences, click on ``Packages``, type in ``julia-client``
+
+5. You'll then see a setting called Julia path. Fill it with the result of running Sys.BINDIR in the REPL, with an addiional /julia at the end. For example, in an OSX REPL running that command yields:
+
+    .. code-block:: none 
+
+        /Applications/Julia-1.0.app/Contents/Resources/julia/bin
+
+So you would type in /Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia (no quotes)
+
+6. To change a few Atom settings, with ``Shift-Ctrl-P`` go to ``Atom > Open Your Config`` to get your ``config.cson`` and add 
+
+    * ``softWrap: true`` in the ``editor`` section, and 
+
+    .. code-block:: none 
+
+          "line-ending-selector":
+             defaultLineEnding: "LF"
+
+
 
 The key package to install is called `Juno <http://junolab.org.>`_ 
 
