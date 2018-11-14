@@ -4,7 +4,7 @@
 
 
 *****************************************
-The Julia Data and Statistical Ecosystem
+Data and Statistics Packages
 *****************************************
 
 .. contents:: :depth: 2

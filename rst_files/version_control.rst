@@ -3,7 +3,7 @@
 .. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
-Introduction to Git and Version Control
+Git, GitHub, and Version Control
 ******************************************
 
 Co-authored with Arnav Sood
