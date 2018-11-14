@@ -653,6 +653,8 @@ To confirm this, we can check the history on our account `here <https://github.c
 .. figure:: /_static/figures/testing-expectations.png
     :scale: 100%
 
+The green check mark indicates that Travis tests passed for this commit
+
 Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve 
 
 .. figure:: /_static/figures/testing-pr2.png
