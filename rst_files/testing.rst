@@ -50,7 +50,7 @@ CodeCov
 
 CodeCov is a service that tells you how expansive your tests are (i.e., how much of your code is untested)
 
-To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
+To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up" 
 
 .. figure:: /_static/figures/codecov-1.png
     :scale: 60%
@@ -99,7 +99,9 @@ Adding Project to Git
 
 The next step is to add this project to Git version control 
 
-First, open the repository screen in your account as discussed previously. We'll want the following settings 
+First, open the repository screen in your account as discussed previously
+
+We'll want the following settings 
 
 .. figure:: /_static/figures/testing-git1.png
     :scale: 60%
@@ -323,7 +325,9 @@ Let's create a new output directory in our project, and run ``jupyter lab`` from
 .. figure:: /_static/figures/testing-output.png
     :scale: 60%
 
-From here, we can use our package's functions in the usual way. This lets us produce neat output examples, without re-defining everything 
+From here, we can use our package's functions in the usual way
+
+This lets us produce neat output documents, without pasting the whole codebase 
 
 We can also edit it interactively inside the notebook 
 
@@ -510,7 +514,7 @@ This is telling Travis to build the project in Julia, on OSX and Linux, using Ju
 
 It also says that if the nightly version doesn't work, that shouldn't register as a failure 
 
-**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift. You can delete those lines to speed up the build. Likewise for nightly Julia 
+**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift. You can delete those lines to speed up the build. Likewise the nightly Julia 
 
 Working with Builds 
 --------------------
