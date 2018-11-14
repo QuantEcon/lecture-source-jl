@@ -53,14 +53,14 @@ CodeCov is a service that tells you how expansive your tests are (i.e., how much
 To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
 
 .. figure:: /_static/figures/codecov-1.png
-    :scale: 45%
+    :scale: 100%
 
 Next, click "add a repository" and *enable private scope* (this allows CodeCov to service your private projects)
 
 The result should be 
 
 .. figure:: /_static/figures/codecov-2.png
-    :scale: 45%
+    :scale: 100%
 
 This is all we need for now 
 
@@ -99,7 +99,7 @@ Let's create a specific project based off this template
 If we navigate to the package directory (shown in the output), we should see something like 
 
 .. figure:: /_static/figures/testing-dir.png
-    :scale: 45%
+    :scale: 100%
 
 Adding Project to Git 
 ------------------------
@@ -109,7 +109,7 @@ The next step is to add this project to Git version control
 First, open the repository screen in your account as discussed previously. We'll want the following settings 
 
 .. figure:: /_static/figures/testing-git1.png
-    :scale: 45%
+    :scale: 100%
 
 In particular 
 
@@ -124,7 +124,7 @@ Click the "publish branch" button to upload your files to GitHub
 If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
 
 .. figure:: /_static/figures/testing-git2.png
-    :scale: 45%
+    :scale: 100%
 
 Adding Project to Julia Package Manager 
 -------------------------------------------
@@ -260,7 +260,7 @@ We can track changes in the TOML, as before
 Here's the Manifest 
 
 .. figure:: /_static/figures/testing-atom-manifest.png
-    :scale: 45%
+    :scale: 100%
 
 We can also run other operations, like ``] up``, ``] precompile``, etc.
 
@@ -328,14 +328,14 @@ We can also call this function from a Jupyter notebook
 Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
 
 .. figure:: /_static/figures/testing-output.png
-    :scale: 45%
+    :scale: 100%
 
 From here, we can use our package's functions in the usual way. This lets us produce neat output examples, without re-defining everything 
 
 We can also edit it interactively inside the notebook 
 
 .. figure:: /_static/figures/testing-notebook.png
-    :scale: 45%
+    :scale: 100%
 
 The change will be reflected in the ``Project.toml`` file::
 
@@ -483,7 +483,7 @@ This includes private repos if you're on a student developer pack or an academic
 To change this, go to "settings" under your GitHub profile 
 
 .. figure:: /_static/figures/git-settings.png
-    :scale: 45%
+    :scale: 100%
 
 Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked 
 
@@ -527,14 +527,14 @@ As above, builds are triggered whenever we push changes or open a pull request
 For example, if we push our changes to the server and then click the Travis badge on the README, we should see something like 
 
 .. figure:: /_static/figures/travis-progress.png
-    :scale: 45%
+    :scale: 100%
 
 This gives us an overview of all the builds running for that commit 
 
 To inspect a build more closely (say, if it fails), we can click on it and expand the log options 
 
 .. figure:: /_static/figures/travis-log.png
-    :scale: 45%
+    :scale: 100%
 
 Note that the build times here aren't informative, because we can't generally control the hardware to which our job is allocated 
 
@@ -543,7 +543,7 @@ We can also cancel specific jobs, either from their specific pages or by clickin
 Lastly, we can trigger builds manually (without a new commit or PR) from the Travis overview 
 
 .. figure:: /_static/figures/travis-trigger.png
-    :scale: 45%
+    :scale: 100%
 
 To commit *without* triggering a build, simply add [ci skip] somewhere inside the commit message 
 
@@ -577,7 +577,7 @@ Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/
 Next, go to your travis settings and add an environment variable as below 
 
 .. figure:: /_static/figures/travis-settings.png
-    :scale: 45%
+    :scale: 100%
 
 Interpreting Results 
 ------------------------
@@ -589,7 +589,7 @@ This shows us that our tests cover 50 \% of our functions in ``src//``
 To get a more granular view, we can click the ``src//`` and the resultant filename
 
 .. figure:: /_static/figures/codecov.png
-    :scale: 45%
+    :scale: 100%
 
 This shows us precisely which methods (and parts of methods) are untested 
 
@@ -608,6 +608,8 @@ For example, running
     ] dev Expectations
 
 will clone the repo ``https://github.com/quantecon/Expectations.jl`` to ``~/.julia/dev``
+
+Make sure you do this from a fresh REPL
 
 As a reminder, you can find the location of your ``~/.julia`` folder (called the "user depot"), by running 
 
@@ -628,31 +630,33 @@ Next, drag that folder to GitHub Desktop
 The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
 
 .. figure:: /_static/figures/testing-fork.png
-    :scale: 45%
+    :scale: 100%
 
 Lastly, edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL 
 
 .. figure:: /_static/figures/testing-repo-settings.png
-    :scale: 45%
+    :scale: 100%
 
 Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is 
 
 If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
 
 .. figure:: /_static/figures/testing-commit.png
-    :scale: 45%
+    :scale: 100%
 
 Here, for example, we're revising the README 
 
-Committing and pushing to the server will push these changes to the fork you created on your account (which you can also access by viewing the commits `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the ``version_control`` lecture)
+Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account 
+
+To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the ``version_control`` lecture
 
 .. figure:: /_static/figures/testing-expectations.png
-    :scale: 60%
+    :scale: 100%
 
-Clicking "Create PR" will create a pull request for project maintainers to review and approve 
+Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve 
 
 .. figure:: /_static/figures/testing-pr2.png
-    :scale: 60%
+    :scale: 100%
 
 For more on PRs, see the relevant section of the ``version_control`` lecture 
 
@@ -661,7 +665,7 @@ Case with Write Access
 
 If you have write access to the repo, we can skip the preceding steps about forking and changing the URL 
 
-You can use `] dev` on a package name or the URL of the package.  
+You can use ``] dev`` on a package name or the URL of the package.  
 
 .. code-block:: julia
     :class: no-execute
@@ -683,19 +687,28 @@ Next, drag that folder to GitHub Desktop
 Then, in order to work with a project locally, all we need to do is open it in a text editor (like Atom)
 
 .. figure:: /_static/figures/testing-atom-package.png
-    :scale: 45%
+    :scale: 100%
 
-From here, we can edit this package just like we created it ourselves and use GitHub Desktop for all package operations (pushing, pulling, reverting, etc.)
+From here, we can edit this package just like we created it ourselves and use GitHub Desktop to track versions of our package files (say, after ``] up``, or editing source code, ``] add Package``, etc.)
 
-Removing a Julia Project 
+Removing a Julia Package 
 ------------------------------
 
-To "un-dev" a Julia project (say, if we want to use our old ``Expectations.jl``), you can simply run 
+To "un-dev" a Julia package (say, if we want to use our old ``Expectations.jl``), you can simply run 
 
 .. code-block:: julia 
     :class: no-execute 
 
     ] free Expectations 
+
+To delete it entirely, simply run 
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    ] rm Expectations 
+
+From a fresh REPL 
 
 Benchmarking 
 ==================
