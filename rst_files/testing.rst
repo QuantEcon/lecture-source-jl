@@ -596,7 +596,7 @@ This shows us precisely which methods (and parts of methods) are untested
 Pull Requests to External Julia Projects 
 ===============================================
 
-As mentioned in ``version control``, sometimes we'll want to work on external repos that are also Julia projects 
+As mentioned in `version control <version_control>`_, sometimes we'll want to work on external repos that are also Julia projects 
 
 The first thing is to ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo and sync it with the Julia package manager
 
@@ -648,7 +648,7 @@ Here, for example, we're revising the README
 
 Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account 
 
-To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the ``version_control`` lecture
+To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the `version control <version_control>`_ lecture
 
 .. figure:: /_static/figures/testing-expectations.png
     :scale: 60%
@@ -660,7 +660,7 @@ Clicking "new pull request" from the pull requests tab will show us a snapshot o
 .. figure:: /_static/figures/testing-pr2.png
     :scale: 60%
 
-For more on PRs, see the relevant section of the ``version_control`` lecture 
+For more on PRs, see the relevant section of the `version control <version_control>`_ lecture 
 
 Case with Write Access
 ---------------------------

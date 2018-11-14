@@ -351,12 +351,17 @@ Commit some changes by selecting the files and writing a commit message
 .. figure:: /_static/figures/git-fork-changes.png
     :scale: 60%
 
+And push by using the dropdown 
+
+.. figure:: /_static/figures/git-dropdown.png
+    :scale: 60%
+
 Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
 
 .. figure:: /_static/figures/git-edit-fork.png
     :scale: 60%
 
-We should make confirm that these changes are on the server 
+We should make confirm that these changes are on the server (which we can get to by going to the `fork webpage <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
 
 .. figure:: /_static/figures/git-fork-history.png
     :scale: 60%
@@ -368,7 +373,7 @@ Next, go to the pull requests menu and click "New Pull Request." You'll see some
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
-Fill in the details hit create. This opens a form like this on the main repo
+Fill in the details and hit create. This opens a form like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
     :scale: 60%
@@ -379,21 +384,21 @@ The key pieces are
 * A list of reviewers, who can approve or modify our changes 
 * Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
 
-For an example of a PR, see `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
+Here's an `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 To edit a PR, simply push changes to the fork you cloned to your desktop
 
-For example, let's say we push a new change to the README *after* we create the PR 
+For example, let's say we commit a new change to the README *after* we create the PR 
 
 .. figure:: /_static/figures/git-pr-modification.png
     :scale: 60%
 
-And push it to the server, we can then see the change reflected in the PR `webpage <https://github.com/quanteconuser/example_repository/pull/3>`_
+After pushing to the server, the change is reflected in the PR `webpage <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 .. figure:: /_static/figures/git-pr-expost.png
     :scale: 60%
 
-That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
+That is, creating a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
 
 Write Access Case 
 ----------------------
@@ -425,7 +430,7 @@ For example, let's say we add some stuff to the Julia code file and commit it
 
 To put this branch (with changes) on the server, we simply need to click "Publish Branch"
 
-Navigating to the repo page, we will see a suggestion about a new branch
+Navigating to the `repo page <https://github.com/quanteconuser/example_repository>`_, we will see a suggestion about a new branch
 
 .. figure:: /_static/figures/git-new-branch.png
     :scale: 60%
