@@ -707,7 +707,7 @@ The best resource is to carefully read other peoples code, but a few sources to 
 Now why would we emphasize naming as style as a crucial part of the lectures?
 
 Because it is an essential tool for creating research that is 
-**reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_(computer_science\)>`_
+**reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_\(computer_science\)>`_
 
 Some helpful ways to think about this are 
 
