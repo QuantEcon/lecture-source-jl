@@ -112,9 +112,6 @@ The easiest approach is to using Julia with Jupyter on your desktop is to instal
         see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and
         `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_.
 
-.. This could be in a separate section
-.. * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
-
 2. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
 
 3. Open Julia, either by
