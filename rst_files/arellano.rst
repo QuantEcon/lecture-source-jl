@@ -367,9 +367,9 @@ Setup
         vf = zeros(nB, ny)
         vd = zeros(1, ny)
         vc = zeros(nB, ny)
-        policy = zeros(Float64, nB, ny)
+        policy = zeros(nB, ny)
         q = ones(nB, ny) .* (1 / (1 + r))
-        defprob = zeros(Float64, nB, ny)
+        defprob = zeros(nB, ny)
 
         return (β = β, γ = γ, r = r, ρ = ρ, η = η, θ = θ, ny = ny, 
                 nB = nB, ygrid = ygrid, ydefgrid = ydefgrid, 
