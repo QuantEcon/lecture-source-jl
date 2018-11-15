@@ -782,16 +782,16 @@ Setup
         U = similar(X, Float64)
 
         function normalized_orthogonal_projection(b, Z)
-            # Project onto the orthogonal complement of the col span of Z
+            # project onto the orthogonal complement of the col span of Z
             orthogonal = I - Z * inv(Z'Z) * Z'
             projection = orthogonal * b
-            # Normalize
+            # normalize
             return projection / norm(projection)
         end
 
         for col in 1:size(U, 2)
-            # Set up
-            b = X[:,col]       # The vector we're going to project
+            # set up
+            b = X[:,col]       # vector we're going to project
             Z = X[:,1:col - 1] # first i-1 columns of X
             U[:,col] = normalized_orthogonal_projection(b, Z)
         end
