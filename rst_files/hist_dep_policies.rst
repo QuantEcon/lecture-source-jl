@@ -668,6 +668,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
     using QuantEcon, Roots, Plots
     gr(fmt=:png)
+    pyplot()
 
     struct HistDepRamsey
         # these are the parameters of the economy
@@ -722,7 +723,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
         Q = 0.0
 
         # use LQ to solve the Ramsey Problem.
-        lq = LQ(Q, -R, A, B, bet=β)
+        lq = QuantEcon.LQ(Q, -R, A, B, bet=β)
 
         P, F, _d = stationary_values(lq)
 
@@ -737,7 +738,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
         R = hdr.R
         R[2, 3] = R[3, 2] = -μ / 2
-        lq = LQ(Q, -R, A, B, bet=β)
+        lq = QuantEcon.LQ(Q, -R, A, B, bet=β)
 
         P, F, _d = stationary_values(lq)
 
@@ -778,14 +779,14 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
         u0 = compute_u0(hdr, P)
 
         # initialize vectors
-        y = Array{TF}(4, T)
-        uhat = Vector{TF}(T)
-        uhatdif = Vector{TF}(T)
-        τhat = Vector{TF}(T)
-        τhatdif = Vector{TF}(T)
-        μ = Vector{TF}(T)
-        G = Vector{TF}(T)
-        GPay = Vector{TF}(T)
+        y = zeros(4, T)
+        uhat = zeros(T)
+        uhatdif = zeros(T)
+        τhat = zeros(T)
+        τhatdif = zeros(T)
+        μ = zeros(T)
+        G = zeros(T)
+        GPay = zeros(T)
 
         # initial conditions
         G[1] = G0
