@@ -182,19 +182,16 @@ The code for solving the DP problem described above is found below:
 
 .. code-block:: julia
 
-  struct CareerWorkerProblem{TF<:AbstractFloat,
-                            TI<:Integer,
-                            TAV<:AbstractVector{TF},
-                            TAV2<:AbstractVector{TF}}
-      β::TF
-      N::TI
-      B::TF
-      θ::TAV
-      ϵ::TAV
-      F_probs::TAV2
-      G_probs::TAV2
-      F_mean::TF
-      G_mean::TF
+  struct CareerWorkerProblem
+      β
+      N
+      B
+      θ
+      ϵ
+      F_probs
+      G_probs
+      F_mean
+      G_mean
   end
 
   function CareerWorkerProblem(;β = 0.95,
