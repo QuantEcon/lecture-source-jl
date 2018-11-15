@@ -1496,7 +1496,7 @@ Exercise 3
     plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
     plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
     m = moment_sequence(ar)
-    pop_means = Float64[]
+    pop_means = zeros(0)
     for (i, t) ∈ enumerate(m)
         (μ_x, μ_y, Σ_x, Σ_y) = t
         push!(pop_means, μ_y[1])
