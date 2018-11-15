@@ -861,7 +861,6 @@ Here's the code
     # parameters
     β = 1 / 1.05
     ρ, mg = .7, .35
-    A = Matrix{Float64}(I, 2, 2)
     A = [ρ mg*(1 - ρ); 0.0 1.0]
     C = [sqrt(1 - ρ^2) * mg / 10 0.0; 0 0]
     Sg = [1.0 0.0]
