@@ -674,7 +674,7 @@ Exercise 3
 .. code-block:: julia
 
     # define A, Q, G, R
-    G = Matrix{Float64}(I, 2, 2)
+    G = I + zeros(2, 2)
     R = 0.5 .* G
     A = [0.5 0.4
             0.6 0.3]
