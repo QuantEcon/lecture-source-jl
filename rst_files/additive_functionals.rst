@@ -279,7 +279,7 @@ Setup
         nk0 = zeros(1, nk)
         ny0c = zeros(nm, 1)
         ny0r = zeros(1, nm)
-        ny1m = Matrix{Float64}(I, nm, nm)
+        ny1m = I + zeros(nm, nm)
         ny0m = zeros(nm, nm)
         nyx0m = similar(D)
 
