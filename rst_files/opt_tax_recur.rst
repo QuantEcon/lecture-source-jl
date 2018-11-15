@@ -1481,7 +1481,7 @@ This utility function is implemented in the type `CRRAutility`
         γ = 2.0,
         Π = 0.5 * ones(2, 2),
         G = [0.1, 0.2],
-        Θ = ones(Float64, 2),
+        Θ = ones(2),
         transfers = false
         )
         function U(c, n)
