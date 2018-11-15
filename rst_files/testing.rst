@@ -69,7 +69,7 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
-We'll use the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
+First, load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
 
 .. code-block:: julia 
 
@@ -361,13 +361,23 @@ Make sure you've activated the project environment (``] activate ExamplePackage`
 Collaborative Work 
 --------------------------
 
-For someone else to get the package, they simply need to run 
+For someone else to get the package, they simply need to
+
+1. Run the following command 
 
 .. code-block:: julia 
 
     ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
-This will place the repository inside their ``~/.julia/dev`` folder, and they can drag-and-drop it to GitHub desktop in the usual way 
+This will place the repository inside their ``~/.julia/dev`` folder
+
+2. Drag-and-drop the folder to GitHub desktop in the usual way 
+
+Recall that the path to your ``~/.julia`` folder is 
+
+.. code-block:: julia 
+
+    ] DEPOT_PATH[1]
 
 They can then collaborate as they would on other git repositories 
 

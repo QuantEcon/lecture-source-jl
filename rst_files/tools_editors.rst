@@ -331,9 +331,9 @@ Here, we'll walk through the setup and installation steps, along with the main f
 Setup
 -----------
 
-* Create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
+1. First, create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
     
-Download and install for
+2. Next, download and install Docker for
 
 * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
 * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
@@ -344,25 +344,25 @@ Download and install for
 
 * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
 
-To verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
+3. Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
 
-.. code-block:: none 
+    .. code-block:: none 
 
-    docker pull hello-world 
-    docker run hello-world 
+        docker pull hello-world 
+        docker run hello-world 
 
 You should see something like 
 
 .. figure:: /_static/figures/docker-hello-world.png
     :scale: 60%
 
-Download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
+4. Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
 
 .. code-block:: none
 
     docker pull quantecon/base
 
-Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages 
+5. Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages 
 
 .. code-block:: none
 

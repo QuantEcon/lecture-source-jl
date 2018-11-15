@@ -105,39 +105,39 @@ Installing Julia and Dependencies
 
 The easiest approach is to using Julia with Jupyter on your desktop is to install Anaconda
 
-Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
+1. Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
 
-* Make sure you click yes to "add Anaconda to my PATH."
-* If you would rather do that later, 
-  see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and
-  `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_.
+    * Make sure you click yes to "add Anaconda to my PATH."
+    * If you would rather do that later, 
+        see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and
+        `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_.
 
 .. This could be in a separate section
 .. * Note that the packages in Anaconda update regularly --- you can keep up to date by typing ``conda update anaconda`` in a terminal 
 
-Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
+2. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
 
-Assuming there were no problems, you should now be able to start Julia either by
+3. Open Julia, either by
 
-* Navigating to Julia through your menus or desktop icons (Windows, OSX), or
-* Opening a terminal and typing ``julia`` (Linux, + OSX/git bash if you configure it)
+    * Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+    * Opening a terminal and typing ``julia`` (Linux, + OSX/git bash if you configure it)
 
 Either way you should now be looking at something like this (modulo your operating system)
 
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 75%
 
-In that ``julia`` terminal, type the following
+4. In that ``julia`` terminal, type the following
 
 .. code-block:: none
 
     ] add IJulia InstantiateFromURL Revise REPL
 
-Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes)
+5. Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes)
 
 .. literalinclude:: /_static/includes/deps.jl    
 
-To run Jupyter, in a terminal ``cd`` to the location you wish to modify local files in and type 
+To run Jupyter, you can now open a terminal, ``cd`` to the location you wish to modify local files in and type 
 
 .. code-block:: none
 
@@ -145,8 +145,7 @@ To run Jupyter, in a terminal ``cd`` to the location you wish to modify local fi
 
 For convenience, you may find it useful on your operating system to change the directory where the REPL starts
 
-* On Windows, if you have a shortcut on your desktop or on the taskbar, you should: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
-
+6. On Windows, if you have a shortcut on your desktop or on the taskbar, you should: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
 
 .. _jl_startup_file:
 
