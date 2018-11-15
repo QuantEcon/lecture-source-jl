@@ -429,7 +429,7 @@ In particular, let's look at what happens when we change :math:`\beta` and
 .. code:: julia
 
     grid_size = 25
-    R = rand(Float64, grid_size, grid_size)
+    R = rand(grid_size, grid_size)
 
     c_vals = range(10.0, 30.0, length = grid_size)
     β_vals = range(0.9, 0.99, length = grid_size)
