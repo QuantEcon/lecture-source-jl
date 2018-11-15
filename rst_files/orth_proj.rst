@@ -779,7 +779,7 @@ Setup
 
     function gram_schmidt(X)
 
-        U = similar(X, Float64)
+        U = similar(X, Float64) # for robustness
 
         function normalized_orthogonal_projection(b, Z)
             # project onto the orthogonal complement of the col span of Z
