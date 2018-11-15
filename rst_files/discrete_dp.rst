@@ -651,7 +651,7 @@ Here's how we could set up these objects for the preceding example
     s_indices = Int64[]
     a_indices = Int64[]
     Q = zeros(0, n)
-    R = Float64[]
+    R = zeros(0)
 
     b = 1 / (B + 1)
 
@@ -659,7 +659,7 @@ Here's how we could set up these objects for the preceding example
         for a in 0:min(M, s)
             s_indices = [s_indices; s + 1]
             a_indices = [a_indices; a + 1]
-            q = zeros(Float64, 1, n)
+            q = zeros(1, n)
             q[(a + 1):((a + B) + 1)] .= b
             Q = [Q; q]
             R = [R; u(s-a)]
