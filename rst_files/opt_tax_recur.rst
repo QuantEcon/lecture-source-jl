@@ -1350,7 +1350,7 @@ The above steps are implemented in a type called `RecursiveAllocation`
       nf = Vector{AbstractInterpolation}(undef, S)
       xprimef = Matrix{AbstractInterpolation}(undef, S, S)
       for s in 1:S
-          PFvec = Matrix{typeof(PP.model).parameters[1]}(undef, length(xgrid), 3+S)
+          PFvec = zeros(length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
               PFvec[i_x, :] = PF(i_x, x, s)
           end
@@ -1382,7 +1382,6 @@ The above steps are implemented in a type called `RecursiveAllocation`
       model, S, policies = pab.model, pab.S, pab.policies
       β, Π, Uc = model.β, model.Π, model.Uc
       cf, nf, xprimef = policies[1], policies[2], policies[3]
-      TF = typeof(model).parameters[1]
       cHist = zeros(T)
       nHist = similar(cHist)
       Bhist = similar(cHist)
