@@ -406,15 +406,15 @@ Setup
             end
         end
 
-        add_figs = Vector{Any}(undef, nm)
+        add_figs = []
 
         for ii in 0:nm-1
             li, ui = npaths*(ii), npaths*(ii + 1)
             LI, UI = 2ii, 2(ii + 1)
-            add_figs[ii + 1] =
+            push!(add_figs,
                 plot_given_paths(T, ypath[li + 1:ui, :], mpath[li + 1:ui, :], spath[li + 1:ui, :],
                                 tpath[li + 1:ui, :], mbounds[LI + 1:UI, :], sbounds[LI + 1:UI, :],
-                                show_trend = show_trend)
+                                show_trend = show_trend))
         end
         return add_figs
     end
@@ -483,16 +483,16 @@ Setup
             end
         end
 
-        mult_figs = Vector{Any}(undef, nm)
+        mult_figs = []
 
         for ii in 0:nm-1
             li, ui = npaths * ii, npaths * (ii + 1)
             LI, UI = 2ii, 2(ii + 1)
-            mult_figs[ii + 1] =
+            push!(mult_figs,
                 plot_given_paths(T, ypath_mult[li+1:ui, :], mpath_mult[li+1:ui, :],
                                 spath_mult[li+1:ui, :], tpath_mult[li+1:ui, :],
                                 mbounds_mult[LI+1:UI, :], sbounds_mult[LI+1:UI, :],
-                                horline = 1.0, show_trend=show_trend)
+                                horline = 1.0, show_trend=show_trend))
         end
 
         return mult_figs
@@ -543,13 +543,14 @@ Setup
             end
         end
 
-        mart_figs = Vector{Any}(undef, nm)
+        mart_figs = []
 
         for ii in 0:nm-1
             li, ui = npaths*(ii), npaths*(ii + 1)
             LI, UI = 2ii, 2(ii + 1)
-            mart_figs[ii + 1] = plot_martingale_paths(T, mpath_mult[li + 1:ui, :],
-                                                        mbounds_mult[LI + 1:UI, :], horline = 1)
+            push!(mart_figs, 
+                plot_martingale_paths(T, mpath_mult[li + 1:ui, :],
+                                                        mbounds_mult[LI + 1:UI, :], horline = 1))
             plot!(mart_figs[ii + 1], title = "Martingale components for many paths of y_(ii + 1)")
         end
 
