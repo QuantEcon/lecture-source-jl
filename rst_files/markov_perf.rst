@@ -468,7 +468,7 @@ From these we compute the infinite horizon MPE using the following code
     γ = 12.0
 
     # in LQ form
-    A  = Matrix{Float64}(I, 3, 3)
+    A  = I + zeros(3, 3)
     B1 = [0.0, 1.0, 0.0]
     B2 = [0.0, 0.0, 1.0]
 
@@ -733,7 +733,7 @@ First let's compute the duopoly MPE under the stated parameters
     γ = 12.0
 
     # in LQ form
-    A = Matrix{Float64}(I, 3, 3)
+    A = I + zeros(3, 3)
     B1 = [0.0, 1.0, 0.0]
     B2 = [0.0, 0.0, 1.0]
 
