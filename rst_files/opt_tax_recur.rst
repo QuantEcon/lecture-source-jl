@@ -704,39 +704,35 @@ The above steps are implemented in a type called `SequentialAllocation`
 
   import QuantEcon: simulate
 
-  mutable struct Model{TF <: AbstractFloat,
-                       TM <: AbstractMatrix{TF},
-                       TV <: AbstractVector{TF}}
-      β::TF
-      Π::TM
-      G::TV
-      Θ::TV
-      transfers::Bool
-      U::Function
-      Uc::Function
-      Ucc::Function
-      Un::Function
-      Unn::Function
-      n_less_than_one::Bool
+  mutable struct Model
+      β
+      Π
+      G
+      Θ
+      transfers
+      U
+      Uc
+      Ucc
+      Un
+      Unn
+      n_less_than_one
   end
 
-  struct SequentialAllocation{TP <: Model,
-                              TI <: Integer,
-                              TV <: AbstractVector}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      cFB::TV
-      nFB::TV
-      ΞFB::TV
-      zFB::TV
+  struct SequentialAllocation
+      model
+      mc
+      S
+      cFB
+      nFB
+      ΞFB
+      zFB
   end
 
   function SequentialAllocation(model)
       β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
       mc = MarkovChain(Π)
       S = size(Π, 1)   # Number of states
-      # Now find the first best allocation
+      # now find the first best allocation
       cFB, nFB, ΞFB, zFB = find_first_best(model, S, 1)
 
       return SequentialAllocation(model, mc, S, cFB, nFB, ΞFB, zFB)
@@ -875,20 +871,16 @@ The above steps are implemented in a type called `SequentialAllocation`
       return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
   end
 
-  mutable struct BellmanEquation{TP <: Model,
-                                 TI <: Integer,
-                                 TV <: AbstractVector,
-                                 TM <: AbstractMatrix{TV},
-                                 TVV <: AbstractVector{TV}}
-      model::TP
-      S::TI
-      xbar::TV
-      time_0::Bool
-      z0::TM
-      cFB::TV
-      nFB::TV
-      xFB::TV
-      zFB::TVV
+  mutable struct BellmanEquation
+      model
+      S
+      xbar
+      time_0
+      z0
+      cFB
+      nFB
+      xFB
+      zFB
   end
 
   function BellmanEquation(model, xgrid, policies0)
@@ -1276,17 +1268,15 @@ The above steps are implemented in a type called `RecursiveAllocation`
 .. code-block:: julia
   :class: collapse
 
-  struct RecursiveAllocation{TP <: Model, TI <: Integer,
-                             TVg <: AbstractVector, TVv <: AbstractVector,
-                             TVp <: AbstractArray}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      T::BellmanEquation
-      μgrid::TVg
-      xgrid::TVg
-      Vf::TVv
-      policies::TVp
+  struct RecursiveAllocation
+      model
+      mc
+      S
+      T
+      μgrid
+      xgrid
+      Vf
+      policies
   end
 
   function RecursiveAllocation(model, μgrid)
