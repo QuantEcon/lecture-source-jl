@@ -335,14 +335,14 @@ Setup
     
 2. Next, download and install Docker for
 
-* `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
-* `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
+    * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+    * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
 
 **Note:** For Windows 
 
-* Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (**not Home or Mobile**)
+    * Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (**not Home or Mobile**)
 
-* If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
+    * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
 
 3. Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
 
@@ -358,16 +358,16 @@ You should see something like
 
 4. Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
 
-.. code-block:: none
+    .. code-block:: none
 
-    docker pull quantecon/base
+        docker pull quantecon/base
 
 5. Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages 
 
-.. code-block:: none
+    .. code-block:: none
 
-    docker volume rm quantecon 
-    docker volume create quantecon 
+        docker volume rm quantecon 
+        docker volume create quantecon 
 
 The first line will delete any existing volume we had with that name
 

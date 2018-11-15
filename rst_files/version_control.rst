@@ -26,30 +26,30 @@ In this lecture, we'll discuss how to use Git and GitHub
 Setup 
 ==================
 
-First, make sure you create an account on `GitHub.com <http://github.com/>`_
+1. Make sure you create an account on `GitHub.com <http://github.com/>`_
 
-* If you are a student, be sure to use the GitHub `Student Developer Pack <https://education.github.com/pack/>`_
+    * If you are a student, be sure to use the GitHub `Student Developer Pack <https://education.github.com/pack/>`_
 
-* Otherwise, see if you qualify for a free `Non-Profit/Academic Plan <https://help.github.com/articles/about-github-education-for-educators-and-researchers/>`_
+    * Otherwise, see if you qualify for a free `Non-Profit/Academic Plan <https://help.github.com/articles/about-github-education-for-educators-and-researchers/>`_
 
-* These come with things like unlimited private repositories, testing support, etc.
+    * These come with things like unlimited private repositories, testing support, etc.
 
-Next, install ``git`` and the GitHub Desktop application 
+2. Install ``git`` and the GitHub Desktop application 
 
-1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
+    1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-2. Install the `GitHub Desktop <https://desktop.github.com/>`_ application
+    2. Install the `GitHub Desktop <https://desktop.github.com/>`_ application
 
-Optionally (but strongly recommended):  On Windows, change the default line-ending by
+3. Optionally (but strongly recommended):  On Windows, change the default line-ending by
 
-1. Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
+    1. Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
 
-2. Run the following
+    2. Run the following
 
-.. code-block:: none
+        .. code-block:: none
 
-    git config --global core.eol lf
-    git config --global core.autocrlf false
+            git config --global core.eol lf
+            git config --global core.autocrlf false
 
 Git vs. GitHub vs. GitHub Desktop
 -----------------------------------

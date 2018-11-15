@@ -69,13 +69,13 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
-First, load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
+1. Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
 
-.. code-block:: julia 
+    .. code-block:: julia 
 
-    using PkgTemplates 
+        using PkgTemplates 
 
-Next, let's create a *template* for our project 
+2. Create a *template* for your project 
 
 This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
 
@@ -83,11 +83,11 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
-Let's create a specific project based off this template
+3. Create a specific project based off this template
 
-.. code-block:: julia 
+    .. code-block:: julia 
 
-    generate("ExamplePackage.jl", ourTemplate)
+        generate("ExamplePackage.jl", ourTemplate)
 
 If we navigate to the package directory (shown in the output), we should see something like 
 

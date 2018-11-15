@@ -129,13 +129,13 @@ Either way you should now be looking at something like this (modulo your operati
 
 4. In that ``julia`` terminal, type the following
 
-.. code-block:: none
+    .. code-block:: none
 
-    ] add IJulia InstantiateFromURL Revise REPL
+        ] add IJulia InstantiateFromURL Revise REPL
 
 5. Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes)
 
-.. literalinclude:: /_static/includes/deps.jl    
+    .. literalinclude:: /_static/includes/deps.jl    
 
 To run Jupyter, you can now open a terminal, ``cd`` to the location you wish to modify local files in and type 
 
