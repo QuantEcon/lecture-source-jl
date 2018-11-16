@@ -719,7 +719,7 @@ where :math:`R_t(s^t)` is the gross risk-free rate of interest between :math:`t`
 and :math:`t+1` at history :math:`s^t` and :math:`T_t(s^t)` are nonnegative transfers
 
 Throughout this lecture, we shall set transfers to zero (for some issues about the limiting behavior of debt, this makes a possibly
-important  difference from AMSS :cite:`AMSS_2002`, who restricted transfers
+important difference from AMSS :cite:`AMSS_2002`, who restricted transfers
 to be nonnegative)
 
 In this case, the household faces a sequence of budget constraints
