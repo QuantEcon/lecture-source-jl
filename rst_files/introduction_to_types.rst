@@ -162,23 +162,11 @@ Concrete types are types that we can *instantiate* --- i.e., pair with data in m
 
 We will now examine **abstract types** that cannot be instantiated (e.g., ``Real``, ``AbstractFloat``)
 
-While you will never have a ``Real`` number directly in memory, the abstract types
+For example, while you will never have a ``Real`` number directly in memory, the abstract types
 help us organize and work with related concrete types
 
-.. In our example above, the Julia library code for ``Array`` and ``Complex`` are written in a way such that it will work for any ``Real``
-
-.. Instead, it provides a way to write :doc:`generic <generic_programming>` code for specific to any concrete types based on ``Real``
-
-.. We saw above that ``Float64`` is the standard type for representing a 64 bit
-.. floating point number
-
-.. But we've also seen references to types such as ``Real`` and ``AbstractFloat``
-
-
-**can we think of a different subheading here, it's the same as above**
-
 Subtypes and Supertypes
-----------------------
+-------------------------
 
 How exactly do abstract types organize or relate different concrete types?
 
