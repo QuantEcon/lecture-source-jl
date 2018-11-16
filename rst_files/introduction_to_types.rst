@@ -373,7 +373,7 @@ Let's start with a trivial example where the ``struct`` we build has fields name
 .. code-block:: julia
 
     struct FooNotTyped  # immutable by default, use `mutable struct` otherwise 
-        a 
+        a # BAD! not typed 
         b
         c
     end
