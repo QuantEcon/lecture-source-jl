@@ -1390,8 +1390,8 @@ Solutions
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LaTeXStrings
-    pyplot()
+    using QuantEcon, Plots
+    gr(fmt=:png)
 
 Exercise 1
 ----------
@@ -1411,7 +1411,7 @@ Exercise 1
 
     x, y = simulate(lss, 50)
     plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-    plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    plot!(xlabel="time", ylabel = "y_t", legend = :none)
 
 .. code-block:: julia
     :class: test
@@ -1446,7 +1446,7 @@ Exercise 2
     x, y = simulate(ar, 200)
 
     plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-    plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    plot!(xlabel="time", ylabel = "y_t", legend = :none)
 
 .. code-block:: julia
     :class: test
@@ -1494,7 +1494,7 @@ Exercise 3
 
     ensemble_mean = ensemble_mean ./ I
     plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
-    plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
+    plot!(ensemble_mean, color = :blue, linewidth = 2, label = "y_t_bar")
     m = moment_sequence(ar)
     pop_means = zeros(0)
     for (i, t) ∈ enumerate(m)
@@ -1502,8 +1502,8 @@ Exercise 3
         push!(pop_means, μ_y[1])
         i == 50 && break
     end
-    plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
-    plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
+    plot!(pop_means, color = :green, linewidth = 2, label = "G mu_t")
+    plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = "y_t", legendfont = font(12))
 
 .. code-block:: julia
     :class: test
@@ -1565,8 +1565,8 @@ Exercise 4
     plot(ys, linewidth = 0.8, alpha = 0.5)
     plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
     scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
-    plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
-    plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
+    plot!(ylims=(ymin, ymax), ylabel = "y_t", xticks =[], yticks = ymin:0.2:ymax)
+    plot!(annotations = [(T0+1, -0.55, "T");(T1+1, -0.55, "T'");(T2+1, -0.55, "T''")])
 
 .. code-block:: julia
     :class: test
