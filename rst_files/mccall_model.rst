@@ -116,7 +116,7 @@ A crucial observation is that this function :math:`V` must satisfy the recursion
     V(w)
     = \max \left\{
             \frac{w}{1 - \beta}, \, c + \beta \sum_{i=1}^n V(w_i) p_i
-        \right\}\quad\quad\quad
+        \right\}
 
 for every possible :math:`w_i`  in :math:`w_1, \ldots, w_n`
 
@@ -177,7 +177,7 @@ where
 .. math::
     :label: odu_barw
 
-    \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}\quad\quad\quad
+    \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}
 
 Here :math:`\bar w` is a constant depending on :math:`\beta, c` and the wage distribution, called the *reservation wage*
 
@@ -480,7 +480,7 @@ That is,
 
     \psi
     = c + \beta
-        \sum_{i=1}^n V(w_i) p_i\quad\quad\quad
+        \sum_{i=1}^n V(w_i) p_i
 
 where :math:`V` is the value function
 
@@ -501,7 +501,7 @@ Substituting this last equation into :eq:`j1` gives
         \sum_{i=1}^n
         \max \left\{
             \frac{w_i}{1 - \beta}, \psi
-        \right\}  p_i\quad\quad\quad
+        \right\}  p_i
 
 Which we could also write as :math:`\psi = T_{\psi}(\psi)` for the appropriate operator
 
@@ -523,7 +523,7 @@ Step 2: compute the update :math:`\psi'` via
         \sum_{i=1}^n
         \max \left\{
             \frac{w_i}{1 - \beta}, \psi
-        \right\}  p_i\quad\quad\quad
+        \right\}  p_i
 
 Step 3: calculate the deviation :math:`|\psi - \psi'|`
 
