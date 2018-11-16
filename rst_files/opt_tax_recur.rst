@@ -1302,9 +1302,9 @@ The above steps are implemented in a type called `RecursiveAllocation`
           c[i, :], n[i, :], x[i, :], V[i, :] = time1_value(PP, μ)
       end
       Vf = Vector{AbstractInterpolation}(undef, 2)
-      cf = Vector{AbstractInterpolation}(undef, 2)
-      nf = Vector{AbstractInterpolation}(undef, 2)
-      xprimef = Matrix{AbstractInterpolation}(undef, 2, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, 2, S)
       for s in 1:2
           cf[s] = LinearInterpolation(x[:, s][end:-1:1], c[:, s][end:-1:1])
           nf[s] = LinearInterpolation(x[:, s][end:-1:1], n[:, s][end:-1:1])
@@ -1346,9 +1346,9 @@ The above steps are implemented in a type called `RecursiveAllocation`
   function fit_policy_function(PP, PF, xgrid)
       S = PP.S
       Vf = Vector{AbstractInterpolation}(undef, S)
-      cf = Vector{AbstractInterpolation}(undef, S)
-      nf = Vector{AbstractInterpolation}(undef, S)
-      xprimef = Matrix{AbstractInterpolation}(undef, S, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, S, S)
       for s in 1:S
           PFvec = zeros(length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
