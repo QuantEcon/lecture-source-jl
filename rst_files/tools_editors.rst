@@ -34,6 +34,10 @@ Next, either download the file `startup.jl </_static/includes/startup.jl>`_ into
 
 .. include:: /_static/includes/startup.jl.raw
 
+For convenience, you may find it useful on your operating system to change the directory where the REPL starts
+ 
+On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
+
 
 The REPL
 =============

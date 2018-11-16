@@ -42,59 +42,6 @@ While you will eventually use other editors, there are some advantages of starti
 
 Whether you end up using Jupyter as your primary work environment or not, you'll find learning about it an excellent investment
 
-Options
------------------------------
-
-There are a few ways to get started with Jupyter
-
-#. Install `Anaconda and Julia locally <jl_jupyterlocal>`_ otherwise and manually install QuantEcon based packages
-#. Use `Jupyter on the cloud or a department server <jl_jupyterhub>`_ (if it is available)
-#. Install the pre-built `docker-based Julia/Jupyter <jl_jupyterdocker>`_ from QuantEcon
-
-Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using Jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
-
-.. _jl_jupyterhub:
-
-Using Jupyter Online
----------------------------
-
-If you have access to a cloud based solution for Jupyter, then that is typically the easiest solution
-
-* Students: ask your department if these resources are available 
-* Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes
-* `JuliaBox <www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
-
-.. * JuliaBox (currently having , once it's working. 
-..  For example, many Canadian students have access to syzygy.ca
-.. * Ask at your university .. 
-.. (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ )
-
-
-If you are given an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
-
-Otherwise, if there are errors when you attempt to use an online JupyterHub, you will need to go open a Jupyter notebook and type
-
-.. code-block:: none
-
-    ] add InstantiateFromURL
-
-If this command fails, then your online JupyterHub may not support adding new packages, and will not work with the QuantEcon lecture
-
-.. _jl_jupyterdocker:
-
-Installing a Pre-built Jupyter Image
----------------------------------------
-
-`Docker <https://www.docker.com/>`_ is a technology that you use to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a software setup on another computer
-
-While it is largely used for running code in the cloud, it is also convenient for using on local computers 
-
-QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
-
-For instructions on how to set this up, see the `tools and editors <tools_editors>`_ lecture 
-
-**Note:** The Docker installation is easy and complete, but it has limitations on operating systems (in particular, Windows 10 is only supported for the Professional and Education editions, and not the Home edition) 
-
 
 .. _jl_jupyterlocal:
 
@@ -103,21 +50,20 @@ Installing Julia and Dependencies
 
 .. While using the Docker instance is convenient and error-proof, you may eventually want to install things locally
 
-The easiest approach is to using Julia with Jupyter on your desktop is to install Anaconda
+The easiest approach is to using Julia with Jupyter on your desktop is to install Anaconda and then Julia
 
 1. Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
 
-    * Make sure you click yes to "add Anaconda to my PATH."
-    * If you would rather do that later, 
-        see: `Anaconda for Windows <http://docs.anaconda.com/anaconda/install/windows/>`_ and
-        `Mac/Linux <https://conda.io/docs/user-guide/install/macos.html>`_.
+    * Make sure you click yes to "add Anaconda to my PATH"
 
-2. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
+2. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options
+
+    * Do not install JuliaPro
 
 3. Open Julia, either by
 
     * Navigating to Julia through your menus or desktop icons (Windows, OSX), or
-    * Opening a terminal and typing ``julia`` (Linux, + OSX/git bash if you configure it)
+    * Opening a terminal and typing ``julia`` (Linux, + OSX)
 
 Either way you should now be looking at something like this (modulo your operating system)
 
@@ -130,21 +76,23 @@ Either way you should now be looking at something like this (modulo your operati
 
         ] add IJulia InstantiateFromURL Revise REPL
 
-5. Then, install and precompile all of the key packages for these lecture notes (which may take 10-20 minutes)
+This installs enough Julia packages to run Jupyter and use the lecture notes
+
+*Note:* On OS/X you will need to type the ``]`` separately and cannot copy/paste the whole string
+
+5. Then, install the key packages for these lecture notes (which may take 10-20 minutes)
 
     .. literalinclude:: /_static/includes/deps.jl    
 
-To run Jupyter, you can now open a terminal, ``cd`` to the location you wish to modify local files in and type 
+This code downloads and compiles the correct version of all of packages used in the QuantEcon lectures, and will only be slow the first-time you execute it
+
+More details on packages will be explained in a `later lecture <tools_editors>`_
+
+6. To run Jupyter, you can now open a terminal, ``cd`` to the location you wish to modify local files in and type 
 
 .. code-block:: none
 
     jupyter lab
-
-For convenience, you may find it useful on your operating system to change the directory where the REPL starts
-
-6. On Windows, if you have a shortcut on your desktop or on the taskbar, you should: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
-
-
 
 
 .. _jl_jupyter:
@@ -250,10 +198,11 @@ Plots
 
 Let's generate some plots
 
-First, ensure that you have activated a set of packages with
+First, ensure that you have activated a set of packages within the current Jupyter notebook
 
 .. literalinclude:: /_static/includes/deps.jl    
 
+You will find the most convenient way to write code is to place this at the top of every notebook
 
 Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
@@ -349,7 +298,7 @@ Package Manager
 
 You can enter the package manager by prepending a ``]``
 
-For example, ``] st`` will give the the current status of installed pacakges in the current environment
+For example, ``] st`` will give the the current status of installed packages in the current environment
 
 
 Sharing Notebooks
@@ -390,3 +339,59 @@ The REPL is one of the best places to add and remove packages, so a good test is
 .. code-block:: julia
 
     ] st
+
+
+.. _jl_juliaoptions:
+
+Other Approaches to Using Jupyter
+===================================
+
+There are a few ways to get started with Jupyter
+
+#. Install `Anaconda and Julia locally <jl_jupyterlocal>`_ and manually install packages used in the QuantEcon lectures
+#. Use `Jupyter on the cloud or a department server <jl_jupyterhub>`_ (if it is available)
+#. Install the pre-built `docker-based Julia/Jupyter <jl_jupyterdocker>`_ from QuantEcon
+
+Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using Jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
+
+.. _jl_jupyterhub:
+
+Using Jupyter Online
+---------------------------
+
+If you have access to a cloud based solution for Jupyter, then that is typically the easiest solution
+
+* Students: ask your department if these resources are available 
+* Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes
+* `JuliaBox <www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
+
+.. * JuliaBox (currently having , once it's working. 
+..  For example, many Canadian students have access to syzygy.ca
+.. * Ask at your university .. 
+.. (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ )
+
+
+If you are given an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
+
+Otherwise, if there are errors when you attempt to use an online JupyterHub, you will need to go open a Jupyter notebook and type
+
+.. code-block:: none
+
+    ] add InstantiateFromURL
+
+If this command fails, then your online JupyterHub may not support adding new packages, and will not work with the QuantEcon lecture
+
+.. _jl_jupyterdocker:
+
+Installing a Pre-built Jupyter Image
+---------------------------------------
+
+`Docker <https://www.docker.com/>`_ is a technology that you use to host a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_ " version of a software setup on another computer
+
+While it is largely used for running code in the cloud, it is also convenient for using on local computers 
+
+QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
+
+For instructions on how to set this up, see the `tools and editors <tools_editors>`_ lecture 
+
+**Note:** The Docker installation is easy and complete, but it has limitations on operating systems (in particular, Windows 10 is only supported for the Professional and Education editions, and not the Home edition) 
