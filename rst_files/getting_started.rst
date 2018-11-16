@@ -60,10 +60,7 @@ The easiest approach is to using Julia with Jupyter on your desktop is to instal
 
     * Do not install JuliaPro due to its limited number of available packages
 
-3. Open Julia, either by
-
-    * Navigating to Julia through your menus or desktop icons (Windows, OSX), or
-    * Opening a terminal and typing ``julia`` (Linux, OSX, Windows)
+3. Open Julia, by navigating to Julia through your menus or desktop icons
 
 Either way you should now be looking at something like this (modulo your operating system)
 
