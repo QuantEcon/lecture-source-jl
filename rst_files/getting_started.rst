@@ -403,3 +403,5 @@ The REPL is one of the best places to add and remove packages, so a good test is
 .. code-block:: julia
 
     ] st
+
+Note that it's not always supported (e.g. on OSX) to paste this directly into the REPL; standard use is to hit the ``]`` first, and then run your package-mode command. 
