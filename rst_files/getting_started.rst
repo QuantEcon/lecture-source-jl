@@ -58,12 +58,12 @@ The easiest approach is to using Julia with Jupyter on your desktop is to instal
 
 2. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options
 
-    * Do not install JuliaPro
+    * Do not install JuliaPro due to its limited number of available packages
 
 3. Open Julia, either by
 
     * Navigating to Julia through your menus or desktop icons (Windows, OSX), or
-    * Opening a terminal and typing ``julia`` (Linux, + OSX)
+    * Opening a terminal and typing ``julia`` (Linux, OSX, Windows)
 
 Either way you should now be looking at something like this (modulo your operating system)
 
@@ -74,21 +74,13 @@ Either way you should now be looking at something like this (modulo your operati
 
     .. code-block:: none
 
-        ] add IJulia InstantiateFromURL Revise REPL
+        ] add IJulia InstantiateFromURL; precompile
 
-This installs enough Julia packages to run Jupyter and use the lecture notes
+This installs enough Julia packages to run Jupyter to begin using the lecture notes
 
 *Note:* On OS/X you will need to type the ``]`` separately and cannot copy/paste the whole string
 
-5. Then, install the key packages for these lecture notes (which may take 10-20 minutes)
-
-    .. literalinclude:: /_static/includes/deps.jl    
-
-This code downloads and compiles the correct version of all of packages used in the QuantEcon lectures, and will only be slow the first-time you execute it
-
-More details on packages will be explained in a `later lecture <tools_editors>`_
-
-6. To run Jupyter, you can now open a terminal, ``cd`` to the location you wish to modify local files in and type 
+5. To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to modify local files and type 
 
 .. code-block:: none
 
@@ -106,18 +98,16 @@ Using Jupyter
 Getting Started
 -----------------------
 
-After you have started Jupyter (either on the cloud, the docker, or locally installed on your computer)
+After you have started Jupyter, your web browser should open to a page on the local machine that looks like
 
-You should see something (not exactly) like this
+You should see something like this
 
 .. figure:: /_static/figures/starting_nb_julia.png
    :scale: 70%
 
 The page you are looking at is called the "dashboard"
 
-The address ``localhost:8888/lab`` you see in the image indicates that the browser is communicating with a Jupyter lab session via port 8888 of the local machine
-
-If you click on "Julia 1.0.1" you should have the option to start a Julia notebook
+If you click on "Julia 1.0.x" you should have the option to start a Julia notebook
 
 Here's what your Julia notebook should look like
 
@@ -125,6 +115,25 @@ Here's what your Julia notebook should look like
    :scale: 70%
 
 The notebook displays an *active cell*, into which you can type Julia commands
+
+.. Not sure this is helpful
+.. **Note** The address ``localhost:8888/lab`` you see in the image indicates that the browser is communicating with a Jupyter lab session via port 8888 of the local machine
+
+
+Using QuantEcon Lecture Packages
+-------------------------------------------
+
+To use the curated set of package versions in the QuantEcon lecture notes, put the following text in a notebook cell, and choose ``Shift-Enter`` to run the cell
+
+    .. literalinclude:: /_static/includes/deps.jl    
+
+This downloads, installs, and compiles the correct version of all of packages used in the QuantEcon lectures
+
+Depending on your computer, this may take **10-15 minutes** to run the **first-time**, but be virtually instantaneous thereafter
+
+This code can be put at the top of any notebook in order to get a tested set of packages compatible with the code in the QuantEcon notes
+
+More details on packages will be explained in a `later lecture <tools_editors>`_
 
 Notebook Basics
 ------------------
