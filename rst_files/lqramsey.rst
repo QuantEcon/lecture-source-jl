@@ -596,7 +596,7 @@ Description and clarifications are given below
         Sd
         Sb
         Ss
-        proc
+        proc::SP
     end
 
     function compute_exog_sequences(econ, x)
@@ -604,7 +604,7 @@ Description and clarifications are given below
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
         g, d, b, s = [dropdims(S * x, dims = 1) for S in (Sg, Sd, Sb, Ss)]
 
-        # solve for Lagrange multiplier in the govt budget constraint
+        #= solve for Lagrange multiplier in the govt budget constraint
         In fact we solve for ν = λ / (1 + 2*λ).  Here ν is the
         solution to a quadratic equation a(ν^2 - ν) + b = 0 where
         a and b are expected discounted sums of quadratic forms of the state. =#
@@ -758,7 +758,7 @@ Description and clarifications are given below
                 π = π, Π = Π, ξ = ξ)
     end
 
-    function gen_fig_1(path::Path)
+    function gen_fig_1(path)
         T = length(path.c)
 
         plt_1 = plot(path.rvn, lw=2, label = "tau_t")
@@ -782,7 +782,7 @@ Description and clarifications are given below
         plot(plt_1, plt_2, plt_3, plt_4, layout=(2,2), size = (800,600))
     end
 
-    function gen_fig_2(path::Path)
+    function gen_fig_2(path)
 
         T = length(path.c)
 
@@ -920,10 +920,9 @@ Our second example adopts a discrete Markov specification for the exogenous proc
     Sd = [0.0 1.0 0.0 0.0 0.0]
     Sb = [0.0 0.0 1.0 0.0 0.0]
     Ss = [0.0 0.0 0.0 1.0 0.0]
-    discrete = true
     proc = DiscreteStochProcess(P, x_vals)
 
-    econ = Economy(β, Sg, Sd, Sb, Ss, discrete, proc)
+    econ = Economy(β, Sg, Sd, Sb, Ss, proc)
     T = 15
     path = compute_paths(econ, T)
 
@@ -1001,9 +1000,8 @@ Solutions
     Sd = [0. 0. 0. 0. 0.]
     Sb = [0. 0. 0. 0. 2.135]
     Ss = [0. 0. 0. 0. 0.]
-    discrete = false
     proc = ContStochProcess(A, C)
-    econ = Economy(β, Sg, Sd, Sb, Ss, discrete, proc)
+    econ = Economy(β, Sg, Sd, Sb, Ss, proc)
 
     T = 50
     path = compute_paths(econ, T)
