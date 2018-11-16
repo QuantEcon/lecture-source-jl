@@ -72,7 +72,8 @@ Either way you should now be looking at something like this (modulo your operati
 
 4. In that ``julia`` terminal, type the following
 
-    .. code-block:: none
+    .. code-block:: julia 
+        :class: no-execute
 
         ] add IJulia InstantiateFromURL; precompile
 

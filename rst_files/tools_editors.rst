@@ -29,6 +29,12 @@ Whenever the Julia compiler or REPL starts, it will look for a file called ``sta
 
 The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
 
+Recall that you can find the location of this directory by running 
+
+.. code-block:: julia 
+
+    DEPOT_PATH[1]
+
 To add the file:
 
 1. In the ``julia`` terminal, type the following
