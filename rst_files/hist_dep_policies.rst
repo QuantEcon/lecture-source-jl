@@ -668,7 +668,6 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
     using QuantEcon, Roots, Plots
     gr(fmt=:png)
-    pyplot()
 
     struct HistDepRamsey
         # these are the parameters of the economy
@@ -875,16 +874,10 @@ The next figure uses the program to compute and show the Ramsey plan for :math:`
         T = length(rp.μ)
         y = rp.y
 
-        ylabels = ["Q" "tau" "u"]
-        y_vals = [y[2, :] y[3, :] y[4, :]]
-        p = plot(0:T, y_vals, color=:blue,
-                label=["Output" "Tax rate" "First difference in output"],
-                size=(600, 600), lw=2, alpha=0.7, ylabel=ylabels, layout=(3, 1),
-                xlims=(0, 15), xlabel=["" "" "Time"], legend=:topright,
-                xticks=0:5:15)
-         return p
+        y_vals = [y[2, :], y[3, :], y[4, :]]
+        plot(y_vals, layout = (3, 1), labels = ["Output" "Tax rate" "First difference in output"], size=(600, 600), lw = 2)
     end
-    
+
     plot1(rp)
 
 
@@ -1085,12 +1078,11 @@ The difference :math:`\Delta \tau_t := \check{\tau_t} -  \tau_t` is shown in the
         y_vals = [τhatdif uhatdif μ G]
         ylabels = ["Delta tau" "Delta u" "mu" "G"]
         labels = hcat("Time inconsistency differential for tax rate",
-                  "Time inconsistency differential for u",
-                  "Lagrange multiplier", "Government revenue")
-        p = plot(0:T , y_vals, ylabel=ylabels, label=labels, size=(800, 800),
-                 lw=2, layout=(4, 1), xlims=(-0.5, 15), alpha=0.7,
-                 legend=:topright, color=:blue, xlabel=["" "" "" "Time"])
-        return p
+                "Time inconsistency differential for u",
+                "Lagrange multiplier", "Government revenue")
+        plot(y_vals, ylabel=ylabels, label=labels, size=(800, 800),
+                lw=2, layout=(4, 1), xlims=(-0.5, 15), alpha=0.7,
+                legend=:topright, color=:blue, xlabel=["" "" "" "Time"])
     end
 
     plot2(rp)
