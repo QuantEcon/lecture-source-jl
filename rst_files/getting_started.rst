@@ -350,7 +350,7 @@ The REPL is one of the best places to add and remove packages, so a good test is
 
 .. _jl_juliaoptions:
 
-Other Approaches to Using Jupyter
+Other Ways to Use Jupyter
 ===================================
 
 There are a few ways to get started with Jupyter
@@ -382,7 +382,8 @@ If you are given an online Jupyter installation for a class, you may not need to
 
 Otherwise, if there are errors when you attempt to use an online JupyterHub, you will need to go open a Jupyter notebook and type
 
-.. code-block:: none
+.. code-block:: julia 
+    :class: no-execute
 
     ] add InstantiateFromURL
 
