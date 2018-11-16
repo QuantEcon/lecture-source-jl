@@ -365,7 +365,7 @@ Eventually, you will want to move from just using Jupyter to using other `tools 
 Using Jupyter Online
 ---------------------------
 
-If you have access to a cloud based solution for Jupyter, then that is typically the easiest solution
+If you have access to a cloud based solution for Jupyter, then that is typically an easy solution
 
 * Students: ask your department if these resources are available 
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes
