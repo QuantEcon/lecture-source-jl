@@ -1,7 +1,6 @@
-
 .. _optgrowth:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -496,8 +495,10 @@ Setup
 
     plt = plot(xlim = (0,1), ylim = (0,6))
     plot!(plt, f, f_grid, color = :blue, lw = 2, alpha = 0.8, label = "true function")
-    plot!(plt, f_grid, Af.(f_grid), color = :green, lw = 2, alpha = 0.8, label = "linear approximation")
-    plot!(plt, f, c_grid, seriestype = :sticks, linestyle = :dash, linewidth = 2, alpha = 0.5, label = "")
+    plot!(plt, f_grid, Af.(f_grid), color = :green, lw = 2, alpha = 0.8,
+          label = "linear approximation")
+    plot!(plt, f, c_grid, seriestype = :sticks, linestyle = :dash, linewidth = 2, alpha = 0.5, 
+          label = "")
     plot!(plt, legend = :top)
 
 Another advantage of piecewise linear interpolation is that it preserves useful shape properties such as monotonicity and concavity / convexity
@@ -511,9 +512,11 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
     using Optim
 
-    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w); compute_policy = false)
+    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w); 
+                              compute_policy = false)
         w_func = LinearInterpolation(grid, w)
-        objectives = (c -> u(c) + β * mean(w_func.(f(y - c) .* shocks)) for y in grid_y) # objective for each grid point
+        # objective for each grid point
+        objectives = (c -> u(c) + β * mean(w_func.(f(y - c) .* shocks)) for y in grid_y) 
         results = maximize.(objectives, 1e-10, grid_y) # solver result for each grid point
         Tw = Optim.maximum.(results)
         if compute_policy
@@ -603,7 +606,8 @@ Let's code this up now so we can test against it below
     :class: test
 
     @testset "Primitives Tests" begin
-        @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998, 1.6233766233766234]
+        @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998,  
+                                  1.6233766233766234]
         @test ∂u∂c(c1) ≈ -0.08255792258789846
         @test v_star(3) ≈ -25.245288867900843
     end
@@ -676,7 +680,8 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
     plt = plot(grid_y, w, color = :black, linewidth = 2, alpha = 0.8, label = lb)
     for i in 1:n
         w = bellman_operator(w, grid_y, β, log, k -> k^α, shocks)
-        plot!(grid_y, w, color = RGBA(i/n, 0, 1 - i/n, 0.8), linewidth = 2, alpha = 0.6, label = "")
+        plot!(grid_y, w, color = RGBA(i/n, 0, 1 - i/n, 0.8), linewidth = 2, alpha = 0.6, 
+              label = "")
     end
 
     lb = "true value function"
@@ -706,7 +711,8 @@ We can write a function that computes the exact fixed point
 
     function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
         Tw = similar(grid_y)
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero # gets returned
+        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), 
+                                   initial_w).zero # gets returned
     end
 
 We can check our result by plotting it against the true value
@@ -717,7 +723,8 @@ We can check our result by plotting it against the true value
     v_star_approx = solve_optgrowth(initial_w)
 
     plt = plot(ylim = (-35, -24))
-    plot!(plt, grid_y, v_star_approx, linewidth = 2, alpha = 0.6, label = "approximate value function")
+    plot!(plt, grid_y, v_star_approx, linewidth = 2, alpha = 0.6, 
+          label = "approximate value function")
     plot!(plt, v_star, grid_y, linewidth = 2, alpha = 0.6, label = "true value function")
     plot!(plt, legend = :bottomright)
 
@@ -744,7 +751,8 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
 
 .. code-block:: julia
 
-    Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks; compute_policy = true)
+    Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks; 
+                             compute_policy = true)
     cstar = (1 - α * β) * grid_y
 
     plt = plot(grid_y, σ, lw=2, alpha=0.6, label = "approximate policy function")
@@ -829,8 +837,9 @@ Here's one solution (assuming as usual that you've executed everything above)
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero
-        Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks, compute_policy = true)
+        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw),                                  initial_w).zero
+        Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks,
+                                 compute_policy = true)
         σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
 
@@ -848,14 +857,16 @@ Here's one solution (assuming as usual that you've executed everything above)
 
     Tw = similar(grid_y)
     initial_w = 5 * log.(grid_y)
-    v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), initial_w, inplace = false).zero
-    Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks, compute_policy = true)
+    v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw), 
+                               initial_w).zero
+    Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks, 
+                             compute_policy = true)
     σ_func = LinearInterpolation(grid_y, σ)
     y = simulate_og(σ_func);
 
     @testset begin
         @test y[5] ≈ 0.489631315122766
-        @test σ[3] ≈ 0.025086036502830814
+        @test σ[3] ≈ 0.025086037159168094
         @test Tw[4] ≈ -22.27089960340596
         @test v_star_approx[50] ≈ -17.79360247626825
     end

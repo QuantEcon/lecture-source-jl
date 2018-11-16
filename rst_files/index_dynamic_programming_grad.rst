@@ -1,6 +1,6 @@
 .. _single_agent_models:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***************************************
 Dynamic Programming 

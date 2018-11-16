@@ -1,6 +1,6 @@
 .. _harrison_kreps:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -325,8 +325,8 @@ Here's a function that can be used to compute these values
 
     using LinearAlgebra 
 
-    function price_single_beliefs(transition::AbstractMatrix, dividend_payoff::AbstractVector;
-                                β::AbstractFloat=.75)
+    function price_single_beliefs(transition, dividend_payoff;
+                                β=.75)
         # First compute inverse piece
         imbq_inv = inv(I - β * transition)
         
@@ -461,9 +461,10 @@ Here's code to solve for :math:`\bar p`, :math:`\hat p_a` and :math:`\hat p_b` u
 
 .. code-block:: julia 
 
-    function price_optimistic_beliefs(transitions::AbstractVector, dividend_payoff::AbstractVector;
-                                    β::AbstractFloat=.75, max_iter::Integer=50000,
-                                    tol::AbstractFloat=1e-16)
+    function price_optimistic_beliefs(transitions, 
+                                      dividend_payoff;
+                                      β=.75, max_iter=50000,
+                                      tol=1e-16)
 
         # We will guess an initial price vector of [0, 0]
         p_new = [0,0]
@@ -531,9 +532,10 @@ Here's code to solve for :math:`\check p` using iteration
 
 .. code-block:: julia 
 
-    function price_pessimistic_beliefs(transitions::AbstractVector, dividend_payoff::AbstractVector;
-                                    β::AbstractFloat=.75, max_iter::Integer=50000,
-                                    tol::AbstractFloat=1e-16)
+    function price_pessimistic_beliefs(transitions, 
+                                       dividend_payoff;
+                                       β=.75, max_iter=50000,
+                                       tol=1e-16)
         # We will guess an initial price vector of [0, 0]
         p_new = [0, 0]
         p_old = [10.0, 10.0]

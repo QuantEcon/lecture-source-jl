@@ -1,6 +1,6 @@
 .. _julia_essentials:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
 Julia Essentials
@@ -197,7 +197,7 @@ The ``$`` inside of a string is used to interpolate a variable
 
     "x = $x"
 
-With brackets, you can splice the results of expressions into strings as well
+With parentheses, you can splice the results of expressions into strings as well
 
 .. code-block:: julia
 
@@ -381,7 +381,7 @@ Iterating
 One of the most important tasks in computing is stepping through a
 sequence of data and performing a given action
 
-Julia's provides neat, flexible tools for iteration as we now discuss
+Julia's provides neat and flexible tools for iteration as we now discuss
 
 Iterables
 ----------------
@@ -394,7 +394,7 @@ These include sequence data types like arrays
 
     actions = ["surf", "ski"]
     for action in actions
-        println("Charlie don't $action")
+        println("Charlie doesn't $action")
     end
 
 
@@ -548,7 +548,7 @@ As we saw earlier, when testing for equality we use ``==``
     x == 2
 
 
-For "not equal" use ``!=`` or ``≠``
+For "not equal" use ``!=`` or ``≠`` (``\ne<TAB>``)
 
 .. code-block:: julia
 
@@ -850,7 +850,7 @@ Another place that you may use a ``Ref`` is to fix a function parameter you do n
 
 .. code-block:: julia
 
-    f(x, y) = [1, 2, 3] ⋅ x + y
+    f(x, y) = [1, 2, 3] ⋅ x + y # "⋅" can be typed by \cdot<tab>
     f([3, 4, 5], 2) # uses vector as first parameter
     f.(Ref([3,4, 5]), [2,3]) # broadcasting over 2nd parameter, fixing first
 
@@ -877,7 +877,7 @@ The scope of a variable name determines where it is valid to refer to it, and ho
 
 Think of the scope as having a list of all of the name bindings that variables would be relevant, where different scopes could have the same name mean different things
 
-An obvious place to start is to notice that functions introduce there own local names
+An obvious place to start is to notice that functions introduce their own local names
 
 .. code-block:: julia
 
@@ -940,7 +940,8 @@ Similarly to the named arguments, the local scope also works with named tuples
 
     x = 0.1
     y = 2
-    (x = x, y = y) # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    # creates named tuple with names `x` and `y` local to the tuple, bound to the rhs `x` and `y`
+    (x = x, y = y) 
 
 As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
 
@@ -1011,11 +1012,74 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
     end
     solvemodel(0.1)
 
+Higher-Order Functions
+-------------------------
+
+One of the benefits of working with closures and functions is that you can return them from other functions
+
+This leads to some natural programming patters we have already been using, where we can use **functions of functions** and **functions returning functions** (or closures)
+
+To see a simple example, consider functions that accept other functions (including closures)
+
+.. code-block:: julia
+
+    twice(f,x) = f(f(x)) # i.e. applies f to itself twice
+    f(x) = x^2
+    @show twice(f, 2.0)
+    twice(x -> x^2, 2.0)
+    a = 5
+    g(x) = a * x
+    @show twice(g, 2.0); # using a closure 
+
+This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic 
+
+One example of using this in a library is `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_, where we can pass a function to the ``expectation`` function
+
+.. code-block:: julia
+
+    using Expectations, Distributions
+    @show d = Exponential(2.0)
+    f(x) = x^2
+    @show expectation(f, d); # i.e. E(f(x))
+
+Another example is for a function that returns a closure itself
+
+.. code-block:: julia
+
+    function multiplyit(a, g)
+        return x -> a * g(x) # a function with `g` used in the closure
+    end
+    f(x) = x^2
+    h = multiplyit(2.0, f) #Use our quadratic, returns a new function which doubles the result
+    h(2) # the returned function is like any other function
+
+You can create and define using ``function`` as well
+
+.. code-block:: julia
+
+    function snapabove(g, a)
+        function f(x)
+            if x > a # the "a" is captured in the closure f
+                return g(x)
+            else
+                return g(a)
+            end
+        end
+        return f # closure with the embedded a
+    end
+    f(x) = x^2
+    h = snapabove(f, 2.0)
+
+    using Plots
+    gr(fmt=:png)
+    plot(h, 0.0:0.1:3.0)
+   
+
 
 Loops
 ---------------
 
-The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about then the same way you would a function/closure
+The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about them the same way you would a function/closure
 
 In particular
 
@@ -1324,7 +1388,8 @@ Exercise 5
 .. code-block:: julia
 
     function linapprox(f, a, b, n, x)
-        # evaluates the piecewise linear interpolant of f at x on the interval [a, b], with n evenly spaced grid points.
+        # evaluates the piecewise linear interpolant of f at x, 
+        # on the interval [a, b], with n evenly spaced grid points.
 
         length_of_interval = b - a
         num_subintervals = n - 1
@@ -1352,9 +1417,6 @@ Let's test it
 
 .. code-block:: julia
 
-    using Plots
-    gr(fmt=:png)
-    
     x_grid = range(-1.0, 1.0, length = 100)
     y_vals = f_ex5.(x_grid)
     y = g_ex5.(x_grid)

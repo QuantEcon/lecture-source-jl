@@ -1,6 +1,6 @@
 .. _julia_by_example:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
 Introductory Examples
@@ -51,7 +51,8 @@ Set Up
 
 We assume that you've worked your way through :doc:`our getting started lecture <getting_started>` already
 
-In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon notes is to go ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
+In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon 
+notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
 
 Other References
@@ -75,8 +76,6 @@ process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :mat
 .. .. figure:: /_static/figures/test_program_1.png
 ..    :scale: 100%
 
-Fire up a :ref:`Jupyter notebook <jl_jupyter>`
-
 
 
 Introduction to Packages
@@ -90,16 +89,13 @@ There are three ways to install packages and versions (where the first two metho
 #. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
 #. use the ``InstantiateFromURL`` package
 
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag="v0.3.0")
+.. literalinclude:: /_static/includes/deps.jl
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
 
 This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_ 
 
-We will discuss it more in :ref:`Julia Packages <packages>`, but these files provide a listing of packages and versions used by the code
+We will discuss it more in :ref:`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code
 
 This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
 
@@ -151,7 +147,8 @@ Arrays
 --------
 
 
-As a language intended for mathematical and scientific computing, Julia has strong support for using symbols in the source code
+As a language intended for mathematical and scientific computing, Julia has 
+strong support for using unicode characters
 
 In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>`` 
 
@@ -181,8 +178,25 @@ Notice from the above that
 To get **help and examples** in Jupyter or other julia editor, use the ``?`` before a function name or syntax
 
 .. code-block:: julia
+    :class: no-execute
  
     ?typeof
+
+    search: typeof typejoin TypeError
+
+    Get the concrete type of x.
+
+    Examples
+
+    julia> a = 1//2;
+
+    julia> typeof(a)
+    Rational{Int64}
+
+    julia> M = [1 2; 3.5 4];
+
+    julia> typeof(M)
+    Array{Float64,2}    
 
 For Loops
 ---------------
@@ -219,7 +233,7 @@ The index variable is looped over for all integers from ``1:n``--but this does n
 
 Instead, it creates an **iterator** that is looped over --- in this case the **range** of integers from ``1`` to ``n``
 
-While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear.
+While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear
 
 To fix this, use ``eachindex``
 
@@ -254,7 +268,7 @@ Of course, in Julia there are built in functions to perform this calculation whi
 .. code-block:: julia
 
         ϵ_mean ≈ mean(ϵ[1:m])
-        ϵ_mean ≈ sum(ϵ[1:m])/m
+        ϵ_mean ≈ sum(ϵ[1:m]) / m
 
 In these examples, note the use of ``≈`` to test equality, rather than ``==``, which is appropriate for integers and other types
 
@@ -307,15 +321,13 @@ Let us make this example slightly better by "remembering" that ``randn`` can ret
     end
     data = generatedata(5)
 
-While better, the looping over the `i` index to square the results is difficult to read
+While better, the looping over the ``i`` index to square the results is difficult to read
 
 Instead of looping, we can instead **broadcast** the ``^2`` square function over a vector using a ``.``
 
-To be clear, unlike Python, R, and Matlab (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
+To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
 
 Loops of this sort are at least as efficient than vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
-
-Furthermore, we can just drop the ``return`` because functions return the last calculation by default, which leads to
 
 .. code-block:: julia
 
@@ -366,14 +378,14 @@ For this particular case, the clearest and most general solution is probably the
     f(x) = x^2
 
     x = randn(n)
-    plot(f.(x), label = "x^2")
-    plot!(x, label = "x") # layer on the same plot
+    plot(f.(x), label="x^2")
+    plot!(x, label="x") # layer on the same plot
 
-While broadcasting above superficially looks like vectorizing functions in Matlab, or Python ufuncs, it is much richer and built on core foundations of the language
+While broadcasting above superficially looks like vectorizing functions in MATLAB, or Python ufuncs, it is much richer and built on core foundations of the language
 
 The other additional function ``plot!`` adds a graph to the existing plot
 
-This follows a general convention in Julia, where an function which modifies the arguments or a global state has a ``!`` at the end of it the name
+This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
 
 
 A Slightly More Useful Function
@@ -447,9 +459,9 @@ In Julia these alternative versions of a function are called **methods**
 Example: Variations on Fixed-Points
 ================================================
 
-For our second example, we will start with a simple example of solving a fixed-points
+For our second example, we will start with a simple example of determining fixed-points of a function
 
-The goal is to start with code in a matlab style, and move towards a more **Julian** style with high mathematical clarity
+The goal is to start with code in a MATLAB style, and move towards a more **Julian** style with high mathematical clarity
 
 Fixed-Point Maps
 ----------------------------
@@ -496,7 +508,7 @@ For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\b
 
 To implement the iteration in :eq:`fixed_point_naive`, we start by solving this problem with a ``while`` loop
 
-The syntax for the while loop contains no surprises, and looks nearly identical to a Matlab implementation
+The syntax for the while loop contains no surprises, and looks nearly identical to a MATLAB implementation
 
 .. code-block:: julia
 
@@ -552,7 +564,7 @@ The new feature there is ``break`` , which leaves a ``for`` or ``while`` loop
 Using a Function
 ---------------------
 
-The first problem with this setup is that it depends on being sequently run--which can be easily remedied with a function
+The first problem with this setup is that it depends on being sequentially run--which can be easily remedied with a function
 
 .. code-block:: julia
 
@@ -633,7 +645,7 @@ To enable this, Julia has two features:  named function parameters, and named tu
 .. code-block:: julia
 
      # good style
-    function fixedpointmap(f; iv, tolerance = 1E-7, maxiter = 1000)
+    function fixedpointmap(f; iv, tolerance=1E-7, maxiter=1000)
         # setup the algorithm
         x_old = iv
         normdiff = Inf
@@ -644,7 +656,7 @@ To enable this, Julia has two features:  named function parameters, and named tu
             x_old = x_new
             iter = iter + 1
         end
-        return (value = x_old, normdiff = normdiff, iter = iter) # A named tuple
+        return (value = x_old, normdiff=normdiff, iter=iter) # A named tuple
     end    
 
     # define a map and parameters
@@ -652,8 +664,9 @@ To enable this, Julia has two features:  named function parameters, and named tu
     β = 0.9
     f(v) = p + β * v # note that p and β are used in the function!
 
-    sol = fixedpointmap(f, iv = 0.8, tolerance = 1.0E-8) # don't need to pass 
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+    sol = fixedpointmap(f, iv=0.8, tolerance=1.0E-8) # don't need to pass 
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+            " iterations")
 
 In this example, all function parameters after the ``;`` in the list, must be called by name
 
@@ -661,14 +674,14 @@ Furthermore, a default value may be enabled--so the named parameter ``iv`` is re
 
 The return type of the function also has named fields, ``value, normdiff,`` and ``iter``--all accessed intuitively using ``.``
 
-To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:``x = f(x)`` where :math:`f(x) := r x (1-x)`
+To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:`x = f(x)` where :math:`f(x) := r x (1-x)`
 
 .. code-block:: julia
 
     r = 2.0
     f(x) = r * x * (1 - x)
 
-    sol = fixedpointmap(f, iv = 0.8)
+    sol = fixedpointmap(f, iv=0.8)
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 
 
@@ -686,17 +699,16 @@ But best of all is to avoid writing code altogether
     p = 1.0
     β = 0.9     
     f(v) = p .+ β * v # broadcast the +
-    sol = fixedpoint(f, [0.8], inplace = false)
+    sol = fixedpoint(f, [0.8])
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 
 The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed-point iteration scheme above
 
-Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]]``
+Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]``
 
 While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements
 
-In particular, we can use the ``Anderson acceleration`` with a memory of 5 iterations, by changing a setting
 
 .. code-block:: julia
 
@@ -704,18 +716,18 @@ In particular, we can use the ``Anderson acceleration`` with a memory of 5 itera
     p = 1.0
     β = 0.9
     iv = [0.8]
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
 
-Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function
+Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the ``f`` function
 
 But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
 
-The only other change in this function as the move from directly defining ``f(v)`` and using an **anonymous** function
+The only other change in this function is the move from directly defining ``f(v)`` and using an **anonymous** function
 
-Similar to anonymous functions in Matlab, and lambda functions in Python, Julia enables the creation of small functions without any names
+Similar to anonymous functions in MATLAB, and lambda functions in Python, Julia enables the creation of small functions without any names
 
 The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(x)``
 
@@ -724,7 +736,7 @@ Composing Packages
 
 A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source
 
-As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type,
+As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type (recall that computers approximate real numbers to the nearest binary  of a given precision; the *machine epsilon* is the smallest nonzero magnitude)
 
 In Julia, this number can be calculated as
 
@@ -745,10 +757,10 @@ The only change we will need to our model in order to use a different floating p
     iv = [BigFloat(0.8)] # higher precision
 
     # otherwise identical
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
-Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number
+Here, the literal ``BigFloat(0.8)`` takes the number ``0.8`` and changes it to an arbitrary precision number
 
 The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations, and the solution has a finite-precision solution with those parameters
 
@@ -758,7 +770,7 @@ Multivariate Fixed Point Maps
 
 The above example can be extended to multivariate maps without any modifications to the fixed point iteration code
 
-Using our own, homegrown iteration and simple passing in a bivariate map,
+Using our own, homegrown iteration and simply passing in a bivariate map:
 
 .. code-block:: julia
 
@@ -768,7 +780,8 @@ Using our own, homegrown iteration and simple passing in a bivariate map,
     f(v) = p .+ β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+    "iterations")
 
 This also works without any modifications with the ``fixedpoint`` library function
 
@@ -781,7 +794,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     iv =[0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
@@ -794,7 +807,7 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     iv = @SVector  [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
-    sol = fixedpoint(v -> p .+ β * v, iv, inplace = false, method = :anderson, m = 3)
+    sol = fixedpoint(v -> p .+ β * v, iv)
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
@@ -855,7 +868,7 @@ Your hints are as follows:
 
 * If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
-* For a circle, area = π * radius^2
+* For a circle, area = π * :math:`radius^2`
 
 
 .. _jbe_ex4:
@@ -925,6 +938,8 @@ Start :math:`\sigma = 0.2, \alpha = 1.0`
 1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
 
+.. _jbe_ex8a:
+
 Exercise 8(a)
 ---------------
 
@@ -938,7 +953,7 @@ Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-de
 
 .. math::
 
-    x^{n+1} = x^n - \frac{f(x^n}{f'(x^n)}
+    x^{n+1} = x^n - \frac{f(x^n)}{f'(x^n)}
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
@@ -1113,6 +1128,8 @@ Here's one solution
 
 .. code-block:: julia
 
+    using Plots
+    gr(fmt=:png) # setting for easier display in jupyter notebooks
     α = 0.9
     n = 200
     x = zeros(n + 1)

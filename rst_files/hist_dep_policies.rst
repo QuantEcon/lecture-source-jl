@@ -1,6 +1,6 @@
 .. _hist_dep:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -666,55 +666,46 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
 .. code-block:: julia 
 
-    using QuantEcon
-    using Roots
-    using Plots
-    using LaTeXStrings
+    using QuantEcon, Roots, Plots
     gr(fmt=:png)
-    pyplot()
 
-    struct HistDepRamsey{TF<:AbstractFloat}
-        # These are the parameters of the economy
-        A0::AbstractFloat
-        A1::AbstractFloat
-        d::AbstractFloat
-        Q0::AbstractFloat
-        τ0::AbstractFloat
-        μ0::AbstractFloat
-        β::AbstractFloat
+    struct HistDepRamsey
+        # these are the parameters of the economy
+        A0
+        A1
+        d
+        Q0
+        τ0
+        μ0
+        β
 
         # These are the LQ fields and stationary values
-        R::Matrix{TF}
-        A::Matrix{TF}
-        B::Vector{TF}
-        Q::TF
-        P::Matrix{TF}
-        F::Matrix{TF}
-        lq::LQ
+        R
+        A
+        B
+        Q
+        P
+        F
+        lq
     end
 
 
-    struct RamseyPath{TF<:AbstractFloat}
-        y::Matrix{TF}
-        uhat::Vector{TF}
-        uhatdif::Vector{TF}
-        τhat::Vector{TF}
-        τhatdif::Vector{TF}
-        μ::Vector{TF}
-        G::Vector{TF}
-        GPay::Vector{TF}
+    struct RamseyPath
+        y
+        uhat
+        uhatdif
+        τhat
+        τhatdif
+        μ
+        G
+        GPay
     end
 
 
-    function HistDepRamsey(A0::AbstractFloat,
-                        A1::AbstractFloat,
-                        d::AbstractFloat,
-                        Q0::AbstractFloat,
-                        τ0::AbstractFloat,
-                        μ::AbstractFloat,
-                        β::AbstractFloat)
-        # Create Matrices for solving Ramsey problem
+    function HistDepRamsey(A0, A1, d, Q0,
+                           τ0, μ, β)
 
+        # create Matrices for solving Ramsey problem
         R = [     0.0  -A0 / 2      0.0      0.0
             -A0 / 2    A1 / 2   -μ / 2      0.0
                 0.0    -μ / 2      0.0      0.0
@@ -730,8 +721,8 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
         Q = 0.0
 
-        # Use LQ to solve the Ramsey Problem.
-        lq = LQ(Q, -R, A, B, bet=β)
+        # use LQ to solve the Ramsey Problem.
+        lq = QuantEcon.LQ(Q, -R, A, B, bet=β)
 
         P, F, _d = stationary_values(lq)
 
@@ -739,14 +730,14 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
     end
 
 
-    function compute_G(hdr::HistDepRamsey, μ::AbstractFloat)
+    function compute_G(hdr, μ)
         # simplify notation
         Q0, τ0, A, B, Q = hdr.Q0, hdr.τ0, hdr.A, hdr.B, hdr.Q
         β = hdr.β
 
         R = hdr.R
         R[2, 3] = R[3, 2] = -μ / 2
-        lq = LQ(Q, -R, A, B, bet=β)
+        lq = QuantEcon.LQ(Q, -R, A, B, bet=β)
 
         P, F, _d = stationary_values(lq)
 
@@ -766,7 +757,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
     end
 
 
-    function compute_u0(hdr::HistDepRamsey, P::Matrix)
+    function compute_u0(hdr, P)
         # simplify notation
         Q0, τ0 = hdr.Q0, hdr.τ0
 
@@ -779,24 +770,24 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
     end
 
 
-    function init_path{TF<:AbstractFloat}(hdr::HistDepRamsey{TF}, μ0::TF, T::Integer=20)
-        # Construct starting values for the path of the Ramsey economy
+    function init_path(hdr, μ0, T = 20)
+        # construct starting values for the path of the Ramsey economy
         G0, A, B, F, P = compute_G(hdr, μ0)
 
-        # Compute the optimal u0
+        # compute the optimal u0
         u0 = compute_u0(hdr, P)
 
-        # Initialize vectors
-        y = Array{TF}(4, T)
-        uhat = Vector{TF}(T)
-        uhatdif = Vector{TF}(T)
-        τhat = Vector{TF}(T)
-        τhatdif = Vector{TF}(T)
-        μ = Vector{TF}(T)
-        G = Vector{TF}(T)
-        GPay = Vector{TF}(T)
+        # initialize vectors
+        y = zeros(4, T)
+        uhat = zeros(T)
+        uhatdif = zeros(T)
+        τhat = zeros(T)
+        τhatdif = zeros(T)
+        μ = zeros(T)
+        G = zeros(T)
+        GPay = zeros(T)
 
-        # Initial conditions
+        # initial conditions
         G[1] = G0
         μ[1] = μ0
         uhatdif[1] = 0
@@ -808,7 +799,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
     end
 
 
-    function compute_ramsey_path!(hdr::HistDepRamsey, rp::RamseyPath)
+    function compute_ramsey_path!(hdr, rp)
         # simplify notation
         y, uhat, uhatdif, τhat, = rp.y, rp.uhat, rp.uhatdif, rp.τhat
         τhatdif, μ, G, GPay = rp.τhatdif, rp.μ, rp.G, rp.GPay
@@ -879,20 +870,14 @@ The next figure uses the program to compute and show the Ramsey plan for :math:`
 
 .. code-block:: julia
 
-    function plot1(rp::RamseyPath)
+    function plot1(rp)
         T = length(rp.μ)
         y = rp.y
 
-        ylabels = [L"$Q$" L"$\tau$" L"$u$"]
-        y_vals = [y[2, :] y[3, :] y[4, :]]
-        p = plot(0:T, y_vals, color=:blue,
-                label=["Output" "Tax rate" "First difference in output"],
-                size=(600, 600), lw=2, alpha=0.7, ylabel=ylabels, layout=(3, 1),
-                xlims=(0, 15), xlabel=["" "" "Time"], legend=:topright,
-                xticks=0:5:15)
-         return p
+        y_vals = [y[2, :], y[3, :], y[4, :]]
+        plot(y_vals, layout = (3, 1), labels = ["Output" "Tax rate" "First difference in output"], size=(600, 600), lw = 2)
     end
-    
+
     plot1(rp)
 
 
@@ -1085,20 +1070,19 @@ The difference :math:`\Delta \tau_t := \check{\tau_t} -  \tau_t` is shown in the
 
 .. code-block:: julia
 
-    function plot2(rp::RamseyPath)
+    function plot2(rp)
         y, uhatdif, τhatdif, μ = rp.y, rp.uhatdif, rp.τhatdif, rp.μ
         G, GPay = rp.G, rp.GPay
         T = length(rp.μ)
 
         y_vals = [τhatdif uhatdif μ G]
-        ylabels = [L"$\Delta\tau$" L"$\Delta u$" L"$\mu$" L"$G$"]
+        ylabels = ["Delta tau" "Delta u" "mu" "G"]
         labels = hcat("Time inconsistency differential for tax rate",
-                  L"Time inconsistency differential for $u$",
-                  "Lagrange multiplier", "Government revenue")
-        p = plot(0:T , y_vals, ylabel=ylabels, label=labels, size=(800, 800),
-                 lw=2, layout=(4, 1), xlims=(-0.5, 15), alpha=0.7,
-                 legend=:topright, color=:blue, xlabel=["" "" "" "Time"])
-        return p
+                "Time inconsistency differential for u",
+                "Lagrange multiplier", "Government revenue")
+        plot(y_vals, ylabel=ylabels, label=labels, size=(800, 800),
+                lw=2, layout=(4, 1), xlims=(-0.5, 15), alpha=0.7,
+                legend=:topright, color=:blue, xlabel=["" "" "" "Time"])
     end
 
     plot2(rp)

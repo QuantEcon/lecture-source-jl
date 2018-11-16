@@ -1,6 +1,6 @@
 .. _opt_tax_AMSS:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 **********************************************
 Optimal Taxation without State-Contingent Debt
@@ -1317,8 +1317,9 @@ The recursive formulation is implemented as follows
 
         (minf, minx, ret) = optimize(opt, init)
 
-        if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED && ret != :FTOL_REACHED
-            error("optimization failed: ret = $ret")
+        if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
+            ret != :FTOL_REACHED
+                error("optimization failed: ret = $ret")
         end
 
         if model.transfers
