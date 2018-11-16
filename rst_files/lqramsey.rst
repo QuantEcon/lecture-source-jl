@@ -578,53 +578,33 @@ Description and clarifications are given below
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
+    using QuantEcon, Plots, LinearAlgebra, Parameters 
 
-    abstract type AbstractStochProcess end
-
-    struct ContStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
-        A::Matrix{TF}
-        C::Matrix{TF}
+    struct ContStochProcess 
+        A
+        C
     end
 
-    struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
-        P::Matrix{TF}
-        x_vals::Matrix{TF}
+    struct DiscreteStochProcess
+        P
+        x_vals
     end
 
-    struct Economy{TF <: AbstractFloat, SP <: AbstractStochProcess}
-        β::TF
-        Sg::Matrix{TF}
-        Sd::Matrix{TF}
-        Sb::Matrix{TF}
-        Ss::Matrix{TF}
-        is_discrete::Bool
-        proc::SP
-    end
-
-    struct Path{TF <: AbstractFloat}
-        g::Vector{TF}
-        d::Vector{TF}
-        b::Vector{TF}
-        s::Vector{TF}
-        c::Vector{TF}
-        l::Vector{TF}
-        p::Vector{TF}
-        τ::Vector{TF}
-        rvn::Vector{TF}
-        B::Vector{TF}
-        R::Vector{TF}
-        π::Vector{TF}
-        Π::Vector{TF}
-        ξ::Vector{TF}
+    struct Economy{SP} 
+        β
+        Sg
+        Sd
+        Sb
+        Ss
+        proc
     end
 
     function compute_exog_sequences(econ, x)
-        # Compute exogenous variable sequences
+        # compute exogenous variable sequences
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
         g, d, b, s = [dropdims(S * x, dims = 1) for S in (Sg, Sd, Sb, Ss)]
 
-        #= Solve for Lagrange multiplier in the govt budget constraint
+        # solve for Lagrange multiplier in the govt budget constraint
         In fact we solve for ν = λ / (1 + 2*λ).  Here ν is the
         solution to a quadratic equation a(ν^2 - ν) + b = 0 where
         a and b are expected discounted sums of quadratic forms of the state. =#
@@ -637,7 +617,7 @@ Description and clarifications are given below
     function compute_allocation(econ, Sm, ν, x, b)
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
 
-        # Solve for the allocation given ν and x
+        # solve for the allocation given ν and x
         Sc = 0.5 .* (Sb + Sd - Sg - ν .* Sm)
         Sl = 0.5 .* (Sb - Sd + Sg - ν .* Sm)
         c = dropdims(Sc * x, dims = 1)
@@ -677,11 +657,10 @@ Description and clarifications are given below
     end
 
 
-    function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess},
-                           T)
+    function compute_paths(econ::Economy{DiscreteStochProcess}, T)
         # simplify notation
-        β, Sg, Sd, Sb, Ss = econ.β, econ.Sg, econ.Sd, econ.Sb, econ.Ss
-        P, x_vals = econ.proc.P, econ.proc.x_vals
+        @unpack β, Sg, Sd, Sb, Ss = econ
+        @unpack P, x_vals = econ.proc
 
         mc = MarkovChain(P)
         state = simulate(mc, T, init=1)
@@ -715,22 +694,24 @@ Description and clarifications are given below
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
 
-        Path(g, d, b, s, c, l, p, τ, rvn, B, R, π, Π, ξ)
+        return (g = g, d = d, b = b, s = s, c = c, 
+                l = l, p = p, τ = τ, rvn = rvn, B = B, 
+                R = R, π = π, Π = Π, ξ = ξ)
     end
 
-    function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
-        # Simplify notation
-        β, Sg, Sd, Sb, Ss = econ.β, econ.Sg, econ.Sd, econ.Sb, econ.Ss
-        A, C = econ.proc.A, econ.proc.C
+    function compute_paths(econ::Economy{ContStochProcess}, T)
+        # simplify notation
+        @unpack β, Sg, Sd, Sb, Ss = econ
+        @unpack A, C = econ.proc
 
-        # Generate an initial condition x0 satisfying x0 = A x0
+        # generate an initial condition x0 satisfying x0 = A x0
         nx, nx = size(A)
         x0 = nullspace(I - A)
         x0 = x0[end] < 0 ? -x0 : x0
         x0 = x0 ./ x0[end]
         x0 = dropdims(x0, dims = 2)
 
-        # Generate a time series x of length T starting from x0
+        # generate a time series x of length T starting from x0
         nx, nw = size(C)
         x = zeros(nx, T)
         w = randn(nw, T)
@@ -739,7 +720,7 @@ Description and clarifications are given below
             x[:, t] = A *x[:, t-1] + C * w[:, t]
         end
 
-        # Compute exogenous sequence
+        # compute exogenous sequence
         g, d, b, s, Sm = compute_exog_sequences(econ, x)
 
         # compute a0 and b0
@@ -751,7 +732,7 @@ Description and clarifications are given below
         # compute lagrange multiplier
         ν = compute_ν(a0, b0)
 
-        # Solve for the allocation given ν and x
+        # solve for the allocation given ν and x
         Sc, Sl, c, l, p, τ, rvn = compute_allocation(econ, Sm, ν, x, b)
 
         # compute remaining variables
@@ -771,7 +752,10 @@ Description and clarifications are given below
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
 
-        Path(g, d, b, s, c, l, p, τ, rvn, B, R, π, Π, ξ)
+        return (g = g, d = d, b = b, s = s, 
+                c = c, l = l, p = p, τ = τ, 
+                rvn = rvn, B = B, R = R, 
+                π = π, Π = Π, ξ = ξ)
     end
 
     function gen_fig_1(path::Path)
@@ -867,10 +851,9 @@ Here's the code
     Sd = [0.0 0.0]
     Sb = [0 2.135]
     Ss = [0.0 0.0]
-    discrete = false
     proc = ContStochProcess(A, C)
 
-    econ = Economy(β, Sg, Sd, Sb, Ss, discrete, proc)
+    econ = Economy(β, Sg, Sd, Sb, Ss, proc)
     T = 50
     path = compute_paths(econ, T)
 
