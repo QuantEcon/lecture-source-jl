@@ -225,23 +225,22 @@ The code is as follows
 
 .. code-block:: julia
 
-  struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
-                      TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
-      β::TR
-      c::TR
-      F::Distribution
-      G::Distribution
-      f::Function
-      g::Function
-      n_w::TI
-      w_max::TR
-      w_grid::TAVw
-      n_π::TI
-      π_min::TR
-      π_max::TR
-      π_grid::TAVpi
-      quad_nodes::Vector{TF}
-      quad_weights::Vector{TF}
+  struct SearchProblem
+      β
+      c
+      F
+      G
+      f
+      g
+      n_w
+      w_max
+      w_grid
+      n_π
+      π_min
+      π_max
+      π_grid
+      quad_nodes
+      quad_weights
   end
 
   # use key word argment
