@@ -353,13 +353,12 @@ The REPL is one of the best places to add and remove packages, so a good test is
 Other Ways to Use Jupyter
 ===================================
 
-There are a few ways to get started with Jupyter
+There are alternative workflows, such as 
 
-#. Install `Anaconda and Julia locally <jl_jupyterlocal>`_ and manually install packages used in the QuantEcon lectures
-#. Use `Jupyter on the cloud or a department server <jl_jupyterhub>`_ (if it is available)
-#. Install the pre-built `docker-based Julia/Jupyter <jl_jupyterdocker>`_ from QuantEcon
+#. Using `Jupyter on the cloud or a department server <jl_jupyterhub>`_ (if it is available)
+#. Installing the pre-built `docker-based Julia/Jupyter <jl_jupyterdocker>`_ from QuantEcon
 
-Eventually, you will both want to do a `local installation <jl_jupyterlocal>`_ and move from just using Jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
+Eventually, you will want to move from just using Jupyter to using other `tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but don't let the environment get in the way of learning the language
 
 .. _jl_jupyterhub:
 
