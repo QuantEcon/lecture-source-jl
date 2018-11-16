@@ -953,8 +953,6 @@ The recursive formulation is implemented as follows
 
 .. code-block:: julia
 
-    using Dierckx
-
     mutable struct BellmanEquation_Recursive{TI <: Integer, TR <: Real}
 
         model::NamedTuple
@@ -1022,9 +1020,9 @@ The recursive formulation is implemented as follows
             xprimes = repeat(x, 1, S)
             xgrid[s_, :] = x
             for sprime = 1:S
-                splc = Spline1D(x[end:-1:1], c[:, sprime][end:-1:1], k=3)
-                spln = Spline1D(x[end:-1:1], n[:, sprime][end:-1:1], k=3)
-                splx = Spline1D(x[end:-1:1], xprimes[:, sprime][end:-1:1], k=3)
+                splc = LinearInterpolation(x[end:-1:1], c[:, sprime][end:-1:1], extrapolation_bc = Line())
+                spln = LinearInterpolation(x[end:-1:1], n[:, sprime][end:-1:1], extrapolation_bc = Line())
+                splx = LinearInterpolation(x[end:-1:1], xprimes[:, sprime][end:-1:1], extrapolation_bc = Line())
                 cf[s_, sprime] = y -> splc(y)
                 nf[s_, sprime] = y -> spln(y)
                 xprimef[s_, sprime] = y -> splx(y)
@@ -1032,7 +1030,7 @@ The recursive formulation is implemented as follows
                 # nf[s_, sprime] = LinInterp(x[end:-1:1], n[:, sprime][end:-1:1])
                 # xprimef[s_, sprime] = LinInterp(x[end:-1:1], xprimes[:, sprime][end:-1:1])
             end
-            splV = Spline1D(x[end:-1:1], V[end:-1:1], k=3)
+            splV = LinearInterpolation(x[end:-1:1], V[end:-1:1], extrapolation_bc = Line())
             Vf[s_] = y -> splV(y)
             # Vf[s_] = LinInterp(x[end:-1:1], V[end:-1:1])
         end
@@ -1046,7 +1044,7 @@ The recursive formulation is implemented as follows
         # Now iterate on Bellman equation
         T = BellmanEquation_Recursive(model, xgrid, policies)
         diff = 1.0
-        while diff > 1e-4
+        while diff > 1e-3
             PF = (i_x, x, s) -> get_policies_time1(T, i_x, x, s, Vf, xbar)
             Vfnew, policies = fit_policy_function(T, PF, xgrid)
 
@@ -1076,14 +1074,14 @@ The recursive formulation is implemented as follows
             for (i_x, x) in enumerate(xgrid)
                 PFvec[:, i_x] = PF(i_x, x, s_)
             end
-            splV = Spline1D(xgrid, PFvec[1,:], k=3)
+            splV = LinearInterpolation(xgrid, PFvec[1,:], extrapolation_bc = Line())
             Vf[s_] = y -> splV(y)
             # Vf[s_] = LinInterp(xgrid, PFvec[1, :])
             for sprime in 1:S
-                splc = Spline1D(xgrid, PFvec[1 + sprime, :], k=3)
-                spln = Spline1D(xgrid, PFvec[1 + S + sprime, :], k=3)
-                splxprime = Spline1D(xgrid, PFvec[1 + 2S + sprime, :], k=3)
-                splTT = Spline1D(xgrid, PFvec[1 + 3S + sprime, :], k=3)
+                splc = LinearInterpolation(xgrid, PFvec[1 + sprime, :], extrapolation_bc = Line())
+                spln = LinearInterpolation(xgrid, PFvec[1 + S + sprime, :], extrapolation_bc = Line())
+                splxprime = LinearInterpolation(xgrid, PFvec[1 + 2S + sprime, :], extrapolation_bc = Line())
+                splTT = LinearInterpolation(xgrid, PFvec[1 + 3S + sprime, :], extrapolation_bc = Line())
                 cf[s_, sprime] = y -> splc(y)
                 nf[s_, sprime] = y -> spln(y)
                 xprimef[s_, sprime] = y -> splxprime(y)
