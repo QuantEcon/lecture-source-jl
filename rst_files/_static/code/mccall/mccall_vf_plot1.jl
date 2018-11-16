@@ -1,4 +1,4 @@
-using Plots, LaTeXStrings
+using Plots
 gr(fmt=:png)
 pyplot()
 
@@ -11,5 +11,5 @@ plot(mcm.w_vec,
      [V U_vec],
      lw=2, 
      α=0.7, 
-     label=[L"$V$" L"$U$"])
+     label=["V" "U"])
 

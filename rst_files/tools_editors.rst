@@ -101,6 +101,8 @@ You can get a full list of package-mode commands by running
 
     ] ? 
 
+Recall that on some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit ``]`` first and then run your commands)
+
 Help Mode 
 ---------------
 

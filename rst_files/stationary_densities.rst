@@ -492,7 +492,7 @@ The following code is example of usage for the stochastic growth model :ref:`des
 
 .. code-block:: julia
 
-  using Distributions, LaTeXStrings, StatPlots, Plots, QuantEcon, Random
+  using Distributions, StatPlots, Plots, QuantEcon, Random
   Random.seed!(42) # For deterministic results.
 
   s = 0.2

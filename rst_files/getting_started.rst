@@ -347,7 +347,6 @@ The REPL is one of the best places to add and remove packages, so a good test is
 
     ] st
 
-
 .. _jl_juliaoptions:
 
 Other Ways to Use Jupyter
