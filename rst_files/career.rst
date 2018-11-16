@@ -182,18 +182,6 @@ The code for solving the DP problem described above is found below:
 
 .. code-block:: julia
 
-  struct CareerWorkerProblem
-      β
-      N
-      B
-      θ
-      ϵ
-      F_probs
-      G_probs
-      F_mean
-      G_mean
-  end
-
   function CareerWorkerProblem(;β = 0.95,
                                B = 5.0,
                                N = 50,
@@ -209,7 +197,9 @@ The code for solving the DP problem described above is found below:
       G_probs = pdf.(dist_G, support(dist_G))
       F_mean = sum(θ .* F_probs)
       G_mean = sum(ϵ .* G_probs)
-      CareerWorkerProblem(β, N, B, θ, ϵ, F_probs, G_probs, F_mean, G_mean)
+      return (β = β, N = N, B = B, θ = θ, ϵ = ϵ, 
+              F_probs = F_probs, G_probs = G_probs, 
+              F_mean = F_mean, G_mean = G_mean)
   end
 
   function update_bellman!(cp, v, out; ret_policy = false)
