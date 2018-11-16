@@ -77,7 +77,7 @@ For example, ``Array{Float64, 2}`` can be read as
 #. ``Float64`` is a concrete type declaring that the data stored will be a particular size of floating point
 #. ``2`` is the number of dimensions of that array
 
-A concrete type is one where values can be created by the compiler
+A concrete type is one where values can be created by the compiler (equivalently, one which can be the result of ``typeof(x)`` for some object ``x``)
 
 Values of a **parametric type** cannot be concretely constructed unless all of the parameters are given (themselves with concrete types)
 
@@ -211,7 +211,7 @@ There are some further functions to help you explore the type hierarchy, such as
 
 .. code-block:: julia
     
-    using Base: show_supertypes  # Import the function from the `Base` package
+    using Base: show_supertypes  # import the function from the `Base` package
 
     show_supertypes(Int64)
 
@@ -249,11 +249,11 @@ Given the information on the type, the compiler can work through the sequence of
 
 .. code-block:: julia
 
-    f(y) = 2y     # Define some function
+    f(y) = 2y # define some function
 
     
     x = [1, 2, 3]
-    z = f(x)      # Call with an integer array - compiler deduces type
+    z = f(x) # call with an integer array - compiler deduces type
 
 
 Good Practices for Functions and Variable Types
@@ -266,7 +266,7 @@ An example of bad practice is to use an array to hold unrelated types
 
 .. code-block:: julia
 
-    x = [1.0, "test", 1]  # Typically poor style
+    x = [1.0, "test", 1]  # typically poor style
 
 The type of this array is ``Array{Any,1}``, where ``Any`` means the compiler has determined that any valid Julia type can be added to the array
 
@@ -282,7 +282,7 @@ As an example, consider a function which returns different types depending on th
         if x > 0
             return 1.0
         else 
-            return 0  # Probably meant `0.0`
+            return 0  # probably meant `0.0`
         end
     end
     
@@ -323,7 +323,7 @@ To give an example of the declaration of types, the following are equivalent
 .. code-block:: julia
 
     function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64} 
-        # Argument and return types
+        # argument and return types
         b::Vector{Float64} = [5.0, 6.0]
         return A * x .+ b
     end
@@ -343,9 +343,8 @@ Here, the first line works and the second line fails
     @show f([0.1; 2.0], [1 2; 3 4])
     @show f([0.1; 2.0], Diagonal([1.0, 2.0]))
 
-    # f2([0.1; 2.0], [1 2; 3 4])            # Not a `Float64`
-    # f2([0.1; 2.0], Diagonal([1.0, 2.0]))  # Not a `Matrix{Float64}`
-
+    # f2([0.1; 2.0], [1 2; 3 4]) # not a `Float64`
+    # f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a `Matrix{Float64}`
 
 Creating New Types
 ====================
@@ -373,8 +372,8 @@ Let's start with a trivial example where the ``struct`` we build has fields name
 
 .. code-block:: julia
 
-    struct FooNotTyped  # Immutable by default, use `mutable struct` otherwise 
-        a               # BAD! Not typed
+    struct FooNotTyped  # immutable by default, use `mutable struct` otherwise 
+        a 
         b
         c
     end
@@ -395,15 +394,15 @@ It has the same name as the data type but uses function call notion
 
 .. code-block:: julia
 
-    foo_nt = FooNotTyped(2.0, 3, [1.0, 2.0, 3.0])  # New `FooNotTyped`
-    foo = Foo(2.0, 3, [1.0, 2.0, 3.0])             # Creates a new `Foo`
+    foo_nt = FooNotTyped(2.0, 3, [1.0, 2.0, 3.0])  # new `FooNotTyped`
+    foo = Foo(2.0, 3, [1.0, 2.0, 3.0]) # creates a new `Foo`
     
     @show typeof(foo)
-    @show foo.a       # Get the value for a field
+    @show foo.a       # get the value for a field
     @show foo.b
     @show foo.c;
     
-    # foo.a = 2.0     # Fails since it is immutable
+    # foo.a = 2.0     # fails since it is immutable
 
 You will notice two differences above for the creation of a ``struct`` compared to our use of ``NamedTuple``
 
@@ -428,7 +427,7 @@ The first example, which is usually just as low-performance as no declaration of
 
     struct Foo2
         a::Float64
-        b::Integer       # BAD! Not a concrete type
+        b::Integer  # BAD! Not a concrete type
         c::Vector{Real}  # BAD! Not a concrete type
     end
 
@@ -437,20 +436,20 @@ be unnecessarily constraining what is allowed
 
 .. code-block:: julia
 
-    f(x) = x.a + x.b + sum(x.c) # Use the type
+    f(x) = x.a + x.b + sum(x.c) # use the type
     a = 2.0
     b = 3
     c = [1.0, 2.0, 3.0]
     foo = Foo(a, b, c)
-    f(foo)                      # Call with the foo, no problem
+    f(foo)   # call with the foo, no problem
 
-    # Some other typed for the values 
-    a = 2                  # Not a floating point but `f()` would work
+    # some other typed for the values 
+    a = 2   # not a floating point but `f()` would work
     b = 3
-    c = [1.0, 2.0, 3.0]'   # Transpose is not a `Vector` but `f()` would work
-    # foo = Foo(a, b, c)   # Fails to compile
+    c = [1.0, 2.0, 3.0]'   # transpose is not a `Vector` but `f()` would work
+    # foo = Foo(a, b, c)   # fails to compile
 
-    # Works with `NotTyped` version, but low performance
+    # works with `NotTyped` version, but low performance
     foo_nt = FooNotTyped(a, b, c)
 
 Declaring Parametric Types (Advanced)
@@ -463,7 +462,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
 .. code-block:: julia
 
     struct Foo3{T1, T2, T3}
-        a::T1               # Could be any type
+        a::T1   # could be any type
         b::T2
         c::T3
     end
@@ -471,7 +470,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
     # Works fine
     a = 2
     b = 3
-    c = [1.0, 2.0, 3.0]'    # Transpose is not a `Vector` but `f()` would work
+    c = [1.0, 2.0, 3.0]'    # transpose is not a `Vector` but `f()` would work
     foo = Foo3(a, b, c)
     f(foo)
 
@@ -484,9 +483,9 @@ You could constrain the types based on the abstract parent type using the ``<:``
     struct Foo4{T1 <: Real, T2 <: Real, T3 <: AbstractVecOrMat{<:Real}}
         a::T1
         b::T2
-        c::T3  # Should check dimensions as well
+        c::T3  # should check dimensions as well
     end
-    foo = Foo4(a, b, c)  # No problem, and high performance
+    foo = Foo4(a, b, c)  # no problem, and high performance
 
 This ensures that
 
@@ -507,19 +506,19 @@ However, the other issue where constructor arguments are error-prone, can be rem
     using Parameters
     
     @with_kw  struct Foo5
-        a::Float64 = 2.0     # Adds default value
+        a::Float64 = 2.0     # adds default value
         b::Int64
         c::Vector{Float64}
     end
     
     foo = Foo5(a = 0.1, b = 2, c = [1.0, 2.0, 3.0])
-    foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2)  # Rearrange order, uses default values
+    foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2)  # rearrange order, uses default values
     
     @show foo
     @show foo2
 
     function f(x)
-        @unpack a, b, c = x     # Can use `@unpack` on any struct
+        @unpack a, b, c = x     # can use `@unpack` on any struct
         return a + b + sum(c) 
     end
     
@@ -553,9 +552,9 @@ A few simple programming patterns ensure that this is possible
         # BAD
         x = [5.0, 6.0, 2.1] 
         
-        function g(x::Array{Float64, 1})   # Not generic!
-            y = zeros(length(x))           # Not generic, hidden float!
-            z = Diagonal(ones(length(x)))  # Not generic, hidden float!
+        function g(x::Array{Float64, 1})   # not generic!
+            y = zeros(length(x))   # not generic, hidden float!
+            z = Diagonal(ones(length(x)))  # not generic, hidden float!
             q = ones(length(x))
             y .= z * x + q
             return y
@@ -564,10 +563,10 @@ A few simple programming patterns ensure that this is possible
         g(x)
 
         # GOOD
-        function g2(x)                      # Or `x::AbstractVector`
+        function g2(x)  # or `x::AbstractVector`
             y = similar(x)
             z = I
-            q = ones(eltype(x), length(x))  # Or `fill(one(x), length(x))`
+            q = ones(eltype(x), length(x))  # or `fill(one(x), length(x))`
             y .= z * x + q
             return y
         end
@@ -581,7 +580,7 @@ A few simple programming patterns ensure that this is possible
         function g(x)
             y = similar(x)
             for i in eachindex(x)
-                y[i] = x[i]^2      # Could broadcast
+                y[i] = x[i]^2      # could broadcast
             end 
             return y
         end
@@ -616,7 +615,7 @@ A few simple programming patterns ensure that this is possible
         
         x = BigFloat(2)
         
-        @show typeof(one(x))         # Can call with a variable for convenience
+        @show typeof(one(x))  # can call with a variable for convenience
         @show typeof(zero(x));
 
 This last example is a subtle, because of something called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_
@@ -627,12 +626,12 @@ This last example is a subtle, because of something called `type promotion <http
 
       # ACCEPTABLE
       function g(x::AbstractFloat)
-          return x + 1.0           # Assumes `1.0` can be converted to something compatible with `typeof(x)`
+          return x + 1.0   # assumes `1.0` can be converted to something compatible with `typeof(x)`
       end
       
       x = BigFloat(1.0)
       
-      @show typeof(g(x));          # This has "promoted" the `1.0` to a `BigFloat`
+      @show typeof(g(x));  # this has "promoted" the `1.0` to a `BigFloat`
 
   But sometimes assuming promotion is not enough 
 
@@ -640,10 +639,10 @@ This last example is a subtle, because of something called `type promotion <http
 
       # BAD
       function g2(x::AbstractFloat)
-          if x > 0.0                # Can't efficiently call with `x::Integer`
-              return x + 1.0        # Ok - assumes you can promote `Float64` to `AbstractFloat`
+          if x > 0.0   # can't efficiently call with `x::Integer`
+              return x + 1.0   # OK - assumes you can promote `Float64` to `AbstractFloat`
           otherwise 
-              return 0              # Bad! Returns a `Int64`
+              return 0   # BAD! Returns a `Int64`
           end
       end
       
@@ -651,19 +650,19 @@ This last example is a subtle, because of something called `type promotion <http
       x2 = BigFloat(-1.0)
       
       @show typeof(g2(x))
-      @show typeof(g2(x2))  # Type unstable
+      @show typeof(g2(x2))  # type unstable
 
       # GOOD
       function g3(x) #
-          if x > zero(x)         # Any type with an additive identity
-              return x + one(x)  # More general but less important of a change
+          if x > zero(x)   # any type with an additive identity
+              return x + one(x)  # more general but less important of a change
           otherwise 
               return zero(x)
           end
       end     
          
       @show typeof(g3(x))
-      @show typeof(g3(x2));  # Type stable
+      @show typeof(g3(x2));  # type stable
 
 
 These patterns are relatively straightforward, but generic programming can be thought of
@@ -740,8 +739,8 @@ To see this in action, consider the absolute value function ``abs``
 
 .. code-block:: julia
 
-    @show abs(-1)            # `Int64`
-    @show abs(-1.0)          # `Float64`
+    @show abs(-1)   # `Int64`
+    @show abs(-1.0)  # `Float64`
     @show abs(0.0 - 1.0im);  # `Complex{Float64}`
 
 In all of these cases, the ``abs`` function has specialized code depending on the type passed in
@@ -755,7 +754,7 @@ To rewrite the ``abs`` function
 .. code-block:: julia
 
     function ourabs(x::Real)
-        if x > zero(x)       # Note, not 0!
+        if x > zero(x)   # note, not 0!
             return x
         else
             return -x
@@ -766,8 +765,8 @@ To rewrite the ``abs`` function
         sqrt(real(x)^2 + imag(x)^2)
     end
 
-    @show ourabs(-1)            # `Int64`
-    @show ourabs(-1.0)          # `Float64`
+    @show ourabs(-1)   # `Int64`
+    @show ourabs(-1.0) # `Float64`
     @show ourabs(1.0 - 2.0im);  # `Complex{Float64}`
 
 Note that in the above, ``x`` works for any type of ``Real``, including ``Int64``, ``Float64``, and ones you may not have realized exist
@@ -775,7 +774,7 @@ Note that in the above, ``x`` works for any type of ``Real``, including ``Int64`
 
 .. code-block:: julia
 
-    x = -2//3         # A `Rational` number, -2/3
+    x = -2//3  # `Rational` number, -2/3
     @show typeof(x)
     @show ourabs(x);
 
@@ -806,7 +805,7 @@ The uniform grid can be implemented using an ``AbstractRange``, which we can ana
 .. code-block:: julia
 
     x = range(0.0, 1.0, length = 20)
-    x_2 = 1:1:20               # If integers
+    x_2 = 1:1:20   # if integers
     
     @show typeof(x)
     @show typeof(x_2)
@@ -816,7 +815,7 @@ To see the entire tree about a particular type, use ``show_supertypes``
 
 .. code-block:: julia
 
-    show_supertypes(typeof(x))  # Or typeof(x) |> show_supertypes
+    show_supertypes(typeof(x))  # or typeof(x) |> show_supertypes
 
 .. code-block:: julia
 
@@ -844,12 +843,12 @@ Similarly, there are a number of operations available for any ``AbstractVector``
 .. code-block:: julia
 
     f(x) = x^2
-    f_x = f.(x)                              # Calculating at the range values
+    f_x = f.(x)  # calculating at the range values
     
     @show typeof(f_x)
     @show supertype(typeof(f_x))
-    @show supertype(supertype(typeof(f_x)))  # Walk up tree again!
-    @show length(f_x);                       # And many more
+    @show supertype(supertype(typeof(f_x)))  # walk up tree again!
+    @show length(f_x);   # and many more
 
 .. code-block:: julia
 
@@ -866,9 +865,9 @@ There are also many functions that can use any ``AbstractArray``, such as ``diff
 
     search: diff symdiff setdiff symdiff! setdiff! Cptrdiff_t
 
-    diff(A::AbstractVector) # Finite difference operator of matrix or vector A
+    diff(A::AbstractVector) # finite difference operator of matrix or vector A
     
-    # If A is a matrix, specify the dimension over which to operate with the dims keyword argument
+    # if A is a matrix, specify the dimension over which to operate with the dims keyword argument
     diff(A::AbstractMatrix; dims::Integer)  
     
 
@@ -887,7 +886,7 @@ We can use auto-differentiation to compare the results
 
     using Plots, ForwardDiff
     
-    # Operator to get the derivative of this function using AD
+    # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
 
     q(x) = sin(x)
@@ -912,7 +911,7 @@ Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can n
 
 .. code-block:: julia
 
-    # Broadcasts over the diff
+    # broadcasts over the diff
     derivatives(f::Function, x::AbstractArray) = diff(f.(x)) ./ diff(x) 
 
     d_f = derivatives(f, x)
@@ -942,7 +941,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
     A = rand(N, N)
     x = rand(N)
     
-    @btime $A * $x  # The $ in front of variable names is sometimes important
+    @btime $A * $x  # the $ in front of variable names is sometimes important
     @btime inv($A)
 
 Exercise 2
@@ -975,9 +974,9 @@ The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a pa
     p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
     
     @show p
-    p′ = polyder(p)           # Gives the derivative of p, another polynomial
-    @show p(0.1), p′(0.1)     # Call like a function
-    @show roots(p);           # Find roots such that p(x) = 0
+    p′ = polyder(p)   # gives the derivative of p, another polynomial
+    @show p(0.1), p′(0.1)  # call like a function
+    @show roots(p);   # find roots such that p(x) = 0
 
 
 Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
