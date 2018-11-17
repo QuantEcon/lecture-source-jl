@@ -376,7 +376,7 @@ don't let the environment get in the way of learning the language
 Using Jupyter Online
 ---------------------------
 
-If you have access to a cloud based solution for Jupyter, then that is typically an easy solution
+If you have access to a cloud-based solution for Jupyter, then that is typically an easy solution
 
 * Students: ask your department if these resources are available 
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for 
