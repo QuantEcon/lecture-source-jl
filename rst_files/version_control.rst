@@ -511,8 +511,8 @@ Exercise 1a
 
 Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your github accounts
 In this repository
-* Take the code from one of your previous assignments, such as 
-`Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
+
+* Take the code from one of your previous assignments, such as `Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
 * Put in a ``README.jl`` with some text
 * Put in a ``.gitignore`` file, ignoring the Jupyter files ``.ipynb_checkpoints`` and the project files, ``.projects``
 
@@ -520,6 +520,7 @@ Exercise 1b
 ----------------
 
 Pair-up with another student who has done Exercise 1a and find out their github ID, and each do the following
+
 * Add the github ID as a collaborators on your repository
 * Clone the repositories to your local desktop
 * Assign each other an issue
