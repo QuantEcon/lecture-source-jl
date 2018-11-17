@@ -377,7 +377,7 @@ between successive iterates is below `tol`
 
 In the above, we use ``v = copy(v_iv)`` rather than just ``v_iv = v``
 
-To understand why, first recall that ``v_iv`` is a function argument-- either defaulting to the given value, or passed into the function
+To understand why, first recall that ``v_iv`` is a function argument -- either defaulting to the given value, or passed into the function
   * If we had gone ``v = v_iv`` instead, then it would have simply created a new name ``v`` which binds to whatever is located at ``v_iv``
   * Since we later use ``v .= v_next`` later in the algorithm, the values in it would be modified
   * Hence, we would be modifying the ``v_iv`` vector we were passed in, which may not be what the caller of the function wanted

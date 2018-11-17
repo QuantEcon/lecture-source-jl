@@ -304,7 +304,7 @@ The PR is a request for a project maintainer to merge ("pull") changes you've wo
 
 There are a few different workflows for creating and handling PRs, which we'll walk through below 
 
-**Note:** If the changes are for a Julia Package, you will need to follow a different workflow--described in the `testing lecture <testing_>`
+**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the `testing lecture <testing_>`
 
 .. _web_interface:
 

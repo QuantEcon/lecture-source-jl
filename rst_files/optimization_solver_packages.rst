@@ -326,7 +326,7 @@ Alternatively, with an analytical gradient
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
     "$(results.iterations) iterations")    
 
-For derivative-free methods, you can change the algorithm--and have no need to provide a gradient
+For derivative-free methods, you can change the algorithm -- and have no need to provide a gradient
 
 .. code-block:: julia
 

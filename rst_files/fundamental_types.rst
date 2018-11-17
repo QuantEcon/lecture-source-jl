@@ -391,7 +391,7 @@ A **view** on the other hand does not copy the value
 
 Note that the only difference is the ``@views`` macro, which will replace any slices with views in the expression
 
-An alternative is to call the ``view`` function directly--though it is generally discouraged since it is a step away from the math
+An alternative is to call the ``view`` function directly -- though it is generally discouraged since it is a step away from the math
 
 .. code-block:: julia
 

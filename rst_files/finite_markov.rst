@@ -1071,7 +1071,7 @@ course
 
 .. figure:: /_static/figures/mc_ex1_plot.png
 
-(You don't need to add the fancy touches to the graph---see the solution if you're interested)
+(You don't need to add the fancy touches to the graph --- see the solution if you're interested)
 
 .. _mc_ex2:
 

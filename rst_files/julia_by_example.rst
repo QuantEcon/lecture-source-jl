@@ -355,7 +355,7 @@ Finally, we can broadcast any function, where squaring is only a special case
     generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
     data = generatedata(5)
 
-As a final--abstract--approach, we can make the ``generatedata`` function able to generically apply a function 
+As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply a function 
     
 .. code-block:: julia
 
@@ -564,7 +564,7 @@ The new feature there is ``break`` , which leaves a ``for`` or ``while`` loop
 Using a Function
 ---------------------
 
-The first problem with this setup is that it depends on being sequentially run--which can be easily remedied with a function
+The first problem with this setup is that it depends on being sequentially run -- which can be easily remedied with a function
 
 .. code-block:: julia
 
@@ -670,9 +670,9 @@ To enable this, Julia has two features:  named function parameters, and named tu
 
 In this example, all function parameters after the ``;`` in the list, must be called by name
 
-Furthermore, a default value may be enabled--so the named parameter ``iv`` is required while ``tolerance`` and ``maxiter`` have default values
+Furthermore, a default value may be enabled -- so the named parameter ``iv`` is required while ``tolerance`` and ``maxiter`` have default values
 
-The return type of the function also has named fields, ``value, normdiff,`` and ``iter``--all accessed intuitively using ``.``
+The return type of the function also has named fields, ``value, normdiff,`` and ``iter`` -- all accessed intuitively using ``.``
 
 To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:`x = f(x)` where :math:`f(x) := r x (1-x)`
 
@@ -745,7 +745,7 @@ In Julia, this number can be calculated as
     eps()
 
 
-For many cases, this is sufficient precision--but consider that in iterative algorithms applied millions of times, those small differences can add up
+For many cases, this is sufficient precision -- but consider that in iterative algorithms applied millions of times, those small differences can add up
 
 The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value
 
@@ -935,7 +935,7 @@ Take a random walk, starting from :math:`x_0 = 1`
 
 Start :math:`\sigma = 0.2, \alpha = 1.0`
 
-1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks--to a :math:`t_{\max} = 200` and plot a histogram
+1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks -- to a :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
 
 .. _jbe_ex8a:

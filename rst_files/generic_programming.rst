@@ -44,7 +44,7 @@ From ``Mathematics to Generic Programming`` :cite:`stepanov_mathematics_2014`
 
     Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency... Generic programming is more of an *attitude* toward programming than a particular set of tools.
 
-In that sense, it is important to think of generic programming not as a set of rules to apply about decomposing taxonomies of abstractions, but rather as an interactive approach in attempting to uncover generality without any performance overhead
+In that sense, it is important to think of generic programming not as a set of rules to apply when decomposing taxonomies of abstractions, but rather as an interactive approach to uncover generality without compromising performance
 
 As we will see, the core approach is to treat data-structures and algorithms as loosely coupled, and is in direct contrast to the "isa" approach of object-oriented programming
 
@@ -190,7 +190,7 @@ Unlearning Object Oriented (OO) Programming (Advanced)
 ------------------------------------------------------------
 See `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types
 
-If you have never used programming languages such as C++, Java, Python, etc., then the type hierarchies above may seem unfamiliar and abstract--but there is no need to read this section
+If you have never used programming languages such as C++, Java, Python, etc., then the type hierarchies above may seem unfamiliar and abstract -- but there is no need to read this section
 
 Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar
 
@@ -240,7 +240,7 @@ It may be helpful to review the traditional pillars of OOP
 
 When programming in Julia
 * There will be no encapsulation or inheritance, most custom types you create will be immutable, and polymorphism will be fundamentally different
-* Abstraction is primarily achieved through keeping the data and algorithms that operate on them as orthogonal as possible--in contrast to OOP
+* Abstraction is primarily achieved through keeping the data and algorithms that operate on them as orthogonal as possible -- in contrast to OOP
 * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
 * The looseness that accompanies keeping algorithms and data-structures as orthogonal as possible makes it easier to discover commonality in the design
 
@@ -599,7 +599,7 @@ Or Interpolations
 
 Note that the same generic ``plotfunctions`` could use any variable passed to it that "looks" like a function, i.e. can call ``f(x)``
 
-This sort of typing and design--generic but without any declarations--is usually called `duck typing <https://en.wikipedia.org/wiki/Duck_typing>`_
+This sort of typing and design -- generic but without any declarations -- is usually called `duck typing <https://en.wikipedia.org/wiki/Duck_typing>`_
 
 If you need to make an existing type callable, see `Function Like Objects <https://docs.julialang.org/en/v1/manual/methods/#Function-like-objects-1>`_
 
@@ -854,7 +854,7 @@ We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but
     f(x) = 2x
     @code_warntype f(x)
 
-The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example--i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
+The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example -- i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
 
 Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function when called with types like ``[1, 2, 3]`` is always a vector of integers
 
