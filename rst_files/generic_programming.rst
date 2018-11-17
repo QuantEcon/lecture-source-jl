@@ -44,11 +44,11 @@ From ``Mathematics to Generic Programming`` :cite:`stepanov_mathematics_2014`
 
     Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency... Generic programming is more of an *attitude* toward programming than a particular set of tools.
 
-In that sense, it is important to think of generic programming not as a set of rules to apply when decomposing taxonomies of abstractions, but rather as an interactive approach to uncover generality without compromising performance
+In that sense, it is important to think of generic programming as an interactive approach to uncover generality without compromising performance -- and not a set of rules to decomposing taxonomies of abstractions
 
 As we will see, the core approach is to treat data-structures and algorithms as loosely coupled, and is in direct contrast to the "isa" approach of object-oriented programming
 
-This lecture has the dual role of giving an introduction into the design of generic algorithms, and describing how Julia helps make that possible
+This lecture has the dual role of giving an introduction into the design of generic algorithms and describing how Julia helps make that possible
 
 Setup
 ------
@@ -58,10 +58,9 @@ Setup
 Exploring Type Trees
 ==================================================
 
-The connection between data-structures and the algorithms which operate on them is handled the through the type system
+The connection between data-structures and the algorithms which operate on them is handled by the type system
 
-Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) are the data-structures we have in mind for working with algorithms, and the abstract types we have seen before (e.g. ``Number`` and ``AbstractArray``) provide the mapping a particular set of data structures to a particular algorithm 
-
+Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) are the data-structures we apply a an algorithm to, and the abstract types (e.g. the corresponding ``Number`` and ``AbstractArray``) provide the mapping between a set of related data structures and algorithms
 
 .. code-block:: julia
 
@@ -72,13 +71,15 @@ Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) are the data-structur
     @show x, y, z
     @show typeof(x), typeof(y), typeof(z)
     @show supertype(typeof(x))
-    @show typeof(x) |> supertype  # pipe operator(|>), just applies a function to another function
+
+    # pipe operator, |>, is is equivalent
+    @show typeof(x) |> supertype  
     @show supertype(typeof(y))
     @show typeof(z) |> supertype
     @show typeof(x) <: Any;
 
 
-Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing the tree of types were discussed in `this lecture <introduction_to_types>`_
+Beyond the ``typeof`` and ``supertype`` functions, a few other useful tools for analyzing the tree of types have been discussed in the `introduction to types lecture <introduction_to_types>`_
 
 .. code-block:: julia
 
@@ -90,7 +91,7 @@ Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing 
 
     subtypes(Integer)
 
-Using the ``subtypes`` function, we can traverse the type tree below a particular type
+Using the ``subtypes`` function, we can writes an algorithm to traverse the type tree below any time ``t`` -- with the confidence that all types support ``subtypes``
 
 .. code-block:: julia
 
@@ -105,7 +106,7 @@ Using the ``subtypes`` function, we can traverse the type tree below a particula
             end
         end
 
-Using this function, we can see all of the current types in memory below ``Number`` in the tree
+Applying this to ``Number``, we see the tree of types currently loaded
 
 .. code-block:: julia
 
@@ -119,11 +120,11 @@ Any
 
 At the root of all types is ``Any``
 
-There are a number of operations which are available for ``Any``, including a ``show`` function and ``typeof``
+.. There are a number of operations which are available for ``Any``, including a ``show`` function and ``typeof``
 
 There are a few functions that work in the "most generalized" context: usable with anything that you can construct or access from other packages
 
-We have already called ``typeof`` and ``supertype`` on a number of types, and this will work by default for custom types
+We have already called ``typeof, show`` and ``supertype`` -- which will apply to a custom ``struct`` type since ``MyType <: Any``
 
 .. code-block:: julia
 
@@ -139,9 +140,9 @@ We have already called ``typeof`` and ``supertype`` on a number of types, and th
     @show typeof(myval) <: Any;
 
 
-Here we see an important example of generic programming: every type ``<: Any`` supports the ``@show`` macro, which in turn, relies on the ``show`` function
+Here we see another example of generic programming: every type ``<: Any`` supports the ``@show`` macro, which in turn, relies on the ``show`` function
 
-What does the ``@show`` macro do?  It (1) prints the expression as a string; (2) evaluates the expression; and (3) calls the ``show`` function on the returned types
+The ``@show`` macro (1) prints the expression as a string; (2) evaluates the expression; and (3) calls the ``show`` function on the returned values
 
 To see this with built-in types
 
@@ -150,7 +151,9 @@ To see this with built-in types
     x = [1, 2]
     show(x)    
 
-The ``Any`` type is useful, because it provides a fall-back implementation for a variety of functions, such as the ``show``
+The ``Any`` type is useful, because it provides a fall-back implementation for a variety of functions
+
+Hence, calling ``show`` on our custom type dispatches to the fallback function
 
 .. code-block:: julia
 
@@ -167,23 +170,25 @@ The default implementation used by Julia would look something like
         print(io, str)
     end
 
-To implement a "best practice" and provide a specialized implementation of the ``show`` function for our type rather than the fllback
+To implement a specialized implementation of the ``show`` function for our type rather than the fallback
 
 .. code-block:: julia
 
-    import Base.show  # to extend an existing method
+    import Base.show  # to extend an existing function
 
     function show(io::IO, x::MyType)
-        str = "(MyType.a = $(x.a))"
+        str = "(MyType.a = $(x.a))"  # custom display
         print(io, str)
     end
     show(myval)  # it creates an IO value first and then calls the above show
 
-At that point, the ``@show`` macro works by calling the ``show`` function
+At that point, we can use the ``@show`` macro, which in turn calls ``show``
 
 .. code-block:: julia
 
     @show myval;
+
+This is another example of using generic programming: any type with a ``show`` function works with the ``@show`` macro
 
 
 Unlearning Object Oriented (OO) Programming (Advanced)
