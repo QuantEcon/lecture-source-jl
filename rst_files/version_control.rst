@@ -509,7 +509,7 @@ Exercises
 Exercise 1a
 ---------------
 
-Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your github accounts
+Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your github accounts. 
 In this repository
 * Take the code from one of your previous assignments, such as 
 `Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
@@ -530,7 +530,7 @@ Pair-up with another student who has done Exercise 1a and find out their github 
 Exercise 1c
 --------------
 
-Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the ``README.md`` file for your repository that you have both setup as collaborators
+Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the ``README.md`` file for your repository that you have both setup as collaborators.
 
 Start by ensuring there are multiple lines in the file so that some changes may have conflicts, and some may not
 
@@ -541,17 +541,17 @@ Start by ensuring there are multiple lines in the file so that some changes may 
 Exercise 2a
 ----------------
 
-Just using the GitHub's `web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository
+Just using the GitHub's `web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository.
 
-The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl`` 
+The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl``.
 
 Note: The source for that repository is in ``.rst`` files, but you should be able to find spelling mistakes/etc. without much effort
 
 Exercise 2b
 -------------------------
 
-Following the `instructions <fork_workflow>`_ for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository
+Following the `instructions <fork_workflow>`_ for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository.
 
 Again, you could submit it for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl``, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
 
-If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!)
+If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!).
