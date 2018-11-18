@@ -673,7 +673,7 @@ This is all the more reason to exploit carefully designed packages rather than "
 A Digression on Style and Naming
 ------------------------------------
 
-The previous section helps to establishe some of the reasoning behind the style 
+The previous section helps to establish some of the reasoning behind the style 
 choices in these lectures: "be aware of types, but avoid declaring them"
 
 The purpose of this is threefold:
