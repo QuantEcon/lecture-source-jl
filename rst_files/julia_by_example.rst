@@ -209,7 +209,7 @@ program, for the sake of learning syntax let's rewrite our program to use a
     
     In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
 
-Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
+Starting with the most direct version, and pretending we are in a world where ``randn`` can only return a single value
 
 .. code-block:: julia
 
@@ -246,7 +246,7 @@ To fix this, use ``eachindex``
             ϵ[i] = randn()
         end
      
-Here, ``eachindex(ϵ)`` returns an interator of indices which can be used to access ``ϵ``
+Here, ``eachindex(ϵ)`` returns an iterator of indices which can be used to access ``ϵ``
 
 While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code 
 
