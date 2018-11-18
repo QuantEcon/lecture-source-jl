@@ -327,7 +327,7 @@ Instead of looping, we can **broadcast** the ``^2`` square function over a vecto
 
 To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
 
-Loops of this sort are at least as efficient than vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
+Loops of this sort are at least as efficient as vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
 
 .. code-block:: julia
 
