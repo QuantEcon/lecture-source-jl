@@ -20,7 +20,7 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
-## Naming Conventions, Comments, etc.
+## Naming Conventions
 
 - **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
@@ -61,17 +61,18 @@ A = [1 2;
 - **Avoid the use of LaTeX** as it does not work well with most graphics backends
   - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
 - **Prefer** `in` to `∈` 
-- Comment spacing
-  - Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
+
+## Comment Spacing 
+- Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
 ```julia
 x = 1
 
 # comment1
 x = 2
 ```
-  - Comments on the same line of code
+- Comments on the same line of code (note the two spaced before the `#`
 ```julia
-x = 1 # comment2
+x = 1  # comment2
 ```
 - **Add comment for equation to code correspondence whenever possible**.  That is, if there was a formula in the document at some point, say `b = a x^2 (14)` where the `14` is the equation number when rendering, then the code which implements it should be
 ```julia

@@ -1,7 +1,6 @@
 .. _mc:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -265,7 +264,7 @@ We'll write our code as a function that takes the following three arguments
         X[1] = init # set the initial state
 
         for t in 2:sample_size
-            dist = dists[X[t-1]] # get discrete RV from previous state's transition distribution
+            dist = dists[X[t-1]] # get discrete RV from last state's transition distribution
             X[t] = rand(dist) # draw new value
         end
         return X
@@ -849,7 +848,8 @@ The convergence in the theorem is illustrated in the next figure
     mc = MarkovChain(P)
     ψ_star = stationary_distributions(mc)[1]
     x_star, y_star, z_star = ψ_star # unpack the stationary dist
-    plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors, gridalpha = 0.5, legend = :none)
+    plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors,
+                  gridalpha = 0.5, legend = :none)
     plot!(plt, camera = (45,45))
 
 .. code-block:: julia
@@ -1071,7 +1071,7 @@ course
 
 .. figure:: /_static/figures/mc_ex1_plot.png
 
-(You don't need to add the fancy touches to the graph---see the solution if you're interested)
+(You don't need to add the fancy touches to the graph --- see the solution if you're interested)
 
 .. _mc_ex2:
 

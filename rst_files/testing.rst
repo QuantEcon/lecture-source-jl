@@ -1,7 +1,6 @@
 .. _testing:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***************************************************
 Packages, Testing, and Continuous Integration 
@@ -23,6 +22,8 @@ Benefits include
 
 * Having GitHub test your project across operating systems, Julia versions, etc.
 
+.. _project_setup:
+
 Project Setup 
 =======================
 
@@ -36,7 +37,7 @@ As we'll see later, Travis is a service that automatically tests your project on
 
 First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov 
 
-As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>`_ if eligible 
+As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>_` if eligible 
 
 Navigate to the `Travis website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials 
 
@@ -49,17 +50,17 @@ CodeCov
 
 CodeCov is a service that tells you how expansive your tests are (i.e., how much of your code is untested)
 
-To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up." You should see something like this 
+To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up" 
 
 .. figure:: /_static/figures/codecov-1.png
-    :scale: 45%
+    :scale: 60%
 
 Next, click "add a repository" and *enable private scope* (this allows CodeCov to service your private projects)
 
 The result should be 
 
 .. figure:: /_static/figures/codecov-2.png
-    :scale: 45%
+    :scale: 60%
 
 This is all we need for now 
 
@@ -68,47 +69,42 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
-We also want to add the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
+1. Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package 
 
-.. code-block:: julia 
+    .. code-block:: julia 
 
-    ] add PkgTemplates
-    
-.. code-block:: julia 
-    
-    ] precompile 
+        using PkgTemplates 
 
-To recall, you can get into the ``pkg>`` mode by hitting ``]`` in the REPL 
-
-Next, let's create a *template* for our project 
+2. Create a *template* for your project 
 
 This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
 
 .. code-block:: julia 
 
-    using PkgTemplates 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
-Let's create a specific project based off this template
+3. Create a specific project based off this template
 
-.. code-block:: julia 
+    .. code-block:: julia 
 
-    generate("ExamplePackage.jl", ourTemplate)
+        generate("ExamplePackage.jl", ourTemplate)
 
 If we navigate to the package directory (shown in the output), we should see something like 
 
 .. figure:: /_static/figures/testing-dir.png
-    :scale: 45%
+    :scale: 60%
 
 Adding Project to Git 
 ------------------------
 
 The next step is to add this project to Git version control 
 
-First, open the repository screen in your account as discussed previously. We'll want the following settings 
+First, open the repository screen in your account as discussed previously
+
+We'll want the following settings 
 
 .. figure:: /_static/figures/testing-git1.png
-    :scale: 45%
+    :scale: 60%
 
 In particular 
 
@@ -120,10 +116,10 @@ Then, drag and drop your folder from your ``~/.julia/dev`` directory to GitHub D
 
 Click the "publish branch" button to upload your files to GitHub 
 
-If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
+If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like 
 
 .. figure:: /_static/figures/testing-git2.png
-    :scale: 45%
+    :scale: 60%
 
 Adding Project to Julia Package Manager 
 -------------------------------------------
@@ -259,7 +255,7 @@ We can track changes in the TOML, as before
 Here's the Manifest 
 
 .. figure:: /_static/figures/testing-atom-manifest.png
-    :scale: 45%
+    :scale: 60%
 
 We can also run other operations, like ``] up``, ``] precompile``, etc.
 
@@ -327,14 +323,16 @@ We can also call this function from a Jupyter notebook
 Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
 
 .. figure:: /_static/figures/testing-output.png
-    :scale: 45%
+    :scale: 60%
 
-From here, we can use our package's functions in the usual way. This lets us produce neat output examples, without re-defining everything 
+From here, we can use our package's functions in the usual way
+
+This lets us produce neat output documents, without pasting the whole codebase 
 
 We can also edit it interactively inside the notebook 
 
 .. figure:: /_static/figures/testing-notebook.png
-    :scale: 45%
+    :scale: 60%
 
 The change will be reflected in the ``Project.toml`` file::
 
@@ -363,13 +361,23 @@ Make sure you've activated the project environment (``] activate ExamplePackage`
 Collaborative Work 
 --------------------------
 
-For someone else to get the package, they simply need to run 
+For someone else to get the package, they simply need to
+
+1. Run the following command 
 
 .. code-block:: julia 
 
     ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
-This will place the repository inside their ``~/.julia/dev`` folder, and they can drag-and-drop it to GitHub desktop in the usual way 
+This will place the repository inside their ``~/.julia/dev`` folder
+
+2. Drag-and-drop the folder to GitHub desktop in the usual way 
+
+Recall that the path to your ``~/.julia`` folder is 
+
+.. code-block:: julia 
+
+    ] DEPOT_PATH[1]
 
 They can then collaborate as they would on other git repositories 
 
@@ -466,7 +474,7 @@ There are a few different ways to run the tests for your package
 
 * From an activated REPL, simply run ``pkg> test`` (recall that you can activate with ``pkg> activate ExamplePackage``)
 
-* Hit shift-enter in Atom on the actual ``runtests.jl`` file. Recall that we can get the path of the package by running ``using ExamplePackage; pathof(ExamplePackage)`` from an unactivated REPL
+* Hit shift-enter in Atom on the actual ``runtests.jl`` file (as below). Recall that we can get the path of the package by running ``using ExamplePackage; pathof(ExamplePackage)`` from an unactivated REPL
 
 
 Continuous Integration with Travis
@@ -482,14 +490,14 @@ This includes private repos if you're on a student developer pack or an academic
 To change this, go to "settings" under your GitHub profile 
 
 .. figure:: /_static/figures/git-settings.png
-    :scale: 45%
+    :scale: 60%
 
 Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked 
 
 Build Options 
 ----------------
 
-By default, Travis will run builds for new commits and PRs for every tracked repo with a ``.travis.yml`` file 
+By default, Travis will compile and test your project (i.e., "build" it) for new commits and PRs for every tracked repo with a ``.travis.yml`` file 
 
 We can see ours by opening it in Atom 
 
@@ -516,24 +524,24 @@ This is telling Travis to build the project in Julia, on OSX and Linux, using Ju
 
 It also says that if the nightly version doesn't work, that shouldn't register as a failure 
 
-**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift. You can delete those lines to speed up the build. Likewise for nightly Julia 
+**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift. You can delete those lines to speed up the build. Likewise the nightly Julia 
 
 Working with Builds 
 --------------------
 
 As above, builds are triggered whenever we push changes or open a pull request 
 
-For example, if we push our changes to the server and then click the Travis badge on the README in the Travis website, we should see something like 
+For example, if we push our changes to the server and then click the Travis badge on the README, we should see something like 
 
 .. figure:: /_static/figures/travis-progress.png
-    :scale: 45%
+    :scale: 60%
 
 This gives us an overview of all the builds running for that commit 
 
 To inspect a build more closely (say, if it fails), we can click on it and expand the log options 
 
 .. figure:: /_static/figures/travis-log.png
-    :scale: 45%
+    :scale: 60%
 
 Note that the build times here aren't informative, because we can't generally control the hardware to which our job is allocated 
 
@@ -542,7 +550,7 @@ We can also cancel specific jobs, either from their specific pages or by clickin
 Lastly, we can trigger builds manually (without a new commit or PR) from the Travis overview 
 
 .. figure:: /_static/figures/travis-trigger.png
-    :scale: 45%
+    :scale: 60%
 
 To commit *without* triggering a build, simply add [ci skip] somewhere inside the commit message 
 
@@ -576,7 +584,7 @@ Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/
 Next, go to your travis settings and add an environment variable as below 
 
 .. figure:: /_static/figures/travis-settings.png
-    :scale: 45%
+    :scale: 60%
 
 Interpreting Results 
 ------------------------
@@ -588,9 +596,128 @@ This shows us that our tests cover 50 \% of our functions in ``src//``
 To get a more granular view, we can click the ``src//`` and the resultant filename
 
 .. figure:: /_static/figures/codecov.png
-    :scale: 45%
+    :scale: 60%
 
 This shows us precisely which methods (and parts of methods) are untested 
+
+Pull Requests to External Julia Projects 
+===============================================
+
+As mentioned in `version control <version_control>`_, sometimes we'll want to work on external repos that are also Julia projects 
+
+The first thing is to ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo and sync it with the Julia package manager
+
+For example, running 
+
+.. code-block:: julia
+    :class: no-execute
+
+    ] dev Expectations
+
+will clone the repo ``https://github.com/quantecon/Expectations.jl`` to ``~/.julia/dev``
+
+Make sure you do this from a fresh REPL
+
+As a reminder, you can find the location of your ``~/.julia`` folder (called the "user depot"), by running 
+
+.. code-block:: julia 
+
+    DEPOT_PATH[1]
+
+The ``] dev`` command will also add the target to the package manager, so that whenever we run ``using Expectations``, Julia will load our cloned copy from that location
+
+.. code-block:: julia
+    :class: no-execute
+
+    using Expectations
+    pathof(Expectations) # points to our git clone 
+
+Next, drag that folder to GitHub Desktop 
+
+The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
+
+.. figure:: /_static/figures/testing-fork.png
+    :scale: 60%
+
+Lastly, edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL 
+
+.. figure:: /_static/figures/testing-repo-settings.png
+    :scale: 60%
+
+Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is 
+
+If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
+
+.. figure:: /_static/figures/testing-commit.png
+    :scale: 60%
+
+Here, for example, we're revising the README 
+
+Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account 
+
+To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the `version control <version_control>`_ lecture
+
+.. figure:: /_static/figures/testing-expectations.png
+    :scale: 60%
+
+The green check mark indicates that Travis tests passed for this commit
+
+Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve 
+
+.. figure:: /_static/figures/testing-pr2.png
+    :scale: 60%
+
+For more on PRs, see the relevant section of the `version control <version_control>`_ lecture 
+
+Case with Write Access
+---------------------------
+
+If you have write access to the repo, we can skip the preceding steps about forking and changing the URL 
+
+You can use ``] dev`` on a package name or the URL of the package.  
+
+.. code-block:: julia
+    :class: no-execute
+
+    ] dev Expectations 
+
+or ``] dev https://github.com/quanteconuser/Expectations.jl.git`` as an example for an unreleased package by URL
+
+Which will again clone the repo to ``~/.julia/dev``, and use it as a Julia package
+
+.. code-block:: julia
+    :class: no-execute
+
+    using Expectations
+    pathof(Expectations) # points to our git clone 
+
+Next, drag that folder to GitHub Desktop 
+
+Then, in order to work with a project locally, all we need to do is open it in a text editor (like Atom)
+
+.. figure:: /_static/figures/testing-atom-package.png
+    :scale: 60%
+
+From here, we can edit this package just like we created it ourselves and use GitHub Desktop to track versions of our package files (say, after ``] up``, or editing source code, ``] add Package``, etc.)
+
+Removing a Julia Package 
+------------------------------
+
+To "un-dev" a Julia package (say, if we want to use our old ``Expectations.jl``), you can simply run 
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    ] free Expectations 
+
+To delete it entirely, simply run 
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    ] rm Expectations 
+
+Both from a fresh REPL 
 
 Benchmarking 
 ==================
@@ -599,7 +726,7 @@ Another goal of testing is to make sure that code doesn't slow down significantl
 
 We can do this using tools provided by the ``BenchmarkTools.jl`` package 
 
-See the :doc:`need for speed <need_for_speed>` lecture for more details
+See the ``need for speed`` lecture for more details 
 
 Additional Notes 
 =======================
@@ -607,3 +734,39 @@ Additional Notes
 * The `JuliaCI <https://github.com/JuliaCI/>`_ organization provides more Julia utilities for continuous integration and testing 
 
 * This `Salesforce document <https://developer.salesforce.com/page/How_to_Write_Good_Unit_Tests/>`_ has some good lessons about writing and testing code
+
+Exercises
+============
+
+Exercise 1
+---------------
+
+Following the `instructions for a new project <project_setup>`_, create a new package on your github account called ``NewtonsMethod.jl``
+
+In this package, you should create a simple package to do Newton's Method using the code you did in the 
+`Newton's method <jbe_ex8a>`_ exercise in `Julia by example <julia_by_example>`_
+
+In particular, within your package you should have two functions
+* ``newtonroot(f, f′; x₀, tol = 1E-7, maxiter = 1000)``
+* ``newtonroot(f; x₀, tol = 1E-7, maxiter = 1000)``
+
+Where the second function one uses Automatic Differentiation to call the first.
+
+The package should include
+* implementations of those functions in the ``/src`` directory
+* comprehensive set of tests
+* project and manifest files to replicate your development environment
+* automated running of the tests with Travis CI in GitHub 
+
+For the tests, you should have at the very minimum
+* a way to handle non-convergence (e.g. return back ``nothing`` as discussed in `error handling <error_handling>`_
+* several ``@test`` for the root of a known function, given the ``f`` and analytical ``f'`` derivatives
+* tests of those roots using the automatic differentiation version of the function
+* test of finding those roots with a ``BigFloat`` and not just a ``Float64``
+* test of non-convergence for a function without a root (e.g. :math:`f(x) = 2 + x^2` )
+* test to ensure that the ``maxiter`` is working (e.g. what happens if you call ``maxiter = 5``
+* test to ensure that ``tol`` is working
+
+And anything else you can think of.  You should be able to run ``] test`` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI
+
+Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build

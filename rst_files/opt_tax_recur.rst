@@ -1,7 +1,6 @@
 .. _opt_tax_recur:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *********************************************
 Optimal Taxation with State-Contingent Debt
@@ -705,39 +704,35 @@ The above steps are implemented in a type called `SequentialAllocation`
 
   import QuantEcon: simulate
 
-  mutable struct Model{TF <: AbstractFloat,
-                       TM <: AbstractMatrix{TF},
-                       TV <: AbstractVector{TF}}
-      β::TF
-      Π::TM
-      G::TV
-      Θ::TV
-      transfers::Bool
-      U::Function
-      Uc::Function
-      Ucc::Function
-      Un::Function
-      Unn::Function
-      n_less_than_one::Bool
+  mutable struct Model
+      β
+      Π
+      G
+      Θ
+      transfers
+      U
+      Uc
+      Ucc
+      Un
+      Unn
+      n_less_than_one
   end
 
-  struct SequentialAllocation{TP <: Model,
-                              TI <: Integer,
-                              TV <: AbstractVector}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      cFB::TV
-      nFB::TV
-      ΞFB::TV
-      zFB::TV
+  struct SequentialAllocation
+      model
+      mc
+      S
+      cFB
+      nFB
+      ΞFB
+      zFB
   end
 
   function SequentialAllocation(model)
       β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
       mc = MarkovChain(Π)
       S = size(Π, 1)   # Number of states
-      # Now find the first best allocation
+      # now find the first best allocation
       cFB, nFB, ΞFB, zFB = find_first_best(model, S, 1)
 
       return SequentialAllocation(model, mc, S, cFB, nFB, ΞFB, zFB)
@@ -786,9 +781,9 @@ The above steps are implemented in a type called `SequentialAllocation`
           c = z[1:S]
           n = z[S+1:2S]
           Ξ = z[2S+1:end]
-          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ         # FOC c
-          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ    # FOC n
-          out[2S+1:end] = Θ .* n - c - G                                       # Resource constraint
+          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ # FOC c
+          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ # FOC n
+          out[2S+1:end] = Θ .* n - c - G # Resource constraint
           return out
       end
       # Find the root of the FOC
@@ -876,20 +871,16 @@ The above steps are implemented in a type called `SequentialAllocation`
       return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
   end
 
-  mutable struct BellmanEquation{TP <: Model,
-                                 TI <: Integer,
-                                 TV <: AbstractVector,
-                                 TM <: AbstractMatrix{TV},
-                                 TVV <: AbstractVector{TV}}
-      model::TP
-      S::TI
-      xbar::TV
-      time_0::Bool
-      z0::TM
-      cFB::TV
-      nFB::TV
-      xFB::TV
-      zFB::TVV
+  mutable struct BellmanEquation
+      model
+      S
+      xbar
+      time_0
+      z0
+      cFB
+      nFB
+      xFB
+      zFB
   end
 
   function BellmanEquation(model, xgrid, policies0)
@@ -1277,17 +1268,15 @@ The above steps are implemented in a type called `RecursiveAllocation`
 .. code-block:: julia
   :class: collapse
 
-  struct RecursiveAllocation{TP <: Model, TI <: Integer,
-                             TVg <: AbstractVector, TVv <: AbstractVector,
-                             TVp <: AbstractArray}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      T::BellmanEquation
-      μgrid::TVg
-      xgrid::TVg
-      Vf::TVv
-      policies::TVp
+  struct RecursiveAllocation
+      model
+      mc
+      S
+      T
+      μgrid
+      xgrid
+      Vf
+      policies
   end
 
   function RecursiveAllocation(model, μgrid)
@@ -1313,9 +1302,9 @@ The above steps are implemented in a type called `RecursiveAllocation`
           c[i, :], n[i, :], x[i, :], V[i, :] = time1_value(PP, μ)
       end
       Vf = Vector{AbstractInterpolation}(undef, 2)
-      cf = Vector{AbstractInterpolation}(undef, 2)
-      nf = Vector{AbstractInterpolation}(undef, 2)
-      xprimef = Matrix{AbstractInterpolation}(undef, 2, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, 2, S)
       for s in 1:2
           cf[s] = LinearInterpolation(x[:, s][end:-1:1], c[:, s][end:-1:1])
           nf[s] = LinearInterpolation(x[:, s][end:-1:1], n[:, s][end:-1:1])
@@ -1357,11 +1346,11 @@ The above steps are implemented in a type called `RecursiveAllocation`
   function fit_policy_function(PP, PF, xgrid)
       S = PP.S
       Vf = Vector{AbstractInterpolation}(undef, S)
-      cf = Vector{AbstractInterpolation}(undef, S)
-      nf = Vector{AbstractInterpolation}(undef, S)
-      xprimef = Matrix{AbstractInterpolation}(undef, S, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, S, S)
       for s in 1:S
-          PFvec = Matrix{typeof(PP.model).parameters[1]}(undef, length(xgrid), 3+S)
+          PFvec = zeros(length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
               PFvec[i_x, :] = PF(i_x, x, s)
           end
@@ -1393,7 +1382,6 @@ The above steps are implemented in a type called `RecursiveAllocation`
       model, S, policies = pab.model, pab.S, pab.policies
       β, Π, Uc = model.β, model.Π, model.Uc
       cf, nf, xprimef = policies[1], policies[2], policies[3]
-      TF = typeof(model).parameters[1]
       cHist = zeros(T)
       nHist = similar(cHist)
       Bhist = similar(cHist)
@@ -1482,7 +1470,7 @@ This utility function is implemented in the type `CRRAutility`
         γ = 2.0,
         Π = 0.5 * ones(2, 2),
         G = [0.1, 0.2],
-        Θ = ones(Float64, 2),
+        Θ = ones(2),
         transfers = false
         )
         function U(c, n)
@@ -1563,9 +1551,13 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
   @testset begin
     @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
+    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 
+                                                       0.9945696863679917, 0.9945696863679917, 
+                                                       0.9945696863679917, 0.9945696863679917, 
+                                                       0.9945696863679917]
     @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
-    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
+    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434,
+                            1.111111111111111, 1.111111111111111, 1.111111111111111]
   end
 
 **Tax smoothing**
@@ -1688,9 +1680,9 @@ above)
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
 
-    B_vec = range(-1.5,  1.0, length = 100)
+    B_vec = range(-1.5, 1.0, length = 100)
     taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...)')
-    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
+    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
 
     titles = ["Tax Rate" "Gross Interest Rate"]
     labels = [["Time , t = 0", "Time , t >= 0"], ""]

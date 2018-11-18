@@ -1,7 +1,6 @@
 .. _optimization_solver_packages:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***************************************************
 Solvers, Optimizers, and Automatic Differentiation
@@ -307,7 +306,7 @@ However, since most of the algorithms require derivatives, you will often want t
     f(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
     x_iv = [0.0, 0.0]
     results = optimize(f, x_iv, LBFGS(), autodiff=:forward) # i.e. use ForwardDiff.jl
-    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in"*
+    println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
     "$(results.iterations) iterations")    
 
 Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `tips and trick <generic_tips_tricks>`_ )
@@ -327,7 +326,7 @@ Alternatively, with an analytical gradient
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
     "$(results.iterations) iterations")    
 
-For derivative-free methods, you can change the algorithm--and have no need to provide a gradient
+For derivative-free methods, you can change the algorithm -- and have no need to provide a gradient
 
 .. code-block:: julia
 
@@ -370,7 +369,8 @@ The following is an example of calling a linear objective with a nonlinear const
         return z
     end
     m = Model(solver = IpoptSolver())
-    JuMP.register(m,:squareroot, 1, squareroot, autodiff=true) # need to register user defined functions for AD
+    # need to register user defined functions for AD
+    JuMP.register(m,:squareroot, 1, squareroot, autodiff=true) 
 
     @variable(m, x[1:2], start=0.5) # start is the initial condition
     @objective(m, Max, sum(x))
@@ -387,7 +387,7 @@ And this is an example of a quadratic objective
     # st x + y >= 10
 
     using JuMP,Ipopt
-    m = Model(solver = IpoptSolver(print_level=0)) # settings for the solver, e.g. suppress output
+    m = Model(solver = IpoptSolver(print_level=0)) # settings for the solver
     @variable(m, x, start = 0.0)
     @variable(m, y, start = 0.0)
 

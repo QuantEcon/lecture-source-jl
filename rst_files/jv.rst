@@ -1,7 +1,6 @@
 .. _jv:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -408,9 +407,9 @@ The code is as follows
 
     s_policy, ϕ_policy = bellman_operator(wp, sol_V, ret_policies = true)
 
-    # === plot solution === #
+    # plot solution
     p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
-             title = ["ϕ policy" "s policy" "value function"],
+             title = ["phi policy" "s policy" "value function"],
              color = [:orange :blue :green],
              xaxis = ("x", (0.0, maximum(wp.x_grid))),
              yaxis = ((-0.1, 1.1)), size = (800, 800),
@@ -567,7 +566,8 @@ Here's code to produce the 45 degree diagram
   @testset "More Solutions 1 Tests" begin
     @test [xs[4], ys[4]] ≈ [0.0, 0.44530420013435007]
     @test ticks == [0.25, 0.5, 0.75, 1.0]
-    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2 && length(plot_grid) == plot_grid_size && plot_grid_size == 100
+    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2 
+    @test length(plot_grid) == plot_grid_size && plot_grid_size == 100
   end
 
 Looking at the dynamics, we can see that
@@ -597,8 +597,8 @@ Exercise 2
     ϕ_grid = range(0, 1, length = 100)
 
     plot(ϕ_grid, [xbar(ϕ) * (1 - ϕ) for ϕ in ϕ_grid], color = :blue,
-        label = "w^phi", legendfont = font(12), xlabel = "phi",
-        guidefont = font(16), grid = false, legend = :topleft)
+         label = "w^phi", legendfont = font(12), xlabel = "phi",
+         guidefont = font(16), grid = false, legend = :topleft)
 
 
 Observe that the maximizer is around 0.6

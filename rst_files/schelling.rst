@@ -1,7 +1,6 @@
 .. _schelling:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -184,7 +183,7 @@ Setup
         x_vals_0, y_vals_0 = zeros(0), zeros(0)
         x_vals_1, y_vals_1 = zeros(0), zeros(0)
 
-        # Obtain locations of each type
+        # obtain locations of each type
         for agent in agents
             x, y = agent.location
             if agent.kind == 0
@@ -214,7 +213,7 @@ Setup
 
     plot_array = Any[]
 
-    # Loop until none wishes to move
+    # loop until none wishes to move
     while true
         push!(plot_array, plot_distribution(agents))
         no_one_moved = true

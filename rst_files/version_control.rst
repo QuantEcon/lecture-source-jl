@@ -1,10 +1,9 @@
 .. _version_control:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
-Introduction to Git and Version Control
+Git, GitHub, and Version Control
 ******************************************
 
 Co-authored with Arnav Sood
@@ -27,38 +26,38 @@ In this lecture, we'll discuss how to use Git and GitHub
 Setup 
 ==================
 
-First, make sure you create an account on `GitHub.com <http://github.com/>`_
+1. Make sure you create an account on `GitHub.com <http://github.com/>`_
 
-If you are a student, be sure to use the GitHub `Student Developer Pack <https://education.github.com/pack/>`_
+    * If you are a student, be sure to use the GitHub `Student Developer Pack <https://education.github.com/pack/>`_
 
-Otherwise, see if you qualify for a free `Non-Profit/Academic Plan <https://help.github.com/articles/about-github-education-for-educators-and-researchers/>`_
+    * Otherwise, see if you qualify for a free `Non-Profit/Academic Plan <https://help.github.com/articles/about-github-education-for-educators-and-researchers/>`_
 
-These come with things like unlimited private repositories, testing support, etc.
+    * These come with things like unlimited private repositories, testing support, etc.
 
-Next, install ``git`` and the GitHub Desktop application 
+2. Install ``git`` and the GitHub Desktop application 
 
-1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
+    1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-2. Install the `GitHub Desktop <https://desktop.github.com/>`_
+    2. Install the `GitHub Desktop <https://desktop.github.com/>`_ application
 
-Optionally (but strongly recommended):  On Windows, change the default line-ending by
+3. Optionally (but strongly recommended):  On Windows, change the default line-ending by
 
-* Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
+    1. Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
 
-* Run the following
+    2. Run the following
 
-.. code-block:: none
+        .. code-block:: none
 
-    git config --global core.eol lf
-    git config --global core.autocrlf false
+            git config --global core.eol lf
+            git config --global core.autocrlf false
 
 Git vs. GitHub vs. GitHub Desktop
 -----------------------------------
 
 To understand the relationship
 
-* Git is an infrastructure for versioning and merging files, and is neither specific to GitHub and does not even require an online server to function
-* GitHub provides a server to coordinate distributing the Git versions, and adds some additional features for managing projects
+* Git is an infrastructure for versioning and merging files (it is notspecific to GitHub and does not even require an online server)
+* GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects
 * GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use
 
 Later, you may find yourself using alternatives
@@ -66,7 +65,7 @@ Later, you may find yourself using alternatives
 * GitHub is the market leader for open-source projects and Julia, but there are other options, e.g. `GitLab <https://about.gitlab.com/>`_ and `Bitbucket <https://bitbucket.org>`_
 * Instead of the GitHub Desktop, you may directly use the Git `command-line <version_control_commandline>`_ , `GitKraken <https://www.gitkraken.com/>`_, or use the Git functionality built into editors such as `Atom <https://atom.io/>`_ or `VS Code <https://code.visualstudio.com/>`_
 
-Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct projects
+Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products
 
 
 Basic Objects 
@@ -111,6 +110,8 @@ For an example of all three, see the `Expectations.jl <https://github.com/quante
 
 Of these, the ``README.md`` is the most important, as GitHub will display it as `Markdown <https://guides.github.com/features/mastering-markdown/>`_ when accessing the repository online
 
+.. _new_repo_workflow:
+
 Individual Workflow
 ====================================
 
@@ -144,7 +145,7 @@ The next step is to get this to our local machine
 This dropdown gives us a few options 
 
 * "Open in Desktop" will call to the GitHub Desktop application that we've installed 
-* "Download Zip" will download the directory *without the .git* subdirectory
+* "Download Zip" will download the directory *without the .git* subdirectory (avoid this option)
 * The copy/paste button next to the link lets us use the command line, i.e. ``git clone https://github.com/quanteconuser/example_repository.git``
 
 Making and Managing Changes 
@@ -152,7 +153,7 @@ Making and Managing Changes
 
 Now that we have the repository, we can start working with it 
 
-For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on (make these changes in the repository folder on your system where GitHub Desktop saved them)
+For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on 
 
 Returning to GitHub Desktop, we should see something like 
 
@@ -171,7 +172,7 @@ The Julia file is unchanged
 Pushing to the Server 
 --------------------------------
 
-As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button at the top the screen
+As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button atop the screen
 
 The small "1^" to the right of the text indicates we have one commit to upload 
 
@@ -250,10 +251,12 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as `below <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_
+* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
 
 .. figure:: /_static/figures/git-review.png
     :scale: 60%
+
+.. merge_conflict:
 
 Merge Conflicts
 ----------------------------
@@ -264,7 +267,9 @@ In GitHub, this event is called a "merge conflict," and occurs whenever people m
 
 Note that this means that two people touching the same file is OK, so long as the differences are compatible 
 
-A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes. GitHub will give us the following window 
+A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes
+
+GitHub will give us the following window 
 
 .. figure:: /_static/figures/git-merge-conflict.png
     :scale: 60%
@@ -277,22 +282,36 @@ To fix the conflict, we can go into a text editor (such as Atom or VS Code). Her
 .. figure:: /_static/figures/atom-merge-conflict.png
     :scale: 60%
 
-Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file. Returning to GitHub Desktop gives us a pre-formed commit to accept 
+Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file
+
+Returning to GitHub Desktop gives us a pre-formed commit to accept 
 
 .. figure:: /_static/figures/git-merge-commit.png
     :scale: 60%
 
-Open-source Projects 
-======================================
+Collaboration via Pull Request
+=====================================
 
-One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which (generally) anyone has rights to modify or work with 
+One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which anyone can access and use
 
-You can use GitHub to work on such projects 
+However, while anyone can make a copy of the source-code, not everyone has access to modify the particular version stored on GitHub
 
-Quick Fixes
---------------------
+A maintainer (i.e. someone with "write" access to directly modify a repository) might consider different contributions and "merge" the changes into the main repository if the changes meet her criteria
 
-GitHub's website provides an online editor for quick-and-dirty changes, such as fixing typos 
+To make it possible for **any** outsiders to suggest changes to open-source repositories, GitHub introduced the *pull request* ("PR")
+
+The PR is a request for a project maintainer to merge ("pull") changes you've worked on into their repository 
+
+There are a few different workflows for creating and handling PRs, which we'll walk through below 
+
+**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the `testing lecture <testing_>`
+
+.. _web_interface:
+
+Quick Fixes 
+---------------------
+
+GitHub's website provides an online editor for quick-and-dirty changes, such as fixing typos in documentation 
 
 To use it, open a file in GitHub and click the small pencil to the upper right 
 
@@ -305,41 +324,66 @@ After making our changes, we can then describe them and propose them for review 
 
 But what if we want to make more in-depth changes? 
 
-Forking and Pull Requests 
--------------------------------------
+.. _fork_workflow:
 
-The first problem to solve is that we don't have write access (usually) to open-source repos 
+No-Access Case 
+-----------------------
 
-To work around this, we can click the "Fork" button that lives in the top-right of every repo's main page 
+A common problem is when we don't have write access (i.e. we can't directly modify)  the repo in question
 
-This will create a repo under account with the same name, contents, and history as the original. For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
+In that case, click the "Fork" button that lives in the top-right of every repo's main page 
 
-Making Changes 
-----------------------------
+.. figure:: /_static/figures/git-fork-button.png
+    :scale: 60%
 
-We can clone this fork and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo we own)
+This will create a repo under account with the same name, contents, and history as the original
 
-In particular, we can follow the same process of 
+For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
 
-* Updating the fork via sequences of commits, which we push and pull using GitHub Desktop 
+Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo on our account we have write access to)
 
-* Collaborating with other people using issues 
+That is, click the "clone" button on our fork 
 
-* Looking at history using the GitHub website
+.. figure:: /_static/figures/git-clone-fork.png
+    :scale: 60%
 
-The Pull Request 
----------------------------
+You'll see a new repo with the same name but different URL in your GitHub Desktop repo list, along with a special icon to indicate that it's a fork 
 
-Eventually, you will want to upstream your changes into the main repository 
+.. figure:: /_static/figures/git-repo-list.png
+    :scale: 60%
 
-The first thing you want to do is go to the pull requests menu and click "New Pull Request." You'll see something like 
+Commit some changes by selecting the files and writing a commit message 
+
+.. figure:: /_static/figures/git-fork-changes.png
+    :scale: 60%
+
+And push by using the dropdown 
+
+.. figure:: /_static/figures/git-dropdown.png
+    :scale: 60%
+
+Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo 
+
+.. figure:: /_static/figures/git-edit-fork.png
+    :scale: 60%
+
+We should make confirm that these changes are on the server (which we can get to by going to the `fork webpage <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
+
+.. figure:: /_static/figures/git-fork-history.png
+    :scale: 60%
+
+Next, go to the pull requests menu and click "New Pull Request"
+
+You'll see something like this
 
 .. figure:: /_static/figures/git-create-pr.png
     :scale: 60%
 
 This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
 
-Let's fill out the form and then hit create. This opens a form like this on the main repo
+Fill in the details and hit create
+
+This opens a form like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
     :scale: 60%
@@ -350,14 +394,72 @@ The key pieces are
 * A list of reviewers, who can approve or modify our changes 
 * Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
 
-For an example of a PR, see `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
+Here's an `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
-To edit a PR, simply push changes to the fork that you opened the PR from. That is, a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
+To edit a PR, simply push changes to the fork you cloned to your desktop
+
+For example, let's say we commit a new change to the README *after* we create the PR 
+
+.. figure:: /_static/figures/git-pr-modification.png
+    :scale: 60%
+
+After pushing to the server, the change is reflected in the PR `webpage <https://github.com/quanteconuser/example_repository/pull/3>`_
+
+.. figure:: /_static/figures/git-pr-expost.png
+    :scale: 60%
+
+That is, creating a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged 
+
+Write Access Case 
+----------------------
+
+As you become more familiar with github, and work on larger projects, you will find yourself making PRs even when it isn't strictly required
+
+If you are a maintainer of the repo (e.g. you created it or are a collaborator) then you don't need to create a fork, but will rather work with a *git branch* 
+
+Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge 
+
+First, load the repo in GitHub Desktop and use the branch dropdown 
+
+.. figure:: /_static/figures/git-pr-branch.png
+    :scale: 60%
+
+Click "New Branch" and choose an instructive name (make sure there are no spaces or special characters)
+
+This will "check out" a new branch with the same history as the old one (but new commits will be added only to this branch)
+
+We can see the active branch in the top dropdown 
+
+.. figure:: /_static/figures/git-branch.png
+    :scale: 60%
+
+For example, let's say we add some stuff to the Julia code file and commit it 
+
+.. figure:: /_static/figures/git-pr-edits.png
+    :scale: 60%
+
+To put this branch (with changes) on the server, we simply need to click "Publish Branch"
+
+Navigating to the `repo page <https://github.com/quanteconuser/example_repository>`_, we will see a suggestion about a new branch
+
+.. figure:: /_static/figures/git-new-branch.png
+    :scale: 60%
+
+At which point the process of creating a PR is identical to the previous case 
+
+Julia Package Case 
+-----------------------
+
+One special case is when the repo in question is actually a Julia project or package 
+
+We cover that (along with package workflow in general) in the `testing lecture <testing>`_  
 
 Additional Resources and Troubleshooting
 ================================================
 
-You may want to go beyond the scope of this tutorial when working with GitHub. For example, perhaps you run into a bug, or you're working with a setup that doesn't have GitHub Desktop installed 
+You may want to go beyond the scope of this tutorial when working with GitHub 
+
+For example, perhaps you run into a bug, or you're working with a setup that doesn't have GitHub Desktop installed 
 
 Here are some resources to help 
 
@@ -370,9 +472,11 @@ Here are some resources to help
 Command-Line Basics
 ----------------------------------------
 
-Git also comes with a set of command-line tools. They're optional, but many people like using them
+Git also comes with a set of command-line tools
 
-Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the command-line
+They're optional, but many people like using them
+
+Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the commandline
 
 * On Windows, downloading ``git`` will have installed a program called ``git bash``, which installs these tools along with a general Linux-style shell
 
@@ -397,3 +501,57 @@ Instead, to do a hard reset of all files and overwrite any of your local changes
 
 .. Removed this, since I have never done it!
 .. To remove files that aren't tracked by git (e.g., compilation byproducts and output directories), run ``git clean -fd``
+
+
+Exercises
+============
+
+Exercise 1a
+---------------
+
+Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your github accounts
+In this repository
+* Take the code from one of your previous assignments, such as 
+`Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
+* Put in a ``README.jl`` with some text
+* Put in a ``.gitignore`` file, ignoring the Jupyter files ``.ipynb_checkpoints`` and the project files, ``.projects``
+
+Exercise 1b
+----------------
+
+Pair-up with another student who has done Exercise 1a and find out their github ID, and each do the following
+* Add the github ID as a collaborators on your repository
+* Clone the repositories to your local desktop
+* Assign each other an issue
+* Submit a commit from GitHub desktop which references the issue by number
+* Comment on the commits
+* Ensure you can run their code without any modifications
+
+Exercise 1c
+--------------
+
+Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the ``README.md`` file for your repository that you have both setup as collaborators
+
+Start by ensuring there are multiple lines in the file so that some changes may have conflicts, and some may not
+
+* Clone the repository to your local desktops
+* Modify **different** lines of code in the file and both commit and push to the server (prior to pulling from each other)--and see how it merges things "automatically"
+* Modify **the same** line of code in the file, and deal with the `merge conflict <merge_conflict>`_
+
+Exercise 2a
+----------------
+
+Just using the GitHub's `web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository
+
+The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl`` 
+
+Note: The source for that repository is in ``.rst`` files, but you should be able to find spelling mistakes/etc. without much effort
+
+Exercise 2b
+-------------------------
+
+Following the `instructions <fork_workflow>`_ for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository
+
+Again, you could submit it for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl``, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
+
+If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!)

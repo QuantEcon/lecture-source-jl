@@ -1,7 +1,6 @@
 .. _statd:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -493,7 +492,7 @@ The following code is example of usage for the stochastic growth model :ref:`des
 
 .. code-block:: julia
 
-  using Distributions, LaTeXStrings, StatPlots, Plots, QuantEcon, Random
+  using Distributions, StatPlots, Plots, QuantEcon, Random
   Random.seed!(42) # For deterministic results.
 
   s = 0.2
@@ -542,7 +541,8 @@ The following code is example of usage for the stochastic growth model :ref:`des
       push!(laes_plot, lae_est(ψ , ygrid))
       push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
   end
-  plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2, xlabel = "capital", legend = :none)
+  plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
+       xlabel = "capital", legend = :none)
   t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
   plot!(title = t)
 
@@ -1037,7 +1037,8 @@ to get an idea of the speed of convergence.
     ys = range(-3,  3, length = 200)
     plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label="true")
     plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
-    plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, label="kernel based estimate")
+    plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, 
+          label="kernel based estimate")
 
 .. code-block:: julia
     :class: test
@@ -1168,7 +1169,8 @@ series for one boxplot all at once.
         push!(data, X)
         push!(x_labels, labels)
     end
-    boxplot(x_labels, data, layout = (J,1), title = reshape(titles, 1, length(titles)), ylims = (-4, 8),
+    boxplot(x_labels, data, layout = (J,1), title = reshape(titles, 1, length(titles)),
+            ylims = (-4, 8),
     legend = :none, yticks = -4:2:8, xticks = 1:20)
     plot!(size=(800, 2000))
 

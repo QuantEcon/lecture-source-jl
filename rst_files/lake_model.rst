@@ -1,7 +1,6 @@
 .. _lake_model:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -387,12 +386,12 @@ Let's look at the convergence of the unemployment and employment rate to steady 
     x_path = simulate_rate_path(lm, x_0, T)
 
 
-    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color=:blue, lw=2, alpha=0.5, grid=true, label="")
+    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color=:blue, lw=2, 
+                     alpha=0.5, grid=true, label="")
     plot!(plt_unemp, [xbar[1]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
-
-    plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color=:blue, lw=2, alpha=0.5, grid=true, label="")
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color=:blue, lw=2, alpha=0.5, 
+                   grid=true, label="")
     plot!(plt_emp, [xbar[2]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
-
     plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
 
 .. code-block:: julia
@@ -530,16 +529,12 @@ Let's plot the path of the sample averages over 5,000 periods
     s_bar_u = 1 .- s_bar_e
     s_bars = [s_bar_u s_bar_e]
 
-
-
-
-
-    plt_unemp = plot(title="Percent of time unemployed", 1:T, s_bars[:,1],color=:blue, lw=2,alpha=0.5,label="", grid=true)
+    plt_unemp = plot(title="Percent of time unemployed", 1:T, s_bars[:,1],color=:blue, lw=2,
+                     alpha=0.5,label="", grid=true)
     plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle=:dash, color=:red, lw=2, label="")
-
-    plt_emp = plot(title="Percent of time employed", 1:T, s_bars[:,2],color=:blue, lw=2,alpha=0.5,label="", grid=true)
+    plt_emp = plot(title="Percent of time employed", 1:T, s_bars[:,2],color=:blue, lw=2,
+                   alpha=0.5,label="", grid=true)
     plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle=:dash, color=:red, lw=2,label="")
-
     plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
 
 .. code-block:: julia
@@ -770,10 +765,14 @@ function of the unemployment compensation rate
         welfare_vec[i] = welfare
     end
 
-    plt_unemp = plot(title="Unemployment", c_vec, unempl_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
-    plt_tax = plot(title="Tax", c_vec, tax_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
-    plt_emp = plot(title="Employment", c_vec, empl_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
-    plt_welf = plot(title="Welfare", c_vec, welfare_vec, color=:blue, lw=2, alpha=0.7, label="",grid=true)
+    plt_unemp = plot(title="Unemployment", c_vec, unempl_vec, color=:blue, lw=2, alpha=0.7, 
+                     label="",grid=true)
+    plt_tax = plot(title="Tax", c_vec, tax_vec, color=:blue, lw=2, alpha=0.7, label="",
+                   grid=true)
+    plt_emp = plot(title="Employment", c_vec, empl_vec, color=:blue, lw=2, alpha=0.7, label="",
+                   grid=true)
+    plt_welf = plot(title="Welfare", c_vec, welfare_vec, color=:blue, lw=2, alpha=0.7, label="",
+                    grid=true)
 
     plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800,700))
 
@@ -883,9 +882,12 @@ Now plot stocks
     x2 = X_path[2, :]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, grid = true, label="",bg_inside=:lightgrey)
-    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, grid=true, label="",bg_inside=:lightgrey)
-    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, grid=true,label="",bg_inside=:lightgrey)
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, grid = true, label="",
+                     bg_inside=:lightgrey)
+    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, grid=true, label="",
+                   bg_inside=:lightgrey)
+    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, grid=true,label="",
+                     bg_inside=:lightgrey)
 
     plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
 
@@ -904,10 +906,12 @@ And how the rates evolve
 
 .. code-block:: julia
 
-    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color=:blue, grid = true, label="",bg_inside=:lightgrey)
+    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color=:blue, grid = true, 
+                     label="",bg_inside=:lightgrey)
     plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle = :dash, color =:red, label = "")
 
-    plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color=:blue, grid=true, label="",bg_inside=:lightgrey)
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color=:blue, grid=true, 
+                   label="",bg_inside=:lightgrey)
     plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle = :dash, color =:red, label ="")
 
     plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
@@ -988,18 +992,18 @@ Finally we combine these two paths and plot
     x2 = X_path[2,:]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, alpha = 0.7, grid = true, label="",bg_inside=:lightgrey)
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, alpha = 0.7, 
+                     grid = true, label="",bg_inside=:lightgrey)
     plot!(plt_unemp, ylims=extrema(x1).+(-1,1))
 
-    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, alpha = 0.7, grid=true, label="",bg_inside=:lightgrey)
+    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, alpha = 0.7, grid=true,
+                   label="",bg_inside=:lightgrey)
     plot!(plt_emp, ylims=extrema(x2).+(-1,1))
 
-    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, alpha = 0.7, grid=true,label="",bg_inside=:lightgrey)
+    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, alpha = 0.7, grid=true,
+                     label="",bg_inside=:lightgrey)
     plot!(plt_labor, ylims=extrema(x3).+(-1,1))
     plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
-
-
-
 
 
 
@@ -1016,10 +1020,12 @@ And the rates
 
 .. code-block:: julia
 
-    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color=:blue, grid = true, label="",bg_inside=:lightgrey, lw=2)
+    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color=:blue, grid = true, 
+                     label="",bg_inside=:lightgrey, lw=2)
     plot!(plt_unemp, [x0[1]], linetype=:hline, linestyle = :dash, color =:red, label = "", lw=2)
 
-    plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color=:blue, grid=true, label="",bg_inside=:lightgrey, lw=2)
+    plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color=:blue, grid=true, 
+                   label="",bg_inside=:lightgrey, lw=2)
     plot!(plt_emp, [x0[2]], linetype=:hline, linestyle = :dash, color =:red, label ="", lw=2)
 
     plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))

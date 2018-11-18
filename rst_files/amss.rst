@@ -1,17 +1,15 @@
 .. _opt_tax_AMSS:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
-*****************************************************
+**********************************************
 Optimal Taxation without State-Contingent Debt
-*****************************************************
+**********************************************
 
 .. contents:: :depth: 2
 
-
 Overview
-==========
+========
 
 In :doc:`an earlier lecture <opt_tax_recur>` we described a model of
 optimal taxation with state-contingent debt due to
@@ -34,14 +32,8 @@ In this lecture, we
 
 We begin with an introduction to the model
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 Competitive Equilibrium with Distorting Taxes
-===================================================
-
+=============================================
 
 Many but not all features of the economy are identical to those of :doc:`the Lucas-Stokey economy <opt_tax_recur>`
 
@@ -54,7 +46,6 @@ Government purchases :math:`g(s)` are an exact time-invariant function of :math:
 Let :math:`c_t(s^t)`,  :math:`\ell_t(s^t)`, and :math:`n_t(s^t)` denote consumption,
 leisure, and labor supply, respectively, at history :math:`s^t` at time :math:`t`
 
-
 Each period a representative  household is endowed with one unit of time that can be divided between  leisure
 :math:`\ell_t` and labor :math:`n_t`:
 
@@ -63,7 +54,6 @@ Each period a representative  household is endowed with one unit of time that ca
 
     n_t(s^t) + \ell_t(s^t) = 1
 
-
 Output equals :math:`n_t(s^t)` and can be divided between consumption :math:`c_t(s^t)` and :math:`g(s_t)`
 
 .. math::
@@ -71,9 +61,7 @@ Output equals :math:`n_t(s^t)` and can be divided between consumption :math:`c_t
 
     c_t(s^t) + g(s_t) = n_t(s^t)
 
-
 Output is not storable
-
 
 The technology pins down a pre-tax wage rate to unity for all :math:`t, s^t`
 
@@ -84,13 +72,11 @@ A representative  household’s preferences over :math:`\{c_t(s^t), \ell_t(s^t)\
 
     \sum_{t=0}^\infty \sum_{s^t} \beta^t \pi_t(s^t) u[c_t(s^t), \ell_t(s^t)]
 
-
 where
 
 * :math:`\pi_t(s^t)` is a joint probability distribution over the sequence :math:`s^t`, and
 
 * the utility function :math:`u` is  increasing, strictly concave, and three times  continuously differentiable in both arguments
-
 
 The government imposes a flat rate tax :math:`\tau_t(s^t)` on labor income at time :math:`t`, history :math:`s^t`
 
@@ -102,9 +88,8 @@ AMSS allow the government to issue only one-period risk-free debt each period
 
 Ruling out complete markets in this way is a step in the direction of making total tax collections behave more like that prescribed in :cite:`Barro1979` than they do in :cite:`LucasStokey1983`
 
-
 Risk-free One-Period Debt Only
---------------------------------
+------------------------------
 
 In period :math:`t` and history :math:`s^t`, let
 
@@ -131,7 +116,6 @@ The government’s budget constraint in period :math:`t` at history :math:`s^t` 
         & \equiv z(s^t) + {b_{t+1}(s^t) \over R_t(s^t )},
     \end{aligned}
 
-
 where :math:`z(s^t)` is the net-of-interest government surplus
 
 To rule out Ponzi schemes, we assume that the government is subject to a **natural debt limit** (to be discussed in a forthcoming lecture)
@@ -144,7 +128,6 @@ with one-period gross interest rate :math:`R_t(s^t)` is
     {1 \over R_t(s^t)}
     = \sum_{s^{t+1}\vert s^t} \beta  \pi_{t+1}(s^{t+1} | s^t)
                             { u_c(s^{t+1}) \over u_c(s^{t}) }
-
 
 Substituting this expression into the government’s budget constraint :eq:`TS_gov_wo`
 yields:
@@ -173,7 +156,6 @@ particular realization :math:`s_{t}`) we get
                            { u_c(s^{t+1}) \over u_c(s^{t}) }
     \, \left[z(s^{t+1}) + {b_{t+2}(s^{t+1}) \over R_{t+1}(s^{t+1})}\right]
 
-
 After making similar repeated substitutions for all future occurrences of
 government indebtedness, and by invoking the natural debt limit, we
 arrive at:
@@ -186,7 +168,6 @@ arrive at:
         &=  \sum_{j=0}^\infty \sum_{s^{t+j} | s^t} \beta^j  \pi_{t+j}(s^{t+j} | s^t)
                   { u_c(s^{t+j}) \over u_c(s^{t}) } \;z(s^{t+j})
             \end{aligned}
-
 
 Now let's
 
@@ -228,7 +209,7 @@ But now we also have a large number of additional implementability constraints
 Equation :eq:`TS_gov_wo4a` must hold for each :math:`s^t` for each :math:`t \geq 1`
 
 Comparison with Lucas-Stokey Economy
--------------------------------------
+------------------------------------
 
 The expression on the right side of :eq:`TS_gov_wo4a` in the Lucas-Stokey (1983) economy would  equal the present value of a continuation stream of government surpluses evaluated at what would be competitive equilibrium Arrow-Debreu prices at date :math:`t`
 
@@ -238,9 +219,8 @@ In the AMSS economy, the restriction that government debt be risk-free imposes t
 
 In a language used in the literature on incomplete markets models, it can be said that the AMSS model requires that at each :math:`(t, s^t)` what would be the present value of continuation government surpluses in the Lucas-Stokey model must belong to  the **marketable subspace** of the AMSS model
 
-
 Ramsey Problem Without State-contingent Debt
------------------------------------------------
+--------------------------------------------
 
 After we have substituted the resource constraint into the utility function, we can express the Ramsey problem as being to choose an allocation that solves
 
@@ -250,7 +230,6 @@ After we have substituted the resource constraint into the utility function, we 
     \EE_0 \sum_{t=0}^\infty \beta^t
                             u\left(c_t(s^t),1-c_t(s^t)-g_t(s_t)\right)
 
-
 where the maximization is subject to
 
 .. math::
@@ -258,7 +237,6 @@ where the maximization is subject to
 
     \EE_{0} \sum_{j=0}^\infty \beta^j
           { u_c(s^{j}) \over u_c(s^{0}) } \;z(s^{j}) \geq b_0(s^{-1})
-
 
 and
 
@@ -270,10 +248,7 @@ and
         z(s^{t+j}) = b_t(s^{t-1})
           \quad \forall \,  s^t
 
-
 given :math:`b_0(s^{-1})`
-
-
 
 Lagrangian Formulation
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -298,7 +273,6 @@ Depending on how the constraints  bind, these multipliers can be positive or neg
         { u_c(s^{t+j}) \over u_c(s^{t}) } \;z(s^{t+j}) \;\geq \;(\leq)\;\, b_t(s^{t-1}).
     \end{aligned}
 
-
 A negative multiplier :math:`\gamma_t(s^t)<0` means that if we could
 relax constraint :eq:`AMSS_46`, we would like to *increase* the beginning-of-period
 indebtedness for that particular realization of history :math:`s^t`
@@ -308,8 +282,7 @@ That would let us reduce the beginning-of-period indebtedness for some other his
 These features flow from  the fact that the government cannot use state-contingent debt and therefore cannot allocate its indebtedness  efficiently across future states
 
 Some Calculations
-------------------
-
+-----------------
 
 It is helpful to apply two transformations to the Lagrangian
 
@@ -333,7 +306,6 @@ Then a Lagrangian for the Ramsey problem can  be represented as
                        - \gamma_t(s^t)\, u_c(s^{t}) \, b_t(s^{t-1})  \biggr\}
     \end{aligned}
 
-
 where
 
 .. math::
@@ -343,11 +315,9 @@ where
      \quad \text{and} \quad
     \Psi_{-1}(s^{-1})=0
 
-
 In :eq:`AMSS_lagr;a`,  the second equality uses  the law of iterated expectations
 and Abel’s summation formula (also called *summation by parts*, see
 `this page <https://en.wikipedia.org/wiki/Abel%27s_summation_formula>`__)
-
 
 First-order conditions with respect
 to :math:`c_t(s^t)` can be expressed as
@@ -364,14 +334,12 @@ to :math:`c_t(s^t)` can be expressed as
         u_{cc}(s^{t}) - u_{c\ell}(s^{t})\right]b_t(s^{t-1}) =0
     \end{aligned}
 
-
 and with respect to :math:`b_t(s^t)` as
 
 .. math::
     :label: AMSS_foc;b
 
     \EE_{t} \left[\gamma_{t+1}(s^{t+1})\,u_c(s^{t+1})\right] = 0
-
 
 If we substitute :math:`z(s^t)` from :eq:`AMSS_44_2` and its derivative
 :math:`z_c(s^t)` into first-order condition :eq:`AMSS_foc;a`, we  find  two
@@ -391,40 +359,90 @@ for the Lucas-Stokey economy
 :eq:`AMSS_foc;a` may change over time in response to realizations of the state,
 while the multiplier :math:`\Phi` in the Lucas-Stokey economy is time invariant
 
-
 We need some code from our :doc:`an earlier lecture <opt_tax_recur>`
 on optimal taxation with state-contingent debt  sequential allocation implementation:
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-    :class: collapse
+    :class: test
 
-    using QuantEcon
-    using NLsolve
-    using NLopt
+    using Test
 
-    import QuantEcon.simulate
+.. code-block:: julia
 
-    mutable struct Model{TF <: AbstractFloat,
-                        TM <: AbstractMatrix{TF},
-                        TV <: AbstractVector{TF}}
-        β::TF
-        Π::TM
-        G::TV
-        Θ::TV
-        transfers::Bool
-        U::Function
-        Uc::Function
-        Ucc::Function
-        Un::Function
-        Unn::Function
-        n_less_than_one::Bool
+    using Interpolations, NLopt, NLsolve, Parameters, Plots, QuantEcon
+    import QuantEcon: simulate
+    gr(fmt = :png)
+
+.. code-block:: julia
+
+    @enum UtilityFunctions CRRA Log
+
+    function utility_u(utility_function, σ, ψ)
+        if utility_function === CRRA
+            U = (c, n) -> c
+        elseif utility_function === Log
+            U = (c,n) -> log.(c) .+ ψ * log.(1 .- n)
+        end
+        U
     end
+    function utility_c(utility_function, σ, γ, ψ)
+        if utility_function === CRRA
+            U = (c, n) -> c.^(-σ)
+        elseif utility_function === Log
+            U = (c,n) -> 1 ./ c
+        end
+        U
+    end
+    function utility_cc(utility_function, σ)
+        if utility_function === CRRA
+            Ucc = (c,n) -> -σ * c.^(-σ - 1)
+        elseif utility_function === Log
+            Ucc = (c,n) -> -c.^(-2)
+        end
+        return Ucc
+    end
+    function utility_n(utility_function, γ, ψ)
+        if utility_function === CRRA
+            Un = (c,n) -> -n.^γ
+        elseif utility_function === Log
+            Un = (c,n) -> -ψ ./ (1 .- n)
+        end
+        return Un
+    end
+    function utility_nn(utility_function, γ, ψ)
+        if utility_function === CRRA
+            Unn = (c,n) -> -γ * n.^(γ - 1)
+        elseif utility_function === Log
+            Unn = (c,n) -> -ψ ./ (1 .- n).^2
+        end
+        return Unn
+    end
+    is_n_less_than_one(utility_function) = utility_function == Log
 
+    Model = @with_kw (utility = CRRA,
+                      β = 0.9,
+                      ψ = 0.69,
+                      Π = fill(0.5, 2, 2),
+                      G = [0.1, 0.2],
+                      Θ = ones(2),
+                      σ = 2.0,
+                      γ = 2.0,
+                      transfers = true,
+                      n_less_than_one = is_n_less_than_one(utility),
+                      U = utility_u(utility, σ, ψ),
+                      Uc = utility_c(utility, σ, γ, ψ),
+                      Ucc = utility_cc(utility, σ),
+                      Un = utility_n(utility, γ, ψ),
+                      Unn = utility_nn(utility, γ, ψ))
 
-    struct SequentialAllocation{TP <: Model,
-                                TI <: Integer,
+    struct SequentialAllocation{TI <: Integer,
                                 TV <: AbstractVector}
-        model::TP
+        model::NamedTuple
         mc::MarkovChain
         S::TI
         cFB::TV
@@ -433,9 +451,8 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         zFB::TV
     end
 
-
-    function SequentialAllocation(model::Model)
-        β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
+    function SequentialAllocation(model)
+        @unpack β, Π, G, Θ = model
         mc = MarkovChain(Π)
         S = size(Π, 1)   # Number of states
         # Now find the first best allocation
@@ -444,22 +461,20 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return SequentialAllocation(model, mc, S, cFB, nFB, ΞFB, zFB)
     end
 
-
-    function find_first_best(model::Model, S::Integer, version::Integer)
+    function find_first_best(model, S, version)
         if version != 1 && version != 2
             throw(ArgumentError("version must be 1 or 2"))
         end
-        β, Θ, Uc, Un, G, Π =
-            model.β, model.Θ, model.Uc, model.Un, model.G, model.Π
+        @unpack β, Θ, Uc, Un, G, Π = model
         function res!(out, z)
             c = z[1:S]
             n = z[S+1:end]
             out[1:S] = Θ .* Uc(c, n) + Un(c, n)
             out[S+1:end] = Θ .* n - c - G
         end
-        res = nlsolve(res!, 0.5 * ones(2 * S))
+        res = nlsolve(res!, fill(0.5, 2S))
 
-        if converged(res) == false
+        if !converged(res)
             error("Could not find first best")
         end
 
@@ -473,100 +488,85 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             cFB = res.zero[1:S]
             nFB = res.zero[S+1:end]
             IFB = Uc(cFB, nFB) .* cFB + Un(cFB, nFB) .* nFB
-            xFB = \(eye(S) - β * Π, IFB)
+            xFB = \(I - β * Π, IFB)
             zFB = [vcat(cFB[s], xFB[s], xFB) for s in 1:S]
             return cFB, nFB, IFB, xFB, zFB
         end
     end
 
-
-    function time1_allocation(pas::SequentialAllocation, μ::Real)
+    function time1_allocation(pas::SequentialAllocation, μ)
         model, S = pas.model, pas.S
-        Θ, β, Π, G, Uc, Ucc, Un, Unn =
-            model.Θ, model.β, model.Π, model.G,
-            model.Uc, model.Ucc, model.Un, model.Unn
-        function FOC!(out, z::Vector)
+        @unpack Θ, β, Π, G, Uc, Ucc, Un, Unn = model
+        function FOC!(out, z)
             c = z[1:S]
             n = z[S+1:2S]
             Ξ = z[2S+1:end]
-            out[1:S] = Uc(c, n) - μ * (Ucc(c, n) .* c + Uc(c, n)) - Ξ            # FOC c
-            out[S+1:2S] = Un(c, n) - μ * (Unn(c, n) .* n + Un(c, n)) + Θ .* Ξ    # FOC n
-            out[2S+1:end] = Θ .* n - c - G                                       # Resource constraint
+            out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ # FOC c
+            out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ # FOC n
+            out[2S+1:end] = Θ .* n - c - G # Resource constraint
             return out
         end
         # Find the root of the FOC
         res = nlsolve(FOC!, pas.zFB)
-        if res.f_converged == false
+        if !res.f_converged
             error("Could not find LS allocation.")
         end
         z = res.zero
         c, n, Ξ = z[1:S], z[S+1:2S], z[2S+1:end]
         # Now compute x
-        I  = Uc(c, n) .* c +  Un(c, n) .* n
-        x = \(eye(S) - β * model.Π, I)
+        Inv  = Uc(c, n) .* c +  Un(c, n) .* n
+        x = \(I - β * model.Π, Inv)
         return c, n, x, Ξ
     end
 
-
-    function time0_allocation(pas::SequentialAllocation,
-                            B_::AbstractFloat, s_0::Integer)
+    function time0_allocation(pas::SequentialAllocation, B_, s_0)
         model = pas.model
-        Π, Θ, G, β = model.Π, model.Θ, model.G, model.β
-        Uc, Ucc, Un, Unn =
-            model.Uc, model.Ucc, model.Un, model.Unn
+        @unpack Π, Θ, G, β, Uc, Ucc, Un, Unn = model
 
         # First order conditions of planner's problem
         function FOC!(out, z)
             μ, c, n, Ξ = z[1], z[2], z[3], z[4]
             xprime = time1_allocation(pas, μ)[3]
-            out .= vcat(
-            Uc(c, n) .* (c - B_) + Un(c, n) .* n + β * dot(Π[s_0, :], xprime),
-            Uc(c, n) - μ * (Ucc(c, n) .* (c - B_) + Uc(c, n)) - Ξ,
-            Un(c, n) - μ * (Unn(c, n) .* n + Un(c, n)) + Θ[s_0] .* Ξ,
-            (Θ .* n - c - G)[s_0]
-            )
+            out .= vcat(Uc(c, n) .* (c - B_) .+ Un(c, n) .* n + β * (Π[s_0, :] ⋅ xprime),
+                        Uc(c, n) .- μ * (Ucc(c, n) .* (c - B_) + Uc(c, n)) - Ξ,
+                        Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ[s_0] .* Ξ,
+                        (Θ .* n .- c - G)[s_0])
         end
 
         # Find root
         res = nlsolve(FOC!, [0.0, pas.cFB[s_0], pas.nFB[s_0], pas.ΞFB[s_0]])
-        if res.f_converged == false
+        if !res.f_converged
             error("Could not find time 0 LS allocation.")
         end
-        return (res.zero...)
+        return (res.zero...,)
     end
 
-
-    function time1_value(pas::SequentialAllocation, μ::Real)
+    function time1_value(pas::SequentialAllocation, μ)
         model = pas.model
         c, n, x, Ξ = time1_allocation(pas, μ)
         U_val = model.U.(c, n)
-        V = \(eye(pas.S) - model.β*model.Π, U_val)
+        V = \(I - model.β*model.Π, U_val)
         return c, n, x, V
     end
 
-
-    function Τ(model::Model, c::Union{Real,Vector}, n::Union{Real,Vector})
+    function Τ(model, c, n)
         Uc, Un = model.Uc.(c, n), model.Un.(c, n)
-        return 1+Un./(model.Θ .* Uc)
+        return 1 .+ Un ./ (model.Θ .* Uc)
     end
 
-
-    function simulate(pas::SequentialAllocation,
-                    B_::AbstractFloat, s_0::Integer,
-                    T::Integer,
-                    sHist::Union{Vector, Void}=nothing)
+    function simulate(pas::SequentialAllocation, B_, s_0, T, sHist = nothing)
 
         model = pas.model
-        Π, β, Uc = model.Π, model.β, model.Uc
+        @unpack Π, β, Uc = model
 
         if sHist === nothing
             sHist = QuantEcon.simulate(pas.mc, T, init=s_0)
         end
         cHist = zeros(T)
-        nHist = zeros(T)
-        Bhist = zeros(T)
-        ΤHist = zeros(T)
-        μHist = zeros(T)
+        nHist = similar(cHist)
+        Bhist = similar(cHist)
+        ΤHist = similar(cHist)
+        μHist = similar(cHist)
         RHist = zeros(T-1)
         # time 0
         μ, cHist[1], nHist[1], _  = time0_allocation(pas, B_, s_0)
@@ -579,7 +579,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             u_c = Uc(c,n)
             s = sHist[t]
             ΤHist[t] = Τ(pas.model, c, n)[s]
-            Eu_c = dot(Π[sHist[t-1],:], u_c)
+            Eu_c = Π[sHist[t-1],:] ⋅ u_c
             cHist[t], nHist[t], Bhist[t] = c[s], n[s], x[s] / u_c[s]
             RHist[t-1] = Uc(cHist[t-1], nHist[t-1]) / (β * Eu_c)
             μHist[t] = μ
@@ -587,13 +587,11 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
     end
 
-
-    mutable struct BellmanEquation{TP <: Model,
-                                TI <: Integer,
-                                TV <: AbstractVector,
-                                TM <: AbstractMatrix{TV},
-                                TVV <: AbstractVector{TV}}
-        model::TP
+    mutable struct BellmanEquation{TI <: Integer,
+                                   TV <: AbstractVector,
+                                   TM <: AbstractMatrix{TV},
+                                   TVV <: AbstractVector{TV}}
+        model::NamedTuple
         S::TI
         xbar::TV
         time_0::Bool
@@ -604,39 +602,34 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         zFB::TVV
     end
 
-
-    function BellmanEquation(model::Model, xgrid::AbstractVector, policies0::Vector)
-        S = size(model.Π, 1)                                                     # Number of states
-        xbar = [minimum(xgrid), maximum(xgrid)]
+    function BellmanEquation(model, xgrid, policies0)
+        S = size(model.Π, 1) # Number of states
+        xbar = collect(extrema(xgrid))
         time_0 = false
         cf, nf, xprimef = policies0
-        z0 = [vcat(cf[s](x), nf[s](x), [xprimef[s, sprime](x) for sprime in 1:S])
-                            for x in xgrid, s in 1:S]
+        z0 = [vcat(cf[s](x), nf[s](x), [xprimef[s, sprime](x)
+              for sprime in 1:S])
+              for x in xgrid, s in 1:S]
         cFB, nFB, IFB, xFB, zFB = find_first_best(model, S, 2)
         return BellmanEquation(model, S, xbar, time_0, z0, cFB, nFB, xFB, zFB)
     end
 
-
-    function get_policies_time1(T::BellmanEquation,
-                            i_x::Integer, x::AbstractFloat,
-                            s::Integer, Vf::AbstractArray)
+    function get_policies_time1(T, i_x, x, s, Vf)
         model, S = T.model, T.S
-        β, Θ, G, Π = model.β, model.Θ, model.G, model.Π
-        U, Uc, Un = model.U, model.Uc, model.Un
-
-        function objf(z::Vector, grad)
+        @unpack β, Θ, G, Π, U, Uc, Un = model
+        function objf(z, grad)
             c, xprime = z[1], z[2:end]
-            n=c+G[s]
+            n = c + G[s]
             Vprime = [Vf[sprime](xprime[sprime]) for sprime in 1:S]
-            return -(U(c, n) + β * dot(Π[s, :], Vprime))
+            return -(U(c, n) + β * (Π[s, :] ⋅ Vprime))
         end
-        function cons(z::Vector, grad)
+        function cons(z, grad)
             c, xprime = z[1], z[2:end]
-            n=c+G[s]
-            return x - Uc(c, n) * c - Un(c, n) * n - β * dot(Π[s, :], xprime)
+            n = c+G[s]
+            return x - Uc(c, n) * c - Un(c, n) * n - β * (Π[s, :] ⋅ xprime)
         end
-        lb = vcat(0, T.xbar[1] * ones(S))
-        ub = vcat(1 - G[s], T.xbar[2] * ones(S))
+        lb = vcat(0, fill(T.xbar[1], S))
+        ub = vcat(1 - G[s], fill(T.xbar[2], S))
         opt = Opt(:LN_COBYLA, length(T.z0[i_x, s])-1)
         min_objective!(opt, objf)
         equality_constraint!(opt, cons)
@@ -652,29 +645,27 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
                 init[i] = lb[i]
             end
         end
-        (minf, minx, ret) = optimize(opt, init)
+        minf, minx, ret = optimize(opt, init)
         T.z0[i_x, s] = vcat(minx[1], minx[1] + G[s], minx[2:end])
         return vcat(-minf, T.z0[i_x, s])
     end
 
-    function get_policies_time0(T::BellmanEquation,
-                            B_::AbstractFloat, s0::Integer, Vf::Array)
+    function get_policies_time0(T, B_, s0, Vf)
         model, S = T.model, T.S
-        β, Θ, G, Π = model.β, model.Θ, model.G, model.Π
-        U, Uc, Un = model.U, model.Uc, model.Un
+        @unpack β, Θ, G, Π, U, Uc, Un = model
         function objf(z, grad)
             c, xprime = z[1], z[2:end]
-            n = c+G[s0]
+            n = c + G[s0]
             Vprime = [Vf[sprime](xprime[sprime]) for sprime in 1:S]
-            return -(U(c, n) + β * dot(Π[s0, :], Vprime))
+            return -(U(c, n) + β * (Π[s0, :] ⋅ Vprime))
         end
-        function cons(z::Vector, grad)
+        function cons(z, grad)
             c, xprime = z[1], z[2:end]
             n = c + G[s0]
-            return -Uc(c, n) * (c - B_) - Un(c, n) * n - β * dot(Π[s0, :], xprime)
+            return -Uc(c, n) * (c - B_) - Un(c, n) * n - β * (Π[s0, :] ⋅ xprime)
         end
-        lb = vcat(0, T.xbar[1] * ones(S))
-        ub = vcat(1-G[s0], T.xbar[2] * ones(S))
+        lb = vcat(0, fill(T.xbar[1], S))
+        ub = vcat(1-G[s0], fill(T.xbar[2], S))
         opt = Opt(:LN_COBYLA, length(T.zFB[s0])-1)
         min_objective!(opt, objf)
         equality_constraint!(opt, cons)
@@ -690,20 +681,15 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
                 init[i] = lb[i]
             end
         end
-        (minf, minx, ret) = optimize(opt, init)
+        minf, minx, ret = optimize(opt, init)
         return vcat(-minf, vcat(minx[1], minx[1]+G[s0], minx[2:end]))
     end
-
-
 
 To analyze the AMSS model, we find it useful to adopt a recursive formulation
 using techniques like those in our lectures on :doc:`dynamic Stackelberg models <dyn_stack>` and :doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
 
-
-
-
 Recursive Version of AMSS Model
-==================================
+===============================
 
 We now describe a recursive formulation of the AMSS economy
 
@@ -720,10 +706,8 @@ We now explore how these constraints alter  Bellman equations for a time
 :math:`0` Ramsey planner and for time :math:`t \geq 1`, history :math:`s^t`
 continuation Ramsey planners
 
-
-
 Recasting State Variables
---------------------------
+-------------------------
 
 In the AMSS setting, the government faces a sequence of budget constraints
 
@@ -731,12 +715,11 @@ In the AMSS setting, the government faces a sequence of budget constraints
 
     \tau_t(s^t) n_t(s^t) + T_t(s^t) +  b_{t+1}(s^t)/ R_t (s^t) =  g_t + b_t(s^{t-1})
 
-
 where :math:`R_t(s^t)` is the gross risk-free rate of interest between :math:`t`
 and :math:`t+1` at history :math:`s^t` and :math:`T_t(s^t)` are nonnegative transfers
 
 Throughout this lecture, we shall set transfers to zero (for some issues about the limiting behavior of debt, this makes a possibly
-important  difference from AMSS :cite:`AMSS_2002`, who restricted transfers
+important difference from AMSS :cite:`AMSS_2002`, who restricted transfers
 to be nonnegative)
 
 In this case, the household faces a sequence of budget constraints
@@ -745,7 +728,6 @@ In this case, the household faces a sequence of budget constraints
     :label: eqn:AMSSapp1
 
     b_t(s^{t-1}) + (1-\tau_t(s^t)) n_t(s^t) = c_t(s^t) + b_{t+1}(s^t)/R_t(s^t)
-
 
 The household’s first-order conditions are :math:`u_{c,t} = \beta R_t \EE_t u_{c,t+1}`
 and :math:`(1-\tau_t) u_{c,t} = u_{l,t}`
@@ -759,7 +741,6 @@ Using these to eliminate :math:`R_t` and :math:`\tau_t` from  budget constraint
     b_t(s^{t-1}) + \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)} n_t(s^t)
     = c_t(s^t) + {\frac{\beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)}{u_{c,t}(s^t)}}
 
-
 or
 
 .. math::
@@ -768,14 +749,12 @@ or
     u_{c,t}(s^t) b_t(s^{t-1}) + u_{l,t}(s^t) n_t(s^t)
     = u_{c,t}(s^t) c_t(s^t) + \beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)
 
-
 Now define
 
 .. math::
     :label: eqn:AMSSapp3
 
     x_t \equiv \beta b_{t+1}(s^t) \EE_t u_{c,t+1} = u_{c,t} (s^t) {\frac{b_{t+1}(s^t)}{R_t(s^t)}}
-
 
 and represent the household’s budget constraint at time :math:`t`,
 history :math:`s^t` as
@@ -785,11 +764,10 @@ history :math:`s^t` as
 
     {\frac{u_{c,t} x_{t-1}}{\beta \EE_{t-1} u_{c,t}}} = u_{c,t} c_t - u_{l,t} n_t + x_t
 
-
 for :math:`t \geq 1`
 
 Measurability Constraints
---------------------------
+-------------------------
 
 Write equation :eq:`eqn:AMSSapp2` as
 
@@ -798,7 +776,6 @@ Write equation :eq:`eqn:AMSSapp2` as
 
     b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t)
     + {\frac{\beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)}{u_{c,t}}}
-
 
 The right side of equation :eq:`eqn:AMSSapp2b` expresses the time :math:`t` value of government debt
 in terms of a linear combination of terms whose individual components
@@ -813,7 +790,7 @@ Equations :eq:`eqn:AMSSapp2b` are the *measurablility constraints* that the AMSS
 constraint imposed in the Lucas and Stokey model
 
 Two Bellman Equations
-----------------------
+---------------------
 
 Let :math:`\Pi(s|s_-)` be a Markov transition matrix whose entries tell probabilities of moving from state :math:`s_-` to state :math:`s` in one period
 
@@ -836,7 +813,6 @@ satisfies the Bellman equation
     V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s)
     - g(s), 1-n(s)) + \beta V(x(s),s) \right]
 
-
 subject to the following collection of implementability constraints, one
 for each :math:`s \in {\cal S}`:
 
@@ -846,12 +822,10 @@ for each :math:`s \in {\cal S}`:
     {\frac{u_c(s) x_- }{\beta \sum_{\tilde s} \Pi(\tilde s|s_-) u_c(\tilde s) }}
     = u_c(s) (n(s) - g(s)) - u_l(s) n(s) + x(s)
 
-
 A continuation Ramsey planner at :math:`t \geq 1` takes
 :math:`(x_{t-1}, s_{t-1}) = (x_-, s_-)` as given and before
 :math:`s` is realized chooses
 :math:`(n_t(s_t), x_t(s_t)) = (n(s), x(s))` for :math:`s \in  {\cal S}`
-
 
 The **Ramsey planner** takes :math:`(b_0, s_0)` as given and chooses :math:`(n_0, x_0)`.
 
@@ -870,9 +844,8 @@ where maximization is subject to
 
     u_{c,0} b_0 = u_{c,0} (n_0-g_0) - u_{l,0} n_0 + x_0
 
-
 Martingale Supercedes State-Variable Degeneracy
-------------------------------------------------
+-----------------------------------------------
 
 Let :math:`\mu(s|s_-) \Pi(s|s_-)` be a Lagrange multiplier on constraint :eq:`eqn:AMSSapp6`
 for state :math:`s`
@@ -885,7 +858,6 @@ condition with respect to :math:`x(s)` is
 
     \beta V_x(x(s),s) = \mu(s|s_-)
 
-
 Applying the envelope theorem to Bellman equation :eq:`eqn:AMSSapp5` gives
 
 .. math::
@@ -894,7 +866,6 @@ Applying the envelope theorem to Bellman equation :eq:`eqn:AMSSapp5` gives
     V_x(x_-,s_-) = \sum_s \Pi(s|s_-) \mu(s|s_-) {\frac{u_c(s)}{\beta \sum_{\tilde s}
     \Pi(\tilde s|s_-) u_c(\tilde s) }}
 
-
 Equations :eq:`eqn:AMSSapp7` and :eq:`eqn:AMSSapp8` imply that
 
 .. math::
@@ -902,7 +873,6 @@ Equations :eq:`eqn:AMSSapp7` and :eq:`eqn:AMSSapp8` imply that
 
     V_x(x_-, s_-) = \sum_{s} \left( \Pi(s|s_-) {\frac{u_c(s)}{\sum_{\tilde s}
     \Pi(\tilde s| s_-) u_c(\tilde s)}} \right) V_x(x(s), s)
-
 
 Equation :eq:`eqn:AMSSapp9` states that :math:`V_x(x, s)` is a *risk-adjusted martingale*
 
@@ -915,12 +885,9 @@ over :math:`s^t` sequences that is generated by the *twisted* transition probabi
     \check \Pi(s|s_-) \equiv \Pi(s|s_-) {\frac{u_c(s)}{\sum_{\tilde s}
     \Pi(\tilde s| s_-) u_c(\tilde s)}}
 
-
 **Exercise**: Please verify that :math:`\check \Pi(s|s_-)` is a valid Markov
 transition density, i.e., that its elements are all nonnegative and
 that for each :math:`s_-`, the sum over :math:`s` equals unity
-
-
 
 Absence of State Variable Degeneracy
 ------------------------------------
@@ -947,11 +914,8 @@ In the AMSS model, both :math:`x` and :math:`s` are needed to describe the state
 This property of the AMSS model  transmits a twisted martingale
 component to consumption, employment, and the tax rate
 
-
-
-
 Digression on Nonnegative Transfers
-------------------------------------
+-----------------------------------
 
 Throughout this lecture we have imposed that transfers :math:`T_t = 0`
 
@@ -975,7 +939,6 @@ For quasi-linear preferences, the first-order condition with respect to :math:`n
 
     (1-\mu(s|s_-) ) (1 - u_l(s)) + \mu(s|s_-) n(s) u_{ll}(s) =0
 
-
 When :math:`\mu(s|s_-) = \beta V_x(x(s),x)` converges to zero, in the limit
 :math:`u_l(s)= 1 =u_c(s)`, so that :math:`\tau(x(s),s) =0`
 
@@ -983,19 +946,16 @@ Thus, in the limit, if :math:`g_t` is perpetually random,  the government
 accumulates sufficient assets to finance all expenditures from earnings on those
 assets, returning any excess revenues to the household as nonnegative lump sum transfers
 
-
 Code
------
+----
 
 The recursive formulation is implemented as follows
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using Dierckx
+    mutable struct BellmanEquation_Recursive{TI <: Integer, TR <: Real}
 
-
-    mutable struct BellmanEquation_Recursive{TP <: Model, TI <: Integer, TR <: Real}
-        model::TP
+        model::NamedTuple
         S::TI
         xbar::Array{TR}
         time_0::Bool
@@ -1006,12 +966,9 @@ The recursive formulation is implemented as follows
         zFB::Vector{Vector{TR}}
     end
 
+    struct RecursiveAllocation{TI <: Integer, TVg <: AbstractVector, TT <: Tuple}
 
-    struct RecursiveAllocation{TP <: Model,
-                            TI <: Integer,
-                            TVg <: AbstractVector,
-                            TT <: Tuple}
-        model::TP
+        model::NamedTuple
         mc::MarkovChain
         S::TI
         T::BellmanEquation_Recursive
@@ -1021,8 +978,7 @@ The recursive formulation is implemented as follows
         policies::TT
     end
 
-
-    function RecursiveAllocation(model::Model, μgrid::AbstractArray)
+    function RecursiveAllocation(model, μgrid)
         G = model.G
         S = size(model.Π, 1)             # number of states
         mc = MarkovChain(model.Π)
@@ -1032,8 +988,8 @@ The recursive formulation is implemented as follows
         return RecursiveAllocation(model, mc, S, T, μgrid, xgrid, Vf, policies)
     end
 
+    function solve_time1_bellman(model, μgrid)
 
-    function solve_time1_bellman{TR <: Real}(model::Model{TR}, μgrid::AbstractArray)
         Π = model.Π
         S = size(model.Π, 1)
 
@@ -1041,34 +997,32 @@ The recursive formulation is implemented as follows
         # Need to change things to be ex_ante
         PP = SequentialAllocation(model)
 
-        function incomplete_allocation(PP::SequentialAllocation,
-                                    μ_::AbstractFloat,
-                                    s_::Integer)
+        function incomplete_allocation(PP::SequentialAllocation, μ_, s_)
             c, n, x, V = time1_value(PP, μ_)
-            return c, n, dot(Π[s_, :], x), dot(Π[s_, :], V)
+            return c, n, Π[s_, :] ⋅ x, Π[s_, :] ⋅ V
         end
 
-        cf = Array{Function}(S, S)
-        nf = Array{Function}(S, S)
-        xprimef = Array{Function}(S, S)
-        Vf = Vector{Function}(S)
-        xgrid = Array{TR}(S, length(μgrid))
+        cf = Matrix{Function}(undef, S, S)
+        nf = Matrix{Function}(undef, S, S)
+        xprimef = Matrix{Function}(undef, S, S)
+        Vf = Vector{Function}(undef, S)
+        xgrid = zeros(S, length(μgrid))
 
         for s_ in 1:S
-            c = Array{TR}(length(μgrid), S)
-            n = Array{TR}(length(μgrid), S)
-            x = Array{TR}(length(μgrid))
-            V = Array{TR}(length(μgrid))
+            c = zeros(length(μgrid), S)
+            n = zeros(length(μgrid), S)
+            x = zeros(length(μgrid))
+            V = zeros(length(μgrid))
             for (i_μ, μ) in enumerate(μgrid)
                 c[i_μ, :], n[i_μ, :], x[i_μ], V[i_μ] =
                     incomplete_allocation(PP, μ, s_)
             end
-            xprimes = repmat(x, 1, S)
+            xprimes = repeat(x, 1, S)
             xgrid[s_, :] = x
             for sprime = 1:S
-                splc = Spline1D(x[end:-1:1], c[:, sprime][end:-1:1], k=3)
-                spln = Spline1D(x[end:-1:1], n[:, sprime][end:-1:1], k=3)
-                splx = Spline1D(x[end:-1:1], xprimes[:, sprime][end:-1:1], k=3)
+                splc = LinearInterpolation(x[end:-1:1], c[:, sprime][end:-1:1], extrapolation_bc = Line())
+                spln = LinearInterpolation(x[end:-1:1], n[:, sprime][end:-1:1], extrapolation_bc = Line())
+                splx = LinearInterpolation(x[end:-1:1], xprimes[:, sprime][end:-1:1], extrapolation_bc = Line())
                 cf[s_, sprime] = y -> splc(y)
                 nf[s_, sprime] = y -> spln(y)
                 xprimef[s_, sprime] = y -> splx(y)
@@ -1076,7 +1030,7 @@ The recursive formulation is implemented as follows
                 # nf[s_, sprime] = LinInterp(x[end:-1:1], n[:, sprime][end:-1:1])
                 # xprimef[s_, sprime] = LinInterp(x[end:-1:1], xprimes[:, sprime][end:-1:1])
             end
-            splV = Spline1D(x[end:-1:1], V[end:-1:1], k=3)
+            splV = LinearInterpolation(x[end:-1:1], V[end:-1:1], extrapolation_bc = Line())
             Vf[s_] = y -> splV(y)
             # Vf[s_] = LinInterp(x[end:-1:1], V[end:-1:1])
         end
@@ -1085,17 +1039,17 @@ The recursive formulation is implemented as follows
 
         # Create xgrid
         xbar = [maximum(minimum(xgrid)), minimum(maximum(xgrid))]
-        xgrid = linspace(xbar[1], xbar[2], length(μgrid))
+        xgrid = range(xbar[1], xbar[2], length = length(μgrid))
 
         # Now iterate on Bellman equation
         T = BellmanEquation_Recursive(model, xgrid, policies)
         diff = 1.0
-        while diff > 1e-4
+        while diff > 1e-3
             PF = (i_x, x, s) -> get_policies_time1(T, i_x, x, s, Vf, xbar)
             Vfnew, policies = fit_policy_function(T, PF, xgrid)
 
             diff = 0.0
-            for s=1:S
+            for s in 1:S
                 diff = max(diff, maximum(abs, (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./ Vf[s].(xgrid)))
             end
 
@@ -1106,31 +1060,28 @@ The recursive formulation is implemented as follows
         return Vf, policies, T, xgrid
     end
 
-
-    function fit_policy_function{TF<:AbstractFloat}(T::BellmanEquation_Recursive,
-                                                    PF::Function,
-                            xgrid::AbstractVector{TF})
+    function fit_policy_function(T::BellmanEquation_Recursive, PF, xgrid)
         S = T.S
         # preallocation
-        PFvec = Array{TF}(4S + 1, length(xgrid))
-        cf = Array{Function}(S, S)
-        nf = Array{Function}(S, S)
-        xprimef = Array{Function}(S, S)
-        TTf = Array{Function}(S, S)
-        Vf = Vector{Function}(S)
-        # fit policy fuctions
+        PFvec = zeros(4S + 1, length(xgrid))
+        cf = Matrix{Function}(undef, S, S)
+        nf = Matrix{Function}(undef, S, S)
+        xprimef = Matrix{Function}(undef, S, S)
+        TTf = Matrix{Function}(undef, S, S)
+        Vf = Vector{Function}(undef, S)
+        # fit policy functions
         for s_ in 1:S
             for (i_x, x) in enumerate(xgrid)
                 PFvec[:, i_x] = PF(i_x, x, s_)
             end
-            splV = Spline1D(xgrid, PFvec[1,:], k=3)
+            splV = LinearInterpolation(xgrid, PFvec[1,:], extrapolation_bc = Line())
             Vf[s_] = y -> splV(y)
             # Vf[s_] = LinInterp(xgrid, PFvec[1, :])
-            for sprime=1:S
-                splc = Spline1D(xgrid, PFvec[1 + sprime, :], k=3)
-                spln = Spline1D(xgrid, PFvec[1 + S + sprime, :], k=3)
-                splxprime = Spline1D(xgrid, PFvec[1 + 2S + sprime, :], k=3)
-                splTT = Spline1D(xgrid, PFvec[1 + 3S + sprime, :], k=3)
+            for sprime in 1:S
+                splc = LinearInterpolation(xgrid, PFvec[1 + sprime, :], extrapolation_bc = Line())
+                spln = LinearInterpolation(xgrid, PFvec[1 + S + sprime, :], extrapolation_bc = Line())
+                splxprime = LinearInterpolation(xgrid, PFvec[1 + 2S + sprime, :], extrapolation_bc = Line())
+                splTT = LinearInterpolation(xgrid, PFvec[1 + 3S + sprime, :], extrapolation_bc = Line())
                 cf[s_, sprime] = y -> splc(y)
                 nf[s_, sprime] = y -> spln(y)
                 xprimef[s_, sprime] = y -> splxprime(y)
@@ -1141,19 +1092,17 @@ The recursive formulation is implemented as follows
         return Vf, policies
     end
 
-
     function Tau(pab::RecursiveAllocation,
-                c::AbstractArray,
-            n::AbstractArray)
+                 c::AbstractArray,
+                 n::AbstractArray)
         model = pab.model
         Uc, Un = model.Uc(c, n), model.Un(c, n)
-        return 1 + Un ./ (model.Θ .* Uc)
+        return 1 .+ Un ./ (model.Θ .* Uc)
     end
 
     Tau(pab::RecursiveAllocation, c::Real, n::Real) = Tau(pab, [c], [n])
 
-
-    function time0_allocation(pab::RecursiveAllocation, B_::Real, s0::Integer)
+    function time0_allocation(pab::RecursiveAllocation, B_, s0)
         T, Vf = pab.T, pab.Vf
         xbar = T.xbar
         z0 = get_policies_time0(T, B_, s0, Vf, xbar)
@@ -1162,21 +1111,20 @@ The recursive formulation is implemented as follows
         return c0, n0, xprime0, T0
     end
 
+    function simulate(pab::RecursiveAllocation, B_, s_0, T,
+                      sHist = simulate(pab.mc, T, init = s_0))
 
-    function simulate{TF <: AbstractFloat}(pab::RecursiveAllocation,
-                                        B_::TF, s_0::Integer, T::Integer,
-                                        sHist::Vector=simulate(pab.mc, T, init=s_0))
         model, mc, Vf, S = pab.model, pab.mc, pab.Vf, pab.S
-        Π, Uc = model.Π, model.Uc
+        @unpack Π, Uc = model
         cf, nf, xprimef, TTf = pab.policies
 
-        cHist = Array{TF}(T)
-        nHist = Array{TF}(T)
-        Bhist = Array{TF}(T)
-        xHist = Array{TF}(T)
-        TauHist = Array{TF}(T)
-        THist = Array{TF}(T)
-        μHist = Array{TF}(T)
+        cHist = zeros(T)
+        nHist = zeros(T)
+        Bhist = zeros(T)
+        xHist = zeros(T)
+        TauHist = zeros(T)
+        THist = zeros(T)
+        μHist = zeros(T)
 
         #time0
         cHist[1], nHist[1], xHist[1], THist[1]  = time0_allocation(pab, B_, s_0)
@@ -1187,11 +1135,11 @@ The recursive formulation is implemented as follows
         #time 1 onward
         for t in 2:T
             s_, x, s = sHist[t-1], xHist[t-1], sHist[t]
-            c = Array{TF}(S)
-            n = Array{TF}(S)
-            xprime = Array{TF}(S)
-            TT = Array{TF}(S)
-            for sprime=1:S
+            c = zeros(S)
+            n = zeros(S)
+            xprime = zeros(S)
+            TT = zeros(S)
+            for sprime in 1:S
                 c[sprime], n[sprime], xprime[sprime], TT[sprime] =
                     cf[s_, sprime](x), nf[s_, sprime](x),
                     xprimef[s_, sprime](x), TTf[s_, sprime](x)
@@ -1199,7 +1147,7 @@ The recursive formulation is implemented as follows
 
             Tau_val = Tau(pab, c, n)[s]
             u_c = Uc(c, n)
-            Eu_c = dot(Π[s_, :], u_c)
+            Eu_c = Π[s_, :] ⋅ u_c
 
             μHist[t] = Vf[s](xprime[s])
 
@@ -1209,21 +1157,18 @@ The recursive formulation is implemented as follows
         return cHist, nHist, Bhist, xHist, TauHist, THist, μHist, sHist
     end
 
+    function BellmanEquation_Recursive(model, xgrid, policies0)
 
-    function BellmanEquation_Recursive{TF <: AbstractFloat}(model::Model{TF},
-                                                            xgrid::AbstractVector{TF},
-                                                            policies0::Array)
-
-        S = size(model.Π, 1)                                # number of states
-        xbar = [minimum(xgrid), maximum(xgrid)]
+        S = size(model.Π, 1) # number of states
+        xbar = collect(extrema(xgrid))
         time_0 = false
-        z0 = Array{Array}(length(xgrid), S)
+        z0 = Matrix{Array}(undef, length(xgrid), S)
         cf, nf, xprimef = policies0[1], policies0[2], policies0[3]
         for s in 1:S
             for (i_x, x) in enumerate(xgrid)
-                cs = Array{TF}(S)
-                ns = Array{TF}(S)
-                xprimes = Array{TF}(S)
+                cs = zeros(S)
+                ns = zeros(S)
+                xprimes = zeros(S)
                 for j = 1:S
                     cs[j], ns[j], xprimes[j] = cf[s, j](x), nf[s, j](x), xprimef[s, j](x)
                 end
@@ -1234,26 +1179,18 @@ The recursive formulation is implemented as follows
         return BellmanEquation_Recursive(model, S, xbar, time_0, z0, cFB, nFB, xFB, zFB)
     end
 
-
-
-    function get_policies_time1(T::BellmanEquation_Recursive,
-                                i_x::Integer,
-                                x::Real,
-                                s_::Integer,
-                                Vf::AbstractArray{Function},
-                                xbar::AbstractVector)
+    function get_policies_time1(T::BellmanEquation_Recursive, i_x, x, s_, Vf, xbar)
         model, S = T.model, T.S
-        β, Θ, G, Π = model.β, model.Θ, model.G, model.Π
-        U,Uc,Un = model.U, model.Uc, model.Un
+        @unpack β, Θ, G, Π, U, Uc, Un = model
 
-        S_possible = sum(Π[s_, :].>0)
-        sprimei_possible = find(Π[s_, :].>0)
+        S_possible = sum(x -> x > 0, Π[s_, :])
+        sprimei_possible = findall(x -> x > zero(x), Π[s_, :])
 
         function objf(z, grad)
             c, xprime = z[1:S_possible], z[S_possible+1:2S_possible]
             n = (c + G[sprimei_possible]) ./ Θ[sprimei_possible]
             Vprime = [Vf[sprimei_possible[si]](xprime[si]) for si in 1:S_possible]
-            return -dot(Π[s_, sprimei_possible], U.(c, n) + β * Vprime)
+            return -(Π[s_, sprimei_possible] ⋅ (U.(c, n) + β * Vprime))
         end
 
         function cons(out, z, grad)
@@ -1261,41 +1198,41 @@ The recursive formulation is implemented as follows
                 z[1:S_possible], z[S_possible + 1:2S_possible], z[2S_possible + 1:3S_possible]
             n = (c+G[sprimei_possible]) ./ Θ[sprimei_possible]
             u_c = Uc.(c, n)
-            Eu_c = dot(Π[s_, sprimei_possible], u_c)
+            Eu_c = Π[s_, sprimei_possible] ⋅ u_c
             out .= x * u_c/Eu_c - u_c .* (c - TT) - Un(c, n) .* n - β * xprime
         end
         function cons_no_trans(out, z, grad)
             c, xprime = z[1:S_possible], z[S_possible + 1:2S_possible]
             n = (c + G[sprimei_possible]) ./ Θ[sprimei_possible]
             u_c = Uc.(c, n)
-            Eu_c = dot(Π[s_, sprimei_possible], u_c)
+            Eu_c = Π[s_, sprimei_possible] ⋅ u_c
             out .= x * u_c / Eu_c - u_c .* c - Un(c, n) .* n - β * xprime
         end
 
-        if model.transfers == true
-            lb = vcat(zeros(S_possible), ones(S_possible)*xbar[1], zeros(S_possible))
-            if model.n_less_than_one == true
-                ub = vcat(ones(S_possible) - G[sprimei_possible],
-                        ones(S_possible) * xbar[2], ones(S_possible))
+        if model.transfers
+            lb = vcat(zeros(S_possible), fill(xbar[1], S_possible), zeros(S_possible))
+            if model.n_less_than_one
+                ub = vcat(1 .- G[sprimei_possible],
+                        fill(xbar[2], S_possible), ones(S_possible))
             else
-                ub = vcat(100 * ones(S_possible),
-                        ones(S_possible) * xbar[2],
-                        100 * ones(S_possible))
+                ub = vcat(fill(100, S_possible),
+                          fill(xbar[2], S_possible),
+                          fill(100, S_possible))
             end
             init = vcat(T.z0[i_x, s_][sprimei_possible],
-                        T.z0[i_x, s_][2S + sprimei_possible],
-                        T.z0[i_x, s_][3S + sprimei_possible])
+                        T.z0[i_x, s_][2S .+ sprimei_possible],
+                        T.z0[i_x, s_][3S .+ sprimei_possible])
             opt = Opt(:LN_COBYLA, 3S_possible)
             equality_constraint!(opt, cons, zeros(S_possible))
         else
-            lb = vcat(zeros(S_possible), ones(S_possible)*xbar[1])
-            if model.n_less_than_one == true
-                ub = vcat(ones(S_possible)-G[sprimei_possible], ones(S_possible)*xbar[2])
+            lb = vcat(zeros(S_possible), fill(xbar[1], S_possible))
+            if model.n_less_than_one
+                ub = vcat(1 .- G[sprimei_possible], fill(xbar[2], S_possible))
             else
-                ub = vcat(ones(S_possible), ones(S_possible) * xbar[2])
+                ub = vcat(ones(S_possible), fill(xbar[2], S_possible))
             end
             init = vcat(T.z0[i_x, s_][sprimei_possible],
-                        T.z0[i_x, s_][2S+sprimei_possible])
+                        T.z0[i_x, s_][2S .+ sprimei_possible])
             opt = Opt(:LN_COBYLA, 2S_possible)
             equality_constraint!(opt, cons_no_trans, zeros(S_possible))
         end
@@ -1318,26 +1255,20 @@ The recursive formulation is implemented as follows
         end
 
         T.z0[i_x, s_][sprimei_possible] = minx[1:S_possible]
-        T.z0[i_x, s_][S + sprimei_possible] = minx[1:S_possible] + G[sprimei_possible]
-        T.z0[i_x, s_][2S + sprimei_possible] = minx[S_possible + 1:2S_possible]
-        if model.transfers == true
-            T.z0[i_x, s_][3S + sprimei_possible] = minx[2S_possible + 1:3S_possible]
+        T.z0[i_x, s_][S .+ sprimei_possible] = minx[1:S_possible] + G[sprimei_possible]
+        T.z0[i_x, s_][2S .+ sprimei_possible] = minx[S_possible + 1:2S_possible]
+        if model.transfers
+            T.z0[i_x, s_][3S .+ sprimei_possible] = minx[2S_possible + 1:3S_possible]
         else
-            T.z0[i_x, s_][3S + sprimei_possible] = zeros(S)
+            T.z0[i_x, s_][3S .+ sprimei_possible] = zeros(S)
         end
 
         return vcat(-minf, T.z0[i_x, s_])
     end
 
-
-    function get_policies_time0(T::BellmanEquation_Recursive,
-                                B_::Real,
-                                s0::Integer,
-                                Vf::AbstractArray{Function},
-                                xbar::AbstractVector)
+    function get_policies_time0(T::BellmanEquation_Recursive, B_, s0, Vf, xbar)
         model = T.model
-        β, Θ, G = model.β, model.Θ, model.G
-        U, Uc, Un = model.U, model.Uc, model.Un
+        @unpack β, Θ, G, U, Uc, Un = model
 
         function objf(z, grad)
             c, xprime = z[1], z[2]
@@ -1352,9 +1283,9 @@ The recursive formulation is implemented as follows
         end
         cons_no_trans(z, grad) = cons(vcat(z, 0), grad)
 
-        if model.transfers == true
+        if model.transfers
             lb = [0.0, xbar[1], 0.0]
-            if model.n_less_than_one == true
+            if model.n_less_than_one
                 ub = [1 - G[s0], xbar[2], 100]
             else
                 ub = [100.0, xbar[2], 100.0]
@@ -1365,7 +1296,7 @@ The recursive formulation is implemented as follows
             equality_constraint!(opt, cons)
         else
             lb = [0.0, xbar[1]]
-            if model.n_less_than_one == true
+            if model.n_less_than_one
                 ub = [1-G[s0], xbar[2]]
             else
                 ub = [100, xbar[2]]
@@ -1378,7 +1309,6 @@ The recursive formulation is implemented as follows
         init[init .> ub] = ub[init .> ub]
         init[init .< lb] = lb[init .< lb]
 
-
         min_objective!(opt, objf)
         lower_bounds!(opt, lb)
         upper_bounds!(opt, ub)
@@ -1387,31 +1317,25 @@ The recursive formulation is implemented as follows
 
         (minf, minx, ret) = optimize(opt, init)
 
-        if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED && ret != :FTOL_REACHED
-            error("optimization failed: ret = $ret")
+        if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
+            ret != :FTOL_REACHED
+                error("optimization failed: ret = $ret")
         end
 
-        if model.transfers == true
+        if model.transfers
             return -minf, minx[1], minx[1]+G[s0], minx[2], minx[3]
         else
             return -minf, minx[1], minx[1]+G[s0], minx[2], 0
         end
     end
 
-
-
 Examples
-================
+========
 
 We now turn to some examples
 
-
-
-
-
-
 Anticipated One-Period War
-----------------------------------
+--------------------------
 
 In our lecture on :doc:`optimal taxation with state contingent debt <opt_tax_recur>`
 we studied how the government manages uncertainty in a simple setting
@@ -1422,11 +1346,9 @@ As in that lecture, we assume the one-period utility function
 
     u(c,n) = {\frac{c^{1-\sigma}}{1-\sigma}} - {\frac{n^{1+\gamma}}{1+\gamma}}
 
-
 .. note::
     For convenience in  matching our computer code, we have expressed
     utility as a function of :math:`n` rather than leisure :math:`l`
-
 
 We consider the same government expenditure process studied in the lecture on
 :doc:`optimal taxation with state contingent debt <opt_tax_recur>`
@@ -1448,7 +1370,6 @@ A useful trick is to define  components of the state vector as the following six
 
     (0,g_l), (1,g_l), (2,g_l), (3,g_l), (3,g_h), (t\geq 4,g_l)
 
-
 We think of these 6 states as corresponding to :math:`s=1,2,3,4,5,6`
 
 The transition matrix is
@@ -1464,47 +1385,15 @@ The transition matrix is
       0 & 0 & 0 & 0   & 0   & 1
     \end{pmatrix}
 
-
 The government expenditure at  each state is
 
 .. math::
 
     g = \left(\begin{matrix} 0.1\\0.1\\0.1\\0.1\\0.2\\0.1 \end{matrix}\right)
 
-
 We assume the same utility parameters as in the :doc:`Lucas-Stokey economy <opt_tax_recur>`
 
 This utility function is implemented in the following type
-
-.. code-block:: julia
-
-    function crra_utility(;
-        β = 0.9,
-        σ = 2.0,
-        γ = 2.0,
-        Π = 0.5 * ones(2, 2),
-        G = [0.1, 0.2],
-        Θ = ones(Float64, 2),
-        transfers = false
-        )
-        function U(c, n)
-            if σ == 1.0
-                U = log(c)
-            else
-                U = (c.^(1.0 - σ) - 1.0) / (1.0 - σ)
-            end
-            return U - n.^(1 + γ) / (1 + γ)
-        end
-        # Derivatives of utility function
-        Uc(c,n) =  c.^(-σ)
-        Ucc(c,n) = -σ * c.^(-σ - 1.0)
-        Un(c,n) = -n.^γ
-        Unn(c,n) = -γ * n.^(γ - 1.0)
-        n_less_than_one = false
-        return Model(β, Π, G, Θ, transfers,
-                    U, Uc, Ucc, Un, Unn, n_less_than_one)
-    end
-
 
 The following figure plots the Ramsey plan under both complete and incomplete
 markets for both possible realizations of the state at time :math:`t=3`
@@ -1516,25 +1405,21 @@ free bond are in red
 Paths with circles are histories in which there is peace, while those with
 triangle denote war
 
-
-
 .. code-block:: julia
 
-    time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
-                                Θ = ones(6))                       # Θ can in principle be random
-
-    time_example.Π = [ 0.0 1.0 0.0 0.0 0.0 0.0;
-                       0.0 0.0 1.0 0.0 0.0 0.0;
-                       0.0 0.0 0.0 0.5 0.5 0.0;
-                       0.0 0.0 0.0 0.0 0.0 1.0;
-                       0.0 0.0 0.0 0.0 0.0 1.0;
-                       0.0 0.0 0.0 0.0 0.0 1.0]
+    time_example = Model(G = [0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
+                         Θ = ones(6), # Θ can in principle be random
+                         Π = [ 0.0 1.0 0.0 0.0 0.0 0.0
+                               0.0 0.0 1.0 0.0 0.0 0.0
+                               0.0 0.0 0.0 0.5 0.5 0.0
+                               0.0 0.0 0.0 0.0 0.0 1.0
+                               0.0 0.0 0.0 0.0 0.0 1.0
+                               0.0 0.0 0.0 0.0 0.0 1.0])
 
     # Initialize μgrid for value function iteration
-    μgrid = linspace(-0.7, 0.01, 200)
+    μgrid = range(-0.7, 0.01, length = 200)
 
-    time_example.transfers = true                                 # Government can use transfers
-    time_sequential = SequentialAllocation(time_example)          # Solve sequential problem
+    time_sequential = SequentialAllocation(time_example) # Solve sequential problem
 
     time_bellman = RecursiveAllocation(time_example, μgrid)
 
@@ -1546,9 +1431,6 @@ triangle denote war
     sim_seq_l = simulate(time_sequential, 1., 1, 7, sHist_l)
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
 
-    using Plots
-    gr(fmt=:png)
-    pyplot()
     titles = hcat("Consumption", "Labor", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")
     sim_seq_l_plot = hcat(sim_seq_l[1:3]..., sim_seq_l[4],
@@ -1566,16 +1448,13 @@ triangle denote war
     p = plot(size = (700, 500), layout =(3, 2),
      xaxis=(0:6), grid=false, titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
-    for i=1:6
+    for i in 1:6
         plot!(p[i], 0:6, sim_seq_l_plot[:, i], marker=:circle, color=:black, lab="")
         plot!(p[i], 0:6, sim_bel_l_plot[:, i], marker=:circle, color=:red, lab="")
         plot!(p[i], 0:6, sim_seq_h_plot[:, i], marker=:utriangle, color=:black, lab="")
         plot!(p[i], 0:6, sim_bel_h_plot[:, i], marker=:utriangle, color=:red, lab="")
     end
     p
-
-
-
 
 How a Ramsey planner responds to  war depends on the structure of the asset market.
 
@@ -1612,10 +1491,8 @@ Without state contingent debt, the optimal tax rate is history dependent
 
 * A war at time :math:`t=3` causes a permanent increase in the tax rate
 
-
-
 Perpetual War Alert
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 History dependence occurs more dramatically in a case in which the government
 perpetually faces the prospect  of war
@@ -1633,26 +1510,6 @@ In addition, this example features the following preferences
 
 In accordance, we will re-define our utility function
 
-.. code-block:: julia
-
-    function log_utility(;β = 0.9,
-                        ψ = 0.69,
-                        Π = 0.5 * ones(2, 2),
-                        G = [0.1, 0.2],
-                        Θ = ones(2),
-                        transfers = false)
-        # Derivatives of utility function
-        U(c,n) = log(c) + ψ * log(1 - n)
-        Uc(c,n) = 1 ./ c
-        Ucc(c,n) = -c.^(-2.0)
-        Un(c,n) = -ψ ./ (1.0 - n)
-        Unn(c,n) = -ψ ./ (1.0 - n).^2.0
-        n_less_than_one = true
-        return Model(β, Π, G, Θ, transfers,
-                    U, Uc, Ucc, Un, Unn, n_less_than_one)
-    end
-
-
 With these preferences, Ramsey tax rates will vary even in the Lucas-Stokey
 model with state-contingent debt
 
@@ -1660,13 +1517,10 @@ The figure below plots optimal tax policies for both the economy with
 state contingent debt (circles) and the economy with only a risk-free bond
 (triangles)
 
-
-
 .. code-block:: julia
 
-    log_example = log_utility()
+    log_example = Model()
 
-    log_example.transfers = true                             # Government can use transfers
     log_sequential = SequentialAllocation(log_example)       # Solve sequential problem
     log_bellman = RecursiveAllocation(log_example, μgrid)    # Solve recursive problem
 
@@ -1688,14 +1542,11 @@ state contingent debt (circles) and the economy with only a risk-free bond
     labels = fill(("", ""), 6)
     labels[1] = ("Complete Market", "Incomplete Market")
     plot!(p, title = titles)
-    for i = vcat(collect(1:4), 6)
+    for i in vcat(1:4, 6)
         plot!(p[i], sim_seq_plot[:, i], marker=:circle, color=:blue, lab=labels[i][1])
         plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:black, lab=labels[i][1])
     end
     plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:black, lab="")
-
-
-
 
 When the government experiences a prolonged period of peace, it is able to reduce
 government debt and set permanently lower tax rates
@@ -1707,8 +1558,6 @@ depends on the history of shocks
 
 This is even more evident in the following figure that plots the evolution of
 the two policies over 200 periods
-
-
 
 .. code-block:: julia
 
@@ -1724,15 +1573,11 @@ the two policies over 200 periods
     p = plot(size = (700, 500), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
             titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
-    for i = 1:6
+    for i in 1:6
         plot!(p[i], sim_seq_long_plot[:, i], color=:black, linestyle=:solid, lab=labels[i][1])
         plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2])
     end
     p
-
-
-
-
 
 .. rubric:: Footnotes
 

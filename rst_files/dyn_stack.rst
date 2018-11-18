@@ -1,7 +1,6 @@
 .. _dyn_stack:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ****************************
 Dynamic Stackelberg Problems
@@ -926,13 +925,13 @@ Setup
                         beta = 0.95)
 
         # left-hand side of (37)
-        Alhs = Matrix{Float64}(I, 5, 5)
+        Alhs = I + zeros(5, 5)
         Alhs[5, :] = [a0-d 1 -a1 -a1-h c]
         Alhsinv = inv(Alhs)
 
         # right-hand side of (37)
         Brhs = [0; 0; 1; 0; 0]
-        Arhs = Matrix{Float64}(I, 5, 5)
+        Arhs = I + zeros(5, 5)
         Arhs[2, 2] = rho
         Arhs[4, 5] = 1
         Arhs[5, 5] = c / beta

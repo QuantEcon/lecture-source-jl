@@ -1,7 +1,6 @@
 .. _tools_editors:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
 Julia Tools and Editors
@@ -11,9 +10,49 @@ Julia Tools and Editors
 
 Co-authored with Arnav Sood
 
-While Jupyter notebooks are a great way to get started with the language, eventually you'll want to use more powerful Tools
+While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools
 
 We assume you've already completed the :ref:`getting started <getting_started>` lecture 
+
+Preliminary Setup 
+====================
+
+Follow the instructions for setting up Julia `on your local computer <jl_jupyterlocal>`_
+
+.. _jl_startup_file:
+
+Creating a Startup File (Recommended)
+----------------------------------------------------
+
+
+Whenever the Julia compiler or REPL starts, it will look for a file called ``startup.jl`` (see `Julia Manual <https://docs.julialang.org/en/v1/manual/getting-started/#man-getting-started-1>`_)
+
+The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
+
+Recall that you can find the location of this directory by running 
+
+.. code-block:: julia 
+
+    DEPOT_PATH[1]
+
+To add the file:
+
+1. In the ``julia`` terminal, type the following
+
+    .. code-block:: none
+
+        ] add  Revise REPL; precompile
+
+2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
+
+3. Either download the file `startup.jl </_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
+
+.. include:: /_static/includes/startup.jl.raw
+
+4. For convenience, you may find it useful on your operating system to change the directory where the REPL starts
+ 
+    On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
+
 
 The REPL
 =============
@@ -62,6 +101,8 @@ You can get a full list of package-mode commands by running
 
     ] ? 
 
+Recall that on some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit ``]`` first and then run your commands)
+
 Help Mode 
 ---------------
 
@@ -94,16 +135,54 @@ will succeed
 Atom 
 =========
 
-As discussed `previously <getting_started>`_, eventually you'll want to use a full-fledged text editor 
+As discussed `previously <getting_started>`_, eventually you will want to use a full-fledged text editor 
 
 The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
 
 Installation and Configuration 
 ---------------------------------
 
-Instructions for basic setup and configuration can be found `here <https://github.com/econtoolkit/tutorials/blob/master/julia.md#installation-and-setup/>`_
+Installing Atom
+^^^^^^^^^^^^^^^^^^^
 
-The key package to install is called `Juno <http://junolab.org.>`_ 
+1. Download and Install Atom from the `Atom website <https://atom.io/>`_
+
+2. (Optional, but Recommended) Change default Atom settings
+
+    * Use ``Ctrl-,`` to get the `Settings` pane
+    * Choose the `Packages` tab
+    * Type ``line-ending-selector`` into the Filter and then click "Settings" for that package
+
+        * Change the default line ending to ``LF`` (only necessary on Windows)
+        
+    * Choose the `Editor` tab
+        * Turn on ``Soft Wrap``
+        * Set the ``Tab Length`` default to ``4``
+
+Installing Juno
+^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Use ``Ctrl-,`` to get the `Settings` pane
+2. Go to the ``Install`` tab
+3. Type ``uber-juno`` into the search box and then click `Install` on the package that appears
+4. Wait while Juno installs dependencies
+5. When it asks you whether or not to use the standard layout, click ``yes``
+
+At that point, you should see a built-in REPL at the bottom of the screen and be able to start using Julia and Atom
+
+Troubleshooting
+^^^^^^^^^^^^^^^^^^^
+Sometimes, Juno will fail to find the Julia executable (say, if it's installed somewhere nonstandard, or you have multiple)
+
+To do this
+1. ``Ctrl-,`` to get `Settings` pane, and select the `Packages` tab
+2. Type in ``julia-client`` and choos `Settings`
+3. Find the `Julia Path`, and fill it in with the location of the Julia binary
+
+    * To find, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
+    * e.g. ``C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe`` on Windows as ``/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia`` on OSX
+
+See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have further issues
 
 Standard Layout  
 ------------------
@@ -135,12 +214,21 @@ The ``Documentation`` pane simply lets us query Julia documentation
 .. figure:: /_static/figures/juno-docs.png
     :scale: 60%
 
-The ``Plots`` pane captures Julia plots output 
+The ``Plots`` pane captures Julia plots output (the code is as follows)
+
+.. code-block:: julia
+    :class: no-execute
+
+    using Plots 
+    gr(fmt = :png)
+    data = rand(10, 10)
+    h = heatmap(data)
 
 .. figure:: /_static/figures/juno-plots.png
     :scale: 60%
 
-May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
+.. This is for matplotlib?
+.. May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
 
 Other Features 
 -------------------
@@ -149,21 +237,23 @@ Other Features
 
 * The run symbol in the left sidebar (or ``Ctrl+Shift+Enter``) will run the whole file 
 
-Docker Integration 
-----------------------
+See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an exploration of features, and  the `FAQ <http://docs.junolab.org/latest/man/faq.html>`_ for more advanced steps (e.g. using with ``Docker``)
 
-You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
+.. Docker Integration 
+.. ----------------------
+.. 
+.. You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
+.. 
 
-For instructions on this, see the `Juno FAQ <https://docs.junolab.org/latest/man/faq.html/>`_
 
 Package Environments 
 ========================
 
-Julia's package manager lets you set up Python-style "virtualenvs", that draw from an underlying pool of assets on the machine
+Julia's package manager lets you set up Python-style "virtualenvs," that draw from an underlying pool of assets on the machine 
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
-* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull 
+* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see `version control <version_control>`)
 
 * A ``depot`` is a directory, like ``~/.julia``, which contains assets (compile caches, registries, package source directories, etc.) 
 
@@ -207,7 +297,9 @@ Note the lack of commas
 
 To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
 
-The Project TOML should look something like this:: 
+The Project TOML should look something like this
+
+.. code-block:: none
 
     name = "ExampleEnvironment"
     uuid = "14d3e79e-e2e5-11e8-28b9-19823016c34c"
@@ -261,3 +353,151 @@ What this ``activate_github`` function does is
 
 #. ``] instantiate`` and ``] precompile``, if necessary 
 
+.. _docker_main:
+
+Docker 
+===========
+
+As discussed `earlier <jl_jupyterdocker>`_, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
+
+Here, we'll walk through the setup and installation steps, along with the main features of the ``quantecon/base`` Docker image 
+
+Setup
+-----------
+
+1. First, create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
+    
+2. Next, download and install Docker for
+
+    * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+    * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
+
+**Note:** For Windows 
+
+    * Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (**not Home or Mobile**)
+
+    * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
+
+3. Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
+
+    .. code-block:: none 
+
+        docker pull hello-world 
+        docker run hello-world 
+
+You should see something like 
+
+.. figure:: /_static/figures/docker-hello-world.png
+    :scale: 60%
+
+4. Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
+
+    .. code-block:: none
+
+        docker pull quantecon/base
+
+5. Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages 
+
+    .. code-block:: none
+
+        docker volume rm quantecon 
+        docker volume create quantecon 
+
+The first line will delete any existing volume we had with that name
+
+Usage 
+---------------------
+
+The basic, no-frills command is 
+
+.. code-block:: none 
+
+    docker run --rm -p 8888:8888 quantecon/base 
+
+The ``rm`` instructs Docker to delete the container on exit, and the ``p`` flag is for browser access
+
+You will see something like 
+
+.. figure:: /_static/figures/docker-basic-command.png
+    :scale: 60%
+
+In the output, you should see some text near that bottom that looks like 
+
+.. code-block:: none
+
+    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b 
+
+Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
+
+In a browser, go to a URL like the following
+
+.. code-block:: none
+
+        http://127.0.0.1:8888/lab
+
+To see something like 
+
+.. figure:: /_static/figures/docker-jupyter-lab.png
+    :scale: 60%
+
+**Note**: 
+
+* ``Ctrl+C`` is also the keyboard shortcut you use to kill the container, so be sure to copy using the mouse
+* When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
+
+Paste the text into ``Password or token:`` and choose ``Log in`` to get the full window 
+
+.. figure:: /_static/figures/docker-jlab-full.png
+    :scale: 60%
+
+We can see that some packages are already pre-installed for our use 
+
+.. figure:: /_static/figures/docker-packages-preinstalled.png
+    :scale: 60%
+
+Persisting Julia Changes 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As above, you may want to persist changes in your environment (like added packages) from one session to the next 
+
+The command here is 
+
+.. code-block:: none 
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia quantecon/base 
+
+This will have Docker write all changes to the user depot to the ``quantecon`` data volume we created 
+
+Accessing Local Files 
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The Docker image can exchange files locally (and recursively below in the tree) to where it is run
+
+Open a terminal and ``cd`` to the directory you are interested in storing local files
+
+To run an image local to those files, type the following in the terminal (on Linux and OSX)
+
+.. code-block:: none
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base 
+
+Or on Powershell on Windows
+
+.. code-block:: none
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
+
+This will load the folder we ``cd``'d into as the ``local`` directory in the image for both reading and writing 
+
+Notice how we stacked this command with the one above it, so that Julia package changes will also be persisted 
+
+Maintenance and Troubleshooting 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A few reminders 
+
+* If you forget your token number, you may need to stop and restart the container
+* To stop the container, use ``Ctrl-C`` or type ``docker stop $(docker ps -aq)`` in a different terminal
+* To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
+* To clean unnecessary Docker assets from your system, run ``docker system prune`` 
+* If you can't log in, make sure you don't have an existing jupyter notebook occupying port 8888. To check, run ``jupyter notebook list`` and (if need be) ``jupyter notebook stop 8888``. If you have difficulties, see `this git issue <https://github.com/jupyter/notebook/issues/2844>`_ 

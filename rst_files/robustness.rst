@@ -1,7 +1,6 @@
 .. _rob:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -1120,7 +1119,7 @@ The code for producing the graph shown above, with blue being for the robust pol
                   (robust_best_case, robust_worst_case))
 
     egrid = range(0,  emax, length = 100)
-    egrid_data = Vector{Vector{Float64}}()
+    egrid_data = []
     for data_pair in data_pairs
         for data in data_pair
             x, y = data[:, 2], data[:, 1]

@@ -1,7 +1,6 @@
 .. _discrete_dp:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -583,7 +582,8 @@ can easily simulate it, compute its stationary distribution and so on
 
     @testset "Stationary Distributions Test" begin
         @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
-        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 # Only one element of this `mc` field.
+        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 
+        # Only one element of this `mc` field.
     end
 
 Here's the same information in a bar graph
@@ -651,7 +651,7 @@ Here's how we could set up these objects for the preceding example
     s_indices = Int64[]
     a_indices = Int64[]
     Q = zeros(0, n)
-    R = Float64[]
+    R = zeros(0)
 
     b = 1 / (B + 1)
 
@@ -659,7 +659,7 @@ Here's how we could set up these objects for the preceding example
         for a in 0:min(M, s)
             s_indices = [s_indices; s + 1]
             a_indices = [a_indices; a + 1]
-            q = zeros(Float64, 1, n)
+            q = zeros(1, n)
             q[(a + 1):((a + B) + 1)] .= b
             Q = [Q; q]
             R = [R; u(s-a)]

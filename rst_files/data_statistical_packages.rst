@@ -1,10 +1,10 @@
 .. _data_statistical_packages:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
+
 
 *****************************************
-The Julia Data and Statistical Ecosystem
+Data and Statistics Packages
 *****************************************
 
 .. contents:: :depth: 2
@@ -177,7 +177,7 @@ To give an example directly from the source of the LINQ inspired `Query.jl <http
         @collect DataFrame
     end
 
-While it is possible to to just use the ``Plots.jl`` library, there may be better options for displaying tabular data--such as `Vegalite.jl <http://fredo-dedup.github.io/VegaLite.jl/latest/>`_
+While it is possible to to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `Vegalite.jl <http://fredo-dedup.github.io/VegaLite.jl/latest/>`_
 
 .. code-block:: julia
 

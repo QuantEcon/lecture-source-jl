@@ -1,7 +1,6 @@
 .. _arellano:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
-    :class: collapse
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -368,9 +367,9 @@ Setup
         vf = zeros(nB, ny)
         vd = zeros(1, ny)
         vc = zeros(nB, ny)
-        policy = zeros(Float64, nB, ny)
+        policy = zeros(nB, ny)
         q = ones(nB, ny) .* (1 / (1 + r))
-        defprob = zeros(Float64, nB, ny)
+        defprob = zeros(nB, ny)
 
         return (β = β, γ = γ, r = r, ρ = ρ, η = η, θ = θ, ny = ny, 
                 nB = nB, ygrid = ygrid, ydefgrid = ydefgrid, 
@@ -721,7 +720,8 @@ Plot a time series of major variables simulated from the model
 
     plots = plot(layout = (3, 1), size = (700, 800))
 
-    # Plot the three variables, and for each each variable shading the period(s) of default in grey
+    # Plot the three variables, and for each each variable shading the period(s) of default 
+    # in grey
     for i in 1:3
         plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel = "time", label = "", lw = 2)
         for j in 1:length(def_start)
