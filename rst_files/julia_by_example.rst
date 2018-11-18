@@ -85,7 +85,7 @@ The first step is to activate a project environment, which are encapsulated by `
 
 There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
 
-#. directly ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
+#. ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
 #. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
 #. use the ``InstantiateFromURL`` package
 
