@@ -355,19 +355,19 @@ Finally, we can broadcast any function, where squaring is only a special case
     generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
     data = generatedata(5)
 
-As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply a function 
+As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply to a function 
     
 .. code-block:: julia
 
     # too abstract?
-    generatedata(n, gen) = gen.(randn(n)) # Uses broadcast for some function `gen`
+    generatedata(n, gen) = gen.(randn(n)) # uses broadcast for some function `gen`
     
     f(x) = x^2 # simple square function 
     data = generatedata(5, f) # applies f
 
 Whether this example is better or worse than the previous version depends on how it is used
 
-High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or confusing, but Julia enables you to use these techniques **with no performance overhead**
+High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or more confusing, but Julia enables you to use these techniques **with no performance overhead**
 
 For this particular case, the clearest and most general solution is probably the simplest
 
@@ -385,7 +385,7 @@ While broadcasting above superficially looks like vectorizing functions in MATLA
 
 The other additional function ``plot!`` adds a graph to the existing plot
 
-This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
+This follows a general convention in Julia, where a function that modifies the arguments or a global state has a ``!`` at the end of its name
 
 
 A Slightly More Useful Function
