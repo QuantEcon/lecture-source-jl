@@ -229,9 +229,9 @@ Like all code blocks in Julia, the end of the ``for`` loop code block (which is 
 
 The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
 
-The index variable is looped over for all integers from ``1:n``--but this does not actually create a vector of those indices
+The index variable is looped over for all integers from ``1:n`` -- but this does not actually create a vector of those indices
 
-Instead, it creates an **iterator** that is looped over --- in this case the **range** of integers from ``1`` to ``n``
+Instead, it creates an **iterator** that is looped over -- in this case the **range** of integers from ``1`` to ``n``
 
 While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear
 
@@ -279,9 +279,9 @@ Approximately equal, typed with ``\approx<TAB>``, is the appropriate way to comp
 User-Defined Functions
 ----------------------------
 
-For the sake of the exercise, let's define  go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+For the sake of the exercise, let's go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
 
-To make things more interesting, instead of directly plotting the draws from the distribution, lets plot the square of the draws
+To make things more interesting, instead of directly plotting the draws from the distribution, let's plot the squares of these draws
 
 .. code-block:: julia
 
