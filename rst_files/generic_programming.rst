@@ -420,35 +420,37 @@ This is the power of generic programming in general, and Julia in particular: yo
 
 Number, Real, and Algebraic Structures
 =======================================
+Define two binary functions,  :math:`+` and :math:`\cdot`, called addition and multiplication -- although the operators can be applied to data structures much more abstract than a ``Real``
 
-In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_\(mathematics\)>`_ is a set with two binary operators (:math:`+` and :math:`\cdot`, called the additive and multiplicative operators) where there is an
-* additive operator is associative and commutative
-* multiplicative operator is associative and and distributive with respect to the additive operator
-* additive identity element, usually denoted ``0`` such that :math:`a + 0 = a` for any :math:`a` in the set
-* additive inverse of each element, i.e. :math:`-a` such that :math:`a + (-a) = 0`
-* multiplicative identity element, usually denoted ``1`` such that :math:`a \cdot 1 = a`
+In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_\(mathematics\)>`_ is a set with associated additive and multiplicative operators where
 
-This is skipping over a few other key parts of the definition, but it is also useful to say what is not needed
-* A total or partial ordering is not required (i.e. there does not need to be any meaningful ``<`` operator defined)
-* A multiplicative inverse is not required
+    * the additive operator is associative and commutative
+    * the multiplicative operator is associative and and distributive with respect to the additive operator
+    * there is an additive identity element,  denoted :math:`0`, such that :math:`a + 0 = a` for any :math:`a` in the set
+    * there is an additive inverse of each element, denoted :math:`-a`, such that :math:`a + (-a) = 0`
+    * there is a multiplicative identity element, denoted :math:`1`, such that :math:`a \cdot 1 = a = 1 \cdot a`
+    * a total or partial ordering is **not** required (i.e. there does not need to be any meaningful :math:`<` operator defined)
+    * a multiplicative inverse is **not** required
 
-This algebraic structure provides motivation for the abstract ``Number`` type in Julia
+While this skips over some parts of the mathematical definition, this algebraic structure provides motivation for the abstract ``Number`` type in Julia
 
-**Remark** We use motivation here because they are not formally connected and the mapping is imperfect
+    * **Remark** We use the term "motivation" because they are not formally connected and the mapping is imperfect
+    * The main difficulty when dealing with numbers that can be concretely created on a computer is that the requirement that the operators are closed in the set are difficult to ensure (e.g. floating points have finite numbers of bits of information)
 
-* The main difficulty when dealing with numbers that can be concretely created on a computer is that the closure requirements are difficult to ensure (e.g. floating points have finite numbers of bits of information)
+Let ``typeof(a) = typeof(b) = T <: Number``, then under an informal definition of the **generic interface** for ``Number`` the following must be defined
 
-Let ``typeof(a) = typeof(b) = T <: Number``, then under an implicit definition of the **generic interface** for ``Number`` the following must be defined
-* the additive operator: ``a + b``
-* the multiplicative operator: ``a * b``
-* an additive inverse operator: ``-a``
-* an inverse operation for addition ``a - b = a + (-b)``
-* an additive identity: ``zero(T)`` or ``zero(a)`` for convenience
-* a multiplicative identity: ``one(T)`` or ``one(a)`` for convenience
+    * the additive operator: ``a + b``
+    * the multiplicative operator: ``a * b``
+    * an additive inverse operator: ``-a``
+    * an inverse operation for addition ``a - b = a + (-b)``
+    * an additive identity: ``zero(T)`` or ``zero(a)`` for convenience
+    * a multiplicative identity: ``one(T)`` or ``one(a)`` for convenience
 
-The core of generic programming is that, given the knowledge that a value is of type ``Number``, we can write to that generic interface
+The core of generic programming is that, given the knowledge that a value is of type ``Number``, we can design algorithms using any of these functions and not concern ourselves with the particular concrete type 
 
-To demonstrate these for a complex number or a big integer (i.e., two types other than the standard ``Float64`` ``Int64`` you may associate with numbers)
+Furthermore, that generality in designing algorithms comes with no compromises on performance compared to carefully designed algorithms written for that particular type
+
+To demonstrate this for a complex number, where ``Complex{Float64} <: Number``
 
 .. code-block:: julia
 
@@ -463,6 +465,8 @@ To demonstrate these for a complex number or a big integer (i.e., two types othe
     @show zero(a)
     @show one(a);
 
+ And for an arbitrary precision integer where ``BigInt <: Number`` (i.e., a different type than the``Int64`` you have worked with, but nevertheless a ``Number``)
+
 .. code-block:: julia
 
     a = BigInt(10)
@@ -476,23 +480,57 @@ To demonstrate these for a complex number or a big integer (i.e., two types othe
     @show zero(a)
     @show one(a);
 
-Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
-* a multiplicative inverse: :math:`a^{-1}`
-* an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
-* a (not strictly required) total ordering operation: :math:`a < b`
+This allows us to showcase further how different generic packages compose
 
-where the  `total ordering <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_  operation would fulfill the requirements for a Totally Ordered Field
+The ``Complex`` numbers require some sort of storage for their underlying real and imaginary parts, which is itself left generic
+
+This data structure is defined to work with any type ``<: Number``, and is parameterized (e.g. ``Complex{Float64}`` is a complex number storing the imaginary and real parts in ``Float64``)
+
+.. code-block:: julia 
+
+    x = 4.0 + 1.0im
+    @show x, typeof(x)
+
+    xbig = BigFloat(4.0) + 1.0im
+    @show xbig, typeof(xbig);
+
+The implementation of the ``Complex`` numbers use the underlying operations of storage type, so as long as ``+, *, `` etc. are defined -- as they should be for any ``Number`` -- the complex operation can be defined 
+
+That is, the implementation of ``+`` looks something like
+
+.. code-block:: julia
+    :class: no-execute
+
+    function +(z::Complex, w::Complex)
+        return (real(z) + real(w)) + (imag(z) + imag(w))*im
+    end
+
+The ``real(z)`` and ``imag(z)`` returns the associated components of the complex number in the underlying storage type
+
+Those in turn are written to carefully use operations defined for any ``Number`` (i.e. ``+`` but not ``<``, since it is not part of the generic number interface)
+ 
+Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
+
+    * a multiplicative inverse: :math:`a^{-1}`
+    * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
+
+Furthermore, we will make it a `Total Ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ Field with
+
+    * a total ordering binary operator: :math:`a < b`
 
 This type gives some motivation for the operations and properties of the ``Real`` type
 
-Of course, ``Complex{Float64} <: Number`` but not ``Real``, which makes sense since those operations are not defined for the basic Complex number type in mathematics
+Of course, ``Complex{Float64} <: Number`` but not ``Real`` -- since the ordering is not defined for the a complex number in mathematics
 
 These operations are implemented in any subtype of ``Real`` through
-* the multiplicative inverse: ``inv(a)``
-* the multiplicative inverse operation: ``a / b = a * inv(b)``
-* an ordering ``a < b``
 
-To demonstrate with the ``Rational`` type
+    * the multiplicative inverse: ``inv(a)``
+    * the multiplicative inverse operation: ``a / b = a * inv(b)``
+    * an ordering ``a < b``
+
+We have already shown these with the ``Float64`` and ``BigFloat``
+
+To show this for the ``Rational`` number type, where ``a//b`` constructs a rational number :math:`\frac{a}{b}`
 
 .. code-block:: julia
 
@@ -506,15 +544,18 @@ To demonstrate with the ``Rational`` type
     @show a < b;
 
 **Remark** Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular
-* ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
-* However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
-* This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e. it can be independent of the type hierarchy)
 
-Do not think of the break in the connection between the underlying algebraic structures and the code as a failure of the language or design, but rather that the underlying algorithms for use on a computer do not perfectly fit the algebraic structures in this instance
+    * ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
+    * However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
+    * This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e. it can be independent of the type hierarchy)
 
-Moving further down the tree of types provides more operations, which start to become more tied to the computational implementation than the mathematics
+Do not think of the break in the connection between the underlying algebraic structures and the code as a failure of the language or design
 
-For example, floating point numbers all have a machine precision below which there is no way to further differentiate numbers
+Rather, the underlying algorithms for use on a computer do not perfectly fit the algebraic structures in this instance
+
+Moving further down the tree of types provides more operations more directly tied to the computational implementation than abstract algebra
+
+For example, floating point numbers have a machine precision, below which numbers become indistinguishable due to lack of sufficient "bits" of information
 
 .. code-block:: julia
 
@@ -545,19 +586,16 @@ That is, for any values where ``typeof(x) <: Real`` and ``typeof(y) <: Real``, t
 
 We know that ``<`` is defined for the types because it is part of the informal interface for the ``Real`` abstract type
 
-Note that this is not defined for ``Number`` because not all ``Number`` types have the ``<`` operator defined (e.g. ``Complex``)
+Note that this is not defined for ``Number`` because not all ``Number`` types have the ``<`` ordering operator defined (e.g. ``Complex``)
 
-Of course, in order to generate fast code,
+In order to generate fast code, the implementation details may define specialized versions of these operations
 
 .. code-block:: julia
 
     isless(1.0, 2.0)  # Applied to two floats
-
-.. code-block:: julia
-
     @which isless(1.0, 2.0)
 
-Note that the reason  ``Float64 <: Real``
+Note that the reason  ``Float64 <: Real`` calls this implementation rather than the one given above, is that ``Float64 <: Real``, and Julia chooses the most specialized implementation for each function
 
 
 Functions, and Function-Like Types
@@ -565,7 +603,7 @@ Functions, and Function-Like Types
 
 Another common example of the separation between data structures and algorithms is the use of functions
 
-Syntactically, we should consider a univariate "function" any ``f`` that can call an argument ``x`` as ``f(x)`` for a general ``x``
+Syntactically, a univariate "function" is any ``f`` that can call an argument ``x`` as ``f(x)``
 
 For example, we can use a standard function
 
