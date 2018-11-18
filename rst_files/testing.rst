@@ -750,7 +750,7 @@ In particular, within your package you should have two functions
 * ``newtonroot(f, f′; x₀, tol = 1E-7, maxiter = 1000)``
 * ``newtonroot(f; x₀, tol = 1E-7, maxiter = 1000)``
 
-Where the second function one uses Automatic Differentiation to call the first.
+Where the second function uses Automatic Differentiation to call the first.
 
 The package should include
 * implementations of those functions in the ``/src`` directory
