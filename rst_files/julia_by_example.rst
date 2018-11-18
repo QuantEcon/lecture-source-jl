@@ -51,7 +51,7 @@ Set Up
 
 We assume that you've worked your way through :doc:`our getting started lecture <getting_started>` already
 
-In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon 
+In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon 
 notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
 
@@ -60,7 +60,7 @@ Other References
 
 The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/stable/>`_
 
-The manual is thoughtfully written but also quite dense (and somewhat evangelical)
+The manual is thoughtfully written but is also quite dense (and somewhat evangelical)
 
 The presentation in this and our remaining lectures is more of a tutorial style based around examples
 
@@ -81,7 +81,7 @@ process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :mat
 Introduction to Packages
 --------------------------
 
-The first step is to activate a project environment, which are encapsulated by ``Project.toml`` and ``Manifest.toml`` files
+The first step is to activate a project environment, which is encapsulated by ``Project.toml`` and ``Manifest.toml`` files
 
 There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
 
@@ -112,7 +112,7 @@ After the installation and activation, ``using`` provides a way to say that a pa
 Using Functions from a Package
 --------------------------------
 
-Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution mean 0 and variance 1 if given no parameters
+Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution with mean 0 and variance 1 if given no parameters
 
 .. code-block:: julia
 
@@ -141,7 +141,7 @@ The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries
 
 The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings
 
-The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution mean 0 and variance 1
+The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution with mean 0 and variance 1
 
 Arrays
 --------
@@ -962,14 +962,14 @@ Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-de
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
-#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
+#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept arguments ``f, f_prime, x_0, tolerance, maxiter``
 
 #.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
 
 Exercise 8(b)
 ---------------
 
-For those impatient to use more advanced features of Julia, implement a version where Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
+For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
 
 .. code-block:: julia
 
@@ -1036,14 +1036,14 @@ Exercise 2
 Exercise 3
 ----------
 
-Consider the circle of diameter 1 embedded in the unit square
+Consider a circle with diameter 1 embedded in a unit square
 
 Let :math:`A` be its area and let :math:`r = 1/2` be its radius
 
 If we know :math:`\pi` then we can compute :math:`A` via
 :math:`A = \pi r^2`
 
-But here the point is to compute :math:`\pi`, which we can do by
+But the point here is to compute :math:`\pi`, which we can do by
 :math:`\pi = A / r^2`
 
 Summary: If we can estimate the area of the unit circle, then dividing
@@ -1094,7 +1094,7 @@ Exercise 4
     println("\npayoff = $payoff")
 
 
-We can simplify this somewhat using the **ternary operator**. Here's
+We can simplify this somewhat using the **ternary operator**. Here are
 some examples
 
 .. code-block:: julia
@@ -1152,7 +1152,7 @@ Exercise 6
 
     αs = [0.0, 0.8, 0.98]
     n = 200
-    p = plot() #Naming a plot to add to
+    p = plot() # naming a plot to add to
 
     for α in αs
         x = zeros(n + 1)
@@ -1167,7 +1167,7 @@ Exercise 6
 Exercise 7: Hint
 -----------------
 
-As a hint, notice the following pattern for finding the number of draws of a uniform random number until below a given threshold
+As a hint, notice the following pattern for finding the number of draws of a uniform random number until it is below a given threshold
 
 .. code-block:: julia
 
