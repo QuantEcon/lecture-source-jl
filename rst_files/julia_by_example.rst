@@ -853,7 +853,7 @@ The `binomial random variable <https://en.wikipedia.org/wiki/Binomial_distributi
 * each trial succeeds with probability :math:`p`
 
 Using only ``rand()`` from the set of Julia's built-in random number
-generators (not the Distributions package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`
+generators (not the ``Distributions`` package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`
 
 Hint: If :math:`U` is uniform on :math:`(0, 1)` and :math:`p \in (0,1)`, then the expression ``U < p`` evaluates to ``true`` with probability :math:`p`
 
@@ -871,7 +871,7 @@ Your hints are as follows:
 
 * If :math:`U` is a bivariate uniform random variable on the unit square :math:`(0, 1)^2`, then the probability that :math:`U` lies in a subset :math:`B` of :math:`(0,1)^2` is equal to the area of :math:`B`
 
-* If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
+* If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets larger, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
 * For a circle, area = π * :math:`radius^2`
 
@@ -938,7 +938,7 @@ Take a random walk, starting from :math:`x_0 = 1`
 * The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
 * For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`
 
-Start :math:`\sigma = 0.2, \alpha = 1.0`
+Start with :math:`\sigma = 0.2, \alpha = 1.0`
 
 1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks -- to a :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
@@ -950,7 +950,7 @@ Exercise 8(a)
 
 This exercise is more challenging
 
-The root of a univariate function is :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
+The root of a univariate function :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
 
 One solution method to find local roots of smooth functions is called Newton's method
 
