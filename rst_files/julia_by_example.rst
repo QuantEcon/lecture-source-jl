@@ -323,7 +323,7 @@ Let us make this example slightly better by "remembering" that ``randn`` can ret
 
 While better, the looping over the ``i`` index to square the results is difficult to read
 
-Instead of looping, we can instead **broadcast** the ``^2`` square function over a vector using a ``.``
+Instead of looping, we can **broadcast** the ``^2`` square function over a vector using a ``.``
 
 To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
 
