@@ -196,7 +196,7 @@ Sometimes, however, we want to not only inspect what happened before, but go bac
 Working across Machines
 --------------------------------------
 
-Oftentimes, you will want to work on the same project across multiple machines (e.g., a home laptop and a lab workstation)
+Generally, you want to work on the same project but across multiple machines (e.g., a home laptop and a lab workstation)
 
 The key is to push changes from one machine, and then to pull changes from the other machine 
 
