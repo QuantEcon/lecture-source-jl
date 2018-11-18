@@ -8,9 +8,9 @@ Git, GitHub, and Version Control
 
 Co-authored with Arnav Sood
 
-An essential part of modern software engineering is using version control
+An essential part of modern software engineering is using version control.
 
-We use version control because 
+We use version control because: 
 
 * Not all iterations on a file are perfect, and you may want to revert changes
 * We want to be able to see who has changed what and how 
@@ -19,7 +19,7 @@ We use version control because
 * Version control is an essential part of creating reproducible research
 
 
-In this lecture, we'll discuss how to use Git and GitHub
+In this lecture, we'll discuss how to use Git and GitHub.
 
 .. contents:: :depth: 2
 
@@ -74,65 +74,65 @@ Basic Objects
 Repositories
 ------------------------
 
-The fundamental object in GitHub is a *repository* (or "repo.") This is the master directory for a project 
+The fundamental object in GitHub is a *repository* (or "repo."). This is the master directory for a project.
 
 One example of a repo is the QuantEcon `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ package 
 
-On the machine, a repo is a normal directory, along with a subdirectory called ``.git`` which contains the history of changes 
+On the machine, a repo is a normal directory, along with a subdirectory called ``.git`` which contains the history of changes. 
 
 Commits
 ----------------------
 
-GitHub stores history as a sequence of changes to text, called *commits* 
+GitHub stores history as a sequence of changes to text, called *commits*. 
 
-Here is an example of a commit, which revises the style guide in a QuantEcon repo (`link <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92/>`_)
+Here is an example of a commit, which revises the style guide in a QuantEcon repo (`link <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92/>`_).
 
-In particular, commits have the following features
+In particular, commits have the following features:
 
 * An ID (formally, an "SHA-1 hash")
 * Content (i.e., a before and after state)
 * Metadata (author, timestamp, commit message, etc.)
 
-It is crucial to remember that commits represent differences in text, as opposed to repository states 
+It is crucial to remember that commits represent differences in text, as opposed to repository states. 
 
-The ideal commit is small enough to be scanned by a human being in this window 
+The ideal commit is small enough to be scanned by a human being in this window. 
 
 Common Files 
 -----------------------------------------
 
-In addition, each GitHub repository typically comes with a few standard text files 
+In addition, each GitHub repository typically comes with a few standard text files: 
 
 * A ``.gitignore`` file, which lists files/extensions/directories that GitHub shouldn't try to track (e.g., LaTeX compilation byproducts)
 * A ``README.md`` file, which is a Markdown file which GitHub puts on the repository website 
 * A ``LICENSE.txt`` file, which describes the terms under which the repository's contents are made available 
 
-For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo linked above 
+For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo linked above. 
 
-Of these, the ``README.md`` is the most important, as GitHub will display it as `Markdown <https://guides.github.com/features/mastering-markdown/>`_ when accessing the repository online
+Of these, the ``README.md`` is the most important, as GitHub will display it as `Markdown. <https://guides.github.com/features/mastering-markdown/>`_ when accessing the repository online.
 
 .. _new_repo_workflow:
 
 Individual Workflow
 ====================================
 
-In this section, we'll describe how to use GitHub to version your own projects 
+In this section, we'll describe how to use GitHub to version your own projects. 
 
-Much of this will carry over to the collaborative section 
+Much of this will carry over to the collaborative section. 
 
 Creating a Repository 
 ---------------------------------
 
-In general, we will always want to make new repos using the following dropdown 
+In general, we will always want to make new repos using the following dropdown. 
 
 .. figure:: /_static/figures/git-makerepo.png
     :scale: 60%
 
-We can then configure repository options as such 
+We can then configure repository options as such: 
 
 .. figure:: /_static/figures/git-makerepo-full.png
     :scale: 60%
 
-In this case, we're making a public repo ``github.com/quantecon_user/example_repository``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
+In this case, we're making a public repo ``github.com/quantecon_user/example_repository``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts. 
 
 Cloning a Repository 
 ---------------------------------------
@@ -151,23 +151,23 @@ This dropdown gives us a few options
 Making and Managing Changes 
 -------------------------------------------
 
-Now that we have the repository, we can start working with it 
+Now that we have the repository, we can start working with it. 
 
-For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on 
+For example, let's say that we've amended the ``README.md`` (using our editor of choice), and also added a new file ``economics.jl`` which we're still working on. 
 
 Returning to GitHub Desktop, we should see something like 
 
 .. figure:: /_static/figures/git-desktop-commit.png
     :scale: 60%
 
-To select individual files for commit, we can use the check boxes to the left of each file 
+To select individual files for commit, we can use the check boxes to the left of each file. 
 
-Let's say you select only the README to commit. Going to the history tab should show you our change 
+Let's say you select only the README to commit. Going to the history tab should show you our change. 
 
 .. figure:: /_static/figures/git-desktop-commit2.png
     :scale: 60%
 
-The Julia file is unchanged 
+The Julia file is unchanged. 
 
 Pushing to the Server 
 --------------------------------
