@@ -54,18 +54,18 @@ Setup
 Git vs. GitHub vs. GitHub Desktop
 -----------------------------------
 
-To understand the relationship
+To understand the relationship:
 
 * Git is an infrastructure for versioning and merging files (it is notspecific to GitHub and does not even require an online server)
 * GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects
 * GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use
 
-Later, you may find yourself using alternatives
+Later, you may find yourself using alternatives:
 
 * GitHub is the market leader for open-source projects and Julia, but there are other options, e.g. `GitLab <https://about.gitlab.com/>`_ and `Bitbucket <https://bitbucket.org>`_
 * Instead of the GitHub Desktop, you may directly use the Git `command-line <version_control_commandline>`_ , `GitKraken <https://www.gitkraken.com/>`_, or use the Git functionality built into editors such as `Atom <https://atom.io/>`_ or `VS Code <https://code.visualstudio.com/>`_
 
-Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products
+Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products.
 
 
 Basic Objects 
