@@ -726,7 +726,7 @@ Another goal of testing is to make sure that code doesn't slow down significantl
 
 We can do this using tools provided by the ``BenchmarkTools.jl`` package 
 
-See the ``need for speed`` lecture for more details 
+See the :doc:`need for speed <need_for_speed>` lecture for more details 
 
 Additional Notes 
 =======================
