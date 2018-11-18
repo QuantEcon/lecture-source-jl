@@ -188,20 +188,24 @@ At that point, we can use the ``@show`` macro, which in turn calls ``show``
 
     @show myval;
 
-This is another example of using generic programming: any type with a ``show`` function works with the ``@show`` macro
+Here we see another example of generic programming: any type with a ``show`` function works with the ``@show``
+
+Layering of functions (e.g. ``@show`` calling ``show``) with a "fallback" implementation makes it possible for new types to be designed and only specialized where necessary
 
 
 Unlearning Object Oriented (OO) Programming (Advanced)
 ------------------------------------------------------------
 See `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types
 
-If you have never used programming languages such as C++, Java, Python, etc., then the type hierarchies above may seem unfamiliar and abstract -- but there is no need to read this section
+If you have never used programming languages such as C++, Java, and Python, then the type hierarchies above may seem unfamiliar and abstract
+
+In that case, keep an open mind that this discussion of abstract concepts will have practical consequences, but there is no need to read this section
 
 Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar
 
 **Don't be fooled!**
 
-The superficial similarity can lead to misuse: types are *not* just classes with poor encapsulation, and methods are *not* simply the equivalent to member functions with the order of arguments swapped
+The superficial similarity can lead to misuse: types are *not* classes with poor encapsulation, and methods are *not* the equivalent to member functions with the order of arguments swapped
 
 In particular, previous OO knowledge often leads people to write Julia code such as
 
@@ -237,24 +241,31 @@ You may think to yourself that the above code is similar to OO, except that you
 
 While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming
 
-It may be helpful to review the traditional pillars of OOP 
-* *`Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_:* In OO one develops a taxonomy of hierarchical "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
-* *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly controlled since the class manages its own state
-* *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_* Code reuse in OO is achieved through adding a new class to the tree and inheriting some of the behavior of the parent class.
-* *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
+.. It may be helpful to review the traditional pillars of OOP 
+.. * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_: In OO one develops a taxonomy of hierarchical .. "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
+.. * *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly .. controlled since the class manages its own state
+.. * *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_* Code reuse in OO is achieved through adding a new class to the tree and .. inheriting some of the behavior of the parent class.
+.. * *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the .. same function change its behavior given the particular type
 
 When programming in Julia
-* There will be no encapsulation or inheritance, most custom types you create will be immutable, and polymorphism will be fundamentally different
-* Abstraction is primarily achieved through keeping the data and algorithms that operate on them as orthogonal as possible -- in contrast to OOP
+* There is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
+* `Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_ is achieved without anything resembling OOP `inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_
+* `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
 * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
 * The looseness that accompanies keeping algorithms and data-structures as orthogonal as possible makes it easier to discover commonality in the design
 
 Iterative Design of Abstractions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As its essence, the design of generic software is that you will start with creating algorithms which are largely orthogonal to concrete types, and in the process you will discover commonality which leads to abstract types with informally defined functions operating on them
+As its essence, the design of generic software is that you will start with creating algorithms which are largely orthogonal to concrete types
 
-This design is in direct contrast to object-oriented design and analysis (`OOAD <https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design>`_), where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
+In the process, you will discover commonality which leads to abstract types with informally defined functions operating on them
+
+Given the abstract types and commonality, you the refine the algorithms as you really they are more limited or more general than you initially though
+
+This approach is in direct contrast to object-oriented design and analysis (`OOAD <https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design>`_)
+
+With that, where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
 
 In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the abstact types came later
 .. However,  we apologize in the example we confuse things somewhat by jumping to the axioms first for expositoin
@@ -262,11 +273,9 @@ In the examples that follow, we will show for exposition the hierarchy of types 
 Distributions
 =====================
 
-First, lets consider working with "distributions"
+First, consider working with "distributions"
 
-If we consider mathematical "distributions" that we will use in our algorithms, they may include (1) drawing random numbers for Monte-carlo methods; (2) using the pdf or cdf in various calculations
-
-In that sense, some code may be useful in distributions where a ``pdf`` is not necessarily defined or meaningful
+Algorithms using distributions might (1) drawing random numbers for Monte-Carlo methods; and (2) calculate the pdf or cdf -- if it is defined
 
 The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl` package
 
@@ -305,11 +314,11 @@ For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where :math:
 
 ..    # @show simulateprocess(0.0, d=Normal(0.2, 2.0)); #add example of something without pdf
 
-The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else
+The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for Monte-Carlo and Bayesian methods
 
-Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has certain functions we would expect to operate with it
+Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has other functions we can use for generic algorithms operating on distributions
 
-These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, maximum`` and a few others
+These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, maximum``, etc.
 
 .. code-block:: julia
 
@@ -331,9 +340,9 @@ These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, max
     @show maximum(d1)
     @show maximum(d2);
 
-You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_
+You could create your own ``Distributions{Univariate, Continuous}`` type by implementing those functions -- as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_
 
-If you fulfill all of the conditions of a particular interface, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
+If you fulfill all of the conditions of a particular interface, you can use algorithms from the present, past, and future  that are written for the abstract ``Distributions{Univariate, Continuous}`` type
 
 As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.jl>`_ package
 
@@ -343,9 +352,9 @@ As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.
     d = Normal(2.0, 1.0)
     plot(d) # note no other arguments!
 
-The ``plot`` function when applied to anything which is a subtype of ``Distributions{Univariate, Continuous}``, will display the ``pdf`` using the ``minimum`` and ``maximum`` applied to the value
+Calling ``plot`` on any subtype of ``Distributions{Univariate, Continuous}``, displays the ``pdf``and using ``minimum`` and ``maximum`` to determine the range
 
-To demonstrate this, lets create our own distribution type
+To demonstrate this, let's create our own distribution type
 
 .. code-block:: julia
 
@@ -356,7 +365,7 @@ To demonstrate this, lets create our own distribution type
     Distributions.pdf(d::OurTruncatedExponential, x) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
     Distributions.minimum(d::OurTruncatedExponential) = 0
     Distributions.maximum(d::OurTruncatedExponential) = d.xmax
-    # ... should implement all of them, but this was enough
+    # ... more to have a complete type
 
 To demonstrate this
 
@@ -366,7 +375,7 @@ To demonstrate this
     @show minimum(d), maximum(d)
     @show support(d) # why does this work?
 
-Curiously, you will note that the ``support`` function is operational, even though we did not provide one
+Curiously, you will note that the ``support`` function works, even though we did not provide one
 
 This is another example of the power of multiple dispatch and generic programming
 
@@ -377,11 +386,9 @@ In the background, the ``Distributions.jl`` package  has something like the foll
 
         Distributions.support(d::Distribution) = RealInterval(minimum(d), maximum(d))
 
-Hence, since ``OurTruncatedExponential <: Distribution``, and we implemented ``minimum`` and ``maximum``, calls to ``support`` gets this implementation
+Hence, since ``OurTruncatedExponential <: Distribution``, and we implemented ``minimum`` and ``maximum``, calls to ``support`` gets this implementation as a fallback
 
-Of course, while we should implement more of the func
-
-That turns out to be enough for us to use the ``StatPlots`` package
+These functions are enough to use the  ``StatPlots.jl`` package
 
 .. code-block:: julia
     
