@@ -393,9 +393,9 @@ A Slightly More Useful Function
 
 Let's make a slightly more useful function
 
-This function will be passed a choice of probability distribution and respond by plotting a histogram of observations
+This function will be passed in a choice of probability distribution and respond by plotting a histogram of observations
 
-In doing so we'll make use of the Distributions package, which we assume was instantiated above with the project
+In doing so we'll make use of the ``Distributions`` package, which we assume was instantiated above with the project
 
 
 Here's the code
@@ -416,7 +416,7 @@ Here's the code
 Let's have a casual discussion of how all this works while leaving technical details for later in the lectures
 
 First, ``lp = Laplace()`` creates an instance of a data type defined
-in the Distributions module that represents the Laplace distribution
+in the ``Distributions`` module that represents the Laplace distribution
 
 The name ``lp`` is bound to this value
 
@@ -452,7 +452,7 @@ depending on the particular arguments that they're passed
 
 Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value
 
-The compiler knows which function definition to apply in a given setting by looking at the types of the values the function is called on
+The compiler knows which function definition to apply to in a given setting by looking at the types of the values the function is called on
 
 In Julia these alternative versions of a function are called **methods**
 
@@ -538,13 +538,13 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
     end
     println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
 
-The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or inside of a function
+The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or the inside of a function
 
 Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values
 
-The other new function is the ``println`` with the string interpolation, which splices a value of an expression or variable prefixed by ``$`` into a string
+The other new function is the ``println`` with the string interpolation, which splices the value of an expression or variable prefixed by ``$`` into a string
 
-An alternative approach is to use a ``for`` loop, and checking for convergence in each iteration
+An alternative approach is to use a ``for`` loop, and check for convergence in each iteration
 
 .. code-block:: julia
 
@@ -583,7 +583,7 @@ The first problem with this setup is that it depends on being sequentially run -
             v_new = p + β * v_old # the f(v) map
             normdiff = norm(v_new - v_old)
             
-            #Replace and continue
+            # replace and continue
             v_old = v_new
             iter = iter + 1
         end
@@ -601,7 +601,7 @@ The first problem with this setup is that it depends on being sequentially run -
     println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
-While better, there are still improvements
+While better, there could still be improvements
 
 Passing a Function
 --------------------
@@ -640,7 +640,7 @@ A key feature of languages like Julia, is the ability to efficiently handle func
     println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
-Much closer, but there are still hidden bugs if the user orders the settings or return types wrong
+Much closer, but there are still hidden bugs if the user orders the settings or returns types wrong
 
 Named Arguments and Return Values
 -----------------------------------
@@ -649,7 +649,7 @@ To enable this, Julia has two features:  named function parameters, and named tu
 
 .. code-block:: julia
 
-     # good style
+    # good style
     function fixedpointmap(f; iv, tolerance=1E-7, maxiter=1000)
         # setup the algorithm
         x_old = iv
