@@ -456,14 +456,19 @@ The compiler knows which function definition to apply in a given setting by look
 
 In Julia these alternative versions of a function are called **methods**
 
-Example: Variations on Fixed-Points
+Example: Variations on Fixed Points
 ================================================
 
-For our second example, we will start with a simple example of determining fixed-points of a function
+Take a mapping :math:`f : X \to X` for some set :math:`X`
+
+
+If there exists an :math:`x^* \in X` such that :math:`f(x^*) = x^*`, then :math:`x^*`: is called a "fixed point" of :math:`f`
+
+For our second example, we will start with a simple example of determining fixed points of a function
 
 The goal is to start with code in a MATLAB style, and move towards a more **Julian** style with high mathematical clarity
 
-Fixed-Point Maps
+Fixed Point Maps
 ----------------------------
 
 Consider the simple equation, where the scalars :math:`p,\beta` are given, and  :math:`v` is the scalar we wish to solve for
@@ -479,13 +484,13 @@ Rearrange the equation in terms of a map :math:`f(x) : \mathbb R \to \mathbb R`
 .. math::
     :label: fixed_point_map
 
-    v = f(v)\quad
+    v = f(v)
 
 where
 
 .. math::
 
-    f(v) := p + \beta v\quad
+    f(v) := p + \beta v
  
 
 Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem
@@ -498,7 +503,7 @@ One approach to finding a fixed point of :eq:`fixed_point_map` is to start with 
 .. math::
     :label: fixed_point_naive
 
-    v^{n+1} = f(v^n)\quad
+    v^{n+1} = f(v^n)
 
 For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\beta)` when :math:`|\beta| < 1` by iterating backwards and taking :math:`n\to\infty`
 
@@ -674,7 +679,7 @@ Furthermore, a default value may be enabled -- so the named parameter ``iv`` is 
 
 The return type of the function also has named fields, ``value, normdiff,`` and ``iter`` -- all accessed intuitively using ``.``
 
-To show the flexibilty of this code, we can use it to find a fixed-point of the non-linear logistic equation, :math:`x = f(x)` where :math:`f(x) := r x (1-x)`
+To show the flexibilty of this code, we can use it to find a fixed point of the non-linear logistic equation, :math:`x = f(x)` where :math:`f(x) := r x (1-x)`
 
 .. code-block:: julia
 
@@ -703,7 +708,7 @@ But best of all is to avoid writing code altogether
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
 
 
-The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed-point iteration scheme above
+The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed point iteration scheme above
 
 Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]``
 
