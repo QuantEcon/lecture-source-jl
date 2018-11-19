@@ -176,7 +176,7 @@ Sometimes, Juno will fail to find the Julia executable (say, if it's installed s
 
 To do this
 1. ``Ctrl-,`` to get `Settings` pane, and select the `Packages` tab
-2. Type in ``julia-client`` and choos `Settings`
+2. Type in ``julia-client`` and choose `Settings`
 3. Find the `Julia Path`, and fill it in with the location of the Julia binary
 
     * To find, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
