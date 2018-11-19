@@ -45,7 +45,7 @@ To add the file:
 
 2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
 
-3. Either download the file `startup.jl </_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
+3. Either download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
 
 .. include:: /_static/includes/startup.jl.raw
 
