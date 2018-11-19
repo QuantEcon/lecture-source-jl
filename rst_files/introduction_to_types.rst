@@ -572,7 +572,8 @@ A few simple programming patterns ensure that this is possible
         
         g2(x)
 
-* Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``
+* Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``. This is important when using Multiple Dispatch given the different input types the function can call
+
 
     .. code-block:: julia
 
