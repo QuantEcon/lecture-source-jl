@@ -141,9 +141,9 @@ More details on packages are explained in a `later lecture <tools_editors>`_
 Notebook Basics
 ------------------
 
-Notice that in the previous figure the cell is surrounded by a green border
+Notice that in the previous figure the cell is surrounded by a blue border
 
-This means that the cell is in *edit mode*
+This means that the cell is selected, and double-clicking will place it in edit mode
 
 As a result, you can type in Julia code and it will appear in the cell
 
@@ -224,6 +224,8 @@ Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
 You'll see something like this (although the style of plot depends on your
 installation --- more on this later)
+
+**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to precompile everything
 
 .. figure:: /_static/figures/nb4_julia.png
    :scale: 70%
@@ -382,7 +384,7 @@ If you have access to a cloud-based solution for Jupyter, then that is typically
 * Students: ask your department if these resources are available 
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for 
   help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes
-* `JuliaBox <www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
+* `JuliaBox <http://www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
 
 .. * JuliaBox (currently having , once it's working. 
 ..  For example, many Canadian students have access to syzygy.ca
