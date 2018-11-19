@@ -114,7 +114,7 @@ Then, drag and drop your folder from your ``~/.julia/dev`` directory to GitHub D
 
 Click the "publish branch" button to upload your files to GitHub
 
-If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
+If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
 
 .. figure:: /_static/figures/testing-git2.png
     :scale: 60%
