@@ -366,7 +366,7 @@ Exercise 3
 As best you can, reproduce :ref:`the figure showing the optimal policy <career_opt_pol>`
 
 Hint: The ``get_greedy()`` method returns a representation of the optimal
-policy where values 1, 2 and 3 correspond to "stay put", "new job" and "new life" respectively.  Use this and ``contourf`` from ``PyPlot.jl`` to produce the different shadings.
+policy where values 1, 2 and 3 correspond to "stay put", "new job" and "new life" respectively. Use this and the plots functions (e.g., ``contour, contour!``) to produce the different shadings.
 
 Now set ``G_a = G_b = 100`` and generate a new figure with these parameters.  Interpret.
 
