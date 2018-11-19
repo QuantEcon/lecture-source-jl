@@ -330,6 +330,7 @@ which provides a static HTML representations of notebooks
 
 .. Notebook can be downloaded as an ``ipynb`` file by clicking on the download icon at the top right of its page
 
+QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ website, where you can upload and share your notebooks with other economists and the QuantEcon community
 
 The REPL
 ------------
