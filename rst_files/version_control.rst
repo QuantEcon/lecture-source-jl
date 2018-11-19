@@ -44,7 +44,7 @@ Setup
 
     1. Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
 
-    2. Run the following
+    2. Running the following
 
         .. code-block:: none
 
