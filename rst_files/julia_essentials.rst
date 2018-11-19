@@ -836,7 +836,7 @@ The broadcasting notation is not simply vectorization, as it is able to "fuse" m
     z = similar(y)
     z .= x .+ y .- sin.(x) # generates efficient code instead of many temporaries
 
-A convenience macro for adding broadcasting on every function call is `@.`
+A convenience macro for adding broadcasting on every function call is ``@.``
 
 .. code-block:: julia
 
@@ -884,9 +884,8 @@ For/while loops and global variables in Jupyter vs. the REPL:
 * The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information on using globals outside of Jupyter,
- `see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_, 
-though these rules are likely to change in interactive modes in Julia 1.1
+For more information on using globals outside of Jupyter, 
+(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to change in interactive modes in Julia 1.1 
 
 Functions
 ---------------
