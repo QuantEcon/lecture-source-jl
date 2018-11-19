@@ -95,7 +95,7 @@ functions
     size(a)
 
 
-The syntax ``(3,)`` displays a tuple containing one element --- the size along the one dimension that exists
+The syntax ``(3,)`` displays a tuple containing one element -- the size along the one dimension that exists
 
 Array vs Vector vs Matrix
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -115,11 +115,11 @@ To see this, we can create a column vector and row vector more directly
 
 .. code-block:: julia
 
-    [1, 2, 3] == [1; 2; 3]  # Both column vectors
+    [1, 2, 3] == [1; 2; 3]  # both column vectors
 
 .. code-block:: julia
 
-    [1 2 3]  # A row vector is 2-dimensional
+    [1 2 3]  # a row vector is 2-dimensional
 
 As we've seen, in Julia we have both
 
@@ -182,13 +182,13 @@ If you need more control over the types, fill with a non-floating point
 
 .. code-block:: julia
 
-    fill(0, 2, 2)  # Fills with 0, not 0.0
+    fill(0, 2, 2)  # fills with 0, not 0.0
     
 Or fill with a boolean type
 
 .. code-block:: julia
 
-    fill(false, 2, 2)  # Produces a boolean matrix
+    fill(false, 2, 2)  # produces a boolean matrix
 
 
 
@@ -235,14 +235,14 @@ We can also use ``similar`` to pre-allocate a vector with a different size, but 
 .. code-block:: julia
 
     x = [1, 2, 3]
-    y = similar(x, 4)  # Make a vector of length 4
+    y = similar(x, 4)  # make a vector of length 4
 
 Which generalizes to higher dimensions
 
 .. code-block:: julia
 
     x = [1, 2, 3]
-    y = similar(x, 2, 2)  # Make a 2x2 matrix
+    y = similar(x, 2, 2)  # make a 2x2 matrix
 
 Manual Array Definitions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -257,7 +257,7 @@ In two dimensions we can proceed as follows
 
 .. code-block:: julia
 
-    a = [10 20 30 40]  # Two dimensional, shape is 1 x n
+    a = [10 20 30 40]  # two dimensional, shape is 1 x n
 
 
 .. code-block:: julia
@@ -320,12 +320,12 @@ For 2D arrays the index syntax is straightforward
 
 .. code-block:: julia
 
-    a[1, :]  # First row
+    a[1, :]  # first row
 
 
 .. code-block:: julia
 
-    a[:, 1]  # First column
+    a[:, 1]  # first column
 
 
 Booleans can be used to extract elements
@@ -418,7 +418,7 @@ Similarly
 .. code-block:: julia
 
     a = [1 2; 3 4]
-    b = a'         # Transpose
+    b = a'   # transpose
     typeof(b)
 
 
@@ -428,8 +428,8 @@ To copy into a dense array
 
     a = [1 2; 3 4]
     b = a' # transpose
-    c = Matrix(b)      # Convert to matrix
-    d = collect(b)     # Also `collect` works on any iterable
+    c = Matrix(b)  # convert to matrix
+    d = collect(b) # also `collect` works on any iterable
     c == d
 
 Special Matrices
@@ -448,7 +448,7 @@ As you can see, the type is ``2×2 Diagonal{Float64,Array{Float64,1}}``, which i
 
 The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations
 
-In every important sense, matrix types such as ``Diagonal`` are just as much a "matrix" as the dense matrices we have using (see the `introduction to types lecture <introduction_to_types>`_ for more))
+In every important sense, matrix types such as ``Diagonal`` are just as much a "matrix" as the dense matrices we have using (see the `introduction to types lecture <introduction_to_types>`_ for more)
 
 .. code-block:: julia
 
@@ -461,14 +461,14 @@ Another example is in the construction of an identity matrix, where a naive impl
 .. code-block:: julia
 
     b = [1.0 2.0; 3.0 4.0]
-    b - Diagonal([1.0, 1.0])  # Poor style, inefficient code
+    b - Diagonal([1.0, 1.0])  # poor style, inefficient code
 
 Whereas you should instead use
 
 .. code-block:: julia
 
     b = [1.0 2.0; 3.0 4.0]
-    b - I  # Good style, and note the lack of dimensions of I
+    b - I  # good style, and note the lack of dimensions of I
 
 While the implementation of ``I`` is a little abstract to go into at this point, a hint is: 
 
@@ -486,16 +486,16 @@ As discussed above, in Julia, the left hand side of an assignment is a "binding"
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x  # Name `y` binds to whatever value `x` bound to
+    y = x  # name `y` binds to whatever value `x` bound to
 
 The consequence of this, is that you can re-bind that name 
 
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x        # Name `y` binds to whatever `x` bound to
+    y = x        # name `y` binds to whatever `x` bound to
     z = [2 3 4]
-    y = z        # Only changes name binding, not value!
+    y = z        # only changes name binding, not value!
     @show (x, y, z);
 
 What this means is that if ``a`` is an array and we set ``b = a`` then ``a`` and ``b`` point to exactly the same data
@@ -505,9 +505,9 @@ In the above, suppose you had meant to change the value of ``x`` to the values o
 .. code-block:: julia
 
     x = [1 2 3]
-    y = x       # Name `y` binds to whatever `x` bound to
+    y = x       # name `y` binds to whatever `x` bound to
     z = [2 3 4]
-    y .= z      # Now dispatches the assignment of each element
+    y .= z      # now dispatches the assignment of each element
     @show (x, y, z);    
 
 Alternatively, you could have used ``y[:] = z``
@@ -519,7 +519,7 @@ First, define a simple function for a linear map
 .. code-block:: julia
 
     function f(x)
-        return [1 2; 3 4] * x  # Matrix * column vector
+        return [1 2; 3 4] * x  # matrix * column vector
     end
     
     val = [1, 2]
@@ -550,7 +550,7 @@ We can also see a common mistake, where instead of modifying the arguments, the 
 .. code-block:: julia
 
     function f(x)
-        return [1 2; 3 4] * x  # Matrix * column vector
+        return [1 2; 3 4] * x  # matrix * column vector
     end
     
     val = [1, 2]
@@ -576,7 +576,7 @@ Note that scalars are always immutable, such that
 
     x = 5
     # x .-= 2  # Fails!
-    x = x - 2  # Subtle difference - creates a new value and rebinds the variable
+    x = x - 2  # subtle difference - creates a new value and rebinds the variable
 
 
 In particular, there is no way to pass any immutable into a function and have it modified
@@ -586,10 +586,10 @@ In particular, there is no way to pass any immutable into a function and have it
     x = 2
     
     function f(x)
-        x = 3     # MISTAKE! Does not modify x, creates a new value!
+        x = 3     # MISTAKE! does not modify x, creates a new value!
     end
     
-    f(x)          # Cannot modify immutables in place
+    f(x)          # cannot modify immutables in place
     @show x;
 
 This is also true for other immutable types such as tuples, as well as some vector types
@@ -598,13 +598,13 @@ This is also true for other immutable types such as tuples, as well as some vect
 
     using StaticArrays
     xdynamic = [1, 2]
-    xstatic = @SVector [1, 2]  # Turns it into a highly optimized static vector
+    xstatic = @SVector [1, 2]  # turns it into a highly optimized static vector
 
     f(x) = 2x
     @show f(xdynamic)
     @show f(xstatic)
 
-    # Inplace version
+    # inplace version
     function g(x)
         x .= 2x
         return "Success!"
@@ -613,7 +613,7 @@ This is also true for other immutable types such as tuples, as well as some vect
     @show g(xdynamic)
     @show xdynamic;
     
-    # g(xstatic) # Fails, static vectors are immutable
+    # g(xstatic) # fails, static vectors are immutable
 
 Operations on Arrays
 ================================
@@ -631,8 +631,8 @@ already seen
     @show length(a)
     @show sum(a)
     @show mean(a)
-    @show std(a)      # Standard deviation
-    @show var(a)      # Variance
+    @show std(a)      # standard deviation
+    @show var(a)      # variance
     @show maximum(a)
     @show minimum(a)
     @show extrema(a)  # (mimimum(a), maximum(a))
