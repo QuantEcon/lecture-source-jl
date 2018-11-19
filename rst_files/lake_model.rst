@@ -230,7 +230,11 @@ Here's the code:
         return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
-    rate_steady_state(lm) = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5], inplace = false).zero
+    function rate_steady_state(lm) 
+        sol = ixedpoint(x -> lm.A_hat * x, [0.5, 0.5]).zero
+        converged(sol) || error("Failed to converge in $(result.iterations) iterations")
+        return sol
+    end 
 
     function simulate_stock_path(lm, X0, T)
         raw = [lm.A^t * X0 for t in 0:T-1]
