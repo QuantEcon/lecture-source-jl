@@ -39,11 +39,9 @@ First, we need to make sure that your GitHub account is set up with Travis CI an
 
 As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>_` if eligible
 
-Navigate to the `Travis website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials
+Navigate to the `travis-ci.com website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials
 
 If you get stuck, see the `Travis tutorial <https://docs.travis-ci.com/user/tutorial/>`_
-
-**NOTE** As of May 2018, Travis is deprecating the ``travis-ci.org`` website. All users should use ``travis-ci.com``
 
 CodeCov
 ^^^^^^^^^
