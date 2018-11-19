@@ -23,7 +23,7 @@ Markov chains are one of the most useful classes of stochastic processes, being
 
 You will find them in many of the workhorse models of economics and finance
 
-In this lecture we review some of the theory of Markov chains
+In this lecture, we review some of the theory of Markov chains
 
 We will also introduce some of the high quality routines for working with Markov chains available in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__
 
