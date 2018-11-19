@@ -1382,7 +1382,7 @@ With that said, consider the stochastic difference equation
 
 Here
 
-* :math:`X_t, b` and :math:`X_{t+1}` ar :math:`n \times 1`
+* :math:`X_t, b` and :math:`X_{t+1}` are :math:`n \times 1`
 
 * :math:`A` is :math:`n \times n`
 
@@ -1554,7 +1554,7 @@ Let's compute the asymptotic variance
     our_solution = compute_asymptotic_var(A, Σ)
 
 
-Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` function and check we get the same result
+Now let's do the same thing using QuantEcon's ``solve_discrete_lyapunov()`` function and check we get the same result
 
 
 .. code-block:: julia
