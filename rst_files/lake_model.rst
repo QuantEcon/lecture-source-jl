@@ -277,10 +277,10 @@ Let's run a simulation under the default parameters (see above) starting from :m
     gr(fmt=:png)
 
     lm = LakeModel()
-    N_0 = 150      # Population
-    e_0 = 0.92     # Initial employment rate
-    u_0 = 1 - e_0  # Initial unemployment rate
-    T = 50         # Simulation length
+    N_0 = 150      # population
+    e_0 = 0.92     # initial employment rate
+    u_0 = 1 - e_0  # initial unemployment rate
+    T = 50         # simulation length
 
     U_0 = u_0 * N_0
     E_0 = e_0 * N_0
@@ -347,9 +347,9 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 
     lm = LakeModel()
 
-    e_0 = 0.92     # Initial employment rate
+    e_0 = 0.92  # initial employment rate
     u_0 = 1 - e_0  # Initial unemployment rate
-    T = 50         # Simulation length
+    T = 50  # simulation length
 
     xbar = rate_steady_state(lm)
     x_0 = [u_0; e_0]
@@ -644,58 +644,64 @@ We will make use of code we wrote in the :doc:`McCall model lecture <mccall_mode
 
 .. code-block:: julia
 
-    # deps 
-    using Distributions, Expectations
+    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-    # a default utility function
-    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ)
-
-    # model constructor
-    McCallModel = @with_kw (α = 0.2,
-        β = 0.98, # discount rate
-        γ = 0.7,
-        c = 6.0, # unemployment compensation
-        σ = 2.0,
-        u = u, # utility function
-        w = range(10, 20, length = 60), # wage values
-        dist = BetaBinomial(59, 600, 400)) # distribution over wage values
-
-    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, iter = 2_000)
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
+                                iter = 2_000)
         # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
-        @unpack α, β, σ, c, γ, w, dist, u = mcm
-
+        @unpack α, β, σ, c, γ, w, dist, u = mcm 
+        
         # parameter validation
         @assert c > 0.0
-        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here
-
-        # necessary objects
-        u_w = u.(w, σ)
+        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here 
+        
+        # necessary objects 
+        u_w = u.(w, σ) 
         u_c = u(c, σ)
-        E = expectation(dist, w) # expectation operator for wage distribution
+        E = expectation(dist) # expectation operator for wage distribution
 
         # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
         function T(x)
             V = x[1:end-1]
             U = x[end]
             [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
-        end
+        end 
 
-        # value function iteration
+        # value function iteration  
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv; inplace = false, iterations = iter, xtol = tol).zero
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
         V = xstar[1:end-1]
         U = xstar[end]
-
-        # compute the reservation wage
+        
+        # compute the reservation wage 
         wbarindex = searchsortedfirst(V .- U, 0.0)
         if wbarindex >= length(w) # if this is true, you never want to accept
-            wbar = Inf
+            w_bar = Inf
         else
-            wbar = w[wbarindex] # otherwise, return the number
+            w_bar = w[wbarindex] # otherwise, return the number
         end
 
-        return (V = V, U = U, wbar = wbar)
-    end
+        # return a NamedTuple, so we can select values by name  
+        return (V = V, U = U, w_bar = w_bar) 
+    end 
+
+And we'll create the McCall objects 
+
+.. code-block:: julia
+
+    # a default utility function
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
+
+    # model constructor
+    McCallModel = @with_kw (α = 0.2, 
+        β = 0.98, # discount rate 
+        γ = 0.7, 
+        c = 6.0, # unemployment compensation 
+        σ = 2.0, 
+        u = u, # utility function 
+        w = range(10, 20, length = 60), # wage values
+        dist = BetaBinomial(59, 600, 400)) # distribution over wage values 
+
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
