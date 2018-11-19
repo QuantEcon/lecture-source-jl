@@ -172,7 +172,7 @@ The Julia file is unchanged
 Pushing to the Server 
 --------------------------------
 
-As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button atop the screen
+As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button at the top the screen
 
 The small "1^" to the right of the text indicates we have one commit to upload 
 
@@ -251,7 +251,7 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
+* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_
 
 .. figure:: /_static/figures/git-review.png
     :scale: 60%

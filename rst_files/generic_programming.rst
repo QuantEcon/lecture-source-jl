@@ -241,11 +241,11 @@ You may think to yourself that the above code is similar to OO, except that you
 
 While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming
 
-.. It may be helpful to review the traditional pillars of OOP 
-.. * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_: In OO one develops a taxonomy of hierarchical .. "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
-.. * *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly .. controlled since the class manages its own state
-.. * *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_* Code reuse in OO is achieved through adding a new class to the tree and .. inheriting some of the behavior of the parent class.
-.. * *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the .. same function change its behavior given the particular type
+It may be helpful to review the traditional pillars of OOP 
+* `Abstraction <https://goo.gl/m9aWoU>`_: In OO one develops a taxonomy of hierarchical "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
+* `Encapsulation <https://goo.gl/pCjLVU>`_: Most OO code has fully mutable classes, where access to the internals is tightly controlled since the class manages its own state
+* `Inheritance <https://goo.gl/XPFQwj>`_: Code reuse in OO is achieved through adding a new class to the tree and inheriting some of the behavior of the parent class.
+* `Polymorphism <https://goo.gl/oAbY9d>`_:  The abstract "is-a" relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
 
 When programming in Julia
 * There is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
@@ -276,7 +276,7 @@ First, consider working with "distributions"
 
 Algorithms using distributions might (1) drawing random numbers for Monte-Carlo methods; and (2) calculate the pdf or cdf -- if it is defined
 
-The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl` package
+The process of using concrete distributions in these sorts of applications led to the creation of the ``Distributions.jl`` package
 
 Lets examine the tree of types for a `Normal` distribution
 
@@ -285,7 +285,7 @@ Lets examine the tree of types for a `Normal` distribution
     using Distributions
     d1 = Normal(1.0, 2.0) # an example type to explore
     @show d1
-    show_supertypes(typeof(y))
+    show_supertypes(typeof(d1))
 
 The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions, chiefly the ability to draw a random number
 

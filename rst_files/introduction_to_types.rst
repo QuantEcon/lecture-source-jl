@@ -229,7 +229,7 @@ And the ``subtypes`` which gives a list of the available subtypes for any packag
 Deducing and Declaring Types
 =============================
 
-We will discuss this in detail in :doc:`a later lecture lecture <generic_programming>`, 
+We will discuss this in detail in :doc:`this lecture <generic_programming>`,
 but much of Julia's performance gains and generality of notation comes from its type system
 
 For example
@@ -691,7 +691,7 @@ The best resource is to carefully read other peoples code, but a few sources to 
 * `Julia Praxis Naming Guides <https://github.com/JuliaPraxis/Naming/tree/master/guides>`_
 * `QuantEcon Style Guide <https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md>`_ used in these lectures
 
-Now why would we emphasize naming as style as a crucial part of the lectures?
+Now why would we emphasize naming and style as a crucial part of the lectures?
 
 Because it is an essential tool for creating research that is 
 **reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_\(computer_science\)>`_
