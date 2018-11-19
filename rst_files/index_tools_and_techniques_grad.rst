@@ -1,6 +1,6 @@
 .. _tools_and_techniques:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***************************************
 Tools and Techniques

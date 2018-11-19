@@ -1,6 +1,6 @@
 .. _perm_income:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -526,7 +526,7 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
   function time_path2()
       w = randn(T+1)
       w[1] =  0.0
-      b = zeros(Float64, T+1)
+      b = zeros(T+1)
       for t=2:T+1
           b[t] = sum(w[1:t])
       end
@@ -558,8 +558,11 @@ The figure below shows the consumption paths of 250 consumers with independent i
 
 
 .. code-block:: julia
+    :class: test
 
-  Random.seed!(42)
+    Random.seed!(42);
+
+.. code-block:: julia
 
   time_paths = []
   n = 250

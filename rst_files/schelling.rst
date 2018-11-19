@@ -1,12 +1,12 @@
 .. _schelling:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
-********************************
+*****************************
 Schelling's Segregation Model
-********************************
+*****************************
 
 .. index::
     single: Schelling Segregation Model
@@ -17,7 +17,7 @@ Schelling's Segregation Model
 .. contents:: :depth: 2
 
 Overview
-=======================
+========
 
 In 1969, Thomas C. Schelling developed a simple but striking model of racial segregation :cite:`Schelling1969`
 
@@ -31,18 +31,10 @@ In recognition of this and other research, Schelling was awarded the 2005 Nobel 
 
 In this lecture we (in fact you) will build and run a version of Schelling's model
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The Model
-=======================
+=========
 
 We will cover a variation of Schelling's model that is easy to program and captures the main idea
-
-Set Up
----------
 
 Suppose we have two types of people: orange people and green people
 
@@ -52,9 +44,8 @@ These agents all live on a single unit square
 
 The location of an agent is just a point :math:`(x, y)`,  where :math:`0 < x, y < 1`
 
-
 Preferences
--------------
+-----------
 
 We will say that an agent is *happy* if half or more of her 10 nearest neighbors are of the same type
 
@@ -66,9 +57,8 @@ An important point here is that agents are not averse to living in mixed areas
 
 They are perfectly happy if half their neighbors are of the other color
 
-
 Behavior
------------
+--------
 
 Initially, agents are mixed together (integrated)
 
@@ -90,15 +80,12 @@ In this way, we cycle continuously through the agents, moving as required
 
 We continue to cycle until no one wishes to move
 
-
-
 Results
-=============
+=======
 
 Let's have a look at the results we got when we coded and ran this model
 
 As discussed above, agents are initially mixed randomly together
-
 
 .. figure:: /_static/figures/schelling_fig1.png
 
@@ -119,22 +106,20 @@ This is despite the fact that people in the model don't actually mind living mix
 
 Even with these preferences, the outcome is a high degree of segregation
 
-
 Exercises
-===============
-
+=========
 
 .. _schelling_ex1:
 
 Exercise 1
-------------
+----------
 
 Implement and run this simulation for yourself
 
 Use 250 agents of each type
 
 Solutions
-==========
+=========
 
 Exercise 1
 ----------
@@ -143,76 +128,62 @@ Here's one solution that does the job we want. If you feel like a
 further exercise you can probably speed up some of the computations and
 then increase the number of agents.
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
-
-.. code-block:: julia
-
-    using Plots, Random, LinearAlgebra
-    gr(fmt=:png)
-    
-    Random.seed!(42)  # set seed for random numbers. Reproducible output
-
+    using Test, Random
 
 .. code-block:: julia
 
-    mutable struct Agent{TI<:Integer, TF<:AbstractFloat}
-        kind::TI
-        location::Vector{TF}
-    end
+    using Parameters, Plots
+    gr(fmt = :png)
 
-    # constructor
-    Agent(k) = Agent(k, rand(2))
+.. code-block:: julia
+    :class: test
 
+    Random.seed!(42);
 
-    function draw_location!(a)
-        a.location = rand(2)
-        nothing
-    end
+.. code-block:: julia
+
+    Agent = @with_kw (kind, location = rand(2))
+
+    draw_location!(a) = a.location .= rand(2)
 
     # distance is just 2 norm: uses our subtraction function
-    get_distance(a, o) = norm(a.location - o.location)
+    get_distance(a, agent) = norm(a.location - agent.location)
 
-    function is_happy(a, others)
-        "True if sufficient number of nearest neighbors are of the same type."
-        # distances is a list of pairs (d, agent), where d is distance from
-        # agent to self
-        distances = Vector{Tuple{Float64, Agent}}()
-
-        for agent in others
-            if a != agent
-                dist = get_distance(a, agent)
-                push!(distances, (dist, agent))
-            end
-        end
-
-        # == Sort from smallest to largest, according to distance == #
+    function is_happy(a)
+        distances = [(get_distance(a, agent), agent) for agent in agents]
         sort!(distances)
+        neighbors = [agent for (d, agent) in distances[1:neighborhood_size]]
+        share = mean(isequal(a.kind), other.kind for other in neighbors)
 
-        # == Extract the neighboring agents == #
-        neighbors = [agent for (d, agent) in distances[1:num_neighbors]]
+        # can also do
+        # share = mean(isequal(a.kind),
+        #              first(agents[idx]) for idx in
+        #              partialsortperm(get_distance.(Ref(a), agents),
+        #                              1:neighborhood_size))
 
-        # == Count how many neighbors have the same type as self == #
-        num_same_type = sum(a.kind == other.kind for other in neighbors)
-
-        return num_same_type ≥ require_same_type
+        return share ≥ preference
     end
 
-    function update!(a, others)
-        "If not happy, then randomly choose new locations until happy."
-        while !is_happy(a, others)
+    function update!(a)
+        # If not happy, then randomly choose new locations until happy.
+        while !is_happy(a)
             draw_location!(a)
         end
-        return nothing
     end
 
-    function plot_distribution(agents, cycle_num)
-        x_vals_0, y_vals_0 = Float64[], Float64[]
-        x_vals_1, y_vals_1 = Float64[], Float64[]
+    function plot_distribution(agents)
+        x_vals_0, y_vals_0 = zeros(0), zeros(0)
+        x_vals_1, y_vals_1 = zeros(0), zeros(0)
 
-        # == Obtain locations of each type == #
+        # obtain locations of each type
         for agent in agents
             x, y = agent.location
             if agent.kind == 0
@@ -224,40 +195,32 @@ then increase the number of agents.
             end
         end
 
-        p = scatter(x_vals_0, y_vals_0, color=:orange, markersize=8, alpha=0.6)
-        scatter!(x_vals_1, y_vals_1, color=:green, markersize=8, alpha=0.6)
-        plot!(title="Cycle $(cycle_num)", legend=:none)
-
-        return p
-    end;
+        p = scatter(x_vals_0, y_vals_0, color = :orange, markersize = 8, alpha = 0.6)
+        scatter!(x_vals_1, y_vals_1, color = :green, markersize = 8, alpha = 0.6)
+        return plot!(legend = :none)
+    end
 
 .. code-block:: julia
 
-    # == Main == #
-
     num_of_type_0 = 250
     num_of_type_1 = 250
-    num_neighbors = 10      # Number of agents regarded as neighbors
-    require_same_type = 5   # Want at least this many neighbors to be same type
+    neighborhood_size = 10 # Number of agents regarded as neighbors
+    preference = 0.5 # Want their kind to make at least this share of the neighborhood
 
-    # == Create a list of agents == #
-    agents = Agent[Agent(0) for i in 1:num_of_type_0]
-    push!(agents, [Agent(1) for i in 1:num_of_type_1]...)
+    # Create a list of agents
+    agents = vcat([Agent(kind = 0) for i in 1:num_of_type_0],
+                  [Agent(kind = 1) for i in 1:num_of_type_1])
 
-    count = 1
+    plot_array = Any[]
 
-    # ==  Loop until none wishes to move == #
+    # loop until none wishes to move
     while true
-        println("Entering loop $count")
-        p = plot_distribution(agents, count)
-        display(p)
-        count += 1
+        push!(plot_array, plot_distribution(agents))
         no_one_moved = true
-        movers = 0
         for agent in agents
-            old_location = agent.location
-            update!(agent, agents)
-            if !isapprox(0.0, maximum(old_location - agent.location))
+            old_location = copy(agent.location)
+            update!(agent)
+            if norm(old_location - agent.location) ≉ 0
                 no_one_moved = false
             end
         end
@@ -265,11 +228,13 @@ then increase the number of agents.
             break
         end
     end
-
-    println("Converged, terminating")
-
+    n = length(plot_array)
+    plot(plot_array...,
+         layout = (n, 1),
+         size = (600, 400n),
+         title = reshape(["Cycle $i" for i in 1:n], 1, n))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @test sum(agent.kind for agent in agents) == 250
+    @test sum(agent.kind for agent in agents) == 250

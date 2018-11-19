@@ -1,6 +1,6 @@
 .. _lu_tricks:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ****************************************************
 Classical Control with Linear Algebra
@@ -920,8 +920,8 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
 
   using Plots, Random
   gr(fmt=:png)
-  
-  # == Set seed and generate a_t sequence == #
+
+  # set seed and generate a_t sequence
   Random.seed!(123)
   n = 100
   a_seq = sin.(range(0,  5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
@@ -934,11 +934,12 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
     y_hist, L, U, y = optimal_y(testlq, a_seq)
     y = y[end:-1:1]  # reverse y
 
-    # == Plot simulation results == #
-
+    # plot simulation results
     time = 1:length(y)
-    plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle,  markersize = 2, label="a_t")
-    plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8, label="y_t")
+    plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle, 
+               markersize = 2, label="a_t")
+    plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8,      
+          label="y_t")
     plot!(plt, xlabel="Time", grid=true, xlim=(0,maximum(time)), legend=:bottomleft)
   end
 

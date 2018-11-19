@@ -1,6 +1,6 @@
 .. _types_methods:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
 The Need for Speed
@@ -295,6 +295,17 @@ The purpose of this section is to highlight potential issues and show you how
 to circumvent them
 
 
+BenchmarkTools 
+------------------
+
+The main Julia package for benchmarking is `BenchmarkTools.jl <https://www.github.com/JuliaCI/BenchmarkTools.jl>`_
+
+Below, we'll use the ``@btime`` macro it exports to evaluate the performance of Julia code
+
+As mentioned in an `earlier lecture <testing>`_, we can also save benchmark results to a file and guard against performance regressions in code 
+
+For more, see the package docs
+
 Global Variables
 -----------------
 
@@ -359,13 +370,7 @@ then execution speed improves dramatically
 
 .. code-block:: julia
 
-    @time g(1.0, 1.0)
-
-
-.. code-block:: julia
-
-    @time g(1.0, 1.0)
-
+    @btime g(1.0, 1.0)
 
 Note that the second run was dramatically faster than the first
 

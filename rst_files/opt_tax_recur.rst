@@ -1,6 +1,6 @@
 .. _opt_tax_recur:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *********************************************
 Optimal Taxation with State-Contingent Debt
@@ -154,7 +154,7 @@ The **Ramsey problem** or **optimal taxation problem** is to choose a competitiv
 equilibrium with distorting taxes that maximizes :eq:`TS_prefr_opt_tax`
 
 Arrow-Debreu Version of Price System
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 We find it convenient sometimes to work with the Arrow-Debreu price system that is
 implied by a sequence of Arrow securities prices
@@ -176,7 +176,7 @@ constraints into a single intertemporal budget constraint, as we shall find it
 convenient to do below
 
 Primal Approach
-^^^^^^^^^^^^^^^^
+----------------------------------------
 
 We apply a popular approach to solving a Ramsey problem, called the *primal approach*
 
@@ -208,7 +208,8 @@ The primal approach uses four steps:
    taxes and prices
 
 The Implementability Constraint
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
+
 
 By sequential substitution of one one-period budget constraint :eq:`TS_bcr` into
 another, we can obtain the household's present-value budget constraint:
@@ -271,7 +272,8 @@ The **Ramsey problem** is to choose a feasible  allocation  that maximizes
 subject to  :eq:`TSs_cham1`
 
 Solution Details
-^^^^^^^^^^^^^^^^^
+----------------------------------------
+
 
 First define a "pseudo utility function"
 
@@ -402,7 +404,8 @@ currently realized quantity of government purchases :math:`g` only and does
 *not* depend on the specific history that preceded that realization of :math:`g`
 
 The Ramsey Allocation for a Given :math:`\Phi`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------------
+
 
 Temporarily take  :math:`\Phi` as given
 
@@ -430,7 +433,7 @@ satisfied at a candidate Ramsey allocation and price system associated
 with that :math:`\Phi`
 
 Further Specialization
-^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 At this point, it is useful to specialize the model in the following ways
 
@@ -447,7 +450,7 @@ Also, assume that government purchases :math:`g` are an exact time-invariant fun
 We maintain these assumptions throughout the remainder of this lecture
 
 Determining :math:`\Phi`
-^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 We complete the Ramsey plan by computing the Lagrange multiplier :math:`\Phi`
 on the implementability constraint :eq:`TSs_cham1`
@@ -579,7 +582,7 @@ equations in :math:`S` components each of :math:`\vec c`, :math:`\vec n`, and
 :math:`\vec x` together with :math:`n_0, c_0`, and :math:`\Phi`
 
 Time Inconsistency
-^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 Let :math:`\{\tau_t(s^t)\}_{t=0}^\infty, \{b_{t+1}(s_{t+1}| s^t)\}_{t=0}^\infty`
 be a time :math:`0`, state :math:`s_0` Ramsey plan
@@ -605,7 +608,7 @@ The reason is that a continuation Ramsey plan takes :math:`u_{ct} b_t(s_t|s^{t-1
 We shall discuss this more below
 
 Specification with CRRA Utility
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 In our calculations below and in a :doc:`subsequent lecture <amss>` based on an extension of the Lucas-Stokey model
 by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`, we shall modify the one-period utility function assumed above.
@@ -685,14 +688,14 @@ In equation :eq:`opt_tax_eqn_10`, it is understood that
     \end{gather*}
 
 Sequence Implementation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 The above steps are implemented in a type called `SequentialAllocation`
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
   :class: collapse
@@ -701,39 +704,35 @@ The above steps are implemented in a type called `SequentialAllocation`
 
   import QuantEcon: simulate
 
-  mutable struct Model{TF <: AbstractFloat,
-                       TM <: AbstractMatrix{TF},
-                       TV <: AbstractVector{TF}}
-      β::TF
-      Π::TM
-      G::TV
-      Θ::TV
-      transfers::Bool
-      U::Function
-      Uc::Function
-      Ucc::Function
-      Un::Function
-      Unn::Function
-      n_less_than_one::Bool
+  mutable struct Model
+      β
+      Π
+      G
+      Θ
+      transfers
+      U
+      Uc
+      Ucc
+      Un
+      Unn
+      n_less_than_one
   end
 
-  struct SequentialAllocation{TP <: Model,
-                              TI <: Integer,
-                              TV <: AbstractVector}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      cFB::TV
-      nFB::TV
-      ΞFB::TV
-      zFB::TV
+  struct SequentialAllocation
+      model
+      mc
+      S
+      cFB
+      nFB
+      ΞFB
+      zFB
   end
 
   function SequentialAllocation(model)
       β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
       mc = MarkovChain(Π)
       S = size(Π, 1)   # Number of states
-      # Now find the first best allocation
+      # now find the first best allocation
       cFB, nFB, ΞFB, zFB = find_first_best(model, S, 1)
 
       return SequentialAllocation(model, mc, S, cFB, nFB, ΞFB, zFB)
@@ -782,9 +781,9 @@ The above steps are implemented in a type called `SequentialAllocation`
           c = z[1:S]
           n = z[S+1:2S]
           Ξ = z[2S+1:end]
-          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ         # FOC c
-          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ    # FOC n
-          out[2S+1:end] = Θ .* n - c - G                                       # Resource constraint
+          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ # FOC c
+          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ # FOC n
+          out[2S+1:end] = Θ .* n - c - G # Resource constraint
           return out
       end
       # Find the root of the FOC
@@ -872,20 +871,16 @@ The above steps are implemented in a type called `SequentialAllocation`
       return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
   end
 
-  mutable struct BellmanEquation{TP <: Model,
-                                 TI <: Integer,
-                                 TV <: AbstractVector,
-                                 TM <: AbstractMatrix{TV},
-                                 TVV <: AbstractVector{TV}}
-      model::TP
-      S::TI
-      xbar::TV
-      time_0::Bool
-      z0::TM
-      cFB::TV
-      nFB::TV
-      xFB::TV
-      zFB::TVV
+  mutable struct BellmanEquation
+      model
+      S
+      xbar
+      time_0
+      z0
+      cFB
+      nFB
+      xFB
+      zFB
   end
 
   function BellmanEquation(model, xgrid, policies0)
@@ -984,7 +979,7 @@ But :math:`x_t(s^t)` is a also a  natural candidate for a state variable in
 a recursive formulation of the Ramsey problem
 
 Intertemporal Delegation
-^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 To express a Ramsey plan recursively, we imagine that a time :math:`0`
 Ramsey planner is followed by a sequence of continuation Ramsey planners
@@ -1027,7 +1022,7 @@ obligations to implement their parts of the original Ramsey plan,
 designed once-and-for-all at time :math:`0`
 
 Two Bellman Equations
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 After :math:`s_t` has been realized at time :math:`t \geq 1`, the state
 variables confronting the time :math:`t` **continuation Ramsey planner** are
@@ -1041,7 +1036,7 @@ We work backwards by presenting a Bellman equation for
 :math:`V(x,s)` first, then a Bellman equation for :math:`W(b,s)`
 
 The Continuation Ramsey Problem
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 The Bellman equation for a time :math:`t \geq 1` continuation Ramsey
 planner is
@@ -1078,7 +1073,7 @@ are :math:`S+1` time-invariant policy functions
     \end{aligned}
 
 The Ramsey Problem
-^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 The Bellman equation for the time :math:`0` Ramsey planner is
 
@@ -1123,7 +1118,7 @@ the consumption and leisure processes are evaluated along the original
 time :math:`0` Ramsey plan
 
 First-Order Conditions
-^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 Attach a Lagrange multiplier :math:`\Phi_1(x,s)` to constraint :eq:`LSA_Bellman1cons` and a
 Lagrange multiplier :math:`\Phi_0` to constraint :eq:`Bellman2cons`
@@ -1198,7 +1193,7 @@ Ramsey problem agree with the first-order conditions derived when we first
 formulated the Ramsey plan in the space of sequences
 
 State Variable Degeneracy
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 Equations :eq:`LSAx0` and :eq:`LSAn0` imply that :math:`\Phi_0 = \Phi_1`
 and that
@@ -1220,7 +1215,7 @@ for :math:`n` and :math:`c` as functions of :math:`g` that are associated
 with :math:`\Phi = \Phi_0`
 
 Manifestations of Time Inconsistency
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 While the marginal utility adjusted level of government debt :math:`x_t`
 is a key state variable for the continuation Ramsey planners at
@@ -1266,24 +1261,22 @@ the Ramsey planner’s incentive to manipulate Arrow security prices and,
 through them, the value of initial government debt :math:`b_0`
 
 Recursive Implementation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 The above steps are implemented in a type called `RecursiveAllocation`
 
 .. code-block:: julia
   :class: collapse
 
-  struct RecursiveAllocation{TP <: Model, TI <: Integer,
-                             TVg <: AbstractVector, TVv <: AbstractVector,
-                             TVp <: AbstractArray}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      T::BellmanEquation
-      μgrid::TVg
-      xgrid::TVg
-      Vf::TVv
-      policies::TVp
+  struct RecursiveAllocation
+      model
+      mc
+      S
+      T
+      μgrid
+      xgrid
+      Vf
+      policies
   end
 
   function RecursiveAllocation(model, μgrid)
@@ -1309,9 +1302,9 @@ The above steps are implemented in a type called `RecursiveAllocation`
           c[i, :], n[i, :], x[i, :], V[i, :] = time1_value(PP, μ)
       end
       Vf = Vector{AbstractInterpolation}(undef, 2)
-      cf = Vector{AbstractInterpolation}(undef, 2)
-      nf = Vector{AbstractInterpolation}(undef, 2)
-      xprimef = Matrix{AbstractInterpolation}(undef, 2, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, 2, S)
       for s in 1:2
           cf[s] = LinearInterpolation(x[:, s][end:-1:1], c[:, s][end:-1:1])
           nf[s] = LinearInterpolation(x[:, s][end:-1:1], n[:, s][end:-1:1])
@@ -1353,11 +1346,11 @@ The above steps are implemented in a type called `RecursiveAllocation`
   function fit_policy_function(PP, PF, xgrid)
       S = PP.S
       Vf = Vector{AbstractInterpolation}(undef, S)
-      cf = Vector{AbstractInterpolation}(undef, S)
-      nf = Vector{AbstractInterpolation}(undef, S)
-      xprimef = Matrix{AbstractInterpolation}(undef, S, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, S, S)
       for s in 1:S
-          PFvec = Matrix{typeof(PP.model).parameters[1]}(undef, length(xgrid), 3+S)
+          PFvec = zeros(length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
               PFvec[i_x, :] = PF(i_x, x, s)
           end
@@ -1389,7 +1382,6 @@ The above steps are implemented in a type called `RecursiveAllocation`
       model, S, policies = pab.model, pab.S, pab.policies
       β, Π, Uc = model.β, model.Π, model.Uc
       cf, nf, xprimef = policies[1], policies[2], policies[3]
-      TF = typeof(model).parameters[1]
       cHist = zeros(T)
       nHist = similar(cHist)
       Bhist = similar(cHist)
@@ -1421,7 +1413,7 @@ Examples
 =============
 
 Anticipated One Period War
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 This example illustrates in a simple setting how a Ramsey planner manages risk
 
@@ -1478,7 +1470,7 @@ This utility function is implemented in the type `CRRAutility`
         γ = 2.0,
         Π = 0.5 * ones(2, 2),
         G = [0.1, 0.2],
-        Θ = ones(Float64, 2),
+        Θ = ones(2),
         transfers = false
         )
         function U(c, n)
@@ -1509,8 +1501,8 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
 .. code-block:: julia
 
-    using Random 
-    Random.seed!(42) # For reproducible results. 
+    using Random
+    Random.seed!(42) # For reproducible results.
 
     M_time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
                                   Θ=ones(6))            # Θ can in principle be random
@@ -1554,15 +1546,19 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     end
     plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
+    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 
+                                                       0.9945696863679917, 0.9945696863679917, 
+                                                       0.9945696863679917, 0.9945696863679917, 
+                                                       0.9945696863679917]
     @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
-    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
-  end 
+    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434,
+                            1.111111111111111, 1.111111111111111, 1.111111111111111]
+  end
 
 **Tax smoothing**
 
@@ -1615,7 +1611,7 @@ time 0 by raising consumption
     plot!(title="Gross Interest Rate", grid=true)
 
 Government Saving
-^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 At time  :math:`t=0` the government evidently *dissaves* since :math:`b_1> b_0`
 
@@ -1646,7 +1642,7 @@ tax rate is set at level required to service the interest payments
 on the debt and government expenditures
 
 Time 0 Manipulation of Interest Rate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 We have seen that when :math:`b_0>0`, the Ramsey plan sets the time :math:`t=0`
 tax rate partly with an eye toward raising a risk-free interest
@@ -1659,7 +1655,7 @@ By doing this, it lowers the value of time :math:`t=0` debt that it has inherite
 and must finance
 
 Time 0  and Time-Inconsistency
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 In the  preceding  example,  the Ramsey tax rate at time 0 differs from its value  at time 1
 
@@ -1673,16 +1669,20 @@ The figure below plots the Ramsey tax rates and gross interest rates at time
 above)
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42) # For reproducible results. 
+    Random.seed!(42); # For reproducible results.
+
+
+.. code-block:: julia
 
     M2 = crra_utility(G=[0.15], Π=ones(1, 1), Θ=[1.0])
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
 
-    B_vec = range(-1.5,  1.0, length = 100)
+    B_vec = range(-1.5, 1.0, length = 100)
     taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...)')
-    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
+    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
 
     titles = ["Tax Rate" "Gross Interest Rate"]
     labels = [["Time , t = 0", "Time , t >= 0"], ""]
@@ -1693,14 +1693,14 @@ above)
     end
     plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test B_vec[3] ≈ -1.4494949494949494
     @test taxpolicy[2, 2] ≈ 0.0020700125847712414
     @test interest_rate[3, 1] ≈ 1.113064964490116
-  end 
+  end
 
 The figure indicates  that if the government enters with  positive debt, it sets
 a tax rate at :math:`t=0` that is less than all later tax rates
@@ -1759,7 +1759,7 @@ time :math:`t=0` tax rate
 The tax rates in the figure are equal  for only two values of initial government debt
 
 Tax Smoothing and non-CRRA Preferences
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 The complete tax smoothing for :math:`t \geq 1` in the preceding example is a
 consequence of our having assumed CRRA preferences
@@ -1816,8 +1816,12 @@ To compute the tax rate, we will use both the sequential and recursive approache
 The figure below plots a sample path of the Ramsey tax rate
 
 .. code-block:: julia
+    :class: test
 
-    Random.seed!(42) # For reproducible results. 
+    Random.seed!(42); # For reproducible results.
+
+
+.. code-block:: julia
 
     M1 = log_utility()
     μ_grid = range(-0.6,  0.0, length = 200)
@@ -1853,10 +1857,10 @@ The figure below plots a sample path of the Ramsey tax rate
     end
     plot(plots)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test sim_seq_plot[1][14] ≈ 0.38396935397869975
     @test sim_seq_plot[2][14] ≈ 0.5839693539786998
     @test sim_seq_plot[3][14] ≈ 0.3951985593686047
@@ -1866,7 +1870,7 @@ The figure below plots a sample path of the Ramsey tax rate
     @test sim_bel_plot[3][5] ≈ 0.5230509296608254
     @test sim_bel_plot[5][7] == 0.1
     @test sim_bel_plot[2][3] ≈ 0.5402933557593538
-  end 
+  end
 
 As should be expected, the recursive and sequential solutions produce almost
 identical allocations
@@ -1876,7 +1880,7 @@ Unlike outcomes with CRRA preferences, the tax rate is not perfectly smoothed
 Instead the government raises the tax rate when :math:`g_t` is high
 
 Further Comments
-^^^^^^^^^^^^^^^^^^
+======================
 
 A :doc:`related lecture <amss>` describes an extension of the Lucas-Stokey model
 by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`

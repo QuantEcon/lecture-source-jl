@@ -1,6 +1,6 @@
 .. _estspec:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -515,6 +515,7 @@ Exercise 1
 ----------
 
 .. code-block:: julia
+    :class: test
 
     using Random
     Random.seed!(42);  # reproducible results
@@ -574,10 +575,13 @@ Exercise 1
 
 Exercise 2
 ----------
+.. code-block:: julia
+    :class: test
+
+    Random.seed!(42);  # reproducible results
 
 .. code-block:: julia
 
-    Random.seed!(42) # For reproducible results.
     lp2 = ARMA(-0.9, 0.0, 1.0)
     wl = 65
     p = plot(layout=(3,1))

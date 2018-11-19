@@ -1,6 +1,6 @@
 .. _classical_filtering:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -565,41 +565,23 @@ Here's how it looks
 
   using Polynomials, LinearAlgebra
 
-  struct LQFilter{TF_ <: Union{Vector{Float64},Nothing}, TI_ <: Union{Int,Nothing}}
-      d::Vector{Float64}
-      h::Float64
-      y_m::Vector{Float64}
-      m::Int
-      ϕ::Vector{Float64}
-      β::Float64
-      ϕ_r::TF_
-      k::TI_
-  end
-
   function LQFilter(d, h, y_m;
                     r = nothing,
                     β = nothing,
                     h_eps = nothing)
 
       m = length(d) - 1
-
       m == length(y_m) ||
           throw(ArgumentError("y_m and d must be of same length = $m"))
 
-      #---------------------------------------------
-      # Define the coefficients of ϕ up front
-      #---------------------------------------------
-
+      # define the coefficients of ϕ up front
       ϕ = zeros(2m + 1)
       for i in -m:m
           ϕ[m-i+1] = sum(diag(d*d', -i))
       end
       ϕ[m+1] = ϕ[m+1] + h
 
-      #-----------------------------------------------------
-      # If r is given calculate the vector ϕ_r
-      #-----------------------------------------------------
-
+      # if r is given calculate the vector ϕ_r
       if r === nothing
           k = nothing
           ϕ_r = nothing
@@ -616,9 +598,7 @@ Here's how it looks
           end
       end
 
-      #-----------------------------------------------------
-      # If β is given, define the transformed variables
-      #-----------------------------------------------------
+      # if β is given, define the transformed variables
       if β === nothing
           β = 1.0
       else
@@ -626,7 +606,8 @@ Here's how it looks
           y_m = y_m * β.^(- collect(1:m)/2)
       end
 
-      return LQFilter(d, h, y_m, m, ϕ, β, ϕ_r, k)
+      return (d = d, h = h, y_m = y_m, m = m, ϕ = ϕ, β = β, 
+              ϕ_r = ϕ_r, k = k)
   end
 
   function construct_W_and_Wm(lqf, N)
@@ -636,14 +617,11 @@ Here's how it looks
       W = zeros(N + 1, N + 1)
       W_m = zeros(N + 1, m)
 
-      #---------------------------------------
-      # Terminal conditions
-      #---------------------------------------
-
+      # terminal conditions
       D_m1 = zeros(m + 1, m + 1)
       M = zeros(m + 1, m)
 
-      # (1) Constuct the D_{m+1} matrix using the formula
+      # (1) constuct the D_{m+1} matrix using the formula
 
       for j in 1:(m+1)
           for k in j:(m+1)
@@ -663,9 +641,7 @@ Here's how it looks
       end
       M
 
-      #----------------------------------------------
       # Euler equations for t = 0, 1, ..., N-(m+1)
-      #----------------------------------------------
       ϕ, h = lqf.ϕ, lqf.h
 
       W[1:(m + 1), 1:(m + 1)] = D_m1 + h * I
@@ -775,9 +751,7 @@ Here's how it looks
       if t === nothing                      # if the problem is deterministic
           a_hist = J * a_hist
 
-          #--------------------------------------------
-          # Transform the a sequence if β is given
-          #--------------------------------------------
+          # transform the a sequence if β is given
           if β != 1
               a_hist =  reshape(a_hist * (β^(collect(N:0)/ 2)), N + 1, 1)
           end
@@ -788,9 +762,7 @@ Here's how it looks
           # Reverse the order of y_bar with the matrix J
           J = reverse(Matrix(I, N + m + 1, N + m + 1), dims = 2)
           y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
-          #--------------------------------------------
-          # Transform the optimal sequence back if β is given
-          #--------------------------------------------
+          # transform the optimal sequence back if β is given
           if β != 1
               y_hist = y_hist .* β.^(- collect(-m:N)/2)
           end

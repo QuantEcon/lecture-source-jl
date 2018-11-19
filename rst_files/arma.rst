@@ -1,6 +1,6 @@
 .. _arma:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -438,7 +438,7 @@ It is an exercise to show that the MA(1) process :math:`X_t = \theta \epsilon_{t
     = \sigma^2 ( 1 + 2 \theta \cos(\omega) + \theta^2 )
 
 
-With a bit more effort, it's possible to show (see, e.g., p. 261 of :cite:`Sargent1987`) that the spectral density of the AR(1) process :math:`X_t = \phi X_{t-1} + \epsilon_t` is
+With a bit more effort, it is possible to show (see, e.g., p. 261 of :cite:`Sargent1987`) that the spectral density of the AR(1) process :math:`X_t = \phi X_{t-1} + \epsilon_t` is
 
 .. math::
     :label: ar1_sd_ed
@@ -464,7 +464,7 @@ The derivation of :eq:`arma_sd` uses the fact that convolutions become products 
 
 The proof is elegant and can be found in many places --- see, for example, :cite:`Sargent1987`, chapter 11, section 4
 
-It's a nice exercise to verify that :eq:`ma1_sd_ed` and :eq:`ar1_sd_ed` are indeed special cases of :eq:`arma_sd`
+It is a nice exercise to verify that :eq:`ma1_sd_ed` and :eq:`ar1_sd_ed` are indeed special cases of :eq:`arma_sd`
 
 Interpreting the :index:`Spectral Density`
 --------------------------------------------
@@ -537,25 +537,24 @@ These ideas are illustrated in the next figure, which has :math:`k` on the horiz
 
     # Autocovariance when ϕ = -0.8
     plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
-                alpha=0.6, label="gamma(k)")
+                 alpha=0.6, label="gamma(k)")
     plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
     plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
     # Cycles at frequence π
     plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
-                alpha=0.6, label="cos(pi k)")
+                 alpha=0.6, label="cos(pi k)")
     plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
     plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
     # Product
     plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
-                lw=2, label="gamma(k) cos(pi k)")
+                 lw=2, label="gamma(k) cos(pi k)")
     plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
-    plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3),
-          yticks=[-1, 0, 1, 2, 3])
+    plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3), yticks=[-1, 0, 1, 2, 3])
 
     plot(plt_1, plt_2, plt_3, layout=(3,1), size=(800,600))
 
@@ -564,7 +563,8 @@ These ideas are illustrated in the next figure, which has :math:`k` on the horiz
 
   @testset begin
     @test y1[4] ≈ -1.422222222222223
-    @test y2 == [1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0]
+    @test y2 == [1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0,
+                 1.0, -1.0, 1.0]
     @test y3[15] ≈ 0.12216795864177792
   end
 
@@ -582,25 +582,24 @@ both positive and negative terms, and hence the sum of these terms is much small
 
     # Autocovariance when ϕ = -0.8
     plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
-                alpha=0.6, label="gamma(k)")
+                 alpha=0.6, label="gamma(k)")
     plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
     plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
     # Cycles at frequence π
     plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
-                alpha=0.6, label="cos(pi k/3)")
+                 alpha=0.6, label="cos(pi k/3)")
     plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
     plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
     # Product
     plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
-                lw=2, label="gamma(k) cos(pi k/3)")
+                 lw=2, label="gamma(k) cos(pi k/3)")
     plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
           lw=2, label="")
-    plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3),
-          yticks=[-1, 0, 1, 2, 3])
+    plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3), yticks=[-1, 0, 1, 2, 3])
 
     plot(plt_1, plt_2, plt_3, layout=(3,1), size=(600,600))
 
@@ -610,7 +609,8 @@ both positive and negative terms, and hence the sum of these terms is much small
 
   @testset begin
     @test y1[4] ≈ -1.422222222222223
-    @test y2 ≈ [1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5]
+    @test y2 ≈ [1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5, -0.5, -1.0, -0.5, 0.5, 1.0, 0.5,
+                -0.5, -1.0, -0.5]
     @test y3[15] ≈ -0.06108397932088883
   end
 
@@ -746,8 +746,7 @@ Here are some functions to generate the plots
 
     using QuantEcon, Random
 
-    # == Plot functions == #
-
+    # plot functions
     function plot_spectral_density(arma, plt)
         (w, spect) = spectral_density(arma, two_pi=false)
         plot!(plt, w, spect, lw=2, alpha=0.7,label="")
@@ -785,7 +784,7 @@ Here are some functions to generate the plots
         plot!(plt, 0:(n-1), psi, seriestype=:sticks, marker=:circle,
               markersize=2, label="")
         plot!(plt, seriestype=:hline, [0], color=:red, label="")
-        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5),
+        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5), 
               xlabel="time", ylabel="response")
         return plt
     end
@@ -800,8 +799,7 @@ Here are some functions to generate the plots
         X = simulation(arma)
         n = length(X)
         plot!(plt, 0:(n-1), X, lw=2, alpha=0.7, label="")
-        plot!(plt, title="Sample path", xlim=(0,0,n),
-              xlabel="time", ylabel="state space")
+        plot!(plt, title="Sample path", xlim=(0,0,n), xlabel="time", ylabel="state space")
         return plt
     end
 
@@ -845,7 +843,8 @@ We'll use the model :math:`X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}`
   :class: test
 
   @testset begin
-    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555 # As before, we need to repeat the calculations, since we don't have access to the results.
+    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555 
+    # As before, we need to repeat the calculations, since we don't have access to the results.
     @test (autocovariance(arma))[3] ≈ -0.5886222919837174
     @test (impulse_response(arma))[10] == -0.004296875
     Random.seed!(42)

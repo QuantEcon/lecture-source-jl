@@ -1,16 +1,16 @@
 .. _generic_programming:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ******************************************
-Generic Programming and Design
+Generic Programming
 ******************************************
 
 .. contents:: :depth: 2
 
 .. epigraph::
 
-    I find OOP methodologically wrong. It starts with classes. It is as if mathematicians would start with axioms. You do not start with axioms - you start with proofs. Only when you have found a bunch of related proofs, can you come up with axioms. You end with axioms. The same thing is true in programming: you have to start with interesting algorithms. Only when you understand them well, can you come up with an interface that will let them work. - Alexander Stepanov
+    I find OOP methodologically wrong. It starts with classes. It is as if mathematicians would start with axioms. You do not start with axioms - you start with proofs. Only when you have found a bunch of related proofs, can you come up with axioms. You end with axioms. The same thing is true in programming: you have to start with interesting algorithms. Only when you understand them well, can you come up with an interface that will let them work. -- Alexander Stepanov
 
 Overview
 ============================
@@ -19,18 +19,15 @@ In this lecture we delve more deeply into the structure of Julia, and in particu
 
 * abstract and concrete types
 
-* the type tree 
+* the type tree
 
 * designing and using generic interfaces
 
 * the role of generic interfaces in Julia performance
 
-
-These concepts relate to the way that Julia stores and acts on data
-
 Understanding them will help you
 
-* Design code that matches the "white-board" mathematics 
+* Design code that matches the "white-board" mathematics
 
 * Create code that can use (and be used) by a variety of other packages
 
@@ -38,36 +35,51 @@ Understanding them will help you
 
 * Improve the speed at which your code runs
 
+(Special thank you to Jeffrey Sarnoff)
+
+Generic Programming is an Attitude
+-----------------------------------------------
+
+From ``Mathematics to Generic Programming`` :cite:`stepanov_mathematics_2014`
+
+    Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency... Generic programming is more of an *attitude* toward programming than a particular set of tools.
+
+In that sense, it is important to think of generic programming as an interactive approach to uncover generality without compromising performance -- and not a set of rules to decomposing taxonomies of abstractions
+
+As we will see, the core approach is to treat data-structures and algorithms as loosely coupled, and is in direct contrast to the "isa" approach of object-oriented programming
+
+This lecture has the dual role of giving an introduction into the design of generic algorithms and describing how Julia helps make that possible
+
 Setup
 ------
 
 .. literalinclude:: /_static/includes/deps.jl
 
-
 Exploring Type Trees
 ==================================================
 
+The connection between data-structures and the algorithms which operate on them is handled by the type system
 
-At the root of all types is ``Any``
-
-There are a (very limited) set of operations which are available for ``Any``, including a ``show`` function and ``typeof``
+Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) are the data-structures we apply a an algorithm to, and the abstract types (e.g. the corresponding ``Number`` and ``AbstractArray``) provide the mapping between a set of related data structures and algorithms
 
 .. code-block:: julia
 
     using Distributions
     x = 1
     y = Normal()
-    @show x #
-    @show y
-    @show typeof(x)
-    @show typeof(y)
+    z = "foo"
+    @show x, y, z
+    @show typeof(x), typeof(y), typeof(z)
     @show supertype(typeof(x))
-    @show typeof(x) |> supertype # pipe just applies a function around another function
-    @show supertype(typeof(y));
 
-We will investigate some of the sub-types of ``Any``
+    # pipe operator, |>, is is equivalent
+    @show typeof(x) |> supertype  
+    @show supertype(typeof(y))
+    @show typeof(z) |> supertype
+    @show typeof(x) <: Any;
 
-Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing the tree of types were discussed in `this lecture <introduction_to_types>`_
+
+Beyond the ``typeof`` and ``supertype`` functions, a few other useful tools for analyzing the tree of types have been discussed in the `introduction to types lecture <introduction_to_types>`_
 
 .. code-block:: julia
 
@@ -76,114 +88,205 @@ Beyond the ``typeof`` and ``supertype``, a few other useful tools for analyzing 
     show_supertypes(Int64)
 
 .. code-block:: julia
-    
-    show_supertypes(typeof(ones(2,2))
 
-.. code-block:: julia
-    
-    show_supertypes(typeof(Normal()))
-
-.. code-block:: julia
-    
     subtypes(Integer)
 
-Using the ``subtypes`` function, we can traverse the type tree below a particular type
+Using the ``subtypes`` function, we can writes an algorithm to traverse the type tree below any time ``t`` -- with the confidence that all types support ``subtypes``
 
 .. code-block:: julia
 
-    # From https://github.com/JuliaLang/julia/issues/24741
+    #  from https://github.com/JuliaLang/julia/issues/24741
     function subtypetree(t, level=1, indent=4)
             if level == 1
                 println(t)
             end
             for s in subtypes(t)
-                println(join(fill(" ", level * indent)) * string(s)) # print type
-                subtypetree(s, level+1, indent) #recursively print the next types, indenting
+                println(join(fill(" ", level * indent)) * string(s))  # print type
+                subtypetree(s, level+1, indent)  # recursively print the next types, indenting
             end
         end
 
-Using this function, we can see all of the current types in memory below ``Number`` in the tree
+Applying this to ``Number``, we see the tree of types currently loaded
 
 .. code-block:: julia
 
-    subtypetree(Number) # warning: Don't use this function on ``Any``!
+    subtypetree(Number) # warning: do not use this function on ``Any``!
 
-For the most part, all of the *leaves" will be concrete types
+For the most part, all of the "leaves" will be concrete types
 
 
-Unlearning Object Oriented (OO) Programming
-------------------------------------------
-(see `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types)
+Any
+-------
 
-If you have never used programming languages such as C++, Java, Python, etc., then this section may seem unfamilar and abstract
+At the root of all types is ``Any``
 
-On the other hand, if you have used object-oriented programming in those languages, then some of the concepts in this section will appear familiar
+.. There are a number of operations which are available for ``Any``, including a ``show`` function and ``typeof``
+
+There are a few functions that work in the "most generalized" context: usable with anything that you can construct or access from other packages
+
+We have already called ``typeof, show`` and ``supertype`` -- which will apply to a custom ``struct`` type since ``MyType <: Any``
+
+.. code-block:: julia
+
+    # custom type
+    struct MyType
+        a::Float64
+    end
+
+    myval = MyType(2.0)
+    @show myval
+    @show typeof(myval)
+    @show supertype(typeof(myval))
+    @show typeof(myval) <: Any;
+
+
+Here we see another example of generic programming: every type ``<: Any`` supports the ``@show`` macro, which in turn, relies on the ``show`` function
+
+The ``@show`` macro (1) prints the expression as a string; (2) evaluates the expression; and (3) calls the ``show`` function on the returned values
+
+To see this with built-in types
+
+.. code-block:: julia
+
+    x = [1, 2]
+    show(x)    
+
+The ``Any`` type is useful, because it provides a fall-back implementation for a variety of functions
+
+Hence, calling ``show`` on our custom type dispatches to the fallback function
+
+.. code-block:: julia
+
+    myval = MyType(2.0)
+    show(myval)
+
+The default fallback implementation used by Julia would roughly equivalent to
+
+.. code-block:: julia
+    :class: no-execute
+
+    function show(io::IO, x)
+        str = string(x)
+        print(io, str)
+    end
+
+To implement a specialized implementation of the ``show`` function for our type, rather than using this fallback
+
+.. code-block:: julia
+
+    import Base.show  # to extend an existing function
+
+    function show(io::IO, x::MyType)
+        str = "(MyType.a = $(x.a))"  # custom display
+        print(io, str)
+    end
+    show(myval)  # it creates an IO value first and then calls the above show
+
+At that point, we can use the ``@show`` macro, which in turn calls ``show``
+
+.. code-block:: julia
+
+    @show myval;
+
+Here we see another example of generic programming: any type with a ``show`` function works with the ``@show``
+
+Layering of functions (e.g. ``@show`` calling ``show``) with a "fallback" implementation makes it possible for new types to be designed and only specialized where necessary
+
+
+Unlearning Object Oriented (OO) Programming (Advanced)
+------------------------------------------------------------
+See `Types <https://docs.julialang.org/en/v1/manual/types/#man-types-1>`_ for more on OO vs. generic types
+
+If you have never used programming languages such as C++, Java, and Python, then the type hierarchies above may seem unfamiliar and abstract
+
+In that case, keep an open mind that this discussion of abstract concepts will have practical consequences, but there is no need to read this section
+
+Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar
 
 **Don't be fooled!**
 
- The superficial similarity can lead to misuse: types are *not* classes, and methods are not simply the equivalent to member functions
+The superficial similarity can lead to misuse: types are *not* classes with poor encapsulation, and methods are *not* the equivalent to member functions with the order of arguments swapped
 
-In particular, previous OO knowledge may lead you to write code such as
+In particular, previous OO knowledge often leads people to write Julia code such as
 
 .. code-block:: julia
 
-    #BAD Julia approaches
+    # BAD! Replicating an OO design in Julia
     mutable struct MyModel
         a::Float64
         b::Float64
+        algorithmcalculation::Float64
 
-        MyModel(myparam) = new(a,b) # an inner constructor
+        MyModel(a, b) = new(a, b, 0.0) # an inner constructor
     end
 
-    function solve(m::MyModel, x)
-        return m.a + m.b # some algorithm
+    function myalgorithm!(m::MyModel, x)
+        m.algorithmcalculation = m.a + m.b + x # some algorithm
     end
 
-    function set_a(m::MyModel, a)
+    function set_a!(m::MyModel, a)
         m.a = a
     end
 
-
     m = MyModel(2.0, 3.0)
     x = 0.1
-    set_a(m, 4.1)
-    solve(m, x)
+    set_a!(m, 4.1)
+    myalgorithm!(m, x)
+    @show m.algorithmcalculation;
 
-And then think to yourself "that is pretty much the same as OO, except" you
-* reverse the first argument, i.e. ``solve(m, x)`` instead of the object-oriented ``m.solve(x)``
+You may think to yourself that the above code is similar to OO, except that you
+* reverse the first argument, i.e. ``myalgorithm!(m, x)`` instead of the object-oriented ``m.myalgorithm!(x)``
 * cannot control encapsulation of the fields ``a, b``, but you can add getter/setters like ``set_a``
 * do not have concrete inheritance
 
-While this sort of programming is possible, it is both verbose and missing the point of Julia and the power of generic programming
+While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming
 
-Generic programming is a fundamentally different way of thinking, and a largely iterative process
+.. It may be helpful to review the traditional pillars of OOP 
+.. * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_: In OO one develops a taxonomy of hierarchical .. "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
+.. * *`Encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_:* Most OO code has fully mutable classes, where access to the internals is tightly .. controlled since the class manages its own state
+.. * *`Inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_* Code reuse in OO is achieved through adding a new class to the tree and .. inheriting some of the behavior of the parent class.
+.. * *`Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_:*  The abstract "is-a" relationships between types in a taxonomy provide a way to have the .. same function change its behavior given the particular type
 
-As its essence, the key difference is that you will start with creating algorithms which are largely orthogonal to concrete types, and in the process you will discover commonality which leads to abstract types
+When programming in Julia
+* There is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
+* `Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_ is achieved without anything resembling OOP `inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_
+* `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
+* The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
+* The looseness that accompanies keeping algorithms and data-structures as orthogonal as possible makes it easier to discover commonality in the design
 
-This design process is in direct contrast to object-oriented design and analysis, where you start by specifying a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
+Iterative Design of Abstractions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This lecture is intended to help you walk through some of the logic behind existing generic implementations in Julia
+As its essence, the design of generic software is that you will start with creating algorithms which are largely orthogonal to concrete types
 
+In the process, you will discover commonality which leads to abstract types with informally defined functions operating on them
+
+Given the abstract types and commonality, you the refine the algorithms as you really they are more limited or more general than you initially though
+
+This approach is in direct contrast to object-oriented design and analysis (`OOAD <https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design>`_)
+
+With that, where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
+
+In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the abstact types came later
+.. However,  we apologize in the example we confuse things somewhat by jumping to the axioms first for expositoin
 
 Distributions
-----------------------------------------------
+=====================
 
-First, lets consider working with "distributions"
+First, consider working with "distributions"
 
-If we consider mathematical "distributions" that we will use in our algorithms, they may include (1) drawing random numbers for Monte-carlo methods; (2) using the pdf or cdf in various calculations
+Algorithms using distributions might (1) drawing random numbers for Monte-Carlo methods; and (2) calculate the pdf or cdf -- if it is defined
 
-In that sense, some code may be useful in distributions where a `pdf` is not necessarily defined or meaningful
+The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl` package
 
-The process of using concrete distributions in these sorts of applications led to the creation of the `Distributions.jl`package
-
-Lets examine the tree of types for a ``Normal`` distribution
+Lets examine the tree of types for a `Normal` distribution
 
 .. code-block:: julia
 
     using Distributions
     d1 = Normal(1.0, 2.0) # an example type to explore
     @show d1
-    show_supertypes(d1)
+    show_supertypes(typeof(y))
 
 The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions, chiefly the ability to draw a random number
 
@@ -211,11 +314,11 @@ For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where :math:
 
 ..    # @show simulateprocess(0.0, d=Normal(0.2, 2.0)); #add example of something without pdf
 
-The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for monte-carlo and Bayesian methods, in particular, where you can often draw from a distribution, but can do little else  
+The ``Sampleable{Univariate,Continuous}`` and, especially, the ``Sampleable{Multivariate,Continuous}`` abstract types are useful generic interfaces for Monte-Carlo and Bayesian methods
 
-Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has certain functions we would expect to operate with it
+Moving down the tree, the ``Distributions{Univariate, Continuous}`` abstract type has other functions we can use for generic algorithms operating on distributions
 
-These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, maximum`` and a few others
+These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, maximum``, etc.
 
 .. code-block:: julia
 
@@ -237,9 +340,9 @@ These match the mathematics, such as ``pdf, cdf, quantile, support, minimum, max
     @show maximum(d1)
     @show maximum(d2);
 
-You could create your own ``Distributions{Univariate, Continuous}`` type, if you implemented all of those functions, as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_  
+You could create your own ``Distributions{Univariate, Continuous}`` type by implementing those functions -- as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_
 
-If you fulfill all of the conditions of a particular interface, you (or anyone else) could use code written for the abstract ``Distributions{Univariate, Continuous}`` type without any modifications
+If you fulfill all of the conditions of a particular interface, you can use algorithms from the present, past, and future  that are written for the abstract ``Distributions{Univariate, Continuous}`` type
 
 As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.jl>`_ package
 
@@ -249,9 +352,9 @@ As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.
     d = Normal(2.0, 1.0)
     plot(d) # note no other arguments!
 
-The ``plot`` function when applied to anything which is a subtype of ``Distributions{Univariate, Continuous}``, will display the ``pdf`` using the ``minimum`` and ``maximum`` applied to the value
+Calling ``plot`` on any subtype of ``Distributions{Univariate, Continuous}``, displays the ``pdf``and using ``minimum`` and ``maximum`` to determine the range
 
-To demonstrate this, lets create our own distribution type
+To demonstrate this, let's create our own distribution type
 
 .. code-block:: julia
 
@@ -262,9 +365,7 @@ To demonstrate this, lets create our own distribution type
     Distributions.pdf(d::OurTruncatedExponential, x) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
     Distributions.minimum(d::OurTruncatedExponential) = 0
     Distributions.maximum(d::OurTruncatedExponential) = d.xmax
-    # ... should do all of them, but this was enough
-
-
+    # ... more to have a complete type
 
 To demonstrate this
 
@@ -274,7 +375,7 @@ To demonstrate this
     @show minimum(d), maximum(d)
     @show support(d) # why does this work?
 
-Curiously, you will note that the ``support`` function is operational, even though we did not provide one
+Curiously, you will note that the ``support`` function works, even though we did not provide one
 
 This is another example of the power of multiple dispatch and generic programming
 
@@ -285,14 +386,12 @@ In the background, the ``Distributions.jl`` package  has something like the foll
 
         Distributions.support(d::Distribution) = RealInterval(minimum(d), maximum(d))
 
-Hence, since ``OurTruncatedExponential <: Distribution``, and we implemented ``minimum`` and ``maximum``, calls to ``support`` gets this implementation
+Hence, since ``OurTruncatedExponential <: Distribution``, and we implemented ``minimum`` and ``maximum``, calls to ``support`` gets this implementation as a fallback
 
+These functions are enough to use the  ``StatPlots.jl`` package
 
-Of course, while we should implement more of the func
-
-That turns out to be enough for us to use the ``StatPlots`` package
-
-
+.. code-block:: julia
+    
     plot(d) # uses the generic code!
 
 A few things to point out
@@ -307,51 +406,52 @@ A few things to point out
     @show typeof(d)
     plot(d)
 
-Which, of course, is also written in terms of the generic type
-
-.. code-block:: julia
-
-    d = Truncated(OurTruncatedExponential(1.0,2.0), 0.1, 1.5) # truncate again!
-    @show typeof(d)
-    plot(d)
-
-
-Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of separate packages that have simply agreed on what the appropriate functions and abstract types
+.. Which, of course, is also written in terms of the generic type
+.. 
+.. .. code-block:: julia
+.. 
+..     d = Truncated(OurTruncatedExponential(1.0,2.0), 0.1, 1.5) # truncate again!
+..     @show typeof(d)
+..     plot(d)
+.. 
+.. Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of different packages that have simply agreed on a set of appropriate functions and abstract types
 
 This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions
 
-Number, Real, and Algebraic Structures
+Numbers and Algebraic Structures
 =======================================
 
-(Special thank you to Jeffrey Sarnoff)
+Define two binary functions,  :math:`+` and :math:`\cdot`, called addition and multiplication -- although the operators can be applied to data structures much more abstract than a ``Real``
 
-In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is a set with two binary operators (:math:`+` and :math:`\cdot`, called the additive and multiplicative operators) where there is an
-* additive operator is associative and commutative
-* multiplicative operator is associative and and distributive with respect to the additive operator
-* additive identity element, usually denoted ``0`` such that :math:`a + 0 = a` for any :math:`a` in the set
-* additive inverse of each element, i.e. :math:`-a` such that :math:`a + (-a) = 0`
-* multiplicative identity element, usually denoted ``1`` such that :math:`a \cdot 1 = a`
+In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_\(mathematics\)>`_ is a set with associated additive and multiplicative operators where
 
-This is skipping over a few other key parts of the definition, but it is also useful to say what is not needed
-* A total or partial ordering is not required (i.e. there does not need to be any meaningful ``<`` operator defined)
-* A multiplicative inverse is not required
+    * the additive operator is associative and commutative
+    * the multiplicative operator is associative and and distributive with respect to the additive operator
+    * there is an additive identity element,  denoted :math:`0`, such that :math:`a + 0 = a` for any :math:`a` in the set
+    * there is an additive inverse of each element, denoted :math:`-a`, such that :math:`a + (-a) = 0`
+    * there is a multiplicative identity element, denoted :math:`1`, such that :math:`a \cdot 1 = a = 1 \cdot a`
+    * a total or partial ordering is **not** required (i.e. there does not need to be any meaningful :math:`<` operator defined)
+    * a multiplicative inverse is **not** required
 
-This algebraic structure provides motivation for the abstract ``Number`` type in Julia
-**Remark** We use motivation here because they are not formally connected and the mapping is imperfect
-* The main difficulty when dealing with numbers that can be concretely created on a computer is that the closure requirements are difficult to ensure (e.g. floating points have finite numbers of bits of information)
+While this skips over some parts of the mathematical definition, this algebraic structure provides motivation for the abstract ``Number`` type in Julia
 
-Let ``typeof(a) = typeof(b) = T <: Number``, then under an implicit definition of the **generic interface** for ``Number`` the following must be defined
-* the additive operator: ``a + b``
-* the multiplicative operator: ``a * b``
-* an additive inverse operator: ``-a``
-* an inverse operation for addition ``a - b = a + (-b)``
-* an additive identity: ``zero(T)`` or ``zero(a)`` for convenience
-* a multiplicative identity: ``one(T)`` or ``one(a)`` for convenience
+    * **Remark** We use the term "motivation" because they are not formally connected and the mapping is imperfect
+    * The main difficulty when dealing with numbers that can be concretely created on a computer is that the requirement that the operators are closed in the set are difficult to ensure (e.g. floating points have finite numbers of bits of information)
 
+Let ``typeof(a) = typeof(b) = T <: Number``, then under an informal definition of the **generic interface** for ``Number`` the following must be defined
 
-The core of generic programmig is that, given the knowledge that a value is of type ``Number``, we can write to that generic interface
+    * the additive operator: ``a + b``
+    * the multiplicative operator: ``a * b``
+    * an additive inverse operator: ``-a``
+    * an inverse operation for addition ``a - b = a + (-b)``
+    * an additive identity: ``zero(T)`` or ``zero(a)`` for convenience
+    * a multiplicative identity: ``one(T)`` or ``one(a)`` for convenience
 
-To demonstrate these for a complex number or a big integer (i.e., two types other than the standard ``Float64`` ``Int64`` you may associate with numbers)
+The core of generic programming is that, given the knowledge that a value is of type ``Number``, we can design algorithms using any of these functions and not concern ourselves with the particular concrete type 
+
+Furthermore, that generality in designing algorithms comes with no compromises on performance compared to carefully designed algorithms written for that particular type
+
+To demonstrate this for a complex number, where ``Complex{Float64} <: Number``
 
 .. code-block:: julia
 
@@ -366,6 +466,8 @@ To demonstrate these for a complex number or a big integer (i.e., two types othe
     @show zero(a)
     @show one(a);
 
+And for an arbitrary precision integer where ``BigInt <: Number`` (i.e., a different type than the``Int64`` you have worked with, but nevertheless a ``Number``)
+
 .. code-block:: julia
 
     a = BigInt(10)
@@ -379,24 +481,109 @@ To demonstrate these for a complex number or a big integer (i.e., two types othe
     @show zero(a)
     @show one(a);
 
+Complex Numbers and Composition of Generic Functions
+-----------------------------------------------------
 
-Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_(mathematics)>`_ is an `Ring` with a few additional properties, among them
-* a multiplicative inverse: :math:`a^{-1}`
-* an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
-* a (not strictly required) total ordering operation: :math:`a < b`
+This allows us to showcase further how different generic packages compose -- even if they are only loosely coupled through agreement on common generic interfaces
 
-where the  `total ordering <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_  operation would fulfill the requirements for a Totally Ordered Field
+The ``Complex`` numbers require some sort of storage for their underlying real and imaginary parts, which is itself left generic
 
-This type gives some motivation for the operations and properties of the ``Real`` type 
+This data structure is defined to work with any type ``<: Number``, and is parameterized (e.g. ``Complex{Float64}`` is a complex number storing the imaginary and real parts in ``Float64``)
 
-Of course, ``Complex{Float64} <: Number`` but not ``Real``, which makes sense since those operations are not defined for the basic Complex number type in mathematics
+.. code-block:: julia 
+
+    x = 4.0 + 1.0im
+    @show x, typeof(x)
+
+    xbig = BigFloat(4.0) + 1.0im
+    @show xbig, typeof(xbig);
+
+The implementation of the ``Complex`` numbers use the underlying operations of storage type, so as long as ``+, *, `` etc. are defined -- as they should be for any ``Number`` -- the complex operation can be defined 
+
+.. code-block:: julia
+
+    @which +(x,x)
+
+Following that link, the implementation of ``+`` for complex numbers is
+
+.. code-block:: julia
+    :class: no-execute
+
+    +(z::Complex, w::Complex) = Complex(real(z) + real(w), imag(z) + imag(w))
+
+The ``real(z)`` and ``imag(z)`` returns the associated components of the complex number in the underlying storage type (e.g. ``Float64`` or ``BigFloat``)
+
+The rest of the function has been carefully written to use functions defined for any ``Number`` (e.g. ``+`` but not ``<``, since it is not part of the generic number interface)
+
+To follow another example , look at the implementation of ``abs`` specialized for complex numbers
+
+.. code-block:: julia
+    
+    @which abs(x)
+
+The source is
+
+.. code-block:: julia
+    :class: no-execute
+
+    abs(z::Complex)  = hypot(real(z), imag(z))
+
+
+In this case, if you look at the generic function to get the hypotenuse, ``hypot``, you will see that it has the function signature ``hypot(x::T, y::T) where T<:Number``, and hence works for any ``Number``
+
+That function, in turn, relies on the underlying ``abs`` for the type of ``real(z)``
+
+This would dispatch to the appropriate ``abs`` for the type
+
+.. code-block:: julia
+
+    @which abs(1.0)
+
+.. code-block:: julia
+
+    @which abs(BigFloat(1.0))
+
+With implementations
+
+.. code-block:: julia
+    :class: no-execute
+
+    abs(x::Real) = ifelse(signbit(x), -x, x)
+    abs(x::Float64) = abs_float(x)
+
+For a ``Real`` number (which we will discuss in the next section) the fallback implementation calls a function ``signbit`` to determine if it should flip the sign of the number
+
+The specialized version for ``Float64 <: Real`` calls a function called ``abs_float`` -- which turns out to be a specialized implementation at the compiler level
+
+While we have not completely dissected the tree of function calls, at the bottom of the tree you will end at the most optimized version of the function for the underlying datatype
+
+Hopefully this showcases the power of generic programming:  with a well-designed set of abstract types and functions, the code can both be highly general and composable and still use the most efficient implementation possible
+
+Reals and Algebraic Structures
+=======================================
+ 
+Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
+
+    * a multiplicative inverse: :math:`a^{-1}`
+    * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
+
+Furthermore, we will make it a `Total Ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ Field with
+
+    * a total ordering binary operator: :math:`a < b`
+
+This type gives some motivation for the operations and properties of the ``Real`` type
+
+Of course, ``Complex{Float64} <: Number`` but not ``Real`` -- since the ordering is not defined for the a complex number in mathematics
 
 These operations are implemented in any subtype of ``Real`` through
-* the multiplicative inverse: ``inv(a)``
-* the multiplicative inverse operation: ``a / b = a * inv(b)``
-* an ordering ``a < b``
 
-To demonstrate with the ``Rational`` type
+    * the multiplicative inverse: ``inv(a)``
+    * the multiplicative inverse operation: ``a / b = a * inv(b)``
+    * an ordering ``a < b``
+
+We have already shown these with the ``Float64`` and ``BigFloat``
+
+To show this for the ``Rational`` number type, where ``a//b`` constructs a rational number :math:`\frac{a}{b}`
 
 .. code-block:: julia
 
@@ -410,13 +597,18 @@ To demonstrate with the ``Rational`` type
     @show a < b;
 
 **Remark** Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular
-* ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
-* However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
-* in computer science, this is called type promotion, where a type can be converted to another to ensure an operation is possible
 
-Moving further down the tree of types provides more operations, which start to become more tied to the computational implementation than the mathematics
+    * ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
+    * However, it is necessary in practice for integer division to be defined, and return back a member of the ``Reals``
+    * This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e. it can be independent of the type hierarchy)
 
-For example, floating point numbers all have a machine precision below which there is no way to further differentiate numbers
+Do not think of the break in the connection between the underlying algebraic structures and the code as a failure of the language or design
+
+Rather, the underlying algorithms for use on a computer do not perfectly fit the algebraic structures in this instance
+
+Moving further down the tree of types provides more operations more directly tied to the computational implementation than abstract algebra
+
+For example, floating point numbers have a machine precision, below which numbers become indistinguishable due to lack of sufficient "bits" of information
 
 .. code-block:: julia
 
@@ -426,23 +618,7 @@ For example, floating point numbers all have a machine precision below which the
     @show eps(BigFloat);
 
 
-Limitations of these Structures in Julia
-------------------------------------------
-
-You will notice that types in Julia represent a tree with ``Any`` at the root
-
-The tree structure has worked well for the above examples, but it doesn't allow us to associate multiple categorizations of types
-
-For example, a semigroup type would be very useful for a writing generic code (e.g. continuous-time solutions for ODEs and matrix-free methods) but cannot be implemented rigorously since the ``Matrix`` type is a semigroup, but it is also an ``AbstractArray``
-
-In the future, the way to implement this is with a feature called traits
-
-
-Example: ``isless``
--------------------
-
 The ``isless`` function also has multiple methods
-
 
 First let's try with integers
 
@@ -459,31 +635,97 @@ If we go to the provided link in the source, we see the entirety of the function
 
     isless(x::Real, y::Real) = x<y
 
-
 That is, for any values where ``typeof(x) <: Real`` and ``typeof(y) <: Real``, the definition relies on ``<``
 
 We know that ``<`` is defined for the types because it is part of the informal interface for the ``Real`` abstract type
 
-Note that this is not defined for ``Number`` because not all ``Number`` types have the ``<`` operator defined (e.g. ``Complex``)
+Note that this is not defined for ``Number`` because not all ``Number`` types have the ``<`` ordering operator defined (e.g. ``Complex``)
 
-Of course, in order to generate fast code, 
+In order to generate fast code, the implementation details may define specialized versions of these operations
 
 .. code-block:: julia
 
     isless(1.0, 2.0)  # Applied to two floats
+    @which isless(1.0, 2.0)
 
+Note that the reason  ``Float64 <: Real`` calls this implementation rather than the one given above, is that ``Float64 <: Real``, and Julia chooses the most specialized implementation for each function
+
+The specialized implementations are often more subtle than you may realize due to `floating point arithmetic <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>`_, `underflow <https://en.wikipedia.org/wiki/Arithmetic_underflow>`_, etc.  
+
+
+Functions, and Function-Like Types
+======================================
+
+Another common example of the separation between data structures and algorithms is the use of functions
+
+Syntactically, a univariate "function" is any ``f`` that can call an argument ``x`` as ``f(x)``
+
+For example, we can use a standard function
 
 .. code-block:: julia
 
-    @which isless(1.0, 2.0)
+    using QuadGK
+    f(x) = x^2
+    @show quadgk(f, 0.0, 1.0)  # integral 
 
-Note that the reason  ``Float64 <: Real``
+    function plotfunctions(f)
+        intf(x) = quadgk(f, 0.0, x)[1]  # int_0^x f(x) dx
+
+        x = 0:0.1:1.0
+        f_x = f.(x)
+        plot(x, f_x, label="f")
+        plot!(x, intf.(x), label="int_f")
+    end
+    plotfunctions(f)  # call with our f
+
+Of course, univariate polynomials are another type of univariate functions
+
+.. code-block:: julia
+
+    using Polynomials
+    p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
+    @show p
+    @show p(1.0) # call like a function
+
+    plotfunctions(p)  # same generic function
+
+Similarly, the result of interpolating data is also a function
+
+.. code-block:: julia
+
+    using Interpolations
+    x = 0.0:0.2:1.0
+    f(x) = x^2
+    f_int = LinearInterpolation(x, f.(x))  # interpolates the coarse grid
+    @show f_int(1.0)  # call like a function
+
+    plotfunctions(f_int)  # same generic function
+
+Note that the same generic ``plotfunctions`` could use any variable passed to it that "looks" like a function, i.e. can call ``f(x)``
+
+This approach to design with types -- generic, but without any specific type declarations -- is called `duck typing <https://en.wikipedia.org/wiki/Duck_typing>`_
+
+If you need to make an existing type callable, see `Function Like Objects <https://docs.julialang.org/en/v1/manual/methods/#Function-like-objects-1>`_
+
+Limitations of Dispatching on Abstract Types
+==================================================
+
+You will notice that types in Julia represent a tree with ``Any`` at the root
+
+The tree structure has worked well for the above examples, but it doesn't allow us to associate multiple categorizations of types
+
+For example, a semi-group type would be useful for a writing generic code (e.g. continuous-time solutions for ODEs and matrix-free methods), but cannot be implemented rigorously since the ``Matrix`` type is a semi-group as well as an ``AbstractArray``, but not not all ``semi-groups" are ``AbstractArray``
+
+The main way to implement this in a generic language is with a design approach called "traits"
+
+    * See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
+    * A complete description of the Traits patterns as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
+
 
 Understanding Multiple Dispatch in Julia
 ===============================================
 
 This section provides more background on how methods, functions, and types are connected
-
 
 Methods and Functions
 ----------------------
@@ -502,13 +744,11 @@ When an operation like addition is requested, the Julia compiler inspects the ty
 
 This process is called **multiple dispatch**
 
-
 Like all "infix" operators, `1 + 1` has the alternative syntax `+(1, 1)`
 
 .. code-block:: julia
 
     +(1, 1)
-
 
 This operator `+` is itself a function with multiple methods
 
@@ -519,7 +759,6 @@ We can investigate them using the `@which` macro, which shows the method to whic
     x, y = 1.0, 1.0
     @which +(x, y)
 
-
 We see that the operation is sent to the ``+`` method that specializes in adding
 floating point numbers
 
@@ -529,7 +768,6 @@ Here's the integer case
 
     x, y = 1, 1
     @which +(x, y)
-
 
 This output says that the call has been dispatched to the `+` method
 responsible for handling integer values
@@ -543,37 +781,36 @@ Here's another example, with complex numbers
     x, y = 1.0 + 1.0im, 1.0 + 1.0im
     @which +(x, y)
 
-
 Again, the call has been dispatched to a `+` method specifically designed for handling the given data type
 
-.. 
+..
 ..  Example 3
 ..  ^^^^^^^^^^^^^^
-.. 
-.. 
+..
+..
 .. The function ``isfinite()`` has multiple methods too
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     @which isfinite(1) # Call isfinite on an integer
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     @which isfinite(1.0) # Call isfinite on a float
-.. 
-.. 
+..
+..
 .. Here ``AbstractFloat`` is another abstract data type, this time encompassing all floats
-.. 
+..
 .. We can list all the methods of ``isfinite`` as follows
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     methods(isfinite)
-.. 
-.. 
+..
+..
 .. We'll discuss some of the more complicated data types you see here later on
-.. 
+..
 
 Adding Methods
 ^^^^^^^^^^^^^^^^^^
@@ -584,38 +821,32 @@ For example, we can't at present add an integer and a string in Julia (i.e. ``10
 
 This is sensible behavior, but if you want to change it there's nothing to stop you:
 
-
 .. code-block:: julia
 
-    import Base: +  #  Gives access to + so that we can add a method
+    import Base: +  # enables adding methods to the + function
 
     +(x::Integer, y::String) = x + parse(Int, y)
 
     @show +(100, "100")
-    @show 100 + "100"; #equivalent
-
+    @show 100 + "100";  # equivalent
 
 .. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory
-.. 
+..
 .. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their floating point versions
-.. 
+..
 .. If we next call it with integer arguments, the process will be repeated but now
 .. specialized to integers
-.. 
+..
 .. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their integer versions
-.. 
-.. 
+..
+..
 .. Subsequent calls will be routed automatically to the most appropriate method
-
 
 .. Comments on Efficiency
 .. ------------------------
-.. 
-.. 
+..
+..
 .. We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`
-
-
-
 
 Understanding the Compilation Process
 ---------------------------------------
@@ -636,16 +867,13 @@ If not, it looks to see whether the pair ``(S, T)`` matches any method defined f
 For example, if ``S`` is ``Float64`` and ``T`` is ``ComplexF32`` then the
 immediate parents are ``AbstractFloat`` and ``Number`` respectively
 
-
 .. code-block:: julia
 
     supertype(Float64)
 
-
 .. code-block:: julia
 
     supertype(ComplexF32)
-
 
 Hence the interpreter looks next for a method of the form ``f(x::AbstractFloat, y::Number)``
 
@@ -655,12 +883,13 @@ If the interpreter can't find a match in immediate parents (supertypes) it proce
 
 * If not, we get an error
 
-This is the process that leads to the following error
+This is the process that leads to the following error (since we only added the ``+`` for adding ``Integer`` and ``String`` above)
 
 .. code-block:: julia
+    :class: no-test
 
-    +(100, "100")
-
+    @show (typeof(100.0) <: Integer) == false
+    100.0 + "100"
 
 Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the *most specific method* available
 
@@ -678,20 +907,19 @@ exactly this kind of data
 The second method is probably more of a "catch all" method that handles other
 data in a less optimal way
 
-
 Here's another simple example, involving a user-defined function
 
 .. code-block:: julia
 
-    function f(x)
-        println("Generic function invoked")
+    function q(x)  # or q(x::Any)
+        println("Default (Any) method invoked")
     end
 
-    function f(x::Number)
+    function q(x::Number)
         println("Number method invoked")
     end
 
-    function f(x::Integer)
+    function q(x::Integer)
         println("Integer method invoked")
     end
 
@@ -700,38 +928,30 @@ above
 
 .. code-block:: julia
 
-    f(3)
-
-
-.. code-block:: julia
-
-    f(3.0)
-
+    q(3)
 
 .. code-block:: julia
 
-    f("foo")
+    q(3.0)
 
+.. code-block:: julia
 
-Since
+    q("foo")
 
-* ``3`` is an ``Int64`` and ``Int64 <: Integer <: Number``
-
-the call ``f(3)`` proceeds up the tree to ``Integer`` and invokes ``f(x::Integer)``
+Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``q(3)`` proceeds up the tree to ``Integer`` and invokes ``q(x::Integer)``
 
 On the other hand, ``3.0`` is a ``Float64``, which is not a subtype of  ``Integer``
 
-Hence the call ``f(3.0)`` continues up to ``f(x::Number)``
+Hence the call ``q(3.0)`` continues up to ``q(x::Number)``
 
-Finally, ``f("foo")`` is handled by the generic function, since ``String`` is not a subtype of ``Number``
+Finally, ``q("foo")`` is handled by the most function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``
 
 Analyzing Function Return Types
 -------------------------------------------
 
-For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
+For the most part, time spent "optimizing" Julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
 
 We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
-
 
 .. code-block:: julia
 
@@ -739,7 +959,7 @@ We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but
     f(x) = 2x
     @code_warntype f(x)
 
-The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example--i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
+The ``@code_warntype`` macro compiles the ``f(x)`` using the type of ``x`` as an example -- i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
 
 Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the function when called with types like ``[1, 2, 3]`` is always a vector of integers
 
@@ -768,7 +988,7 @@ On the other hand, if we use change the function to return ``0`` if `x <= 0`, it
     f(x) = x > 0.0 ? x : 0
     @code_warntype f(1.0)
 
-The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x`` 
+The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x``
 n the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
 
 .. code-block:: julia
@@ -780,354 +1000,386 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
     f(x) = x > 0.0 ? x : zero(x)
     @code_warntype f(1.0)
 
+.. Functions
+.. ------------
 
+.. s another common example of the separation between data structures and algorithms is the use of functions
 .. 
+.. n Julia, anything which can be called with a ``()`` is a function or function-like object
+.. 
+.. or example, we have already seen user defined function can be called and passed to various algorithms
+.. 
+.. . code-block:: julia
+.. 
+..    using QuadGk
+..    f(x) = x^2
+..    y = 1:5
+..    @show sum(f, y) # i.e. algorithm takes function as first argument and iterator
+..    @show quadgk(f, 0.0, 1.0) # calculate an integral
+..    plot(f, 0.0, 1.0) # plot recipe for any function
+.. 
+.. ut this works for other types, such as intepolation and polynomials 
+.. 
+.. . code-block:: julia
+.. 
+..    Using Interpolations, Polynomials
+..    f(x) = x^2
+..    x = 0:0.1:1.0
+..    fi = LinearIntepoation(x, f.(x))
+..    p = poly([1.0, 2.0, 4.9])
+..    @show sum(fi, 1/0)
+..    @show fi(1.0)
+..    @show sum(fi, y) # i.e. algorithm takes function as first argument and iterator
+..    @show quadgk(p, 0.0, 1.0) # calculate an integral
+..    plot(p, 0.0, 1.0) # plot recipe for any function
+
+..
 .. User-Defined Types
 .. ==============================
-.. 
+..
 .. Let's have a look at defining our own data types
-.. 
-.. 
+..
+..
 .. Motivation
 .. ----------------------
-.. 
+..
 .. At our respective homes we both have draws full of fishing gear
-.. 
+..
 .. Of course we have draws full of other things too, like kitchen utensils, or clothes
-.. 
+..
 .. Are these draws really necessary?
-.. 
+..
 .. Perhaps not, but who wants to search the whole house for their fishing reel when the fish are biting?
-.. 
+..
 .. Certainly not us
-.. 
+..
 .. Just as it's convenient to store household values in draws, it's also
 .. convenient to organize the values in your program into
 .. designated "containers"
-.. 
+..
 .. The first step is to design and build the containers
-.. 
+..
 .. We do this by declaring and using our own types
-.. 
+..
 .. For example,
-.. 
+..
 .. * a ``Firm`` type might store parameters for values that represent firms in a given model
-.. 
+..
 .. * an ``EstimationResults`` type might store output from some statistical procedure, etc.
-.. 
-.. 
+..
+..
 .. Once those types are declared, we can create instances of the type
-.. 
+..
 .. For example,
-.. 
+..
 ..   ``results = EstimationResults(y, X)``
-.. 
+..
 .. might create an instances of ``EstimationResults`` that stores estimated coefficients and other information from a given regression exercise involving data `y, X`
 
-.. 
+..
 .. Adding Methods
 .. --------------
-.. 
+..
 .. We can now create functions that act on instances of ``Foo``
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     foofunc(x::Foo) = "onefoo"
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     foofunc(foo)
-.. 
-.. 
+..
+..
 .. Or we can add new methods for acting on Foos to existing functions, such as `+`
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     +(x::Foo, y::Foo) = "twofoos"
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     foo1, foo2 = Foo(), Foo()  # Create two Foos
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     +(foo1, foo2)
-.. 
-.. 
+..
+..
 .. A Less Trivial Example
 .. -------------------------
-.. 
+..
 .. Let's say we are doing a lot of work with AR(1) processes, which
 .. are random sequences :math:`\{X_t\}` that follow the law of motion
-.. 
+..
 .. .. math::
 ..     X_{t+1} = a X_t + b + \sigma W_{t+1}
 ..     :label: tm_ar1
-.. 
+..
 .. Here
-.. 
+..
 .. * :math:`a`, :math:`b` and :math:`\sigma` are scalars and
-.. 
+..
 .. * :math:`\{W_t\}` is an iid sequence of shocks with some given distribution :math:`\phi`
-.. 
+..
 .. Let's take these primitives :math:`a`, :math:`b`, :math:`\sigma` and :math:`\phi`
 .. and organize them into a single entity like so
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     mutable struct AR1
 ..         a
 ..         b
 ..         σ
 ..         ϕ
 ..     end
-.. 
-.. 
+..
+..
 .. Here ``mutable`` means that we can change (mutate) data while the value is live in memory -- see below
-.. 
-.. 
+..
+..
 .. For the distribution ``ϕ`` we'll assign a ``Distribution`` from the `Distributions <https://github.com/JuliaStats/Distributions.jl>`__ package
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     using Distributions
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m = AR1(0.9, 1, 1, Beta(5, 5))
-.. 
-.. 
+..
+..
 .. In this call to the constructor we've created an instance of ``AR1`` and bound the name ``m`` to it
-.. 
+..
 .. We can access the fields of ``m`` using their names and "dotted attribute" notation
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.a
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.b
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.σ
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.ϕ
-.. 
-.. 
+..
+..
 .. For example, the attribute ``m.ϕ`` points to an instance of ``Beta``, which is in turn a subtype of ``Distribution`` as defined in the Distributions package
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof(m.ϕ)
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.ϕ isa Distribution
-.. 
-.. 
+..
+..
 .. We can reach into ``m`` and change this if we want to
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m.ϕ = Exponential(0.5)
-.. 
-.. 
-.. .. _spec_field_types:
-.. 
-.. 
+..
+..
+.. _spec_field_types:
+..
+..
 .. Specifying Field Types
 .. ^^^^^^^^^^^^^^^^^^^^^^^^^
-.. 
-.. 
+..
+..
 .. In our type definition we can be explicit that we want ``ϕ`` to be a
 .. ``Distribution`` and the other elements to be floats
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_explicit
 ..         a::Float64
 ..         b::Float64
 ..         σ::Float64
 ..         ϕ::Distribution
 ..     end
-.. 
+..
 .. (In this case, ``mutable`` is removed since we do not intend to make any changes to the elements of ``AR1_explicit``)
-.. 
+..
 .. Now the constructor will complain if we try to use the wrong data type
-.. 
+..
 .. .. code-block:: julia
 ..     :class: no-execute
-.. 
+..
 ..     m = AR1_explicit(0.9, 1, "foo", Beta(5, 5))
-.. 
-.. 
+..
+..
 .. This can be useful in terms of failing early on incorrect data, rather than
 .. deeper into execution
-.. 
+..
 .. At the same time, `AR1_explicit` is not as generic as `AR1`, and hence less flexible
-.. 
+..
 .. For example, suppose that we want to allow `a`, `b` and `σ` to take any
 .. value that is `<: Real`
-.. 
+..
 .. We could achieve this by the new definition
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_real
 ..         a::Real
 ..         b::Real
 ..         σ::Real
 ..         ϕ::Distribution
 ..     end
-.. 
-.. 
+..
+..
 .. But it turns out that using abstract types inside user-defined types adversely
 .. affects performance --- more about that :doc:`soon <need_for_speed>`
-.. 
+..
 .. Fortunately, there's another approach that both
-.. 
+..
 .. * preserves the use of concrete types for internal data and
-.. 
+..
 .. * allows flexibility across multiple concrete data types
-.. 
+..
 .. This approach uses *type parameters*, a topic we turn to now
-.. 
-.. 
+..
+..
 .. Type Parameters
 .. -------------------
-.. 
+..
 .. Consider the following output
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof([10, 20, 30])
-.. 
-.. 
+..
+..
 .. Here ``Array`` is one of Julia's predefined types (``Array <: DenseArray <: AbstractArray <: Any``)
-.. 
+..
 .. The ``Int64,1`` in curly brackets are **type parameters**
-.. 
+..
 .. In this case they are the element type and the dimension
-.. 
+..
 .. Many other types have type parameters too
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof(1.0 + 1.0im)
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     typeof(1 + 1im)
-.. 
-.. 
+..
+..
 .. Types with parameters are therefore in fact an indexed family of types, one for each possible value of the parameter
-.. 
-.. 
+..
+..
 .. We can use parametric types in our own type definitions, as the next example shows
-.. 
-.. 
+..
+..
 .. Back to the AR1 Example
 .. -------------------------
-.. 
+..
 .. Recall our AR(1) example, where we considered different restrictions on internal data
-.. 
+..
 .. For the coefficients `a`, `b` and `σ`  we considered
-.. 
+..
 .. * allowing them to be any type
-.. 
+..
 .. * forcing them to be of type `Float64`
-.. 
+..
 .. * allowing them to be any `Real`
-.. 
+..
 .. The last option is a nice balance between specific and flexible
-.. 
+..
 .. For example, using `Real` in the type definition tells us that, while these values should be scalars, integer values and floats are both OK
-.. 
+..
 .. However, as mentioned above, using abstract types for fields of user-defined types impacts negatively on performance
-.. 
+..
 .. For now it suffices to observe that we can achieve flexibility and eliminate
 .. abstract types on `a`, `b`, `σ`, and `ϕ` by the following declaration
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_best{T <: Real, D <: Distribution}
 ..         a::T
 ..         b::T
 ..         σ::T
 ..         ϕ::D
 ..     end
-.. 
+..
 .. If we create an instance using `Float64` values and a `Beta` distribution then the instance has type
 .. `AR1_best{Float64,Beta}`
-.. 
+..
 .. It is worth nothing that under this definition, the instance can only be created by
 .. providing `a`, `b`, and `σ` of the same type. One could make it flexible enough to
 .. parameterize on different values or providing a constructor that converts the inputs
 .. to the same type (e.g., using `promote_type`)
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m = AR1_best(0.9, 1.0, 1.0, Beta(5, 5))
-.. 
-.. 
+..
+..
 .. Exercises
 .. ===========
-.. 
-.. 
+..
+..
 .. Exercise 1
 .. ---------------
-.. 
+..
 .. Write a function with the signature ``simulate(m::AR1, n::Integer, x0::Real)``
 .. that takes as arguments
-.. 
+..
 .. * an instance ``m`` of ``AR1`` (see above)
 .. * an integer ``n``
 .. * a real number ``x0``
-.. 
+..
 .. and returns an array containing a time series of length ``n`` generated according to :eq:`tm_ar1` where
-.. 
+..
 .. * the primitives of the AR(1) process are as specified in ``m``
-.. 
+..
 .. * the initial condition :math:`X_0` is set equal to ``x0``
-.. 
+..
 .. Hint: If ``d`` is an instance of ``Distribution`` then ``rand(d)`` generates one random draw from the distribution specified in ``d``
-.. 
-.. 
+..
+..
 .. Solutions
 .. ==========
-.. 
-.. 
+..
+..
 .. Exercise 1
 .. ----------
-.. 
+..
 .. Let's start with the AR1 definition as specified in the lecture
-.. .. 
+.. ..
 .. .. code-block:: julia
-.. 
+..
 ..     struct AR1_ex1{T <: Real, D <: Distribution}
 ..         a::T
 ..         b::T
 ..         σ::T
 ..         ϕ::D
 ..     end
-.. 
+..
 .. Now let's write the function to simulate AR1s
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     function simulate(m::AR1_ex1, n::Integer, x0::Real)
 ..         X = zeros(n)
 ..         X[1] = x0
@@ -1136,22 +1388,20 @@ n the other hand, if we use change the function to return ``0`` if `x <= 0`, it 
 ..         end
 ..         return X
 ..     end
-.. 
-.. 
+..
+..
 .. Let's test it out on the AR(1) process discussed in the lecture
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     m = AR1_ex1(0.9, 1.0, 1.0, Beta(5, 5))
 ..     X = simulate(m, 100, 0.0)
-.. 
-.. 
+..
+..
 .. Next let's plot the time series to see what it looks like
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     using Plots
 ..     gr(fmt=:png)
 ..     plot(X, legend=:none)
-
-

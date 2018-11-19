@@ -393,7 +393,7 @@ jupyter_kernels = {
     },
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 1.0.0",
+            "display_name": "Julia 1.0",
             "language": "julia",
             "name": "julia-1.0"
             },
@@ -421,3 +421,6 @@ jupyter_target_html = True
 
 #Drop Tests Embedded in Lectures
 jupyter_drop_tests = False
+
+#Use urlprefix images
+jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/"

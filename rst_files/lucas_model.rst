@@ -1,9 +1,8 @@
 .. _lucas_asset:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
-
 
 ************************************************
 Asset Pricing II: The Lucas Asset Pricing Model
@@ -13,8 +12,6 @@ Asset Pricing II: The Lucas Asset Pricing Model
     single: Models; Lucas Asset Pricing
 
 .. contents:: :depth: 2
-
-
 
 Overview
 =====================================
@@ -30,12 +27,6 @@ While we mentioned some consequences of Lucas' model :ref:`earlier <mass_pra>`, 
 A side benefit of studying Lucas' model is that it provides a beautiful illustration of model building in general and equilibrium pricing in competitive models in particular
 
 Another difference to our :doc:`first asset pricing lecture <markov_asset>` is that the state space and shock will be continous rather than discrete
-
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 
 The Lucas Model
 ========================
@@ -78,7 +69,6 @@ We will assume that this endowment is Markovian, following the exogenous process
 
     y_{t+1} = G(y_t, \xi_{t+1})
 
-
 Here :math:`\{ \xi_t \}` is an iid shock sequence with known distribution :math:`\phi` and :math:`y_t \geq 0`
 
 An asset is a claim on all or part of this endowment stream
@@ -88,7 +78,6 @@ The consumption goods :math:`\{y_t\}_{t=0}^{\infty}` are nonstorable, so holding
 For the purposes of intuition, it's common to think of the productive unit as a "tree" that produces fruit
 
 Based on this idea, a "Lucas tree" is a claim on the consumption endowment
-
 
 Consumers
 ^^^^^^^^^^^^^^^
@@ -103,7 +92,6 @@ A representative consumer ranks consumption streams :math:`\{c_t\}` according to
 
     \mathbb{E} \sum_{t=0}^\infty \beta^t u(c_t)
 
-
 Here
 
 * :math:`\beta \in (0,1)` is a fixed discount factor
@@ -111,8 +99,6 @@ Here
 * :math:`u` is a strictly increasing, strictly concave, continuously differentiable period utility function
 
 * :math:`\mathbb{E}` is a mathematical expectation
-
-
 
 Pricing a Lucas Tree
 -----------------------
@@ -145,14 +131,11 @@ Thus, the consumer problem is to maximize :eq:`lt_uf` subject to
 
     c_t + \pi_{t+1} p_t \leq \pi_t y_t + \pi_t p_t
 
-
 along with :math:`c_t \geq 0` and :math:`0 \leq \pi_t \leq 1` at each :math:`t`
 
 The decision to hold share :math:`\pi_t` is actually made at time :math:`t-1`
 
 But this value is inherited as a state variable at time :math:`t`, which explains the choice of subscript
-
-
 
 The dynamic program
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -186,14 +169,12 @@ Using the assumption that price is a given function :math:`p` of :math:`y`, we w
             u(c) + \beta \int v(\pi', G(y, z)) \phi(dz)
         \right\}
 
-
 subject to
 
 .. math::
     :label: preltbe
 
     c + \pi' p(y) \leq \pi y + \pi p(y)
-
 
 We can invoke the fact that utility is increasing to claim equality in :eq:`preltbe` and hence eliminate the constraint, obtaining
 
@@ -205,11 +186,9 @@ We can invoke the fact that utility is increasing to claim equality in :eq:`prel
             u[\pi (y + p(y)) - \pi' p(y) ] + \beta \int v(\pi', G(y, z)) \phi(dz)
         \right\}
 
-
 The solution to this dynamic programming problem is an optimal policy expressing either :math:`\pi'` or :math:`c` as a function of the state :math:`(\pi, y)`
 
 * Each one determines the other, since :math:`c(\pi, y) = \pi (y + p(y))- \pi' (\pi, y) p(y)`
-
 
 Next steps
 ^^^^^^^^^^^
@@ -226,7 +205,6 @@ It seems that to obtain these, we will have to
 
 However, as Lucas showed, there is a related but more straightforward way to do this
 
-
 Equilibrium constraints
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -242,7 +220,6 @@ In particular, the representative consumer owns the whole tree in every period, 
 
 Prices must adjust to satisfy these two constraints
 
-
 The equilibrium price function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -255,7 +232,6 @@ Now observe that the first order condition for :eq:`ltbe` can be written as
 
     u'(c)  p(y) = \beta \int v_1'(\pi', G(y, z)) \phi(dz)
 
-
 where :math:`v'_1` is the derivative of :math:`v` with respect to its first argument
 
 To obtain :math:`v'_1` we can simply differentiate the right hand side of
@@ -265,7 +241,6 @@ To obtain :math:`v'_1` we can simply differentiate the right hand side of
 
     v'_1(\pi, y) = u'(c) (y + p(y))
 
-
 Next we impose the equilibrium constraints while combining the last two
 equations to get
 
@@ -274,7 +249,6 @@ equations to get
 
     p(y)  = \beta \int \frac{u'[G(y, z)]}{u'(y)} [G(y, z) + p(G(y, z))]  \phi(dz)
 
-
 In sequential rather than functional notation, we can also write this as
 
 .. math::
@@ -282,11 +256,9 @@ In sequential rather than functional notation, we can also write this as
 
     p_t = \mathbb{E}_t \left[ \beta \frac{u'(c_{t+1})}{u'(c_t)} ( y_{t+1} + p_{t+1} ) \right]
 
-
 This is the famous consumption-based asset pricing equation
 
 Before discussing it further we want to solve out for prices
-
 
 Solving the Model
 --------------------------------------
@@ -310,14 +282,12 @@ Instead of solving for it directly we'll follow Lucas' indirect approach, first 
 
     f(y) := u'(y) p(y)
 
-
 so that :eq:`lteeq` becomes
 
 .. math::
     :label: lteeq2
 
     f(y) = h(y) + \beta \int f[G(y, z)] \phi(dz)
-
 
 Here :math:`h(y) := \beta \int u'[G(y, z)] G(y, z)  \phi(dz)` is a function that
 depends only on the primitives
@@ -334,7 +304,6 @@ First we introduce the operator :math:`T` mapping :math:`f` into :math:`Tf` as d
     :label: lteeqT
 
     (Tf)(y) = h(y) + \beta \int f[G(y, z)] \phi(dz)
-
 
 The reason we do this is that a solution to :eq:`lteeq2` now corresponds to a
 function :math:`f^*` satisfying :math:`(Tf^*)(y) = f^*(y)` for all :math:`y`
@@ -371,7 +340,6 @@ It tells us that the previous statements will be true if we can find an
     \| Tf - Tg \| \leq \alpha \| f - g \|,
     \qquad \forall \, f, g \in cb\mathbb{R}_+
 
-
 Here :math:`\|h\| := \sup_{x \in \mathbb{R}_+} |h(x)|`
 
 To see that :eq:`ltbc` is valid, pick any :math:`f,g \in cb\mathbb{R}_+` and any :math:`y \in \mathbb{R}_+`
@@ -393,10 +361,8 @@ inside,
         & = \beta  \| f -  g \|
     \end{aligned}
 
-
 Since the right hand side is an upper bound, taking the sup over all :math:`y`
 on the left hand side gives :eq:`ltbc` with :math:`\alpha := \beta`
-
 
 .. _lt_comp_eg:
 
@@ -416,89 +382,66 @@ Utility will take the isoelastic form :math:`u(c) = c^{1-\gamma}/(1-\gamma)`, wh
 
 Some code to implement the iterative computational procedure can be found below:
 
+Setup
+------------------
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
+    using Test
 
 .. code-block:: julia
 
-    using QuantEcon, Distributions, Interpolations
+    using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
+    gr(fmt = :png)
 
-    """
-    The Lucas asset pricing model --- parameters and grid data
-    """
-    struct LucasTree{TF<:AbstractFloat}
-        γ::TF                 # coefficient of risk aversion
-        β::TF                 # Discount factor in (0, 1)
-        α::TF                 # Correlation coefficient in the shock process
-        σ::TF                 # Volatility of shock process
-        ϕ::Distribution       # Distribution for shock process
-        grid::AbstractRange   # Grid of points on which to evaluate prices
-        shocks::Vector{TF}    # Draws of the shock
-        h::Vector{TF}         # The h function represented as a vector
-    end
+.. code-block:: julia
 
-    """
-    Constructor for the Lucas asset pricing model
-    """
-    function LucasTree(;γ::AbstractFloat=2.0,
-                    β::AbstractFloat=0.95,
-                    α::AbstractFloat=0.9,
-                    σ::AbstractFloat=0.1,
-                    grid_size::Integer=100)
+    # model
+    function LucasTree(;γ = 2.0,
+                        β = 0.95,
+                        α = 0.9,
+                        σ = 0.1,
+                        grid_size = 100)
 
         ϕ = LogNormal(0.0, σ)
         shocks = rand(ϕ, 500)
 
-        # == build a grid with mass around stationary distribution == #
+        # build a grid with mass around stationary distribution
         ssd = σ / sqrt(1 - α^2)
-        grid_min, grid_max = exp(-4 * ssd), exp(4 * ssd)
-        grid = range(grid_min,  grid_max, length = grid_size)
+        grid_min, grid_max = exp(-4ssd), exp(4ssd)
+        grid = range(grid_min, grid_max, length = grid_size)
 
-        # == set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz) == #
+        # set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz)
         h = similar(grid)
         for (i, y) in enumerate(grid)
             h[i] = β * mean((y^α .* shocks).^(1 - γ))
         end
 
-        return LucasTree(γ,
-                        β,
-                        α,
-                        σ,
-                        ϕ,
-                        grid,
-                        shocks,
-                        h)
+        return (γ = γ, β = β, α = α, σ = σ, ϕ = ϕ, grid = grid, shocks = shocks, h = h)
     end
 
+    # approximate Lucas operator, which returns the updated function Tf on the grid
+    function lucas_operator(lt, f)
 
-    """
-    The approximate Lucas operator, which computes and returns updated function
-    Tf on the grid points.
-    """
-    function lucas_operator(lt::LucasTree, f::Vector)
-
-        # == unpack names == #
-        grid, α, β, h = lt.grid, lt.α, lt.β, lt.h
+        # unpack input
+        @unpack grid, α, β, h = lt
         z = lt.shocks
 
         Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
 
-        Tf = [h[i] + β * mean(Af.(grid[i]^α.*z)) for i ∈ 1:length(grid)]
+        Tf = [ h[i] + β * mean(Af.(grid[i]^α .* z)) for i in 1:length(grid) ]
         return Tf
     end
 
+    # get equilibrium price for Lucas tree
+    function solve_lucas_model(lt;
+                               tol = 1e-6,
+                               max_iter = 500)
 
-    """
-    Compute the equilibrium price function associated with Lucas tree `lt`
-    """
-    function solve_lucas_model(lt::LucasTree;
-                            tol::AbstractFloat=1e-6,
-                            max_iter::Integer=500)
-
-        # == simplify notation == #
-        grid, γ = lt.grid, lt.γ
+        @unpack grid, γ = lt
 
         i = 0
         f = zero(grid)  # Initial guess of f
@@ -517,42 +460,30 @@ Some code to implement the iterative computational procedure can be found below:
         return price
     end
 
-
 An example of usage is given in the docstring and repeated here
-
-
 
 .. code-block:: julia
 
-    using Random
     Random.seed!(42) # For reproducible results.
 
-    tree = LucasTree(γ=2.0, β=0.95, α=0.90, σ=0.1)
+    tree = LucasTree(γ = 2.0, β = 0.95, α = 0.90, σ = 0.1)
     price_vals = solve_lucas_model(tree);
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test price_vals[57] ≈ 44.5077566916004
-    @test price_vals[78] ≈ 68.42956586308563
-    @test price_vals[13] ≈ 9.880376662058682
-  end
+    @testset begin
+        @test price_vals[57] ≈ 44.5077566916004
+        @test price_vals[78] ≈ 68.42956586308563
+        @test price_vals[13] ≈ 9.880376662058682
+    end
 
 Here's the resulting price function
 
-
-
 .. code-block:: julia
 
-    using Plots
-    gr(fmt=:png)
-    
-    plot(tree.grid, price_vals, lw=2, label="p*(y)")
-    plot!(xlabel="y", ylabel="price", legend=:topleft)
-
-
-
+    plot(tree.grid, price_vals, lw = 2, label = "p*(y)")
+    plot!(xlabel = "y", ylabel = "price", legend = :topleft)
 
 The price is increasing, even if we remove all serial correlation from the endowment process
 
@@ -565,7 +496,6 @@ What happens with a more patient consumer?
 
 Here the orange line corresponds to the previous parameters and the green line is price when :math:`\beta = 0.98`
 
-
 .. _mass_lt_cb:
 
 .. figure:: /_static/figures/solution_mass_ex2.png
@@ -574,7 +504,6 @@ Here the orange line corresponds to the previous parameters and the green line i
 We see that when consumers are more patient the asset becomes more valuable, and the price of the Lucas tree shifts up
 
 Exercise 1 asks you to replicate this figure
-
 
 Exercises
 ==============
@@ -586,33 +515,32 @@ Exercise 1
 
 Replicate :ref:`the figure <mass_lt_cb>` to show how discount rates affect prices
 
-
 Solutions
 ==========
 
+.. code-block:: julia
+    :class: test
 
-
+    Random.seed!(42);
 
 .. code-block:: julia
-
-    Random.seed!(42)
 
     plot()
     for β in (.95, 0.98)
-        tree = LucasTree(;β=β)
+        tree = LucasTree(;β = β)
         grid = tree.grid
         price_vals = solve_lucas_model(tree)
-        plot!(grid, price_vals, lw=2, label="beta = beta_var")
+        plot!(grid, price_vals, lw = 2, label = "beta = beta_var")
     end
 
-    plot!(xlabel="y", ylabel="price", legend=:topleft)
+    plot!(xlabel = "y", ylabel = "price", legend = :topleft)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin # For the 0.98, since the other one is overwritten.
-    Random.seed!(42)
-    price_vals = solve_lucas_model(LucasTree(β = 0.98))
-    @test price_vals[20] ≈ 35.00073581199659
-    @test price_vals[57] ≈ 124.32987344509688
-  end
+    @testset begin # For the 0.98, since the other one is overwritten.
+        Random.seed!(42)
+        price_vals = solve_lucas_model(LucasTree(β = 0.98))
+        @test price_vals[20] ≈ 35.00073581199659
+        @test price_vals[57] ≈ 124.32987344509688
+    end
