@@ -59,7 +59,7 @@ A particularly simple data type is a Boolean value, which can be either ``true``
 
 .. code-block:: julia
 
-    y = 1 > 2  # Now y = false
+    y = 1 > 2  # now y = false
 
 
 .. Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
@@ -99,7 +99,7 @@ Arithmetic operations are fairly standard
 
     x = 2; y = 1.0;
 
-The ``;`` can be used to supress  output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary
+The ``;`` can be used to suppress output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary
 
 
 .. code-block:: julia
@@ -163,7 +163,7 @@ Complex numbers are another primitive data type, with the imaginary part being s
 
 .. code-block:: julia
 
-    x * y  # Complex multiplication
+    x * y  # complex multiplication
 
 
 There are several more primitive data types that we'll introduce as necessary
@@ -238,14 +238,14 @@ Julia provides many functions for working with strings
 
 .. code-block:: julia
 
-    strip(" foobar ")  # Remove whitespace
+    strip(" foobar ")  # remove whitespace
 
 
 Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info)
 
 .. code-block:: julia
 
-    match(r"(\d+)", "Top 10")  # Find digits in string
+    match(r"(\d+)", "Top 10")  # find digits in string
 
 
 Containers
@@ -498,7 +498,7 @@ Comprehensions
 
 Comprehensions are an elegant tool for creating new arrays or dictionaries from iterables
 
-Here's some examples
+Here are some examples
 
 .. code-block:: julia
 
