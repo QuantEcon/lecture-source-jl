@@ -664,7 +664,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
 .. code-block:: julia 
 
-    using QuantEcon, Roots, Plots
+    using QuantEcon, Roots, Plots, Parameters
     gr(fmt=:png)
 
     function HistDepRamsey(A0, A1, d, Q0,
@@ -699,8 +699,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
     function compute_G(hdr, μ)
         # simplify notation
-        Q0, τ0, A, B, Q = hdr.Q0, hdr.τ0, hdr.A, hdr.B, hdr.Q
-        β = hdr.β
+        @unpack Q0, τ0, A, B, Q, β = hdr 
 
         R = hdr.R
         R[2, 3] = R[3, 2] = -μ / 2
@@ -726,7 +725,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
     function compute_u0(hdr, P)
         # simplify notation
-        Q0, τ0 = hdr.Q0, hdr.τ0
+        @unpack Q0, τ0 = hdr
 
         P21 = P[4, 1:3]
         P22 = P[4, 4]
@@ -770,7 +769,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
     function compute_ramsey_path!(hdr, rp)
         # simplify notation
-        y, uhat, uhatdif, τhat, = rp.y, rp.uhat, rp.uhatdif, rp.τhat
+        @unpack y, uhat, uhatdif, τhat, = rp
         τhatdif, μ, G, GPay = rp.τhatdif, rp.μ, rp.G, rp.GPay
         β = hdr.β
 
