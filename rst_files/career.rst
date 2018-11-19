@@ -152,7 +152,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 
 .. code-block:: julia
 
-  using Plots, QuantEcon, Distributions # used PyPlot
+  using Plots, QuantEcon, Distributions 
   gr(fmt=:png)
 
   n = 50
@@ -252,7 +252,7 @@ The code for solving the DP problem described above is found below:
 
 The code defines
 
-* a type ``CareerWorkerProblem`` that
+* a named tuple ``CareerWorkerProblem`` that
 
     * encapsulates all the details of a particular parameterization
 
@@ -315,7 +315,7 @@ Exercises
 Exercise 1
 ------------
 
-Using the default parameterization in the type ``CareerWorkerProblem``,
+Using the default parameterization in the ``CareerWorkerProblem``,
 generate and plot typical sample paths for :math:`\theta` and :math:`\epsilon`
 when the worker follows the optimal policy
 
@@ -366,7 +366,7 @@ Exercise 3
 As best you can, reproduce :ref:`the figure showing the optimal policy <career_opt_pol>`
 
 Hint: The ``get_greedy()`` method returns a representation of the optimal
-policy where values 1, 2 and 3 correspond to "stay put", "new job" and "new life" respectively.  Use this and ``contourf`` from ``PyPlot.jl`` to produce the different shadings.
+policy where values 1, 2 and 3 correspond to "stay put", "new job" and "new life" respectively. Use this and the plots functions (e.g., ``contour, contour!``) to produce the different shadings.
 
 Now set ``G_a = G_b = 100`` and generate a new figure with these parameters.  Interpret.
 

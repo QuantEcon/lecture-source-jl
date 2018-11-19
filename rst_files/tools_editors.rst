@@ -45,7 +45,7 @@ To add the file:
 
 2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
 
-3. Either download the file `startup.jl </_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
+3. Either download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
 
 .. include:: /_static/includes/startup.jl.raw
 
@@ -176,7 +176,7 @@ Sometimes, Juno will fail to find the Julia executable (say, if it's installed s
 
 To do this
 1. ``Ctrl-,`` to get `Settings` pane, and select the `Packages` tab
-2. Type in ``julia-client`` and choos `Settings`
+2. Type in ``julia-client`` and choose `Settings`
 3. Find the `Julia Path`, and fill it in with the location of the Julia binary
 
     * To find, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen

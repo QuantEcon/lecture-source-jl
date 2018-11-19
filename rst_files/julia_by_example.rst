@@ -51,16 +51,16 @@ Set Up
 
 We assume that you've worked your way through :doc:`our getting started lecture <getting_started>` already
 
-In particular, the easiest way to install and precompile all of the Julia packages used in the QuantEcon 
+In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon 
 notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
 
 
 Other References
 --------------------
 
-The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/stable/>`_
+The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/v1/>`_
 
-The manual is thoughtfully written but also quite dense (and somewhat evangelical)
+The manual is thoughtfully written but is also quite dense (and somewhat evangelical)
 
 The presentation in this and our remaining lectures is more of a tutorial style based around examples
 
@@ -81,11 +81,11 @@ process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :mat
 Introduction to Packages
 --------------------------
 
-The first step is to activate a project environment, which are encapsulated by ``Project.toml`` and ``Manifest.toml`` files
+The first step is to activate a project environment, which is encapsulated by ``Project.toml`` and ``Manifest.toml`` files
 
 There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
 
-#. directly ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
+#. ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
 #. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
 #. use the ``InstantiateFromURL`` package
 
@@ -112,7 +112,7 @@ After the installation and activation, ``using`` provides a way to say that a pa
 Using Functions from a Package
 --------------------------------
 
-Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution mean 0 and variance 1 if given no parameters
+Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution with mean 0 and variance 1 if given no parameters
 
 .. code-block:: julia
 
@@ -141,7 +141,7 @@ The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries
 
 The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings
 
-The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution mean 0 and variance 1
+The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution with mean 0 and variance 1
 
 Arrays
 --------
@@ -209,7 +209,7 @@ program, for the sake of learning syntax let's rewrite our program to use a
     
     In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
 
-Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
+Starting with the most direct version, and pretending we are in a world where ``randn`` can only return a single value
 
 .. code-block:: julia
 
@@ -227,11 +227,11 @@ The ``for`` loop then populates this array by successive calls to ``randn()``
 
 Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``
 
-The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
+The word ``in`` from the ``for`` loop can be replaced by either ``∈`` or ``=``
 
-The index variable is looped over for all integers from ``1:n``--but this does not actually create a vector of those indices
+The index variable is looped over for all integers from ``1:n`` -- but this does not actually create a vector of those indices
 
-Instead, it creates an **iterator** that is looped over --- in this case the **range** of integers from ``1`` to ``n``
+Instead, it creates an **iterator** that is looped over -- in this case the **range** of integers from ``1`` to ``n``
 
 While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear
 
@@ -246,7 +246,7 @@ To fix this, use ``eachindex``
             ϵ[i] = randn()
         end
      
-Here, ``eachindex(ϵ)`` returns an interator of indices which can be used to access ``ϵ``
+Here, ``eachindex(ϵ)`` returns an iterator of indices which can be used to access ``ϵ``
 
 While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code 
 
@@ -254,7 +254,7 @@ In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-        ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0!
+        ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0
         m = 5
         for ϵ_val in ϵ[1:m]
             ϵ_sum = ϵ_sum + ϵ_val
@@ -279,9 +279,9 @@ Approximately equal, typed with ``\approx<TAB>``, is the appropriate way to comp
 User-Defined Functions
 ----------------------------
 
-For the sake of the exercise, let's define  go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+For the sake of the exercise, let's go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
 
-To make things more interesting, instead of directly plotting the draws from the distribution, lets plot the square of the draws
+To make things more interesting, instead of directly plotting the draws from the distribution, let's plot the squares of these draws
 
 .. code-block:: julia
 
@@ -323,11 +323,11 @@ Let us make this example slightly better by "remembering" that ``randn`` can ret
 
 While better, the looping over the ``i`` index to square the results is difficult to read
 
-Instead of looping, we can instead **broadcast** the ``^2`` square function over a vector using a ``.``
+Instead of looping, we can **broadcast** the ``^2`` square function over a vector using a ``.``
 
 To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
 
-Loops of this sort are at least as efficient than vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
+Loops of this sort are at least as efficient as vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
 
 .. code-block:: julia
 
@@ -355,19 +355,19 @@ Finally, we can broadcast any function, where squaring is only a special case
     generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
     data = generatedata(5)
 
-As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply a function 
+As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply to a function 
     
 .. code-block:: julia
 
     # too abstract?
-    generatedata(n, gen) = gen.(randn(n)) # Uses broadcast for some function `gen`
+    generatedata(n, gen) = gen.(randn(n)) # uses broadcast for some function `gen`
     
     f(x) = x^2 # simple square function 
     data = generatedata(5, f) # applies f
 
 Whether this example is better or worse than the previous version depends on how it is used
 
-High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or confusing, but Julia enables you to use these techniques **with no performance overhead**
+High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or more confusing, but Julia enables you to use these techniques **with no performance overhead**
 
 For this particular case, the clearest and most general solution is probably the simplest
 
@@ -385,7 +385,7 @@ While broadcasting above superficially looks like vectorizing functions in MATLA
 
 The other additional function ``plot!`` adds a graph to the existing plot
 
-This follows a general convention in Julia, where a function which modifies the arguments or a global state has a ``!`` at the end of it the name
+This follows a general convention in Julia, where a function that modifies the arguments or a global state has a ``!`` at the end of its name
 
 
 A Slightly More Useful Function
@@ -393,9 +393,9 @@ A Slightly More Useful Function
 
 Let's make a slightly more useful function
 
-This function will be passed a choice of probability distribution and respond by plotting a histogram of observations
+This function will be passed in a choice of probability distribution and respond by plotting a histogram of observations
 
-In doing so we'll make use of the Distributions package, which we assume was instantiated above with the project
+In doing so we'll make use of the ``Distributions`` package, which we assume was instantiated above with the project
 
 
 Here's the code
@@ -416,7 +416,7 @@ Here's the code
 Let's have a casual discussion of how all this works while leaving technical details for later in the lectures
 
 First, ``lp = Laplace()`` creates an instance of a data type defined
-in the Distributions module that represents the Laplace distribution
+in the ``Distributions`` module that represents the Laplace distribution
 
 The name ``lp`` is bound to this value
 
@@ -452,7 +452,7 @@ depending on the particular arguments that they're passed
 
 Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value
 
-The compiler knows which function definition to apply in a given setting by looking at the types of the values the function is called on
+The compiler knows which function definition to apply to in a given setting by looking at the types of the values the function is called on
 
 In Julia these alternative versions of a function are called **methods**
 
@@ -538,13 +538,13 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
     end
     println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
 
-The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or inside of a function
+The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or the inside of a function
 
 Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values
 
-The other new function is the ``println`` with the string interpolation, which splices a value of an expression or variable prefixed by ``$`` into a string
+The other new function is the ``println`` with the string interpolation, which splices the value of an expression or variable prefixed by ``$`` into a string
 
-An alternative approach is to use a ``for`` loop, and checking for convergence in each iteration
+An alternative approach is to use a ``for`` loop, and check for convergence in each iteration
 
 .. code-block:: julia
 
@@ -583,7 +583,7 @@ The first problem with this setup is that it depends on being sequentially run -
             v_new = p + β * v_old # the f(v) map
             normdiff = norm(v_new - v_old)
             
-            #Replace and continue
+            # replace and continue
             v_old = v_new
             iter = iter + 1
         end
@@ -601,7 +601,7 @@ The first problem with this setup is that it depends on being sequentially run -
     println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
-While better, there are still improvements
+While better, there could still be improvements
 
 Passing a Function
 --------------------
@@ -640,7 +640,7 @@ A key feature of languages like Julia, is the ability to efficiently handle func
     println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
-Much closer, but there are still hidden bugs if the user orders the settings or return types wrong
+Much closer, but there are still hidden bugs if the user orders the settings or returns types wrong
 
 Named Arguments and Return Values
 -----------------------------------
@@ -649,7 +649,7 @@ To enable this, Julia has two features:  named function parameters, and named tu
 
 .. code-block:: julia
 
-     # good style
+    # good style
     function fixedpointmap(f; iv, tolerance=1E-7, maxiter=1000)
         # setup the algorithm
         x_old = iv
@@ -853,7 +853,7 @@ The `binomial random variable <https://en.wikipedia.org/wiki/Binomial_distributi
 * each trial succeeds with probability :math:`p`
 
 Using only ``rand()`` from the set of Julia's built-in random number
-generators (not the Distributions package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`
+generators (not the ``Distributions`` package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`
 
 Hint: If :math:`U` is uniform on :math:`(0, 1)` and :math:`p \in (0,1)`, then the expression ``U < p`` evaluates to ``true`` with probability :math:`p`
 
@@ -871,7 +871,7 @@ Your hints are as follows:
 
 * If :math:`U` is a bivariate uniform random variable on the unit square :math:`(0, 1)^2`, then the probability that :math:`U` lies in a subset :math:`B` of :math:`(0,1)^2` is equal to the area of :math:`B`
 
-* If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets large, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
+* If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets larger, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
 
 * For a circle, area = π * :math:`radius^2`
 
@@ -938,7 +938,7 @@ Take a random walk, starting from :math:`x_0 = 1`
 * The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
 * For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`
 
-Start :math:`\sigma = 0.2, \alpha = 1.0`
+Start with :math:`\sigma = 0.2, \alpha = 1.0`
 
 1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks -- to a :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
@@ -950,7 +950,7 @@ Exercise 8(a)
 
 This exercise is more challenging
 
-The root of a univariate function is :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
+The root of a univariate function :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
 
 One solution method to find local roots of smooth functions is called Newton's method
 
@@ -962,14 +962,14 @@ Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-de
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
-#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept an ``f, f_prime, x_0, tolerance, maxiter``
+#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept arguments ``f, f_prime, x_0, tolerance, maxiter``
 
 #.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
 
 Exercise 8(b)
 ---------------
 
-For those impatient to use more advanced features of Julia, implement a version where Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
+For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
 
 .. code-block:: julia
 
@@ -1036,14 +1036,14 @@ Exercise 2
 Exercise 3
 ----------
 
-Consider the circle of diameter 1 embedded in the unit square
+Consider a circle with diameter 1 embedded in a unit square
 
 Let :math:`A` be its area and let :math:`r = 1/2` be its radius
 
 If we know :math:`\pi` then we can compute :math:`A` via
 :math:`A = \pi r^2`
 
-But here the point is to compute :math:`\pi`, which we can do by
+But the point here is to compute :math:`\pi`, which we can do by
 :math:`\pi = A / r^2`
 
 Summary: If we can estimate the area of the unit circle, then dividing
@@ -1094,7 +1094,7 @@ Exercise 4
     println("\npayoff = $payoff")
 
 
-We can simplify this somewhat using the **ternary operator**. Here's
+We can simplify this somewhat using the **ternary operator**. Here are
 some examples
 
 .. code-block:: julia
@@ -1152,7 +1152,7 @@ Exercise 6
 
     αs = [0.0, 0.8, 0.98]
     n = 200
-    p = plot() #Naming a plot to add to
+    p = plot() # naming a plot to add to
 
     for α in αs
         x = zeros(n + 1)
@@ -1167,7 +1167,7 @@ Exercise 6
 Exercise 7: Hint
 -----------------
 
-As a hint, notice the following pattern for finding the number of draws of a uniform random number until below a given threshold
+As a hint, notice the following pattern for finding the number of draws of a uniform random number until it is below a given threshold
 
 .. code-block:: julia
 

@@ -10,8 +10,6 @@
 
 .. contents:: :depth: 2
 
-.. TODO: Still need to change some of references to matlab programs to python programs, but some are done.  Where should we put these python files - currently they are in /_static/temp/EvansSargent.
-
 Overview
 ============
 
@@ -666,41 +664,8 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
 .. code-block:: julia 
 
-    using QuantEcon, Roots, Plots
+    using QuantEcon, Roots, Plots, Parameters
     gr(fmt=:png)
-
-    struct HistDepRamsey
-        # these are the parameters of the economy
-        A0
-        A1
-        d
-        Q0
-        τ0
-        μ0
-        β
-
-        # These are the LQ fields and stationary values
-        R
-        A
-        B
-        Q
-        P
-        F
-        lq
-    end
-
-
-    struct RamseyPath
-        y
-        uhat
-        uhatdif
-        τhat
-        τhatdif
-        μ
-        G
-        GPay
-    end
-
 
     function HistDepRamsey(A0, A1, d, Q0,
                            τ0, μ, β)
@@ -726,14 +691,15 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
         P, F, _d = stationary_values(lq)
 
-        HistDepRamsey(A0, A1, d, Q0, τ0, μ0, β, R, A, B, Q, P, Array(F), lq)
+        return (A0 = A0, A1 = A1, d = d, Q0 = Q0, τ0 = τ0, 
+                μ0 = μ0, β = β, R = R, A = A, B = B, Q = Q, 
+                P = P, F = Array(F), lq = lq)
     end
 
 
     function compute_G(hdr, μ)
         # simplify notation
-        Q0, τ0, A, B, Q = hdr.Q0, hdr.τ0, hdr.A, hdr.B, hdr.Q
-        β = hdr.β
+        @unpack Q0, τ0, A, B, Q, β = hdr 
 
         R = hdr.R
         R[2, 3] = R[3, 2] = -μ / 2
@@ -759,7 +725,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
     function compute_u0(hdr, P)
         # simplify notation
-        Q0, τ0 = hdr.Q0, hdr.τ0
+        @unpack Q0, τ0 = hdr
 
         P21 = P[4, 1:3]
         P22 = P[4, 4]
@@ -795,13 +761,15 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
         τhatdif[1] = 0
         y[:, 1] = vcat([1.0 hdr.Q0 hdr.τ0]', u0)
 
-        return RamseyPath(y, uhat, uhatdif, τhat, τhatdif, μ, G, GPay)
+        return (y = y, uhat = uhat, uhatdif = uhatdif, 
+                τhat = τhat, τhatdif = τhatdif, μ = μ, 
+                G = G, GPay = GPay)
     end
 
 
     function compute_ramsey_path!(hdr, rp)
         # simplify notation
-        y, uhat, uhatdif, τhat, = rp.y, rp.uhat, rp.uhatdif, rp.τhat
+        @unpack y, uhat, uhatdif, τhat, = rp
         τhatdif, μ, G, GPay = rp.τhatdif, rp.μ, rp.G, rp.GPay
         β = hdr.β
 

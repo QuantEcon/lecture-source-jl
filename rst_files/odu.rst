@@ -172,7 +172,7 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
-  using Distributions, Plots, QuantEcon, Interpolations
+  using Distributions, Plots, QuantEcon, Interpolations, Parameters
 
   gr(fmt=:png)
 
@@ -225,24 +225,6 @@ The code is as follows
 
 .. code-block:: julia
 
-  struct SearchProblem
-      β
-      c
-      F
-      G
-      f
-      g
-      n_w
-      w_max
-      w_grid
-      n_π
-      π_min
-      π_max
-      π_grid
-      quad_nodes
-      quad_weights
-  end
-
   # use key word argment
   function SearchProblem(;β = 0.95, c = 0.6, F_a = 1, F_b = 1,
                          G_a = 3, G_b = 1.2, w_max = 2.0,
@@ -251,8 +233,7 @@ The code is as follows
       F = Beta(F_a, F_b)
       G = Beta(G_a, G_b)
 
-      # NOTE: the x./w_max)./w_max in these functions makes our dist match
-      #       the scipy one with scale=w_max given
+      # scaled pdfs
       f(x) = pdf.(F, x/w_max)/w_max
       g(x) = pdf.(G, x/w_max)/w_max
 
@@ -264,9 +245,11 @@ The code is as follows
 
       nodes, weights = qnwlege(21, 0.0, w_max)
 
-      SearchProblem(β, c, F, G, f, g,
-                  w_grid_size, w_max, w_grid,
-                  π_grid_size, π_min, π_max, π_grid, nodes, weights)
+      return (β = β, c = c, F = F, G = G, f = f, 
+              g = g, n_w = w_grid_size, w_max = w_max, 
+              w_grid = w_grid, n_π = π_grid_size, π_min = π_min, 
+              π_max = π_max, π_grid = π_grid, quad_nodes = nodes, 
+              quad_weights = weights)
   end
 
   function q(sp, w, π_val)
@@ -278,8 +261,8 @@ The code is as follows
 
   function bellman_operator!(sp, v, out;
                              ret_policy = false)
-      # Simplify names
-      f, g, β, c = sp.f, sp.g, sp.β, sp.c
+      # simplify names
+      @unpack f, g, β, c = sp
       nodes, weights = sp.quad_nodes, sp.quad_weights
 
       vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
@@ -320,8 +303,8 @@ The code is as follows
   get_greedy(sp, v) = bellman_operator(sp, v, ret_policy = true)
 
   function res_wage_operator!(sp, ϕ, out)
-      # Simplify name
-      f, g, β, c = sp.f, sp.g, sp.β, sp.c
+      # simplify name
+      @unpack f, g, β, c = sp
 
       # Construct interpolator over π_grid, given ϕ
       ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())

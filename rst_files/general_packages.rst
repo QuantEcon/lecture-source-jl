@@ -312,7 +312,7 @@ Routines are available for
 
 * Schur factorization, etc.
 
-See `here <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#Linear-Algebra-1>`__ for further details
+See `here <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/>`_ for further details
 
 
 General Tools
