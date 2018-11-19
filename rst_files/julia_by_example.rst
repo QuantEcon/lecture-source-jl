@@ -58,7 +58,7 @@ notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter noteboo
 Other References
 --------------------
 
-The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/stable/>`_
+The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/v1/>`_
 
 The manual is thoughtfully written but is also quite dense (and somewhat evangelical)
 
