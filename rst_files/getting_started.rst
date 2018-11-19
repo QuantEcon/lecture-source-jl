@@ -299,7 +299,7 @@ Shell Commands
 
 You can execute shell commands (system commands) in IJulia by prepending a semicolon
 
-For example, ``;ls`` will execute the UNIX style shell command ``ls``, 
+For example, ``; ls`` will execute the UNIX style shell command ``ls``, 
 which --- at least for UNIX style operating systems --- lists the 
 contents of the current working directory
 
