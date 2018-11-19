@@ -347,7 +347,7 @@ To start the REPL in a typical Jupyter lab environment
 
 Otherwise, if you  have a local installation, then  
 
-* Navigatw to Julia through your menus or desktop icons (Windows, OSX), or
+* Navigate to Julia through your menus or desktop icons (Windows, OSX), or
 
 * Open a terminal and type ``julia`` (Linux)
 
