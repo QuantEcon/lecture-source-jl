@@ -1400,8 +1400,7 @@ Here's one solutions:
         return is_subset
     end
 
-    # == test == #
-
+    # test
     println(f_ex4([1, 2], [1, 2, 3]))
     println(f_ex4([1, 2, 3], [1, 2]))
 
@@ -1429,13 +1428,13 @@ Exercise 5
         num_subintervals = n - 1
         step = length_of_interval / num_subintervals
 
-        # find first grid point larger than x === #
+        # find first grid point larger than x
         point = a
         while point ≤ x
             point += step
         end
 
-        # x must lie between the gridpoints (point - step) and point === #
+        # x must lie between the gridpoints (point - step) and point
         u, v = point - step, point
 
         return f(u) + (x - u) * (f(v) - f(u)) / (v - u)
