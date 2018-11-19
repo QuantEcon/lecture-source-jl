@@ -74,9 +74,9 @@ This lecture can be viewed as a followup to :doc:`perm_income_cons` and  a warm 
 
 Linear-quadratic versions of the Lucas-Stokey tax-smoothing model are described in :doc:`lqramsey`
 
-The key difference between those lectures and this one is
+The key differences between those lectures and this one are
 
-* Here the decision maker  takes all prices as exogenous, meaning that his decisions do not affect them
+* Here the decision maker takes all prices as exogenous, meaning that his decisions do not affect them
 
 * In :doc:`lqramsey` and :doc:`opt_tax_recur`, the decision maker -- the government in the case of these lectures -- recognizes that his decisions affect prices
 
@@ -425,7 +425,7 @@ Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget co
 
     @testset "Budget Constraint Tests" begin
         # assert that the object above is always true
-        @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0) 
+        @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
         @test c_bar ≈ 1.7241558441558444 # default example invariance
         @test debt_complete[2] ≈ 2.188311688311688 # one of the other objects
     end
@@ -629,13 +629,13 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
     plt_tax = plot(title = "Tax collection paths", x_label = "Periods", ylim = [1.4,2.1])
     plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
     plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
-    plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, 
+    plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash,
           lw = 2)
 
     plt_gov = plot(title = "Government assets paths", x_label = "Periods")
     plot!(plt_gov, 1:N_simul, debt_path, label = "incomplete market", lw = 2)
     plot!(plt_gov, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
-    plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash, 
+    plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash,
           lw = 2)
     hline!(plt_gov, [0], linestyle = :dash, color = :black, lw = 2, label = "")
     plot(plt_tax, plt_gov, layout = (1,2), size = (800, 400))
