@@ -389,7 +389,7 @@ If you have access to a cloud-based solution for Jupyter, then that is typically
 .. (e.g. `www.syzygy.ca <www.syzygy.ca>`_ and `juliabox.com <www.juliabox.com>`_ )
 
 
-If you are giving an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
+If you are using an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
 
 Otherwise, if there are errors when you attempt to use an online JupyterHub, you will need to go open a Jupyter notebook and type
 
