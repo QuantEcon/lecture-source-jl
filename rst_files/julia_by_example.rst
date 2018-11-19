@@ -227,7 +227,7 @@ The ``for`` loop then populates this array by successive calls to ``randn()``
 
 Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``
 
-The word ``in`` from the ``for`` loop can be replaced by etiher ``∈`` or ``=``
+The word ``in`` from the ``for`` loop can be replaced by either ``∈`` or ``=``
 
 The index variable is looped over for all integers from ``1:n`` -- but this does not actually create a vector of those indices
 
@@ -254,7 +254,7 @@ In Julia you can also loop directly over arrays themselves, like so
 
 .. code-block:: julia
 
-        ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0!
+        ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0
         m = 5
         for ϵ_val in ϵ[1:m]
             ϵ_sum = ϵ_sum + ϵ_val
