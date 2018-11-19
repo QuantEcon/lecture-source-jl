@@ -705,7 +705,7 @@ Let's check that it works
     f(1 / pi)
 
 
-Julia also allows for you to define anonymous functions
+Julia also allows you to define anonymous functions
 
 For example, to define ``f(x) = sin(1 / x)`` you can use ``x -> sin(1 / x)``
 
@@ -717,7 +717,7 @@ Typically it's as an argument to another function
 
 .. code-block:: julia
 
-    map(x -> sin(1 / x), randn(3))  # Apply function to each element
+    map(x -> sin(1 / x), randn(3))  # apply function to each element
 
 
 Optional and Keyword Arguments
@@ -731,7 +731,7 @@ Function arguments can be given default values
 
     f(x, a = 1) = exp(cos(a * x))
 
-If the argument is not supplied the default value is substituted
+If the argument is not supplied, the default value is substituted
 
 .. code-block:: julia
 
@@ -746,7 +746,7 @@ If the argument is not supplied the default value is substituted
 Another option is to use **keyword** arguments
 
 The difference between keyword and standard (positional) arguments is that
-they are parsed and bound by name rather than order in the function call
+they are parsed and bounded by name rather than the order in the function call
 
 For example, in the call
 
