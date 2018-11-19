@@ -130,6 +130,7 @@ The parameter :math:`\delta` is the depreciation rate
 From the first-order condition with respect to capital, the firm's inverse demand for capital is
 
 .. math::
+    :label: aiy_rgk
 
     r = A \alpha  \left( \frac{N}{K} \right)^{1 - \alpha} - \delta
 
@@ -137,6 +138,7 @@ Using this expression and the firm's first-order condition for labor, we can pin
 the equilibrium wage rate as a function of :math:`r` as
 
 .. math::
+    :label: aiy_wgr
 
     w(r) = A  (1 - \alpha)  (A \alpha / (r + \delta))^{\alpha / (1 - \alpha)}
 
@@ -165,7 +167,7 @@ In practice, once parameter values are set, we can check for an SREE by the foll
 
 #. pick a proposed quantity :math:`K` for aggregate capital
 
-#. determine corresponding prices, with interest rate :math:`r` and wage rate :math:`w(r)` determined by inverse demand for capital and labor. 
+#. determine corresponding prices, with interest rate :math:`r` determined by :eq:`aiy_rgk` and a wage rate :math:`w(r)` as given in :eq:`aiy_wgr`
 
 #. determine the common optimal savings policy of the households given these prices
 
