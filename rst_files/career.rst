@@ -252,7 +252,7 @@ The code for solving the DP problem described above is found below:
 
 The code defines
 
-* a type ``CareerWorkerProblem`` that
+* a named tuple ``CareerWorkerProblem`` that
 
     * encapsulates all the details of a particular parameterization
 
@@ -315,7 +315,7 @@ Exercises
 Exercise 1
 ------------
 
-Using the default parameterization in the type ``CareerWorkerProblem``,
+Using the default parameterization in the ``CareerWorkerProblem``,
 generate and plot typical sample paths for :math:`\theta` and :math:`\epsilon`
 when the worker follows the optimal policy
 
