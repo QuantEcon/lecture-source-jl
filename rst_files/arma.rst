@@ -438,7 +438,7 @@ It is an exercise to show that the MA(1) process :math:`X_t = \theta \epsilon_{t
     = \sigma^2 ( 1 + 2 \theta \cos(\omega) + \theta^2 )
 
 
-With a bit more effort, it's possible to show (see, e.g., p. 261 of :cite:`Sargent1987`) that the spectral density of the AR(1) process :math:`X_t = \phi X_{t-1} + \epsilon_t` is
+With a bit more effort, it is possible to show (see, e.g., p. 261 of :cite:`Sargent1987`) that the spectral density of the AR(1) process :math:`X_t = \phi X_{t-1} + \epsilon_t` is
 
 .. math::
     :label: ar1_sd_ed
@@ -464,7 +464,7 @@ The derivation of :eq:`arma_sd` uses the fact that convolutions become products 
 
 The proof is elegant and can be found in many places --- see, for example, :cite:`Sargent1987`, chapter 11, section 4
 
-It's a nice exercise to verify that :eq:`ma1_sd_ed` and :eq:`ar1_sd_ed` are indeed special cases of :eq:`arma_sd`
+It is a nice exercise to verify that :eq:`ma1_sd_ed` and :eq:`ar1_sd_ed` are indeed special cases of :eq:`arma_sd`
 
 Interpreting the :index:`Spectral Density`
 --------------------------------------------

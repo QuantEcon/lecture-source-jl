@@ -251,8 +251,7 @@ The code is as follows
       F = Beta(F_a, F_b)
       G = Beta(G_a, G_b)
 
-      # NOTE: the x./w_max)./w_max in these functions makes our dist match
-      #       the scipy one with scale=w_max given
+      # scaled pdfs
       f(x) = pdf.(F, x/w_max)/w_max
       g(x) = pdf.(G, x/w_max)/w_max
 
