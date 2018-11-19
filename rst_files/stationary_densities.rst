@@ -510,8 +510,6 @@ The following code is example of usage for the stochastic growth model :ref:`des
       =#
       d = s * x.^α
 
-      # scipy silently evaluates the pdf of the lognormal dist at a negative
-      # value as zero. It should be undefined and Julia recognizes this.
       pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
       return pdf.(ϕ, pdf_arg) ./ d
   end
@@ -1076,8 +1074,6 @@ Here's one program that does the job.
         =#
             d = s * x.^α
 
-        # scipy silently evaluates the pdf of the lognormal dist at a negative
-        # value as zero. It should be undefined and Julia recognizes this.
         pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
         return pdf.(ϕ, pdf_arg) ./ d
     end

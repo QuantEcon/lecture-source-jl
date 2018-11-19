@@ -44,7 +44,7 @@ As we have seen in the previous lectures, in Julia all values have a type, which
     @show typeof(1)
     @show typeof(1.0);
 
-The hard-coded values ``1`` and ``1.0`` are called literals in a programming
+The hard-coded values ``1`` and ``1.0`` are called literals in a programming 
 language, and the compiler deduces their types (``Int64`` and ``Float64`` respectively in the example above)
 
 You can also query the type of a value
@@ -81,7 +81,7 @@ A concrete type is one where values can be created by the compiler (equivalently
 Values of a **parametric type** cannot be concretely constructed unless all of the parameters are given (themselves with concrete types)
 
 In the case of ``Complex{Float64}``
-
+ 
 #. ``Complex`` is an abstract complex number type
 #. ``Float64`` is a concrete type declaring what the type of the real and imaginary parts of the value should store
 
@@ -142,8 +142,8 @@ Now ``x`` "points to" another value, of type ``Float64``
 
 .. However, outside of these sorts of examples and tests, it is usually a bad idea to change the type of a variable haphazardly
 
-However, beyond a few notable exceptions (e.g. ``nothing`` used for `error handling <error_handling>`_),
-changing types is usually a symptom of poorly organized code, and makes
+However, beyond a few notable exceptions (e.g. ``nothing`` used for `error handling <error_handling>`_), 
+changing types is usually a symptom of poorly organized code, and makes 
 `type inference <type_inference>`_ more difficult for the compiler
 
 The Type Hierarchy
@@ -209,7 +209,7 @@ The point of abstract types is to categorize the concrete types, as well as othe
 There are some further functions to help you explore the type hierarchy, such as ``show_supertypes`` which walks up the tree of types to ``Any`` for a given type
 
 .. code-block:: julia
-
+    
     using Base: show_supertypes  # import the function from the `Base` package
 
     show_supertypes(Int64)
@@ -219,7 +219,7 @@ There are some further functions to help you explore the type hierarchy, such as
 And the ``subtypes`` which gives a list of the available subtypes for any packages or code currently loaded
 
 .. code-block:: julia
-
+    
     @show subtypes(Real)
     @show subtypes(AbstractFloat);
 
@@ -229,7 +229,7 @@ And the ``subtypes`` which gives a list of the available subtypes for any packag
 Deducing and Declaring Types
 =============================
 
-We will discuss this in detail in :doc:`a later lecture lecture <generic_programming>`,
+We will discuss this in detail in :doc:`a later lecture lecture <generic_programming>`, 
 but much of Julia's performance gains and generality of notation comes from its type system
 
 For example
@@ -238,7 +238,7 @@ For example
 
     x1 = [1, 2, 3]
     x2 = [1.0, 2.0, 3.0]
-
+    
     @show typeof(x1)
     @show typeof(x2)
 
@@ -250,7 +250,7 @@ Given the information on the type, the compiler can work through the sequence of
 
     f(y) = 2y # define some function
 
-
+    
     x = [1, 2, 3]
     z = f(x) # call with an integer array - compiler deduces type
 
@@ -258,7 +258,7 @@ Given the information on the type, the compiler can work through the sequence of
 Good Practices for Functions and Variable Types
 -------------------------------------------------
 
-In order to keep many of the benefits of Julia, you will sometimes want to ensure
+In order to keep many of the benefits of Julia, you will sometimes want to ensure 
 the compiler can always deduce a single type from any function or expression
 
 An example of bad practice is to use an array to hold unrelated types
@@ -280,11 +280,11 @@ As an example, consider a function which returns different types depending on th
     function f(x)
         if x > 0
             return 1.0
-        else
+        else 
             return 0  # probably meant `0.0`
         end
     end
-
+    
     @show f(1)
     @show f(-1);
 
@@ -316,17 +316,17 @@ To give an example of the declaration of types, the following are equivalent
         b = [5.0, 6.0]
         return A * x .+ b
     end
-
+    
     val = f([0.1, 2.0], [1.0 2.0; 3.0 4.0])
 
 .. code-block:: julia
 
-    function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64}
+    function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64} 
         # argument and return types
         b::Vector{Float64} = [5.0, 6.0]
         return A * x .+ b
     end
-
+    
     val = f2([0.1; 2.0], [1.0 2.0; 3.0 4.0])
 
 While declaring the types may be verbose, would it ever generate faster code?
@@ -352,7 +352,7 @@ Creating New Types
 
 Up until now, we have used ``NamedTuple`` to collect sets of parameters for our models and examples
 
-These are useful for maintaining values for model parameters,
+These are useful for maintaining values for model parameters, 
 but you will eventually need to be able to use code that creates its own types
 
 Syntax for Creating Concrete Types
@@ -371,8 +371,8 @@ Let's start with a trivial example where the ``struct`` we build has fields name
 
 .. code-block:: julia
 
-    struct FooNotTyped  # immutable by default, use `mutable struct` otherwise
-        a # BAD! not typed
+    struct FooNotTyped  # immutable by default, use `mutable struct` otherwise 
+        a # BAD! not typed 
         b
         c
     end
@@ -395,12 +395,12 @@ It has the same name as the data type but uses function call notion
 
     foo_nt = FooNotTyped(2.0, 3, [1.0, 2.0, 3.0])  # new `FooNotTyped`
     foo = Foo(2.0, 3, [1.0, 2.0, 3.0]) # creates a new `Foo`
-
+    
     @show typeof(foo)
     @show foo.a       # get the value for a field
     @show foo.b
     @show foo.c;
-
+    
     # foo.a = 2.0     # fails since it is immutable
 
 You will notice two differences above for the creation of a ``struct`` compared to our use of ``NamedTuple``
@@ -430,7 +430,7 @@ The first example, which is usually just as low-performance as no declaration of
         c::Vector{Real}  # BAD! Not a concrete type
     end
 
-The second issue is that by choosing a type (as in the ``Foo`` above), you may
+The second issue is that by choosing a type (as in the ``Foo`` above), you may 
 be unnecessarily constraining what is allowed
 
 .. code-block:: julia
@@ -442,7 +442,7 @@ be unnecessarily constraining what is allowed
     foo = Foo(a, b, c)
     f(foo)   # call with the foo, no problem
 
-    # some other typed for the values
+    # some other typed for the values 
     a = 2   # not a floating point but `f()` would work
     b = 3
     c = [1.0, 2.0, 3.0]'   # transpose is not a `Vector` but `f()` would work
@@ -503,24 +503,24 @@ However, the other issue where constructor arguments are error-prone, can be rem
 .. code-block:: julia
 
     using Parameters
-
+    
     @with_kw  struct Foo5
         a::Float64 = 2.0     # adds default value
         b::Int64
         c::Vector{Float64}
     end
-
+    
     foo = Foo5(a = 0.1, b = 2, c = [1.0, 2.0, 3.0])
     foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2)  # rearrange order, uses default values
-
+    
     @show foo
     @show foo2
 
     function f(x)
         @unpack a, b, c = x     # can use `@unpack` on any struct
-        return a + b + sum(c)
+        return a + b + sum(c) 
     end
-
+    
     f(foo)
 
 .. _generic_tips_tricks:
@@ -532,14 +532,14 @@ As discussed in the previous sections, there is major advantage to never declari
 
 The main place where it is necessary is designing code around `multiple dispatch <intro_multiple_dispatch>`_
 
-If you are careful to write code that doesn't unnecessarily assume types,
+If you are careful to write code that doesn't unnecessarily assume types, 
 you will both achieve higher performance and allow seamless use of a
-number of powerful libraries such as
-`auto-differentiation <https://github.com/JuliaDiff/ForwardDiff.jl>`_,
-`static arrays <https://github.com/JuliaArrays/StaticArrays.jl>`_,
-`GPUs <https://github.com/JuliaGPU/CuArrays.jl>`_,
-`interval arithmetic and root finding <https://github.com/JuliaIntervals/IntervalRootFinding.jl>`_,
-`arbitrary precision numbers <https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/index.html#Arbitrary-Precision-Arithmetic-1>`_,
+number of powerful libraries such as 
+`auto-differentiation <https://github.com/JuliaDiff/ForwardDiff.jl>`_, 
+`static arrays <https://github.com/JuliaArrays/StaticArrays.jl>`_, 
+`GPUs <https://github.com/JuliaGPU/CuArrays.jl>`_, 
+`interval arithmetic and root finding <https://github.com/JuliaIntervals/IntervalRootFinding.jl>`_, 
+`arbitrary precision numbers <https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/index.html#Arbitrary-Precision-Arithmetic-1>`_, 
 and many more packages -- including ones that have not even been written yet
 
 A few simple programming patterns ensure that this is possible
@@ -549,8 +549,8 @@ A few simple programming patterns ensure that this is possible
     .. code-block:: julia
 
         # BAD
-        x = [5.0, 6.0, 2.1]
-
+        x = [5.0, 6.0, 2.1] 
+        
         function g(x::Array{Float64, 1})   # not generic!
             y = zeros(length(x))   # not generic, hidden float!
             z = Diagonal(ones(length(x)))  # not generic, hidden float!
@@ -558,7 +558,7 @@ A few simple programming patterns ensure that this is possible
             y .= z * x + q
             return y
         end
-
+        
         g(x)
 
         # GOOD
@@ -569,10 +569,11 @@ A few simple programming patterns ensure that this is possible
             y .= z * x + q
             return y
         end
-
+        
         g2(x)
 
 * Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``. This is important when using Multiple Dispatch given the different input types the function can call
+
 
     .. code-block:: julia
 
@@ -580,10 +581,10 @@ A few simple programming patterns ensure that this is possible
             y = similar(x)
             for i in eachindex(x)
                 y[i] = x[i]^2      # could broadcast
-            end
+            end 
             return y
         end
-
+        
         g([BigInt(1), BigInt(2)])
 
 * Use ``typeof`` or ``eltype`` to declare a type
@@ -610,10 +611,10 @@ A few simple programming patterns ensure that this is possible
         @show typeof(1.0)
         @show typeof(BigFloat(1.0))
         @show typeof(one(BigFloat))  # Gets multiplicative identity, passing in type
-        @show typeof(zero(BigFloat))
-
+        @show typeof(zero(BigFloat)) 
+        
         x = BigFloat(2)
-
+        
         @show typeof(one(x))  # can call with a variable for convenience
         @show typeof(zero(x));
 
@@ -627,12 +628,12 @@ This last example is a subtle, because of something called `type promotion <http
       function g(x::AbstractFloat)
           return x + 1.0   # assumes `1.0` can be converted to something compatible with `typeof(x)`
       end
-
+      
       x = BigFloat(1.0)
-
+      
       @show typeof(g(x));  # this has "promoted" the `1.0` to a `BigFloat`
 
-  But sometimes assuming promotion is not enough
+  But sometimes assuming promotion is not enough 
 
   .. code-block:: julia
 
@@ -640,14 +641,14 @@ This last example is a subtle, because of something called `type promotion <http
       function g2(x::AbstractFloat)
           if x > 0.0   # can't efficiently call with `x::Integer`
               return x + 1.0   # OK - assumes you can promote `Float64` to `AbstractFloat`
-          otherwise
+          otherwise 
               return 0   # BAD! Returns a `Int64`
           end
       end
-
+      
       x = BigFloat(1.0)
       x2 = BigFloat(-1.0)
-
+      
       @show typeof(g2(x))
       @show typeof(g2(x2))  # type unstable
 
@@ -655,17 +656,17 @@ This last example is a subtle, because of something called `type promotion <http
       function g3(x) #
           if x > zero(x)   # any type with an additive identity
               return x + one(x)  # more general but less important of a change
-          otherwise
+          otherwise 
               return zero(x)
           end
-      end
-
+      end     
+         
       @show typeof(g3(x))
       @show typeof(g3(x2));  # type stable
 
 
 These patterns are relatively straightforward, but generic programming can be thought of
-as a Leontief production function:  if *any* of the functions you write or call are not
+as a Leontief production function:  if *any* of the functions you write or call are not 
 precise enough, then it may break the chain
 
 This is all the more reason to exploit carefully designed packages rather than "do-it-yourself"
@@ -673,7 +674,7 @@ This is all the more reason to exploit carefully designed packages rather than "
 A Digression on Style and Naming
 ------------------------------------
 
-The previous section helps to establish some of the reasoning behind the style
+The previous section helps to establish some of the reasoning behind the style 
 choices in these lectures: "be aware of types, but avoid declaring them"
 
 The purpose of this is threefold:
@@ -692,21 +693,21 @@ The best resource is to carefully read other peoples code, but a few sources to 
 
 Now why would we emphasize naming as style as a crucial part of the lectures?
 
-Because it is an essential tool for creating research that is
+Because it is an essential tool for creating research that is 
 **reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_\(computer_science\)>`_
 
-Some helpful ways to think about this are
+Some helpful ways to think about this are 
 
-* **Clearly written code is easier to review for errors**: The first-order
+* **Clearly written code is easier to review for errors**: The first-order 
   concern of any code is that it correctly implements the whiteboard math
-* **Code is read many more times than it is written**: Saving a few keystrokes
-  in typing a variable name is never worth it, nor is a divergence from the
+* **Code is read many more times than it is written**: Saving a few keystrokes 
+  in typing a variable name is never worth it, nor is a divergence from the 
   mathematical notation where a single symbol for a variable name would map better to the model
-* **Write code to be read in the future, not today**: If you are not sure
-  anyone else will read the code, then write it for an ignorant future version
+* **Write code to be read in the future, not today**: If you are not sure 
+  anyone else will read the code, then write it for an ignorant future version 
   of yourself who may have forgotten everything, and is likely to misuse the code
-* **Maintain the correspondence between the whiteboard math and the code**:
-  For example, if you change notation in your model, then immediately update
+* **Maintain the correspondence between the whiteboard math and the code**: 
+  For example, if you change notation in your model, then immediately update 
   all variables in the code to reflect it
 
 
@@ -777,10 +778,10 @@ Note that in the above, ``x`` works for any type of ``Real``, including ``Int64`
     @show typeof(x)
     @show ourabs(x);
 
-You will also note that we used an abstract type, ``Real``, and an incomplete
+You will also note that we used an abstract type, ``Real``, and an incomplete 
 parametric type, ``Complex``, when defining the above functions
 
-Unlike the creation of ``struct`` fields, there is no penalty in using abstract
+Unlike the creation of ``struct`` fields, there is no penalty in using abstract 
 types when you define function parameters, as they are used purely to determine which version of a function to use
 
 Multiple Dispatch in Algorithms (Advanced)
@@ -798,14 +799,14 @@ In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the for
 
 To implement this calculation for a vector of inputs, we notice that there is a specialized implementation if the grid is uniform
 
-The uniform grid can be implemented using an ``AbstractRange``, which we can analyze with
+The uniform grid can be implemented using an ``AbstractRange``, which we can analyze with 
 ``typeof``, ``supertype`` and ``show_supertypes``
 
 .. code-block:: julia
 
     x = range(0.0, 1.0, length = 20)
     x_2 = 1:1:20   # if integers
-
+    
     @show typeof(x)
     @show typeof(x_2)
     @show supertype(typeof(x))
@@ -837,13 +838,13 @@ While you may not know the exact concrete type, any ``AbstractRange`` has an inf
     @show length(x)
     @show step(x);
 
-Similarly, there are a number of operations available for any ``AbstractVector``, such as ``length``
+Similarly, there are a number of operations available for any ``AbstractVector``, such as ``length`` 
 
 .. code-block:: julia
 
     f(x) = x^2
     f_x = f.(x)  # calculating at the range values
-
+    
     @show typeof(f_x)
     @show supertype(typeof(f_x))
     @show supertype(supertype(typeof(f_x)))  # walk up tree again!
@@ -865,17 +866,17 @@ There are also many functions that can use any ``AbstractArray``, such as ``diff
     search: diff symdiff setdiff symdiff! setdiff! Cptrdiff_t
 
     diff(A::AbstractVector) # finite difference operator of matrix or vector A
-
+    
     # if A is a matrix, specify the dimension over which to operate with the dims keyword argument
-    diff(A::AbstractMatrix; dims::Integer)
-
+    diff(A::AbstractMatrix; dims::Integer)  
+    
 
 Hence, we can call this function for anything of type ``AbstractVector``
 
 Finally, we can make a high performance specialization for any ``AbstractVector`` and ``AbstractRange``
 
 .. code-block:: julia
-
+    
     derivatives(f::AbstractVector, x::AbstractRange) = diff(f) / step(x)
 
 
@@ -884,7 +885,7 @@ We can use auto-differentiation to compare the results
 .. code-block:: julia
 
     using Plots, ForwardDiff
-
+    
     # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
 
@@ -911,7 +912,7 @@ Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can n
 .. code-block:: julia
 
     # broadcasts over the diff
-    derivatives(f::Function, x::AbstractArray) = diff(f.(x)) ./ diff(x)
+    derivatives(f::Function, x::AbstractArray) = diff(f.(x)) ./ diff(x) 
 
     d_f = derivatives(f, x)
     @show d_f[1];
@@ -926,20 +927,20 @@ Exercises
 Exercise 1
 -----------------
 
-Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArrays.jl>`_
+Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArrays.jl>`_ 
 
 * Describe two abstract types and the hierarchy of three different concrete types
-* Benchmark the calculation of some simple linear algebra with a static array
+* Benchmark the calculation of some simple linear algebra with a static array 
   compared to the following for a dense arrays for ``N = 3`` and ``N = 15``
-
+  
 .. code-block:: julia
 
     using BenchmarkTools
-
+    
     N = 3
     A = rand(N, N)
     x = rand(N)
-
+    
     @btime $A * $x  # the $ in front of variable names is sometimes important
     @btime inv($A)
 
@@ -969,9 +970,9 @@ The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a pa
 .. code-block:: julia
 
     using Polynomials
-
+    
     p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
-
+    
     @show p
     p′ = polyder(p)   # gives the derivative of p, another polynomial
     @show p(0.1), p′(0.1)  # call like a function
@@ -983,10 +984,10 @@ Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
 Exercise 4
 --------------
 
-Use your solution to Exercise 8(a/b) in `Julia By Example <julia_by_example>`_ to
+Use your solution to Exercise 8(a/b) in `Julia By Example <julia_by_example>`_ to 
 create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function
 
-The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``,
+The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``, 
 where ``p::Poly`` ensures that this version of the function will be used anytime a polynomial is passed (i.e. dispatch)
 
 Compare the results of this function to the built-in ``roots(p)`` function
@@ -1016,16 +1017,16 @@ With these:
 2. From the analytical solution of the function, plot the error of ``trapezoidal(f, x̲, x̄, N)`` relative to the analytical solution for a grid of different ``N`` values
 3. Consider trying different functions for :math:`f(x)` and compare the solutions for various ``N``
 
-When trying different functions, instead of integrating by hand consider using a high-accuracy
-library for numerical integration such as `QuadGK.jl <https://juliamath.github.io/QuadGK.jl/latest/>`_
+When trying different functions, instead of integrating by hand consider using a high-accuracy 
+library for numerical integration such as `QuadGK.jl <https://juliamath.github.io/QuadGK.jl/latest/>`_ 
 
 .. code-block:: julia
 
     using QuadGK
-
+    
     f(x) = x^2
     value, accuracy = quadgk(f, 0.0, 1.0)
-
+    
 Exercise 6 (Advanced)
 -----------------------
 
@@ -1037,7 +1038,7 @@ Use auto-differentiation to calculate the following derivative for the example f
 
     \frac{d}{d \bar{x}}\int_\underline{x}^\bar{x} f(x) \, dx
 
-Hint: See the following code for the general pattern, and be careful to
+Hint: See the following code for the general pattern, and be careful to 
 follow the `rules for generic programming <_generic_tips_tricks>`_
 
 .. code-block:: julia
@@ -1045,13 +1046,13 @@ follow the `rules for generic programming <_generic_tips_tricks>`_
     using ForwardDiff
 
     function f(a, b; N = 50)
-        r = range(a, b, length=N) # one
+        r = range(a, b, length=N) # one 
     return mean(r)
     end
-
-    Df(x) = ForwardDiff.derivative(y -> f(0.0, y), x)
+    
+    Df(x) = ForwardDiff.derivative(y -> f(0.0, y), x) 
 
     @show f(0.0, 3.0)
     @show f(0.0, 3.1)
-
+    
     Df(3.0)

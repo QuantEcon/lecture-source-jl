@@ -198,7 +198,7 @@ Here we take the state to be :math:`s_t := (a_t, z_t)`, where :math:`a_t` is ass
 
 The action is the choice of next period asset level :math:`a_{t+1}`
 
-The type also includes a default set of parameters that we'll adopt unless otherwise specified
+The object also includes a default set of parameters that we'll adopt unless otherwise specified
 
 Setup
 -----

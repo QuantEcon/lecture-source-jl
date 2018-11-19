@@ -10,7 +10,7 @@ Generic Programming
 
 .. epigraph::
 
-    I find OOP methodologically wrong. It starts with classes. It is as if mathematicians would start with axioms. You do not start with axioms - you start with proofs. Only when you have found a bunch of related proofs, can you come up with axioms. You end with axioms. The same thing is true in programming: you have to start with interesting algorithms. Only when you understand them well, can you come up with an interface that will let them work. - Alexander Stepanov
+    I find OOP methodologically wrong. It starts with classes. It is as if mathematicians would start with axioms. You do not start with axioms - you start with proofs. Only when you have found a bunch of related proofs, can you come up with axioms. You end with axioms. The same thing is true in programming: you have to start with interesting algorithms. Only when you understand them well, can you come up with an interface that will let them work. -- Alexander Stepanov
 
 Overview
 ============================
@@ -160,17 +160,17 @@ Hence, calling ``show`` on our custom type dispatches to the fallback function
     myval = MyType(2.0)
     show(myval)
 
-The default implementation used by Julia would look something like
+The default fallback implementation used by Julia would roughly equivalent to
 
 .. code-block:: julia
     :class: no-execute
 
-    function show(io::IO, x::MyType)
+    function show(io::IO, x)
         str = string(x)
         print(io, str)
     end
 
-To implement a specialized implementation of the ``show`` function for our type rather than the fallback
+To implement a specialized implementation of the ``show`` function for our type, rather than using this fallback
 
 .. code-block:: julia
 
@@ -418,8 +418,9 @@ A few things to point out
 
 This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions
 
-Number, Real, and Algebraic Structures
+Numbers and Algebraic Structures
 =======================================
+
 Define two binary functions,  :math:`+` and :math:`\cdot`, called addition and multiplication -- although the operators can be applied to data structures much more abstract than a ``Real``
 
 In mathematics, a `Ring <https://en.wikipedia.org/wiki/Ring_\(mathematics\)>`_ is a set with associated additive and multiplicative operators where
@@ -465,7 +466,7 @@ To demonstrate this for a complex number, where ``Complex{Float64} <: Number``
     @show zero(a)
     @show one(a);
 
- And for an arbitrary precision integer where ``BigInt <: Number`` (i.e., a different type than the``Int64`` you have worked with, but nevertheless a ``Number``)
+And for an arbitrary precision integer where ``BigInt <: Number`` (i.e., a different type than the``Int64`` you have worked with, but nevertheless a ``Number``)
 
 .. code-block:: julia
 
@@ -480,7 +481,10 @@ To demonstrate this for a complex number, where ``Complex{Float64} <: Number``
     @show zero(a)
     @show one(a);
 
-This allows us to showcase further how different generic packages compose
+Complex Numbers and Composition of Generic Functions
+-----------------------------------------------------
+
+This allows us to showcase further how different generic packages compose -- even if they are only loosely coupled through agreement on common generic interfaces
 
 The ``Complex`` numbers require some sort of storage for their underlying real and imaginary parts, which is itself left generic
 
@@ -496,18 +500,67 @@ This data structure is defined to work with any type ``<: Number``, and is param
 
 The implementation of the ``Complex`` numbers use the underlying operations of storage type, so as long as ``+, *, `` etc. are defined -- as they should be for any ``Number`` -- the complex operation can be defined 
 
-That is, the implementation of ``+`` looks something like
+.. code-block:: julia
+
+    @which +(x,x)
+
+Following that link, the implementation of ``+`` for complex numbers is
 
 .. code-block:: julia
     :class: no-execute
 
-    function +(z::Complex, w::Complex)
-        return (real(z) + real(w)) + (imag(z) + imag(w))*im
-    end
+    +(z::Complex, w::Complex) = Complex(real(z) + real(w), imag(z) + imag(w))
 
-The ``real(z)`` and ``imag(z)`` returns the associated components of the complex number in the underlying storage type
+The ``real(z)`` and ``imag(z)`` returns the associated components of the complex number in the underlying storage type (e.g. ``Float64`` or ``BigFloat``)
 
-Those in turn are written to carefully use operations defined for any ``Number`` (i.e. ``+`` but not ``<``, since it is not part of the generic number interface)
+The rest of the function has been carefully written to use functions defined for any ``Number`` (e.g. ``+`` but not ``<``, since it is not part of the generic number interface)
+
+To follow another example , look at the implementation of ``abs`` specialized for complex numbers
+
+.. code-block:: julia
+    
+    @which abs(x)
+
+The source is
+
+.. code-block:: julia
+    :class: no-execute
+
+    abs(z::Complex)  = hypot(real(z), imag(z))
+
+
+In this case, if you look at the generic function to get the hypotenuse, ``hypot``, you will see that it has the function signature ``hypot(x::T, y::T) where T<:Number``, and hence works for any ``Number``
+
+That function, in turn, relies on the underlying ``abs`` for the type of ``real(z)``
+
+This would dispatch to the appropriate ``abs`` for the type
+
+.. code-block:: julia
+
+    @which abs(1.0)
+
+.. code-block:: julia
+
+    @which abs(BigFloat(1.0))
+
+With implementations
+
+.. code-block:: julia
+    :class: no-execute
+
+    abs(x::Real) = ifelse(signbit(x), -x, x)
+    abs(x::Float64) = abs_float(x)
+
+For a ``Real`` number (which we will discuss in the next section) the fallback implementation calls a function ``signbit`` to determine if it should flip the sign of the number
+
+The specialized version for ``Float64 <: Real`` calls a function called ``abs_float`` -- which turns out to be a specialized implementation at the compiler level
+
+While we have not completely dissected the tree of function calls, at the bottom of the tree you will end at the most optimized version of the function for the underlying datatype
+
+Hopefully this showcases the power of generic programming:  with a well-designed set of abstract types and functions, the code can both be highly general and composable and still use the most efficient implementation possible
+
+Reals and Algebraic Structures
+=======================================
  
 Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
 
@@ -597,6 +650,8 @@ In order to generate fast code, the implementation details may define specialize
 
 Note that the reason  ``Float64 <: Real`` calls this implementation rather than the one given above, is that ``Float64 <: Real``, and Julia chooses the most specialized implementation for each function
 
+The specialized implementations are often more subtle than you may realize due to `floating point arithmetic <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>`_, `underflow <https://en.wikipedia.org/wiki/Arithmetic_underflow>`_, etc.  
+
 
 Functions, and Function-Like Types
 ======================================
@@ -610,21 +665,20 @@ For example, we can use a standard function
 .. code-block:: julia
 
     using QuadGK
-    const integrate = quadgk  # example of setting an alias
     f(x) = x^2
-    @show integrate(f, 0.0, 1.0)  # integral 
+    @show quadgk(f, 0.0, 1.0)  # integral 
 
     function plotfunctions(f)
-        intf(x) = integrate(f, 0.0, x)[1]  # int_0^x f(x) dx
+        intf(x) = quadgk(f, 0.0, x)[1]  # int_0^x f(x) dx
 
         x = 0:0.1:1.0
         f_x = f.(x)
         plot(x, f_x, label="f")
-        plot!(x, intf.(x), label="intf")
+        plot!(x, intf.(x), label="int_f")
     end
     plotfunctions(f)  # call with our f
 
-Of course, polynomials are also functions in every important sense
+Of course, univariate polynomials are another type of univariate functions
 
 .. code-block:: julia
 
@@ -635,21 +689,21 @@ Of course, polynomials are also functions in every important sense
 
     plotfunctions(p)  # same generic function
 
-Or Interpolations
+Similarly, the result of interpolating data is also a function
 
 .. code-block:: julia
 
     using Interpolations
     x = 0.0:0.2:1.0
     f(x) = x^2
-    f_int = LinearInterpolation(x, f.(x))  # interpolating those points
+    f_int = LinearInterpolation(x, f.(x))  # interpolates the coarse grid
     @show f_int(1.0)  # call like a function
 
     plotfunctions(f_int)  # same generic function
 
 Note that the same generic ``plotfunctions`` could use any variable passed to it that "looks" like a function, i.e. can call ``f(x)``
 
-This sort of typing and design -- generic but without any declarations -- is usually called `duck typing <https://en.wikipedia.org/wiki/Duck_typing>`_
+This approach to design with types -- generic, but without any specific type declarations -- is called `duck typing <https://en.wikipedia.org/wiki/Duck_typing>`_
 
 If you need to make an existing type callable, see `Function Like Objects <https://docs.julialang.org/en/v1/manual/methods/#Function-like-objects-1>`_
 
@@ -660,13 +714,12 @@ You will notice that types in Julia represent a tree with ``Any`` at the root
 
 The tree structure has worked well for the above examples, but it doesn't allow us to associate multiple categorizations of types
 
-For example, a semi-group type would be very useful for a writing generic code (e.g. continuous-time solutions for ODEs and matrix-free methods) but cannot be implemented rigorously since the ``Matrix`` type is a semi-group, but it is also an ``AbstractArray``
+For example, a semi-group type would be useful for a writing generic code (e.g. continuous-time solutions for ODEs and matrix-free methods), but cannot be implemented rigorously since the ``Matrix`` type is a semi-group as well as an ``AbstractArray``, but not not all ``semi-groups" are ``AbstractArray``
 
-The main way to implement this in a generic language is with a feature called traits
+The main way to implement this in a generic language is with a design approach called "traits"
 
-See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
-
-A complete description of the Traits patterns as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
+    * See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
+    * A complete description of the Traits patterns as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
 
 
 Understanding Multiple Dispatch in Julia
@@ -770,7 +823,7 @@ This is sensible behavior, but if you want to change it there's nothing to stop 
 
 .. code-block:: julia
 
-    import Base: +  # enables extension of the + function
+    import Base: +  # enables adding methods to the + function
 
     +(x::Integer, y::String) = x + parse(Int, y)
 
@@ -830,11 +883,13 @@ If the interpreter can't find a match in immediate parents (supertypes) it proce
 
 * If not, we get an error
 
-This is the process that leads to the following error
+This is the process that leads to the following error (since we only added the ``+`` for adding ``Integer`` and ``String`` above)
 
 .. code-block:: julia
+    :class: no-test
 
-    +(100, "100")
+    @show (typeof(100.0) <: Integer) == false
+    100.0 + "100"
 
 Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the *most specific method* available
 
@@ -894,7 +949,7 @@ Finally, ``q("foo")`` is handled by the most function operating on ``Any``, sinc
 Analyzing Function Return Types
 -------------------------------------------
 
-For the most part, time spent "optimizing" julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
+For the most part, time spent "optimizing" Julia code to run faster is able ensuring the compiler can correctly deduce types for all functions
 
 We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
 
