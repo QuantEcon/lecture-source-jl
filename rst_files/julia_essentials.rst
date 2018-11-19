@@ -949,7 +949,7 @@ Due to scoping, you could write this as
     y = 2
     f(x; y = y) # left hand `y` is the local name of the argument in the function
 
-Similarly to the named arguments, the local scope also works with named tuples
+Similarly to named arguments, the local scope also works with named tuples
 
 .. code-block:: julia
 
@@ -960,10 +960,10 @@ Similarly to the named arguments, the local scope also works with named tuples
     x = 0.1
     y = 2
     
-    # Create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
+    # create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
     (x = x, y = y) 
 
-As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
+As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
 
 In fact, it frequently leads to clear code closer to the math when you don't need to specify intermediaries.
 
@@ -971,17 +971,17 @@ Another example is with broadcasting
 
 .. code-block:: julia
 
-    f(x) = x^2  # Local `x` in scope
+    f(x) = x^2  # local `x` in scope
 
-    x = 1:5     # Not an integer
+    x = 1:5     # not an integer
 
-    f.(x)       # Broadcasts the x^2 function over the vector
+    f.(x)       # broadcasts the x^2 function over the vector
 
 
 Closures
 ---------------
 
-Frequently, you will want to have a function that calculates a value given some fixed parameter
+Frequently, you will want to have a function that calculates a value given some fixed parameters
 
 .. code-block:: julia
 
@@ -994,21 +994,21 @@ While the above was convenient, there are other times when you want to simply fi
 .. code-block:: julia
 
     a = 0.2
-    f(x) = a * x^2     # Refers to the `a` in the outer scope
-    f(1)               # Univariate function
+    f(x) = a * x^2     # refers to the `a` in the outer scope
+    f(1)               # univariate function
 
 When the function ``f`` is parsed in Julia, it will look to see if any of the variables are already defined in the current scope
 
 In this case, it finds the ``a`` since it was defined previously, whereas if the 
-code defined ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
+code defines ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
 
 This also works when embedded in other functions
 
 .. code-block:: julia
 
     function g(a)
-        f(x) = a * x^2  # Refers to the `a` passed in the function
-        f(1)            # Univariate function
+        f(x) = a * x^2  # refers to the `a` passed in the function
+        f(1)            # univariate function
     end
     g(0.2)
 
@@ -1028,7 +1028,7 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
         a = x^2
         b = 2 * a
         c = a + b
-        return (a = a, b = b, c = c)  # Note local scope of tuples!
+        return (a = a, b = b, c = c)  # note local scope of tuples!
     end
     
     solvemodel(0.1)
@@ -1044,14 +1044,14 @@ To see a simple example, consider functions that accept other functions (includi
 
 .. code-block:: julia
 
-    twice(f, x) = f(f(x))  # Applies f to itself twice
+    twice(f, x) = f(f(x))  # applies f to itself twice
     f(x) = x^2
     @show twice(f, 2.0)
     
     twice(x -> x^2, 2.0)
     a = 5
     g(x) = a * x
-    @show twice(g, 2.0);   # Using a closure 
+    @show twice(g, 2.0);   # using a closure 
 
 This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic 
 
@@ -1154,7 +1154,7 @@ A Quick Check for Scoping Design
 
 While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout
 
-Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of the functions
+Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of functions
 
 A simple test of the difference is to take a segment of code and wrap it in a function, for example
 
