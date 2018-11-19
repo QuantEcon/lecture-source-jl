@@ -268,7 +268,6 @@ This approach is in direct contrast to object-oriented design and analysis (`OOA
 With that, where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance)
 
 In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the abstact types came later
-.. However,  we apologize in the example we confuse things somewhat by jumping to the axioms first for expositoin
 
 Distributions
 =====================
