@@ -152,7 +152,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 
 .. code-block:: julia
 
-  using Plots, QuantEcon, Distributions # used PyPlot
+  using Plots, QuantEcon, Distributions 
   gr(fmt=:png)
 
   n = 50
