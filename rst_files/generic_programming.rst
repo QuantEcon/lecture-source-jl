@@ -27,6 +27,8 @@ In this lecture we delve more deeply into the structure of Julia, and in particu
 
 Understanding them will help you
 
+* form a "mental model" of the Julia language
+
 * design code that matches the "white-board" mathematics
 
 * create code that can use (and be used by) a variety of other packages
@@ -240,19 +242,13 @@ You may think to yourself that the above code is similar to OO, except that you
 * do not have concrete inheritance
 
 While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming
-
-It may be helpful to review the traditional pillars of OOP 
-* `Abstraction <https://goo.gl/m9aWoU>`_: In OO one develops a taxonomy of hierarchical "is-a" relationships as "classes", where the key abstraction involves describing interactions between the self-contained "classes"
-* `Encapsulation <https://goo.gl/pCjLVU>`_: Most OO code has fully mutable classes, where access to the internals is tightly controlled since the class manages its own state
-* `Inheritance <https://goo.gl/XPFQwj>`_: Code reuse in OO is achieved through adding a new class to the tree and inheriting some of the behavior of the parent class.
-* `Polymorphism <https://goo.gl/oAbY9d>`_:  The abstract "is-a" relationships between types in a taxonomy provide a way to have the same function change its behavior given the particular type
-
 When programming in Julia
-* there is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
-* `Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_ is achieved without anything resembling OOP `inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_
-* `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)\#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
-* The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
-* The looseness that accompanies keeping algorithms and data structures as orthogonal as possible makes it easier to discover commonality in the design
+
+    * there is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
+    * `Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_ is achieved without anything resembling OOP `inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_
+    * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)\#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
+    * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
+    * The looseness that accompanies keeping algorithms and data structures as orthogonal as possible makes it easier to discover commonality in the design
 
 Iterative Design of Abstractions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -577,7 +573,7 @@ Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org
     * a multiplicative inverse: :math:`a^{-1}`
     * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
 
-Furthermore, we will make it a `Total Ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ field with
+Furthermore, we will make it a `total ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ field with
 
     * a total ordering binary operator: :math:`a < b`
 
@@ -734,286 +730,6 @@ The main way to implement this in a generic language is with a design approach c
     * See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
     * A complete description of the traits pattern as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
 
-
-Understanding Multiple Dispatch in Julia
-===============================================
-
-This section provides more background on how methods, functions, and types are connected
-
-Methods and Functions
-----------------------
-
-The precise data type is important, for reasons of both efficiency and mathematical correctness
-
-For example consider `1 + 1` vs. `1.0 + 1.0` or `[1 0] + [0 1]`
-
-On a CPU, integer and floating point addition are different things, using a different set of instructions
-
-Julia handles this problem by storing multiple, specialized versions of functions like addition, one for each data type or set of data types
-
-These individual specialized versions are called **methods**
-
-When an operation like addition is requested, the Julia compiler inspects the type of data to be acted on and hands it out to the appropriate method
-
-This process is called **multiple dispatch**
-
-Like all "infix" operators, `1 + 1` has the alternative syntax `+(1, 1)`
-
-.. code-block:: julia
-
-    +(1, 1)
-
-This operator `+` is itself a function with multiple methods
-
-We can investigate them using the `@which` macro, which shows the method to which a given call is dispatched
-
-.. code-block:: julia
-
-    x, y = 1.0, 1.0
-    @which +(x, y)
-
-We see that the operation is sent to the ``+`` method that specializes in adding
-floating point numbers
-
-Here's the integer case
-
-.. code-block:: julia
-
-    x, y = 1, 1
-    @which +(x, y)
-
-This output says that the call has been dispatched to the `+` method
-responsible for handling integer values
-
-(We'll learn more about the details of this syntax below)
-
-Here's another example, with complex numbers
-
-.. code-block:: julia
-
-    x, y = 1.0 + 1.0im, 1.0 + 1.0im
-    @which +(x, y)
-
-Again, the call has been dispatched to a `+` method specifically designed for handling the given data type
-
-..
-..  Example 3
-..  ^^^^^^^^^^^^^^
-..
-..
-.. The function ``isfinite()`` has multiple methods too
-..
-.. .. code-block:: julia
-..
-..     @which isfinite(1) # Call isfinite on an integer
-..
-..
-.. .. code-block:: julia
-..
-..     @which isfinite(1.0) # Call isfinite on a float
-..
-..
-.. Here ``AbstractFloat`` is another abstract data type, this time encompassing all floats
-..
-.. We can list all the methods of ``isfinite`` as follows
-..
-.. .. code-block:: julia
-..
-..     methods(isfinite)
-..
-..
-.. We'll discuss some of the more complicated data types you see here later on
-..
-
-Adding Methods
-^^^^^^^^^^^^^^^^^^
-
-It's straightforward to add methods to existing functions
-
-For example, we can't at present add an integer and a string in Julia (i.e. ``100 + "100"`` is not valid syntax)
-
-This is sensible behavior, but if you want to change it there's nothing to stop you
-
-.. code-block:: julia
-
-    import Base: +  # enables adding methods to the + function
-
-    +(x::Integer, y::String) = x + parse(Int, y)
-
-    @show +(100, "100")
-    @show 100 + "100";  # equivalent
-
-.. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory
-..
-.. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their floating point versions
-..
-.. If we next call it with integer arguments, the process will be repeated but now
-.. specialized to integers
-..
-.. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their integer versions
-..
-..
-.. Subsequent calls will be routed automatically to the most appropriate method
-
-.. Comments on Efficiency
-.. ------------------------
-..
-..
-.. We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`
-
-Understanding the Compilation Process
----------------------------------------
-
-We can now be a little bit clearer about what happens when you call a function on given types
-
-Suppose we execute the function call ``f(a, b)`` where ``a`` and ``b``
-are of concrete types ``S`` and ``T`` respectively
-
-The Julia interpreter first queries the types of ``a`` and ``b`` to obtain the tuple ``(S, T)``
-
-It then parses the list of methods belonging to ``f``, searching for a match
-
-If it finds a method matching ``(S, T)`` it calls that method
-
-If not, it looks to see whether the pair ``(S, T)`` matches any method defined for *immediate parent types*
-
-For example, if ``S`` is ``Float64`` and ``T`` is ``ComplexF32`` then the
-immediate parents are ``AbstractFloat`` and ``Number`` respectively
-
-.. code-block:: julia
-
-    supertype(Float64)
-
-.. code-block:: julia
-
-    supertype(ComplexF32)
-
-Hence the interpreter looks next for a method of the form ``f(x::AbstractFloat, y::Number)``
-
-If the interpreter can't find a match in immediate parents (supertypes) it proceeds up the tree, looking at the parents of the last type it checked at each iteration
-
-* If it eventually finds a matching method, it invokes that method
-
-* If not, we get an error
-
-This is the process that leads to the following error (since we only added the ``+`` for adding ``Integer`` and ``String`` above)
-
-.. code-block:: julia
-    :class: no-test
-
-    @show (typeof(100.0) <: Integer) == false
-    100.0 + "100"
-
-Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the *most specific method* available
-
-For example, if you have methods for function ``f`` that handle
-
-#.  ``(Float64, Int64)`` pairs
-
-#.  ``(Number, Number)`` pairs
-
-and you call ``f`` with ``f(0.5, 1)`` then the first method will be invoked
-
-This makes sense because (hopefully) the first method is optimized for
-exactly this kind of data
-
-The second method is probably more of a "catch all" method that handles other
-data in a less optimal way
-
-Here's another simple example, involving a user-defined function
-
-.. code-block:: julia
-
-    function q(x)  # or q(x::Any)
-        println("Default (Any) method invoked")
-    end
-
-    function q(x::Number)
-        println("Number method invoked")
-    end
-
-    function q(x::Integer)
-        println("Integer method invoked")
-    end
-
-Let's now run this and see how it relates to our discussion of method dispatch
-above
-
-.. code-block:: julia
-
-    q(3)
-
-.. code-block:: julia
-
-    q(3.0)
-
-.. code-block:: julia
-
-    q("foo")
-
-Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``q(3)`` proceeds up the tree to ``Integer`` and invokes ``q(x::Integer)``
-
-On the other hand, ``3.0`` is a ``Float64``, which is not a subtype of  ``Integer``
-
-Hence the call ``q(3.0)`` continues up to ``q(x::Number)``
-
-Finally, ``q("foo")`` is handled by the function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``
-
-Analyzing Function Return Types
--------------------------------------------
-
-For the most part, time spent "optimizing" Julia code to run faster is about ensuring the compiler can correctly deduce types for all functions
-
-We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
-
-.. code-block:: julia
-
-    x = [1, 2, 3]
-    f(x) = 2x
-    @code_warntype f(x)
-
-The ``@code_warntype`` macro compiles ``f(x)`` using the type of ``x`` as an example -- i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
-
-Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the 
-function, when called with types like ``[1, 2, 3]``, is always a vector of integers
-
-In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : nothing
-    @code_warntype f(1)
-
-This states that the compiler determines the return type when called with an integer (like ``1``) could be one of two different types, ``Body::Union{Nothing, Int64}``
-
-A final example is a variation on the above, which returns the maximum of ``x`` and ``0``
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : 0.0
-    @code_warntype f(1)
-
-Which shows that, when called with an integer, the type could be that integer or the floating point ``0.0``
-
-On the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
-
-.. code-block:: julia
-
-    f(x) = x > 0.0 ? x : 0
-    @code_warntype f(1.0)
-
-The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x``
-
-On the other hand, if we change the function to return ``0`` if ``x <= 0``, it is type-unstable with  floating point
-
-.. code-block:: julia
-
-    @show zero(2.3)
-    @show zero(4)
-    @show zero(2.0 + 3im)
-
-    f(x) = x > 0.0 ? x : zero(x)
-    @code_warntype f(1.0)
 
 .. Functions
 .. ------------
