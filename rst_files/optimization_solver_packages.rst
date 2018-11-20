@@ -69,7 +69,7 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
 .. math::
     \begin{array}{l|l}
     \text{Operations to compute value} &
-    \text{Operations to compute $\frac{d f(x_1,x_2)}{d x_1}$}
+    \text{Operations to compute $\frac{\partial f(x_1,x_2)}{\partial x_1}$}
     \\
     \hline
     w_1 = x_1 &
@@ -78,13 +78,13 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
     \frac{d  w_2}{d x_1} = 0 \text{ (seed)}
     \\
     w_3 = w_1 \cdot w_2 &
-    \frac{d  w_3}{d x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
+    \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
     \\
     w_4 = \sin w_1 &
     \frac{d  w_4}{d x_1} = \cos w_1 \cdot \frac{d  w_1}{d x_1}
     \\
     w_5 = w_3 + w_4 &
-    \frac{d  w_5}{d x_1} = \frac{d  w_3}{d x_1} + \frac{d  w_4}{d x_1}
+    \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{d  w_4}{d x_1}
     \end{array}
 
 Using Dual Numbers
@@ -96,7 +96,7 @@ Take a number :math:`x` and augment it with an infinitesimal :math:`\epsilon` su
 
 All math is then done with this (mathematical, rather than Julia) tuple :math:`(x, x')` where the :math:`x'` may be hidden from the user
 
-With these definition, we can write a general rule for differentiation of :math:`g(x,y)` as
+With this definition, we can write a general rule for differentiation of :math:`g(x,y)` as
 
 .. math::
     g(\left(x,x'\right),\left(y,y'\right)) = \left(g(x,y),\partial_x g(x,y)x' + \partial_y g(x,y)y' \right)
@@ -108,7 +108,7 @@ An AD library using dual numbers will concurrently calculate the function and it
 .. math::
 		\begin{align*}
 		x + y \to \left(x,x'\right) + \left(y,y'\right) &= \left(x + y,\underbrace{x' + y'}_{\partial(x + y) = \partial x + \partial y}\right)\\
-		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y y}\right)\\
+		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y}\right)\\
 		\exp(x) \to \exp(\left(x, x'\right)) &= \left(\exp(x),\underbrace{x'\exp(x)}_{\partial(\exp(x)) = \exp(x)\partial x} \right)
 		\end{align*}
 
@@ -128,7 +128,7 @@ We have already seen one of the AD packages in Julia
     f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
     g = (x) -> ForwardDiff.gradient(f, x); # g() is now the gradient
     @show g(rand(20)); # gradient at a random point
-    # ForwardDiff.hessian(f,x2) # or the hessian
+    # ForwardDiff.hessian(f,x') # or the hessian
 
 We can even auto-differenitate complicated functions with embedded iterations
 
@@ -141,7 +141,7 @@ We can even auto-differenitate complicated functions with embedded iterations
         end
         return z
     end
-    sqrt(2.0)
+    squareroot(2.0)
 
 .. code-block:: julia
 
@@ -153,7 +153,7 @@ We can even auto-differenitate complicated functions with embedded iterations
 Flux.jl
 ---------
 
-Another is Flux.jl, which is a machine-learning library in Julia
+Another is `Flux.jl <https://github.com/FluxML/Flux.jl>`_, which is a machine-learning library in Julia
 
 AD is one of the main reasons that machine learning has become so powerful in recent years, and is an essential component of any ML package
 
@@ -233,7 +233,7 @@ The other reason is that different types of optimization problems require differ
 Optim.jl
 ---------------------
 
-A good pure-Julia solution for the (unconstrained or box-bounded) optimization of univariate and multivariate function is `Optim <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
+A good pure-Julia solution for the (unconstrained or box-bounded) optimization of univariate and multivariate function is `Optim.jl <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
 
 By default, the algorithms in Optim target minimization rather than maximization, so if a function is called "optimize" it will mean minimization
 
@@ -258,6 +258,9 @@ Always check if the results converged, and throw errors otherwise
     xmin = result.minimizer
     result.minimum
 
+The first line is a logical OR between ``converged(result)`` and ``error("...")``
+
+If the convergence check passes, the logical sentence is true, and it will proceed to the next line; if not, it will throw the error
 
 Or to maximize
 
@@ -269,8 +272,7 @@ Or to maximize
     xmin = maximizer(result)
     fmax = maximum(result)
 
-
-**Note:** There are a few inconsistencies with extracting  ``optimize`` vs. ``maximize`` results, as shown above
+**Note:** Notice that we call ``optimize`` results using ``result.minimizer``, and ``maximize`` results using ``maximizer(result)``
 
 Unconstrained Multivariate Optimization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -297,8 +299,7 @@ To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.j
 
 Note that this has fewer iterations
 
-As no derivative was given, it used `finite-differences <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ to approximate the gradient of ``f(x)``
-
+As no derivative was given, it used `finite-differences <https://en.wikipedia.org/wiki/Finite_difference>`_ to approximate the gradient of ``f(x)``
 
 However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible
 
@@ -310,7 +311,7 @@ However, since most of the algorithms require derivatives, you will often want t
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
     "$(results.iterations) iterations")
 
-Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `tips and trick <generic_tips_tricks>`_ )
+Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `generic programming lecture <generic_programming>`_ )
 
 Alternatively, with an analytical gradient
 
@@ -351,9 +352,11 @@ If you have a linear, quadratic, conic, mixed-integer linear, etc. problem then 
 
 For nonlinear problems, the modelling language may make things difficult for complicated functions (as it is not designed to be used as a general-purpose non-linear optimizer)
 
-See the `quickstart guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
+See the `quick start guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
 
 The following is an example of calling a linear objective with a nonlinear constraint (provided by an external function)
+
+Here ``Ipopt`` stands for ``Interior Point OPTimizer``, a `nonlinear solver <https://github.com/JuliaOpt/Ipopt.jl>`_ in Julia 
 
 .. code-block:: julia
 
@@ -376,7 +379,7 @@ The following is an example of calling a linear objective with a nonlinear const
     @variable(m, x[1:2], start=0.5) # start is the initial condition
     @objective(m, Max, sum(x))
     @NLconstraint(m, squareroot(x[1]^2+x[2]^2) <= 1)
-    solve(m)
+    @show solve(m)
 
 
 And this is an example of a quadratic objective
@@ -408,7 +411,7 @@ BlackBoxOptim.jl
 
 Another package for doing global optimization without derivatives is `BlackBoxOptim.jl <https://github.com/robertfeldt/BlackBoxOptim.jl>`_
 
-To see an example from the documentation,
+To see an example from the documentation
 
 .. code-block:: julia
 
@@ -446,7 +449,7 @@ with :math:`x \in [0,1]` we get
 
 The unique root is approximately 0.408
 
-The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
+The `Roots.jl <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
 
 .. code-block:: julia
 
