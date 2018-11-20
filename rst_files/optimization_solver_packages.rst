@@ -128,7 +128,7 @@ We have already seen one of the AD packages in Julia
     f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
     g = (x) -> ForwardDiff.gradient(f, x); # g() is now the gradient
     @show g(rand(20)); # gradient at a random point
-    # ForwardDiff.hessian(f,x) # or the hessian
+    # ForwardDiff.hessian(f,x') # or the hessian
 
 We can even auto-differenitate complicated functions with embedded iterations
 
