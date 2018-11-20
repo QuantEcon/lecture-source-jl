@@ -373,7 +373,7 @@ Let's look at the convergence of the unemployment and employment rate to steady 
   :class: test
 
   @testset begin
-      @test x_path[3, 1] ≈ 0.08137725667264473
+      @test x_path[3, 1] ≈ 0.09471014989625384
       @test x_path[7, 2] ≈ 0.9176350068305223
   end
 
@@ -863,10 +863,14 @@ Initialize the simulation values
 
 New legislation changes :math:`\lambda` to :math:`0.2`
 
+.. code-block:: julia 
+    :class: test 
+
+    Random.seed!(42) # for determinism
+
 .. code-block:: julia
 
     lm = LakeModel(λ=0.2)
-
 
 .. code-block:: julia
 
@@ -947,7 +951,7 @@ state
   :class: test
 
   @testset begin
-    @test x0[1] ≈ 0.082666290609561176
+    @test x0[1] ≈ 0.08266626766923285
   end
 
 Here are the other parameters:
@@ -969,6 +973,11 @@ Let's increase :math:`b` to the new value and simulate for 20 periods
 Now we reset :math:`b` to the original value and then, using the state
 after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
+
+.. code-block:: julia 
+    :class: test 
+
+    Random.seed!(42) # for determinism
 
 .. code-block:: julia
 
@@ -1005,11 +1014,11 @@ Finally we combine these two paths and plot
 .. code-block:: julia
   :class: test
 
-  @testset begin
-      @test x1[1] ≈ 8.266629060956117
-      @test x2[2] ≈ 92.11681713146707
-      @test x3[3] ≈ 98.95872483999996
-  end
+    @testset begin
+        @test x1[1] ≈ 8.266629060956117
+        @test x2[2] ≈ 92.11681873319097
+        @test x3[3] ≈ 98.95872483999999
+    end
 
 And the rates
 
@@ -1030,6 +1039,6 @@ And the rates
   :class: test
 
   @testset begin
-    @test x_path[3, 1] ≈  0.06791409498571369
+    @test x_path[3, 1] ≈  0.06791408368459206
     @test x_path[7, 2] ≈ 0.9429334410213106
   end
