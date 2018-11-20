@@ -379,7 +379,7 @@ Here ``Ipopt`` stands for ``Interior Point OPTimizer``, a `nonlinear solver <htt
     @variable(m, x[1:2], start=0.5) # start is the initial condition
     @objective(m, Max, sum(x))
     @NLconstraint(m, squareroot(x[1]^2+x[2]^2) <= 1)
-    solve(m)
+    @show solve(m)
 
 
 And this is an example of a quadratic objective
