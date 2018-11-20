@@ -231,7 +231,7 @@ Here's the code:
     end
 
     function rate_steady_state(lm) 
-        sol = ixedpoint(x -> lm.A_hat * x, [0.5, 0.5]).zero
+        sol = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5]).zero
         converged(sol) || error("Failed to converge in $(result.iterations) iterations")
         return sol
     end 
