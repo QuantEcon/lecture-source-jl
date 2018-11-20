@@ -488,7 +488,7 @@ Let's plot the path of the sample averages over 5,000 periods
 
     using QuantEcon, Roots, Random
 
-    Random.seed!(42)
+    Random.seed!(42) # for deterministic results 
 
     lm = LakeModel(d=0.0, b=0.0)
     T = 5000                        # Simulation length
@@ -518,7 +518,7 @@ Let's plot the path of the sample averages over 5,000 periods
   :class: test
 
   @testset begin
-      @test round(xbar[1], digits = 5) == round(0.043921027960428106, digits = 5)
+      @test xbar[1] == 0.04391891891891919
       @test s_bars[end,end] ≈ 0.957
   end
 
@@ -898,9 +898,9 @@ Now plot stocks
   :class: test
 
   @testset begin
-      @test round(x1[1], digits = 3) == round(8.266806439740906, digits = 3)
-      @test round(x2[2], digits = 3) == round(91.43618846013545, digits = 3)
-      @test round(x3[3], digits = 3) == round(100.83774723999996, digits = 3)
+      @test x1[1] == 8.266626766923284
+      @test x2[2] == 91.43632870031433
+      @test x3[3] == 100.83774724
   end
 
 And how the rates evolve
