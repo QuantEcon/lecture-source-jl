@@ -575,7 +575,7 @@ Reals and Algebraic Structures
 Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
 
     * a multiplicative inverse: :math:`a^{-1}`
-    * an inverse operation for multiplication: :math:`\frac{a}{b} = a \cdot b^{-1}`
+    * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
 
 Furthermore, we will make it a `Total Ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ Field with
 
