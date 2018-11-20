@@ -16,7 +16,7 @@ This lecture explores some of the key packages for working with data and statist
 
 While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution
 
-This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_ `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
+This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_, `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
 
 Setup
 ------------------
@@ -93,7 +93,7 @@ Named tuples can also be used to construct a DataFrame, and have it properly ded
 Working with Missing
 -----------------------
 
-As we discussed in `fundamental types <missing>`_, the semantics of ``missing`` are that mathematical operations will not silently ignore it
+As we discussed in `fundamental types <fundamental_types>`_, the semantics of ``missing`` are that mathematical operations will not silently ignore it
 
 In order to allow ``missing`` in a column, you can create/load the dataframe from a source with missings, or call ``allowmissing!`` on a column 
 
