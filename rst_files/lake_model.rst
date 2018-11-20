@@ -644,7 +644,7 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 Fiscal Policy Code
 -----------------------
 
-We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`
+We will make use of (with a few tweaks) the code we wrote in the :doc:`McCall model lecture <mccall_model>`
 
 .. code-block:: julia
 
@@ -657,12 +657,11 @@ We will make use of code we wrote in the :doc:`McCall model lecture <mccall_mode
         
         # parameter validation
         @assert c > 0.0
-        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here 
         
         # necessary objects 
         u_w = u.(w, σ) 
         u_c = u(c, σ)
-        E = expectation(dist) # expectation operator for wage distribution
+        E = expectation(dist, w) # expectation operator for wage distribution
 
         # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
         function T(x)
@@ -682,13 +681,13 @@ We will make use of code we wrote in the :doc:`McCall model lecture <mccall_mode
         # compute the reservation wage 
         wbarindex = searchsortedfirst(V .- U, 0.0)
         if wbarindex >= length(w) # if this is true, you never want to accept
-            w_bar = Inf
+            wbar = Inf
         else
-            w_bar = w[wbarindex] # otherwise, return the number
+            wbar = w[wbarindex] # otherwise, return the number
         end
 
         # return a NamedTuple, so we can select values by name  
-        return (V = V, U = U, w_bar = w_bar) 
+        return (V = V, U = U, wbar = wbar) 
     end 
 
 And we'll create the McCall objects 
@@ -725,6 +724,7 @@ function of the unemployment compensation rate
 
     dist = Truncated(LogNormal(20), 0, 170) # the default wage distribution: a truncated log normal
     w_vec = range(1e-3, 170, length = 201)
+    w_vec = (w_vec[1:end-1] + w_vec[2:end])/2 # averaging scheme 
     E = expectation(dist, w_vec)
 
     function compute_optimal_quantities(c, τ)
