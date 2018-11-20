@@ -572,12 +572,12 @@ Hopefully this showcases the power of generic programming:  with a well-designed
 Reals and Algebraic Structures
 =======================================
  
-Thinking back to the mathematical motivation, a `Field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
+Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/field_\(mathematics\)>`_ is an `Ring` with a few additional properties, among them
 
     * a multiplicative inverse: :math:`a^{-1}`
     * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
 
-Furthermore, we will make it a `Total Ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ Field with
+Furthermore, we will make it a `Total Ordered <https://en.wikipedia.org/wiki/Total_order#Strict_total_order>`_ field with
 
     * a total ordering binary operator: :math:`a < b`
 
@@ -727,7 +727,7 @@ The tree structure has worked well for the above examples, but it doesn't allow 
 For example, a semi-group type would be useful for a writing generic code (e.g. 
 continuous-time solutions for ODEs and matrix-free methods), but cannot be 
 implemented rigorously since the ``Matrix`` type is a semi-group as well 
-as an ``AbstractArray``, but not all ``semi-groups`` are ``AbstractArray``
+as an ``AbstractArray``, but not all semi-groups are ``AbstractArray``s
 
 The main way to implement this in a generic language is with a design approach called "traits"
 
@@ -1212,7 +1212,7 @@ n the other hand, if we change the function to return ``0`` if ``x <= 0``, it is
 .. _spec_field_types:
 ..
 ..
-.. Specifying Field Types
+.. Specifying field Types
 .. ^^^^^^^^^^^^^^^^^^^^^^^^^
 ..
 ..
