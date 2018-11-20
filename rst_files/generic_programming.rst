@@ -572,7 +572,7 @@ Hopefully this showcases the power of generic programming:  with a well-designed
 Reals and Algebraic Structures
 =======================================
  
-Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/field_\(mathematics\)>`_ is an ``ring`` with a few additional properties, among them
+Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/field_\(mathematics\)>`_ is a ``ring`` with a few additional properties, among them
 
     * a multiplicative inverse: :math:`a^{-1}`
     * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
@@ -1003,7 +1003,8 @@ On the other hand, if we use change the function to return ``0`` if `x <= 0`, it
     @code_warntype f(1.0)
 
 The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x``
-n the other hand, if we change the function to return ``0`` if ``x <= 0``, it is type-unstable with  floating point
+
+On the other hand, if we change the function to return ``0`` if ``x <= 0``, it is type-unstable with  floating point
 
 .. code-block:: julia
 
