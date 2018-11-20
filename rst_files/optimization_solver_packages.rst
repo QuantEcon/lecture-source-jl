@@ -95,7 +95,7 @@ Take a number :math:`x` and augment it with an infinitesimal :math:`\epsilon` su
 
 All math is then done with this (mathematical, rather than Julia) tuple :math:`(x, x')` where the :math:`x'` may be hidden from the user
 
-With these definition, we can write a general rule for differentiation of :math:`g(x,y)` as
+With this definition, we can write a general rule for differentiation of :math:`g(x,y)` as
 
 .. math::
     g(\left(x,x'\right),\left(y,y'\right)) = \left(g(x,y),\partial_x g(x,y)x' + \partial_y g(x,y)y' \right)
@@ -107,7 +107,7 @@ An AD library using dual numbers will concurrently calculate the function and it
 .. math::
 		\begin{align*}
 		x + y \to \left(x,x'\right) + \left(y,y'\right) &= \left(x + y,\underbrace{x' + y'}_{\partial(x + y) = \partial x + \partial y}\right)\\
-		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y y}\right)\\
+		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y}\right)\\
 		\exp(x) \to \exp(\left(x, x'\right)) &= \left(\exp(x),\underbrace{x'\exp(x)}_{\partial(\exp(x)) = \exp(x)\partial x} \right)
 		\end{align*}
 
@@ -127,7 +127,7 @@ We have already seen one of the AD packages in Julia
     f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
     g = (x) -> ForwardDiff.gradient(f, x); # g() is now the gradient
     @show g(rand(20)); # gradient at a random point
-    # ForwardDiff.hessian(f,x2) # or the hessian
+    # ForwardDiff.hessian(f,x) # or the hessian
 
 We can even auto-differenitate complicated functions with embedded iterations
 
@@ -140,7 +140,7 @@ We can even auto-differenitate complicated functions with embedded iterations
         end
         return z
     end
-    sqrt(2.0)
+    squareroot(2.0)
 
 .. code-block:: julia
 
@@ -152,7 +152,7 @@ We can even auto-differenitate complicated functions with embedded iterations
 Flux.jl
 ---------
 
-Another is Flux.jl, which is a machine-learning library in Julia
+Another is `Flux.jl <https://github.com/FluxML/Flux.jl>`_, which is a machine-learning library in Julia
 
 AD is one of the main reasons that machine learning has become so powerful in recent years, and is an essential component of any ML package
 
@@ -232,7 +232,7 @@ The other reason is that different types of optimization problems require differ
 Optim.jl
 ---------------------
 
-A good pure-Julia solution for the (unconstrained or box-bounded) optimization of univariate and multivariate function is `Optim <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
+A good pure-Julia solution for the (unconstrained or box-bounded) optimization of univariate and multivariate function is `Optim.jl <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
 
 By default, the algorithms in Optim target minimization rather than maximization, so if a function is called "optimize" it will mean minimization
 
@@ -350,7 +350,7 @@ If you have a linear, quadratic, conic, mixed-integer linear, etc. problem then 
 
 For nonlinear problems, the modelling language may make things difficult for complicated functions (as it is not designed to be used as a general-purpose non-linear optimizer) 
 
-See the `quickstart guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
+See the `quick start guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
 
 The following is an example of calling a linear objective with a nonlinear constraint (provided by an external function)
 
@@ -407,7 +407,7 @@ BlackBoxOptim.jl
 
 Another package for doing global optimization without derivatives is `BlackBoxOptim.jl <https://github.com/robertfeldt/BlackBoxOptim.jl>`_
 
-To see an example from the documentation, 
+To see an example from the documentation
 
 .. code-block:: julia
 
@@ -445,7 +445,7 @@ with :math:`x \in [0,1]` we get
 
 The unique root is approximately 0.408
 
-The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
+The `Roots.jl <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
 
 .. code-block:: julia
 
