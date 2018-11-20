@@ -69,7 +69,7 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
 .. math::
     \begin{array}{l|l}
     \text{Operations to compute value} &
-    \text{Operations to compute $\frac{d f(x_1,x_2)}{d x_1}$}
+    \text{Operations to compute $\frac{\partial f(x_1,x_2)}{\partial x_1}$}
     \\
     \hline
     w_1 = x_1 &
@@ -78,13 +78,13 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
     \frac{d  w_2}{d x_1} = 0 \text{ (seed)}
     \\
     w_3 = w_1 \cdot w_2 &
-    \frac{d  w_3}{d x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
+    \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
     \\
     w_4 = \sin w_1 &
     \frac{d  w_4}{d x_1} = \cos w_1 \cdot \frac{d  w_1}{d x_1}
     \\
     w_5 = w_3 + w_4 &
-    \frac{d  w_5}{d x_1} = \frac{d  w_3}{d x_1} + \frac{d  w_4}{d x_1}
+    \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{d  w_4}{d x_1}
     \end{array}
 
 Using Dual Numbers
