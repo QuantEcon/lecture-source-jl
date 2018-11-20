@@ -258,6 +258,9 @@ Always check if the results converged, and throw errors otherwise
     xmin = result.minimizer
     result.minimum
 
+The first line is a logical OR between ``converged(result)`` and ``error("...")``
+
+If the convergence check passes, the logical sentence is true, and it will proceed to the next line; if not, it will throw the error
 
 Or to maximize
 
@@ -269,8 +272,7 @@ Or to maximize
     xmin = maximizer(result)
     fmax = maximum(result)
 
-
-**Note:** There are a few inconsistencies with extracting  ``optimize`` vs. ``maximize`` results, as shown above
+**Note:** Notice that we call ``optimize`` results using ``result.minimizer``, and ``maximize`` results using ``maximizer(result)``
 
 Unconstrained Multivariate Optimization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
