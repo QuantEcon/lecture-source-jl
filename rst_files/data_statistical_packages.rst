@@ -16,7 +16,7 @@ This lecture explores some of the key packages for working with data and statist
 
 While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution
 
-This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_ `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
+This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_, `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
 
 Setup
 ------------------
