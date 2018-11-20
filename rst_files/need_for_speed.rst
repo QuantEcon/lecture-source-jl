@@ -674,7 +674,7 @@ Further Reading
 -----------------------
 
 
-A good next stop for further reading is the `relevant part <https://docs.julialang.org/en/stable/manual/performance-tips/>`_ of the Julia documentation
+A good next stop for further reading is the `relevant part <https://docs.julialang.org/en/v1/manual/performance-tips/>`_ of the Julia documentation
 
 
 .. http://www.informit.com/articles/article.aspx?p=1215438&seqNum=2
