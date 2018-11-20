@@ -931,7 +931,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 * Describe two abstract types and the hierarchy of three different concrete types
 * Benchmark the calculation of some simple linear algebra with a static array 
-  compared to the following for a dense arrays for ``N = 3`` and ``N = 15``
+  compared to the following for a dense array for ``N = 3`` and ``N = 15``
   
 .. code-block:: julia
 

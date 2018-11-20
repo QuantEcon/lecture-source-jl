@@ -146,7 +146,7 @@ Under the hood, it is finding the appropriate Gaussian quadrature scheme for the
 Interpolation
 =============================
 
-In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of .. points)
+In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of points)
 
 The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
 
