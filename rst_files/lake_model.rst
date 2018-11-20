@@ -488,8 +488,6 @@ Let's plot the path of the sample averages over 5,000 periods
 
     using QuantEcon, Roots, Random
 
-    Random.seed!(42) # for deterministic results 
-
     lm = LakeModel(d=0.0, b=0.0)
     T = 5000                        # Simulation length
 
@@ -500,6 +498,7 @@ Let's plot the path of the sample averages over 5,000 periods
     mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
     xbar = rate_steady_state(lm)
 
+    Random.seed!(42) # for deterministic results 
     s_path = simulate(mc, T; init=2)
     s_bar_e = cumsum(s_path) ./ (1:T)
     s_bar_u = 1 .- s_bar_e
