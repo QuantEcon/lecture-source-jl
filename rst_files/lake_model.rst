@@ -673,7 +673,9 @@ We will make use of code we wrote in the :doc:`McCall model lecture <mccall_mode
 
         # value function iteration  
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
+        sol = fixedpoint(T, x_iv, iterations = iter, xtol = tol)
+        converged(sol) || error("iteration did not converge")
+        xstar = sol.zero
         V = xstar[1:end-1]
         U = xstar[end]
         
@@ -698,13 +700,13 @@ And we'll create the McCall objects
 
     # model constructor
     McCallModel = @with_kw (α = 0.2, 
-        β = 0.98, # discount rate 
-        γ = 0.7, 
-        c = 6.0, # unemployment compensation 
-        σ = 2.0, 
-        u = u, # utility function 
-        w = range(10, 20, length = 60), # wage values
-        dist = BetaBinomial(59, 600, 400)) # distribution over wage values 
+                            β = 0.98, # discount rate 
+                            γ = 0.7, 
+                            c = 6.0, # unemployment compensation 
+                            σ = 2.0, 
+                            u = u, # utility function 
+                            w = range(10, 20, length = 60), # wage values
+                            dist = BetaBinomial(59, 600, 400)) # distribution over wage values 
 
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
