@@ -533,7 +533,7 @@ Assuming that the spectral radius of :math:`J` is strictly less than :math:`\bet
     v = (I - \beta J)^{-1} \beta  J {\mathbb 1}
 
 We will define a function `tree_price` to solve for $v$ given parameters stored in
-the type `AssetPriceModel`
+the `AssetPriceModel` objects
 
 .. code-block:: julia
 

@@ -572,7 +572,8 @@ A few simple programming patterns ensure that this is possible
         
         g2(x)
 
-* Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``
+* Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``. This is important when using Multiple Dispatch given the different input types the function can call
+
 
     .. code-block:: julia
 
@@ -673,7 +674,7 @@ This is all the more reason to exploit carefully designed packages rather than "
 A Digression on Style and Naming
 ------------------------------------
 
-The previous section helps to establishe some of the reasoning behind the style 
+The previous section helps to establish some of the reasoning behind the style 
 choices in these lectures: "be aware of types, but avoid declaring them"
 
 The purpose of this is threefold:

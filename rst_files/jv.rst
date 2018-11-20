@@ -351,7 +351,7 @@ where
     \right\}
 
 
-Here we are minimizing instead of maximizing to fit with SciPy's optimization routines
+Here we are minimizing instead of maximizing to fit with optimization routines
 
 When we represent :math:`V`, it will be with a Julia array ``V`` giving values on grid ``x_grid``
 
@@ -373,12 +373,9 @@ Hence in the preliminaries of ``bellman_operator``
 Inside the ``for`` loop, for each ``x`` in the grid over the state space, we
 set up the function :math:`w(z) = w(s, \phi)` defined in :eq:`defw`.
 
-The function is minimized over all feasible :math:`(s, \phi)` pairs, either by
+The function is minimized over all feasible :math:`(s, \phi)` pairs, either by brute-force search over a grid, or specialized solver routines
 
-* a relatively sophisticated solver from SciPy called ``fmin_slsqp``, or
-* brute force search over a grid
-
-The former is much faster, but convergence to the global optimum is not
+The latter is much faster, but convergence to the global optimum is not
 guaranteed.  Grid search is a simple way to check results
 
 

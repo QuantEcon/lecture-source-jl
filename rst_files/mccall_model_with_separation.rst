@@ -357,7 +357,7 @@ The Reservation Wage and Unemployment Compensation
 
 First, let's look at how :math:`\bar w` varies with unemployment compensation
 
-In the figure below, we use the default parameters in the `McCallModel` type, apart from
+In the figure below, we use the default parameters in the `McCallModel` tuple, apart from
 `c` (which takes the values given on the horizontal axis)
 
 .. figure:: /_static/figures/mccall_resw_c.png

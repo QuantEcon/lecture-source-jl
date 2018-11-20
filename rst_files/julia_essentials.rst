@@ -59,7 +59,7 @@ A particularly simple data type is a Boolean value, which can be either ``true``
 
 .. code-block:: julia
 
-    y = 1 > 2  # Now y = false
+    y = 1 > 2  # now y = false
 
 
 .. Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
@@ -99,7 +99,7 @@ Arithmetic operations are fairly standard
 
     x = 2; y = 1.0;
 
-The ``;`` can be used to supress  output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary
+The ``;`` can be used to suppress output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary
 
 
 .. code-block:: julia
@@ -163,7 +163,7 @@ Complex numbers are another primitive data type, with the imaginary part being s
 
 .. code-block:: julia
 
-    x * y  # Complex multiplication
+    x * y  # complex multiplication
 
 
 There are several more primitive data types that we'll introduce as necessary
@@ -238,14 +238,14 @@ Julia provides many functions for working with strings
 
 .. code-block:: julia
 
-    strip(" foobar ")  # Remove whitespace
+    strip(" foobar ")  # remove whitespace
 
 
 Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info)
 
 .. code-block:: julia
 
-    match(r"(\d+)", "Top 10")  # Find digits in string
+    match(r"(\d+)", "Top 10")  # find digits in string
 
 
 Containers
@@ -498,7 +498,7 @@ Comprehensions
 
 Comprehensions are an elegant tool for creating new arrays or dictionaries from iterables
 
-Here's some examples
+Here are some examples
 
 .. code-block:: julia
 
@@ -705,7 +705,7 @@ Let's check that it works
     f(1 / pi)
 
 
-Julia also allows for you to define anonymous functions
+Julia also allows you to define anonymous functions
 
 For example, to define ``f(x) = sin(1 / x)`` you can use ``x -> sin(1 / x)``
 
@@ -717,7 +717,7 @@ Typically it's as an argument to another function
 
 .. code-block:: julia
 
-    map(x -> sin(1 / x), randn(3))  # Apply function to each element
+    map(x -> sin(1 / x), randn(3))  # apply function to each element
 
 
 Optional and Keyword Arguments
@@ -731,7 +731,7 @@ Function arguments can be given default values
 
     f(x, a = 1) = exp(cos(a * x))
 
-If the argument is not supplied the default value is substituted
+If the argument is not supplied, the default value is substituted
 
 .. code-block:: julia
 
@@ -746,7 +746,7 @@ If the argument is not supplied the default value is substituted
 Another option is to use **keyword** arguments
 
 The difference between keyword and standard (positional) arguments is that
-they are parsed and bound by name rather than order in the function call
+they are parsed and bounded by name rather than the order in the function call
 
 For example, in the call
 
@@ -836,7 +836,7 @@ The broadcasting notation is not simply vectorization, as it is able to "fuse" m
     z = similar(y)
     z .= x .+ y .- sin.(x) # generates efficient code instead of many temporaries
 
-A convenience macro for adding broadcasting on every function call is `@.`
+A convenience macro for adding broadcasting on every function call is ``@.``
 
 .. code-block:: julia
 
@@ -884,9 +884,8 @@ For/while loops and global variables in Jupyter vs. the REPL:
 * The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information on using globals outside of Jupyter,
- `see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_, 
-though these rules are likely to change in interactive modes in Julia 1.1
+For more information on using globals outside of Jupyter, 
+(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to change in interactive modes in Julia 1.1 
 
 Functions
 ---------------
@@ -950,7 +949,7 @@ Due to scoping, you could write this as
     y = 2
     f(x; y = y) # left hand `y` is the local name of the argument in the function
 
-Similarly to the named arguments, the local scope also works with named tuples
+Similarly to named arguments, the local scope also works with named tuples
 
 .. code-block:: julia
 
@@ -961,10 +960,10 @@ Similarly to the named arguments, the local scope also works with named tuples
     x = 0.1
     y = 2
     
-    # Create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
+    # create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
     (x = x, y = y) 
 
-As you use Julia, you will find that the scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
+As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
 
 In fact, it frequently leads to clear code closer to the math when you don't need to specify intermediaries.
 
@@ -972,17 +971,17 @@ Another example is with broadcasting
 
 .. code-block:: julia
 
-    f(x) = x^2  # Local `x` in scope
+    f(x) = x^2  # local `x` in scope
 
-    x = 1:5     # Not an integer
+    x = 1:5     # not an integer
 
-    f.(x)       # Broadcasts the x^2 function over the vector
+    f.(x)       # broadcasts the x^2 function over the vector
 
 
 Closures
 ---------------
 
-Frequently, you will want to have a function that calculates a value given some fixed parameter
+Frequently, you will want to have a function that calculates a value given some fixed parameters
 
 .. code-block:: julia
 
@@ -995,21 +994,21 @@ While the above was convenient, there are other times when you want to simply fi
 .. code-block:: julia
 
     a = 0.2
-    f(x) = a * x^2     # Refers to the `a` in the outer scope
-    f(1)               # Univariate function
+    f(x) = a * x^2     # refers to the `a` in the outer scope
+    f(1)               # univariate function
 
 When the function ``f`` is parsed in Julia, it will look to see if any of the variables are already defined in the current scope
 
 In this case, it finds the ``a`` since it was defined previously, whereas if the 
-code defined ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
+code defines ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
 
 This also works when embedded in other functions
 
 .. code-block:: julia
 
     function g(a)
-        f(x) = a * x^2  # Refers to the `a` passed in the function
-        f(1)            # Univariate function
+        f(x) = a * x^2  # refers to the `a` passed in the function
+        f(1)            # univariate function
     end
     g(0.2)
 
@@ -1029,7 +1028,7 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
         a = x^2
         b = 2 * a
         c = a + b
-        return (a = a, b = b, c = c)  # Note local scope of tuples!
+        return (a = a, b = b, c = c)  # note local scope of tuples!
     end
     
     solvemodel(0.1)
@@ -1045,14 +1044,14 @@ To see a simple example, consider functions that accept other functions (includi
 
 .. code-block:: julia
 
-    twice(f, x) = f(f(x))  # Applies f to itself twice
+    twice(f, x) = f(f(x))  # applies f to itself twice
     f(x) = x^2
     @show twice(f, 2.0)
     
     twice(x -> x^2, 2.0)
     a = 5
     g(x) = a * x
-    @show twice(g, 2.0);   # Using a closure 
+    @show twice(g, 2.0);   # using a closure 
 
 This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic 
 
@@ -1155,7 +1154,7 @@ A Quick Check for Scoping Design
 
 While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout
 
-Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of the functions
+Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of functions
 
 A simple test of the difference is to take a segment of code and wrap it in a function, for example
 
@@ -1401,8 +1400,7 @@ Here's one solutions:
         return is_subset
     end
 
-    # == test == #
-
+    # test
     println(f_ex4([1, 2], [1, 2, 3]))
     println(f_ex4([1, 2, 3], [1, 2]))
 
@@ -1430,13 +1428,13 @@ Exercise 5
         num_subintervals = n - 1
         step = length_of_interval / num_subintervals
 
-        # find first grid point larger than x === #
+        # find first grid point larger than x
         point = a
         while point ≤ x
             point += step
         end
 
-        # x must lie between the gridpoints (point - step) and point === #
+        # x must lie between the gridpoints (point - step) and point
         u, v = point - step, point
 
         return f(u) + (x - u) * (f(v) - f(u)) / (v - u)
