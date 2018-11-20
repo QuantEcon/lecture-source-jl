@@ -46,9 +46,9 @@ From *Mathematics to Generic Programming* :cite:`stepanov_mathematics_2014`
 
     Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency... Generic programming is more of an *attitude* toward programming than a particular set of tools.
 
-In that sense, it is important to think of generic programming as an interactive approach to uncover generality without compromising performance -- and not a set of rules to decomposing taxonomies of abstractions
+In that sense, it is important to think of generic programming as an interactive approach to uncover generality without compromising performance rather than as a set of rules
 
-As we will see, the core approach is to treat data structures and algorithms as loosely coupled, and is in direct contrast to the "isa" approach of object-oriented programming
+As we will see, the core approach is to treat data structures and algorithms as loosely coupled, and is in direct contrast to the `is-a <https://en.wikipedia.org/wiki/Is-a>`_  approach of object-oriented programming
 
 This lecture has the dual role of giving an introduction into the design of generic algorithms and describing how Julia helps make that possible
 
