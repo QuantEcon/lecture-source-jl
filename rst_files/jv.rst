@@ -178,26 +178,14 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  using Distributions, QuantEcon, Interpolations, Expectations
-
-    # pending rewrite
-    struct JvWorker
-        A
-        α
-        β
-        x_grid
-        G
-        π_func
-        F
-        E
-        ϵ
+  using Distributions, QuantEcon, Interpolations, Expectations, Parameters
         
-        # inner constructor 
-        function JvWorker(;A = 1.4,
-                    α = 0.6,
-                    β = 0.96,
-                    grid_size = 50,
-                    ϵ = 1e-4)
+    # model object 
+    function JvWorker(;A = 1.4,
+                α = 0.6,
+                β = 0.96,
+                grid_size = 50,
+                ϵ = 1e-4)
 
         G(x, ϕ) = A .* (x .* ϕ).^α
         π_func = sqrt
@@ -215,16 +203,16 @@ The following code solves the DP problem described above
         # CoordInterpGrid below
         x_grid = range(ϵ, grid_max, length = grid_size)
 
-        new(A, α, β, x_grid, G, π_func, F, E, ϵ)
-        end
+        return (A = A, α = α, β = β, x_grid = x_grid, G = G, 
+                π_func = π_func, F = F, E = E, ϵ = ϵ)
     end
 
-  function bellman_operator!(jv::JvWorker,
-                             V::AbstractVector,
+  function bellman_operator!(jv,
+                             V,
                              new_V::AbstractVector)
 
       # simplify notation
-      G, π_func, F, β, E, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.E, jv.ϵ
+      @unpack G, π_func, F, β, E, ϵ = jv
 
       # prepare interpoland of value function
       Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -260,12 +248,12 @@ The following code solves the DP problem described above
       end
   end
 
-  function bellman_operator!(jv::JvWorker,
-                             V::AbstractVector,
+  function bellman_operator!(jv,
+                             V,
                              out::Tuple{AbstractVector, AbstractVector})
 
       # simplify notation
-      G, π_func, F, β, E, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.E, jv.ϵ
+      @unpack G, π_func, F, β, E, ϵ = jv
 
       # prepare interpoland of value function
       Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -509,7 +497,8 @@ Here's code to produce the 45 degree diagram
 .. code-block:: julia
 
     wp = JvWorker(grid_size=25)
-    G, π_func, F = wp.G, wp.π_func, wp.F       # Simplify names
+    # simplify notation 
+    @unpack G, π_func, F = wp
 
     v_init = collect(wp.x_grid) * 0.5
     f2(x) = bellman_operator(wp, x)
