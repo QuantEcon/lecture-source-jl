@@ -299,8 +299,7 @@ To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.j
 
 Note that this has fewer iterations
 
-As no derivative was given, it used `finite-differences <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ to approximate the gradient of ``f(x)``
-
+As no derivative was given, it used `finite-differences <https://en.wikipedia.org/wiki/Finite_difference>`_ to approximate the gradient of ``f(x)``
 
 However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible
 
@@ -312,7 +311,7 @@ However, since most of the algorithms require derivatives, you will often want t
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
     "$(results.iterations) iterations")
 
-Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `tips and trick <generic_tips_tricks>`_ )
+Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `generic programming lecture <generic_programming>`_ )
 
 Alternatively, with an analytical gradient
 
@@ -356,6 +355,8 @@ For nonlinear problems, the modelling language may make things difficult for com
 See the `quick start guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
 
 The following is an example of calling a linear objective with a nonlinear constraint (provided by an external function)
+
+Here ``Ipopt`` stands for ``Interior Point OPTimizer``, a `nonlinear solver <https://github.com/JuliaOpt/Ipopt.jl>`_ in Julia 
 
 .. code-block:: julia
 
