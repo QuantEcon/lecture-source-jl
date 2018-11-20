@@ -231,9 +231,9 @@ Here's the code:
     end
 
     function rate_steady_state(lm) 
-        sol = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5]).zero
+        sol = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5])
         converged(sol) || error("Failed to converge in $(result.iterations) iterations")
-        return sol
+        return sol.zero
     end 
 
     function simulate_stock_path(lm, X0, T)
