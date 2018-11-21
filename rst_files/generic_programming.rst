@@ -247,7 +247,7 @@ When programming in Julia
 
     * there is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
     * `Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_ is achieved without anything resembling OOP `inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_
-    * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)\#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
+    * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_(computer_science)#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
     * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e., part of generic polymorphism) and have nothing to do with OO inheritance
     * The looseness that accompanies keeping algorithms and data structures as orthogonal as possible makes it easier to discover commonality in the design
 
