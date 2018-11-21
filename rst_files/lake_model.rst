@@ -753,9 +753,8 @@ function of the unemployment compensation rate
             return t - u_rate * c
         end
 
-        τ = brent(budget_differential, (0.0, 0.95c))
+        τ = find_zero(budget_differential, (0.0, 0.95c))
     end
-
 
     # Levels of unemployment insurance we wish to study
     Nc = 60
