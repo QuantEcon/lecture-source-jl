@@ -81,6 +81,8 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
+**Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
+
 3. Create a specific project based off this template
 
     .. code-block:: julia
