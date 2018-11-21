@@ -984,7 +984,7 @@ Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
 Exercise 4
 --------------
 
-Use your solution to Exercise 8(a/b) in `Julia By Example <julia_by_example>`_ to 
+Use your solution to Exercise 8(a/b) in `Introductory Examples <julia_by_example>`_ to 
 create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function
 
 The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``, 
