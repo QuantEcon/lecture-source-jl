@@ -229,7 +229,7 @@ And the ``subtypes`` which gives a list of the available subtypes for any packag
 Deducing and Declaring Types
 =============================
 
-We will discuss this in detail in :doc:`this lecture <generic_programming>`,
+We will discuss this in detail in :doc:`generic programming <generic_programming>`,
 but much of Julia's performance gains and generality of notation comes from its type system
 
 For example
@@ -946,7 +946,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 Exercise 2
 -------------
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from `this lecture <kalman>`_
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from `the Kalman lecture <kalman>`_
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
