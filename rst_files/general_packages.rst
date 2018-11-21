@@ -15,7 +15,7 @@ Overview
 .. I am not sure I agree... The size of the ecosystem depends on what kind of package you are thinking of
 .. While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
-Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proof of concepts
+Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs of concept
 
 A major advantage of Julia libraries is that, because Julia itself is sufficiently fast, there is less need to mix in low level languages like C and Fortran
 
