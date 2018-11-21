@@ -518,9 +518,9 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             xprime = time1_allocation(pas, μ)[3]
             out .= vcat(
             Uc(c, n) .* (c - B_) + Un(c, n) .* n + β * dot(Π[s_0, :], xprime),
-            Uc(c, n) - μ * (Ucc(c, n) .* (c - B_) + Uc(c, n)) - Ξ,
-            Un(c, n) - μ * (Unn(c, n) .* n + Un(c, n)) + Θ[s_0] .* Ξ,
-            (Θ .* n - c - G)[s_0]
+            Uc(c, n) .- μ * (Ucc(c, n) .* (c - B_) + Uc(c, n)) .- Ξ,
+            Un(c, n) .- μ * (Unn(c, n) .* n + Un(c, n)) + Θ[s_0] .* Ξ,
+            (Θ .* n .- c .- G)[s_0]
             )
         end
 
@@ -544,7 +544,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 
     function Τ(model::Model, c::Union{Real,Vector}, n::Union{Real,Vector})
         Uc, Un = model.Uc.(c, n), model.Un.(c, n)
-        return 1+Un./(model.Θ .* Uc)
+        return 1. .+ Un./(model.Θ .* Uc)
     end
 
 
@@ -1145,7 +1145,7 @@ The recursive formulation is implemented as follows
             n::AbstractArray)
         model = pab.model
         Uc, Un = model.Uc(c, n), model.Un(c, n)
-        return 1 + Un ./ (model.Θ .* Uc)
+        return 1. .+ Un ./ (model.Θ .* Uc)
     end
 
     Tau(pab::RecursiveAllocation, c::Real, n::Real) = Tau(pab, [c], [n])
@@ -1249,7 +1249,7 @@ The recursive formulation is implemented as follows
 
         function objf(z, grad)
             c, xprime = z[1:S_possible], z[S_possible+1:2S_possible]
-            n = (c + G[sprimei_possible]) ./ Θ[sprimei_possible]
+            n = (c .+ G[sprimei_possible]) ./ Θ[sprimei_possible]
             Vprime = [Vf[sprimei_possible[si]](xprime[si]) for si in 1:S_possible]
             return -dot(Π[s_, sprimei_possible], U.(c, n) + β * Vprime)
         end
@@ -1257,14 +1257,14 @@ The recursive formulation is implemented as follows
         function cons(out, z, grad)
             c, xprime, TT =
                 z[1:S_possible], z[S_possible + 1:2S_possible], z[2S_possible + 1:3S_possible]
-            n = (c+G[sprimei_possible]) ./ Θ[sprimei_possible]
+            n = (c .+ G[sprimei_possible]) ./ Θ[sprimei_possible]
             u_c = Uc.(c, n)
             Eu_c = dot(Π[s_, sprimei_possible], u_c)
             out .= x * u_c/Eu_c - u_c .* (c - TT) - Un(c, n) .* n - β * xprime
         end
         function cons_no_trans(out, z, grad)
             c, xprime = z[1:S_possible], z[S_possible + 1:2S_possible]
-            n = (c + G[sprimei_possible]) ./ Θ[sprimei_possible]
+            n = (c .+ G[sprimei_possible]) ./ Θ[sprimei_possible]
             u_c = Uc.(c, n)
             Eu_c = dot(Π[s_, sprimei_possible], u_c)
             out .= x * u_c / Eu_c - u_c .* c - Un(c, n) .* n - β * xprime
@@ -1293,7 +1293,7 @@ The recursive formulation is implemented as follows
                 ub = vcat(ones(S_possible), ones(S_possible) * xbar[2])
             end
             init = vcat(T.z0[i_x, s_][sprimei_possible],
-                        T.z0[i_x, s_][2 .S+sprimei_possible])
+                        T.z0[i_x, s_][2S .+ sprimei_possible])
             opt = Opt(:LN_COBYLA, 2S_possible)
             equality_constraint!(opt, cons_no_trans, zeros(S_possible))
         end
@@ -1316,12 +1316,12 @@ The recursive formulation is implemented as follows
         end
 
         T.z0[i_x, s_][sprimei_possible] = minx[1:S_possible]
-        T.z0[i_x, s_][S + sprimei_possible] = minx[1:S_possible] + G[sprimei_possible]
-        T.z0[i_x, s_][2S + sprimei_possible] = minx[S_possible + 1:2S_possible]
+        T.z0[i_x, s_][S .+ sprimei_possible] = minx[1:S_possible] .+ G[sprimei_possible]
+        T.z0[i_x, s_][2S .+ sprimei_possible] = minx[S_possible .+ 1:2S_possible]
         if model.transfers == true
-            T.z0[i_x, s_][3S + sprimei_possible] = minx[2S_possible + 1:3S_possible]
+            T.z0[i_x, s_][3S .+ sprimei_possible] = minx[2S_possible + 1:3S_possible]
         else
-            T.z0[i_x, s_][3S + sprimei_possible] = zeros(S)
+            T.z0[i_x, s_][3S .+ sprimei_possible] = zeros(S)
         end
 
         return vcat(-minf, T.z0[i_x, s_])
@@ -1547,7 +1547,6 @@ triangle denote war
 
     using Plots
     gr(fmt=:png)
-    pyplot()
     titles = hcat("Consumption", "Labor", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")
     sim_seq_l_plot = hcat(sim_seq_l[1:3]..., sim_seq_l[4],
