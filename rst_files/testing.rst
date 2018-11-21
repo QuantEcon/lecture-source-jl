@@ -793,18 +793,18 @@ Push a commit to the repository which breaks one of the tests and see what the T
 
 Just as a workflow review, you should 
 
-1. Create the local package directory using the PkgTemplates.jl.
+1. Create the local package directory using the PkgTemplates.jl
 
-2. Drag-and-drop that folder to GitHub Desktop.
+2. Drag-and-drop that folder to GitHub Desktop
 
-3. Create an empty repository with the same name on the GitHub server.
+3. Create an empty repository with the same name on the GitHub server
 
-4. Push from GitHub Desktop to the server.
+4. Push from GitHub Desktop to the server
 
-5. Open that folder in Atom.
+5. Open that folder in Atom
 
 6. Make changes, test, iterate on it, etc. As a rule, functions like ``newtonmethod()`` should live in the ``src/`` directory once they're stable, and you should export them with ``export newtonmethod``
 
 7. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
 
-8. Push to the server, and see the Travis and CodeCov results.
+8. Push to the server, and see the Travis and CodeCov results
