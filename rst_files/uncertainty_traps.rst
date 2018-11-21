@@ -242,17 +242,17 @@ Setup
 
 .. code-block:: julia
 
-    @with_kw mutable struct UncertaintyTrapEcon
-        a = 1.5             # Risk aversion
-        γ_x = 0.5           # Production shock precision
-        ρ = 0.99            # Correlation coefficient for θ
-        σ_θ = 0.5           # Standard dev of θ shock
-        num_firms = 100     # Number of firms
-        σ_F = 1.5           # Std dev of fixed costs
-        c = -420.0          # External opportunity cost
-        μ = 0.0             # Initial value for μ
-        γ = 4.0             # Initial value for γ
-        θ = 0.0             # Initial value for θ
+    @with_kw mutable struct UncertaintyTrapEcon{TF <: AbstractFloat, TI <: Integer}
+        a::TF = 1.5             # Risk aversion
+        γ_x::TF = 0.5           # Production shock precision
+        ρ::TF = 0.99            # Correlation coefficient for θ
+        σ_θ::TF = 0.5           # Standard dev of θ shock
+        num_firms::TI = 100     # Number of firms
+        σ_F::TF = 1.5           # Std dev of fixed costs
+        c::TF = -420.0          # External opportunity cost
+        μ::TF = 0.0             # Initial value for μ
+        γ::TF = 4.0             # Initial value for γ
+        θ::TF = 0.0             # Initial value for θ
         σ_x = sqrt(a / γ_x) # Standard deviation of shock
     end
 
