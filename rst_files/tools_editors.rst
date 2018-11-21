@@ -51,7 +51,7 @@ To add the file:
 
 4. For convenience, you may find it useful on your operating system to change the directory where the REPL starts
  
-    On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
+On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
 
 
 The REPL
@@ -95,13 +95,13 @@ Hitting ``]`` brings you into package mode
 
 * ``] precompile`` will precompile everytihng possible 
 
-You can get a full list of package-mode commands by running 
+You can get a full list of package mode commands by running 
 
 .. code-block:: julia 
 
     ] ? 
 
-Recall that on some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit ``]`` first and then run your commands)
+On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit ``]`` first and then run your commands)
 
 Help Mode 
 ---------------
@@ -135,7 +135,7 @@ will succeed
 Atom 
 =========
 
-As discussed `previously <getting_started>`_, eventually you will want to use a full-fledged text editor 
+As discussed `previously <getting_started>`_, eventually you will want to use a fully fledged text editor 
 
 The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
 
@@ -147,10 +147,10 @@ Installing Atom
 
 1. Download and Install Atom from the `Atom website <https://atom.io/>`_
 
-2. (Optional, but Recommended) Change default Atom settings
+2. (Optional, but recommended): Change default Atom settings
 
-    * Use ``Ctrl-,`` to get the `Settings` pane
-    * Choose the `Packages` tab
+    * Use ``Ctrl-,`` to get the ``Settings`` pane
+    * Choose the ``Packages`` tab
     * Type ``line-ending-selector`` into the Filter and then click "Settings" for that package
 
         * Change the default line ending to ``LF`` (only necessary on Windows)
@@ -196,7 +196,9 @@ If you don't, simply go to the command palette and type "Julia standard layout"
 
 The bottom pane is a standard REPL, which supports the different modes above 
 
-The "workspace" pane is a snapshot of currently-defined objects. For example, if we define an object in the REPL
+The "workspace" pane is a snapshot of currently-defined objects
+
+For example, if we define an object in the REPL
 
 .. code-block:: julia 
 
