@@ -1293,7 +1293,7 @@ The recursive formulation is implemented as follows
                 ub = vcat(ones(S_possible), ones(S_possible) * xbar[2])
             end
             init = vcat(T.z0[i_x, s_][sprimei_possible],
-                        T.z0[i_x, s_][2S+sprimei_possible])
+                        T.z0[i_x, s_][2 .S+sprimei_possible])
             opt = Opt(:LN_COBYLA, 2S_possible)
             equality_constraint!(opt, cons_no_trans, zeros(S_possible))
         end
