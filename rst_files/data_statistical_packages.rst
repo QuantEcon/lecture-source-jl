@@ -27,11 +27,12 @@ Setup
 DataFrames
 ========================
 
-A useful package for working with data is `DataFrames <https://github.com/JuliaStats/DataFrames.jl>`_
+A useful package for working with data is `DataFrames.jl <https://github.com/JuliaStats/DataFrames.jl>`_
 
 The most important data type provided is a ``DataFrame``, a two dimensional array for storing heterogeneous data
 
 Although data can be heterogeneous within a ``DataFrame``, the contents of the columns must be homogeneous
+(of the same type)
 
 This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) or, more loosely, a spreadsheet in Excel
 
@@ -40,7 +41,7 @@ There are a few different ways to create a DataFrame
 Constructing a DataFrame
 -----------------------------------
 
-The first is to setup columns and construct a dataframe by assigning names
+The first is to set up columns and construct a dataframe by assigning names
 
 .. code-block:: julia
 
@@ -51,7 +52,7 @@ The first is to setup columns and construct a dataframe by assigning names
     last_price = [4.2, 11.3, 12.1, missing]
     df = DataFrame(commod = commodities, price = last_price)
 
-Columns of the DataFrame can be accessed by name using a symbol or a ``.``
+Columns of the ``DataFrame`` can be accessed by name using a symbol or a ``.``
 
 
 .. code-block:: julia
@@ -69,20 +70,20 @@ Note that the type of this array has values ``Union{Missing, Float64}`` since it
 
     df.commod
 
-The DataFrames package provides a number of methods for acting on DataFrames, such as ``describe``
+The ``DataFrames.jl`` package provides a number of methods for acting on ``DataFrame``'s, such as ``describe``
 
 .. code-block:: julia
 
     describe(df)
 
-While often data will be generated all at once, or read from a file, you can add to a dataframe by providing the key parameters
+While often data will be generated all at once, or read from a file, you can add to a ``DataFrame`` by providing the key parameters
 
 .. code-block:: julia
 
     nt = (commod = "nickel", price= 5.1)
     push!(df, nt)
     
-Named tuples can also be used to construct a DataFrame, and have it properly deduce all types
+Named tuples can also be used to construct a ``DataFrame``, and have it properly deduce all types
 
 .. code-block:: julia
 
@@ -95,7 +96,8 @@ Working with Missing
 
 As we discussed in `fundamental types <missing>`_, the semantics of ``missing`` are that mathematical operations will not silently ignore it
 
-In order to allow ``missing`` in a column, you can create/load the dataframe from a source with missings, or call ``allowmissing!`` on a column 
+In order to allow ``missing`` in a column, you can create/load the ``DataFrame`` 
+from a source with ``missing``'s, or call ``allowmissing!`` on a column 
 
 .. code-block:: julia
 
@@ -103,14 +105,14 @@ In order to allow ``missing`` in a column, you can create/load the dataframe fro
     push!(df2, (t=3, col1 = missing))
     push!(df2, (t=4, col1 = 5.1))
 
-We can see the propagation of ``missing`` to caller functions, as well the way to efficiently calculate with non-missing data
+We can see the propagation of ``missing`` to caller functions, as well as a way to efficiently calculate with non-missing data
 
 .. code-block:: julia
 
     @show mean(df2.col1)
     @show mean(skipmissing(df2.col1))
 
-And to replace the missing,
+And to replace the ``missing``
 
 .. code-block:: julia
 
@@ -119,7 +121,7 @@ And to replace the missing,
 Manipulating and Transforming DataFrames
 ------------------------------------------
 
-One way to do an additional calculation with a DataFrame is the ``@transform`` macro from ``DataFramesMeta.jl``
+One way to do an additional calculation with a ``DataFrame`` is to tuse the ``@transform`` macro from ``DataFramesMeta.jl``
 
 .. code-block:: julia
 
@@ -148,11 +150,11 @@ For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/
 Visualization, Querying, and Plots
 -------------------------------------
 
-The DataFrame (and similar types that fulfill a standard generic interface) can fit into a variety of packages
+The ``DataFrame`` (and similar types that fulfill a standard generic interface) can fit into a variety of packages
 
 One set of them is the `QueryVerse <https://github.com/queryverse>`_  
 
-**Note:** The queryverse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax ``|>``
+**Note:** The QueryVerse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax ``|>``
 
 .. code-block:: julia
 
@@ -227,7 +229,9 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
     ols = lm(@formula(y ~ x), df) # R-style notation
 
 
-To display the results in a useful tables for LaTex and the display, use `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output similar to the Stata package `esttab` and the R package `stargazer`.
+To display the results in a useful tables for LaTeX and the REPL, use 
+`RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output 
+similar to the Stata package `esttab` and the R package `stargazer`
 
 .. code-block:: julia
 
@@ -252,7 +256,8 @@ To display the results in a useful tables for LaTex and the display, use `Regres
 Fixed Effects
 ----------------
 
-While Julia may be overkill for estimating a simple linear regression, fixed-effect estimation with dummies for multiple variables are much more computationally intensive
+While Julia may be overkill for estimating a simple linear regression, 
+fixed-effects estimation with dummies for multiple variables are much more computationally intensive
 
 
 For a 2-way fixed-effect, taking the example directly from the documentation using `cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
