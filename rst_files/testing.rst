@@ -94,6 +94,8 @@ If we navigate to the package directory (shown in the output), we should see som
 .. figure:: /_static/figures/testing-dir.png
     :scale: 60%
 
+**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
+
 Adding Project to Git
 ------------------------
 
