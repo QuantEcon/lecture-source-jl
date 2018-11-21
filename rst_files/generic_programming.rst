@@ -62,7 +62,7 @@ Exploring Type Trees
 
 The connection between data structures and the algorithms which operate on them is handled by the type system
 
-Concrete types (i.e. ``Float64`` or ``Array{Float64, 2}``) are the data structures we apply an algorithm to, and the abstract types (e.g. the corresponding ``Number`` and ``AbstractArray``) provide the mapping between a set of related data structures and algorithms
+Concrete types (i.e., ``Float64`` or ``Array{Float64, 2}``) are the data structures we apply an algorithm to, and the abstract types (e.g. the corresponding ``Number`` and ``AbstractArray``) provide the mapping between a set of related data structures and algorithms
 
 .. code-block:: julia
 
@@ -237,7 +237,7 @@ In particular, previous OO knowledge often leads people to write Julia code such
     @show m.algorithmcalculation;
 
 You may think to yourself that the above code is similar to OO, except that you
-* reverse the first argument, i.e. ``myalgorithm!(m, x)`` instead of the object-oriented ``m.myalgorithm!(x)``
+* reverse the first argument, i.e., ``myalgorithm!(m, x)`` instead of the object-oriented ``m.myalgorithm!(x)``
 * cannot control encapsulation of the fields ``a``, ``b``, but you can add getter/setters like ``set_a``
 * do not have concrete inheritance
 
@@ -247,7 +247,7 @@ When programming in Julia
     * there is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
     * `Polymorphism <https://en.wikipedia.org/wiki/Polymorphism_\(computer_science\)>`_ is achieved without anything resembling OOP `inheritance <https://en.wikipedia.org/wiki/Inheritance_\(object-oriented_programming\)>`_
     * `Abstraction <https://en.wikipedia.org/wiki/Abstraction_\(computer_science\)\#Abstraction_in_object_oriented_programming>`_ is implemented by keeping the data and algorithms that operate on them as orthogonal as possible -- in direct contrast to OOP's association of algorithms and methods directly with a type in a tree
-    * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e. part of generic polymorphism) and have nothing to do with OO inheritance
+    * The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e., part of generic polymorphism) and have nothing to do with OO inheritance
     * The looseness that accompanies keeping algorithms and data structures as orthogonal as possible makes it easier to discover commonality in the design
 
 Iterative Design of Abstractions
@@ -432,7 +432,7 @@ In mathematics, a `ring <https://en.wikipedia.org/wiki/ring_\(mathematics\)>`_ i
     * there is an additive identity element,  denoted :math:`0`, such that :math:`a + 0 = a` for any :math:`a` in the set
     * there is an additive inverse of each element, denoted :math:`-a`, such that :math:`a + (-a) = 0`
     * there is a multiplicative identity element, denoted :math:`1`, such that :math:`a \cdot 1 = a = 1 \cdot a`
-    * a total or partial ordering is **not** required (i.e. there does not need to be any meaningful :math:`<` operator defined)
+    * a total or partial ordering is **not** required (i.e., there does not need to be any meaningful :math:`<` operator defined)
     * a multiplicative inverse is **not** required
 
 While this skips over some parts of the mathematical definition, this algebraic structure provides motivation for the abstract ``Number`` type in Julia
@@ -604,9 +604,9 @@ To show this for the ``Rational`` number type, where ``a // b`` constructs a rat
 
 **Remark:** Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular
 
-    * ``Integer`` types (i.e. ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
+    * ``Integer`` types (i.e., ``Int64 <: Integer``) do not have a a multiplicative inverse with closure in the set
     * However, it is necessary in practice for integer division to be defined, and return back a member of the ``Real``'s
-    * This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e. it can be independent of the type hierarchy)
+    * This is called `type promotion <https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1>`_, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e., it can be independent of the type hierarchy)
 
 Do not think of the break in the connection between the underlying algebraic structures and the code as a failure of the language or design
 
@@ -707,7 +707,7 @@ Similarly, the result of interpolating data is also a function
 
     plotfunctions(f_int)  # same generic function
 
-Note that the same generic ``plotfunctions`` could use any variable passed to it that "looks" like a function, i.e. can call ``f(x)``
+Note that the same generic ``plotfunctions`` could use any variable passed to it that "looks" like a function, i.e., can call ``f(x)``
 
 This approach to design with types -- generic, but without any specific type declarations -- is called `duck typing <https://en.wikipedia.org/wiki/Duck_typing>`_
 
@@ -745,7 +745,7 @@ The main way to implement this in a generic language is with a design approach c
 ..    using QuadGk
 ..    f(x) = x^2
 ..    y = 1:5
-..    @show sum(f, y) # i.e. algorithm takes function as first argument and iterator
+..    @show sum(f, y) # i.e., algorithm takes function as first argument and iterator
 ..    @show quadgk(f, 0.0, 1.0) # calculate an integral
 ..    plot(f, 0.0, 1.0) # plot recipe for any function
 .. 
@@ -760,7 +760,7 @@ The main way to implement this in a generic language is with a design approach c
 ..    p = poly([1.0, 2.0, 4.9])
 ..    @show sum(fi, 1/0)
 ..    @show fi(1.0)
-..    @show sum(fi, y) # i.e. algorithm takes function as first argument and iterator
+..    @show sum(fi, y) # i.e., algorithm takes function as first argument and iterator
 ..    @show quadgk(p, 0.0, 1.0) # calculate an integral
 ..    plot(p, 0.0, 1.0) # plot recipe for any function
 
