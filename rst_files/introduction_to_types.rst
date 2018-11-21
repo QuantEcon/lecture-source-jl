@@ -109,7 +109,7 @@ Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Sy
 
     typeof(:a)
 
-**Remark:** Note that, by convention, type names use CamelCase ---  ``Array``, ``AbstractArray``, etc.
+**Remark:** Note that, by convention, type names use CamelCase --  ``Array``, ``AbstractArray``, etc.
 
 
 Variables, Types, and Values
@@ -157,7 +157,7 @@ Abstract vs Concrete Types
 
 Up to this point, most of the types we have worked with (e.g., ``Float64, Int64``) are examples of **concrete types**
 
-Concrete types are types that we can *instantiate* --- i.e., pair with data in memory
+Concrete types are types that we can *instantiate* -- i.e., pair with data in memory
 
 We will now examine **abstract types** that cannot be instantiated (e.g., ``Real``, ``AbstractFloat``)
 
@@ -466,7 +466,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
         c::T3
     end
 
-    # Works fine
+    # works fine
     a = 2
     b = 3
     c = [1.0, 2.0, 3.0]'    # transpose is not a `Vector` but `f()` would work
@@ -610,7 +610,7 @@ A few simple programming patterns ensure that this is possible
         @show typeof(1)
         @show typeof(1.0)
         @show typeof(BigFloat(1.0))
-        @show typeof(one(BigFloat))  # Gets multiplicative identity, passing in type
+        @show typeof(one(BigFloat))  # gets multiplicative identity, passing in type
         @show typeof(zero(BigFloat)) 
         
         x = BigFloat(2)
@@ -901,7 +901,7 @@ Consider a variation where we pass a function instead of an ``AbstractArray``
 
 .. code-block:: julia
 
-    derivatives(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # Broadcast function
+    derivatives(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # broadcast function
 
     @show typeof(q) <: Function
     d_q = derivatives(q, x)
