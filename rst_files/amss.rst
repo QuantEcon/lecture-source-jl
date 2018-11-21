@@ -487,7 +487,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             n = z[S+1:2S]
             Ξ = z[2S+1:end]
             out[1:S] = Uc.(c, n) - μ * (Ucc.(c, n) .* c + Uc.(c, n)) - Ξ # FOC c
-            out[S+1:2S] = Un.(c, n) - μ * (Unn(c, n) .* n .0+ Un.(c, n)) + Θ .* Ξ # FOC n
+            out[S+1:2S] = Un.(c, n) - μ * (Unn(c, n) .* n .+ Un.(c, n)) + Θ .* Ξ # FOC n
             out[2S+1:end] = Θ .* n - c .- G # resource constraint
             return out
         end
