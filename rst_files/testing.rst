@@ -232,6 +232,7 @@ Likewise, the only packages Julia knows about are those in the ``ExamplePackage.
     ] activate ExamplePackage
 
 .. code-block:: julia
+    :class: no-execute
 
     using QuantEcon # fails, even though QuantEcon is on the machine
 
@@ -280,7 +281,12 @@ For example, let's say we add ``Distributions.jl``
 
     ] add Distributions
 
-and edit the source to read as follows::
+and edit the source to read as follows
+
+**Note**: That is, paste this into the file itself 
+
+.. code-block:: julia 
+    :class: no-execute 
 
     module ExamplePackage
 
@@ -437,7 +443,10 @@ Example
 
 Let's add some unit tests for the ``foo()`` function we defined earlier. Our ``tests/runtests.jl`` file should look like this
 
+**As before, this should be pasted into the file directly**
+
 .. code-block:: julia
+    :class: no-execute 
 
     using ExamplePackage
     using Test
