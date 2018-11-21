@@ -1010,7 +1010,7 @@ Given an ``x`` and a function ``f``, implement a few variations of the trapezoid
 * ``trapezoidal(f, x)`` for any ``typeof(x) = AbstractRange`` and ``typeof(f) == AbstractArray`` where ``length(x) = length(f)``
   * Exploit the fact that ``AbstractRange`` has constant step sizes to specialize the algorithm
 * ``trapezoidal(f, x̲, x̄, N)`` where ``typeof(f) = Function``, and the other arguments are ``Real``
-  * For this, build a uniform grid with ``N`` points on ``[x̲, x̄]`` - call the ``f`` function at those grid points and use the existing ``trapezoidal(f, x)`` from the implementation
+  * For this, build a uniform grid with ``N`` points on ``[x̲, x̄]`` -- call the ``f`` function at those grid points and use the existing ``trapezoidal(f, x)`` from the implementation
 
 With these:
 1. Test each variation of the function with :math:`f(x) = x^2` with :math:`\underline{x}=0,\, \bar{x} = 1`
