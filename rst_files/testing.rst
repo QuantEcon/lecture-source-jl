@@ -121,6 +121,12 @@ If you navigate to your git repo (ours is `here <https://github.com/quanteconuse
 .. figure:: /_static/figures/testing-git2.png
     :scale: 60%
 
+**Note:** Be sure that you don't separately clone the repo you just added to another location (i.e., to your desktop)
+
+The main idiom of git is that you have some set of files on your local machine (here in ``~/.julia/dev/ExamplePackage.jl``) and git is plugged into those files 
+
+For convenience, you might want to create a shortcut to that location somewhere accessible
+
 Adding Project to Julia Package Manager
 -------------------------------------------
 
@@ -159,6 +165,8 @@ We see the change reflected in our default package list
 .. code-block:: julia
 
     ] st
+
+For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
 
 Using the Package Manager
 --------------------------------
@@ -782,3 +790,21 @@ For the tests, you should have at the very minimum
 And anything else you can think of.  You should be able to run ``] test`` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI
 
 Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build
+
+Just as a workflow review, you should 
+
+1. Create the local package directory using the PkgTemplates.jl.
+
+2. Drag-and-drop that folder to GitHub Desktop.
+
+3. Create an empty repository with the same name on the GitHub server.
+
+4. Push from GitHub Desktop to the server.
+
+5. Open that folder in Atom.
+
+6. Make changes, test, iterate on it, etc. As a rule, functions like ``newtonmethod()`` should live in the ``src/`` directory once they're stable, and you should export them with ``export newtonmethod``
+
+7. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
+
+8. Push to the server, and see the Travis and CodeCov results.
