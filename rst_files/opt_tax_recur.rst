@@ -704,29 +704,33 @@ The above steps are implemented in a type called `SequentialAllocation`
 
   import QuantEcon: simulate
 
-  mutable struct Model
-      β
-      Π
-      G
-      Θ
-      transfers
-      U
-      Uc
-      Ucc
-      Un
-      Unn
-      n_less_than_one
-  end
+    mutable struct Model{TF <: AbstractFloat,
+                        TM <: AbstractMatrix{TF},
+                        TV <: AbstractVector{TF}}
+        β::TF
+        Π::TM
+        G::TV
+        Θ::TV
+        transfers::Bool
+        U::Function
+        Uc::Function
+        Ucc::Function
+        Un::Function
+        Unn::Function
+        n_less_than_one::Bool
+    end
 
-  struct SequentialAllocation
-      model
-      mc
-      S
-      cFB
-      nFB
-      ΞFB
-      zFB
-  end
+    struct SequentialAllocation{TP <: Model,
+                                TI <: Integer,
+                                TV <: AbstractVector}
+        model::TP
+        mc::MarkovChain
+        S::TI
+        cFB::TV
+        nFB::TV
+        ΞFB::TV
+        zFB::TV
+    end
 
   function SequentialAllocation(model)
       β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
@@ -871,17 +875,21 @@ The above steps are implemented in a type called `SequentialAllocation`
       return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
   end
 
-  mutable struct BellmanEquation
-      model
-      S
-      xbar
-      time_0
-      z0
-      cFB
-      nFB
-      xFB
-      zFB
-  end
+    mutable struct BellmanEquation{TP <: Model,
+                                TI <: Integer,
+                                TV <: AbstractVector,
+                                TM <: AbstractMatrix{TV},
+                                TVV <: AbstractVector{TV}}
+        model::TP
+        S::TI
+        xbar::TV
+        time_0::Bool
+        z0::TM
+        cFB::TV
+        nFB::TV
+        xFB::TV
+        zFB::TVV
+    end
 
   function BellmanEquation(model, xgrid, policies0)
       S = size(model.Π, 1) # Number of states
@@ -1268,16 +1276,19 @@ The above steps are implemented in a type called `RecursiveAllocation`
 .. code-block:: julia
   :class: collapse
 
-  struct RecursiveAllocation
-      model
-      mc
-      S
-      T
-      μgrid
-      xgrid
-      Vf
-      policies
-  end
+    struct RecursiveAllocation{TP <: Model, TI <: Integer,
+                            TVg <: AbstractVector, TVv <: AbstractVector,
+                            TVp <: AbstractArray}
+        model::TP
+        mc::MarkovChain
+        S::TI
+        T::BellmanEquation
+        μgrid::TVg
+        xgrid::TVg
+        Vf::TVv
+        policies::TVp
+    end
+
 
   function RecursiveAllocation(model, μgrid)
       mc = MarkovChain(model.Π)

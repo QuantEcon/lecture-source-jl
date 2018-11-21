@@ -630,9 +630,9 @@ The code takes a few minutes to run.
                       Gridded(Linear())), Flat())
 
   # Holds the employment state and beliefs of an individual agent.
-  mutable struct Agent
-      _π
-      employed
+  mutable struct Agent{TF <: AbstractFloat, TI <: Integer}
+      _π::TF
+      employed::TI
   end
 
   Agent(_π=1e-3) = Agent(_π, 1)
