@@ -14,11 +14,11 @@ While Jupyter notebooks are a great way to get started with the language, eventu
 
 We'll discuss a few of them here, such as
 
-* text editors like Atom, which come with rich Julia support for debugging, documentation, git integration, plotting and inspecting data, and code execution 
+* Text editors like Atom, which come with rich Julia support for debugging, documentation, git integration, plotting and inspecting data, and code execution 
 
-* the Julia REPL, which has specialized modes for package management, shell commands, and help 
+* The Julia REPL, which has specialized modes for package management, shell commands, and help 
 
-* the Docker setup we mentioned in `getting started <getting_started>`_, which provides a painless pre-configured environment on your machine 
+* The Docker setup we mentioned in `getting started <getting_started>`_, which provides a painless pre-configured environment on your machine 
 
 Note that we assume you've already completed the :ref:`getting started <getting_started>` lecture 
 
@@ -34,9 +34,9 @@ Creating a Startup File (Recommended)
 
 Whenever the Julia compiler or REPL starts, it will look for a file called ``startup.jl`` (see `Julia Manual <https://docs.julialang.org/en/v1/manual/getting-started/#man-getting-started-1>`_)
 
-The one we give here does two things 
+We provide a file here which does two things 
 
-* makes the REPL shell mode "sticky," so you don't need to keep running ``;`` for new commands 
+* Makes the REPL shell mode "sticky," so you don't need to keep running ``;`` for new commands 
 
 * Loads the ``Revise.jl`` package on startup, which lets you see changes you make to a package in real-time (i.e., no need to quit the REPL, open again, and load again)
 
@@ -152,7 +152,7 @@ As discussed `previously <getting_started>`_, eventually you will want to use a 
 
 The most feature-rich one for Julia development is `Atom <https://atom.io/>`_, with the `Juno <http://junolab.org/>`_ package 
 
-There are several reasons to use a text editor like Atom 
+There are several reasons to use a text editor like Atom, including
 
 * Git integration (more on this in the `next lecture <version_control>`_) 
 
@@ -161,8 +161,6 @@ There are several reasons to use a text editor like Atom
 * Easily run code blocks, and drop in custom snippets of code 
 
 * Integration with Julia documentation and plots 
-
-And others 
 
 Installation and Configuration 
 ---------------------------------
@@ -204,7 +202,7 @@ To do this
 2. Type in ``julia-client`` and choose `Settings`
 3. Find the `Julia Path`, and fill it in with the location of the Julia binary
 
-    * To find, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
+    * To find the binary, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
     * e.g. ``C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe`` on Windows as ``/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia`` on OSX
 
 See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have further issues
@@ -277,7 +275,7 @@ Package Environments
 
 Julia's package manager lets you set up Python-style "virtualenvs," or subsets of packages that draw from an underlying pool of assets on the machine 
 
-This way, you can work with (and specify) the dependencies for one project without worrying about impacts on other projects 
+This way, you can work with (and specify) the dependencies (i.e., required packages) for one project without worrying about impacts on other projects 
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
