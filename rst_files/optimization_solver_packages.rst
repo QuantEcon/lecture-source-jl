@@ -449,6 +449,7 @@ For example, if we plot the function
 
 with :math:`x \in [0,1]` we get
 
+.. figure:: /_static/figures/sine-screenshot-2.png
 
 The unique root is approximately 0.408
 
@@ -559,11 +560,8 @@ but you could also provide your own calculation of the Jacobian (analytical or u
     LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
                                     f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
 
-Exercises
-=============
 
-
-Exercise 1
-------------
+Additional Notes 
+====================
 
 Watch `this video <https://www.youtube.com/watch?v=vAp6nUMrKYg&feature=youtu.be>`_ from one of Julia's creators on automatic differentiation
