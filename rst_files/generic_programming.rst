@@ -242,6 +242,7 @@ You may think to yourself that the above code is similar to OO, except that you
 * do not have concrete inheritance
 
 While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming
+
 When programming in Julia
 
     * there is no `encapsulation <https://en.wikipedia.org/wiki/Encapsulation_\(computer_programming\)>`_ and most custom types you create will be immutable
@@ -400,7 +401,7 @@ A few things to point out
 
 * Even if it worked for ``StatPlots``, our implementation is incomplete, as we haven't fulfilled all of the requirements of a ``Distribution``
 * We also did not implement the ``rand`` function, which means we are breaking the implicit contract of the ``Sampleable`` abstract type
-* It turns out that there is a better way to to this precise thing already built into ``Distributions``
+* It turns out that there is a better way to do this precise thing already built into ``Distributions``
 
 .. code-block:: julia
 
@@ -428,7 +429,7 @@ Define two binary functions,  :math:`+` and :math:`\cdot`, called addition and m
 In mathematics, a `ring <https://en.wikipedia.org/wiki/ring_\(mathematics\)>`_ is a set with associated additive and multiplicative operators where
 
     * the additive operator is associative and commutative
-    * the multiplicative operator is associative and and distributive with respect to the additive operator
+    * the multiplicative operator is associative and distributive with respect to the additive operator
     * there is an additive identity element,  denoted :math:`0`, such that :math:`a + 0 = a` for any :math:`a` in the set
     * there is an additive inverse of each element, denoted :math:`-a`, such that :math:`a + (-a) = 0`
     * there is a multiplicative identity element, denoted :math:`1`, such that :math:`a \cdot 1 = a = 1 \cdot a`
@@ -579,7 +580,7 @@ Furthermore, we will make it a `total ordered <https://en.wikipedia.org/wiki/Tot
 
 This type gives some motivation for the operations and properties of the ``Real`` type
 
-Of course, ``Complex{Float64} <: Number`` but not ``Real`` -- since the ordering is not defined for the a complex number in mathematics
+Of course, ``Complex{Float64} <: Number`` but not ``Real`` -- since the ordering is not defined for complex numbers in mathematics
 
 These operations are implemented in any subtype of ``Real`` through
 
@@ -651,7 +652,7 @@ In order to generate fast code, the implementation details may define specialize
 
 .. code-block:: julia
 
-    isless(1.0, 2.0)  # Applied to two floats
+    isless(1.0, 2.0)  # applied to two floats
     @which isless(1.0, 2.0)
 
 Note that the reason  ``Float64 <: Real`` calls this implementation rather than the one given above, is that ``Float64 <: Real``, and Julia chooses the most specialized implementation for each function
