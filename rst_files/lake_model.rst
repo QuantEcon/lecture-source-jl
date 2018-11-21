@@ -652,15 +652,14 @@ We will make use of (with a few tweaks) the code we wrote in the :doc:`McCall mo
 
     function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
                                 iter = 2_000)
-        # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
-        @unpack α, β, σ, c, γ, w, dist, u = mcm 
+        @unpack α, β, σ, c, γ, w, dist, u, τ = mcm 
         
         # parameter validation
         @assert c > 0.0
         
         # necessary objects 
-        u_w = u.(w, σ) 
-        u_c = u(c, σ)
+        u_w = u.(w .- τ, σ) # impose the tax 
+        u_c = u(c - τ, σ)
         E = expectation(dist, w) # expectation operator for wage distribution
 
         # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
@@ -705,7 +704,8 @@ And we'll create the McCall objects
                             σ = 2.0, 
                             u = u, # utility function 
                             w = range(10, 20, length = 60), # wage values
-                            dist = BetaBinomial(59, 600, 400)) # distribution over wage values 
+                            dist = BetaBinomial(59, 600, 400), # distribution over wages 
+                            τ = 0.0) # tax level 
 
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
@@ -723,14 +723,13 @@ function of the unemployment compensation rate
     σ = 2.0
 
     dist = Truncated(LogNormal(20), 0, 170) # the default wage distribution: a truncated log normal
-    w_vec = range(1e-3, 170, length = 201)
-    w_vec = (w_vec[1:end-1] + w_vec[2:end])/2 # averaging scheme 
+    w_vec = range(1e-3, 170, length = 200)
     E = expectation(dist, w_vec)
 
     function compute_optimal_quantities(c, τ)
-        mcm = McCallModel(α = α_q, β = β, γ = γ, c = c - τ, σ = σ, w = w_vec .- τ, dist = dist)
+        mcm = McCallModel(α = α_q, β = β, γ = γ, c = c, σ = σ, w = w_vec, dist = dist, τ = τ)
         @unpack wbar, V, U = solve_mccall_model(mcm)
-        λ = γ * E(wage -> wage - τ > wbar ? 1 : 0) # find probability of wage τ higher than wbar
+        λ = γ * E(wage -> wage - τ > wbar ? 1 : 0) # γ * probability of a good offer 
         return (wbar = wbar, λ = λ, V = V, U = U)
     end
 
@@ -741,18 +740,22 @@ function of the unemployment compensation rate
         u_rate, e_rate = x
 
         # compute welfare
-        expected_accept = E(wage -> wage - τ > wbar ? wage : 0)/E(wage -> wage - τ > wbar ? 1 : 0) # expected wage conditional on accepting
-        w = sum(V * expected_accept)
+        i(wage) = wage - τ > wbar # indicator function
+        w = E(V .* i.(w_vec)) / E(i)
         welfare = e_rate * w + u_rate * U
         return u_rate, e_rate, welfare
     end
 
-    function steady_state_budget(c, t)
-        u_rate, e_rate, w = compute_steady_state_quantities(c, t)
-        return t - u_rate * c
+    function find_balanced_budget_tax(c::Real)
+        
+        function budget_differential(t::Real)
+            u_rate, e_rate, welfare = compute_steady_state_quantities(c, t)
+            return t - u_rate * c
+        end
+
+        τ = brent(budget_differential, (0.0, 0.95c))
     end
 
-    find_balanced_budget_tax(c) = find_zero(t -> steady_state_budget(c, t), (0.0, 0.99c))
 
     # Levels of unemployment insurance we wish to study
     Nc = 60
