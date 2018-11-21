@@ -12,9 +12,13 @@ Data and Statistics Packages
 Overview
 ============
 
-This lecture explores some of the key packages for working with data and statistics in Julia
+This lecture explores some of the key packages for working with data and doing statistics in Julia
+
+In particular, we will examine the ``DataFrame`` object in detail (i.e., construction, manipulation, querying, visualization, and nuances like missing data) 
 
 While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution
+
+Examples include ``GLM.jl`` and ``FixedEffectModels.jl``, which we discuss
 
 This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_, `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
 
@@ -61,7 +65,6 @@ Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[:row]``
 .. code-block:: julia
 
     df.price
-
 
 Note that the type of this array has values ``Union{Missing, Float64}`` since it was created with a ``missing`` value
 

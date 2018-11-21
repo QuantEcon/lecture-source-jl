@@ -580,22 +580,24 @@ Description and clarifications are given below
 
     using QuantEcon, Plots, LinearAlgebra, Parameters 
 
-    struct ContStochProcess 
-        A
-        C
+    struct ContStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
+        A::Matrix{TF}
+        C::Matrix{TF}
     end
 
-    struct DiscreteStochProcess
-        P
-        x_vals
+
+    struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
+        P::Matrix{TF}
+        x_vals::Matrix{TF}
     end
 
-    struct Economy{SP} 
-        β
-        Sg
-        Sd
-        Sb
-        Ss
+    struct Economy{TF <: AbstractFloat, SP <: AbstractStochProcess}
+        β::TF
+        Sg::Matrix{TF}
+        Sd::Matrix{TF}
+        Sb::Matrix{TF}
+        Ss::Matrix{TF}
+        is_discrete::Bool
         proc::SP
     end
 
@@ -657,7 +659,7 @@ Description and clarifications are given below
     end
 
 
-    function compute_paths(econ::Economy{DiscreteStochProcess}, T)
+    function compute_paths(econ::Economy{TF, DiscreteStochProcess}, T) where {TF <: AbstractFloat}
         # simplify notation
         @unpack β, Sg, Sd, Sb, Ss = econ
         @unpack P, x_vals = econ.proc
@@ -699,7 +701,7 @@ Description and clarifications are given below
                 R = R, π = π, Π = Π, ξ = ξ)
     end
 
-    function compute_paths(econ::Economy{ContStochProcess}, T)
+    function compute_paths(econ::Economy{TF, ContStochProcess}, T) where {TF <: AbstractFloat}
         # simplify notation
         @unpack β, Sg, Sd, Sb, Ss = econ
         @unpack A, C = econ.proc
