@@ -397,9 +397,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 .. code-block:: julia
     :class: collapse
 
-    using QuantEcon
-    using NLsolve
-    using NLopt
+    using QuantEcon, NLsolve, NLopt, Compat 
 
     import QuantEcon.simulate
 
@@ -472,7 +470,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             cFB = res.zero[1:S]
             nFB = res.zero[S+1:end]
             IFB = Uc(cFB, nFB) .* cFB + Un(cFB, nFB) .* nFB
-            xFB = \(eye(S) - β * Π, IFB)
+            xFB = \(LinearAlgebra.I - β * Π, IFB)
             zFB = [vcat(cFB[s], xFB[s], xFB) for s in 1:S]
             return cFB, nFB, IFB, xFB, zFB
         end
@@ -502,7 +500,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         c, n, Ξ = z[1:S], z[S+1:2S], z[2S+1:end]
         # Now compute x
         I  = Uc(c, n) .* c +  Un(c, n) .* n
-        x = \(eye(S) - β * model.Π, I)
+        x = \(LinearAlgebra.I - β * model.Π, I)
         return c, n, x, Ξ
     end
 
@@ -531,7 +529,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         if res.f_converged == false
             error("Could not find time 0 LS allocation.")
         end
-        return (res.zero...)
+        return (res.zero...,)
     end
 
 
@@ -539,7 +537,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         model = pas.model
         c, n, x, Ξ = time1_allocation(pas, μ)
         U_val = model.U.(c, n)
-        V = \(eye(pas.S) - model.β*model.Π, U_val)
+        V = \(LinearAlgebra.I - model.β*model.Π, U_val)
         return c, n, x, V
     end
 
@@ -553,7 +551,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
     function simulate(pas::SequentialAllocation,
                     B_::AbstractFloat, s_0::Integer,
                     T::Integer,
-                    sHist::Union{Vector, Void}=nothing)
+                    sHist::Union{Vector, Nothing}=nothing)
 
         model = pas.model
         Π, β, Uc = model.Π, model.β, model.Uc
@@ -1032,7 +1030,7 @@ The recursive formulation is implemented as follows
     end
 
 
-    function solve_time1_bellman{TR <: Real}(model::Model{TR}, μgrid::AbstractArray)
+    function solve_time1_bellman(model::Model{TR}, μgrid::AbstractArray) where {TR <: Real}
         Π = model.Π
         S = size(model.Π, 1)
 
@@ -1047,22 +1045,22 @@ The recursive formulation is implemented as follows
             return c, n, dot(Π[s_, :], x), dot(Π[s_, :], V)
         end
 
-        cf = Array{Function}(S, S)
-        nf = Array{Function}(S, S)
-        xprimef = Array{Function}(S, S)
-        Vf = Vector{Function}(S)
-        xgrid = Array{TR}(S, length(μgrid))
+        cf = Array{Function}(undef, S, S)
+        nf = Array{Function}(undef, S, S)
+        xprimef = Array{Function}(undef, S, S)
+        Vf = Vector{Function}(undef, S)
+        xgrid = Array{TR}(undef, S, length(μgrid))
 
         for s_ in 1:S
-            c = Array{TR}(length(μgrid), S)
-            n = Array{TR}(length(μgrid), S)
-            x = Array{TR}(length(μgrid))
-            V = Array{TR}(length(μgrid))
+            c = Array{TR}(undef, length(μgrid), S)
+            n = Array{TR}(undef, length(μgrid), S)
+            x = Array{TR}(undef, length(μgrid))
+            V = Array{TR}(undef, length(μgrid))
             for (i_μ, μ) in enumerate(μgrid)
                 c[i_μ, :], n[i_μ, :], x[i_μ], V[i_μ] =
                     incomplete_allocation(PP, μ, s_)
             end
-            xprimes = repmat(x, 1, S)
+            xprimes = repeat(x, 1, S)
             xgrid[s_, :] = x
             for sprime = 1:S
                 splc = Spline1D(x[end:-1:1], c[:, sprime][end:-1:1], k=3)
@@ -1084,7 +1082,7 @@ The recursive formulation is implemented as follows
 
         # Create xgrid
         xbar = [maximum(minimum(xgrid)), minimum(maximum(xgrid))]
-        xgrid = linspace(xbar[1], xbar[2], length(μgrid))
+        xgrid = range(xbar[1], xbar[2], length = length(μgrid))
 
         # Now iterate on Bellman equation
         T = BellmanEquation_Recursive(model, xgrid, policies)
@@ -1107,17 +1105,17 @@ The recursive formulation is implemented as follows
     end
 
 
-    function fit_policy_function{TF<:AbstractFloat}(T::BellmanEquation_Recursive,
+    function fit_policy_function(T::BellmanEquation_Recursive,
                                                     PF::Function,
-                                                    xgrid::AbstractVector{TF})
+                                                    xgrid::AbstractVector{TF}) where {TF <: AbstractFloat}
         S = T.S
         # preallocation
-        PFvec = Array{TF}(4S + 1, length(xgrid))
-        cf = Array{Function}(S, S)
-        nf = Array{Function}(S, S)
-        xprimef = Array{Function}(S, S)
-        TTf = Array{Function}(S, S)
-        Vf = Vector{Function}(S)
+        PFvec = Array{TF}(undef, 4S + 1, length(xgrid))
+        cf = Array{Function}(undef, S, S)
+        nf = Array{Function}(undef, S, S)
+        xprimef = Array{Function}(undef, S, S)
+        TTf = Array{Function}(undef, S, S)
+        Vf = Vector{Function}(undef, S)
         # fit policy fuctions
         for s_ in 1:S
             for (i_x, x) in enumerate(xgrid)
@@ -1163,20 +1161,20 @@ The recursive formulation is implemented as follows
     end
 
 
-    function simulate{TF <: AbstractFloat}(pab::RecursiveAllocation,
+    function simulate(pab::RecursiveAllocation,
                                         B_::TF, s_0::Integer, T::Integer,
-                                        sHist::Vector=simulate(pab.mc, T, init=s_0))
+                                        sHist::Vector=simulate(pab.mc, T, init=s_0)) where {TF <: AbstractFloat}
         model, mc, Vf, S = pab.model, pab.mc, pab.Vf, pab.S
         Π, Uc = model.Π, model.Uc
         cf, nf, xprimef, TTf = pab.policies
 
-        cHist = Array{TF}(T)
-        nHist = Array{TF}(T)
-        Bhist = Array{TF}(T)
-        xHist = Array{TF}(T)
-        TauHist = Array{TF}(T)
-        THist = Array{TF}(T)
-        μHist = Array{TF}(T)
+        cHist = Array{TF}(undef, T)
+        nHist = Array{TF}(undef, T)
+        Bhist = Array{TF}(undef, T)
+        xHist = Array{TF}(undef, T)
+        TauHist = Array{TF}(undef, T)
+        THist = Array{TF}(undef, T)
+        μHist = Array{TF}(undef, T)
 
         #time0
         cHist[1], nHist[1], xHist[1], THist[1]  = time0_allocation(pab, B_, s_0)
@@ -1187,10 +1185,10 @@ The recursive formulation is implemented as follows
         #time 1 onward
         for t in 2:T
             s_, x, s = sHist[t-1], xHist[t-1], sHist[t]
-            c = Array{TF}(S)
-            n = Array{TF}(S)
-            xprime = Array{TF}(S)
-            TT = Array{TF}(S)
+            c = Array{TF}(undef, S)
+            n = Array{TF}(undef, S)
+            xprime = Array{TF}(undef, S)
+            TT = Array{TF}(undef, S)
             for sprime=1:S
                 c[sprime], n[sprime], xprime[sprime], TT[sprime] =
                     cf[s_, sprime](x), nf[s_, sprime](x),
@@ -1210,20 +1208,20 @@ The recursive formulation is implemented as follows
     end
 
 
-    function BellmanEquation_Recursive{TF <: AbstractFloat}(model::Model{TF},
+    function BellmanEquation_Recursive(model::Model{TF},
                                                             xgrid::AbstractVector{TF},
-                                                            policies0::Array)
+                                                            policies0::Array) where {TF <: AbstractFloat}
 
         S = size(model.Π, 1) # number of states
         xbar = [minimum(xgrid), maximum(xgrid)]
         time_0 = false
-        z0 = Array{Array}(length(xgrid), S)
+        z0 = Array{Array}(undef, length(xgrid), S)
         cf, nf, xprimef = policies0[1], policies0[2], policies0[3]
         for s in 1:S
             for (i_x, x) in enumerate(xgrid)
-                cs = Array{TF}(S)
-                ns = Array{TF}(S)
-                xprimes = Array{TF}(S)
+                cs = Array{TF}(undef, S)
+                ns = Array{TF}(undef, S)
+                xprimes = Array{TF}(undef, S)
                 for j = 1:S
                     cs[j], ns[j], xprimes[j] = cf[s, j](x), nf[s, j](x), xprimef[s, j](x)
                 end
@@ -1247,7 +1245,7 @@ The recursive formulation is implemented as follows
         U,Uc,Un = model.U, model.Uc, model.Un
 
         S_possible = sum(Π[s_, :].>0)
-        sprimei_possible = find(Π[s_, :].>0)
+        sprimei_possible = findall(Π[s_, :].>0)
 
         function objf(z, grad)
             c, xprime = z[1:S_possible], z[S_possible+1:2S_possible]
@@ -1283,8 +1281,8 @@ The recursive formulation is implemented as follows
                         100 * ones(S_possible))
             end
             init = vcat(T.z0[i_x, s_][sprimei_possible],
-                        T.z0[i_x, s_][2S + sprimei_possible],
-                        T.z0[i_x, s_][3S + sprimei_possible])
+                        T.z0[i_x, s_][2S .+ sprimei_possible],
+                        T.z0[i_x, s_][3S .+ sprimei_possible])
             opt = Opt(:LN_COBYLA, 3S_possible)
             equality_constraint!(opt, cons, zeros(S_possible))
         else
@@ -1532,7 +1530,7 @@ triangle denote war
                        0.0 0.0 0.0 0.0 0.0 1.0]
 
     # Initialize μgrid for value function iteration
-    μgrid = linspace(-0.7, 0.01, 200)
+    μgrid = range(-0.7, 0.01, length = 200)
 
     time_example.transfers = true  # Government can use transfers
     time_sequential = SequentialAllocation(time_example) # Solve sequential problem
