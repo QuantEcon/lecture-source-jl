@@ -52,8 +52,7 @@ The first is to set up columns and construct a dataframe by assigning names
     last_price = [4.2, 11.3, 12.1, missing]
     df = DataFrame(commod = commodities, price = last_price)
 
-Columns of the ``DataFrame`` can be accessed by name using a symbol or a ``.``
-
+Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[:row]`` or a struct-style ``df.row``, as below 
 
 .. code-block:: julia
 
