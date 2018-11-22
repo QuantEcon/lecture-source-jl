@@ -220,27 +220,14 @@ Here's the code:
 
 .. code-block:: julia
 
-    struct LakeModel{TF <: AbstractFloat}
-        λ::TF
-        α::TF
-        b::TF
-        d::TF
-        g::TF
-        A::Matrix{TF}
-        A_hat::Matrix{TF}
-    end
+    using Parameters
 
-    function LakeModel(;λ = 0.283,
-                        α = 0.013,
-                        b = 0.0124,
-                        d = 0.00822)
-
+    function LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
         g = b - d
-        A = [(1-λ) * (1-d) + b  (1-d) * α + b;
+        A = [(1-λ) * (1-d) + b  (1-d) * α + b; # carry out intermediate calculations
             (1-d) * λ          (1-d) * (1-α)]
         A_hat = A ./ (1 + g)
-
-        return LakeModel(λ, α, b, d, g, A, A_hat)
+        return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
     function rate_steady_state(lm, tol = 1e-6)
