@@ -13,7 +13,7 @@ Multiplicative Functionals
 
 .. contents:: :depth: 2
 
-Co-authored with Chase Coleman and Balint Szoke.
+Co-authored with Chase Coleman and Balint Szoke
 
 Overview
 ========

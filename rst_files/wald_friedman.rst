@@ -15,7 +15,7 @@
 
 .. contents:: :depth: 2
 
-Co-authored with Chase Coleman.
+Co-authored with Chase Coleman
 
 Overview
 =========

@@ -12,7 +12,15 @@ Co-authored with Arnav Sood
 
 While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools
 
-We assume you've already completed the :ref:`getting started <getting_started>` lecture 
+We'll discuss a few of them here, such as
+
+* Text editors like Atom, which come with rich Julia support for debugging, documentation, git integration, plotting and inspecting data, and code execution 
+
+* The Julia REPL, which has specialized modes for package management, shell commands, and help 
+
+* The Docker setup we mentioned in `getting started <getting_started>`_, which provides a painless pre-configured environment on your machine 
+
+Note that we assume you've already completed the :ref:`getting started <getting_started>` lecture 
 
 Preliminary Setup 
 ====================
@@ -24,8 +32,13 @@ Follow the instructions for setting up Julia `on your local computer <jl_jupyter
 Creating a Startup File (Recommended)
 ----------------------------------------------------
 
-
 Whenever the Julia compiler or REPL starts, it will look for a file called ``startup.jl`` (see `Julia Manual <https://docs.julialang.org/en/v1/manual/getting-started/#man-getting-started-1>`_)
+
+We provide a file here which does two things 
+
+* Makes the REPL shell mode "sticky," so you don't need to keep running ``;`` for new commands 
+
+* Loads the ``Revise.jl`` package on startup, which lets you see changes you make to a package in real-time (i.e., no need to quit the REPL, open again, and load again)
 
 The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
 
@@ -51,7 +64,7 @@ To add the file:
 
 4. For convenience, you may find it useful on your operating system to change the directory where the REPL starts
  
-    On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
+On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
 
 
 The REPL
@@ -95,13 +108,13 @@ Hitting ``]`` brings you into package mode
 
 * ``] precompile`` will precompile everytihng possible 
 
-You can get a full list of package-mode commands by running 
+You can get a full list of package mode commands by running 
 
 .. code-block:: julia 
 
     ] ? 
 
-Recall that on some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit ``]`` first and then run your commands)
+On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit ``]`` first and then run your commands)
 
 Help Mode 
 ---------------
@@ -135,9 +148,19 @@ will succeed
 Atom 
 =========
 
-As discussed `previously <getting_started>`_, eventually you will want to use a full-fledged text editor 
+As discussed `previously <getting_started>`_, eventually you will want to use a fully fledged text editor 
 
-The most feature-rich one for Julia development is `Atom <https://atom.io/>`_
+The most feature-rich one for Julia development is `Atom <https://atom.io/>`_, with the `Juno <http://junolab.org/>`_ package 
+
+There are several reasons to use a text editor like Atom, including
+
+* Git integration (more on this in the `next lecture <version_control>`_) 
+
+* Painless inspection of variables and data 
+
+* Easily run code blocks, and drop in custom snippets of code 
+
+* Integration with Julia documentation and plots 
 
 Installation and Configuration 
 ---------------------------------
@@ -147,10 +170,10 @@ Installing Atom
 
 1. Download and Install Atom from the `Atom website <https://atom.io/>`_
 
-2. (Optional, but Recommended) Change default Atom settings
+2. (Optional, but recommended): Change default Atom settings
 
-    * Use ``Ctrl-,`` to get the `Settings` pane
-    * Choose the `Packages` tab
+    * Use ``Ctrl-,`` to get the ``Settings`` pane
+    * Choose the ``Packages`` tab
     * Type ``line-ending-selector`` into the Filter and then click "Settings" for that package
 
         * Change the default line ending to ``LF`` (only necessary on Windows)
@@ -179,7 +202,7 @@ To do this
 2. Type in ``julia-client`` and choose `Settings`
 3. Find the `Julia Path`, and fill it in with the location of the Julia binary
 
-    * To find, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
+    * To find the binary, you could run ``Sys.BINDIR`` in the REPL, then add in an additional ``/julia`` to the end of the screen
     * e.g. ``C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe`` on Windows as ``/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia`` on OSX
 
 See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have further issues
@@ -196,7 +219,9 @@ If you don't, simply go to the command palette and type "Julia standard layout"
 
 The bottom pane is a standard REPL, which supports the different modes above 
 
-The "workspace" pane is a snapshot of currently-defined objects. For example, if we define an object in the REPL
+The "workspace" pane is a snapshot of currently-defined objects
+
+For example, if we define an object in the REPL
 
 .. code-block:: julia 
 
@@ -245,11 +270,12 @@ See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an 
 .. You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
 .. 
 
-
 Package Environments 
 ========================
 
-Julia's package manager lets you set up Python-style "virtualenvs," that draw from an underlying pool of assets on the machine 
+Julia's package manager lets you set up Python-style "virtualenvs," or subsets of packages that draw from an underlying pool of assets on the machine 
+
+This way, you can work with (and specify) the dependencies (i.e., required packages) for one project without worrying about impacts on other projects 
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
@@ -359,6 +385,8 @@ Docker
 ===========
 
 As discussed `earlier <jl_jupyterdocker>`_, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
+
+The advantage of a Docker-based workflow is that it's perfectly reproducible, and that setup (of Julia versions and dependencies, etc.) is handled upstream by the image maintainer
 
 Here, we'll walk through the setup and installation steps, along with the main features of the ``quantecon/base`` Docker image 
 

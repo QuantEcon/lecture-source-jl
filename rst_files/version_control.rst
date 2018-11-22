@@ -20,7 +20,6 @@ We use version control because
 * Concurrent editing on code is necessary for collaboration
 * Version control is an essential part of creating reproducible research
 
-
 In this lecture, we'll discuss how to use Git and GitHub
 
 

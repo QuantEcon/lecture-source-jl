@@ -220,38 +220,20 @@ Here's the code:
 
 .. code-block:: julia
 
-    struct LakeModel{TF <: AbstractFloat}
-        λ::TF
-        α::TF
-        b::TF
-        d::TF
-        g::TF
-        A::Matrix{TF}
-        A_hat::Matrix{TF}
-    end
+    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-    function LakeModel(;λ = 0.283,
-                        α = 0.013,
-                        b = 0.0124,
-                        d = 0.00822)
-
+    function LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
         g = b - d
-        A = [(1-λ) * (1-d) + b  (1-d) * α + b;
+        A = [(1-λ) * (1-d) + b  (1-d) * α + b; # carry out intermediate calculations
             (1-d) * λ          (1-d) * (1-α)]
         A_hat = A ./ (1 + g)
-
-        return LakeModel(λ, α, b, d, g, A, A_hat)
+        return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
-    function rate_steady_state(lm, tol = 1e-6)
-        x = 0.5 * ones(2)
-        error = tol + 1
-        while (error > tol)
-            new_x = lm.A_hat * x
-            error = maximum(abs, new_x - x)
-            x = new_x
-        end
-        return x
+    function rate_steady_state(lm)
+        sol = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5])
+        converged(sol) || error("Failed to converge in $(result.iterations) iterations")
+        return sol.zero
     end
 
     function simulate_stock_path(lm, X0, T)
@@ -304,14 +286,13 @@ Let's run a simulation under the default parameters (see above) starting from :m
 
 .. code-block:: julia
 
-    using Plots
     gr(fmt=:png)
     
     lm = LakeModel()
-    N_0 = 150      # Population
-    e_0 = 0.92     # Initial employment rate
-    u_0 = 1 - e_0  # Initial unemployment rate
-    T = 50         # Simulation length
+    N_0 = 150      # population
+    e_0 = 0.92     # initial employment rate
+    u_0 = 1 - e_0  # initial unemployment rate
+    T = 50         # simulation length
 
     U_0 = u_0 * N_0
     E_0 = e_0 * N_0
@@ -358,7 +339,6 @@ This is the case for our default parameters:
 
 .. code-block:: julia
 
-    using LinearAlgebra
     lm = LakeModel()
     e, f = eigvals(lm.A_hat)
     abs(e), abs(f)
@@ -377,9 +357,9 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 .. code-block:: julia
 
     lm = LakeModel()
-    e_0 = 0.92     # Initial employment rate
-    u_0 = 1 - e_0  # Initial unemployment rate
-    T = 50         # Simulation length
+    e_0 = 0.92     # initial employment rate
+    u_0 = 1 - e_0  # initial unemployment rate
+    T = 50         # simulation length
 
     xbar = rate_steady_state(lm)
     x_0 = [u_0; e_0]
@@ -541,7 +521,7 @@ Let's plot the path of the sample averages over 5,000 periods
   :class: test
 
   @testset begin
-      @test xbar[1] ≈ 0.043921027960428106
+      @test xbar[1] ≈ 0.04391891891891919 
       @test s_bars[end,end] ≈ 0.957
   end
 
@@ -669,18 +649,59 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 Fiscal Policy Code
 -----------------------
 
-We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
+We will make use of (with some tweaks) the code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
 
-The first piece of code, repeated below, implements value function iteration
+.. code-block:: julia 
 
-.. literalinclude:: /_static/code/mccall/mccall_bellman_iteration.jl
-    :class: collapse
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
+                                iter = 2_000)
+        @unpack α, β, σ, c, γ, w, E, u = mcm 
 
-The second piece of code repeated from :doc:`the McCall model lecture <mccall_model>` is used to complete the reservation wage
+        # necessary objects 
+        u_w = u.(w, σ) 
+        u_c = u(c, σ)
 
+        # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
+        function T(x)
+            V = x[1:end-1]
+            U = x[end]
+            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+        end 
 
-.. literalinclude:: /_static/code/mccall/compute_reservation_wage.jl
-    :class: collapse
+        # value function iteration  
+        x_iv = [V_iv; U_iv] # initial x val
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
+        V = xstar[1:end-1]
+        U = xstar[end]
+        
+        # compute the reservation wage 
+        w_barindex = searchsortedfirst(V .- U, 0.0)
+        if w_barindex >= length(w) # if this is true, you never want to accept
+            w_bar = Inf
+        else
+            w_bar = w[w_barindex] # otherwise, return the number
+        end
+
+        # return a NamedTuple, so we can select values by name  
+        return (V = V, U = U, w_bar = w_bar) 
+    end 
+
+And the McCall object 
+
+.. code-block:: julia
+
+    # a default utility function
+    u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
+
+    # model constructor
+    McCallModel = @with_kw (α = 0.2, 
+        β = 0.98, # discount rate 
+        γ = 0.7, 
+        c = 6.0, # unemployment compensation 
+        σ = 2.0, 
+        u = u, # utility function 
+        w = range(10, 20, length = 60), # wage values
+        E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values 
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
@@ -688,7 +709,7 @@ function of the unemployment compensation rate
 
 .. code-block:: julia
 
-    # Some global variables that will stay constant
+    # some global variables that will stay constant
     α = 0.013
     α_q = (1 - (1 - α)^3)
     b_param = 0.0124
@@ -697,27 +718,31 @@ function of the unemployment compensation rate
     γ = 1.0
     σ = 2.0
 
-    # The default wage distribution: a discretized log normal
+    # the default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
     w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
+    
     logw_dist = Normal(log(log_wage_mean), 1)
     cdf_logw = cdf.(logw_dist, log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
+    
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
+    E = expectation(Categorical(p_vec)) # expectation object
+
     function compute_optimal_quantities(c, τ)
-        mcm = McCallModel(α_q,
-                          β,
-                          γ,
-                          c-τ,                # post-tax compensation
-                          σ,
-                          collect(w_vec .- τ),   # post-tax wages
-                          p_vec)
+        mcm = McCallModel(α = α_q,
+                          β = β,
+                          γ = γ,
+                          c = c - τ, # post-tax compensation
+                          σ = σ,
+                          w = w_vec .- τ, # post-tax wages
+                          E = E) # expectation operator 
 
-
-        w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
-        λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
+        @unpack V, U, w_bar = solve_mccall_model(mcm)
+        indicator = wage -> wage > w_bar
+        λ = γ * E * indicator.(w_vec .- τ)
 
         return w_bar, λ, V, U
     end
@@ -725,13 +750,16 @@ function of the unemployment compensation rate
     function compute_steady_state_quantities(c, τ)
         w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
 
-        # Compute steady state employment and unemployment rates
+        # compute steady state employment and unemployment rates
         lm = LakeModel(λ=λ_param, α=α_q, b=b_param, d=d_param)
         x = rate_steady_state(lm)
         u_rate, e_rate = x
 
-        # Compute steady state welfare
-        w = sum(V .* p_vec .* (w_vec .- τ .> w_bar)) / sum(p_vec .* (w_vec .- τ .> w_bar))
+        # compute steady state welfare
+        indicator(wage) = wage > w_bar 
+        indicator(wage) = wage > w_bar
+        decisions = indicator.(w_vec .- τ)
+        w = (E * (V .* decisions)) / (E * decisions)
         welfare = e_rate .* w + u_rate .* U
 
         return u_rate, e_rate, welfare
@@ -747,7 +775,7 @@ function of the unemployment compensation rate
         return τ
     end
 
-    # Levels of unemployment insurance we wish to study
+    # levels of unemployment insurance we wish to study
     Nc = 60
     c_vec = range(5.0, 140.0, length = Nc)
 
@@ -784,6 +812,9 @@ function of the unemployment compensation rate
 
   @testset begin
       @test c_vec == 5.0:2.288135593220339:140.0
+      @test tax_vec[40] == 55.78515130142509
+      @test empl_vec[50] == 0.2787840354254594
+      @test welfare_vec[17] == 49.047098920686786
   end
 
 
@@ -897,8 +928,8 @@ Now plot stocks
   :class: test
 
   @testset begin
-      @test x1[1] ≈ 8.266806439740906
-      @test x2[2] ≈ 91.43618846013545
+      @test x1[1] ≈ 8.266626766923284 
+      @test x2[2] ≈ 91.43632870031433 
       @test x3[3] ≈ 100.83774723999996
   end
 
@@ -920,8 +951,8 @@ And how the rates evolve
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.09471123542018117
-      @test x_path[2,7] ≈ 0.893616705896849
+      @test x_path[1,3] ≈ 0.09471014989625384 
+      @test x_path[2,7] ≈ 0.8936171021324064 
   end
 
 We see that it takes 20 periods for the economy to converge to it's new
@@ -947,7 +978,7 @@ state
   :class: test
 
   @testset begin
-    @test x0[1] == 0.08266806439740906
+    @test x0[1] == 0.08266626766923285 
   end
   
 Here are the other parameters:
@@ -1011,8 +1042,8 @@ Finally we combine these two paths and plot
   :class: test
 
   @testset begin
-      @test x1[1] ≈ 8.266806439740906
-      @test x2[2] ≈ 92.11669328327237
+      @test x1[1] ≈ 8.266626766923284 
+      @test x2[2] ≈ 92.11681873319097 
       @test x3[3] ≈ 98.95872483999996
   end
 
@@ -1034,6 +1065,6 @@ And the rates
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.06791496880896275
-      @test x_path[2,7] ≈ 0.9429332289570732
+      @test x_path[1,3] ≈ 0.06791408368459205 
+      @test x_path[2,7] ≈ 0.9429334437639298 
   end
