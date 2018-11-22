@@ -220,7 +220,7 @@ Here's the code:
 
 .. code-block:: julia
 
-    using Parameters
+    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
     function LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
         g = b - d
@@ -230,15 +230,10 @@ Here's the code:
         return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
-    function rate_steady_state(lm, tol = 1e-6)
-        x = 0.5 * ones(2)
-        error = tol + 1
-        while (error > tol)
-            new_x = lm.A_hat * x
-            error = maximum(abs, new_x - x)
-            x = new_x
-        end
-        return x
+    function rate_steady_state(lm)
+        sol = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5])
+        converged(sol) || error("Failed to converge in $(result.iterations) iterations")
+        return sol.zero
     end
 
     function simulate_stock_path(lm, X0, T)
@@ -291,7 +286,6 @@ Let's run a simulation under the default parameters (see above) starting from :m
 
 .. code-block:: julia
 
-    using Plots
     gr(fmt=:png)
     
     lm = LakeModel()
@@ -345,7 +339,6 @@ This is the case for our default parameters:
 
 .. code-block:: julia
 
-    using LinearAlgebra
     lm = LakeModel()
     e, f = eigvals(lm.A_hat)
     abs(e), abs(f)
@@ -659,8 +652,6 @@ Fiscal Policy Code
 We will make use of (with some tweaks) the code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
 
 .. code-block:: julia 
-
-    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
     function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
                                 iter = 2_000)
