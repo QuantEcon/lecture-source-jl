@@ -763,7 +763,7 @@ Exercise 1
 Following the `instructions for a new project <project_setup>`_, create a new package on your github account called ``NewtonsMethod.jl``
 
 In this package, you should create a simple package to do Newton's Method using the code you did in the
-`Newton's method <jbe_ex8a>`_ exercise in `Julia by example <julia_by_example>`_
+`Newton's method <jbe_ex8a>`_ exercise in `Introductory Examples <julia_by_example>`_
 
 In particular, within your package you should have two functions
 
