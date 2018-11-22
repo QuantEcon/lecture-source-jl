@@ -521,7 +521,7 @@ Let's plot the path of the sample averages over 5,000 periods
   :class: test
 
   @testset begin
-      @test xbar[1] ≈ 0.043921027960428106
+      @test xbar[1] ≈ 0.04391891891891919 
       @test s_bars[end,end] ≈ 0.957
   end
 
@@ -917,8 +917,8 @@ Now plot stocks
   :class: test
 
   @testset begin
-      @test x1[1] ≈ 8.266806439740906
-      @test x2[2] ≈ 91.43618846013545
+      @test x1[1] ≈ 8.266626766923284 
+      @test x2[2] ≈ 91.43632870031433 
       @test x3[3] ≈ 100.83774723999996
   end
 
@@ -940,8 +940,8 @@ And how the rates evolve
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.09471123542018117
-      @test x_path[2,7] ≈ 0.893616705896849
+      @test x_path[1,3] ≈ 0.09471014989625384 
+      @test x_path[2,7] ≈ 0.8936171021324064 
   end
 
 We see that it takes 20 periods for the economy to converge to it's new
@@ -967,7 +967,7 @@ state
   :class: test
 
   @testset begin
-    @test x0[1] == 0.08266806439740906
+    @test x0[1] == 0.08266626766923285 
   end
   
 Here are the other parameters:
@@ -1032,7 +1032,7 @@ Finally we combine these two paths and plot
 
   @testset begin
       @test x1[1] ≈ 8.266806439740906
-      @test x2[2] ≈ 92.11669328327237
+      @test x2[2] ≈ 92.11681873319097 
       @test x3[3] ≈ 98.95872483999996
   end
 
@@ -1054,6 +1054,6 @@ And the rates
   :class: test
 
   @testset begin
-      @test x_path[1,3] ≈ 0.06791496880896275
-      @test x_path[2,7] ≈ 0.9429332289570732
+      @test x_path[1,3] ≈ 0.06791408368459205 
+      @test x_path[2,7] ≈ 0.9429334437639298 
   end
