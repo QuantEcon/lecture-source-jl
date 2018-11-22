@@ -1031,7 +1031,7 @@ Finally we combine these two paths and plot
   :class: test
 
   @testset begin
-      @test x1[1] ≈ 8.266806439740906
+      @test x1[1] ≈ 8.266626766923284 
       @test x2[2] ≈ 92.11681873319097 
       @test x3[3] ≈ 98.95872483999996
   end
