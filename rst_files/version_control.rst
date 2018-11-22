@@ -249,7 +249,7 @@ Let's unpack the different components
 
 * It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments -- this is part of what's called *GitHub-Flavored Markdown* 
 
-For an example of an issue, see `here <https://github.com/quanteconuser/example_repository/issues/1>`_ 
+For an example of an issue, see `here <https://github.com/quanteconuser/example_repository/issues/1>`__
 
 You can see open issues at a glance from the general issues tab 
 
