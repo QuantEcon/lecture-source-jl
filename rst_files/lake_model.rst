@@ -740,9 +740,9 @@ function of the unemployment compensation rate
         mcm = McCallModel(α = α_q,
                           β = β,
                           γ = γ,
-                          c = c, # post-tax compensation
+                          c = c - τ, # post-tax compensation
                           σ = σ,
-                          w = w_vec, # post-tax wages
+                          w = w_vec .- τ, # post-tax wages
                           p = p_vec) # wage distribution 
 
         @unpack V, U, w_bar = solve_mccall_model(mcm)
