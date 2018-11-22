@@ -285,7 +285,7 @@ GitHub will give us the following window
 * The warning symbol next to the file indicates the existence of a merge conflict 
 * The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
 
-To fix the conflict, we can go into a text editor (such as Atom or VS Code)
+To fix the conflict, we can go into a text editor (such as Atom)
 
 .. figure:: /_static/figures/atom-merge-conflict.png
     :scale: 60%
