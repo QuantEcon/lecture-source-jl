@@ -655,7 +655,7 @@ We will make use of (with some tweaks) the code we wrote in the :doc:`McCall mod
 
     function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
                                 iter = 2_000)
-        @unpack α, β, σ, c, γ, w, p, u = mcm 
+        @unpack α, β, σ, c, γ, w, E, u = mcm 
 
         # necessary objects 
         u_w = u.(w, σ) 
@@ -665,7 +665,7 @@ We will make use of (with some tweaks) the code we wrote in the :doc:`McCall mod
         function T(x)
             V = x[1:end-1]
             U = x[end]
-            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * dot(p_vec, max.(U, V))]
+            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
         end 
 
         # value function iteration  
@@ -701,7 +701,7 @@ And the McCall object
         σ = 2.0, 
         u = u, # utility function 
         w = range(10, 20, length = 60), # wage values
-        p = pdf.(w, Ref(BetaBinomial(59, 600, 400)))) # distribution over wage values 
+        E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values 
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
@@ -729,6 +729,8 @@ function of the unemployment compensation rate
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
+    E = expectation(Categorical(p_vec)) # expectation object
+
     function compute_optimal_quantities(c, τ)
         mcm = McCallModel(α = α_q,
                           β = β,
@@ -736,10 +738,11 @@ function of the unemployment compensation rate
                           c = c - τ, # post-tax compensation
                           σ = σ,
                           w = w_vec .- τ, # post-tax wages
-                          p = p_vec) # wage probabilities 
+                          E = E) # expectation operator 
 
         @unpack V, U, w_bar = solve_mccall_model(mcm)
-        λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
+        indicator = wage -> wage > w_bar
+        λ = γ * E * indicator.(w_vec .- τ)
 
         return w_bar, λ, V, U
     end
@@ -754,7 +757,9 @@ function of the unemployment compensation rate
 
         # compute steady state welfare
         indicator(wage) = wage > w_bar 
-        w = sum(V .* p_vec .* indicator.(w_vec .- τ)) / sum(p_vec .* indicator.(w_vec .- τ))
+        indicator(wage) = wage > w_bar
+        decisions = indicator.(w_vec .- τ)
+        w = (E * (V .* decisions)) / (E * decisions)
         welfare = e_rate .* w + u_rate .* U
 
         return u_rate, e_rate, welfare
