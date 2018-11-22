@@ -569,7 +569,7 @@ Hopefully this showcases the power of generic programming:  with a well-designed
 Reals and Algebraic Structures
 =======================================
  
-Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/Field_(mathematics)>`_ is a ``ring`` with a few additional properties, among them
+Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is a ``ring`` with a few additional properties, among them
 
     * a multiplicative inverse: :math:`a^{-1}`
     * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
