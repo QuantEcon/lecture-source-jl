@@ -395,9 +395,14 @@ We need some code from our :doc:`an earlier lecture <opt_tax_recur>`
 on optimal taxation with state-contingent debt  sequential allocation implementation:
 
 .. code-block:: julia
+    :class: test
+
+    using Test, Random
+
+.. code-block:: julia
     :class: collapse
 
-    using QuantEcon, NLsolve, NLopt, Compat 
+    using QuantEcon, NLsolve, NLopt, Compat
 
     import QuantEcon.simulate
 
@@ -986,7 +991,7 @@ Code
 
 The recursive formulation is implemented as follows
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using Dierckx
 
@@ -1093,7 +1098,7 @@ The recursive formulation is implemented as follows
 
             diff = 0.0
             for s=1:S
-                diff = max(diff, maximum(abs, (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./ 
+                diff = max(diff, maximum(abs, (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./
                                                 Vf[s].(xgrid)))
             end
 
@@ -1706,7 +1711,10 @@ depends on the history of shocks
 This is even more evident in the following figure that plots the evolution of
 the two policies over 200 periods
 
+.. code-block:: julia
+  :class: test
 
+  Random.seed!(42)
 
 .. code-block:: julia
 
@@ -1728,7 +1736,17 @@ the two policies over 200 periods
     end
     p
 
+.. code-block:: julia
+  :class: test
 
+  @testset begin
+    @test sim_seq_long_plot[50, 3] ≈ 0.3951985593686047
+    @test sim_bel_long_plot[50, 3] ≈ 0.05684753244006188
+    @test sim_seq_long_plot[100, 4] ≈ 0.340233842670859
+    @test sim_bel_long_plot[100, 4] ≈ 0.2093423366870517
+    @test sim_seq_long_plot[200, 2] ≈ 0.5839693539786998
+    @test sim_bel_long_plot[200, 2] ≈ 0.6324036099550768
+  end
 
 
 
