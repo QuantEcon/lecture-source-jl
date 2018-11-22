@@ -42,11 +42,13 @@ We provide a file here which does two things
 
 The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
 
-Recall that you can find the location of this directory by running 
+Recall that you can find the location of the ``~/.julia`` directory by running 
 
 .. code-block:: julia 
 
     DEPOT_PATH[1]
+
+**Note:** On Mac, this won't be visible in the Finder unless you specifically enable that option, but you can get to it by running ``cd .julia; open .`` from a new terminal
 
 To add the file:
 
@@ -56,16 +58,13 @@ To add the file:
 
         ] add  Revise REPL; precompile
 
-2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
+2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer 
 
-3. Either download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
-
-.. include:: /_static/includes/startup.jl.raw
+3. Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory
 
 4. For convenience, you may find it useful on your operating system to change the directory where the REPL starts
  
 On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
-
 
 The REPL
 =============
@@ -252,8 +251,7 @@ The ``Plots`` pane captures Julia plots output (the code is as follows)
 .. figure:: /_static/figures/juno-plots.png
     :scale: 60%
 
-.. This is for matplotlib?
-.. May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
+**Note:** The plots feature is not perfectly reliable across all plotting backends, see `the Basic Usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ page 
 
 Other Features 
 -------------------
@@ -270,6 +268,8 @@ See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an 
 .. You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
 .. 
 
+.. _jl_packages:
+
 Package Environments 
 ========================
 
@@ -285,27 +285,25 @@ This way, you can work with (and specify) the dependencies (i.e., required packa
 
 Essentially, an environment is a dependency tree for a project, or a "frame of mind" for Julia's package manager 
 
-We can see the default (``v1.0``) environment as such 
+1. We can see the default (``v1.0``) environment as such 
 
 .. code-block:: julia 
 
     ] st 
 
-We can also create and activate a new environment 
+2. We can also create and activate a new environment 
 
 .. code-block:: julia 
 
     ] generate ExampleEnvironment
 
-will create a directory with fresh TOML files, and 
+3. And go to it  
 
 .. code-block:: julia 
 
     ; cd ExampleEnvironment
 
-will go there 
-
-To activate the directory, simply 
+4. To activate the directory, simply 
 
 .. code-block:: julia 
 
@@ -313,7 +311,7 @@ To activate the directory, simply
 
 where "." stands in for the "present working directory"
 
-Let's make some changes to this 
+5. Let's make some changes to this 
 
 .. code-block:: julia 
 
@@ -321,7 +319,7 @@ Let's make some changes to this
 
 Note the lack of commas 
 
-To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
+6. To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
 
 The Project TOML should look something like this
 
@@ -346,7 +344,7 @@ We can also
 
 You can think of the TOML as specifying demands for resources, which are supplied by the ``~/.julia`` user depot 
 
-To return to the default Julia environment, simply 
+7. To return to the default Julia environment, simply 
 
 .. code-block:: julia 
 
@@ -354,7 +352,7 @@ To return to the default Julia environment, simply
 
 without any arguments 
 
-Lastly, let's clean up 
+8. Lastly, let's clean up 
 
 .. code-block:: julia 
 

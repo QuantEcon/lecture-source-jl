@@ -120,7 +120,7 @@ Much of this will carry over to the collaborative section
 Creating a Repository 
 ---------------------------------
 
-In general, we will always want to make new repos using the following dropdown 
+In general, we will always want to repos for new projects using the following dropdown 
 
 .. figure:: /_static/figures/git-makerepo.png
     :scale: 60%
@@ -131,6 +131,10 @@ We can then configure repository options as such
     :scale: 60%
 
 In this case, we're making a public repo ``github.com/quantecon_user/example_repository``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts 
+
+**Note** This workflow is for creating projects *de novo*; the process for turning existing directories into git repos is a bit more complicated 
+
+In particular, in that case we recommend that you create a new repo via this method, then copy in and commit your files (see below), and then delete the old directory
 
 Cloning a Repository 
 ---------------------------------------
@@ -189,9 +193,8 @@ Clicking an individual commit gives us the difference view, (e.g., `example comm
 
 Sometimes, however, we want to not only inspect what happened before, but reverse the commit
 
-* If you haven't made the commit yet, just right-click the file and hit "discard changes" to reset the file to the last known commit 
-* If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, 
-  right click the commit and click "revert this commit" -- this will create the inverse commit, as above 
+* If you haven't made the commit yet, just right-click the file in the "changes" tab and hit "discard changes" to reset the file to the last known commit 
+* If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, shown below 
 
 .. figure:: /_static/figures/git-revert-commit.png
     :scale: 60%
@@ -294,6 +297,8 @@ Returning to GitHub Desktop gives us a pre-formed commit to accept
 .. figure:: /_static/figures/git-merge-commit.png
     :scale: 60%
 
+Clicking "commit to master" will let us push and pull from the server as normal
+
 Collaboration via Pull Request
 =====================================
 
@@ -311,7 +316,7 @@ A PR requests the project maintainer to merge ("pull") changes you've worked on 
 
 There are a few different workflows for creating and handling PRs, which we'll walk through below 
 
-**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the `testing lecture <testing_>`
+**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the `testing lecture <testing>`_
 
 .. _web_interface:
 
@@ -389,9 +394,14 @@ You'll see something like this
 
 This gives us a quick overview of the commits we want to merge in, as well as the file differences
 
-Fill in the details and hit create
+Hit create and then click through the following form
 
-A PR has now been opened on the main repo with:
+This opens a page like this on the main repo
+
+.. figure:: /_static/figures/git-create-pr-2.png
+    :scale: 60%
+
+The key pieces are 
 
 * A list of the commits we're proposing 
 * A list of reviewers, who can approve or modify our changes 

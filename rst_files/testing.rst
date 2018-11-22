@@ -37,7 +37,7 @@ As we'll see later, Travis is a service that automatically tests your project on
 
 First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov
 
-As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>_` if eligible
+As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>`_ if eligible
 
 Navigate to the `travis-ci.com website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials
 
@@ -89,19 +89,19 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
         generate("ExamplePackage.jl", ourTemplate)
 
-If we navigate to the package directory (shown in the output), we should see something like
+If we navigate to the package directory (shown in the output), we should see something like the following 
+
+**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
 
 .. figure:: /_static/figures/testing-dir.png
     :scale: 60%
-
-**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
 
 Adding Project to Git
 ------------------------
 
 The next step is to add this project to Git version control
 
-First, open the repository screen in your account as discussed previously
+1. Open the repository screen in your account as discussed previously
 
 We'll want the following settings
 
@@ -114,9 +114,9 @@ In particular
 
 * We should leave the boxes unchecked for the ``README.md``, ``LICENSE``, and ``.gitignore``, since these are handled by ``PkgTemplates``
 
-Then, drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
+2. Drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
 
-Click the "publish branch" button to upload your files to GitHub
+3. Click the "publish branch" button to upload your files to GitHub
 
 If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
 
@@ -134,7 +134,7 @@ Adding Project to Julia Package Manager
 
 We also want Julia's package manager to be aware of the project
 
-First, open a REPL in the newly created project directory, either by noting the path printed above, or by running
+1. Open a REPL in the newly created project directory, either by noting the path printed above, or by running
 
 .. code-block:: julia
 
@@ -150,17 +150,21 @@ You can change the path of a Julia REPL by running
 
     cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
 
-Then, run
+2. Run
 
 .. code-block:: julia
 
     ] activate
 
-To get into the main Julia environment, and
+To get into the main Julia environment (more on environments in the second half of this lecture), and
+
+3. Run 
 
 .. code-block:: julia
 
     ] dev .
+
+to add the package
 
 We see the change reflected in our default package list
 
@@ -233,20 +237,11 @@ Dependency Management
 Environments
 ^^^^^^^^^^^^^^^^
 
-As before, the TOML files define an *environment* for our project
+As `before <jl_packages>`_, the TOML files define an *environment* for our project, or a set of files which represent the dependency information 
 
-Any package operations we execute will be reflected in our ``ExamplePackage.jl`` directory's TOML
+This information is the name of every package we depend on, along with the exact versions of those packages
 
-Likewise, the only packages Julia knows about are those in the ``ExamplePackage.jl`` TOML. For example
-
-.. code-block:: julia
-
-    ] activate ExamplePackage
-
-.. code-block:: julia
-    :class: no-execute
-
-    using QuantEcon # fails, even though QuantEcon is on the machine
+This information (in practice, the result of package operations we execute) will be reflected in our ``ExamplePackage.jl`` directory's TOML, once that environment is activated (selected)
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it
 
@@ -256,6 +251,18 @@ Pkg Operations
 ^^^^^^^^^^^^^^^^^^^
 
 For now, let's just try adding a dependency
+
+1. Activate the package environment (to be run from the base, ``v1.0`` environment)
+
+.. code-block:: julia
+
+    ] activate ExamplePackage
+
+This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, and use the versions of packages specified there 
+
+Note that the base environment isn't special, except that it's what's loaded by a freshly-started REPL or Jupyter notebook
+
+2. Add a package
 
 .. code-block:: julia
 
@@ -269,6 +276,8 @@ Here's the Manifest
     :scale: 60%
 
 We can also run other operations, like ``] up``, ``] precompile``, etc.
+
+Package operations are listed in detail in the `tools and editors <tools_editors>`_ lecture
 
 Recall that, to quit the active environment and return to the base ``(v1.0)``, simply run
 
@@ -316,11 +325,11 @@ and edit the source to read as follows
 
     end # module
 
-Let's try calling this from the top environment (to stand in for a fresh REPL)
+Let's try calling this 
 
 .. code-block:: julia
 
-    ] activate
+    ] activate # reset the environment to the base one 
 
 .. code-block:: julia
 
@@ -331,26 +340,33 @@ Let's try calling this from the top environment (to stand in for a fresh REPL)
 
     foo() # exported, so don't need to qualify the namespace
 
+**Note:** If you didn't follow the instructions to add a `startup file <jl_startup_file>`_, you may need to quit your REPL and load the package again
+
 Jupyter Workflow
 ------------------------
 
-We can also call this function from a Jupyter notebook
+We can also work with the package from a Jupyter notebook
 
 Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
 
 .. figure:: /_static/figures/testing-output.png
     :scale: 60%
 
-From here, we can use our package's functions in the usual way
+From here, we can use our package's functions as we would functions from other packages
 
 This lets us produce neat output documents, without pasting the whole codebase
 
-We can also edit it interactively inside the notebook
+We can also run package operations inside the notebook
 
 .. figure:: /_static/figures/testing-notebook.png
     :scale: 60%
 
-The change will be reflected in the ``Project.toml`` file::
+The change will be reflected in the ``Project.toml`` file
+
+Note that, as usual, we had to first activate ``ExamplePackage`` first before making our dependency changes
+
+.. code-block:: julia 
+    :class: no-execute
 
     name = "ExamplePackage"
     uuid = "f85830d0-e1f0-11e8-2fad-8762162ab251"
@@ -382,6 +398,7 @@ For someone else to get the package, they simply need to
 1. Run the following command
 
 .. code-block:: julia
+    :class: no-execute
 
     ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
@@ -393,7 +410,7 @@ Recall that the path to your ``~/.julia`` folder is
 
 .. code-block:: julia
 
-    ] DEPOT_PATH[1]
+    DEPOT_PATH[1]
 
 They can then collaborate as they would on other git repositories
 
@@ -403,11 +420,13 @@ In particular, they can run
 
     ] activate ExamplePackage
 
+to load the list of dependencies, and 
+
 .. code-block:: julia
 
     ] instantiate
 
-To make sure the right dependencies are installed on their machine
+to make sure they are installed on the local machine
 
 Unit Testing
 ====================================
@@ -473,7 +492,7 @@ And run it by running
 
     ] test
 
-from an activated REPL
+from an activated REPL (i.e., a REPL where you've run ``] activate ExamplePackage``)
 
 Test Sets
 -------------
@@ -484,17 +503,16 @@ This is useful for organizing different batches of tests, but for now we can sim
 
 To learn more about test sets, see `the docs <https://docs.julialang.org/en/v1/stdlib/Test/index.html#Working-with-Test-Sets-1/>`_
 
-Running Tests Locally
+Running Tests
 -----------------------
 
 There are a few different ways to run the tests for your package
 
-* From a fresh REPL, run ``pkg> test ExamplePackage``
+* Run the actual ``runtests.jl``, say by hitting shift-enter on it in Atom 
 
-* From an activated REPL, simply run ``pkg> test`` (recall that you can activate with ``pkg> activate ExamplePackage``)
+* From a fresh (``v1.0``) REPL, run ``] test ExamplePackage`` 
 
-* Hit shift-enter in Atom on the actual ``runtests.jl`` file (as below). Recall that we can get the path of the package by running ``using ExamplePackage; pathof(ExamplePackage)`` from an unactivated REPL
-
+* From an activated (``ExamplePackage``) REPL, simply run ``] test`` (recall that you can activate with ``] activate ExamplePackage``)
 
 Continuous Integration with Travis
 ==========================================
@@ -521,6 +539,7 @@ By default, Travis will compile and test your project (i.e., "build" it) for new
 We can see ours by opening it in Atom
 
 .. code-block:: julia
+    :class: no-execute
 
     # Documentation: http://docs.travis-ci.com/user/languages/julia/
     language: julia
@@ -612,7 +631,7 @@ Click the CodeCov badge to see the build page for your project
 
 This shows us that our tests cover 50 \% of our functions in ``src//``
 
-To get a more granular view, we can click the ``src//`` and the resultant filename
+**Note:** To get a more granular view, we can click the ``src//`` and the resultant filename
 
 .. figure:: /_static/figures/codecov.png
     :scale: 60%
@@ -624,7 +643,7 @@ Pull Requests to External Julia Projects
 
 As mentioned in `version control <version_control>`_, sometimes we'll want to work on external repos that are also Julia projects
 
-The first thing is to ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo and sync it with the Julia package manager
+1. ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo to ``~/.julia/dev`` and sync it with the Julia package manager
 
 For example, running
 
@@ -633,9 +652,9 @@ For example, running
 
     ] dev Expectations
 
-will clone the repo ``https://github.com/quantecon/Expectations.jl`` to ``~/.julia/dev``
+will clone the repo ``https://github.com/quantecon/Expectations.jl`` to ``~/.julia/dev/Expectations``
 
-Make sure you do this from a fresh REPL
+Make sure you do this from the base Julia environment (i.e., after running ``] activate`` without arguments)
 
 As a reminder, you can find the location of your ``~/.julia`` folder (called the "user depot"), by running
 
@@ -651,28 +670,30 @@ The ``] dev`` command will also add the target to the package manager, so that w
     using Expectations
     pathof(Expectations) # points to our git clone
 
-Next, drag that folder to GitHub Desktop
+2. Drag that folder to GitHub Desktop
 
-The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
+3. The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
 
 .. figure:: /_static/figures/testing-fork.png
     :scale: 60%
 
-Lastly, edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
+4. Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
 
 .. figure:: /_static/figures/testing-repo-settings.png
     :scale: 60%
 
 Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is
 
-If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
+5. If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
+
+**Note:** As before, we're editing the files directly in ``~/.julia/dev``, as opposed to cloning the repo again. 
 
 .. figure:: /_static/figures/testing-commit.png
     :scale: 60%
 
 Here, for example, we're revising the README
 
-Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account
+6. Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account
 
 To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the `version control <version_control>`_ lecture
 
@@ -681,7 +702,7 @@ To confirm this, we can check the history on our account `here <https://github.c
 
 The green check mark indicates that Travis tests passed for this commit
 
-Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve
+7. Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve
 
 .. figure:: /_static/figures/testing-pr2.png
     :scale: 60%
@@ -710,9 +731,9 @@ Which will again clone the repo to ``~/.julia/dev``, and use it as a Julia packa
     using Expectations
     pathof(Expectations) # points to our git clone
 
-Next, drag that folder to GitHub Desktop
+Next, drag that folder to GitHub Desktop as before
 
-Then, in order to work with a project locally, all we need to do is open it in a text editor (like Atom)
+Then, in order to work with the package locally, all we need to do is open the ``~/.julia/dev/Expectations`` in a text editor (like Atom)
 
 .. figure:: /_static/figures/testing-atom-package.png
     :scale: 60%
@@ -736,7 +757,7 @@ To delete it entirely, simply run
 
     ] rm Expectations
 
-Both from a fresh REPL
+From a REPL where that package is in the active environment
 
 Benchmarking
 ==================
@@ -753,6 +774,29 @@ Additional Notes
 * The `JuliaCI <https://github.com/JuliaCI/>`_ organization provides more Julia utilities for continuous integration and testing
 
 * This `Salesforce document <https://developer.salesforce.com/page/How_to_Write_Good_Unit_Tests/>`_ has some good lessons about writing and testing code
+
+Review 
+=============
+
+To review the workflow for creating, versioning, and testing a new project end-to-end 
+
+1. Create the local package directory using the ``PkgTemplates.jl``
+
+2. Add that package to the Julia package manager, by opening a Julia REPL in the ``~/.julia/dev/ExamplePackage.jl``, making sure the active environment is the default one ``(v1.0)``, and hitting ``] dev .``
+
+3. Drag-and-drop that folder to GitHub Desktop
+
+4. Create an empty repository with the same name on the GitHub server
+
+5. Push from GitHub Desktop to the server
+
+6. Open **the original project folder** (e.g., ``~/.julia/dev/ExamplePackage.jl``) in Atom
+
+7. Make changes, test, iterate on it, etc. As a rule, functions like should live in the ``src/`` directory once they're stable, and you should export them from that file with ``export func1, func2``. This will export all methods of ``func1``, ``func2``, etc.
+
+8. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
+
+9. Push to the server, and see the Travis and CodeCov results
 
 Exercises
 ============
@@ -793,20 +837,3 @@ And anything else you can think of.  You should be able to run ``] test`` for th
 
 Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build
 
-Just as a workflow review, you should 
-
-1. Create the local package directory using the PkgTemplates.jl
-
-2. Drag-and-drop that folder to GitHub Desktop
-
-3. Create an empty repository with the same name on the GitHub server
-
-4. Push from GitHub Desktop to the server
-
-5. Open that folder in Atom
-
-6. Make changes, test, iterate on it, etc. As a rule, functions like ``newtonmethod()`` should live in the ``src/`` directory once they're stable, and you should export them with ``export newtonmethod``
-
-7. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
-
-8. Push to the server, and see the Travis and CodeCov results
