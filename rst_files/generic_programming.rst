@@ -426,7 +426,7 @@ Numbers and Algebraic Structures
 
 Define two binary functions,  :math:`+` and :math:`\cdot`, called addition and multiplication -- although the operators can be applied to data structures much more abstract than a ``Real``
 
-In mathematics, a `ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is a set with associated additive and multiplicative operators where
+In mathematics, a `ring <https://en.wikipedia.org/wiki/Ring_\(mathematics\)>`_ is a set with associated additive and multiplicative operators where
 
     * the additive operator is associative and commutative
     * the multiplicative operator is associative and distributive with respect to the additive operator
