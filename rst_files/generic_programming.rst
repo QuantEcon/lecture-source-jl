@@ -426,7 +426,7 @@ Numbers and Algebraic Structures
 
 Define two binary functions,  :math:`+` and :math:`\cdot`, called addition and multiplication -- although the operators can be applied to data structures much more abstract than a ``Real``
 
-In mathematics, a `ring <https://goo.gl/unRJRB>`_ is a set with associated additive and multiplicative operators where
+In mathematics, a `ring <https://en.wikipedia.org/wiki/Ring_(mathematics)>`_ is a set with associated additive and multiplicative operators where
 
     * the additive operator is associative and commutative
     * the multiplicative operator is associative and distributive with respect to the additive operator
@@ -569,7 +569,7 @@ Hopefully this showcases the power of generic programming:  with a well-designed
 Reals and Algebraic Structures
 =======================================
  
-Thinking back to the mathematical motivation, a `field <https://goo.gl/ooVtU1>`_ is a ``ring`` with a few additional properties, among them
+Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/Field_(mathematics)>`_ is a ``ring`` with a few additional properties, among them
 
     * a multiplicative inverse: :math:`a^{-1}`
     * an inverse operation for multiplication: :math:`a / b = a \cdot b^{-1}`
