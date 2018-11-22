@@ -260,6 +260,8 @@ For now, let's just try adding a dependency
 
 This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, and use the versions of packages specified there 
 
+Note that the base environment isn't special, except that it's what's loaded by a freshly-started REPL or Jupyter notebook
+
 2. Add a package
 
 .. code-block:: julia
