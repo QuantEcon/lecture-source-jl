@@ -6,6 +6,8 @@
 Git, GitHub, and Version Control
 ******************************************
 
+.. contents:: :depth: 2
+
 Co-authored with Arnav Sood
 
 An essential part of modern software engineering is using version control
@@ -18,10 +20,7 @@ We use version control because
 * Concurrent editing on code is necessary for collaboration
 * Version control is an essential part of creating reproducible research
 
-
 In this lecture, we'll discuss how to use Git and GitHub
-
-.. contents:: :depth: 2
 
 Setup 
 ==================
