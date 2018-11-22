@@ -640,7 +640,7 @@ The code takes a few minutes to run.
   function update!(ag, H)
       if ag.employed == 0
           w = rand(H) * 2   # account for scale in julia
-          if w ≥ w_bar[ag._π]
+          if w ≥ w_bar(ag._π)
               ag.employed = 1
           else
               ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
