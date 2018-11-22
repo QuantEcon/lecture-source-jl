@@ -252,7 +252,7 @@ Pkg Operations
 
 For now, let's just try adding a dependency
 
-First, activate the environment 
+1. Activate the environment 
 
 .. code-block:: julia
 
@@ -260,7 +260,7 @@ First, activate the environment
 
 This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, and use the versions of packages specified there 
 
-Next, add a package
+2. Add a package
 
 .. code-block:: julia
 
