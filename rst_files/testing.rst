@@ -134,7 +134,7 @@ Adding Project to Julia Package Manager
 
 We also want Julia's package manager to be aware of the project
 
-First, open a REPL in the newly created project directory, either by noting the path printed above, or by running
+1. Open a REPL in the newly created project directory, either by noting the path printed above, or by running
 
 .. code-block:: julia
 
@@ -150,13 +150,15 @@ You can change the path of a Julia REPL by running
 
     cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
 
-Then, run
+2. Run
 
 .. code-block:: julia
 
     ] activate
 
 To get into the main Julia environment (more on environments in the second half of this lecture), and
+
+3. Run 
 
 .. code-block:: julia
 
