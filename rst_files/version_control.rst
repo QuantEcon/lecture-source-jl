@@ -253,6 +253,8 @@ You can see open issues at a glance from the general issues tab
 .. figure:: /_static/figures/git-issue-tab.png
     :scale: 60%
 
+The checkboxes are common in GitHub to manage project tasks
+
 Reviewing Code 
 ------------------------------
 
