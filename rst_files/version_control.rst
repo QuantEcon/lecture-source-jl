@@ -55,7 +55,7 @@ Git vs. GitHub vs. GitHub Desktop
 
 To understand the relationship
 
-* Git is an infrastructure for versioning and merging files (it is notspecific to GitHub and does not even require an online server)
+* Git is an infrastructure for versioning and merging files (it is not specific to GitHub and does not even require an online server)
 * GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects
 * GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use
 
