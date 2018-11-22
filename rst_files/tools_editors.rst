@@ -268,6 +268,8 @@ See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an 
 .. You can plug Juno/Atom into a Julia session running in a docker container, such as the QuantEcon base container 
 .. 
 
+.. _jl_packages:
+
 Package Environments 
 ========================
 
