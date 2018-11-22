@@ -15,7 +15,7 @@ Overview
 .. I am not sure I agree... The size of the ecosystem depends on what kind of package you are thinking of
 .. While Julia lacks the massive scientific ecosystem of Python, it has successfully attracted a small army of enthusiastic and talented developers
 
-Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs-of-concept
+Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs of concept
 
 A major advantage of Julia libraries is that, because Julia itself is sufficiently fast, there is less need to mix in low level languages like C and Fortran
 
@@ -126,7 +126,7 @@ Expectations
 
 If the calculations of the numerical integral is simply for calculating mathematical expectations of a particular distribution, then `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_ provides a convenient interface
 
-Under the hood, it is finding the appropriate Gaussian quadrature scheme for the distribution and using `FastGaussQuadrature`
+Under the hood, it is finding the appropriate Gaussian quadrature scheme for the distribution using ``FastGaussQuadrature``
 
 .. code-block:: julia
 
@@ -146,7 +146,7 @@ Under the hood, it is finding the appropriate Gaussian quadrature scheme for the
 Interpolation
 =============================
 
-In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of .. points)
+In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of points)
 
 The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
 
@@ -191,7 +191,8 @@ To implement linear and cubic spline interpolation
 Univariate with Irregular Grid
 ---------------------------------
 
-In the above, the ``LinearInterpolation`` function uses a specialized function for regular grids since the ``x`` is a Range type
+In the above, the ``LinearInterpolation`` function uses a specialized function 
+for regular grids since ``x`` is a ``Range`` type
 
 For an arbitrary, irregular grid
 
@@ -312,7 +313,7 @@ Routines are available for
 
 * Schur factorization, etc.
 
-See `here <https://docs.julialang.org/en/stable/manual/linear-algebra/>`__ for further details
+See `here <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/>`_ for further details
 
 
 General Tools

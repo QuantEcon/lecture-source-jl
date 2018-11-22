@@ -81,6 +81,8 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
+**Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
+
 3. Create a specific project based off this template
 
     .. code-block:: julia
@@ -91,6 +93,8 @@ If we navigate to the package directory (shown in the output), we should see som
 
 .. figure:: /_static/figures/testing-dir.png
     :scale: 60%
+
+**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
 
 Adding Project to Git
 ------------------------
@@ -114,10 +118,16 @@ Then, drag and drop your folder from your ``~/.julia/dev`` directory to GitHub D
 
 Click the "publish branch" button to upload your files to GitHub
 
-If you navigate to your git repo (ours is `here <https:https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
+If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
 
 .. figure:: /_static/figures/testing-git2.png
     :scale: 60%
+
+**Note:** Be sure that you don't separately clone the repo you just added to another location (i.e., to your desktop)
+
+The main idiom of git is that you have some set of files on your local machine (here in ``~/.julia/dev/ExamplePackage.jl``) and git is plugged into those files 
+
+For convenience, you might want to create a shortcut to that location somewhere accessible
 
 Adding Project to Julia Package Manager
 -------------------------------------------
@@ -157,6 +167,8 @@ We see the change reflected in our default package list
 .. code-block:: julia
 
     ] st
+
+For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
 
 Using the Package Manager
 --------------------------------
@@ -232,6 +244,7 @@ Likewise, the only packages Julia knows about are those in the ``ExamplePackage.
     ] activate ExamplePackage
 
 .. code-block:: julia
+    :class: no-execute
 
     using QuantEcon # fails, even though QuantEcon is on the machine
 
@@ -280,7 +293,12 @@ For example, let's say we add ``Distributions.jl``
 
     ] add Distributions
 
-and edit the source to read as follows::
+and edit the source to read as follows
+
+**Note**: That is, paste this into the file itself 
+
+.. code-block:: julia 
+    :class: no-execute 
 
     module ExamplePackage
 
@@ -437,7 +455,10 @@ Example
 
 Let's add some unit tests for the ``foo()`` function we defined earlier. Our ``tests/runtests.jl`` file should look like this
 
+**As before, this should be pasted into the file directly**
+
 .. code-block:: julia
+    :class: no-execute 
 
     using ExamplePackage
     using Test
@@ -724,7 +745,7 @@ Another goal of testing is to make sure that code doesn't slow down significantl
 
 We can do this using tools provided by the ``BenchmarkTools.jl`` package
 
-See the ``need for speed`` lecture for more details
+See the :doc:`need for speed <need_for_speed>` lecture for more details
 
 Additional Notes
 =======================
@@ -771,3 +792,21 @@ For the tests, you should have at the very minimum
 And anything else you can think of.  You should be able to run ``] test`` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI
 
 Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build
+
+Just as a workflow review, you should 
+
+1. Create the local package directory using the PkgTemplates.jl
+
+2. Drag-and-drop that folder to GitHub Desktop
+
+3. Create an empty repository with the same name on the GitHub server
+
+4. Push from GitHub Desktop to the server
+
+5. Open that folder in Atom
+
+6. Make changes, test, iterate on it, etc. As a rule, functions like ``newtonmethod()`` should live in the ``src/`` directory once they're stable, and you should export them with ``export newtonmethod``
+
+7. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
+
+8. Push to the server, and see the Travis and CodeCov results

@@ -109,7 +109,7 @@ Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Sy
 
     typeof(:a)
 
-**Remark:** Note that, by convention, type names use CamelCase ---  ``Array``, ``AbstractArray``, etc.
+**Remark:** Note that, by convention, type names use CamelCase --  ``Array``, ``AbstractArray``, etc.
 
 
 Variables, Types, and Values
@@ -157,7 +157,7 @@ Abstract vs Concrete Types
 
 Up to this point, most of the types we have worked with (e.g., ``Float64, Int64``) are examples of **concrete types**
 
-Concrete types are types that we can *instantiate* --- i.e., pair with data in memory
+Concrete types are types that we can *instantiate* -- i.e., pair with data in memory
 
 We will now examine **abstract types** that cannot be instantiated (e.g., ``Real``, ``AbstractFloat``)
 
@@ -229,7 +229,7 @@ And the ``subtypes`` which gives a list of the available subtypes for any packag
 Deducing and Declaring Types
 =============================
 
-We will discuss this in detail in :doc:`a later lecture lecture <generic_programming>`, 
+We will discuss this in detail in :doc:`generic programming <generic_programming>`,
 but much of Julia's performance gains and generality of notation comes from its type system
 
 For example
@@ -466,7 +466,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
         c::T3
     end
 
-    # Works fine
+    # works fine
     a = 2
     b = 3
     c = [1.0, 2.0, 3.0]'    # transpose is not a `Vector` but `f()` would work
@@ -572,7 +572,8 @@ A few simple programming patterns ensure that this is possible
         
         g2(x)
 
-* Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``
+* Preallocate related vectors with ``similar`` where possible, and use ``eltype`` or ``typeof``. This is important when using Multiple Dispatch given the different input types the function can call
+
 
     .. code-block:: julia
 
@@ -609,7 +610,7 @@ A few simple programming patterns ensure that this is possible
         @show typeof(1)
         @show typeof(1.0)
         @show typeof(BigFloat(1.0))
-        @show typeof(one(BigFloat))  # Gets multiplicative identity, passing in type
+        @show typeof(one(BigFloat))  # gets multiplicative identity, passing in type
         @show typeof(zero(BigFloat)) 
         
         x = BigFloat(2)
@@ -690,7 +691,7 @@ The best resource is to carefully read other peoples code, but a few sources to 
 * `Julia Praxis Naming Guides <https://github.com/JuliaPraxis/Naming/tree/master/guides>`_
 * `QuantEcon Style Guide <https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md>`_ used in these lectures
 
-Now why would we emphasize naming as style as a crucial part of the lectures?
+Now why would we emphasize naming and style as a crucial part of the lectures?
 
 Because it is an essential tool for creating research that is 
 **reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_\(computer_science\)>`_
@@ -900,7 +901,7 @@ Consider a variation where we pass a function instead of an ``AbstractArray``
 
 .. code-block:: julia
 
-    derivatives(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # Broadcast function
+    derivatives(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # broadcast function
 
     @show typeof(q) <: Function
     d_q = derivatives(q, x)
@@ -930,7 +931,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 * Describe two abstract types and the hierarchy of three different concrete types
 * Benchmark the calculation of some simple linear algebra with a static array 
-  compared to the following for a dense arrays for ``N = 3`` and ``N = 15``
+  compared to the following for a dense array for ``N = 3`` and ``N = 15``
   
 .. code-block:: julia
 
@@ -945,7 +946,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 Exercise 2
 -------------
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from `this lecture <kalman>`_
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from `the Kalman lecture <kalman>`_
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
@@ -983,7 +984,7 @@ Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
 Exercise 4
 --------------
 
-Use your solution to Exercise 8(a/b) in `Julia By Example <julia_by_example>`_ to 
+Use your solution to Exercise 8(a/b) in `Introductory Examples <julia_by_example>`_ to 
 create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function
 
 The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``, 
@@ -1009,7 +1010,7 @@ Given an ``x`` and a function ``f``, implement a few variations of the trapezoid
 * ``trapezoidal(f, x)`` for any ``typeof(x) = AbstractRange`` and ``typeof(f) == AbstractArray`` where ``length(x) = length(f)``
   * Exploit the fact that ``AbstractRange`` has constant step sizes to specialize the algorithm
 * ``trapezoidal(f, x̲, x̄, N)`` where ``typeof(f) = Function``, and the other arguments are ``Real``
-  * For this, build a uniform grid with ``N`` points on ``[x̲, x̄]`` - call the ``f`` function at those grid points and use the existing ``trapezoidal(f, x)`` from the implementation
+  * For this, build a uniform grid with ``N`` points on ``[x̲, x̄]`` -- call the ``f`` function at those grid points and use the existing ``trapezoidal(f, x)`` from the implementation
 
 With these:
 1. Test each variation of the function with :math:`f(x) = x^2` with :math:`\underline{x}=0,\, \bar{x} = 1`

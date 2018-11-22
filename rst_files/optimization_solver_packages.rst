@@ -21,19 +21,19 @@ Setup
 Introduction to Automatic Differentiation
 =============================================
 
-Automatic differentiation (sometimes called algorithmic differentiation) is a crucial way to increase the performance of both estimation and solution methods
+Automatic differentiation (AD, sometimes called algorithmic differentiation) is a crucial way to increase the performance of both estimation and solution methods
 
-There are essentially three four ways to calculate the gradient or jacobian on a computer
+There are essentially four ways to calculate the gradient or Jacobian on a computer
 
 * Calculation by hand
 
-    * Where possible, you can calculate the derivative on "pen-and-paper" and potentially simplify the expression
+    * Where possible, you can calculate the derivative on "pen and paper" and potentially simplify the expression
     * Sometimes, though not always, the most accurate and fastest option if there are algebraic simplifications
     * The algebra is error prone for non-trivial setups
 
 * Finite differences
 
-    * Evaluate the function at least ``N`` times to get the gradient, jacobians are even worse
+    * Evaluate the function at least :math:`N` times to get the gradient -- Jacobians are even worse
     * Large :math:`\Delta` is numerically stable but inaccurate, too small of :math:`\Delta` is numerically unstable but more accurate
     * Avoid if you can, and use packages (e.g. `DiffEqDiffTools.jl <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ ) to get a good choice of :math:`\Delta`
 
@@ -43,23 +43,23 @@ There are essentially three four ways to calculate the gradient or jacobian on a
 * Symbolic differentiation
 
     * If you put in an expression for a function, some packages will do symbolic differentiation
-    * In effect, repeated applications of the chain-rule, produce-rule, etc.
+    * In effect, repeated applications of the chain rule, product rule, etc.
     * Sometimes a good solution, if the package can handle your functions
 
 * Automatic Differentiation
 
     * Essentially the same as symbolic differentiation, just occurring at a different time in the compilation process 
-    * Equivalent to analytical derivatives since it uses the chain-rule, etc.
+    * Equivalent to analytical derivatives since it uses the chain rule, etc.
 
 We will explore AD packages in Julia rather than the alternatives
 
 Automatic Differentiation
 ---------------------------
 
-To summarize here, first recall the chain rule (adapted from Wikipedia)
+To summarize here, first recall the chain rule (adapted from `Wikipedia <https://en.wikipedia.org/wiki/Chain_rule>`_)
 
 .. math::
-    \frac{dy}{dx} = \frac{dy}{dw} \frac{dw}{dx}
+    \frac{dy}{dx} = \frac{dy}{dw} \cdot \frac{dw}{dx}
 
 Consider functions composed of calculations with fundamental operations with known analytical derivatives, such as :math:`f(x_1, x_2) = x_1 x_2 + \sin(x_1)`
 
@@ -68,7 +68,7 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
 .. math::
     \begin{array}{l|l}
     \text{Operations to compute value} &
-    \text{Operations to compute $\frac{d f(x_1,x_2)}{d x_1}$}
+    \text{Operations to compute $\frac{\partial f(x_1,x_2)}{\partial x_1}$}
     \\
     \hline
     w_1 = x_1 &
@@ -77,37 +77,37 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
     \frac{d  w_2}{d x_1} = 0 \text{ (seed)}
     \\
     w_3 = w_1 \cdot w_2 &
-    \frac{d  w_3}{d x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
+    \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
     \\
     w_4 = \sin w_1 &
     \frac{d  w_4}{d x_1} = \cos w_1 \cdot \frac{d  w_1}{d x_1}
     \\
     w_5 = w_3 + w_4 &
-    \frac{d  w_5}{d x_1} = \frac{d  w_3}{d x_1} + \frac{d  w_4}{d x_1}
+    \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{d  w_4}{d x_1}
     \end{array}
 
 Using Dual Numbers
 --------------------
 
-One way to implement this (used in Forward-mode AD) is to use `Dual Numbers <https://en.wikipedia.org/wiki/Dual_number>`_
+One way to implement this (used in forward-mode AD) is to use `dual numbers <https://en.wikipedia.org/wiki/Dual_number>`_
 
 Take a number :math:`x` and augment it with an infinitesimal :math:`\epsilon` such that :math:`\epsilon^2 = 0`, i.e. :math:`x \to x + x' \epsilon`
 
 All math is then done with this (mathematical, rather than Julia) tuple :math:`(x, x')` where the :math:`x'` may be hidden from the user
 
-With these definition, we can write a general rule for differentiation of :math:`g(x,y)` as
+With this definition, we can write a general rule for differentiation of :math:`g(x,y)` as
 
 .. math::
-    g(\left(x,x'\right),\left(y,y'\right)) = \left(g(x,y),\partial_x g(x,y)x' + \partial_y g(x,y)y' \right)
+    g \big( \left(x,x'\right),\left(y,y'\right) \big) = \left(g(x,y),\partial_x g(x,y)x' + \partial_y g(x,y)y' \right)
 
 This calculation is simply the chain rule for the total derivative
 
-An AD library using dual numbers will concurrently calculate the function and its derivatives, repeating the chain rule until it hits a set of intrinsic rules such as
+An AD library using dual numbers concurrently calculates the function and its derivatives, repeating the chain rule until it hits a set of intrinsic rules such as
 
 .. math::
 		\begin{align*}
 		x + y \to \left(x,x'\right) + \left(y,y'\right) &= \left(x + y,\underbrace{x' + y'}_{\partial(x + y) = \partial x + \partial y}\right)\\
-		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y y}\right)\\
+		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y}\right)\\
 		\exp(x) \to \exp(\left(x, x'\right)) &= \left(\exp(x),\underbrace{x'\exp(x)}_{\partial(\exp(x)) = \exp(x)\partial x} \right)
 		\end{align*}
 
@@ -127,9 +127,9 @@ We have already seen one of the AD packages in Julia
     f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
     g = (x) -> ForwardDiff.gradient(f, x); # g() is now the gradient
     @show g(rand(20)); # gradient at a random point
-    # ForwardDiff.hessian(f,x2) # or the hessian
+    # ForwardDiff.hessian(f,x') # or the hessian
 
-We can even auto-differenitate complicated functions with embedded iterations
+We can even auto-differentiate complicated functions with embedded iterations
 
 .. code-block:: julia
 
@@ -140,7 +140,7 @@ We can even auto-differenitate complicated functions with embedded iterations
         end
         return z
     end
-    sqrt(2.0)
+    squareroot(2.0)
 
 .. code-block:: julia
 
@@ -152,15 +152,16 @@ We can even auto-differenitate complicated functions with embedded iterations
 Flux.jl
 ---------
 
-Another is Flux.jl, which is a machine-learning library in Julia
+Another is `Flux.jl <https://github.com/FluxML/Flux.jl>`_, a machine learning library in Julia
 
-AD is one of the main reasons that machine learning has become so powerful in recent years, and is an essential component of any ML package
+AD is one of the main reasons that machine learning has become so powerful in 
+recent years, and is an essential component of any machine learning package
 
 .. code-block:: julia
 
     using Flux
     using Flux.Tracker
-    using Flux.Tracker: update!    
+    using Flux.Tracker: update!
 
     f(x) = 3x^2 + 2x + 1
 
@@ -181,10 +182,10 @@ As before, we can differentiate complicated functions
 
 .. code-block:: julia
 
-    dsquareroot(x) = Tracker.gradient(squareroot, x)    
+    dsquareroot(x) = Tracker.gradient(squareroot, x)
 
 
-From the documentation, we can do a machine-learning approach to a linear regression
+From the documentation, we can use a machine learning approach to a linear regression
 
 .. code-block:: julia
 
@@ -232,14 +233,17 @@ The other reason is that different types of optimization problems require differ
 Optim.jl
 ---------------------
 
-A good pure-Julia solution for the (unconstrained or box-bounded) optimization of univariate and multivariate function is `Optim <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
+A good pure-Julia solution for the (unconstrained or box-bounded) optimization of 
+univariate and multivariate function is the `Optim.jl <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
 
-By default, the algorithms in Optim target minimization rather than maximization, so if a function is called "optimize" it will mean minimization
+By default, the algorithms in ``Optim.jl`` target minimization rather than 
+maximization, so if a function is called ``optimize`` it will mean minimization
 
 Univariate Functions on Bounded Intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`Univariate optimization <http://julianlsolvers.github.io/Optim.jl/stable/#user/minimization/#minimizing-a-univariate-function-on-a-bounded-interval>`_ defaults to a robust hybrid optimization routine called Brent's method
+`Univariate optimization <http://julianlsolvers.github.io/Optim.jl/stable/#user/minimization/#minimizing-a-univariate-function-on-a-bounded-interval>`_ 
+defaults to a robust hybrid optimization routine called `Brent's method <https://en.wikipedia.org/wiki/Brent%27s_method>`_
 
 .. code-block:: julia
 
@@ -257,6 +261,9 @@ Always check if the results converged, and throw errors otherwise
     xmin = result.minimizer
     result.minimum
 
+The first line is a logical OR between ``converged(result)`` and ``error("...")``
+
+If the convergence check passes, the logical sentence is true, and it will proceed to the next line; if not, it will throw the error
 
 Or to maximize
 
@@ -268,8 +275,7 @@ Or to maximize
     xmin = maximizer(result)
     fmax = maximum(result)
 
-
-**Note:** There are a few inconsistencies with extracting  ``optimize`` vs. ``maximize`` results, as shown above
+**Note:** Notice that we call ``optimize`` results using ``result.minimizer``, and ``maximize`` results using ``maximizer(result)``
 
 Unconstrained Multivariate Optimization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -292,12 +298,11 @@ To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.j
 
     results = optimize(f, x_iv, LBFGS())
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
-    "$(results.iterations) iterations")    
+    "$(results.iterations) iterations")
 
 Note that this has fewer iterations
 
-As no derivative was given, it used `finite-differences <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ to approximate the gradient of ``f(x)``
-
+As no derivative was given, it used `finite differences <https://en.wikipedia.org/wiki/Finite_difference>`_ to approximate the gradient of ``f(x)``
 
 However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible
 
@@ -307,9 +312,9 @@ However, since most of the algorithms require derivatives, you will often want t
     x_iv = [0.0, 0.0]
     results = optimize(f, x_iv, LBFGS(), autodiff=:forward) # i.e. use ForwardDiff.jl
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
-    "$(results.iterations) iterations")    
+    "$(results.iterations) iterations")
 
-Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `tips and trick <generic_tips_tricks>`_ )
+Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the `generic programming lecture <generic_programming>`_ )
 
 Alternatively, with an analytical gradient
 
@@ -324,7 +329,7 @@ Alternatively, with an analytical gradient
 
     results = optimize(f, g!, x0, LBFGS()) # or ConjugateGradient()
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
-    "$(results.iterations) iterations")    
+    "$(results.iterations) iterations")
 
 For derivative-free methods, you can change the algorithm -- and have no need to provide a gradient
 
@@ -337,22 +342,26 @@ For derivative-free methods, you can change the algorithm -- and have no need to
 However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global-convergence properties
 
 
-See the `maximum likelihood <http://julianlsolvers.github.io/Optim.jl/stable/#examples/generated/maxlikenlm/>`_ example and the accompanying `jupyter notebook <https://nbviewer.jupyter.org/github/JuliaNLSolvers/Optim.jl/blob/gh-pages/v0.15.3/examples/generated/maxlikenlm.ipynb>`_
+See the `maximum likelihood <http://julianlsolvers.github.io/Optim.jl/stable/#examples/generated/maxlikenlm/>`_ 
+example and the accompanying `Jupyter notebook <https://nbviewer.jupyter.org/github/JuliaNLSolvers/Optim.jl/blob/gh-pages/v0.15.3/examples/generated/maxlikenlm.ipynb>`_
 
 JuMP.jl
 --------
 
 The `JuMP.jl <https://github.com/JuliaOpt/JuMP.jl>`_ package is an ambitious implementation of a modelling language for optimization problems in Julia
 
-In that sense, it is more like an AMPL (or Pyomo) built on top of the Julia language with macros, and able to use a variety of different commerical and open-source solvers
+In that sense, it is more like an AMPL (or Pyomo) built on top of the Julia 
+language with macros, and able to use a variety of different commerical and open source solvers
 
 If you have a linear, quadratic, conic, mixed-integer linear, etc. problem then this will likely be the ideal "meta-package" for calling various solvers
 
-For nonlinear problems, the modelling language may make things difficult for complicated functions (as it is not designed to be used as a general-purpose non-linear optimizer) 
+For nonlinear problems, the modelling language may make things difficult for complicated functions (as it is not designed to be used as a general-purpose nonlinear optimizer)
 
-See the `quickstart guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
+See the `quick start guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html>`_ for more details on all of the options
 
 The following is an example of calling a linear objective with a nonlinear constraint (provided by an external function)
+
+Here ``Ipopt`` stands for ``Interior Point OPTimizer``, a `nonlinear solver <https://github.com/JuliaOpt/Ipopt.jl>`_ in Julia 
 
 .. code-block:: julia
 
@@ -370,12 +379,12 @@ The following is an example of calling a linear objective with a nonlinear const
     end
     m = Model(solver = IpoptSolver())
     # need to register user defined functions for AD
-    JuMP.register(m,:squareroot, 1, squareroot, autodiff=true) 
+    JuMP.register(m,:squareroot, 1, squareroot, autodiff=true)
 
     @variable(m, x[1:2], start=0.5) # start is the initial condition
     @objective(m, Max, sum(x))
     @NLconstraint(m, squareroot(x[1]^2+x[2]^2) <= 1)
-    solve(m)
+    @show solve(m)
 
 
 And this is an example of a quadratic objective
@@ -407,7 +416,7 @@ BlackBoxOptim.jl
 
 Another package for doing global optimization without derivatives is `BlackBoxOptim.jl <https://github.com/robertfeldt/BlackBoxOptim.jl>`_
 
-To see an example from the documentation, 
+To see an example from the documentation
 
 .. code-block:: julia
 
@@ -440,12 +449,11 @@ For example, if we plot the function
 
 with :math:`x \in [0,1]` we get
 
-.. _root_fig:
-
+.. figure:: /_static/figures/sine-screenshot-2.png
 
 The unique root is approximately 0.408
 
-The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero()`` to find roots
+The `Roots.jl <https://github.com/JuliaLang/Roots.jl>`_ package offers ``fzero()`` to find roots
 
 .. code-block:: julia
 
@@ -456,9 +464,9 @@ The `Roots <https://github.com/JuliaLang/Roots.jl>`_ package offers the ``fzero(
 NLsolve.jl
 ------------------
 
-The package `NLsolve.jl <https://github.com/JuliaNLSolvers/NLsolve.jl/>`_ provides functions to solve for multivariate systems of equations and fixed-points
+The `NLsolve.jl <https://github.com/JuliaNLSolvers/NLsolve.jl/>`_ package provides functions to solve for multivariate systems of equations and fixed points
 
-From the documentation, to solve for a system of equations without providing a jacobian
+From the documentation, to solve for a system of equations without providing a Jacobian
 
 .. code-block:: julia
 
@@ -469,19 +477,19 @@ From the documentation, to solve for a system of equations without providing a j
 
     results = nlsolve(f, [ 0.1; 1.2])
 
-In the above case, the algorithm used finite-differences to calculate the jacobian
+In the above case, the algorithm used finite differences to calculate the Jacobian
 
 Alternatively, if ``f(x)`` is written generically, you can use auto-differentiation with a single setting
 
 .. code-block:: julia
 
     results = nlsolve(f, [ 0.1; 1.2], autodiff=:forward)
-    
+
     println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in "*
     "$(results.iterations) iterations and $(results.f_calls) function calls")
 
 
-Providing a function with operates in-place (i.e. modifying an argument) may help performance for large systems of equations (and hurt it for small ones)
+Providing a function which operates inplace (i.e. modifies an argument) may help performance for large systems of equations (and hurt it for small ones)
 
 .. code-block:: julia
 
@@ -500,7 +508,7 @@ LeastSquaresOptim.jl
 
 Many optimization problems can be solved using linear or nonlinear least squares
 
-Let :math:`x \in R^N` and :math:`F(x) : R^N \to R^M` with :math:`M \geq N`, then the nonlinear least squares problem is 
+Let :math:`x \in R^N` and :math:`F(x) : R^N \to R^M` with :math:`M \geq N`, then the nonlinear least squares problem is
 
 .. math::
 
@@ -514,7 +522,7 @@ As with most nonlinear optimization problems, the benefits will typically become
 
 If :math:`M = N` and we know a root :math:`F(x^*) = 0` to the system of equations exists, then NLS is the defacto method for solving large **systems of equations**
 
-An implementation of NLS is given in `LeastSquaresOptim.jl <https://github.com/matthieugomez/LeastSquaresOptim.jl>`_ 
+An implementation of NLS is given in `LeastSquaresOptim.jl <https://github.com/matthieugomez/LeastSquaresOptim.jl>`_
 
 From the documentation
 
@@ -530,7 +538,8 @@ From the documentation
 **Note:** Because there is a name clash between ``Optim.jl`` and this package, to use both we need to qualify the use of the ``optimize`` function (i.e. ``LeastSquaresOptim.optimize``)
 
 
-Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobian, but you could also provide your own calculation of the Jacobian (analytical or using finite differences) and/or calculate the function in-place
+Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobian, 
+but you could also provide your own calculation of the Jacobian (analytical or using finite differences) and/or calculate the function inplace
 
 .. code-block:: julia
 
@@ -538,7 +547,7 @@ Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobia
         out[1] = 1 - x[1]
         out[2] = 100 * (x[2]-x[1]^2)
     end
-    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), 
+    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
                                     f! = rosenbrock_f!, output_length = 2))
 
     # if you want to use gradient
@@ -548,14 +557,11 @@ Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobia
         J[2, 1] = -200 * x[1]
         J[2, 2] = 100
     end
-    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2), 
+    LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
                                     f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
 
-Exercises
-=============
 
-
-Exercise 1
-------------
+Additional Notes 
+====================
 
 Watch `this video <https://www.youtube.com/watch?v=vAp6nUMrKYg&feature=youtu.be>`_ from one of Julia's creators on automatic differentiation
