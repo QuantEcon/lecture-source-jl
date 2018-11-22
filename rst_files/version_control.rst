@@ -392,7 +392,7 @@ You'll see something like this
 .. figure:: /_static/figures/git-create-pr.png
     :scale: 60%
 
-This gives us a quick overview of the commits we want to merge in, as well as the file differences
+This gives us a quick overview of the commits we want to merge in, as well as the overall differences
 
 Hit create and then click through the following form
 
