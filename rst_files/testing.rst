@@ -252,7 +252,7 @@ Pkg Operations
 
 For now, let's just try adding a dependency
 
-1. Activate the environment 
+1. Activate the package environment (to be run from the base, ``v1.0`` environment)
 
 .. code-block:: julia
 
