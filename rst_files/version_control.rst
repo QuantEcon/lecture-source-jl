@@ -6,6 +6,8 @@
 Git, GitHub, and Version Control
 ******************************************
 
+.. contents:: :depth: 2
+
 Co-authored with Arnav Sood
 
 An essential part of modern software engineering is using version control
@@ -21,7 +23,6 @@ We use version control because
 
 In this lecture, we'll discuss how to use Git and GitHub
 
-.. contents:: :depth: 2
 
 Setup 
 ==================
@@ -40,7 +41,7 @@ Setup
 
     2. Install the `GitHub Desktop <https://desktop.github.com/>`_ application
 
-3. Optionally (but strongly recommended):  On Windows, change the default line-ending by
+3. Optionally (but strongly recommended):  On Windows, change the default line-ending by:
 
     1. Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step
 
@@ -56,14 +57,14 @@ Git vs. GitHub vs. GitHub Desktop
 
 To understand the relationship
 
-* Git is an infrastructure for versioning and merging files (it is notspecific to GitHub and does not even require an online server)
+* Git is an infrastructure for versioning and merging files (it is not specific to GitHub and does not even require an online server)
 * GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects
 * GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use
 
 Later, you may find yourself using alternatives
 
-* GitHub is the market leader for open-source projects and Julia, but there are other options, e.g. `GitLab <https://about.gitlab.com/>`_ and `Bitbucket <https://bitbucket.org>`_
-* Instead of the GitHub Desktop, you may directly use the Git `command-line <version_control_commandline>`_ , `GitKraken <https://www.gitkraken.com/>`_, or use the Git functionality built into editors such as `Atom <https://atom.io/>`_ or `VS Code <https://code.visualstudio.com/>`_
+* GitHub is the market leader for open source projects and Julia, but there are other options, e.g. `GitLab <https://about.gitlab.com/>`_ and `Bitbucket <https://bitbucket.org>`_
+* Instead of the GitHub Desktop, you may directly use the Git command line, `GitKraken <https://www.gitkraken.com/>`_, or use the Git functionality built into editors such as `Atom <https://atom.io/>`_ or `VS Code <https://code.visualstudio.com/>`_
 
 Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products
 
@@ -74,7 +75,7 @@ Basic Objects
 Repositories
 ------------------------
 
-The fundamental object in GitHub is a *repository* (or "repo.") This is the master directory for a project 
+The fundamental object in GitHub is a *repository* (or "repo") -- this is the master directory for a project 
 
 One example of a repo is the QuantEcon `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ package 
 
@@ -85,7 +86,8 @@ Commits
 
 GitHub stores history as a sequence of changes to text, called *commits* 
 
-Here is an example of a commit, which revises the style guide in a QuantEcon repo (`link <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92/>`_)
+`Here <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92/>`_
+ is an example of a commit, which revises the style guide in a QuantEcon repo
 
 In particular, commits have the following features
 
@@ -93,9 +95,6 @@ In particular, commits have the following features
 * Content (i.e., a before and after state)
 * Metadata (author, timestamp, commit message, etc.)
 
-It is crucial to remember that commits represent differences in text, as opposed to repository states 
-
-The ideal commit is small enough to be scanned by a human being in this window 
 
 Common Files 
 -----------------------------------------
@@ -106,7 +105,7 @@ In addition, each GitHub repository typically comes with a few standard text fil
 * A ``README.md`` file, which is a Markdown file which GitHub puts on the repository website 
 * A ``LICENSE.txt`` file, which describes the terms under which the repository's contents are made available 
 
-For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo linked above 
+For an example of all three, see the `Expectations.jl <https://github.com/quantecon/expectations.jl/>`_ repo
 
 Of these, the ``README.md`` is the most important, as GitHub will display it as `Markdown <https://guides.github.com/features/mastering-markdown/>`_ when accessing the repository online
 
@@ -172,7 +171,9 @@ The Julia file is unchanged
 Pushing to the Server 
 --------------------------------
 
-As of now, this commit lives only on our local machine. To upload it to the server, you can simply click the "Push Origin" button at the top the screen
+As of now, this commit lives only on our local machine
+
+To upload it to the server, you can simply click the "Push Origin" button at the top the screen
 
 The small "1^" to the right of the text indicates we have one commit to upload 
 
@@ -181,14 +182,17 @@ Reading and Reverting History
 
 As mentioned, one of the key features of GitHub is the ability to scan through history 
 
-By clicking the "commits" tab on the repo front page, for example, we see `this page <https://github.com/quanteconuser/example_repository/commits/master>`_
+By clicking the "commits" tab on the repo front page, 
+we see `this page <https://github.com/quanteconuser/example_repository/commits/master>`_
+(as an example)
 
-Clicking an individual commit gives us the granular view, (e.g., `example commit <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
+Clicking an individual commit gives us the difference view, (e.g., `example commit <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_)
 
-Sometimes, however, we want to not only inspect what happened before, but go back to it 
+Sometimes, however, we want to not only inspect what happened before, but reverse the commit
 
 * If you haven't made the commit yet, just right-click the file and hit "discard changes" to reset the file to the last known commit 
-* If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, as above 
+* If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, 
+  right click the commit and click "revert this commit" -- this will create the inverse commit, as above 
 
 .. figure:: /_static/figures/git-revert-commit.png
     :scale: 60%
@@ -200,7 +204,9 @@ Generally, you want to work on the same project but across multiple machines (e.
 
 The key is to push changes from one machine, and then to pull changes from the other machine 
 
-Pushing can be done as above. To pull, simply click pull under the "repository" dropdown at the top of the screen 
+Pushing can be done as above
+
+To pull, simply click pull under the "repository" dropdown at the top of the screen 
 
 .. figure:: /_static/figures/git-pull.png
     :scale: 60%
@@ -223,7 +229,9 @@ Project Management
 
 GitHub's website also comes with project management tools to coordinate work between people 
 
-The main one is an *issue*, which we can create from the issues tab. You should see something like this
+The main one is an *issue*, which we can create from the issues tab
+
+You should see something like this
 
 .. figure:: /_static/figures/git-issue.png
     :scale: 60%
@@ -234,11 +242,9 @@ Let's unpack the different components
 
 * The *labels* dropdown lets you tag the issue with labels visible from the issues page, such as "high priority" or "feature request" 
 
-* It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments. This is part of what's called *GitHub-Flavored Markdown* 
+* It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments -- this is part of what's called *GitHub-Flavored Markdown* 
 
-For an example of an issue, see `example issue <https://github.com/quanteconuser/example_repository/issues/1>`_ 
-
-The checkbox idiom is a common one to manage projects in GitHub 
+For an example of an issue, see `here <https://github.com/quanteconuser/example_repository/issues/1>`_ 
 
 You can see open issues at a glance from the general issues tab 
 
@@ -251,7 +257,7 @@ Reviewing Code
 There are a few different ways to review people's code in GitHub 
 
 * Whenever people push to a project you're working on, you'll receive an email notification
-* You can also review individual line-items or commits by opening commits in the granular view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_
+* You can also review individual line items or commits by opening commits in the difference view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_
 
 .. figure:: /_static/figures/git-review.png
     :scale: 60%
@@ -277,7 +283,7 @@ GitHub will give us the following window
 * The warning symbol next to the file indicates the existence of a merge conflict 
 * The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
 
-To fix the conflict, we can go into a text editor (such as Atom or VS Code). Here's an image of what we see in Atom 
+To fix the conflict, we can go into a text editor (such as Atom or VS Code)
 
 .. figure:: /_static/figures/atom-merge-conflict.png
     :scale: 60%
@@ -292,15 +298,17 @@ Returning to GitHub Desktop gives us a pre-formed commit to accept
 Collaboration via Pull Request
 =====================================
 
-One of the defining features of GitHub is that it is the dominant platform for *open-source* code, which anyone can access and use
+One of the defining features of GitHub is that it is the dominant platform for *open source* code, which anyone can access and use
 
-However, while anyone can make a copy of the source-code, not everyone has access to modify the particular version stored on GitHub
+However, while anyone can make a copy of the source code, not everyone has access to modify the particular version stored on GitHub
 
-A maintainer (i.e. someone with "write" access to directly modify a repository) might consider different contributions and "merge" the changes into the main repository if the changes meet her criteria
+A maintainer (i.e. someone with "write" access to directly modify a repository) 
+might consider different contributions and "merge" the changes into the main 
+repository if the changes meet their criteria
 
-To make it possible for **any** outsiders to suggest changes to open-source repositories, GitHub introduced the *pull request* ("PR")
+A *pull request* ("PR") allows **any** outsiders to suggest changes to open source repositories
 
-The PR is a request for a project maintainer to merge ("pull") changes you've worked on into their repository 
+A PR requests the project maintainer to merge ("pull") changes you've worked on into their repository 
 
 There are a few different workflows for creating and handling PRs, which we'll walk through below 
 
@@ -311,16 +319,16 @@ There are a few different workflows for creating and handling PRs, which we'll w
 Quick Fixes 
 ---------------------
 
-GitHub's website provides an online editor for quick-and-dirty changes, such as fixing typos in documentation 
+GitHub's website provides an online editor for quick and dirty changes, such as fixing typos in documentation 
 
 To use it, open a file in GitHub and click the small pencil to the upper right 
 
 .. figure:: /_static/figures/git-quick-pr.png
     :scale: 60%
 
-Here, we're trying to add the QuantEcon link to the Julia project's README
+Here, we're trying to add the QuantEcon link to the Julia project's ``README`` file
 
-After making our changes, we can then describe them and propose them for review by maintainers 
+After making our changes, we can then describe and propose them for review by maintainers 
 
 But what if we want to make more in-depth changes? 
 
@@ -336,11 +344,12 @@ In that case, click the "Fork" button that lives in the top-right of every repo'
 .. figure:: /_static/figures/git-fork-button.png
     :scale: 60%
 
-This will create a repo under account with the same name, contents, and history as the original
+This will copy the repo into your own GitHub account
 
 For example, `this repo <https://github.com/ubcecon/example_repository>`_ is a fork of our original `git setup <https://github.com/quanteconuser/example_repository/>`_ 
 
-Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own (because a fork *is* a repo on our account we have write access to)
+Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own 
+(as the fork is in your account, you now have write access)
 
 That is, click the "clone" button on our fork 
 
@@ -367,7 +376,7 @@ Below, for example, we've committed and pushed some changes to the fork that we 
 .. figure:: /_static/figures/git-edit-fork.png
     :scale: 60%
 
-We should make confirm that these changes are on the server (which we can get to by going to the `fork webpage <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
+We should make confirm that these changes are on the server (which we can get to by going to the `fork <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
 
 .. figure:: /_static/figures/git-fork-history.png
     :scale: 60%
@@ -379,20 +388,19 @@ You'll see something like this
 .. figure:: /_static/figures/git-create-pr.png
     :scale: 60%
 
-This gives us a quick overview of the commits we want to merge in, as well as the end-to-end differences
+This gives us a quick overview of the commits we want to merge in, as well as the file differences
 
 Fill in the details and hit create
 
-This opens a form like this on the main repo
-
-.. figure:: /_static/figures/git-create-pr-2.png
-    :scale: 60%
-
-The key pieces are 
+A PR has now been opened on the main repo with:
 
 * A list of the commits we're proposing 
 * A list of reviewers, who can approve or modify our changes 
 * Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
+
+.. figure:: /_static/figures/git-create-pr-2.png
+    :scale: 60%
+
 
 Here's an `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
@@ -403,7 +411,7 @@ For example, let's say we commit a new change to the README *after* we create th
 .. figure:: /_static/figures/git-pr-modification.png
     :scale: 60%
 
-After pushing to the server, the change is reflected in the PR `webpage <https://github.com/quanteconuser/example_repository/pull/3>`_
+After pushing to the server, the change is reflected on the PR `page <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 .. figure:: /_static/figures/git-pr-expost.png
     :scale: 60%
@@ -413,7 +421,7 @@ That is, creating a pull request is not like bundling up your changes and delive
 Write Access Case 
 ----------------------
 
-As you become more familiar with github, and work on larger projects, you will find yourself making PRs even when it isn't strictly required
+As you become more familiar with GitHub, and work on larger projects, you will find yourself making PRs even when it isn't strictly required
 
 If you are a maintainer of the repo (e.g. you created it or are a collaborator) then you don't need to create a fork, but will rather work with a *git branch* 
 
@@ -476,11 +484,11 @@ Git also comes with a set of command-line tools
 
 They're optional, but many people like using them
 
-Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the commandline
+Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the command line
 
 * On Windows, downloading ``git`` will have installed a program called ``git bash``, which installs these tools along with a general Linux-style shell
 
-* On Linux/macOS, these tools are integrated into your usual terminal
+* On Linux/MacOS, these tools are integrated into your usual terminal
 
 To open the terminal in a directory, either right click and hit "open git bash" (in Windows), or use Linux commands like ``cd`` and ``ls`` to navigate 
 
@@ -509,7 +517,7 @@ Exercises
 Exercise 1a
 ---------------
 
-Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your github accounts
+Follow the instructions to create a `new repository <new_repo_workflow>`_ for one of your GitHub accounts
 In this repository
 
 * Take the code from one of your previous assignments, such as `Newton's method <jbe_ex8a>`_ in `Julia by example <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
@@ -519,12 +527,12 @@ In this repository
 Exercise 1b
 ----------------
 
-Pair-up with another student who has done Exercise 1a and find out their github ID, and each do the following
+Pair-up with another student who has done Exercise 1a and find out their GitHub ID, and each do the following
 
-* Add the github ID as a collaborators on your repository
+* Add the GitHub ID as a collaborators on your repository
 * Clone the repositories to your local desktop
 * Assign each other an issue
-* Submit a commit from GitHub desktop which references the issue by number
+* Submit a commit from GitHub Desktop which references the issue by number
 * Comment on the commits
 * Ensure you can run their code without any modifications
 
@@ -542,7 +550,7 @@ Start by ensuring there are multiple lines in the file so that some changes may 
 Exercise 2a
 ----------------
 
-Just using the GitHub's `web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository
+Just using GitHub's `web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository
 
 The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl`` 
 
