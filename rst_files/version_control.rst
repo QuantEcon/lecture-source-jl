@@ -135,7 +135,7 @@ In this case, we're making a public repo ``github.com/quantecon_user/example_rep
 
 **Note** This workflow is for creating projects *de novo*; the process for turning existing directories into git repos is a bit more complicated 
 
-In particular, we recommend that you create a new repo via this method, then copy in and commit your files (see below), and then delete the old directory
+In particular, in that case we recommend that you create a new repo via this method, then copy in and commit your files (see below), and then delete the old directory
 
 Cloning a Repository 
 ---------------------------------------
