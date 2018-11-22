@@ -277,7 +277,7 @@ The code is as follows
 
           for (π_j, _π) in enumerate(sp.π_grid)
               # calculate v2
-              integrand(m) = [vf[m[i], q.(Ref(sp), m[i], _π)] *
+              integrand(m) = [vf(m[i], q.(Ref(sp), m[i], _π)) *
                           (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
               integral = do_quad(integrand, nodes, weights)
               # integral = do_quad(integrand, q_nodes, q_weights)
@@ -358,7 +358,7 @@ Here's the value function:
                               π_plot_grid_size = 100)
     π_plot_grid = range(0.001,  0.99, length =  π_plot_grid_size)
     w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
-    Z = [vf[w_plot_grid[j], π_plot_grid[i]]
+    Z = [vf(w_plot_grid[j], π_plot_grid[i])
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
                 fill=true, size=(400, 400), c=:lightrainbow)
@@ -378,7 +378,7 @@ The optimal policy:
                                 π_plot_grid_size = 100)
       π_plot_grid = range(0.001,  0.99, length = π_plot_grid_size)
       w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
-      Z = [pf[w_plot_grid[j], π_plot_grid[i]]
+      Z = [pf(w_plot_grid[j], π_plot_grid[i])
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
       p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, 
                   size=(400, 400), c=:coolwarm)
