@@ -94,6 +94,9 @@ In particular, commits have the following features
 * Content (i.e., a before and after state)
 * Metadata (author, timestamp, commit message, etc.)
 
+**Note:** It's crucial to remember that what's stored in a commit is only the actual changes you make to text  
+
+This is a key reason why git can store long and complicated histories without consuming massive amounts of memory 
 
 Common Files 
 -----------------------------------------
