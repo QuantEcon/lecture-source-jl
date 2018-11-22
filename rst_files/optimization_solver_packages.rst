@@ -227,9 +227,6 @@ Part of the reason for the diversity of options is that Julia makes it possible 
 
 The other reason is that different types of optimization problems require different algorithms
 
-.. TODO: need to describe different types of optimization problems and suggested packages at some point
-
-
 Optim.jl
 ---------------------
 
