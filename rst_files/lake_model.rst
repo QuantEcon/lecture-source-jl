@@ -669,18 +669,68 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 Fiscal Policy Code
 -----------------------
 
-We will make use of code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
+We will make use of (with some tweaks) the code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
 
-The first piece of code, repeated below, implements value function iteration
+.. code-block:: julia 
 
-.. literalinclude:: /_static/code/mccall/mccall_bellman_iteration.jl
-    :class: collapse
+    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-The second piece of code repeated from :doc:`the McCall model lecture <mccall_model>` is used to complete the reservation wage
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
+                                iter = 2_000)
+        # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
+        @unpack α, β, σ, c, γ, w, dist, u = mcm 
+        
+        # parameter validation
+        @assert c > 0.0
+        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here 
+        
+        # necessary objects 
+        u_w = u.(w, σ) 
+        u_c = u(c, σ)
+        E = expectation(dist) # expectation operator for wage distribution
 
+        # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
+        function T(x)
+            V = x[1:end-1]
+            U = x[end]
+            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+        end 
 
-.. literalinclude:: /_static/code/mccall/compute_reservation_wage.jl
-    :class: collapse
+        # value function iteration  
+        x_iv = [V_iv; U_iv] # initial x val
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
+        V = xstar[1:end-1]
+        U = xstar[end]
+        
+        # compute the reservation wage 
+        w_barindex = searchsortedfirst(V .- U, 0.0)
+        if w_barindex >= length(w) # if this is true, you never want to accept
+            w_bar = Inf
+        else
+            w_bar = w[w_barindex] # otherwise, return the number
+        end
+
+        # return a NamedTuple, so we can select values by name  
+        return (V = V, U = U, w_bar = w_bar) 
+    end 
+
+And the McCall object 
+
+.. code-block:: julia
+
+    # a default utility function
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
+
+    # model constructor
+    McCallModel = @with_kw (α = 0.2, 
+        β = 0.98, # discount rate 
+        γ = 0.7, 
+        c = 6.0, # unemployment compensation 
+        σ = 2.0, 
+        u = u, # utility function 
+        w = range(10, 20, length = 60), # wage values
+        dist = BetaBinomial(59, 600, 400), # distribution over wage values 
+        τ = 0.0) 
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
@@ -706,17 +756,20 @@ function of the unemployment compensation rate
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
+    # our stuff 
+    dist = Normal(log(log_wage_mean), 1)
+
     function compute_optimal_quantities(c, τ)
-        mcm = McCallModel(α_q,
-                          β,
-                          γ,
-                          c-τ,                # post-tax compensation
-                          σ,
-                          collect(w_vec .- τ),   # post-tax wages
-                          p_vec)
+        mcm = McCallModel(α = α_q,
+                          β = β,
+                          γ = γ,
+                          c = c, # pre-tax compensation
+                          σ = σ,
+                          w = w_vec, # pre-tax wages
+                          dist = dist, # wage distribution 
+                          τ = τ) # tax 
 
-
-        w_bar, V, U = compute_reservation_wage(mcm, return_values = true)
+        V, U, w_bar = solve_mccall_model(mcm)
         λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
 
         return w_bar, λ, V, U
