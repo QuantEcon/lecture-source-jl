@@ -1304,7 +1304,7 @@ Occasionally you will want to catch these errors and try to recover, as we did a
     f(0.0)
     f(-1.0)
 
-.. _missing::
+.. _missing:
 
 Missing
 ----------------------------------

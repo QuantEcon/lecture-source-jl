@@ -45,11 +45,11 @@ Say we have an equation
 
 
 .. math::
-    :label: fixed_point_map
+    :label: fixed_point_map_test
 
     v = f(v)
 
-And want to link to it in text :eq:`fixed_point_map`
+And want to link to it in text :eq:`fixed_point_map_test`
 
 Render 
 =========
