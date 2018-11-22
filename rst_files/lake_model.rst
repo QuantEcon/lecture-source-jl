@@ -751,7 +751,8 @@ function of the unemployment compensation rate
         u_rate, e_rate = x
 
         # Compute steady state welfare
-        w = sum(V .* p_vec .* (w_vec .- τ .> w_bar)) / sum(p_vec .* (w_vec .- τ .> w_bar))
+        indicator(wage) = wage > w_bar 
+        w = sum(V .* p_vec .* indicator.(w_vec .- τ)) / sum(p_vec .* indicator.(w_vec .- τ))
         welfare = e_rate .* w + u_rate .* U
 
         return u_rate, e_rate, welfare
