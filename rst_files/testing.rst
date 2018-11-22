@@ -101,7 +101,7 @@ Adding Project to Git
 
 The next step is to add this project to Git version control
 
-First, open the repository screen in your account as discussed previously
+1. Open the repository screen in your account as discussed previously
 
 We'll want the following settings
 
@@ -114,9 +114,9 @@ In particular
 
 * We should leave the boxes unchecked for the ``README.md``, ``LICENSE``, and ``.gitignore``, since these are handled by ``PkgTemplates``
 
-Then, drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
+2. Drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
 
-Click the "publish branch" button to upload your files to GitHub
+3. Click the "publish branch" button to upload your files to GitHub
 
 If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
 
@@ -323,11 +323,11 @@ and edit the source to read as follows
 
     end # module
 
-Let's try calling this from the top environment (to stand in for a fresh REPL)
+Let's try calling this 
 
 .. code-block:: julia
 
-    ] activate
+    ] activate # reset the environment to the base one 
 
 .. code-block:: julia
 
@@ -338,12 +338,12 @@ Let's try calling this from the top environment (to stand in for a fresh REPL)
 
     foo() # exported, so don't need to qualify the namespace
 
-**Note:** If you didn't follow the instructions to add a `startup file <jl_startup_file>`_, you may need to quit your REPL and start it again
+**Note:** If you didn't follow the instructions to add a `startup file <jl_startup_file>`_, you may need to quit your REPL and load the package again
 
 Jupyter Workflow
 ------------------------
 
-We can also call this function from a Jupyter notebook
+We can also work with the package from a Jupyter notebook
 
 Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
 
@@ -354,14 +354,14 @@ From here, we can use our package's functions as we would functions from other p
 
 This lets us produce neat output documents, without pasting the whole codebase
 
-We can also manipulate the package interactively inside the notebook
+We can also run package operations inside the notebook
 
 .. figure:: /_static/figures/testing-notebook.png
     :scale: 60%
 
 The change will be reflected in the ``Project.toml`` file
 
-Note that we had to activate ``ExamplePackage`` first before making our dependency changes
+Note that, as usual, we had to first activate ``ExamplePackage`` first before making our dependency changes
 
 .. code-block:: julia 
     :class: no-execute
@@ -506,11 +506,11 @@ Running Tests
 
 There are a few different ways to run the tests for your package
 
-* Run the actual ``runtests.jl``, say by hitting shift-enter on it in ATom 
+* Run the actual ``runtests.jl``, say by hitting shift-enter on it in Atom 
 
-* From a fresh REPL, run ``] test ExamplePackage`` 
+* From a fresh (``v1.0``) REPL, run ``] test ExamplePackage`` 
 
-* From an activated REPL, simply run ``pkg> test`` (recall that you can activate with ``pkg> activate ExamplePackage``)
+* From an activated (``ExamplePackage``) REPL, simply run ``] test`` (recall that you can activate with ``] activate ExamplePackage``)
 
 Continuous Integration with Travis
 ==========================================
@@ -629,7 +629,7 @@ Click the CodeCov badge to see the build page for your project
 
 This shows us that our tests cover 50 \% of our functions in ``src//``
 
-To get a more granular view, we can click the ``src//`` and the resultant filename
+**Note:** To get a more granular view, we can click the ``src//`` and the resultant filename
 
 .. figure:: /_static/figures/codecov.png
     :scale: 60%
@@ -780,20 +780,21 @@ To review the workflow for creating, versioning, and testing a new project end-t
 
 1. Create the local package directory using the ``PkgTemplates.jl``
 
-2. Drag-and-drop that folder to GitHub Desktop
+2. Add that package to the Julia package manager, by opening a Julia REPL in the ``~/.julia/dev/ExamplePackage.jl``, making sure the active environment is the default one ``(v1.0)``, and hitting ``] dev .``
 
-3. Create an empty repository with the same name on the GitHub server
+3. Drag-and-drop that folder to GitHub Desktop
 
-4. Push from GitHub Desktop to the server
+4. Create an empty repository with the same name on the GitHub server
 
-5. Open **the original project folder** (e.g., ``~/.julia/dev/ExamplePackage.jl``) in Atom
+5. Push from GitHub Desktop to the server
 
-6. Make changes, test, iterate on it, etc. As a rule, functions like should live in the ``src/`` directory once they're stable, and you should export them from that file with ``export func1, func2``. This will export all methods of ``func1``, ``func2``, etc.
+6. Open **the original project folder** (e.g., ``~/.julia/dev/ExamplePackage.jl``) in Atom
 
-7. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
+7. Make changes, test, iterate on it, etc. As a rule, functions like should live in the ``src/`` directory once they're stable, and you should export them from that file with ``export func1, func2``. This will export all methods of ``func1``, ``func2``, etc.
 
-8. Push to the server, and see the Travis and CodeCov results
+8. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
 
+9. Push to the server, and see the Travis and CodeCov results
 
 Exercises
 ============
