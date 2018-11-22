@@ -360,6 +360,8 @@ The REPL is one of the best places to add and remove packages, so a good test is
 
     ] st
 
+We examine the REPL and its different modes in more details in the `tools and editors <tools_editors>`__ lecture  
+
 .. _jl_juliaoptions:
 
 Other Ways to Use Jupyter
