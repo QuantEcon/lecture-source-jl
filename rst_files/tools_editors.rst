@@ -48,7 +48,7 @@ Recall that you can find the location of the ``~/.julia`` directory by running
 
     DEPOT_PATH[1]
 
-On Mac, this won't be visible in the Finder unless you specifically enable that option, but you can get to it by running ``cd .julia; open .`` from a new terminal
+**Note:** On Mac, this won't be visible in the Finder unless you specifically enable that option, but you can get to it by running ``cd .julia; open .`` from a new terminal
 
 To add the file:
 
