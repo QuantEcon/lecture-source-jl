@@ -289,10 +289,10 @@ Let's run a simulation under the default parameters (see above) starting from :m
     gr(fmt=:png)
     
     lm = LakeModel()
-    N_0 = 150      # Population
-    e_0 = 0.92     # Initial employment rate
-    u_0 = 1 - e_0  # Initial unemployment rate
-    T = 50         # Simulation length
+    N_0 = 150      # population
+    e_0 = 0.92     # initial employment rate
+    u_0 = 1 - e_0  # initial unemployment rate
+    T = 50         # simulation length
 
     U_0 = u_0 * N_0
     E_0 = e_0 * N_0
@@ -357,9 +357,9 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 .. code-block:: julia
 
     lm = LakeModel()
-    e_0 = 0.92     # Initial employment rate
-    u_0 = 1 - e_0  # Initial unemployment rate
-    T = 50         # Simulation length
+    e_0 = 0.92     # initial employment rate
+    u_0 = 1 - e_0  # initial unemployment rate
+    T = 50         # simulation length
 
     xbar = rate_steady_state(lm)
     x_0 = [u_0; e_0]
@@ -709,7 +709,7 @@ function of the unemployment compensation rate
 
 .. code-block:: julia
 
-    # Some global variables that will stay constant
+    # some global variables that will stay constant
     α = 0.013
     α_q = (1 - (1 - α)^3)
     b_param = 0.0124
@@ -718,7 +718,7 @@ function of the unemployment compensation rate
     γ = 1.0
     σ = 2.0
 
-    # The default wage distribution: a discretized log normal
+    # the default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
     w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
     logw_dist = Normal(log(log_wage_mean), 1)
@@ -734,7 +734,7 @@ function of the unemployment compensation rate
                           c = c - τ, # post-tax compensation
                           σ = σ,
                           w = w_vec .- τ, # post-tax wages
-                          p = p_vec) # wage distribution 
+                          p = p_vec) # wage probabilities 
 
         @unpack V, U, w_bar = solve_mccall_model(mcm)
         λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
@@ -745,12 +745,12 @@ function of the unemployment compensation rate
     function compute_steady_state_quantities(c, τ)
         w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
 
-        # Compute steady state employment and unemployment rates
+        # compute steady state employment and unemployment rates
         lm = LakeModel(λ=λ_param, α=α_q, b=b_param, d=d_param)
         x = rate_steady_state(lm)
         u_rate, e_rate = x
 
-        # Compute steady state welfare
+        # compute steady state welfare
         indicator(wage) = wage > w_bar 
         w = sum(V .* p_vec .* indicator.(w_vec .- τ)) / sum(p_vec .* indicator.(w_vec .- τ))
         welfare = e_rate .* w + u_rate .* U
@@ -768,7 +768,7 @@ function of the unemployment compensation rate
         return τ
     end
 
-    # Levels of unemployment insurance we wish to study
+    # levels of unemployment insurance we wish to study
     Nc = 60
     c_vec = range(5.0, 140.0, length = Nc)
 
