@@ -506,7 +506,7 @@ Furthermore, in some environments (e.g. JupyterHub installations) you may only h
 
 To open the terminal in a directory, either right click and hit "open git bash" (in Windows), or use Linux commands like ``cd`` and ``ls`` to navigate 
 
-See `here <https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101>`_ for a short introduction to the command line
+See `here <https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101>`__ for a short introduction to the command line
 
 As above, you can clone by grabbing the repo URL (say, GitHub's `site-policy repo <https://github.com/github/site-policy/>`_) and running ``git clone https://github.com/github/site-policy.git``
 

@@ -1331,7 +1331,7 @@ Exercise 2
 Exercise 3
 ----------
 
-A solution from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ can be found `here <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`_
+A solution from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ can be found `here <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`__
 
 .. rubric:: Footnotes
 

@@ -118,7 +118,7 @@ In particular
 
 3. Click the "publish branch" button to upload your files to GitHub
 
-If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`_), you should see something like
+If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`__), you should see something like
 
 .. figure:: /_static/figures/testing-git2.png
     :scale: 60%
@@ -695,7 +695,7 @@ Here, for example, we're revising the README
 
 6. Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account
 
-To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`_; for more on working with git repositories, see the `version control <version_control>`_ lecture
+To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`__; for more on working with git repositories, see the `version control <version_control>`_ lecture
 
 .. figure:: /_static/figures/testing-expectations.png
     :scale: 60%
