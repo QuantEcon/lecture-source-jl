@@ -42,11 +42,13 @@ We provide a file here which does two things
 
 The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows)
 
-Recall that you can find the location of this directory by running 
+Recall that you can find the location of the ``~/.julia`` directory by running 
 
 .. code-block:: julia 
 
     DEPOT_PATH[1]
+
+On Mac, this won't be visible in the Finder unless you specifically enable that option, but you can get to it by running ``cd .julia; open .`` from a new terminal
 
 To add the file:
 
@@ -56,16 +58,13 @@ To add the file:
 
         ] add  Revise REPL; precompile
 
-2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer  (to find the ``~/.julia`` location in the REPL, you can look at the output of ``] st``)
+2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer 
 
-3. Either download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory, or create a file and paste in the following text
-
-.. include:: /_static/includes/startup.jl.raw
+3. Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory
 
 4. For convenience, you may find it useful on your operating system to change the directory where the REPL starts
  
 On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
-
 
 The REPL
 =============
@@ -252,8 +251,7 @@ The ``Plots`` pane captures Julia plots output (the code is as follows)
 .. figure:: /_static/figures/juno-plots.png
     :scale: 60%
 
-.. This is for matplotlib?
-.. May be buggy, see for ex: `here <https://github.com/MTG/sms-tools/issues/36/>`_
+**Note:** The plots feature is not perfectly reliable across all plotting backends, see `the Basic Usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ page 
 
 Other Features 
 -------------------
