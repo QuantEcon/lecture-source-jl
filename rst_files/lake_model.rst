@@ -677,23 +677,17 @@ We will make use of (with some tweaks) the code we wrote in the :doc:`McCall mod
 
     function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
                                 iter = 2_000)
-        # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
-        @unpack α, β, σ, c, γ, w, dist, u = mcm 
-        
-        # parameter validation
-        @assert c > 0.0
-        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here 
-        
+        @unpack α, β, σ, c, γ, w, p, u = mcm 
+
         # necessary objects 
         u_w = u.(w, σ) 
         u_c = u(c, σ)
-        E = expectation(dist) # expectation operator for wage distribution
 
         # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
         function T(x)
             V = x[1:end-1]
             U = x[end]
-            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+            [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * dot(p_vec, max.(U, V))]
         end 
 
         # value function iteration  
@@ -719,7 +713,7 @@ And the McCall object
 .. code-block:: julia
 
     # a default utility function
-    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
+    u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
 
     # model constructor
     McCallModel = @with_kw (α = 0.2, 
@@ -729,8 +723,7 @@ And the McCall object
         σ = 2.0, 
         u = u, # utility function 
         w = range(10, 20, length = 60), # wage values
-        dist = BetaBinomial(59, 600, 400), # distribution over wage values 
-        τ = 0.0) 
+        p = pdf.(w, Ref(BetaBinomial(59, 600, 400)))) # distribution over wage values 
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
@@ -756,20 +749,16 @@ function of the unemployment compensation rate
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
-    # our stuff 
-    dist = Normal(log(log_wage_mean), 1)
-
     function compute_optimal_quantities(c, τ)
         mcm = McCallModel(α = α_q,
                           β = β,
                           γ = γ,
-                          c = c, # pre-tax compensation
+                          c = c, # post-tax compensation
                           σ = σ,
-                          w = w_vec, # pre-tax wages
-                          dist = dist, # wage distribution 
-                          τ = τ) # tax 
+                          w = w_vec, # post-tax wages
+                          p = p_vec) # wage distribution 
 
-        V, U, w_bar = solve_mccall_model(mcm)
+        @unpack V, U, w_bar = solve_mccall_model(mcm)
         λ = γ * sum(p_vec[w_vec .- τ .> w_bar])
 
         return w_bar, λ, V, U
