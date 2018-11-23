@@ -4,9 +4,9 @@
 
 .. highlight:: julia
 
-********************************************
+*******************************************
 A Lake Model of Employment and Unemployment
-********************************************
+*******************************************
 
 .. index::
     single: Lake Model
@@ -14,7 +14,7 @@ A Lake Model of Employment and Unemployment
 .. contents:: :depth: 2
 
 Overview
-===============
+========
 
 This lecture describes what has come to be called a *lake model*
 
@@ -45,7 +45,6 @@ We'll also use some nifty concepts like ergodicity, which provides a fundamental
 
 These concepts will help us build an equilibrium model of ex ante homogeneous workers whose different luck generates variations in their ex post experiences
 
-
 Prerequisites
 -------------
 
@@ -54,14 +53,8 @@ on finite Markov chains <finite_markov>`
 
 You will also need some basic :doc:`linear algebra <linear_algebra>` and probability
 
-
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 The Model
-==========
+=========
 
 The economy is inhabited by a very large number of ex ante identical workers
 
@@ -79,9 +72,8 @@ Their rates of  transition between employment and unemployment are  governed by 
 
 The growth rate of the labor force evidently equals :math:`g=b-d`
 
-
 Aggregate Variables
-----------------------
+-------------------
 
 We want to derive the dynamics of the following aggregates
 
@@ -97,13 +89,10 @@ We also want to know the values of the following objects
 
 * The unemployment rate :math:`u_t := U_t/N_t`
 
-
 (Here and below, capital letters represent stocks and lowercase letters represent flows)
 
-
-
 Laws of Motion for Stock Variables
-------------------------------------
+----------------------------------
 
 We begin by constructing laws of motion for the aggregate variables :math:`E_t,U_t, N_t`
 
@@ -125,13 +114,11 @@ Therefore,  the number of workers who will be employed at date :math:`t+1` will 
 
     E_{t+1} = (1-d)(1-\alpha)E_t + (1-d)\lambda U_t
 
-
 A similar analysis implies
 
 .. math::
 
     U_{t+1} = (1-d)\alpha E_t + (1-d)(1-\lambda)U_t + b (E_t+U_t)
-
 
 The value :math:`b(E_t+U_t)` is the mass of new workers entering the labor force unemployed
 
@@ -140,7 +127,6 @@ The total stock of workers :math:`N_t=E_t+U_t` evolves as
 .. math::
 
     N_{t+1} = (1+b-d)N_t = (1+g)N_t
-
 
 Letting :math:`X_t := \left(\begin{matrix}U_t\\E_t\end{matrix}\right)`, the law of motion for :math:`X`  is
 
@@ -154,12 +140,10 @@ Letting :math:`X_t := \left(\begin{matrix}U_t\\E_t\end{matrix}\right)`, the law 
         (1-d)\lambda & (1-d)(1-\alpha)
     \end{pmatrix}
 
-
 This law tells us how total employment and unemployment evolve over time
 
-
 Laws of Motion for Rates
---------------------------------------------------------
+------------------------
 
 Now let's derive the law of motion for rates
 
@@ -179,7 +163,6 @@ To get these we can divide both sides of :math:`X_{t+1} = A X_t` by  :math:`N_{t
         E_{t}/N_{t}
     \end{pmatrix}
 
-
 Letting
 
 .. math::
@@ -192,7 +175,6 @@ Letting
         U_t/N_t\\ E_t/N_t
     \end{matrix}\right)
 
-
 we can also write this as
 
 .. math::
@@ -201,37 +183,44 @@ we can also write this as
     \quad \text{where} \quad
     \hat A := \frac{1}{1 + g} A
 
-
 You can check that :math:`e_t + u_t = 1` implies that :math:`e_{t+1}+u_{t+1} = 1`
 
 This follows from the fact that the columns of :math:`\hat A` sum to 1
 
 Implementation
-================
+==============
 
 Let's code up these equations
 
 Here's the code:
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps.jl
+
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  using Test
+    using Test
 
 .. code-block:: julia
 
-    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
+    using Distributions, Expectations, NLsolve, Parameters, Plots
+    gr(fmt = :png)
+
+.. code-block:: julia
 
     function LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
         g = b - d
-        A = [(1-λ) * (1-d) + b  (1-d) * α + b; # carry out intermediate calculations
-            (1-d) * λ          (1-d) * (1-α)]
+        A = [(1 - λ) * (1 - d) + b (1 - d) * α + b   # carry out intermediate calculations
+            (1 - d) * λ            (1 - d) * (1 - α)]
         A_hat = A ./ (1 + g)
         return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
     end
 
     function rate_steady_state(lm)
-        sol = fixedpoint(x -> lm.A_hat * x, [0.5, 0.5])
+        sol = fixedpoint(x -> lm.A_hat * x, fill(0.5, 2))
         converged(sol) || error("Failed to converge in $(result.iterations) iterations")
         return sol.zero
     end
@@ -271,23 +260,20 @@ Here's the code:
     lm.A
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test lm.α == 2.0
-    @test lm.A[1][1] == 0.7235062600000001
-  end
+    @testset begin
+        @test lm.α == 2.0
+        @test lm.A[1][1] == 0.7235062600000001
+    end
 
 Aggregate Dynamics
---------------------
-
+------------------
 
 Let's run a simulation under the default parameters (see above) starting from :math:`X_0 = (12, 138)`
 
 .. code-block:: julia
 
-    gr(fmt=:png)
-    
     lm = LakeModel()
     N_0 = 150      # population
     e_0 = 0.92     # initial employment rate
@@ -304,24 +290,22 @@ Let's run a simulation under the default parameters (see above) starting from :m
     x2 = X_path[2, :]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, grid = true, label="")
-    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, grid=true, label="")
-    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, lw=2, grid=true,label="")
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2, grid = true, label = "")
+    plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2, grid = true, label = "")
+    plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, lw = 2, grid = true, label = "")
 
-    plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
-
+    plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test x1[1] ≈ 11.999999999999995
-      @test x2[2] ≈ 138.45447156
-      @test x3[3] ≈ 151.25662086
-  end
+    @testset begin
+        @test x1[1] ≈ 11.999999999999995
+        @test x2[2] ≈ 138.45447156
+        @test x3[3] ≈ 151.25662086
+    end
 
 The aggregates :math:`E_t` and :math:`U_t` don't converge because  their sum :math:`E_t + U_t` grows at rate :math:`g`
-
 
 On the other hand, the vector of employment and unemployment rates :math:`x_t` can be in a steady state :math:`\bar x` if
 there exists an :math:`\bar x`  such that
@@ -336,7 +320,6 @@ We also have :math:`x_t \to \bar x` as :math:`t \to \infty` provided that the re
 
 This is the case for our default parameters:
 
-
 .. code-block:: julia
 
     lm = LakeModel()
@@ -344,15 +327,14 @@ This is the case for our default parameters:
     abs(e), abs(f)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test abs(e) == 0.6953067378358462
-    @test abs(f) == 1.0
-  end
+    @testset begin
+        @test abs(e) == 0.6953067378358462
+        @test abs(f) == 1.0
+    end
 
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
-
 
 .. code-block:: julia
 
@@ -365,27 +347,24 @@ Let's look at the convergence of the unemployment and employment rate to steady 
     x_0 = [u_0; e_0]
     x_path = simulate_rate_path(lm, x_0, T)
 
-
-    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color=:blue, lw=2, 
-                     alpha=0.5, grid=true, label="")
-    plot!(plt_unemp, [xbar[1]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
-    plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color=:blue, lw=2, alpha=0.5, 
-                   grid=true, label="")
-    plot!(plt_emp, [xbar[2]], color=:red, linetype=:hline, linestyle=:dash, lw=2, label="")
-    plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
+    plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color = :blue, lw = 2,
+                     alpha = 0.5, grid = true, label = "")
+    plot!(plt_unemp, [xbar[1]], color=:red, linetype = :hline, linestyle = :dash, lw = 2, label = "")
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color = :blue, lw = 2, alpha = 0.5,
+                   grid = true, label = "")
+    plot!(plt_emp, [xbar[2]], color=:red, linetype = :hline, linestyle = :dash, lw = 2, label = "")
+    plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test x_path[1,3] ≈ 0.08137725667264473
-      @test x_path[2,7] ≈ 0.9176350068305223
-  end
-
+    @testset begin
+        @test x_path[1,3] ≈ 0.08137725667264473
+        @test x_path[2,7] ≈ 0.9176350068305223
+    end
 
 Dynamics of an Individual Worker
-=================================
-
+================================
 
 An individual worker's employment dynamics are governed by a :doc:`finite state Markov process <finite_markov>`
 
@@ -408,7 +387,6 @@ The associated transition matrix is then
             \end{matrix}
         \right)
 
-
 Let :math:`\psi_t` denote the :ref:`marginal distribution <mc_md>` over employment / unemployment states for the worker at time :math:`t`
 
 As usual, we regard it as a row vector
@@ -418,7 +396,6 @@ We know :ref:`from an earlier discussion <mc_md>` that :math:`\psi_t` follows th
 .. math::
 
     \psi_{t+1} = \psi_t P
-
 
 We also know from the :doc:`lecture on finite Markov chains <finite_markov>`
 that if :math:`\alpha \in (0, 1)` and :math:`\lambda \in (0, 1)`, then
@@ -430,18 +407,15 @@ The unique stationary distribution satisfies
 
     \psi^*[0] = \frac{\alpha}{\alpha + \lambda}
 
-
 Not surprisingly, probability mass on the unemployment state increases with
 the dismissal rate and falls with the job finding rate rate
 
-
 Ergodicity
-------------------------
+----------
 
 Let's look at a typical lifetime of employment-unemployment spells
 
 We want to compute the average amounts of time an infinitely lived worker would spend employed and unemployed
-
 
 Let
 
@@ -449,13 +423,11 @@ Let
 
     \bar s_{u,T} := \frac1{T} \sum_{t=1}^T \mathbb 1\{s_t = 0\}
 
-
 and
 
 .. math::
 
     \bar s_{e,T} := \frac1{T} \sum_{t=1}^T \mathbb 1\{s_t = 1\}
-
 
 (As usual, :math:`\mathbb 1\{Q\} = 1` if statement :math:`Q` is true and 0 otherwise)
 
@@ -469,17 +441,14 @@ If :math:`\alpha \in (0, 1)` and :math:`\lambda \in (0, 1)`, then :math:`P` is :
     \quad \text{and} \quad
     \lim_{T \to \infty} \bar s_{e, T} = \psi^*[1]
 
-
 with probability one
-
 
 Inspection tells us that :math:`P` is exactly the transpose of :math:`\hat A` under the assumption :math:`b=d=0`
 
 Thus, the percentages of time that an  infinitely lived worker  spends employed and unemployed equal the fractions of workers employed and unemployed in the steady state distribution
 
-
 Convergence rate
-------------------
+----------------
 
 How long does it take for time series sample averages to converge to cross sectional averages?
 
@@ -488,19 +457,22 @@ We can use `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__
 
 Let's plot the path of the sample averages over 5,000 periods
 
-
 .. code-block:: julia
 
     using QuantEcon, Roots, Random
 
-    Random.seed!(42)
-    lm = LakeModel(d=0.0, b=0.0)
+.. code-block:: julia
+
+    lm = LakeModel(d = 0, b = 0)
     T = 5000                        # Simulation length
 
     α, λ = lm.α, lm.λ
-    P = [(1 - λ)     λ;
+    P = [(1 - λ)     λ
          α      (1 - α)]
 
+.. code-block:: julia
+
+    Random.seed!(42)
     mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
     xbar = rate_steady_state(lm)
 
@@ -509,19 +481,19 @@ Let's plot the path of the sample averages over 5,000 periods
     s_bar_u = 1 .- s_bar_e
     s_bars = [s_bar_u s_bar_e]
 
-    plt_unemp = plot(title="Percent of time unemployed", 1:T, s_bars[:,1],color=:blue, lw=2,
-                     alpha=0.5,label="", grid=true)
-    plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle=:dash, color=:red, lw=2, label="")
-    plt_emp = plot(title="Percent of time employed", 1:T, s_bars[:,2],color=:blue, lw=2,
-                   alpha=0.5,label="", grid=true)
-    plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle=:dash, color=:red, lw=2,label="")
-    plot(plt_unemp, plt_emp, layout = (2,1), size=(700,500))
+    plt_unemp = plot(title = "Percent of time unemployed", 1:T, s_bars[:,1],color = :blue, lw = 2,
+                     alpha = 0.5, label = "", grid = true)
+    plot!(plt_unemp, [xbar[1]], linetype = :hline, linestyle = :dash, color=:red, lw = 2, label = "")
+    plt_emp = plot(title = "Percent of time employed", 1:T, s_bars[:,2],color = :blue, lw = 2,
+                   alpha = 0.5, label = "", grid = true)
+    plot!(plt_emp, [xbar[2]], linetype = :hline, linestyle = :dash, color=:red, lw = 2, label = "")
+    plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
 
 .. code-block:: julia
   :class: test
 
   @testset begin
-      @test xbar[1] ≈ 0.04391891891891919 
+      @test xbar[1] ≈ 0.04391891891891919
       @test s_bars[end,end] ≈ 0.957
   end
 
@@ -531,10 +503,8 @@ In this case it takes much of the sample for these two objects to converge
 
 This is largely due to the high persistence in the Markov chain
 
-
 Endogenous Job Finding Rate
-============================
-
+===========================
 
 We now make the hiring rate endogenous
 
@@ -542,9 +512,8 @@ The transition rate from unemployment to employment will be determined by the Mc
 
 All details relevant to the following discussion can be found in :doc:`our treatment <mccall_model>` of that model
 
-
 Reservation Wage
--------------------
+----------------
 
 The most important thing to remember about the model is that optimal decisions
 are characterized by a reservation wage :math:`\bar w`
@@ -563,9 +532,8 @@ As we saw in :doc:`our discussion of the model <mccall_model>`, the reservation 
 
 * :math:`c`, unemployment compensation
 
-
 Linking the McCall Search Model to the Lake Model
---------------------------------------------------
+-------------------------------------------------
 
 Suppose that  all workers inside a lake model behave according to the McCall search model
 
@@ -582,9 +550,8 @@ This is now
     = \gamma \mathbb P \{ w_t \geq \bar w\}
     = \gamma \sum_{w' \geq \bar w} p(w')
 
-
 Fiscal Policy
------------------
+-------------
 
 We can use the McCall search version of the Lake Model  to find an optimal level of unemployment insurance
 
@@ -597,7 +564,6 @@ To attain a balanced budget at a steady state, taxes, the steady state unemploym
 .. math::
 
     \tau = u c
-
 
 The lump sum tax applies to everyone, including unemployed workers
 
@@ -615,7 +581,6 @@ For a given level of unemployment benefit :math:`c`, we can solve for a tax that
 
     \tau = u(c, \tau) c
 
-
 To evaluate alternative government tax-unemployment compensation pairs, we require a welfare criterion
 
 We use a steady state welfare criterion
@@ -624,11 +589,9 @@ We use a steady state welfare criterion
 
     W := e \,  {\mathbb E} [V \, | \,  \text{employed}] + u \,  U
 
-
 where the notation :math:`V` and :math:`U` is as defined in the :doc:`McCall search model lecture <mccall_model>`
 
 The wage offer distribution will be a discretized version of the lognormal distribution :math:`LN(\log(20),1)`, as shown in the next figure
-
 
 .. figure:: /_static/figures/lake_distribution_wages.png
     :scale: 80%
@@ -645,20 +608,19 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 
 * :math:`\alpha = 0.013`
 
-
 Fiscal Policy Code
 -----------------------
 
 We will make use of (with some tweaks) the code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                                 iter = 2_000)
-        @unpack α, β, σ, c, γ, w, E, u = mcm 
+        @unpack α, β, σ, c, γ, w, E, u = mcm
 
-        # necessary objects 
-        u_w = u.(w, σ) 
+        # necessary objects
+        u_w = u.(w, σ)
         u_c = u(c, σ)
 
         # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
@@ -666,15 +628,15 @@ We will make use of (with some tweaks) the code we wrote in the :doc:`McCall mod
             V = x[1:end-1]
             U = x[end]
             [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
-        end 
+        end
 
-        # value function iteration  
+        # value function iteration
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero
         V = xstar[1:end-1]
         U = xstar[end]
-        
-        # compute the reservation wage 
+
+        # compute the reservation wage
         w_barindex = searchsortedfirst(V .- U, 0.0)
         if w_barindex >= length(w) # if this is true, you never want to accept
             w_bar = Inf
@@ -682,11 +644,11 @@ We will make use of (with some tweaks) the code we wrote in the :doc:`McCall mod
             w_bar = w[w_barindex] # otherwise, return the number
         end
 
-        # return a NamedTuple, so we can select values by name  
-        return (V = V, U = U, w_bar = w_bar) 
-    end 
+        # return a NamedTuple, so we can select values by name
+        return (V = V, U = U, w_bar = w_bar)
+    end
 
-And the McCall object 
+And the McCall object
 
 .. code-block:: julia
 
@@ -694,18 +656,17 @@ And the McCall object
     u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
 
     # model constructor
-    McCallModel = @with_kw (α = 0.2, 
-        β = 0.98, # discount rate 
-        γ = 0.7, 
-        c = 6.0, # unemployment compensation 
-        σ = 2.0, 
-        u = u, # utility function 
-        w = range(10, 20, length = 60), # wage values
-        E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values 
+    McCallModel = @with_kw (α = 0.2,
+                            β = 0.98, # discount rate
+                            γ = 0.7,
+                            c = 6.0, # unemployment compensation
+                            σ = 2.0,
+                            u = u, # utility function
+                            w = range(10, 20, length = 60), # wage values
+                            E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
-
 
 .. code-block:: julia
 
@@ -721,11 +682,11 @@ function of the unemployment compensation rate
     # the default wage distribution: a discretized log normal
     log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
     w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
-    
+
     logw_dist = Normal(log(log_wage_mean), 1)
     cdf_logw = cdf.(logw_dist, log.(w_vec))
     pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
-    
+
     p_vec = pdf_logw ./ sum(pdf_logw)
     w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
@@ -738,7 +699,7 @@ function of the unemployment compensation rate
                           c = c - τ, # post-tax compensation
                           σ = σ,
                           w = w_vec .- τ, # post-tax wages
-                          E = E) # expectation operator 
+                          E = E) # expectation operator
 
         @unpack V, U, w_bar = solve_mccall_model(mcm)
         indicator = wage -> wage > w_bar
@@ -751,12 +712,12 @@ function of the unemployment compensation rate
         w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
 
         # compute steady state employment and unemployment rates
-        lm = LakeModel(λ=λ_param, α=α_q, b=b_param, d=d_param)
+        lm = LakeModel(λ = λ_param, α = α_q, b = b_param, d = d_param)
         x = rate_steady_state(lm)
         u_rate, e_rate = x
 
         # compute steady state welfare
-        indicator(wage) = wage > w_bar 
+        indicator(wage) = wage > w_bar
         indicator(wage) = wage > w_bar
         decisions = indicator.(w_vec .- τ)
         w = (E * (V .* decisions)) / (E * decisions)
@@ -777,7 +738,7 @@ function of the unemployment compensation rate
 
     # levels of unemployment insurance we wish to study
     Nc = 60
-    c_vec = range(5.0, 140.0, length = Nc)
+    c_vec = range(5, 140, length = Nc)
 
     tax_vec = zeros(Nc)
     unempl_vec = similar(tax_vec)
@@ -793,41 +754,36 @@ function of the unemployment compensation rate
         welfare_vec[i] = welfare
     end
 
-    plt_unemp = plot(title="Unemployment", c_vec, unempl_vec, color=:blue, lw=2, alpha=0.7, 
-                     label="",grid=true)
-    plt_tax = plot(title="Tax", c_vec, tax_vec, color=:blue, lw=2, alpha=0.7, label="",
-                   grid=true)
-    plt_emp = plot(title="Employment", c_vec, empl_vec, color=:blue, lw=2, alpha=0.7, label="",
-                   grid=true)
-    plt_welf = plot(title="Welfare", c_vec, welfare_vec, color=:blue, lw=2, alpha=0.7, label="",
-                    grid=true)
+    plt_unemp = plot(title = "Unemployment", c_vec, unempl_vec, color = :blue, lw = 2, alpha=0.7,
+                     label = "",grid = true)
+    plt_tax = plot(title = "Tax", c_vec, tax_vec, color = :blue, lw = 2, alpha=0.7, label = "",
+                   grid = true)
+    plt_emp = plot(title = "Employment", c_vec, empl_vec, color = :blue, lw = 2, alpha=0.7, label = "",
+                   grid = true)
+    plt_welf = plot(title = "Welfare", c_vec, welfare_vec, color = :blue, lw = 2, alpha=0.7, label = "",
+                    grid = true)
 
-    plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800,700))
-
-
-
+    plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800, 700))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test c_vec == 5.0:2.288135593220339:140.0
-      @test tax_vec[40] == 55.78515130142509
-      @test empl_vec[50] == 0.2787840354254594
-      @test welfare_vec[17] == 49.047098920686786
-  end
-
+    @testset begin
+        @test c_vec == 5.0:2.288135593220339:140.0
+        @test tax_vec[40] == 55.78515130142509
+        @test empl_vec[50] == 0.2787840354254594
+        @test welfare_vec[17] == 49.047098920686786
+    end
 
 Welfare first increases and then decreases as unemployment benefits rise
 
 The level that maximizes steady state welfare is approximately 62
 
-
 Exercises
-=============
+=========
 
 Exercise 1
-----------------
+----------
 
 Consider an economy with initial stock  of workers :math:`N_0 = 100` at the
 steady state level of employment in the baseline parameterization
@@ -852,9 +808,8 @@ How long does the economy take to converge to its new steady state?
 
 What is the new steady state level of employment?
 
-
 Exercise 2
------------------
+----------
 
 Consider an economy with initial stock  of workers :math:`N_0 = 100` at the
 steady state level of employment in the baseline parameterization
@@ -866,7 +821,6 @@ Plot the transition dynamics of the unemployment and employment stocks for 50 pe
 Plot the transition dynamics for the rates
 
 How long does the economy take to return to its original steady state?
-
 
 Solutions
 ==========
@@ -894,16 +848,14 @@ New legislation changes :math:`\lambda` to :math:`0.2`
 
 .. code-block:: julia
 
-    lm = LakeModel(λ=0.2)
-
+    lm = LakeModel(λ = 0.2)
 
 .. code-block:: julia
 
     xbar = rate_steady_state(lm) # new steady state
-    X_path = simulate_stock_path(lm,x0 * N0, T)
-    x_path = simulate_rate_path(lm,x0, T)
+    X_path = simulate_stock_path(lm, x0 * N0, T)
+    x_path = simulate_rate_path(lm, x0, T)
     println("New Steady State: $xbar")
-
 
 Now plot stocks
 
@@ -913,47 +865,45 @@ Now plot stocks
     x2 = X_path[2, :]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, grid = true, label="",
-                     bg_inside=:lightgrey)
-    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, grid=true, label="",
-                   bg_inside=:lightgrey)
-    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, grid=true,label="",
-                     bg_inside=:lightgrey)
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, grid = true, label = "",
+                     bg_inside = :lightgrey)
+    plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, grid = true, label = "",
+                   bg_inside = :lightgrey)
+    plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, grid = true, label = "",
+                     bg_inside = :lightgrey)
 
-    plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
-
-
+    plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test x1[1] ≈ 8.266626766923284 
-      @test x2[2] ≈ 91.43632870031433 
-      @test x3[3] ≈ 100.83774723999996
-  end
+    @testset begin
+        @test x1[1] ≈ 8.266626766923284
+        @test x2[2] ≈ 91.43632870031433
+        @test x3[3] ≈ 100.83774723999996
+    end
 
 And how the rates evolve
 
 .. code-block:: julia
 
-    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color=:blue, grid = true, 
-                     label="",bg_inside=:lightgrey)
-    plot!(plt_unemp, [xbar[1]], linetype=:hline, linestyle = :dash, color =:red, label = "")
+    plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color = :blue, grid = true,
+                     label = "", bg_inside = :lightgrey)
+    plot!(plt_unemp, [xbar[1]], linetype = :hline, linestyle = :dash, color =:red, label = "")
 
-    plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color=:blue, grid=true, 
-                   label="",bg_inside=:lightgrey)
-    plot!(plt_emp, [xbar[2]], linetype=:hline, linestyle = :dash, color =:red, label ="")
+    plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color = :blue, grid = true,
+                   label = "", bg_inside = :lightgrey)
+    plot!(plt_emp, [xbar[2]], linetype = :hline, linestyle = :dash, color =:red, label = "")
 
-    plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
+    plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test x_path[1,3] ≈ 0.09471014989625384 
-      @test x_path[2,7] ≈ 0.8936171021324064 
-  end
+    @testset begin
+        @test x_path[1,3] ≈ 0.09471014989625384
+        @test x_path[2,7] ≈ 0.8936171021324064
+    end
 
 We see that it takes 20 periods for the economy to converge to it's new
 steady state levels
@@ -975,14 +925,13 @@ state
     x0 = rate_steady_state(lm)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test x0[1] == 0.08266626766923285 
-  end
-  
+    @testset begin
+        @test x0[1] == 0.08266626766923285
+    end
+
 Here are the other parameters:
-
 
 .. code-block:: julia
 
@@ -997,17 +946,15 @@ Let's increase :math:`b` to the new value and simulate for 20 periods
     X_path1 = simulate_stock_path(lm, x0 * N0, T_hat)   # simulate stocks
     x_path1 = simulate_rate_path(lm, x0, T_hat)         # simulate rates
 
-
 Now we reset :math:`b` to the original value and then, using the state
 after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
 
 .. code-block:: julia
 
-    lm = LakeModel(b=0.0124)
+    lm = LakeModel(b = 0.0124)
     X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T_hat+1)    # simulate stocks
     x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T_hat+1)     # simulate rates
-
 
 Finally we combine these two paths and plot
 
@@ -1016,55 +963,52 @@ Finally we combine these two paths and plot
     x_path = hcat(x_path1, x_path2[:, 2:end])  # note [2:] to avoid doubling period 20
     X_path = hcat(X_path1, X_path2[:, 2:end])
 
-
 .. code-block:: julia
 
     x1 = X_path[1,:]
     x2 = X_path[2,:]
     x3 = dropdims(sum(X_path, dims = 1), dims = 1)
 
-    plt_unemp = plot(title = "Unemployment", 1:T, x1, color=:blue, lw=2, alpha = 0.7, 
-                     grid = true, label="",bg_inside=:lightgrey)
-    plot!(plt_unemp, ylims=extrema(x1).+(-1,1))
+    plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2, alpha = 0.7,
+                     grid = true, label = "", bg_inside = :lightgrey)
+    plot!(plt_unemp, ylims = extrema(x1) .+ (-1, 1))
 
-    plt_emp = plot(title = "Employment", 1:T, x2, color=:blue, lw=2, alpha = 0.7, grid=true,
-                   label="",bg_inside=:lightgrey)
-    plot!(plt_emp, ylims=extrema(x2).+(-1,1))
+    plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2, alpha = 0.7, grid = true,
+                   label = "", bg_inside = :lightgrey)
+    plot!(plt_emp, ylims = extrema(x2) .+ (-1, 1))
 
-    plt_labor = plot(title = "Labor force", 1:T, x3, color=:blue, alpha = 0.7, grid=true,
-                     label="",bg_inside=:lightgrey)
-    plot!(plt_labor, ylims=extrema(x3).+(-1,1))
-    plot(plt_unemp, plt_emp, plt_labor, layout = (3,1), size = (800,600))
-
-
+    plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, alpha = 0.7, grid = true,
+                     label = "", bg_inside = :lightgrey)
+    plot!(plt_labor, ylims = extrema(x3) .+ (-1, 1))
+    plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test x1[1] ≈ 8.266626766923284 
-      @test x2[2] ≈ 92.11681873319097 
-      @test x3[3] ≈ 98.95872483999996
-  end
+    @testset begin
+        @test x1[1] ≈ 8.266626766923284
+        @test x2[2] ≈ 92.11681873319097
+        @test x3[3] ≈ 98.95872483999996
+    end
 
 And the rates
 
 .. code-block:: julia
 
-    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color=:blue, grid = true, 
-                     label="",bg_inside=:lightgrey, lw=2)
-    plot!(plt_unemp, [x0[1]], linetype=:hline, linestyle = :dash, color =:red, label = "", lw=2)
+    plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color = :blue, grid = true,
+                     label = "", bg_inside = :lightgrey, lw = 2)
+    plot!(plt_unemp, [x0[1]], linetype = :hline, linestyle = :dash, color =:red, label = "", lw = 2)
 
-    plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color=:blue, grid=true, 
-                   label="",bg_inside=:lightgrey, lw=2)
-    plot!(plt_emp, [x0[2]], linetype=:hline, linestyle = :dash, color =:red, label ="", lw=2)
+    plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color = :blue, grid = true,
+                   label = "", bg_inside = :lightgrey, lw = 2)
+    plot!(plt_emp, [x0[2]], linetype = :hline, linestyle = :dash, color =:red, label = "", lw = 2)
 
-    plot(plt_unemp, plt_emp, layout = (2,1), size = (800,600))
+    plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-      @test x_path[1,3] ≈ 0.06791408368459205 
-      @test x_path[2,7] ≈ 0.9429334437639298 
-  end
+    @testset begin
+        @test x_path[1,3] ≈ 0.06791408368459205
+        @test x_path[2,7] ≈ 0.9429334437639298
+    end
