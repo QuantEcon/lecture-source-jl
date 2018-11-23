@@ -228,6 +228,8 @@ The other important text files for now are
 
 * ``Project.toml`` and ``Manifest.toml``, which contain dependency information
 
+In particular, the ``Project.toml`` contains a list of dependencies, and the ``Manifest.toml`` specifies their exact versions and sub-dependencies 
+
 * The ``.gitignore`` file (which may display as an untitled file), which contains files and paths for ``git`` to ignore
 
 Project Workflow
@@ -274,7 +276,7 @@ For now, let's just try adding a dependency
 
   We can track changes in the TOML, as before
 
-  Here's the manifest
+  Here's the ``Manifest.toml``
 
 .. figure:: /_static/figures/testing-atom-manifest.png
     :scale: 60%
