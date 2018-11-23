@@ -441,14 +441,15 @@ It's important to make sure that your code is well-tested
 
 There are a few different kinds of test, each with different purposes
 
-* *Unit testing* makes sure that individual pieces of a project function as expected
+* *Unit testing* makes sure that individual pieces of a project work as expected
 
-* *Integration testing* makes sure that they work together as expected
+* *Integration testing* makes sure that they fit together as expected
 
 * *Regression testing* makes sure that behavior is unchanged over time
 
 In this lecture, we'll focus on unit testing
 
+In general, well-written tests (which also guard against regression, for example by comparing function output to hardcoded values) are sufficient for most small projects
 
 The ``Test`` Module
 -------------------------
@@ -465,7 +466,7 @@ The basic object is the macro ``@test``
 
 Tests will pass if the condition is ``true``, or fail otherwise
 
-If a test is failing, we should flag it and continue to run our tests
+If a test is failing, we should flag it with ``@test_broken`` as below
 
 .. code-block:: julia
 
