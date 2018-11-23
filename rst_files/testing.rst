@@ -10,11 +10,11 @@ Packages, Testing, and Continuous Integration
 
 Co-authored with Arnav Sood
 
-This lecture is about structuring your project as a Julia module, and testing it with tools from GitHub
+This lecture discusses structuring a project as a Julia module, and testing it with tools from GitHub
 
 Benefits include
 
-* Specifying dependencies (and their versions), so that your project works across Julia setups and over time
+* Specifying dependencies (and their versions) so that your project works across Julia setups and over time
 
 * Being able to load your project's functions from outside without copy/pasting
 
@@ -39,14 +39,14 @@ First, we need to make sure that your GitHub account is set up with Travis CI an
 
 As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>`_ if eligible
 
-Navigate to the `travis-ci.com website <https://travis-ci.com/>`_ and click "sign up with GitHub." Supply your credentials
+Navigate to the `travis-ci.com website <https://travis-ci.com/>`_ and click "sign up with GitHub" -- supply your credentials
 
 If you get stuck, see the `Travis tutorial <https://docs.travis-ci.com/user/tutorial/>`_
 
 CodeCov
 ^^^^^^^^^
 
-CodeCov is a service that tells you how expansive your tests are (i.e., how much of your code is untested)
+CodeCov is a service that tells you how comprehensive your tests are (i.e., how much of your code is actually tested)
 
 To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up"
 
@@ -67,6 +67,8 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
+To set up CodeCov on Julia:
+
 1. Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package
 
     .. code-block:: julia
@@ -75,13 +77,13 @@ Julia Setup
 
 2. Create a *template* for your project
 
-This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
+    This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
 
-.. code-block:: julia
+    .. code-block:: julia
 
-    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
+        ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
 
-**Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
+    **Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
 
 3. Create a specific project based off this template
 
@@ -89,14 +91,14 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
         generate("ExamplePackage.jl", ourTemplate)
 
-If we navigate to the package directory (shown in the output), we should see something like the following 
+    If we navigate to the package directory (shown in the output), we should see something like the following 
 
-**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
+    .. figure:: /_static/figures/testing-dir.png
+        :scale: 60%
+        
+    **Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
 
-.. figure:: /_static/figures/testing-dir.png
-    :scale: 60%
-
-Adding Project to Git
+Adding a Project to Git
 ------------------------
 
 The next step is to add this project to Git version control
@@ -125,54 +127,54 @@ If you navigate to your git repo (ours is `here <https://github.com/quanteconuse
 
 **Note:** Be sure that you don't separately clone the repo you just added to another location (i.e., to your desktop)
 
-The main idiom of git is that you have some set of files on your local machine (here in ``~/.julia/dev/ExamplePackage.jl``) and git is plugged into those files 
+A key note is that you have some set of files on your local machine (here in ``~/.julia/dev/ExamplePackage.jl``) and git is plugged into those files 
 
 For convenience, you might want to create a shortcut to that location somewhere accessible
 
-Adding Project to Julia Package Manager
--------------------------------------------
+Adding a Project to the Julia Package Manager
+-----------------------------------------------
 
 We also want Julia's package manager to be aware of the project
 
 1. Open a REPL in the newly created project directory, either by noting the path printed above, or by running
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    DEPOT_PATH
+      DEPOT_PATH
 
-And navigating to the first element, then the subdirectory ``/dev/ExamplePackage``
+  And navigating to the first element, then to the subdirectory ``/dev/ExamplePackage``
 
-Note the lack of ``.jl``!
+  Note the lack of ``.jl``!
 
-You can change the path of a Julia REPL by running
+  You can change the path of a Julia REPL by running
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
+      cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
 
 2. Run
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    ] activate
+      ] activate
 
-To get into the main Julia environment (more on environments in the second half of this lecture), and
+  To get into the main Julia environment (more on environments in the second half of this lecture)
 
 3. Run 
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    ] dev .
+      ] dev .
 
-to add the package
+  to add the package
 
-We see the change reflected in our default package list
+  We see the change reflected in our default package list
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    ] st
+      ] st
 
-For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
+  For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
 
 Using the Package Manager
 --------------------------------
@@ -199,26 +201,26 @@ Let's unpack the structure of the generated project
 
 * The first directory, ``.git``, holds the version control information
 
-* The ``src`` directory contains the project's source code. Currently, it should contain only one file (``ExamplePackage.jl``), which reads
+* The ``src`` directory contains the project's source code -- it should contain only one file (``ExamplePackage.jl``), which reads
 
-.. code-block:: none
+  .. code-block:: none
 
-    module ExamplePackage
+      module ExamplePackage
 
-    greet() = print("Hello World!")
+      greet() = print("Hello World!")
 
-    end # module
+      end # module
 
-* Likewise, the ``test`` directory should have only one file (``runtests.jl``), which reads:
+* Likewise, the ``test`` directory should have only one file (``runtests.jl``), which reads
 
-.. code-block:: none
+  .. code-block:: none
 
-    using ExamplePackage
-    using Test
+      using ExamplePackage
+      using Test
 
-    @testset "ExamplePackage.jl" begin
-        # Write your own tests here.
-    end
+      @testset "ExamplePackage.jl" begin
+          # Write your own tests here.
+      end
 
 In particular, the workflow is to export objects we want to test (``using ExamplePackage``), and test them using Julia's ``Test`` module
 
@@ -237,11 +239,12 @@ Dependency Management
 Environments
 ^^^^^^^^^^^^^^^^
 
-As `before <jl_packages>`_, the TOML files define an *environment* for our project, or a set of files which represent the dependency information 
+As `before <jl_packages>`_, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information 
 
 This information is the name of every package we depend on, along with the exact versions of those packages
 
-This information (in practice, the result of package operations we execute) will be reflected in our ``ExamplePackage.jl`` directory's TOML, once that environment is activated (selected)
+This information (in practice, the result of package operations we execute) will 
+be reflected in our ``ExamplePackage.jl`` directory's TOML, once that environment is activated (selected)
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it
 
@@ -254,21 +257,22 @@ For now, let's just try adding a dependency
 
 1. Activate the package environment (to be run from the base, ``v1.0`` environment)
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    ] activate ExamplePackage
+      ] activate ExamplePackage
 
-This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, and use the versions of packages specified there 
+  This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, 
+  and use the versions of packages specified there 
 
 2. Add a package
 
-.. code-block:: julia
+  .. code-block:: julia
 
-    ] add Expectations
+      ] add Expectations
 
-We can track changes in the TOML, as before
+  We can track changes in the TOML, as before
 
-Here's the Manifest
+  Here's the manifest
 
 .. figure:: /_static/figures/testing-atom-manifest.png
     :scale: 60%
@@ -300,9 +304,7 @@ For example, let's say we add ``Distributions.jl``
 
     ] add Distributions
 
-and edit the source to read as follows
-
-**Note**: That is, paste this into the file itself 
+and edit the source (paste this into the file itself ) to read as follows
 
 .. code-block:: julia 
     :class: no-execute 
@@ -345,7 +347,9 @@ Jupyter Workflow
 
 We can also work with the package from a Jupyter notebook
 
-Let's create a new output directory in our project, and run ``jupyter lab`` from it. Call a new notebook ``output.ipynb``
+Let's create a new output directory in our project, and run ``jupyter lab`` from it
+
+Create a new notebook ``output.ipynb``
 
 .. figure:: /_static/figures/testing-output.png
     :scale: 60%
@@ -395,12 +399,12 @@ For someone else to get the package, they simply need to
 
 1. Run the following command
 
-.. code-block:: julia
-    :class: no-execute
+  .. code-block:: julia
+      :class: no-execute
 
-    ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
+      ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
-This will place the repository inside their ``~/.julia/dev`` folder
+  This will place the repository inside their ``~/.julia/dev`` folder
 
 2. Drag-and-drop the folder to GitHub desktop in the usual way
 
@@ -457,7 +461,7 @@ The basic object is the macro ``@test``
 
 Tests will pass if the condition is ``true``, or fail otherwise
 
-If a test is failing, we should *flag it and move on*
+If a test is failing, we should flag it and continue to run our tests
 
 .. code-block:: julia
 
@@ -465,12 +469,16 @@ If a test is failing, we should *flag it and move on*
 
 This way, we still have access to information about the test, instead of just deleting it or commenting it out
 
-There are other test macros, that check for things like error handling and type-stability. Advanced users can check the `Julia docs <https://docs.julialang.org/en/v1/stdlib/Test/>`_
+There are other test macros, that check for things like error handling and type-stability
+
+Advanced users can check the `Julia docs <https://docs.julialang.org/en/v1/stdlib/Test/>`_
 
 Example
 -----------
 
-Let's add some unit tests for the ``foo()`` function we defined earlier. Our ``tests/runtests.jl`` file should look like this
+Let's add some unit tests for the ``foo()`` function we defined earlier
+
+Our ``tests/runtests.jl`` file should look like this
 
 **As before, this should be pasted into the file directly**
 
@@ -484,13 +492,7 @@ Let's add some unit tests for the ``foo()`` function we defined earlier. Our ``t
     @test foo(1, 1.5) == 0.2731856314283442
     @test_broken foo(1, 0) # tells us this is broken
 
-And run it by running
-
-.. code-block:: julia
-
-    ] test
-
-from an activated REPL (i.e., a REPL where you've run ``] activate ExamplePackage``)
+And run it by typing ``] test`` into an activated REPL (i.e., a REPL where you've run ``] activate ExamplePackage``)
 
 Test Sets
 -------------
@@ -506,7 +508,7 @@ Running Tests
 
 There are a few different ways to run the tests for your package
 
-* Run the actual ``runtests.jl``, say by hitting shift-enter on it in Atom 
+* Run the actual ``runtests.jl``, say by hitting ``shift-enter`` on it in Atom 
 
 * From a fresh (``v1.0``) REPL, run ``] test ExamplePackage`` 
 
@@ -560,7 +562,9 @@ This is telling Travis to build the project in Julia, on OSX and Linux, using Ju
 
 It also says that if the nightly version doesn't work, that shouldn't register as a failure
 
-**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift. You can delete those lines to speed up the build. Likewise the nightly Julia
+**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift
+
+You can delete those lines to speed up the build, likewise for the nightly Julia version
 
 Working with Builds
 --------------------
@@ -588,7 +592,7 @@ Lastly, we can trigger builds manually (without a new commit or PR) from the Tra
 .. figure:: /_static/figures/travis-trigger.png
     :scale: 60%
 
-To commit *without* triggering a build, simply add [ci skip] somewhere inside the commit message
+To commit *without* triggering a build, simply add "[ci skip]" somewhere inside the commit message
 
 Travis and Pull Requests
 ----------------------------
@@ -597,9 +601,9 @@ One key feature of Travis is the ability to see at-a-glance whether PRs pass tes
 
 This happens automatically when Travis is enabled on a repository
 
-For an example of this feature, see `this PR <https://github.com/QuantEcon/Games.jl/pull/65/>`_ in the Games.jl repository
+For an example of this feature, see `this PR <https://github.com/QuantEcon/Games.jl/pull/65/>`_ in the ``Games.jl`` repository
 
-CodeCoverage
+Code Coverage
 ===================
 
 Beyond the success or failure of our test suite, we also want to know how much of our code the tests cover
@@ -609,7 +613,7 @@ The tool we use to do this is called `CodeCov <http://codecov.io>`_
 Setup
 ---------
 
-You'll find that codecov is automatically enabled for public repos with Travis
+You'll find that CodeCov is automatically enabled for public repos with Travis
 
 For private ones, you'll need to first get an access token
 
@@ -617,7 +621,7 @@ Add private scope in the CodeCov website, just like we did for Travis
 
 Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/ExamplePackage.jl/settings`` for our repo) and copy the token
 
-Next, go to your travis settings and add an environment variable as below
+Next, go to your Travis settings and add an environment variable as below
 
 .. figure:: /_static/figures/travis-settings.png
     :scale: 60%
@@ -627,9 +631,9 @@ Interpreting Results
 
 Click the CodeCov badge to see the build page for your project
 
-This shows us that our tests cover 50 \% of our functions in ``src//``
+This shows us that our tests cover 50\% of our functions in ``src//``
 
-**Note:** To get a more granular view, we can click the ``src//`` and the resultant filename
+**Note:** To get a more detailed view, we can click the ``src//`` and the resultant filename
 
 .. figure:: /_static/figures/codecov.png
     :scale: 60%
@@ -672,15 +676,15 @@ The ``] dev`` command will also add the target to the package manager, so that w
 
 3. The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
 
-.. figure:: /_static/figures/testing-fork.png
-    :scale: 60%
+    .. figure:: /_static/figures/testing-fork.png
+        :scale: 60%
 
 4. Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
 
-.. figure:: /_static/figures/testing-repo-settings.png
-    :scale: 60%
+    .. figure:: /_static/figures/testing-repo-settings.png
+        :scale: 60%
 
-Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is
+    Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is
 
 5. If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
 
@@ -770,8 +774,6 @@ Additional Notes
 =======================
 
 * The `JuliaCI <https://github.com/JuliaCI/>`_ organization provides more Julia utilities for continuous integration and testing
-
-* This `Salesforce document <https://developer.salesforce.com/page/How_to_Write_Good_Unit_Tests/>`_ has some good lessons about writing and testing code
 
 Review 
 =============
