@@ -241,6 +241,8 @@ Environments
 
 As `before <jl_packages>`_, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information 
 
+The actual files are written in the `TOML language <https://github.com/toml-lang/toml>`_, which is a lightweight format to specify configuration options  
+
 This information is the name of every package we depend on, along with the exact versions of those packages
 
 This information (in practice, the result of package operations we execute) will 
