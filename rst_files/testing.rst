@@ -451,7 +451,7 @@ There are a few different kinds of test, each with different purposes
 
 In this lecture, we'll focus on unit testing
 
-In general, well-written tests (which also guard against regression, for example by comparing function output to hardcoded values) are sufficient for most small projects
+In general, well-written unit tests (which also guard against regression, for example by comparing function output to hardcoded values) are sufficient for most small projects
 
 The ``Test`` Module
 -------------------------
