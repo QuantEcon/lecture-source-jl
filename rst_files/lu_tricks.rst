@@ -879,11 +879,6 @@ Implementation
 Code that computes solutions to the LQ problem using the methods described
 above can be found in file `control_and_filter.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/lu_tricks/control_and_filter.jl>`__
 
-Here's how it looks
-
-**TODO** Missing code
-.. .. literalinclude:: /_static/code/lu_tricks/control_and_filter.jl
-
 Example
 ---------
 
