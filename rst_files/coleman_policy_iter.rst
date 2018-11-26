@@ -369,7 +369,14 @@ Here's some code that implements the Coleman operator
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+
+    using LinearAlgebra, Statistics, Compat 
+    using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
+    using Optim, Random
+
 
 .. code-block:: julia
     :class: test
