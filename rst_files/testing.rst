@@ -69,6 +69,8 @@ Julia Setup
 
 **Note:** Before these steps, make sure that you've either completed the `version control <version_control>`_ lecture or run 
 
+**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets 
+
 .. code-block:: julia 
     :class: no-execute 
 
@@ -153,15 +155,15 @@ We also want Julia's package manager to be aware of the project
 
 Note the lack of ``.jl``!
 
-* Run
+* Run the following 
 
 .. code-block:: julia
 
     ] activate
 
-To get into the main Julia environment (more on environments in the second half of this lecture)
+to get into the main Julia environment (more on environments in the second half of this lecture)
 
-* Run 
+* And run 
 
 .. code-block:: julia
 
