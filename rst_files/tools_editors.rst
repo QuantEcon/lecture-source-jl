@@ -52,17 +52,17 @@ Recall that you can find the location of the ``~/.julia`` directory by running
 
 To add the file:
 
-1. In the ``julia`` terminal, type the following
+* In the ``julia`` terminal, type the following
 
     .. code-block:: none
 
         ] add  Revise REPL; precompile
 
-2. Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer 
+* Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer 
 
-3. Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory
+* Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory
 
-4. For convenience, you may find it useful on your operating system to change the directory where the REPL starts
+* For convenience, you may find it useful on your operating system to change the directory where the REPL starts
  
 On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
 
@@ -285,25 +285,25 @@ This way, you can work with (and specify) the dependencies (i.e., required packa
 
 Essentially, an environment is a dependency tree for a project, or a "frame of mind" for Julia's package manager 
 
-1. We can see the default (``v1.0``) environment as such 
+* We can see the default (``v1.0``) environment as such 
 
 .. code-block:: julia 
 
     ] st 
 
-2. We can also create and activate a new environment 
+* We can also create and activate a new environment 
 
 .. code-block:: julia 
 
     ] generate ExampleEnvironment
 
-3. And go to it  
+* And go to it  
 
 .. code-block:: julia 
 
     ; cd ExampleEnvironment
 
-4. To activate the directory, simply 
+* To activate the directory, simply 
 
 .. code-block:: julia 
 
@@ -311,7 +311,7 @@ Essentially, an environment is a dependency tree for a project, or a "frame of m
 
 where "." stands in for the "present working directory"
 
-5. Let's make some changes to this 
+* Let's make some changes to this 
 
 .. code-block:: julia 
 
@@ -319,7 +319,7 @@ where "." stands in for the "present working directory"
 
 Note the lack of commas 
 
-6. To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
+* To see the changes, simply open the ``ExampleEnvironment`` directory in an editor like Atom 
 
 The Project TOML should look something like this
 
@@ -344,7 +344,7 @@ We can also
 
 You can think of the TOML as specifying demands for resources, which are supplied by the ``~/.julia`` user depot 
 
-7. To return to the default Julia environment, simply 
+* To return to the default Julia environment, simply 
 
 .. code-block:: julia 
 
@@ -352,7 +352,7 @@ You can think of the TOML as specifying demands for resources, which are supplie
 
 without any arguments 
 
-8. Lastly, let's clean up 
+* Lastly, let's clean up 
 
 .. code-block:: julia 
 
@@ -391,9 +391,9 @@ Here, we'll walk through the setup and installation steps, along with the main f
 Setup
 -----------
 
-1. First, create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
+* First, create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
     
-2. Next, download and install Docker for
+* Next, download and install Docker for
 
     * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
     * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
@@ -404,7 +404,7 @@ Setup
 
     * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
 
-3. Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
+* Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run 
 
     .. code-block:: none 
 
@@ -416,13 +416,13 @@ You should see something like
 .. figure:: /_static/figures/docker-hello-world.png
     :scale: 60%
 
-4. Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
+* Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
 
     .. code-block:: none
 
         docker pull quantecon/base
 
-5. Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages 
+* Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages 
 
     .. code-block:: none
 
