@@ -336,6 +336,7 @@ Setup
 
 .. code-block:: julia 
 
+    using LinearAlgebra, Statistics, Compat
     using Parameters, QuantEcon, DataFrames, Plots, Random 
 
 .. code-block:: julia
