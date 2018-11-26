@@ -16,7 +16,14 @@ In this lecture we introduce a few of the Julia libraries that we've found parti
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps.jl
+.. literalinclude:: /_static/includes/alldeps_no_using.jl
+
+.. code-block:: julia 
+
+    using ForwardDiff, Flux, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve
+    using LeastSquaresOptim, Flux.Tracker
+    using Flux.Tracker: update!
+    using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 
 Introduction to Automatic Differentiation
 =============================================
