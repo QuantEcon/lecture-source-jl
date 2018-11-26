@@ -541,7 +541,7 @@ The following code is example of usage for the stochastic growth model :ref:`des
   end
   plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
        xlabel = "capital", legend = :none)
-  t = LaTeXString("Density of \$k_1\$ (lighter) to \$k_T\$ (darker) for \$T=$T\$")
+  t = "Density of k_1 (lighter) to k_T (darker) for T=$T"
   plot!(title = t)
 
 .. code-block:: julia
