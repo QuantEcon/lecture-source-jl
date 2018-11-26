@@ -280,7 +280,12 @@ Implementation
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: 
+
+    using LinearAlgebra, Statistics, Compat 
+    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots, Parameters 
 
 .. code-block:: julia
     :class: test
@@ -289,7 +294,6 @@ Setup
 
 .. code-block:: julia
 
-    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots, Parameters
     gr(fmt = :png);
 
 Here's the distribution of wage offers we'll work with
