@@ -35,7 +35,7 @@ Travis CI
 
 As we'll see later, Travis is a service that automatically tests your project on the GitHub server
 
-First, we need to make sure that your GitHub account is set up with Travis CI and CodeCov
+First, we need to make sure that your GitHub account is set up with Travis CI and Codecov
 
 As a reminder, make sure you signed up for the GitHub `Student Developer Pack <https://education.github.com/pack/>`_ or `Academic Plan <https://help.github.com/articles/applying-for-an-academic-research-discount/>`_ if eligible
 
@@ -43,17 +43,17 @@ Navigate to the `travis-ci.com website <https://travis-ci.com/>`_ and click "sig
 
 If you get stuck, see the `Travis tutorial <https://docs.travis-ci.com/user/tutorial/>`_
 
-CodeCov
+Codecov
 ^^^^^^^^^
 
-CodeCov is a service that tells you how comprehensive your tests are (i.e., how much of your code is actually tested)
+Codecov is a service that tells you how comprehensive your tests are (i.e., how much of your code is actually tested)
 
-To sign up, visit the `CodeCov website <http://codecov.io/>`_, and click "sign up"
+To sign up, visit the `Codecov website <http://codecov.io/>`_, and click "sign up"
 
 .. figure:: /_static/figures/codecov-1.png
     :scale: 60%
 
-Next, click "add a repository" and *enable private scope* (this allows CodeCov to service your private projects)
+Next, click "add a repository" and *enable private scope* (this allows Codecov to service your private projects)
 
 The result should be
 
@@ -76,41 +76,41 @@ Julia Setup
 
 To set up a project on Julia:
 
-1. Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package
+* Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package
 
-    .. code-block:: julia
+.. code-block:: julia
 
-        using PkgTemplates
+    using PkgTemplates
 
-2. Create a *template* for your project
+* Create a *template* for your project
 
-    This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
+This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
 
-    .. code-block:: julia
+.. code-block:: julia
 
-        ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
+    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
 
-    **Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
+**Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
 
-3. Create a specific project based off this template
+* Create a specific project based off this template
 
-    .. code-block:: julia
+.. code-block:: julia
 
-        generate("ExamplePackage.jl", ourTemplate)
+    generate("ExamplePackage.jl", ourTemplate)
 
-    If we navigate to the package directory (shown in the output), we should see something like the following 
+If we navigate to the package directory (shown in the output), we should see something like the following 
 
-    .. figure:: /_static/figures/testing-dir.png
-        :scale: 60%
+.. figure:: /_static/figures/testing-dir.png
+    :scale: 60%
         
-    **Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
+**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
 
 Adding a Project to Git
 ------------------------
 
 The next step is to add this project to Git version control
 
-1. Open the repository screen in your account as discussed previously
+* Open the repository screen in your account as discussed previously
 
 We'll want the following settings
 
@@ -123,9 +123,11 @@ In particular
 
 * We should leave the boxes unchecked for the ``README.md``, ``LICENSE``, and ``.gitignore``, since these are handled by ``PkgTemplates``
 
-2. Drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
+Then, 
 
-3. Click the "publish branch" button to upload your files to GitHub
+* Drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
+
+* Click the "publish branch" button to upload your files to GitHub
 
 If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`__), you should see something like
 
@@ -143,45 +145,37 @@ Adding a Project to the Julia Package Manager
 
 We also want Julia's package manager to be aware of the project
 
-1. Open a REPL in the newly created project directory, either by noting the path printed above, or by running
+* Open a REPL in the newly created project directory, either by noting the path printed above, or by running the following in a REPL 
 
-  .. code-block:: julia
+.. code-block:: julia
 
-      DEPOT_PATH
+    cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
 
-  And navigating to the first element, then to the subdirectory ``/dev/ExamplePackage``
+Note the lack of ``.jl``!
 
-  Note the lack of ``.jl``!
+* Run
 
-  You can change the path of a Julia REPL by running
+.. code-block:: julia
 
-  .. code-block:: julia
+    ] activate
 
-      cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
+To get into the main Julia environment (more on environments in the second half of this lecture)
 
-2. Run
+* Run 
 
-  .. code-block:: julia
+.. code-block:: julia
 
-      ] activate
+    ] dev .
 
-  To get into the main Julia environment (more on environments in the second half of this lecture)
+to add the package
 
-3. Run 
+We see the change reflected in our default package list
 
-  .. code-block:: julia
+.. code-block:: julia
 
-      ] dev .
+    ] st
 
-  to add the package
-
-  We see the change reflected in our default package list
-
-  .. code-block:: julia
-
-      ] st
-
-  For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
+For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
 
 Using the Package Manager
 --------------------------------
@@ -266,26 +260,26 @@ Pkg Operations
 
 For now, let's just try adding a dependency
 
-1. Activate the package environment (to be run from the base, ``v1.0`` environment)
+* Activate the package environment (to be run from the base, ``v1.0`` environment)
 
-  .. code-block:: julia
+.. code-block:: julia
 
-      ] activate ExamplePackage
+    ] activate ExamplePackage
 
-  This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, 
+This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, 
   and use the versions of packages specified there 
 
 Note that the base environment isn't special, except that it's what's loaded by a freshly-started REPL or Jupyter notebook
 
-2. Add a package
+* Add a package
 
-  .. code-block:: julia
+.. code-block:: julia
 
-      ] add Expectations
+    ] add Expectations
 
-  We can track changes in the TOML, as before
+We can track changes in the TOML, as before
 
-  Here's the ``Manifest.toml``
+Here's the ``Manifest.toml``
 
 .. figure:: /_static/figures/testing-atom-manifest.png
     :scale: 60%
@@ -350,6 +344,7 @@ Let's try calling this
     ExamplePackage.greet()
 
 .. code-block:: julia
+    :class: no-execute
 
     foo() # exported, so don't need to qualify the namespace
 
@@ -410,16 +405,16 @@ Collaborative Work
 
 For someone else to get the package, they simply need to
 
-1. Run the following command
+* Run the following command
 
-  .. code-block:: julia
-      :class: no-execute
+.. code-block:: julia
+    :class: no-execute
 
-      ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
+    ] dev https://github.com/quanteconuser/ExamplePackage.jl.git
 
-  This will place the repository inside their ``~/.julia/dev`` folder
+This will place the repository inside their ``~/.julia/dev`` folder
 
-2. Drag-and-drop the folder to GitHub desktop in the usual way
+* Drag-and-drop the folder to GitHub desktop in the usual way
 
 Recall that the path to your ``~/.julia`` folder is
 
@@ -624,16 +619,16 @@ Code Coverage
 
 Beyond the success or failure of our test suite, we also want to know how much of our code the tests cover
 
-The tool we use to do this is called `CodeCov <http://codecov.io>`_
+The tool we use to do this is called `Codecov <http://codecov.io>`_
 
 Setup
 ---------
 
-You'll find that CodeCov is automatically enabled for public repos with Travis
+You'll find that Codecov is automatically enabled for public repos with Travis
 
 For private ones, you'll need to first get an access token
 
-Add private scope in the CodeCov website, just like we did for Travis
+Add private scope in the Codecov website, just like we did for Travis
 
 Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/ExamplePackage.jl/settings`` for our repo) and copy the token
 
@@ -645,13 +640,13 @@ Next, go to your Travis settings and add an environment variable as below
 Interpreting Results
 ------------------------
 
-Click the CodeCov badge to see the build page for your project
+Click the Codecov badge to see the build page for your project
 
 This shows us that our tests cover 50\% of our functions in ``src//``
 
 **Note:** To get a more detailed view, we can click the ``src//`` and the resultant filename
 
-**Note:** CodeCov may take a few minutes to run for the first time 
+**Note:** Codecov may take a few minutes to run for the first time 
 
 .. figure:: /_static/figures/codecov.png
     :scale: 60%
@@ -663,7 +658,7 @@ Pull Requests to External Julia Projects
 
 As mentioned in `version control <version_control>`_, sometimes we'll want to work on external repos that are also Julia projects
 
-1. ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo to ``~/.julia/dev`` and sync it with the Julia package manager
+* ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo to ``~/.julia/dev`` and sync it with the Julia package manager
 
 For example, running
 
@@ -690,21 +685,21 @@ The ``] dev`` command will also add the target to the package manager, so that w
     using Expectations
     pathof(Expectations) # points to our git clone
 
-2. Drag that folder to GitHub Desktop
+* Drag that folder to GitHub Desktop
 
-3. The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
+* The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
 
     .. figure:: /_static/figures/testing-fork.png
         :scale: 60%
 
-4. Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
+* Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
 
     .. figure:: /_static/figures/testing-repo-settings.png
         :scale: 60%
 
     Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is
 
-5. If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
+* If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
 
 **Note:** As before, we're editing the files directly in ``~/.julia/dev``, as opposed to cloning the repo again. 
 
@@ -713,7 +708,7 @@ The ``] dev`` command will also add the target to the package manager, so that w
 
 Here, for example, we're revising the README
 
-6. Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account
+* Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account
 
 To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`__; for more on working with git repositories, see the `version control <version_control>`_ lecture
 
@@ -722,7 +717,7 @@ To confirm this, we can check the history on our account `here <https://github.c
 
 The green check mark indicates that Travis tests passed for this commit
 
-7. Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve
+* Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve
 
 .. figure:: /_static/figures/testing-pr2.png
     :scale: 60%
@@ -814,7 +809,7 @@ To review the workflow for creating, versioning, and testing a new project end-t
 
 8. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
 
-9. Push to the server, and see the Travis and CodeCov results (note that these may take a few minutes the first time)
+9. Push to the server, and see the Travis and Codecov results (note that these may take a few minutes the first time)
 
 Exercises
 ============
