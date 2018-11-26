@@ -20,6 +20,7 @@ Setup
 
 .. code-block:: julia 
 
+    using LinearAlgebra, Statistics, Compat 
     using ForwardDiff, Flux, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve
     using LeastSquaresOptim, Flux.Tracker
     using Flux.Tracker: update!

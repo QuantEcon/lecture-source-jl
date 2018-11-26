@@ -34,7 +34,9 @@ Setup
 
 .. code-block:: julia 
 
-    using QuantEcon, QuadGK, FastGaussQuadrature, Distributions, Expectations, Interpolations, Plots, LaTeXStrings, ProgressMeter
+    using LinearAlgebra, Statistics, Compat 
+    using QuantEcon, QuadGK, FastGaussQuadrature, Distributions, Expectations
+    using Interpolations, Plots, LaTeXStrings, ProgressMeter
 
 .. We have seen more detail on this package than this, so probably best to rewrite
 .. Distributions
