@@ -158,16 +158,17 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+
+    using LinearAlgebra, Statistics, Compat 
+    using Distributions, Parameters, Printf, Random, Roots, StatPlots, Plots
 
 .. code-block:: julia
     :class: test
 
     using Test
-
-.. code-block:: julia
-
-    using Distributions, Parameters, Printf, Random, Roots, StatPlots, Plots
 
 .. code-block:: julia
 
