@@ -341,7 +341,7 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 The REPL
 ------------
 
-While we have not emphasized it, on any JupyterHub or local Jupyter 
+While we have not emphasized it, on any `JupyterHub <jl_jupyterhub>`_ or local Jupyter 
 installation you will also have access to the Julia REPL
 
 This is a Julia specific terminal disconnected from the graphical interface of 
