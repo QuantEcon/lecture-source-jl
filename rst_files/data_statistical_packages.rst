@@ -25,8 +25,12 @@ This list is not exhaustive, and others can be found in organizations such as `J
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps.jl
+.. literalinclude:: /_static/includes/alldeps_no_using.jl
 
+.. code-block:: julia 
+
+    using DataFrames, RDataSets, DataFramesMeta, CategoricalArrays, Query, Vegalite 
+    using DataVoyager, GLM, RegressionTables, FixedEffectModels
 
 DataFrames
 ========================
