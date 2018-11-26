@@ -578,7 +578,7 @@ Working with Builds
 
 As above, builds are triggered whenever we push changes or open a pull request
 
-For example, if we push our changes to the server and then click the Travis badge on the README, we should see something like
+For example, if we push our changes to the server and then click the Travis badge (the one which says "build") on the README, we should see something like
 
 .. figure:: /_static/figures/travis-progress.png
     :scale: 60%
