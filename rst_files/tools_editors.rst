@@ -214,7 +214,7 @@ If you follow the instructions, you should see something like this when you open
 If you don't, simply go to the command palette and type "Julia standard layout" 
 
 .. figure:: /_static/figures/juno-standard-layout.png
-    :scale: 60%
+    :scale: 100%
 
 The bottom pane is a standard REPL, which supports the different modes above 
 
@@ -229,14 +229,14 @@ For example, if we define an object in the REPL
 Our workspace should read 
 
 .. figure:: /_static/figures/juno-workspace-1.png
-    :scale: 60%
+    :scale: 100%
 
 The ``ans`` variable simply captures the result of the last computation 
 
 The ``Documentation`` pane simply lets us query Julia documentation 
 
 .. figure:: /_static/figures/juno-docs.png
-    :scale: 60%
+    :scale: 100%
 
 The ``Plots`` pane captures Julia plots output (the code is as follows)
 
@@ -249,7 +249,7 @@ The ``Plots`` pane captures Julia plots output (the code is as follows)
     h = heatmap(data)
 
 .. figure:: /_static/figures/juno-plots.png
-    :scale: 60%
+    :scale: 100%
 
 **Note:** The plots feature is not perfectly reliable across all plotting backends, see `the Basic Usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ page 
 
@@ -414,7 +414,7 @@ Setup
 You should see something like 
 
 .. figure:: /_static/figures/docker-hello-world.png
-    :scale: 60%
+    :scale: 100%
 
 * Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
 
@@ -445,7 +445,7 @@ The ``rm`` instructs Docker to delete the container on exit, and the ``p`` flag 
 You will see something like 
 
 .. figure:: /_static/figures/docker-basic-command.png
-    :scale: 60%
+    :scale: 100%
 
 In the output, you should see some text near that bottom that looks like 
 
@@ -464,7 +464,7 @@ In a browser, go to a URL like the following
 To see something like 
 
 .. figure:: /_static/figures/docker-jupyter-lab.png
-    :scale: 60%
+    :scale: 100%
 
 **Note**: 
 
@@ -474,12 +474,12 @@ To see something like
 Paste the text into ``Password or token:`` and choose ``Log in`` to get the full window 
 
 .. figure:: /_static/figures/docker-jlab-full.png
-    :scale: 60%
+    :scale: 100%
 
 We can see that some packages are already pre-installed for our use 
 
 .. figure:: /_static/figures/docker-packages-preinstalled.png
-    :scale: 60%
+    :scale: 100%
 
 Persisting Julia Changes 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

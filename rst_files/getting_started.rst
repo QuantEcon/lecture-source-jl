@@ -69,7 +69,7 @@ install `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
 Either way you should now be looking at something like this (modulo your operating system)
 
 .. figure:: /_static/figures/julia_term_1.png
-   :scale: 75%
+   :scale: 100%
 
 This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more `below <julia_repl>`_ 
 
@@ -106,7 +106,7 @@ After you have started Jupyter, your web browser should open to a page on the
 local machine that looks something like this
 
 .. figure:: /_static/figures/starting_nb_julia.png
-   :scale: 70%
+   :scale: 100%
 
 The page you are looking at is called the "dashboard"
 
@@ -115,7 +115,7 @@ If you click on "Julia 1.0.x" you should have the option to start a Julia notebo
 Here's what your Julia notebook should look like
 
 .. figure:: /_static/figures/nb2_julia.png
-   :scale: 70%
+   :scale: 100%
 
 The notebook displays an *active cell*, which you can type Julia commands into
 
@@ -152,7 +152,7 @@ As a result, you can type in Julia code and it will appear in the cell
 When you're ready to execute these commands, hit ``Shift-Enter``
 
 .. figure:: /_static/figures/nb3_julia.png
-   :scale: 70%
+   :scale: 100%
 
 
 Modal Editing
@@ -230,7 +230,7 @@ installation --- more on this later)
 **Note**: The "time-to-first-plot" in Julia takes a while, since it needs to precompile everything
 
 .. figure:: /_static/figures/nb4_julia.png
-   :scale: 70%
+   :scale: 100%
 
 
 Working with the Notebook
@@ -249,7 +249,7 @@ For example if you type ``rep`` and hit the tab key you'll get a list of all
 commands that start with ``rep``
 
 .. figure:: /_static/figures/nb5_julia.png
-   :scale: 70%
+   :scale: 100%
 
 IJulia offers up the possible completions
 
@@ -275,7 +275,7 @@ In addition to executing code, the Jupyter notebook allows you to embed text, eq
 For example, here we enter a mixture of plain text and LaTeX instead of code
 
 .. figure:: /_static/figures/nb6_julia.png
-   :scale: 70%
+   :scale: 100%
 
 Next we ``Esc`` to enter command mode and then type ``m`` to indicate that we
 are writing `Markdown <http://daringfireball.net/projects/markdown/>`_, a mark-up language similar to (but simpler than) LaTeX
@@ -285,7 +285,7 @@ are writing `Markdown <http://daringfireball.net/projects/markdown/>`_, a mark-u
 Now we ``Shift + Enter`` to produce this
 
 .. figure:: /_static/figures/nb7_julia.png
-   :scale: 70%
+   :scale: 100%
 
    
 Inserting unicode (e.g. Greek letters)
