@@ -88,7 +88,7 @@ To set up a project on Julia:
 
     .. code-block:: julia
 
-        ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), CodeCov()])
+        ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
 
     **Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
 
