@@ -30,7 +30,11 @@ Also see :doc:`data and statistical packages <data_statistical_packages>` and :d
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps.jl
+.. literalinclude:: /_static/includes/alldeps_no_using.jl
+
+.. code-block:: julia 
+
+    using QuantEcon, QuadGK, FastGaussQuadrature, Distributions, Expectations, Interpolations, Plots, LaTeXStrings, ProgressMeter
 
 .. We have seen more detail on this package than this, so probably best to rewrite
 .. Distributions
