@@ -67,7 +67,14 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
-To set up CodeCov on Julia:
+**Note:** Before these steps, make sure that you've either completed the `version control <version_control>`_ lecture or run 
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    git config -- global user.name "Your Name" 
+
+To set up a project on Julia:
 
 1. Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package
 
