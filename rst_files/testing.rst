@@ -583,6 +583,8 @@ For example, if we push our changes to the server and then click the Travis badg
 .. figure:: /_static/figures/travis-progress.png
     :scale: 60%
 
+Note that you may need to wait a bit and/or refresh your browser 
+
 This gives us an overview of all the builds running for that commit
 
 To inspect a build more closely (say, if it fails), we can click on it and expand the log options
@@ -641,6 +643,8 @@ Click the CodeCov badge to see the build page for your project
 This shows us that our tests cover 50\% of our functions in ``src//``
 
 **Note:** To get a more detailed view, we can click the ``src//`` and the resultant filename
+
+**Note:** CodeCov may take a few minutes to run for the first time 
 
 .. figure:: /_static/figures/codecov.png
     :scale: 60%
@@ -803,7 +807,7 @@ To review the workflow for creating, versioning, and testing a new project end-t
 
 8. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states)
 
-9. Push to the server, and see the Travis and CodeCov results
+9. Push to the server, and see the Travis and CodeCov results (note that these may take a few minutes the first time)
 
 Exercises
 ============
