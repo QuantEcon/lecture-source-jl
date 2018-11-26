@@ -55,16 +55,16 @@ Installing Julia and Dependencies
 The easiest approach to using Julia with Jupyter on your desktop is to 
 install `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
 
-1. Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
+* Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
 
     * Make sure you click yes to "add Anaconda to my PATH"
 
-2. Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options
+* Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options
 
     * We do not recommend `JuliaPro <https://juliacomputing.com/products/juliapro.html>`_
       due to its limited number of available packages
 
-3. Open Julia, by navigating to Julia through your menus or desktop icons
+* Open Julia, by navigating to Julia through your menus or desktop icons
 
 Either way you should now be looking at something like this (modulo your operating system)
 
@@ -73,7 +73,7 @@ Either way you should now be looking at something like this (modulo your operati
 
 This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more `below <julia_repl>`_ 
 
-4. In the Julia terminal, type the following
+* In the Julia terminal, type the following
 
     .. code-block:: julia 
         :class: no-execute
@@ -355,11 +355,11 @@ To start the REPL in a typical Jupyter lab environment
 #. Choose "New Launcher"
 #. Choose a ``Julia 1.0`` Console
 
-Otherwise, if you  have a local installation, then  
+Otherwise, if you have a local installation, then  
 
-* Navigate to Julia through your menus or desktop icons (Windows, OSX), or
+#. Navigate to Julia through your menus or desktop icons (Windows, OSX), or
 
-* Open a terminal and type ``julia`` (Linux)
+#. Open a terminal and type ``julia`` (Linux)
 
 The REPL is one of the best places to add and remove packages, so a good test is to see the current status of the package manager
 
