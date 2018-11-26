@@ -473,7 +473,12 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+
+    using LinearAlgebra, Statistics, Compat 
+    using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random 
 
 .. code-block:: julia
     :class: test
