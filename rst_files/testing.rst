@@ -336,7 +336,7 @@ Let's try calling this
 
 .. code-block:: julia
 
-    ] activate # reset the environment to the base one 
+    ] activate 
 
 .. code-block:: julia
 
