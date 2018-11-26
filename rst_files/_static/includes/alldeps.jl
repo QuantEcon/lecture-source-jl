@@ -1,4 +1,7 @@
 using InstantiateFromURL
-activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.3") # activate the QuantEcon environment
 
-using LinearAlgebra, Statistics, Compat # load common packages
+# activate the QuantEcon environment
+activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.4")
+
+# load common packages
+using LinearAlgebra, Statistics, Compat 
