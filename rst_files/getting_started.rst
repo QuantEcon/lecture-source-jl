@@ -71,6 +71,8 @@ Either way you should now be looking at something like this (modulo your operati
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 75%
 
+This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more `below <julia_repl>`_ 
+
 4. In the Julia terminal, type the following
 
     .. code-block:: julia 
@@ -334,6 +336,8 @@ which provides a static HTML representations of notebooks
 
 QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ website, where you can upload and share your notebooks with other economists and the QuantEcon community
 
+.. _julia_repl: 
+
 The REPL
 ------------
 
@@ -342,6 +346,9 @@ installation you will also have access to the Julia REPL
 
 This is a Julia specific terminal disconnected from the graphical interface of 
 Jupyter, and becomes increasingly important as you learn Julia
+
+For example, the REPL is what we used in the beginning of this lecture to install 
+``InstantiateFromURL.jl`` and ``IJulia``
 
 To start the REPL in a typical Jupyter lab environment
 
