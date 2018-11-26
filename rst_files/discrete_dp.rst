@@ -462,7 +462,12 @@ The following code sets up these objects for us
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+
+    using LinearAlgebra, Statistics, Compat, BenchmarkTools, Plots, QuantEcon
+    using SparseArrays 
 
 .. code-block:: julia
     :class: test
