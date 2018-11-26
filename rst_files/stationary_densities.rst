@@ -924,7 +924,7 @@ To illustrate, let's generate three artificial data sets and compare them with a
     y = randn(n) .+ 2.0  # N(2, 1)
     z = randn(n) .+ 4.0  # N(4, 1)
     data = vcat(x, y, z)
-    l = [LaTeXString("\$X\$") LaTeXString("\$Y\$")  LaTeXString("\$Z\$") ]
+    l = ["X" "Y" "Z"]
     xlabels = reshape(repeat(l, n), 3n, 1)
 
     boxplot(xlabels, data, label = "", ylims = (-2, 14))
