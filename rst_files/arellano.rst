@@ -332,16 +332,16 @@ The code can be found below:
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+
+    using Parameters, QuantEcon, DataFrames, Plots, Random 
 
 .. code-block:: julia
     :class: test
 
     using Test
-
-.. code-block:: julia
-
-    using Parameters, QuantEcon
     
 .. code-block:: julia
 
