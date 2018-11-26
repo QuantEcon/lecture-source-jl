@@ -30,8 +30,13 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
+.. code-block:: julia 
+
+    using LinearAlgebra, Statistics, Compat
+    using Distributions, QuantEcon, Interpolations, Expectations, Parameters
+    using Plots, NLsolve, Random
 
 Model
 ========
