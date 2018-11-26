@@ -197,8 +197,14 @@ Here's the code:
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
+.. code-block:: julia 
+
+    using LinearAlgebra, Statistics, Compat 
+    using Distributions, Expectations, NLsolve, Parameters, Plots
+    using QuantEcon, Roots, Random
+    
 .. code-block:: julia
     :class: test
 
@@ -206,7 +212,6 @@ Setup
 
 .. code-block:: julia
 
-    using Distributions, Expectations, NLsolve, Parameters, Plots
     gr(fmt = :png)
 
 .. code-block:: julia
