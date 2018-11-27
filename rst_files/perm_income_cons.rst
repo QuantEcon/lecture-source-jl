@@ -618,21 +618,19 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         xvals = 1:T
 
         # plot consumption and income
-        ax[1][:plot](csim[1, :], label="c", color="b")
-        ax[1][:plot](ysim[1, :], label="y", color="g")
-        ax[1][:plot](csim', alpha=.1, color="b")
-        ax[1][:plot](ysim', alpha=.1, color="g")
-        ax[1][:legend](loc=4)
-        ax[1][:set](title="Nonfinancial Income, Consumption, and Debt",
-                    xlabel="t", ylabel="y and c")
+        plt_1 = plot(csim[1,:], label="c", color=:blue, lw=2)
+        plot!(plt_1, ysim[1, :], label="y", color=:green, lw=2)
+        plot!(plt_1, csim', alpha=0.1, color=:blue, label="")
+        plot!(plt_1, ysim', alpha=0.1, color=:green, label="")
+        plot!(plt_1, title="Nonfinancial Income, Consumption, and Debt",
+              xlabel="t", ylabel="y and c",legend=:bottomright)
 
         # plot debt
-        ax[2][:plot](bsim[1, :], label="b", color="r")
-        ax[2][:plot](bsim', alpha=.1, color="r")
-        ax[2][:legend](loc=4)
-        ax[2][:set](xlabel="t", ylabel="debt")
+        plt_2 = plot(bsim[1,: ], label="b", color=:red, lw=2)
+        plot!(plt_2, bsim', alpha=0.1, color=:red,label="")
+        plot!(plt_2, xlabel="t", ylabel="debt",legend=:bottomright)
 
-        fig[:tight_layout]
+        plot(plt_1, plt_2, layout=(2,1), size=(800,600))
     end
 
     function consumption_debt_fanchart(csim, cons_mean, cons_var,
