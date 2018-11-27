@@ -965,7 +965,7 @@ Here's how it looks
         end
 
         # Make the matrix symmetric
-        D_m1 = D_m1 + D_m1' - diagm(diag(D_m1))
+        D_m1 = D_m1 + D_m1' - Diagonal(diag(D_m1))
 
         # (2) Construct the M matrix using the entries of D_m1
 
@@ -1077,9 +1077,9 @@ Here's how it looks
         F = lufact(W, Val{true})
 
         L, U = F[:L], F[:U]
-        D = diagm(1.0./diag(U))
+        D = Diagonal(1.0./diag(U))
         U = D * U
-        L = L * diagm(1.0./diag(D))
+        L = L * Diagonal(1.0./diag(D))
 
         J = flipdim(eye(N + 1), 2)
 
