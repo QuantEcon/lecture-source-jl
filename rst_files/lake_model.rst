@@ -833,7 +833,7 @@ Solutions
 Exercise 1
 ----------
 
-We begin by constructing the type containing the default parameters and assigning the
+We begin by constructing an object containing the default parameters and assigning the
 steady state values to `x0`
 
 .. code-block:: julia
