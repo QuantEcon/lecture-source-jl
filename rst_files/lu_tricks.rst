@@ -893,17 +893,16 @@ Here's how it looks
         m::TI
         ϕ::Vector{TF}
         β::TR
-        ϕ_r::Union{Vector{TF},Void}
-        k::Union{TI,Void}
+        ϕ_r::Union{Vector{TF},Nothing}
+        k::Union{TI,Nothing}
     end
 
-    function LQFilter{TR<:Real}(d::Vector{TR},
+    function LQFilter(d::Vector{TR},
                     h::TR,
                     y_m::Vector{TR};
-                    r::Union{Vector{TR},Void}=nothing,
-                    β::Union{TR,Void}=nothing,
-                    h_eps::Union{TR,Void}=nothing,
-                    )
+                    r::Union{Vector{TR},Nothing}=nothing,
+                    β::Union{TR,Nothing}=nothing,
+                    h_eps::Union{TR,Nothing}=nothing) where TR <: Real 
 
 
         m = length(d) - 1
@@ -912,7 +911,7 @@ Here's how it looks
             throw(ArgumentError("y_m and d must be of same length = $m"))
 
         # define the coefficients of ϕ up front
-        ϕ = Vector{TR}(2m + 1)
+        ϕ = Vector{TR}(undef, 2m + 1)
         for i in -m:m
             ϕ[m-i+1] = sum(diag(d*d', -i))
         end
@@ -924,7 +923,7 @@ Here's how it looks
             ϕ_r = nothing
         else
             k = size(r, 1) - 1
-            ϕ_r = Vector{TR}(2k + 1)
+            ϕ_r = Vector{TR}(undef, 2k + 1)
 
             for i = -k:k
                 ϕ_r[k-i+1] = sum(diag(r*r', -i))
