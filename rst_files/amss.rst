@@ -1552,7 +1552,7 @@ triangle denote war
 
     using Plots
     gr(fmt=:png)
-    titles = hcat("Consumption", "Labor", "Government Debt",
+    titles = hcat("Consumption", "Labor Supply", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")
     sim_seq_l_plot = hcat(sim_seq_l[1:3]..., sim_seq_l[4],
                           time_example.G[sHist_l],
@@ -1566,7 +1566,7 @@ triangle denote war
     sim_bel_h_plot = hcat(sim_bel_h[1:3]..., sim_bel_h[5],
                           time_example.G[sHist_h],
                           time_example.Θ[sHist_h] .* sim_bel_h[2])
-    p = plot(size = (700, 500), layout =(3, 2),
+    p = plot(size = (920, 750), layout =(3, 2),
      xaxis=(0:6), grid=false, titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
     for i=1:6
@@ -1686,16 +1686,16 @@ state contingent debt (circles) and the economy with only a risk-free bond
                 sim_bel[5], log_example.G[sHist], log_example.Θ[sHist] .* sim_bel[2])
 
     #plot policies
-    p = plot(size = (700, 500), layout = grid(3, 2),
+    p = plot(size = (920, 750), layout = grid(3, 2),
             xaxis=(0:T), grid=false, titlefont=Plots.font("sans-serif", 10))
     labels = fill(("", ""), 6)
-    labels[1] = ("Complete Market", "Incomplete Market")
+    labels[3] = ("Complete Market", "Incomplete Market")
     plot!(p, title = titles)
     for i = vcat(collect(1:4), 6)
-        plot!(p[i], sim_seq_plot[:, i], marker=:circle, color=:blue, lab=labels[i][1])
-        plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:black, lab=labels[i][1])
+        plot!(p[i], sim_seq_plot[:, i], marker=:circle, color=:black, lab=labels[i][1])
+        plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:blue, lab=labels[i][2], legend=:bottomright)
     end
-    plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:black, lab="")
+    plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:blue, lab="")
 
 
 
@@ -1727,12 +1727,12 @@ the two policies over 200 periods
     sim_bel_long_plot = hcat(sim_bel_long[1:3]..., sim_bel_long[5],
                  log_example.G[sHist_long], log_example.Θ[sHist_long] .* sim_bel_long[2])
 
-    p = plot(size = (700, 500), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
+    p = plot(size = (920, 750), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
             titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
     for i = 1:6
         plot!(p[i], sim_seq_long_plot[:, i], color=:black, linestyle=:solid, lab=labels[i][1])
-        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2])
+        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2], legend=:bottomright)
     end
     p
 
