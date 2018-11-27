@@ -687,7 +687,7 @@ Draw a plot of the value functions
     plot(ae.Bgrid, ae.vf[:, iy_low], label = "Low")
     plot!(ae.Bgrid, ae.vf[:, iy_high], label = "High")
     plot!(xlabel = "B", ylabel = "V(y,B)", title = "Value functions",     
-          legend_title="y", legend = :topleft))
+          legend_title="y", legend = :topleft)
 
 Draw a heat map for default probability
 
@@ -695,9 +695,9 @@ Draw a heat map for default probability
 
     plot(seriestype = :heatmap, ae.Bgrid[1:end-1],
           ae.ygrid[2:end],
-          clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1))
+          clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1)
     plot!(xlabel = "B'", ylabel = "y", title = "Probability of default",
-          legend = :topleft))
+          legend = :topleft)
 
 Plot a time series of major variables simulated from the model
 
