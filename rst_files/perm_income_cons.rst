@@ -432,7 +432,7 @@ Now create the appropriate instance of an LQ model
 
 
 
-We'll save the implied optimal policy function soon compare them with what we get by
+We'll save the implied optimal policy function soon and compare with what we get by
 employing an alternative solution method
 
 .. code-block:: julia
