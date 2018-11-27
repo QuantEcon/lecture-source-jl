@@ -988,8 +988,9 @@ Solutions
     Random.seed!(42);
 
 .. code-block:: julia
+    :class: hide-output
 
-    # Parameters
+    # parameters
     β = 1 / 1.05
     ρ, mg = .95, .35
     A = [0. 0. 0. ρ  mg*(1-ρ);
