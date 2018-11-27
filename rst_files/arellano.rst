@@ -695,7 +695,7 @@ Draw a heat map for default probability
 
     plot(seriestype = :heatmap, ae.Bgrid[1:end-1],
           ae.ygrid[2:end],
-          clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1)
+          clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1))
     plot!(xlabel = "B'", ylabel = "y", title = "Probability of default",
           legend = :topleft)
 
