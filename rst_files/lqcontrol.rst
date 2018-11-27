@@ -777,7 +777,7 @@ relatively more weight on later consumption values
   :class: collapse
 
   # compute solutions and simulate
-  lq = LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)
+  lq = QuantEcon.LQ(Q, R, A, B, C; bet=0.96, capT=T, rf=Rf)
   x0 = [0.0; 1.0]
   xp, up, wp = compute_sequence(lq, x0)
 
@@ -1412,7 +1412,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     C = [σ; 0.0; 0.0; 0.0]
 
     # compute solutions and simulate
-    lq = LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
+    lq = QuantEcon.LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
     x0 = [0.0; 1.0; 0.0; 0.0]
     xp, up, wp = compute_sequence(lq, x0)
 
@@ -1471,11 +1471,11 @@ the lecture.
     C = [0.0; 0.0; 0.0; 0.0]
 
     # initialize LQ instance for retired agent
-    lq_retired = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
+    lq_retired = QuantEcon.LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
 
     # since update_values!() changes its argument in place, we need another identical instance
     # just to get the correct value function
-    lq_retired_proxy = LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
+    lq_retired_proxy = QuantEcon.LQ(Q, R, A, B, C; bet=β, capT=T-K, rf=Rf)
                     
     
     # iterate back to start of retirement, record final value function
@@ -1495,7 +1495,7 @@ the lecture.
     C = [σ; 0.0; 0.0; 0.0]
 
     # set up working life LQ instance with terminal Rf from lq_retired
-    lq_working = LQ(Q, R, A, B, C; bet=β, capT=K, rf=Rf2)
+    lq_working = QuantEcon.LQ(Q, R, A, B, C; bet=β, capT=K, rf=Rf2)
 
     # simulate working state / control paths
     x0 = [0.0; 1.0; 0.0; 0.0]
@@ -1594,7 +1594,7 @@ Our solution code is
     B = [0.0; 1.0; 0.0]
     C = [m1 * σ; 0.0; 0.0]
 
-    lq = LQ(Q, R, A, B, C; bet=β)
+    lq = QuantEcon.LQ(Q, R, A, B, C; bet=β)
 
     # simulate state / control paths
     x0 = [m0; 2.0; 1.0]
