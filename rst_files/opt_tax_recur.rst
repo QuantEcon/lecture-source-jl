@@ -1798,7 +1798,7 @@ For example, let the period utility function be
 
     u(c,n) = \log(c) + 0.69 \log(1-n)
 
-We will create a new type `LogUtility` to represent this utility function
+We will write a new constructor `LogUtility` to represent this utility function
 
 .. code-block:: julia
 
