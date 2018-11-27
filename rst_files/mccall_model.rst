@@ -282,7 +282,7 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: 
+.. code-block:: julia 
 
     using LinearAlgebra, Statistics, Compat 
     using Distributions, Expectations, NLsolve, Roots, Random, StatPlots, Parameters 
