@@ -122,23 +122,27 @@ Hitting ``?`` will bring you into help mode
 
 The key use case is to find docstrings for functions and macros, e.g. 
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute 
 
     ? print 
 
 Note that objects must be loaded for Julia to return their documentation, e.g. 
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute 
 
     ? @test 
 
 will fail, but 
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute 
 
     using Test 
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: no-execute  
 
     ? @test 
 
