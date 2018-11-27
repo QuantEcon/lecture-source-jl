@@ -721,7 +721,8 @@ While a key benefit of using a package is that the code is clearer, and the impl
     β = 0.9
     iv = [0.8]
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in $(sol.iterations) iterations")
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " * 
+    "$(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
 
