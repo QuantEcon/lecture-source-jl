@@ -1478,7 +1478,7 @@ The government expenditure at  each state is
 
 We assume the same utility parameters as in the :doc:`Lucas-Stokey economy <opt_tax_recur>`
 
-This utility function is implemented in the following type
+This utility function is implemented in the following constructor
 
 .. code-block:: julia
 
