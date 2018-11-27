@@ -1727,12 +1727,12 @@ the two policies over 200 periods
     sim_bel_long_plot = hcat(sim_bel_long[1:3]..., sim_bel_long[5],
                  log_example.G[sHist_long], log_example.Θ[sHist_long] .* sim_bel_long[2])
 
-    p = plot(size = (700, 500), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
+    p = plot(size = (920, 750), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
             titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
     for i = 1:6
         plot!(p[i], sim_seq_long_plot[:, i], color=:black, linestyle=:solid, lab=labels[i][1])
-        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2])
+        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2], legend=:bottomright)
     end
     p
 
