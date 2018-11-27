@@ -227,16 +227,16 @@ Next we generate an instance
 
 .. code-block:: julia
 
-    mlog = Model() # Log Linear model
+    mlog = Model(); # Log Linear model
 
 We also need some shock draws for Monte Carlo integration
 
 .. code-block:: julia
 
-    Random.seed!(42) # For reproducible behavior.
+    Random.seed!(42); # For reproducible behavior.
 
     shock_size = 250     # Number of shock draws in Monte Carlo integral
-    shocks = exp.(mlog.μ .+ mlog.s * randn(shock_size))
+    shocks = exp.(mlog.μ .+ mlog.s * randn(shock_size));
 
 .. code-block:: julia
     :class: test
