@@ -85,8 +85,7 @@ Commits
 
 GitHub stores history as a sequence of changes to text, called *commits* 
 
-`Here <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92/>`_
- is an example of a commit, which revises the style guide in a QuantEcon repo
+`Here <https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92>`_ is an example of a commit, which revises the style guide in a QuantEcon repo
 
 In particular, commits have the following features
 
