@@ -979,7 +979,7 @@ Here's how it looks
         # Euler equations for t = 0, 1, ..., N-(m+1)
         ϕ, h = lqf.ϕ, lqf.h
 
-        W[1:(m + 1), 1:(m + 1)] = D_m1 + h * eye(m + 1)
+        W[1:(m + 1), 1:(m + 1)] = D_m1 + h * I
         W[1:(m + 1), (m + 2):(2m + 1)] = M
 
         for (i, row) in enumerate((m + 2):(N + 1 - m))
@@ -1061,7 +1061,7 @@ Here's how it looks
         V = construct_V(N + 1)
 
         aux_matrix = zeros(N + 1, N + 1)
-        aux_matrix[1:t+1 , 1:t+1 ] = eye(t + 1)
+        aux_matrix[1:t+1 , 1:t+1 ] .= I + zeros(t+1, t+1)
         L = chol(V)'
         Ea_hist = inv(L) * aux_matrix * L * a_hist
 
@@ -1081,7 +1081,7 @@ Here's how it looks
         U = D * U
         L = L * Diagonal(1.0./diag(D))
 
-        J = flipdim(eye(N + 1), 2)
+        J = reverse(I + zeros(N+1, N + 1), dims = 2)
 
         if t == nothing                      # if the problem is deterministic
             a_hist = J * a_hist
@@ -1095,7 +1095,7 @@ Here's how it looks
             Uy = \(L, a_bar)                  # U @ y_bar = L^{-1}a_bar from the lecture
             y_bar = \(U, Uy)                  # y_bar = U^{-1}L^{-1}a_bar
             # Reverse the order of y_bar with the matrix J
-            J = flipdim(eye(N + m + 1), 2)
+            J = reverse(I + zeros(N+m+1, N + m + 1), dims = 2)
             y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
             # transform the optimal sequence back if β is given
             if β != 1
@@ -1111,7 +1111,7 @@ Here's how it looks
             y_bar = \(U, Uy)                  # y_bar = U^{-1}L^{-1}a_bar
 
             # Reverse the order of y_bar with the matrix J
-            J = flipdim(eye(N + m + 1), 2)
+            J = reverse(I + zeros(N + m + 1, N + m + 1), dims = 2)
             y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
         end
         return y_hist, L, U, y_bar
