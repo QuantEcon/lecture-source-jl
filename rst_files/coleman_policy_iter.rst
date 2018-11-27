@@ -371,7 +371,8 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
+.. code-block:: julia
+    :class: hide-output 
 
     using LinearAlgebra, Statistics, Compat 
     using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots

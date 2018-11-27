@@ -28,6 +28,7 @@ Setup
 .. literalinclude:: /_static/includes/alldeps_no_using.jl
 
 .. code-block:: julia 
+    :class: hide-output 
 
     using LinearAlgebra, Statistics, Compat 
     using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, Vegalite 
