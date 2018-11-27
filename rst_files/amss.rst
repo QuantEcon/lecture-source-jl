@@ -1111,8 +1111,8 @@ The recursive formulation is implemented as follows
 
 
     function fit_policy_function(T::BellmanEquation_Recursive,
-                                                    PF::Function,
-                                                    xgrid::AbstractVector{TF}) where {TF <: AbstractFloat}
+                                 PF::Function,
+                                 xgrid::AbstractVector{TF}) where {TF <: AbstractFloat}
         S = T.S
         # preallocation
         PFvec = Array{TF}(undef, 4S + 1, length(xgrid))
@@ -1167,8 +1167,8 @@ The recursive formulation is implemented as follows
 
 
     function simulate(pab::RecursiveAllocation,
-                                        B_::TF, s_0::Integer, T::Integer,
-                                        sHist::Vector=simulate(pab.mc, T, init=s_0)) where {TF <: AbstractFloat}
+                      B_::TF, s_0::Integer, T::Integer,
+                      sHist::Vector=simulate(pab.mc, T, init=s_0)) where {TF <: AbstractFloat}
         model, mc, Vf, S = pab.model, pab.mc, pab.Vf, pab.S
         Π, Uc = model.Π, model.Uc
         cf, nf, xprimef, TTf = pab.policies
@@ -1214,8 +1214,8 @@ The recursive formulation is implemented as follows
 
 
     function BellmanEquation_Recursive(model::Model{TF},
-                                                            xgrid::AbstractVector{TF},
-                                                            policies0::Array) where {TF <: AbstractFloat}
+                                       xgrid::AbstractVector{TF},
+                                       policies0::Array) where {TF <: AbstractFloat}
 
         S = size(model.Π, 1) # number of states
         xbar = [minimum(xgrid), maximum(xgrid)]
@@ -1687,13 +1687,14 @@ state contingent debt (circles) and the economy with only a risk-free bond
 
     #plot policies
     p = plot(size = (920, 750), layout = grid(3, 2),
-            xaxis=(0:T), grid=false, titlefont=Plots.font("sans-serif", 10))
+             xaxis=(0:T), grid=false, titlefont=Plots.font("sans-serif", 10))
     labels = fill(("", ""), 6)
     labels[3] = ("Complete Market", "Incomplete Market")
     plot!(p, title = titles)
     for i = vcat(collect(1:4), 6)
         plot!(p[i], sim_seq_plot[:, i], marker=:circle, color=:black, lab=labels[i][1])
-        plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:blue, lab=labels[i][2], legend=:bottomright)
+        plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:blue, lab=labels[i][2], 
+              legend=:bottomright)
     end
     plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:blue, lab="")
 
@@ -1728,11 +1729,12 @@ the two policies over 200 periods
                  log_example.G[sHist_long], log_example.Θ[sHist_long] .* sim_bel_long[2])
 
     p = plot(size = (920, 750), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
-            titlefont=Plots.font("sans-serif", 10))
+             titlefont=Plots.font("sans-serif", 10))
     plot!(p, title = titles)
     for i = 1:6
         plot!(p[i], sim_seq_long_plot[:, i], color=:black, linestyle=:solid, lab=labels[i][1])
-        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2], legend=:bottomright)
+        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2], 
+              legend=:bottomright)
     end
     p
 

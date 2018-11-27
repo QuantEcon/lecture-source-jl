@@ -445,15 +445,15 @@ Next we solve a problem by finding the α, β values for the decision rule
         β = findlast((left .== 2) .& (right .≠ 2)) |> (x -> isa(x, Int) ? roots[x] : 0)
         α = findfirst((left .≠ 1) .& (right .== 1)) |> (x -> isa(x, Int) ? roots[x] : 1)
         if β < α
-            @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f\nAccept x0 
-                     if p ≥ %.2f", β, β, α, α)
+            @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f
+                    \nAccept x0 if p ≥ %.2f", β, β, α, α)
         else
             x0 = accept_x0(β, L0)
             x1 = accept_x1(β, L1)
             draw = draw_again(β, d0, d1, L0, L1, c, min(x0, x1))
             if draw == min(x0, x1, draw)
-                @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p 
-                         ≤ %.2f\nAccept x0 if p ≥ %.2f", β, β, α, α)
+                @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f
+                        \nAccept x0 if p ≥ %.2f", β, β, α, α)
             else
                 @printf("Accept x1 if p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, α)
             end
