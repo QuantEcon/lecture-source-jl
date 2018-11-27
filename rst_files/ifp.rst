@@ -358,7 +358,7 @@ Implementation
 .. index::
     single: Optimal Savings; Programming Implementation
 
-Here's the code for a type called ``ConsumerProblem`` that stores primitives, as well as
+Here's the code for a named-tuple constructor called ``ConsumerProblem`` that stores primitives, as well as
 
 * a ``bellman_operator`` function, which implements the Bellman operator :math:`T` specified above
 
