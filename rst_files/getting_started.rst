@@ -84,7 +84,7 @@ This installs enough Julia packages to begin using the lecture notes
 
 *Note:* On OS/X you will need to type the ``]`` separately and cannot copy/paste the whole string
 
-5. To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type 
+* To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type 
 
 .. code-block:: none
 
