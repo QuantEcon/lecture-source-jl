@@ -1171,10 +1171,14 @@ series for one boxplot all at once.
         push!(data, X)
         push!(x_labels, labels)
     end
-    boxplot(x_labels, data, layout = (J,1), title = reshape(titles, 1, length(titles)),
-            ylims = (-4, 8),
-    legend = :none, yticks = -4:2:8, xticks = 1:20)
-    plot!(size=(800, 2000))
+
+.. code-block:: julia 
+
+    plots = []
+    for i in 1:J 
+        push!(plots, boxplot(x_labels[i], data[i], title = titles[i])
+    end 
+    plot(plots..., layout = (J, 1), legend = :none, size = (800, 2000))
 
 .. code-block:: julia
     :class: test
