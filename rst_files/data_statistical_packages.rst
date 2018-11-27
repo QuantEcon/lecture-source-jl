@@ -30,7 +30,7 @@ Setup
 .. code-block:: julia 
 
     using LinearAlgebra, Statistics, Compat 
-    using DataFrames, RDataSets, DataFramesMeta, CategoricalArrays, Query, Vegalite 
+    using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, Vegalite 
     using DataVoyager, GLM, RegressionTables, FixedEffectModels
 
 DataFrames
