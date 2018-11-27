@@ -482,7 +482,7 @@ Next we generate an instance
 
 .. code-block:: julia
 
-    m = Model()
+    m = Model();
 
 We also need some shock draws for Monte Carlo integration
 
@@ -492,7 +492,7 @@ We also need some shock draws for Monte Carlo integration
     Random.seed!(42) # for reproducible results.
 
     shock_size = 250 # number of shock draws in Monte Carlo integral
-    shocks = collect(exp.(m.μ .+ m.s * randn(shock_size))) # generate shocks
+    shocks = collect(exp.(m.μ .+ m.s * randn(shock_size))); # generate shocks
 
 As a preliminary test, let's see if :math:`K c^* = c^*`, as implied by the
 theory
@@ -740,7 +740,7 @@ Here's the code, which will execute if you've run all the code above
 
     # Model instance with risk aversion = 1.5
     # others are the same as the previous instance
-    m_ex = Model(γ = 1.5)
+    m_ex = Model(γ = 1.5);
 
 .. code-block:: julia
 
