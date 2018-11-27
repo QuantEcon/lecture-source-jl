@@ -316,7 +316,7 @@ Regarding the imports
 
 
 
-Next we build a type called ``JvWorker`` that
+Next we write a constructor called ``JvWorker`` that
 
 * packages all the parameters and other basic attributes of a given model
 
