@@ -446,7 +446,7 @@ We'll price several distinct assets, including
 
 * The price of an endowment stream
 
-* A consol (a type of bond issued by the UK government in the 19th century)
+* A consol (a variety of bond issued by the UK government in the 19th century)
 
 * Call options on a consol
 
