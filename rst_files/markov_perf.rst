@@ -766,6 +766,7 @@ Now we evaluate the time path of industry output and prices given
 initial condition :math:`q_{10} = q_{20} = 1`
 
 .. code-block:: julia
+    :class: hide-output
 
     AF = A - B1 * F1 - B2 * F2
     n = 20
@@ -820,6 +821,7 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
 
 
 .. code-block:: julia
+    :class: hide-output 
 
     R = a1
     Q = γ
