@@ -437,8 +437,8 @@ employing an alternative solution method
 
 .. code-block:: julia
 
-    P, F, d = stationary_values(LQPI)    #  Compute value function and decision rule
-    ABF = ALQ - BLQ * F                  #  Form closed loop system
+    P, F, d = stationary_values(LQPI)    #  compute value function and decision rule
+    ABF = ALQ - BLQ * F    #  form closed loop system
 
 .. code-block:: julia
     :class: test
