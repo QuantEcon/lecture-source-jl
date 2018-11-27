@@ -203,6 +203,7 @@ While it is possible to just use the ``Plots.jl`` library, there may be better o
 Another useful tool for exploring tabular data is `DataVoyager.jl <https://github.com/queryverse/DataVoyager.jl>`_
 
 .. code-block:: julia
+    :class: no-execute
 
     using DataVoyager
     iris |> Voyager()
@@ -283,7 +284,7 @@ To explore the data use the interactive DataVoyager
 
 .. code-block:: julia
 
-    cigar |> Voyager()
+    # cigar |> Voyager()
 
     cigar |> @vlplot(
         :point,
