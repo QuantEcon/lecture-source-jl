@@ -509,5 +509,10 @@ fmax = maximum(result)
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
+## Other 
+
+- When taking screenshots for use in lectures (e.g., `tools_editors`, `version_control`, etc.), make sure you zoom in a level or two on the text for legibility in HTML. And store the image at 100% unless you have a reason to change it.
+
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
+
