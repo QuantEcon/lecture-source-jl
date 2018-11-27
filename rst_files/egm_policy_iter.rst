@@ -217,7 +217,7 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
                       grid_min = 1e-6, # smallest grid point
                       grid_max = 4.0,  # largest grid point
                       grid_size = 200, # grid size
-                      u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function (can refer to previous args)
+                      u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function 
                       u′ = c-> c^(-γ), # u'
                       f = k-> k^α, # production function
                       f′ = k -> α*k^(α-1), # f'
