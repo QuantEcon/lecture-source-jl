@@ -105,20 +105,21 @@ Credibility considerations contribute an additional auxiliary state variable in 
 
 It expresses how decisions must unfold to give the government the incentive to confirm private sector expectations when the government chooses sequentially
 
-.. note::
-      We occasionally hear confusion about the consequences of  recursive
-      representations of government policies under our two timing protocols.
-      It is incorrect to regard a recursive representation of the Ramsey plan
-      as in any way 'solving a time-inconsistency problem'.  On the contrary,
-      the evolution of the auxiliary state variable that augments the
-      authentic ones under our first timing protocol ought to be viewed as
-      *expressing* the time-inconsistency of a Ramsey plan.  Despite that, in
-      literatures about practical monetary policy one sometimes hears
-      interpretations that sell Ramsey plans in settings where our sequential
-      timing protocol is the one that more accurately characterizes  decision
-      making.  Please beware of discussions that toss around claims about
-      credibility if you don't also see recursive representations of policies
-      with the complete list of state variables appearing in our :cite:`chang1998credible` -like analysis that we present :ref:`below <sec:credible>`.
+**Note**
+
+We occasionally hear confusion about the consequences of  recursive
+representations of government policies under our two timing protocols.
+It is incorrect to regard a recursive representation of the Ramsey plan
+as in any way 'solving a time-inconsistency problem'.  On the contrary,
+the evolution of the auxiliary state variable that augments the
+authentic ones under our first timing protocol ought to be viewed as
+*expressing* the time-inconsistency of a Ramsey plan.  Despite that, in
+literatures about practical monetary policy one sometimes hears
+interpretations that sell Ramsey plans in settings where our sequential
+timing protocol is the one that more accurately characterizes  decision
+making.  Please beware of discussions that toss around claims about
+credibility if you don't also see recursive representations of policies
+with the complete list of state variables appearing in our :cite:`chang1998credible` -like analysis that we present :ref:`below <sec:credible>`.
 
 
 
