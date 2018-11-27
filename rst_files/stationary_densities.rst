@@ -4,9 +4,9 @@
 
 .. highlight:: julia
 
-******************************************
+***************************************
 :index:`Continuous State Markov Chains`
-******************************************
+***************************************
 
 .. index::
     single: Markov Chains; Continuous State
@@ -14,7 +14,7 @@
 .. contents:: :depth: 2
 
 Overview
-============
+========
 
 In a :doc:`previous lecture <finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models
 
@@ -44,7 +44,6 @@ In particular,
 
     * If so, how can we compute it?
 
-
 Answering these questions will lead us to revisit many of the topics that occupied us in the finite state case,
 such as simulation, distribution dynamics, stability, ergodicity, etc.
 
@@ -54,22 +53,21 @@ such as simulation, distribution dynamics, stability, ergodicity, etc.
     mathematical literature (e.g., :cite:`MeynTweedie2009`) in using the term to refer to any discrete **time**
     Markov process
 
-
 Setup
-------------------
+-----
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using KernelDensity, Distributions, StatPlots, Plots, QuantEcon, Random
 
 .. _statd_density_case:
 
 The Density Case
-==================================
+================
 
 You are probably aware that some distributions can be represented by densities
 and some cannot
@@ -83,10 +81,8 @@ The benefit is that the density case offers a very direct parallel to the finite
 
 Once we've built some intuition we'll cover the general case
 
-
-
 Definitions and Basic Properties
----------------------------------
+--------------------------------
 
 In our :doc:`lecture on finite Markov chains <finite_markov>`, we studied discrete time Markov chains that evolve on a finite state space :math:`S`
 
@@ -101,7 +97,6 @@ In symbols,
 .. math::
 
     \mathbb P \{ X_{t+1} = j \,|\, X_t = i \} = P[i, j]
-
 
 Equivalently,
 
@@ -137,7 +132,6 @@ kernel :math:`p_w` defined by
 
     p_w(x, y) := \frac{1}{\sqrt{2 \pi}} \exp \left\{ - \frac{(y - x)^2}{2} \right\}
 
-
 What kind of model does :math:`p_w` represent?
 
 The answer is, the (normally distributed) random walk
@@ -149,7 +143,6 @@ The answer is, the (normally distributed) random walk
     \quad \text{where} \quad
     \{ \xi_t \} \stackrel {\textrm{ IID }} {\sim} N(0, 1)
 
-
 To see this, let's find the stochastic kernel :math:`p` corresponding to :eq:`statd_rw`
 
 Recall that :math:`p(x, \cdot)` represents the distribution of :math:`X_{t+1}` given :math:`X_t = x`
@@ -158,10 +151,8 @@ Letting :math:`X_t = x` in :eq:`statd_rw` and considering the distribution of :m
 
 In other words, :math:`p` is exactly :math:`p_w`, as defined in :eq:`statd_rwsk`
 
-
-
 Connection to Stochastic Difference Equations
--------------------------------------------------
+---------------------------------------------
 
 In the previous section, we made the connection between stochastic difference
 equation :eq:`statd_rw` and stochastic kernel :eq:`statd_rwsk`
@@ -176,7 +167,6 @@ To this end, consider the generic (scalar) stochastic difference equation given 
     :label: statd_srs
 
     X_{t+1} = \mu(X_t) + \sigma(X_t) \, \xi_{t+1}
-
 
 Here we assume that
 
@@ -194,14 +184,12 @@ Here we assume that
     \qquad \sigma^2_t = \beta + \gamma X_t^2,
     \qquad \beta, \gamma > 0
 
-
 Alternatively, we can write the model as
 
 .. math::
     :label: statd_arch
 
     X_{t+1} = \alpha X_t + (\beta + \gamma X_t^2)^{1/2} \xi_{t+1}
-
 
 This is a special case of :eq:`statd_srs` with :math:`\mu(x) = \alpha x` and :math:`\sigma(x) = (\beta + \gamma x^2)^{1/2}`
 
@@ -213,7 +201,6 @@ This is a special case of :eq:`statd_srs` with :math:`\mu(x) = \alpha x` and :ma
     :label: statd_ss
 
     k_{t+1} = s  A_{t+1} f(k_t) + (1 - \delta) k_t
-
 
 Here
 
@@ -245,7 +232,6 @@ with :math:`b > 0`, then the density of :math:`V` is given by
     = \frac{1}{b}
     f_U \left( \frac{v - a}{b} \right)
 
-
 (The proof is :ref:`below <statd_appendix>`.  For a multidimensional version
 see `EDTC <http://johnstachurski.net/edtc.html>`_, theorem 8.1.3)
 
@@ -265,7 +251,6 @@ Hence, by :eq:`statd_dv`,
     = \frac{1}{\sigma(x)}
     \phi \left( \frac{y - \mu(x)}{\sigma(x)} \right)
 
-
 For example, the growth model in :eq:`statd_ss` has stochastic kernel
 
 .. math::
@@ -275,16 +260,13 @@ For example, the growth model in :eq:`statd_ss` has stochastic kernel
     = \frac{1}{sf(x)}
     \phi \left( \frac{y - (1 - \delta) x}{s f(x)} \right)
 
-
 where :math:`\phi` is the density of :math:`A_{t+1}`
 
 (Regarding the state space :math:`S` for this model, a natural choice is :math:`(0, \infty)` --- in which case
 :math:`\sigma(x) = s f(x)` is strictly positive for all :math:`s` as required)
 
-
-
 Distribution Dynamics
------------------------
+---------------------
 
 In :ref:`this section <mc_md>` of our lecture on **finite** Markov chains, we
 asked the following question: If
@@ -301,7 +283,6 @@ answer :ref:`we gave <mc_fdd>` was that
 
     \psi_{t+1}[j] = \sum_{i \in S} P[i,j] \psi_t[i]
 
-
 This intuitive equality states that the probability of being at :math:`j`
 tomorrow is the probability of visiting :math:`i` today and then going on to
 :math:`j`, summed over all possible :math:`i`
@@ -314,7 +295,6 @@ mass functions with densities, yielding
 
     \psi_{t+1}(y) = \int p(x,y) \psi_t(x) \, dx,
     \qquad \forall y \in S
-
 
 It is convenient to think of this updating process in terms of an operator
 
@@ -329,7 +309,6 @@ defined by
     :label: def_dmo
 
     (\psi P)(y) = \int p(x,y) \psi(x) dx
-
 
 This operator is usually called the *Markov operator* corresponding to :math:`p`
 
@@ -346,7 +325,6 @@ With this notation, we can write :eq:`statd_fdd` more succinctly as :math:`\psi_
     :label: statd_p
 
     \psi_{t+1} = \psi_t P
-
 
 Equation :eq:`statd_p` tells us that if we specify a distribution for :math:`\psi_0`, then the entire sequence
 of future distributions can be obtained by iterating with :math:`P`
@@ -366,7 +344,7 @@ one (albeit in a much higher dimensional space)
     the `counting measure <https://en.wikipedia.org/wiki/Counting_measure>`_.
 
 Computation
---------------
+-----------
 
 To learn about the dynamics of a given process, it's useful to compute and study the sequences of densities generated by the model
 
@@ -386,7 +364,6 @@ Let's go over the ideas with reference to the growth model :ref:`discussed above
     :label: statd_ss2
 
     k_{t+1} = s  A_{t+1} f(k_t) + (1 - \delta) k_t
-
 
 Our aim is to compute the sequence :math:`\{ \psi_t \}` associated with this model and fixed initial condition :math:`\psi_0`
 
@@ -419,7 +396,6 @@ k_{t-1}^n` and form the estimate
 
     \psi_t^n(y) = \frac{1}{n} \sum_{i=1}^n p(k_{t-1}^i, y)
 
-
 where :math:`p` is the growth model stochastic kernel in :eq:`statd_sssk`
 
 What is the justification for this slightly surprising estimator?
@@ -433,7 +409,6 @@ The idea is that, by the strong :ref:`law of large numbers <lln_ksl>`,
     \mathbb E p(k_{t-1}^i, y)
     = \int p(x, y) \psi_{t-1}(x) \, dx
     = \psi_t(y)
-
 
 with probability one as :math:`n \to \infty`
 
@@ -451,43 +426,23 @@ converges almost surely to :math:`\psi_t(y)`, which is just what we want to comp
 
     In fact much stronger convergence results are true (see, for example, `this paper <https://lectures.quantecon.org/_downloads/ECTA6180.pdf>`__)
 
-
-
-
-
 Implementation
-----------------
-
-
+--------------
 
 A function which calls an ``LAE`` type for estimating densities by this technique can be found in `lae.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl>`__
 
-
-
-
-
-
-
-
-
 This function returns the right-hand side of :eq:`statd_lae1` using
-
-
 
 * an object of type ``LAE`` that stores the stochastic kernel and the observations
 
 * the value :math:`y` as its second argument
 
-
-
 The function is vectorized, in the sense that if ``psi`` is such an instance and ``y`` is an array, then the call ``psi(y)`` acts elementwise
 
 (This is the reason that we reshaped ``X`` and ``y`` inside the type --- to make vectorization work)
 
-
-
 Example
----------------
+-------
 
 The following code is example of usage for the stochastic growth model :ref:`described above <solow_swan>`
 
@@ -498,57 +453,55 @@ The following code is example of usage for the stochastic growth model :ref:`des
 
 .. code-block:: julia
 
-  using Distributions, StatPlots, Plots, QuantEcon, Random
-  Random.seed!(42) # For deterministic results.
+    using Distributions, StatPlots, Plots, QuantEcon, Random
+    Random.seed!(42) # For deterministic results.
 
-  s = 0.2
-  δ = 0.1
-  a_σ = 0.4                    # A = exp(B) where B ~ N(0, a_σ)
-  α = 0.4                      # We set f(k) = k**α
-  ψ_0 = Beta(5.0, 5.0)         # Initial distribution
-  ϕ = LogNormal(0.0, a_σ)
+    s = 0.2
+    δ = 0.1
+    a_σ = 0.4                    # A = exp(B) where B ~ N(0, a_σ)
+    α = 0.4                      # We set f(k) = k**α
+    ψ_0 = Beta(5.0, 5.0)         # Initial distribution
+    ϕ = LogNormal(0.0, a_σ)
 
+    function p(x, y)
+        # Stochastic kernel for the growth model with Cobb-Douglas production.
+        # Both x and y must be strictly positive.
 
-  function p(x, y)
-      #=
-      Stochastic kernel for the growth model with Cobb-Douglas production.
-      Both x and y must be strictly positive.
-      =#
-      d = s * x.^α
+        d = s * x.^α
 
-      pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-      return pdf.(ϕ, pdf_arg) ./ d
-  end
+        pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
+        return pdf.(ϕ, pdf_arg) ./ d
+    end
 
-  n = 10000  # Number of observations at each date t
-  T = 30     # Compute density of k_t at 1,...,T+1
+    n = 10000  # Number of observations at each date t
+    T = 30     # Compute density of k_t at 1,...,T+1
 
-  # Generate matrix s.t. t-th column is n observations of k_t
-  k = zeros(n, T)
-  A = rand!(ϕ, zeros(n, T))
+    # Generate matrix s.t. t-th column is n observations of k_t
+    k = zeros(n, T)
+    A = rand!(ϕ, zeros(n, T))
 
-  # Draw first column from initial distribution
-  k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
-  for t ∈ 1:T-1
-      k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
-  end
+    # Draw first column from initial distribution
+    k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
+    for t in 1:T-1
+        k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+    end
 
-  # Generate T instances of LAE using this data, one for each date t
-  laes = [LAE(p, k[:, t]) for t ∈ T:-1:1]
+    # Generate T instances of LAE using this data, one for each date t
+    laes = [LAE(p, k[:, t]) for t in T:-1:1]
 
-  # Plot
-  ygrid = range(0.01,  4.0, length = 200)
-  laes_plot = []
-  colors = []
-  for i ∈ 1:T
-      ψ = laes[i]
-      push!(laes_plot, lae_est(ψ , ygrid))
-      push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
-  end
-  plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
-       xlabel = "capital", legend = :none)
-  t = "Density of k_1 (lighter) to k_T (darker) for T=$T"
-  plot!(title = t)
+    # Plot
+    ygrid = range(0.01, 4, length = 200)
+    laes_plot = []
+    colors = []
+    for i in 1:T
+        ψ = laes[i]
+        push!(laes_plot, lae_est(ψ , ygrid))
+        push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
+    end
+    plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
+         xlabel = "capital", legend = :none)
+    t = "Density of k_1 (lighter) to k_T (darker) for T=$T"
+    plot!(title = t)
 
 .. code-block:: julia
     :class: test
@@ -568,9 +521,8 @@ converging --- more on this in just a moment
 Another quick comment is that each of these distributions could be interpreted
 as a cross sectional distribution (recall :ref:`this discussion <mc_eg1-1>`)
 
-
 Beyond Densities
-==================================
+================
 
 Up until now, we have focused exclusively on continuous state Markov chains
 where all conditional distributions :math:`p(x, \cdot)` are densities
@@ -587,9 +539,8 @@ be familiar with measure theory
 
 We can, however, construct a fairly general theory using distribution functions
 
-
 Example and Definitions
-------------------------
+-----------------------
 
 To illustrate the issues, recall that Hopenhayn and Rogerson :cite:`HopenhaynRogerson1993` study a model of firm dynamics where individual firm productivity follows the exogenous process
 
@@ -598,7 +549,6 @@ To illustrate the issues, recall that Hopenhayn and Rogerson :cite:`HopenhaynRog
     X_{t+1} = a + \rho X_t + \xi_{t+1},
     \quad \text{where} \quad
     \{ \xi_t \} \stackrel {\textrm{ IID }} {\sim} N(0, \sigma^2)
-
 
 As is, this fits into the density case we treated above
 
@@ -611,7 +561,6 @@ One way to write this is
     X_{t+1} = h(a + \rho X_t + \xi_{t+1})
     \quad \text{where} \quad
     h(x) := x \, \mathbf 1\{0 \leq x \leq 1\} + \mathbf 1 \{ x > 1\}
-
 
 If you think about it, you will see that for any given :math:`x \in [0, 1]`,
 the conditional distribution of :math:`X_{t+1}` given :math:`X_t = x`
@@ -628,7 +577,6 @@ To this end, set
     G(x, y) := \mathbb P \{ h(a + \rho x + \xi_{t+1}) \leq y \}
     \qquad (0 \leq x, y \leq 1)
 
-
 This family of cdfs :math:`G(x, \cdot)` plays a role analogous to the stochastic kernel in the density case
 
 The distribution dynamics in :eq:`statd_fdd` are then replaced by
@@ -638,14 +586,12 @@ The distribution dynamics in :eq:`statd_fdd` are then replaced by
 
     F_{t+1}(y) = \int G(x,y) F_t(dx)
 
-
 Here :math:`F_t` and :math:`F_{t+1}` are cdfs representing the distribution of the current state and next period state
 
 The intuition behind :eq:`statd_fddc` is essentially the same as for :eq:`statd_fdd`
 
-
 Computation
-------------
+-----------
 
 If you wish to compute these cdfs, you cannot use the look-ahead estimator as before
 
@@ -654,9 +600,8 @@ estimating/computing are not densities
 
 One good option is simulation as before, combined with the `empirical distribution function <https://en.wikipedia.org/wiki/Empirical_distribution_function>`__
 
-
 Stability
-===========
+=========
 
 In our :doc:`lecture <finite_markov>` on finite Markov chains we also studied stationarity, stability and ergodicity
 
@@ -666,9 +611,8 @@ We will, however, treat only the density case (as in :ref:`this section <statd_d
 
 The general case is relatively similar --- references are given below
 
-
 Theoretical Results
---------------------
+-------------------
 
 Analogous to :ref:`the finite case <mc_stat_dd>`, given a stochastic kernel :math:`p` and corresponding Markov operator as
 defined in :eq:`def_dmo`, a density :math:`\psi^*` on :math:`S` is called
@@ -681,7 +625,6 @@ In other words,
 
     \psi^*(y) = \int p(x,y) \psi^*(x) \, dx,
     \qquad \forall y \in S
-
 
 As with the finite case, if :math:`\psi^*` is stationary for :math:`P`, and
 the distribution of :math:`X_0` is :math:`\psi^*`, then, in view of
@@ -707,7 +650,6 @@ With additional conditions, we can also get a unique stationary density (:math:`
     \forall \, \psi \in \mathscr D, \quad \psi P^t \to \psi^*
         \quad \text{as} \quad t \to \infty
 
-
 This combination of existence, uniqueness and global convergence in the sense
 of :eq:`statd_dca` is often referred to as *global stability*
 
@@ -718,7 +660,6 @@ Under very similar conditions, we get *ergodicity*, which means that
 
     \frac{1}{n} \sum_{t = 1}^n h(X_t)  \to \int h(x) \psi^*(x) dx
         \quad \text{as } n \to \infty
-
 
 for any (`measurable <https://en.wikipedia.org/wiki/Measurable_function>`_) function :math:`h \colon S \to \mathbb R`  such that the right-hand side is finite
 
@@ -748,9 +689,8 @@ In addition
   provides a specific treatment for the growth model we considered in this
   lecture
 
-
 An Example of Stability
-------------------------
+-----------------------
 
 As stated above, the :ref:`growth model treated here <solow_swan>` is stable under mild conditions
 on the primitives
@@ -770,9 +710,8 @@ All sequences are converging towards the same limit, regardless of their initial
 
 The details regarding initial conditions and so on are given in :ref:`this exercise <statd_ex2>`, where you are asked to replicate the figure
 
-
 Computing Stationary Densities
---------------------------------
+------------------------------
 
 In the preceding figure, each sequence of densities is converging towards the unique stationary density :math:`\psi^*`
 
@@ -794,7 +733,6 @@ long time series :math:`X_0, X_1, \ldots, X_n` and estimate :math:`\psi^*` via
 
     \psi_n^*(y) = \frac{1}{n} \sum_{t=1}^n p(X_t, y)
 
-
 This is essentially the same as the look ahead estimator :eq:`statd_lae1`,
 except that now the observations we generate are a single time series, rather
 than a cross section
@@ -808,7 +746,6 @@ The justification for :eq:`statd_lae2` is that, with probability one as :math:`n
     \int p(x, y) \psi^*(x) \, dx
     = \psi^*(y)
 
-
 where the convergence is by :eq:`statd_lln` and the equality on the right is by
 :eq:`statd_dsd`
 
@@ -819,14 +756,13 @@ for the look ahead estimator is very good
 
 The first exercise helps illustrate this point
 
-
 Exercises
-=============
+=========
 
 .. _statd_ex1:
 
 Exercise 1
-------------
+----------
 
 Consider the simple threshold autoregressive model
 
@@ -836,7 +772,6 @@ Consider the simple threshold autoregressive model
     X_{t+1} = \theta |X_t| + (1- \theta^2)^{1/2} \xi_{t+1}
     \qquad \text{where} \quad
     \{ \xi_t \} \stackrel {\textrm{ IID }} {\sim} N(0, 1)
-
 
 This is one of those rare nonlinear stochastic models where an analytical
 expression for the stationary density is available
@@ -851,7 +786,6 @@ stationary density :math:`\psi^*` given by
     \left[
         \frac{\theta y}{(1 - \theta^2)^{1/2}}
     \right]
-
 
 Here :math:`\phi` is the standard normal density and :math:`\Phi` is the standard normal cdf
 
@@ -875,11 +809,10 @@ density estimator
 
 If you repeat the simulation you will see that this is consistently the case
 
-
 .. _statd_ex2:
 
 Exercise 2
-------------
+----------
 
 Replicate the figure on global convergence :ref:`shown above <statd_egs>`
 
@@ -889,7 +822,6 @@ Begin with the code found in `stochasticgrowth.py <https://github.com/QuantEcon/
 
 Use the same parameters
 
-
 For the four initial distributions, use the beta distribution and shift the random draws as shown below
 
  .. code-block:: none
@@ -898,15 +830,14 @@ For the four initial distributions, use the beta distribution and shift the rand
     n = 1000
     # .... more setup
 
-    for i ∈ 1:4
+    for i in 1:4
         # .... some code
         rand_draws = (rand(ψ_0, n) .+ 2.5i) ./ 2
-
 
 .. _statd_ex3:
 
 Exercise 3
-------------
+----------
 
 A common way to compare distributions visually is with `boxplots <https://en.wikipedia.org/wiki/Box_plot>`_
 
@@ -948,9 +879,7 @@ The three data sets are
     \text{ and } \;
     \{ Z_1, \ldots, Z_n \} \sim N(4, 1), \;
 
-
 The figure looks as follows
-
 
 Each data set is represented by a box, where the top and bottom of the box are the third and first quartiles of the data, and the red line in the center is the median
 
@@ -971,12 +900,10 @@ boxplots
 
 In particular, the exercise is to generate `J` boxplot figures, one for each initial condition :math:`X_0` in
 
-
 .. code-block:: julia
     :class: no-execute
 
-    initial_conditions = range(8,  0, length = J)
-
+    initial_conditions = range(8, 0, length = J)
 
 For each :math:`X_0` in this set,
 
@@ -984,16 +911,12 @@ For each :math:`X_0` in this set,
 
 #. Create a boxplot representing :math:`n` distributions, where the :math:`t`-th distribution shows the :math:`k` observations of :math:`X_t`
 
-
 Use :math:`\theta = 0.9, n = 20, k = 5000, J = 8`
-
 
 .. TODO: Exercise 4, to be written: From LAE to GLAE --- GARCH as in MOR
 
-
 Solutions
-==========
-
+=========
 
 .. code-block:: julia
 
@@ -1031,18 +954,18 @@ to get an idea of the speed of convergence.
 
     Z = rand(ϕ, n)
     X = zeros(n)
-    for t ∈ 1:n-1
+    for t in 1:n-1
         X[t+1] = θ * abs(X[t]) + d * Z[t]
     end
 
     ψ_est(a) = lae_est(LAE(p_TAR, X), a)
     k_est = kde(X)
 
-    ys = range(-3,  3, length = 200)
-    plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label="true")
-    plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label="look ahead estimate")
-    plot!(k_est.x, k_est.density, color=:black, lw = 2, alpha = 0.6, 
-          label="kernel based estimate")
+    ys = range(-3, 3, length = 200)
+    plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label = "true")
+    plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label = "look ahead estimate")
+    plot!(k_est.x, k_est.density, color = :black, lw = 2, alpha = 0.6,
+          label = "kernel based estimate")
 
 .. code-block:: julia
     :class: test
@@ -1072,12 +995,10 @@ Here's one program that does the job.
     ψ_0 = Beta(5.0, 5.0)  # Initial distribution
     ϕ = LogNormal(0.0, a_σ)
 
-
     function p_growth(x, y)
-        #=
-        Stochastic kernel for the growth model with Cobb-Douglas production.
-        Both x and y must be strictly positive.
-        =#
+        # Stochastic kernel for the growth model with Cobb-Douglas production.
+        # Both x and y must be strictly positive.
+
             d = s * x.^α
 
         pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
@@ -1088,35 +1009,35 @@ Here's one program that does the job.
     T = 40    # Compute density of k_t at 1,...,T+1
 
     xmax = 6.5
-    ygrid = range(0.01,  xmax, length = 150)
-    laes_plot = zeros(length(ygrid), 4*T)
+    ygrid = range(0.01, xmax, length = 150)
+    laes_plot = zeros(length(ygrid), 4T)
     colors = []
-    for i ∈ 1:4
+    for i in 1:4
         k = zeros(n, T)
         A = rand!(ϕ, zeros(n, T))
 
         # Draw first column from initial distribution
         # match scale = 0.5 and loc = 2i in julia version
         k[:, 1] = (rand(ψ_0, n) .+ 2.5i) ./ 2
-        for t ∈ 1:T-1
-            k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+        for t in 1:T-1
+            k[:, t+1] = s * A[:, t] .* k[:, t].^α + (1 - δ) .* k[:, t]
         end
 
         # Generate T instances of LAE using this data, one for each date t
-        laes = [LAE(p_growth, k[:, t]) for t ∈ T:-1:1]
+        laes = [LAE(p_growth, k[:, t]) for t in T:-1:1]
         ind = i
-        for j ∈ 1:T
+        for j in 1:T
             ψ = laes[j]
             laes_plot[:, ind] = lae_est(ψ, ygrid)
             ind = ind + 4
-            push!(colors,  RGBA(0, 0, 0, 1 - (j - 1)/T))
+            push!(colors,  RGBA(0, 0, 0, 1 - (j - 1) / T))
         end
     end
 
     #colors = reshape(reshape(colors, T, 4)', 4*T, 1)
     colors = reshape(colors, 1, length(colors))
     plot(ygrid, laes_plot, layout = (2,2), color = colors,
-            legend = :none, xlabel = "capital", xlims = (0, xmax))
+         legend = :none, xlabel = "capital", xlims = (0, xmax))
 
 .. code-block:: julia
     :class: test
@@ -1149,13 +1070,13 @@ series for one boxplot all at once.
     d = sqrt(1 - θ^2)
     δ = θ / d
 
-    initial_conditions = range(8,  0, length = J)
+    initial_conditions = range(8, 0, length = J)
 
     Z = randn(k, n, J)
     titles = []
     data = []
     x_labels = []
-    for j ∈ 1:J
+    for j in 1:J
         title = "time series from t = $(initial_conditions[j])"
         push!(titles, title)
 
@@ -1163,7 +1084,7 @@ series for one boxplot all at once.
         X[:, 1] .= initial_conditions[j]
         labels = []
         labels = vcat(labels, ones(k, 1))
-        for t ∈ 2:n
+        for t in 2:n
             X[:, t] = θ .* abs.(X[:, t-1]) .+ d .* Z[:, t, j]
             labels = vcat(labels, t*ones(k, 1))
         end
@@ -1172,12 +1093,12 @@ series for one boxplot all at once.
         push!(x_labels, labels)
     end
 
-.. code-block:: julia 
+.. code-block:: julia
 
     plots = []
-    for i in 1:J 
+    for i in 1:J
         push!(plots, boxplot(x_labels[i], data[i], title = titles[i]))
-    end 
+    end
     plot(plots..., layout = (J, 1), legend = :none, size = (800, 2000))
 
 .. code-block:: julia
@@ -1189,7 +1110,7 @@ series for one boxplot all at once.
     end
 
 Appendix
-===========
+========
 
 .. _statd_appendix:
 
