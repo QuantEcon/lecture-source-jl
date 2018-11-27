@@ -280,7 +280,7 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
                                 weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
 
-To explore the data use the interactive DataVoyager
+To explore the data use the interactive DataVoyager and VegaLite
 
 .. code-block:: julia
 
