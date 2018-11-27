@@ -714,7 +714,7 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
     C = [σ; 0.0]
 
     # compute solutions and simulate
-    lq = LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
+    lq = QuantEcon.LQ(Q, R, A, B, C; bet=β, capT=T, rf=Rf)
     x0 = [0.0; 1.0]
     xp, up, wp = compute_sequence(lq, x0)
 
