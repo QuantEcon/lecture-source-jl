@@ -560,7 +560,7 @@ Comparing sample paths with population distributions at each date :math:`t` is a
 
 .. code-block:: julia
 
-    lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0)
+    lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0);
 
 
 Population and sample panels
@@ -676,8 +676,6 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         ax[2][:set](ylabel="debt", xlabel="t")
 
         fig[:tight_layout]
-    end
-
 
         plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
         plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
