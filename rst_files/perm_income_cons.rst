@@ -640,43 +640,23 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         # get T
         T =  size(bsim, 2)
 
-        # create Percentiles of cross-section distributions
+        # create percentiles of cross-section distributions
         cmean = mean(cons_mean)
         c90 = 1.65 * sqrt.(cons_var)
         c95 = 1.96 * sqrt.(cons_var)
         c_perc_95p, c_perc_95m = cons_mean + c95, cons_mean - c95
         c_perc_90p, c_perc_90m = cons_mean + c90, cons_mean - c90
 
-        # create Percentiles of cross-section distributions
+        # create percentiles of cross-section distributions
         dmean = mean(debt_mean)
         d90 = 1.65 * sqrt.(debt_var)
         d95 = 1.96 * sqrt.(debt_var)
         d_perc_95p, d_perc_95m = debt_mean + d95, debt_mean - d95
         d_perc_90p, d_perc_90m = debt_mean + d90, debt_mean - d90
 
-        # create second figure
-
         xvals = 1:T
 
-        #fig[:suptitle]("Consumption/Debt over time")
-
-        # consumption fan
-        ax[1][:plot](xvals, cons_mean, color="k")
-        ax[1][:plot](xvals, csim', color="k", alpha=.25)
-        ax[1][:fill_between](xvals, c_perc_95m, c_perc_95p, alpha=.25, color="b")
-        ax[1][:fill_between](xvals, c_perc_90m, c_perc_90p, alpha=.25, color="r")
-        ax[1][:set](title="Consumption/Debt over time",
-                    ylim=(cmean-15, cmean+15), ylabel="consumption")
-
-        # debt fan
-        ax[2][:plot](xvals, debt_mean, color="k")
-        ax[2][:plot](xvals, bsim', color="k", alpha=.25)
-        ax[2][:fill_between](xvals, d_perc_95m, d_perc_95p, alpha=.25, color="b")
-        ax[2][:fill_between](xvals, d_perc_90m, d_perc_90p, alpha=.25, color="r")
-        ax[2][:set](ylabel="debt", xlabel="t")
-
-        fig[:tight_layout]
-
+        # first fanchart 
         plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
         plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
         plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
@@ -684,7 +664,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         plot!(plt_1, title="Consumption/Debt over time",
               ylim=(cmean-15, cmean+15), ylabel="consumption")
 
-        # debt fan
+        # second fanchart 
         plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
         plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
         plot!(xvals, fill_between=(d_perc_95m, d_perc_95p), alpha=0.25, color=:blue,label="")
