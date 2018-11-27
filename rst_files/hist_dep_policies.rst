@@ -835,7 +835,7 @@ The above code computes a number of sequences besides the Ramsey plan, some of w
 
 The next figure uses the program to compute and show the Ramsey plan for :math:`\tau` and the Ramsey outcome for :math:`(Q_t,u_t)`
 
-
+.. _fig_ES_plot_1:
 
 .. code-block:: julia
 
@@ -848,14 +848,6 @@ The next figure uses the program to compute and show the Ramsey plan for :math:`
     end
 
     plot1(rp)
-
-
-
-
-.. _fig_ES_plot_1:
-
-.. figure:: /_static/figures/evans_sargent_plot1_updated.png
-    :scale: 100%
 
 From top to bottom, the panels show :math:`Q_t`, :math:`\tau_t` and :math:`u_t := Q_{t+1} - Q_t` over :math:`t=0, \ldots, 15`
 
