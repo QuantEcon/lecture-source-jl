@@ -60,7 +60,7 @@ To add the file:
 
 * Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer 
 
-* Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory
+* Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory
 
 * For convenience, you may find it useful on your operating system to change the directory where the REPL starts
  
