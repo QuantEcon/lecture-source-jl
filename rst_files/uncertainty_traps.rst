@@ -212,7 +212,7 @@ Implementation
 
 We want to simulate this economy
 
-As a first step, let's put together a type that bundles
+As a first step, let's put together a struct that bundles
 
 * the parameters, the current value of :math:`\theta` and the current values of the
   two belief parameters :math:`\mu` and :math:`\gamma`
