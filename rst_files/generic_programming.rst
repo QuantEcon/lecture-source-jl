@@ -55,7 +55,13 @@ This lecture has the dual role of giving an introduction into the design of gene
 Setup
 ------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+    :class: hide-output 
+
+    using LinearAlgebra, Statistics, Compat 
+    using Distributions, StatPlots, QuadGK, Polynomials, Interpolations
 
 Exploring Type Trees
 ==================================================
