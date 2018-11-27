@@ -1074,9 +1074,9 @@ Here's how it looks
         N = length(a_hist) - 1
         W, W_m = construct_W_and_Wm(lqf, N)
 
-        F = lufact(W, Val{true})
+        F = lu(W)
 
-        L, U = F[:L], F[:U]
+        L, U = F.L, F.U
         D = Diagonal(1.0./diag(U))
         U = D * U
         L = L * Diagonal(1.0./diag(D))
