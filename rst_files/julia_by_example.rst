@@ -359,7 +359,6 @@ As a final -- abstract -- approach, we can make the ``generatedata`` function ab
     
 .. code-block:: julia
 
-    # too abstract?
     generatedata(n, gen) = gen.(randn(n)) # uses broadcast for some function `gen`
     
     f(x) = x^2 # simple square function 
