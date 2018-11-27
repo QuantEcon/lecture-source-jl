@@ -626,6 +626,7 @@ To test our code, we want to see if we can replicate the analytical solution num
 We need a grid and some shock draws for Monte Carlo integration
 
 .. code-block:: julia
+    :class: hide-output 
 
     using Random
     Random.seed!(42) # For reproducible results.
@@ -800,6 +801,7 @@ We have also dialed down the shocks a bit
     Random.seed!(42);
 
 .. code-block:: julia
+    :class: hide-output
 
     s = 0.05
     shocks = exp.(μ .+ s * randn(shock_size))
