@@ -592,12 +592,13 @@ Exercise 1
     plot(plots..., size = (1000, 1000))
 
 .. code-block:: julia
+    :class: test
 
     function plot_attraction_basis(s1 = 0.5,
-                                   θ = 2.5,
-                                   δ = 0.7,
-                                   ρ = 0.2;
-                                   npts = 250)
+                                θ = 2.5,
+                                δ = 0.7,
+                                ρ = 0.2;
+                                npts = 250)
         # Create attraction basis
         unitrange = range(0,  1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
@@ -605,9 +606,6 @@ Exercise 1
     end
 
     abvec = [plot_attraction_basis(p...) for p in params]
-
-.. code-block:: julia
-    :class: test
 
     @testset begin
         @test abvec[1][5] == 194.0
