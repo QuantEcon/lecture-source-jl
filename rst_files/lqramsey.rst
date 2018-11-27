@@ -764,12 +764,12 @@ Description and clarifications are given below
     function gen_fig_1(path)
         T = length(path.c)
 
-        plt_1 = plot(path.rvn, lw=2, label = "tau_t")
+        plt_1 = plot(path.rvn, lw=2, label = "tau_t l_t")
         plot!(plt_1, path.g, lw=2, label= "g_t")
         plot!(plt_1, path.c, lw=2, label= "c_t")
         plot!(xlabel="Time", grid=true)
 
-        plt_2 = plot(path.rvn, lw=2, label="tau_t")
+        plt_2 = plot(path.rvn, lw=2, label="tau_t l_t")
         plot!(plt_2, path.g, lw=2, label="g_t")
         plot!(plt_2, path.B[2:end], lw=2, label="B_(t+1)")
         plot!(xlabel="Time", grid=true)
@@ -777,7 +777,7 @@ Description and clarifications are given below
         plt_3 = plot(path.R, lw=2, label="R_(t-1)")
         plot!(plt_3, xlabel="Time", grid=true)
 
-        plt_4 = plot(path.rvn, lw=2, label="tau_t")
+        plt_4 = plot(path.rvn, lw=2, label="tau_t l_t")
         plot!(plt_4, path.g, lw=2, label="g_t")
         plot!(plt_4, path.π, lw=2, label="pi_t")
         plot!(plt_4, xlabel="Time", grid=true)
