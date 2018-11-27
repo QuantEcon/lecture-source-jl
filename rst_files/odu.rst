@@ -362,7 +362,7 @@ Here's the value function:
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
                 fill=true, size=(400, 400), c=:lightrainbow)
-    plot!(xlabel="pi", ylabel="2", xguidefont=font(12))
+    plot!(xlabel="pi", ylabel="w", xguidefont=font(12))
     return p
   end
 
