@@ -259,10 +259,10 @@ The associated Lagrangian is
     =
     \mathbb E  \sum_{t=0}^{\infty} \beta^t
     \left\{
-    - \frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right]
-    + \lambda
-    \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right]
-    + \mu_t
+    - \frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] + 
+    \lambda
+    \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right] + 
+    \mu_t
     [d_t + \ell_t - c_t - g_t]
     \right\}
 
