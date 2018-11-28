@@ -56,7 +56,7 @@ Next period output is
 
     y_{t+1} := f(k_{t+1}) \xi_{t+1}
 
-where :math:`f \colon \RR_+ \to \RR_+` is called the production function
+where :math:`f \colon \mathbb{R}_+ \to \mathbb{R}_+` is called the production function
 
 The resource constraint is
 
