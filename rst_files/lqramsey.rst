@@ -93,7 +93,7 @@ for labor and consumption to maximize
 .. math::
     :label: lq_hu
 
-    - \mathbb E \frac{1}{2} \sum_{t=0}^{\infty} \beta^t
+    -\mathbb E \frac{1}{2} \sum_{t=0}^{\infty} \beta^t
     \left[
        (c_t - b_t)^2 + \ell_t^2
     \right]
@@ -259,7 +259,7 @@ The associated Lagrangian is
     =
     \mathbb E  \sum_{t=0}^{\infty} \beta^t
     \left\{
-    - \frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] + 
+    -\frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] + 
     \lambda
     \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right] + 
     \mu_t
@@ -270,7 +270,7 @@ The first order conditions associated with :math:`c_t` and :math:`\ell_t` are
 
 .. math::
 
-    - (c_t - b_t ) + \lambda [- \ell_t + (g_t + s_t )] = \mu_t
+    -(c_t - b_t ) + \lambda [- \ell_t + (g_t + s_t )] = \mu_t
 
 and
 
