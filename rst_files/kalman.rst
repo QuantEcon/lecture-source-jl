@@ -129,9 +129,11 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     two_args_to_pdf(dist) = (x, y) -> pdf(dist, [x, y]) # returns a function to be plotted
 
     # plot
-    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = true, levels = 6, 
-            color = :lightrainbow, alpha = 0.6, cbar = false) 
-            # saves us the trouble of reshaping a data matrix to be a Cartesian grid
+    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = true,
+        color = :lighttest, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, levels = 6, lw=1,
+        color = :grays, cbar = false)
+        # saves us the trouble of reshaping a data matrix to be a Cartesian grid
 
 .. code-block:: julia
     :class: test
@@ -221,14 +223,18 @@ The original density is left in as contour lines for comparison
 
     # plot the new density on the old plot
     newdist = MvNormal(x_hat_F, Symmetric(Σ_F)) # because Σ_F
-    contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 6, 
-             color = :grays, cbar = false)
+    contour(x_grid, y_grid, two_args_to_pdf(newdist), fill = true,
+         color = :lighttest, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
+         color = :grays, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, levels = 14, lw=1,
+         color = :grays, cbar = false)
 
 .. code-block:: julia
     :class: test
 
     @testset "Updated Belief Tests" begin
-        @test M ≈ [0.6666666666666667 1.1102230246251565e-16; 
+        @test M ≈ [0.6666666666666667 1.1102230246251565e-16;
                    1.1102230246251565e-16 0.6666666666666667]
         @test Σ_F ≈ [0.13333333333333325 0.09999999999999992;
                      0.09999999999999998 0.15000000000000002]
@@ -330,8 +336,12 @@ the update has used parameters
     predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
 
     # Plot Density 3
-    contour!(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, levels = 6, 
-             color = :grays, cbar = false)
+    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = true,
+         color = :lighttest, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, levels = 6,
+         color = :grays, cbar = false)
+    contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, levels = 6,
+         color = :grays, cbar = false)
 
 .. code-block:: julia
     :class: test
@@ -717,9 +727,9 @@ Exercise 3
         e2[t] = sum((a - b)^2 for (a, b) in zip(x, Ax))
     end
 
-    plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error", 
+    plot(1:T, e1, color = :black, linewidth = 2, alpha = 0.6, label = "Kalman filter error",
          grid = false)
-    plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6, 
+    plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6,
           label = "conditional expectation error")
 
 .. code-block:: julia
