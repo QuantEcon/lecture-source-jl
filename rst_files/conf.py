@@ -261,13 +261,6 @@ latex_elements = {
 
 \usepackage{bbm}
 
-\newcommand{\dD}{\mathcal D}
-\newcommand{\lL}{\mathcal L}
-\newcommand{\gG}{\mathcal G}
-\newcommand{\hH}{\mathcal H}
-\newcommand{\nN}{\mathcal N}
-\newcommand{\pP}{\mathcal P}
-
 \DeclareMathOperator{\trace}{trace}
 \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\Span}{span}
