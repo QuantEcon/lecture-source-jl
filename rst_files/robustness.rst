@@ -228,14 +228,7 @@ As we'll see, this will eventually lead us to construct the Bellman equation
 .. math::
     :label: rb_wcb0
 
-    J (x)
-    =
-    \min_u
-    \max_w
-    \{
-        x' R x + u' Q u + \beta \,
-        [J (Ax + B u + C w) - \theta w'w]
-    \}
+    J (x) = \min_u \max_w \{ x' R x + u' Q u + \beta \,[J (Ax + B u + C w) - \theta w'w] \}
 
 
 Notice that we've added the penalty term :math:`- \theta w'w`
@@ -288,13 +281,9 @@ and :math:`I` is a :math:`j \times j` identity matrix.  Substituting this expres
 .. math::
     :label: rb_owb
 
-    x'Px
-    =
-    \min_u
-    \{
+    x'Px  =  \min_u    \{
         x' R x + u' Q u + \beta \,
-       (Ax + Bu)' \mathcal D(P) (Ax + Bu)
-    \}
+       (Ax + Bu)' \mathcal D(P) (Ax + Bu)    \}
 
 
 Using similar mathematics, the solution to this minimization problem is :math:`u  = - F x` where :math:`F := (Q + \beta B' \mathcal D (P) B)^{-1} \beta B' \mathcal D(P) A`
@@ -716,8 +705,7 @@ Using this notation, we replace :eq:`rb_wcb0` with the stochastic analogue
 .. math::
     :label: rb_wcb1
 
-    J (x)
-    =
+    J (x) =
     \min_u
     \max_{\psi \in \mathcal P}
     \left\{
@@ -785,8 +773,7 @@ Substituting the expression for the maximum into  Bellman equation
 .. math::
     :label: rb_wcb2
 
-    x' P x + d
-    =
+    x' P x + d =
     \min_u
     \left\{
         x' R x + u' Q u + \beta \,

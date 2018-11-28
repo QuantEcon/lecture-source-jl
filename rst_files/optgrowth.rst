@@ -190,8 +190,7 @@ We insert this process into the objective function to get
     \mathbb E
     \left[ \,
     \sum_{t = 0}^{\infty} \beta^t u(c_t) \,
-    \right]
-    =
+    \right] =
     \mathbb E
     \left[ \,
     \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \,
@@ -212,9 +211,7 @@ The **policy value function** :math:`v_{\sigma}` associated with a given policy 
 .. math::
     :label: vfcsdp00
 
-    v_{\sigma}(y)
-    =
-    \mathbb E \left[ \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \right]
+    v_{\sigma}(y) = \mathbb E \left[ \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \right]
 
 when :math:`\{y_t\}` is given by :eq:`firstp0_og2` with :math:`y_0 = y`
 

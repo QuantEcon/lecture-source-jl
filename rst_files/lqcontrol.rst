@@ -152,8 +152,7 @@ In particular, if we write
     a_{t+1} \\
     1
     \end{array}
-    \right)
-    =
+    \right) =
     \left(
     \begin{array}{cc}
     1 + r & -\bar c + \mu \\
@@ -167,8 +166,7 @@ In particular, if we write
     \end{array}
     \right) +
     \left(
-    \begin{array}{c}
-    -1 \\
+    \begin{array}{c}    -1 \\
     0
     \end{array}
     \right)
