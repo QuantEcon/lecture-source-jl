@@ -169,8 +169,8 @@ and
     :label: bell02_mccall
 
     U = u(c) +
-      \beta (1 - \gamma) U
-          + \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
+      \beta (1 - \gamma) U + 
+      \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
 Solving the Bellman Equations
 -------------------------------
@@ -203,8 +203,8 @@ and
     :label: bell2001
 
     U_{n+1} = u(c) +
-        \beta (1 - \gamma) U_n
-         + \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
+        \beta (1 - \gamma) U_n + 
+        \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
 
 
 starting from some initial conditions :math:`U_0, V_0`
