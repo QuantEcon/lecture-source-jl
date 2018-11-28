@@ -258,6 +258,20 @@ latex_elements = {
 \usepackage{pgf}
 \usepackage{pgfplots}
 \usepackage{bbm}
+\newcommand{\NN}{\mathbbm N}
+\newcommand{\PP}{\mathbbm P}
+\newcommand{\EE}{\mathbbm E \,}
+\newcommand{\XX}{\mathbbm X}
+\newcommand{\ZZ}{\mathbbm Z}
+\newcommand{\QQ}{\mathbbm Q}
+
+\newcommand{\fF}{\mathcal F}
+\newcommand{\dD}{\mathcal D}
+\newcommand{\lL}{\mathcal L}
+\newcommand{\gG}{\mathcal G}
+\newcommand{\hH}{\mathcal H}
+\newcommand{\nN}{\mathcal N}
+\newcommand{\pP}{\mathcal P}
 
 \DeclareMathOperator{\trace}{trace}
 \DeclareMathOperator{\Var}{Var}
