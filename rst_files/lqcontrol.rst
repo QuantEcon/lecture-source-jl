@@ -165,16 +165,14 @@ In particular, if we write
     a_t \\
     1
     \end{array}
-    \right)
-    +
+    \right) +
     \left(
     \begin{array}{c}
     -1 \\
     0
     \end{array}
     \right)
-    u_t
-    +
+    u_t +
     \left(
     \begin{array}{c}
     \sigma \\
@@ -481,8 +479,8 @@ where
     :label: lq_finr
 
     P_{T-1}
-    = R - \beta^2 A' P_T B (Q + \beta B' P_T B)^{-1} B' P_T A
-    + \beta A' P_T A
+    = R - \beta^2 A' P_T B (Q + \beta B' P_T B)^{-1} B' P_T A + 
+    \beta A' P_T A
 
 and
 
@@ -499,8 +497,8 @@ If we continue working backwards in this manner, it soon becomes clear that :mat
     :label: lq_pr
 
     P_{t-1}
-    = R - \beta^2 A' P_t B (Q + \beta B' P_t B)^{-1} B' P_t A
-    + \beta A' P_t A
+    = R - \beta^2 A' P_t B (Q + \beta B' P_t B)^{-1} B' P_t A + 
+    \beta A' P_t A
     \quad \text{with } \quad
     P_T = R_f
 
@@ -637,8 +635,7 @@ by applying :eq:`lq_pr` and :eq:`lq_oc`
 After generating shocks :math:`w_1, \ldots, w_T`, the dynamics for assets and
 consumption can be simulated via :eq:`lq_xud`
 
-The following figure was computed using :math:`r = 0.05, \beta = 1 / (1
-+ r), \bar c = 2,  \mu = 1, \sigma = 0.25, T = 45` and :math:`q = 10^6`
+The following figure was computed using :math:`r = 0.05, \beta = 1 / (1 + r), \bar c = 2,  \mu = 1, \sigma = 0.25, T = 45` and :math:`q = 10^6`
 
 The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 
@@ -805,8 +802,8 @@ The sequence :math:`\{P_t\}` from :eq:`lq_pr` becomes
     :label: lq_pr_cp
 
     P_{t-1}
-    = R - (\beta B' P_t A + N)' (Q + \beta B' P_t B)^{-1} (\beta B' P_t A + N)
-    + \beta A' P_t A
+    = R - (\beta B' P_t A + N)' (Q + \beta B' P_t B)^{-1} (\beta B' P_t A + N) + 
+    \beta A' P_t A
     \quad \text{with } \quad
     P_T = R_f
 
@@ -861,9 +858,8 @@ The stationary matrix :math:`P` is the solution to the
 .. math::
     :label: lq_pr_ih
 
-    P
-    = R - (\beta B' P A + N)' (Q + \beta B' P B)^{-1} (\beta B' P A + N)
-    + \beta A' P A
+    P = R - (\beta B' P A + N)' (Q + \beta B' P B)^{-1} (\beta B' P A + N) + 
+    \beta A' P A
 
 Equation :eq:`lq_pr_ih` is also called the *LQ Bellman equation*, and the map
 that sends a given :math:`P` into the right-hand side of :eq:`lq_pr_ih` is
