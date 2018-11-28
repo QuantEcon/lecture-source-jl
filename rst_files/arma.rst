@@ -299,8 +299,7 @@ Using :math:`L`, we can rewrite :eq:`arma` as
 .. math::
     :label: arma_lag
 
-    L^0 X_t - \phi_1 L^1 X_t - \cdots - \phi_p L^p X_t
-    = L^0 \epsilon_t + \theta_1 L^1 \epsilon_t + \cdots + \theta_q L^q \epsilon_t
+    L^0 X_t - \phi_1 L^1 X_t - \cdots - \phi_p L^p X_t = L^0 \epsilon_t + \theta_1 L^1 \epsilon_t + \cdots + \theta_q L^q \epsilon_t
 
 If we let :math:`\phi(z)` and :math:`\theta(z)` be the polynomials
 
