@@ -550,8 +550,7 @@ According to the preceding rule, this gives us an :math:`n \times 1` column vect
 .. math::
     :label: la_atx
 
-    A x
-    =
+    A x =
     \left[
     \begin{array}{ccc}
         a_{11} &  \cdots & a_{1k} \\
@@ -565,8 +564,7 @@ According to the preceding rule, this gives us an :math:`n \times 1` column vect
         \vdots  \\
         x_{k}
     \end{array}
-    \right]
-    :=
+    \right] :=
     \left[
     \begin{array}{c}
         a_{11} x_1 + \cdots + a_{1k} x_k \\
