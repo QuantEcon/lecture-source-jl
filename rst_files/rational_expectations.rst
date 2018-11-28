@@ -321,7 +321,7 @@ The first-order necessary condition for choosing :math:`y'` is
 .. math::
     :label: comp5
 
-    - \gamma (y' - y) + \beta v_y(y',H(Y)) =0
+    -\gamma (y' - y) + \beta v_y(y',H(Y)) =0
 
 
 An important useful envelope result of Benveniste-Scheinkman  :cite:`BenvenisteScheinkman1979` implies that to
@@ -487,7 +487,7 @@ The associated first order condition is
 .. math::
     :label: comp14
 
-    - \gamma (Y' - Y) + \beta V'(Y') = 0
+    -\gamma (Y' - Y) + \beta V'(Y') = 0
 
 
 Applying the same Benveniste-Scheinkman formula gives
