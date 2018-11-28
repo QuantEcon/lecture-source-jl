@@ -1178,10 +1178,10 @@ This is the content of the next lemma
 .. math::
     :label: rb_a2be
 
-    \tilde P = -R - \hat F' Q \hat F
-    - \beta^2 (A - B \hat F)' \tilde P C
-      (\beta \theta I + \beta C' \tilde P C)^{-1} C' \tilde P (A - B \hat F)
-      + \beta (A - B \hat F)' \tilde P (A - B \hat F)
+    \tilde P = -R - \hat F' Q \hat F - 
+    \beta^2 (A - B \hat F)' \tilde P C
+    (\beta \theta I + \beta C' \tilde P C)^{-1} C' \tilde P (A - B \hat F) + 
+    \beta (A - B \hat F)' \tilde P (A - B \hat F)
 
 
 (revisit :ref:`this discussion <lq_ih>` if you don't know where :eq:`rb_a2be` comes from) and the optimal policy is
