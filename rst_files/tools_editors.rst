@@ -182,6 +182,7 @@ Installing Atom
         * Change the default line ending to ``LF`` (only necessary on Windows)
         
     * Choose the `Editor` tab
+    
         * Turn on ``Soft Wrap``
         * Set the ``Tab Length`` default to ``4``
 
