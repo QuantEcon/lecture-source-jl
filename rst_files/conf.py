@@ -260,11 +260,7 @@ latex_elements = {
 
 
 \usepackage{bbm}
-\newcommand{\XX}{\mathbbm X}
-\newcommand{\ZZ}{\mathbbm Z}
-\newcommand{\QQ}{\mathbbm Q}
 
-\newcommand{\fF}{\mathcal F}
 \newcommand{\dD}{\mathcal D}
 \newcommand{\lL}{\mathcal L}
 \newcommand{\gG}{\mathcal G}
