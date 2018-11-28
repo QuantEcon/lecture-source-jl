@@ -257,8 +257,6 @@ latex_elements = {
 \usetikzlibrary{decorations}
 \usepackage{pgf}
 \usepackage{pgfplots}
-
-
 \usepackage{bbm}
 
 \DeclareMathOperator{\trace}{trace}
