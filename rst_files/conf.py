@@ -258,9 +258,10 @@ latex_elements = {
 \usepackage{pgf}
 \usepackage{pgfplots}
 \usepackage{bbm}
+
 \newcommand{\NN}{\mathbbm N}
 \newcommand{\PP}{\mathbbm P}
-\newcommand{\mathbb{E}\,}{\mathbbm E \,}
+\newcommand{\EE}{\mathbbm E \,}
 \newcommand{\XX}{\mathbbm X}
 \newcommand{\ZZ}{\mathbbm Z}
 \newcommand{\QQ}{\mathbbm Q}
