@@ -507,8 +507,8 @@ triangle inequality for integrals tells us that
     |(Q \psi)(\pi) - (Q \phi)(\pi)|
     \leq \beta \int
     \left|
-    \max \left\{w', \psi \circ q(w', \pi) \right\}
-    - \max \left\{w', \phi \circ q(w', \pi) \right\}
+    \max \left\{w', \psi \circ q(w', \pi) \right\} - 
+    \max \left\{w', \phi \circ q(w', \pi) \right\}
     \right|
     \, h_{\pi}(w') \, dw'
 
