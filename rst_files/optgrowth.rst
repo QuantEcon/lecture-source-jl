@@ -190,8 +190,7 @@ We insert this process into the objective function to get
     \mathbb E
     \left[ \,
     \sum_{t = 0}^{\infty} \beta^t u(c_t) \,
-    \right]
-    =
+    \right] =
     \mathbb E
     \left[ \,
     \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \,
