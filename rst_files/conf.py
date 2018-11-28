@@ -260,7 +260,6 @@ latex_elements = {
 
 
 \usepackage{bbm}
-\newcommand{\RR}{\mathbbm R}
 \newcommand{\NN}{\mathbbm N}
 \newcommand{\PP}{\mathbbm P}
 \newcommand{\EE}{\mathbbm E \,}
