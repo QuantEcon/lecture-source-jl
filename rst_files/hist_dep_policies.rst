@@ -1227,11 +1227,11 @@ The plan is said to be **credible** if, for each :math:`t` and each state :math:
 
     \begin{aligned}
     J_t
-    & = A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 - \frac{d}{2} u_{t}^2
-        + \beta J_{t+1} (\hat \tau_{t+1}, \hat G_{t+1})
+    & = A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 - \frac{d}{2} u_{t}^2 + 
+        \beta J_{t+1} (\hat \tau_{t+1}, \hat G_{t+1})
     \\
-    & \geq A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2
-        - \frac{d}{2} u_{t}^2 +  \beta J_{t+1} ( \tau_{t+1}, G_{t+1})
+    & \geq A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 - 
+        \frac{d}{2} u_{t}^2 +  \beta J_{t+1} ( \tau_{t+1}, G_{t+1})
     \end{aligned}
 
 
