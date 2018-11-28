@@ -1272,7 +1272,8 @@ An example of an exception is a ``DomainError``, which signifies that a value pa
 
 .. code-block:: julia
 
-    # sqrt(-1.0)                        # throws exception, turned off to prevent breaking notebook
+    # throws exception, turned off to prevent breaking notebook
+    # sqrt(-1.0)
 
     # to see the error
     try sqrt(-1.0); catch err; err end  # catches the exception and prints it
@@ -1282,7 +1283,8 @@ Another example you will see is when the compiler cannot convert between types
 
 .. code-block:: julia
 
-    # convert(Int64, 3.12)                        # throws exception, turned off to prevent breaking notebook
+    # throws exception, turned off to prevent breaking notebook
+    # convert(Int64, 3.12)
     
     # to see the error
     try convert(Int64, 3.12); catch err; err end  # catches the exception and prints it.
