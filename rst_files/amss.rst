@@ -328,8 +328,8 @@ Then a Lagrangian for the Ramsey problem can  be represented as
        &= \EE_{0} \sum_{t=0}^\infty \beta^t
                              \biggl\{ u\left(c_t(s^t), 1-c_t(s^t)-g_t(s_t)\right)
             \\
-       &  \qquad + \Psi_t(s^t)\, u_c(s^{t}) \,z(s^{t})
-                       - \gamma_t(s^t)\, u_c(s^{t}) \, b_t(s^{t-1})  \biggr\}
+       &  \qquad + \Psi_t(s^t)\, u_c(s^{t}) \,z(s^{t}) - 
+       \gamma_t(s^t)\, u_c(s^{t}) \, b_t(s^{t-1})  \biggr\}
     \end{aligned}
 
 
@@ -835,8 +835,8 @@ satisfies the Bellman equation
 .. math::
     :label: eqn:AMSSapp5
 
-    V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s)
-    - g(s), 1-n(s)) + \beta V(x(s),s) \right]
+    V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s) - 
+    g(s), 1-n(s)) + \beta V(x(s),s) \right]
 
 
 subject to the following collection of implementability constraints, one
