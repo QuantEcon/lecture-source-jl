@@ -124,8 +124,8 @@ The government’s budget constraint in period :math:`t` at history :math:`s^t` 
 
     \begin{aligned}
     b_t(s^{t-1})
-        & =    \tau^n_t(s^t) n_t(s^t) - g_t(s_t) - T_t(s^t)
-                       + {b_{t+1}(s^t) \over R_t(s^t )}
+        & =    \tau^n_t(s^t) n_t(s^t) - g_t(s_t) - T_t(s^t) + 
+                {b_{t+1}(s^t) \over R_t(s^t )}
         \\
         & \equiv z(s^t) + {b_{t+1}(s^t) \over R_t(s^t )},
     \end{aligned}
@@ -356,8 +356,8 @@ to :math:`c_t(s^t)` can be expressed as
 
     \begin{aligned}
       u_c(s^t)-u_{\ell}(s^t) &+ \Psi_t(s^t)\left\{ \left[
-        u_{cc}(s^t) - u_{c\ell}(s^{t})\right]z(s^{t})
-        + u_{c}(s^{t})\,z_c(s^{t}) \right\}
+        u_{cc}(s^t) - u_{c\ell}(s^{t})\right]z(s^{t}) + 
+        u_{c}(s^{t})\,z_c(s^{t}) \right\}
         \\
         & \hspace{35mm} - \gamma_t(s^t)\left[
         u_{cc}(s^{t}) - u_{c\ell}(s^{t})\right]b_t(s^{t-1}) =0
@@ -798,8 +798,8 @@ Write equation :eq:`eqn:AMSSapp2` as
 .. math::
     :label: eqn:AMSSapp2b
 
-    b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t)
-    + {\frac{\beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)}{u_{c,t}}}
+    b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t) + 
+    {\frac{\beta (\EE_t u_{c,t+1}) b_{t+1}(s^t)}{u_{c,t}}}
 
 
 The right side of equation :eq:`eqn:AMSSapp2b` expresses the time :math:`t` value of government debt
