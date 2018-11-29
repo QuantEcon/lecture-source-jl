@@ -275,7 +275,7 @@ latex_elements = {
 \newcommand{\pP}{\mathcal P}
 
 \DeclareMathOperator{\trace}{trace}
-\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\mathop{\mathrm{Var}}}{Var}
 \DeclareMathOperator{\Span}{span}
 \DeclareMathOperator{\proj}{proj}
 \DeclareMathOperator{\col}{col}
