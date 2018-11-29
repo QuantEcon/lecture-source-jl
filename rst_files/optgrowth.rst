@@ -842,7 +842,8 @@ Here's one solution (assuming as usual that you've executed everything above)
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw),                                  initial_w).zero
+        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw),
+                                   initial_w).zero
         Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks,
                                  compute_policy = true)
         σ_func = LinearInterpolation(grid_y, σ)

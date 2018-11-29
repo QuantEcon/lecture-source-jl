@@ -255,8 +255,7 @@ The associated Lagrangian is
 .. math::
     :label: lq_rp
 
-    \mathscr L
-    =
+    \mathscr L =
     \mathbb E  \sum_{t=0}^{\infty} \beta^t
     \left\{
     -\frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] + 
