@@ -128,7 +128,7 @@ there exists a unique solution to the minimization problem
 
 .. math::
 
-    \hat y := \argmin_{z \in S} \|y - z\|
+    \hat y := \mathop{\mathrm{arg\,min}}_{z \in S} \|y - z\|
 
 The minimizer :math:`\hat y` is the unique vector in :math:`\mathbb{R}^n` that satisfies
 
@@ -560,8 +560,8 @@ Since monotone transforms don't affect minimizers, we have
 
 .. math::
 
-    \argmin_{b \in \mathbb{R}^K} \sum_{n=1}^N (y_n - b' x_n)^2
-    = \argmin_{b \in \mathbb{R}^K} \| y - X b \|
+    \mathop{\mathrm{arg\,min}}_{b \in \mathbb{R}^K} \sum_{n=1}^N (y_n - b' x_n)^2
+    = \mathop{\mathrm{arg\,min}}_{b \in \mathbb{R}^K} \| y - X b \|
 
 By our results about overdetermined linear systems of equations, the solution is
 

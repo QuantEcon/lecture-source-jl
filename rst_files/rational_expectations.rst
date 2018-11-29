@@ -305,7 +305,7 @@ where
 .. math::
     :label: ree_opbe
 
-    h(y, Y) := \argmax_{y'}
+    h(y, Y) := \mathop{\mathrm{arg\,max}}_{y'}
     \left\{ a_0 y - a_1 y Y - \frac{ \gamma (y' - y)^2}{2}   + \beta v(y', H(Y))\right\}
 
 
