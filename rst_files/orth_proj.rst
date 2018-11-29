@@ -244,7 +244,7 @@ An orthogonal set of vectors :math:`O \subset \mathbb{R}^n` is called an **ortho
 
 Let :math:`S` be a linear subspace of :math:`\mathbb{R}^n` and let :math:`O \subset S`
 
-If :math:`O` is orthonormal and :math:`\Span O = S`, then :math:`O` is called an **orthonormal basis** of :math:`S`
+If :math:`O` is orthonormal and :math:`\mathop{\mathrm{Span}} O = S`, then :math:`O` is called an **orthonormal basis** of :math:`S`
 
 :math:`O` is necessarily a basis of :math:`S` (being independent by orthogonality and the fact that no element is the zero vector)
 
@@ -259,7 +259,7 @@ If :math:`\{u_1, \ldots, u_k\}` is an orthonormal basis of linear subspace :math
     \quad \text{for all} \quad
     x \in S
 
-To see this, observe that since :math:`x \in \Span\{u_1, \ldots, u_k\}`, we can find
+To see this, observe that since :math:`x \in \mathop{\mathrm{Span}}\{u_1, \ldots, u_k\}`, we can find
 scalars :math:`\alpha_1, \ldots, \alpha_k` that verify
 
 .. math::
@@ -371,7 +371,7 @@ It is common in applications to start with :math:`n \times k` matrix :math:`X`  
 
 .. math::
 
-    S := \Span X := \Span \{\col_1 X, \ldots, \col_k X \}
+    S := \mathop{\mathrm{Span}} X := \mathop{\mathrm{Span}} \{\col_1 X, \ldots, \col_k X \}
 
 Then the columns of :math:`X` form a basis of :math:`S`
 
@@ -386,7 +386,7 @@ The Orthonormal Case
 
 Suppose that :math:`U` is :math:`n \times k` with orthonormal columns
 
-Let :math:`u_i := \col U_i` for each :math:`i`, let :math:`S := \Span U` and let :math:`y \in \mathbb{R}^n`
+Let :math:`u_i := \mathop{\mathrm{col}} U_i` for each :math:`i`, let :math:`S := \mathop{\mathrm{Span}} U` and let :math:`y \in \mathbb{R}^n`
 
 We know that the projection of :math:`y` onto :math:`S` is
 
@@ -443,14 +443,14 @@ Proof:  Note that
     X \hat \beta = X (X' X)^{-1} X' y =
     P y
 
-Since :math:`P y` is the orthogonal projection onto :math:`\Span(X)` we have
+Since :math:`P y` is the orthogonal projection onto :math:`\mathop{\mathrm{Span}}(X)` we have
 
 .. math::
 
     \| y - P y \|
-    \leq \| y - z \| \text{ for any } z \in \Span(X)
+    \leq \| y - z \| \text{ for any } z \in \mathop{\mathrm{Span}}(X)
 
-Because :math:`Xb \in \Span(X)`
+Because :math:`Xb \in \mathop{\mathrm{Span}}(X)`
 
 .. math::
 
@@ -624,9 +624,9 @@ orthonormal set :math:`\{u_1, \ldots, u_k\}` with
 
 .. math::
 
-    \Span \{x_1, \ldots, x_i\}
+    \mathop{\mathrm{Span}} \{x_1, \ldots, x_i\}
     =
-    \Span \{u_1, \ldots, u_i\}
+    \mathop{\mathrm{Span}} \{u_1, \ldots, u_i\}
     \quad \text{for} \quad
     i = 1, \ldots, k
 
@@ -634,7 +634,7 @@ The **Gram-Schmidt orthogonalization** procedure constructs an orthogonal set :m
 
 One description of this procedure is as follows:
 
-* For :math:`i = 1, \ldots, k`, form :math:`S_i := \Span\{x_1, \ldots, x_i\}` and :math:`S_i^{\perp}`
+* For :math:`i = 1, \ldots, k`, form :math:`S_i := \mathop{\mathrm{Span}}\{x_1, \ldots, x_i\}` and :math:`S_i^{\perp}`
 
 * Set :math:`v_1 = x_1`
 
@@ -665,7 +665,7 @@ Proof sketch: Let
 
 * :math:`Q` be formed from cols :math:`u_i`
 
-Since :math:`x_j \in \Span\{u_1, \ldots, u_j\}`, we have
+Since :math:`x_j \in \mathop{\mathrm{Span}}\{u_1, \ldots, u_j\}`, we have
 
 .. math::
 
