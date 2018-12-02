@@ -320,7 +320,7 @@ A PR requests the project maintainer to merge ("pull") changes you've worked on 
 
 There are a few different workflows for creating and handling PRs, which we'll walk through below 
 
-**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the `testing lecture <testing>`_
+**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the :doc:`testing lecture <testing>`_
 
 .. _web_interface:
 
@@ -473,7 +473,7 @@ Julia Package Case
 
 One special case is when the repo in question is actually a Julia project or package 
 
-We cover that (along with package workflow in general) in the `testing lecture <testing>`_  
+We cover that (along with package workflow in general) in the :doc:`testing lecture <testing>`_  
 
 Additional Resources and Troubleshooting
 ================================================
