@@ -142,9 +142,9 @@ Now ``x`` "points to" another value, of type ``Float64``
 
 .. However, outside of these sorts of examples and tests, it is usually a bad idea to change the type of a variable haphazardly
 
-However, beyond a few notable exceptions (e.g. ``nothing`` used for `error handling <error_handling>`_), 
+However, beyond a few notable exceptions (e.g. ``nothing`` used for :ref:`error handling <error_handling>`_), 
 changing types is usually a symptom of poorly organized code, and makes 
-`type inference <type_inference>`_ more difficult for the compiler
+:ref:`type inference <type_inference>`_ more difficult for the compiler
 
 The Type Hierarchy
 =====================
@@ -530,7 +530,7 @@ Tips and Tricks for Writing Generic Functions
 
 As discussed in the previous sections, there is major advantage to never declaring a type unless it is absolutely necessary
 
-The main place where it is necessary is designing code around `multiple dispatch <intro_multiple_dispatch>`_
+The main place where it is necessary is designing code around :ref:`multiple dispatch <intro_multiple_dispatch>`_
 
 If you are careful to write code that doesn't unnecessarily assume types, 
 you will both achieve higher performance and allow seamless use of a
@@ -946,7 +946,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 Exercise 2
 -------------
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from `the Kalman lecture <kalman>`_
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from :doc:`the Kalman lecture <kalman>`_
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
@@ -984,7 +984,7 @@ Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
 Exercise 4
 --------------
 
-Use your solution to Exercise 8(a/b) in `Introductory Examples <julia_by_example>`_ to 
+Use your solution to Exercise 8(a/b) in :doc:`Introductory Examples <julia_by_example>`_ to 
 create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function
 
 The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``, 
@@ -1039,7 +1039,7 @@ Use auto-differentiation to calculate the following derivative for the example f
     \frac{d}{d \bar{x}}\int_\underline{x}^\bar{x} f(x) \, dx
 
 Hint: See the following code for the general pattern, and be careful to 
-follow the `rules for generic programming <_generic_tips_tricks>`_
+follow the :ref:`rules for generic programming <_generic_tips_tricks>`_
 
 .. code-block:: julia
 
