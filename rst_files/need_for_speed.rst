@@ -582,7 +582,7 @@ The main Julia package for benchmarking is `BenchmarkTools.jl <https://www.githu
 
 Below, we'll use the ``@btime`` macro it exports to evaluate the performance of Julia code
 
-As mentioned in an :doc:`earlier lecture <testing>`_, we can also save benchmark results to a file and guard against performance regressions in code 
+As mentioned in an :doc:`earlier lecture <testing>`, we can also save benchmark results to a file and guard against performance regressions in code 
 
 For more, see the package docs
 
