@@ -71,7 +71,7 @@ Either way you should now be looking at something like this (modulo your operati
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 100%
 
-This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more `below <julia_repl>`_ 
+This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more :ref:`below <julia_repl>`_ 
 
 * In the Julia terminal, type the following
 
@@ -138,7 +138,7 @@ Depending on your computer, this may take **10-15 minutes** to run the **first-t
 This code can be put at the top of any notebook in order to get a tested set of 
 packages compatible with the code in the QuantEcon notes
 
-More details on packages are explained in a `later lecture <tools_editors>`_
+More details on packages are explained in a :doc:`later lecture <tools_editors>`_
 
 Notebook Basics
 ------------------
@@ -341,7 +341,7 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 The REPL
 ------------
 
-While we have not emphasized it, on any `JupyterHub <jl_jupyterhub>`_ or local Jupyter 
+While we have not emphasized it, on any :ref:`JupyterHub <jl_jupyterhub>`_ or local Jupyter 
 installation you will also have access to the Julia REPL
 
 This is a Julia specific terminal disconnected from the graphical interface of 
@@ -367,7 +367,7 @@ The REPL is one of the best places to add and remove packages, so a good test is
 
     ] st
 
-We examine the REPL and its different modes in more detail in the `tools and editors <tools_editors>`__ lecture  
+We examine the REPL and its different modes in more detail in the :doc:`tools and editors <tools_editors>`__ lecture  
 
 .. _jl_juliaoptions:
 
@@ -376,11 +376,11 @@ Other Ways to Use Jupyter
 
 There are alternative workflows, such as 
 
-#. Using `Jupyter on the cloud or a department server <jl_jupyterhub>`_ (if it is available)
-#. Installing the pre-built `docker-based Julia/Jupyter <jl_jupyterdocker>`_ from QuantEcon
+#. Using :ref:`Jupyter on the cloud or a department server <jl_jupyterhub>`_ (if it is available)
+#. Installing the pre-built :ref:`docker-based Julia/Jupyter <jl_jupyterdocker>`_ from QuantEcon
 
 Eventually, you will want to move from just using Jupyter to using other 
-`tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but 
+:doc:`tools and editors <tools_editors>`_ such as `Atom/Juno <http://junolab.org/>`_, but 
 don't let the environment get in the way of learning the language
 
 .. _jl_jupyterhub:
@@ -426,7 +426,7 @@ While it is largely used for running code in the cloud, it is also convenient fo
 
 QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
 
-For instructions on how to set this up, see the `tools and editors <tools_editors>`_ lecture 
+For instructions on how to set this up, see the :doc:`tools and editors <tools_editors>`_ lecture 
 
 **Note:** The Docker installation is easy and complete, but it has limitations 
 on operating systems (in particular, Windows 10 is only supported for the Professional 
