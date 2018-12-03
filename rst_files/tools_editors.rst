@@ -18,14 +18,14 @@ We'll discuss a few of them here, such as
 
 * The Julia REPL, which has specialized modes for package management, shell commands, and help 
 
-* The Docker setup we mentioned in `getting started <getting_started>`_, which provides a painless pre-configured environment on your machine 
+* The Docker setup we mentioned in :doc:`getting started <getting_started>`_, which provides a painless pre-configured environment on your machine 
 
-Note that we assume you've already completed the :ref:`getting started <getting_started>` lecture 
+Note that we assume you've already completed the :doc:`getting started <getting_started>` lecture 
 
 Preliminary Setup 
 ====================
 
-Follow the instructions for setting up Julia `on your local computer <jl_jupyterlocal>`_
+Follow the instructions for setting up Julia :doc:`on your local computer <jl_jupyterlocal>`_
 
 .. _jl_startup_file:
 
@@ -151,13 +151,13 @@ will succeed
 Atom 
 =========
 
-As discussed `previously <getting_started>`_, eventually you will want to use a fully fledged text editor 
+As discussed :doc:`previously <getting_started>`_, eventually you will want to use a fully fledged text editor 
 
 The most feature-rich one for Julia development is `Atom <https://atom.io/>`_, with the `Juno <http://junolab.org/>`_ package 
 
 There are several reasons to use a text editor like Atom, including
 
-* Git integration (more on this in the `next lecture <version_control>`_) 
+* Git integration (more on this in the :doc:`next lecture <version_control>`_) 
 
 * Painless inspection of variables and data 
 
@@ -284,7 +284,7 @@ This way, you can work with (and specify) the dependencies (i.e., required packa
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``) 
 
-* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see `version control <version_control>`)
+* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see :doc:`version control <version_control>`_)
 
 * A ``depot`` is a directory, like ``~/.julia``, which contains assets (compile caches, registries, package source directories, etc.) 
 
@@ -387,7 +387,7 @@ What this ``activate_github`` function does is
 Docker 
 ===========
 
-As discussed `earlier <jl_jupyterdocker>`_, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
+As discussed :ref:`earlier <jl_jupyterdocker>`_, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
 
 The advantage of a Docker-based workflow is that it's perfectly reproducible, and that setup (of Julia versions and dependencies, etc.) is handled upstream by the image maintainer
 
