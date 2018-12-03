@@ -67,7 +67,7 @@ Julia Setup
 
 .. literalinclude:: /_static/includes/alldeps.jl
 
-**Note:** Before these steps, make sure that you've either completed the `version control <version_control>`_ lecture or run 
+**Note:** Before these steps, make sure that you've either completed the :doc:`version control <version_control>`_ lecture or run 
 
 **Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets 
 
@@ -177,7 +177,7 @@ We see the change reflected in our default package list
 
     ] st
 
-For more on the package mode, see the `tools and editors <tools_editors>`_ lecture 
+For more on the package mode, see the :docs:`tools and editors <tools_editors>`_ lecture 
 
 Using the Package Manager
 --------------------------------
@@ -244,7 +244,7 @@ Dependency Management
 Environments
 ^^^^^^^^^^^^^^^^
 
-As `before <jl_packages>`_, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information 
+As :ref:`before <jl_packages>`_, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information 
 
 The actual files are written in the `TOML language <https://github.com/toml-lang/toml>`_, which is a lightweight format to specify configuration options  
 
@@ -288,7 +288,7 @@ Here's the ``Manifest.toml``
 
 We can also run other operations, like ``] up``, ``] precompile``, etc.
 
-Package operations are listed in detail in the `tools and editors <tools_editors>`_ lecture
+Package operations are listed in detail in the :doc:`tools and editors <tools_editors>`_ lecture
 
 Recall that, to quit the active environment and return to the base ``(v1.0)``, simply run
 
@@ -350,7 +350,7 @@ Let's try calling this
 
     foo() # exported, so don't need to qualify the namespace
 
-**Note:** If you didn't follow the instructions to add a `startup file <jl_startup_file>`_, you may need to quit your REPL and load the package again
+**Note:** If you didn't follow the instructions to add a :ref:`startup file <jl_startup_file>`_, you may need to quit your REPL and load the package again
 
 Jupyter Workflow
 ------------------------
@@ -658,7 +658,7 @@ This shows us precisely which methods (and parts of methods) are untested
 Pull Requests to External Julia Projects
 ===============================================
 
-As mentioned in `version control <version_control>`_, sometimes we'll want to work on external repos that are also Julia projects
+As mentioned in :doc:`version control <version_control>`_, sometimes we'll want to work on external repos that are also Julia projects
 
 * ``] dev`` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo to ``~/.julia/dev`` and sync it with the Julia package manager
 
@@ -712,7 +712,7 @@ Here, for example, we're revising the README
 
 * Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account
 
-To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`__; for more on working with git repositories, see the `version control <version_control>`_ lecture
+To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`__; for more on working with git repositories, see the :doc:`version control <version_control>`_ lecture
 
 .. figure:: /_static/figures/testing-expectations.png
     :scale: 100%
@@ -724,7 +724,7 @@ The green check mark indicates that Travis tests passed for this commit
 .. figure:: /_static/figures/testing-pr2.png
     :scale: 100%
 
-For more on PRs, see the relevant section of the `version control <version_control>`_ lecture
+For more on PRs, see the relevant section of the :doc:`version control <version_control>`_ lecture
 
 Case with Write Access
 ---------------------------
@@ -819,10 +819,10 @@ Exercises
 Exercise 1
 ---------------
 
-Following the `instructions for a new project <project_setup>`_, create a new package on your github account called ``NewtonsMethod.jl``
+Following the :ref:`instructions for a new project <project_setup>`_, create a new package on your github account called ``NewtonsMethod.jl``
 
 In this package, you should create a simple package to do Newton's Method using the code you did in the
-`Newton's method <jbe_ex8a>`_ exercise in `Introductory Examples <julia_by_example>`_
+:ref:`Newton's method <jbe_ex8a>`_ exercise in :doc:`Introductory Examples <julia_by_example>`_
 
 In particular, within your package you should have two functions
 
@@ -840,7 +840,7 @@ The package should include
 
 For the tests, you should have at the very minimum
 
-* a way to handle non-convergence (e.g. return back ``nothing`` as discussed in `error handling <error_handling>`_
+* a way to handle non-convergence (e.g. return back ``nothing`` as discussed in :ref:`error handling <error_handling>`_
 * several ``@test`` for the root of a known function, given the ``f`` and analytical ``f'`` derivatives
 * tests of those roots using the automatic differentiation version of the function
 * test of finding those roots with a ``BigFloat`` and not just a ``Float64``
