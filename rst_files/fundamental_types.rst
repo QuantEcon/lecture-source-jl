@@ -1110,7 +1110,7 @@ There are two distinct use cases for this
 #. ``nothing`` ("software engineers null"): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.
 #. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available 
 
-.. error_handling:
+.. _error_handling:
 
 Nothing and Basic Error Handling
 ----------------------------------

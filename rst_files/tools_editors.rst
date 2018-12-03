@@ -25,7 +25,7 @@ Note that we assume you've already completed the :doc:`getting started <getting_
 Preliminary Setup 
 ====================
 
-Follow the instructions for setting up Julia :doc:`on your local computer <jl_jupyterlocal>`
+Follow the instructions for setting up Julia :ref:`on your local computer <jl_jupyterlocal>`
 
 .. _jl_startup_file:
 

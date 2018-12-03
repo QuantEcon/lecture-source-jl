@@ -1039,7 +1039,7 @@ Use auto-differentiation to calculate the following derivative for the example f
     \frac{d}{d \bar{x}}\int_\underline{x}^\bar{x} f(x) \, dx
 
 Hint: See the following code for the general pattern, and be careful to 
-follow the :ref:`rules for generic programming <_generic_tips_tricks>`
+follow the :ref:`rules for generic programming <generic_tips_tricks>`
 
 .. code-block:: julia
 

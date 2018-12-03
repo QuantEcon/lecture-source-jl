@@ -268,7 +268,7 @@ There are a few different ways to review people's code in GitHub
 .. figure:: /_static/figures/git-review.png
     :scale: 100%
 
-.. merge_conflict:
+.. _merge_conflict:
 
 Merge Conflicts
 ----------------------------
