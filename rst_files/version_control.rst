@@ -320,7 +320,7 @@ A PR requests the project maintainer to merge ("pull") changes you've worked on 
 
 There are a few different workflows for creating and handling PRs, which we'll walk through below 
 
-**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the :doc:`testing lecture <testing>`_
+**Note:** If the changes are for a Julia Package, you will need to follow a different workflow -- described in the :doc:`testing lecture <testing>`
 
 .. _web_interface:
 
@@ -473,7 +473,7 @@ Julia Package Case
 
 One special case is when the repo in question is actually a Julia project or package 
 
-We cover that (along with package workflow in general) in the :doc:`testing lecture <testing>`_  
+We cover that (along with package workflow in general) in the :doc:`testing lecture <testing>`
 
 Additional Resources and Troubleshooting
 ================================================
@@ -530,10 +530,10 @@ Exercises
 Exercise 1a
 ---------------
 
-Follow the instructions to create a :ref:`new repository <new_repo_workflow>`_ for one of your GitHub accounts
+Follow the instructions to create a :ref:`new repository <new_repo_workflow>` for one of your GitHub accounts
 In this repository
 
-* Take the code from one of your previous assignments, such as :ref:`Newton's method <jbe_ex8a>`_ in :doc:`Introductory Examples <julia_by_example>`_ (either as a ``.jl`` file or a Jupyter notebook)
+* Take the code from one of your previous assignments, such as :ref:`Newton's method <jbe_ex8a>` in :doc:`Introductory Examples <julia_by_example>` (either as a ``.jl`` file or a Jupyter notebook)
 * Put in a ``README.md`` with some text
 * Put in a ``.gitignore`` file, ignoring the Jupyter files ``.ipynb_checkpoints`` and the project files, ``.projects``
 
@@ -558,12 +558,12 @@ Start by ensuring there are multiple lines in the file so that some changes may 
 
 * Clone the repository to your local desktops
 * Modify **different** lines of code in the file and both commit and push to the server (prior to pulling from each other)--and see how it merges things "automatically"
-* Modify **the same** line of code in the file, and deal with the :ref:`merge conflict <merge_conflict>`_
+* Modify **the same** line of code in the file, and deal with the :ref:`merge conflict <merge_conflict>`
 
 Exercise 2a
 ----------------
 
-Just using GitHub's :ref:`web interface <web_interface>`_, submit a Pull Request for a simple change of documentation to a public repository
+Just using GitHub's :ref:`web interface <web_interface>`, submit a Pull Request for a simple change of documentation to a public repository
 
 The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl`` 
 
@@ -572,7 +572,7 @@ Note: The source for that repository is in ``.rst`` files, but you should be abl
 Exercise 2b
 -------------------------
 
-Following the :ref:`instructions <fork_workflow>`_ for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository
+Following the :ref:`instructions <fork_workflow>` for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository
 
 Again, you could submit it for a typo in the source repository for these notes, i.e. ``https://github.com/QuantEcon/lecture-source-jl``, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
 
