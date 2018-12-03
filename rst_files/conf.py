@@ -413,7 +413,7 @@ jupyter_welcome_block = ""
 
 #Allow .. only:: html pass through 
 jupyter_allow_html_only = True
-jupyter_target_html_urlpath = "http://compare-lectures.quantecon.org/jl/"
+jupyter_target_html_urlpath = "https://lectures.quantecon.org/jl/"
 
 
 #Adjust links to target html (rather than ipynb) when targeting html through nbconvert
@@ -423,4 +423,4 @@ jupyter_target_html = True
 jupyter_drop_tests = True
 
 #Use urlprefix images
-jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/compare-lectures.quantecon.org/jl/_static/"
+jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/"
