@@ -102,7 +102,7 @@ Named tuples can also be used to construct a ``DataFrame``, and have it properly
 Working with Missing
 -----------------------
 
-As we discussed in `fundamental types <missing>`_, the semantics of ``missing`` are that mathematical operations will not silently ignore it
+As we discussed in :ref:`fundamental types <missing>`_, the semantics of ``missing`` are that mathematical operations will not silently ignore it
 
 In order to allow ``missing`` in a column, you can create/load the ``DataFrame`` 
 from a source with ``missing``'s, or call ``allowmissing!`` on a column 
