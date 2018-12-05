@@ -663,7 +663,7 @@ The values of :math:`y_T` are represented by black dots in the left-hand figure
 In the right-hand figure, these values are converted into a rotated histogram
 that shows relative frequencies from our sample of 20 :math:`y_T`'s
 
-(The parameters and source code for the figures can be found in file `linear_models/paths_and_hist.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/linear_models/paths_and_hist.jl>`__)
+(The parameters and source code for the figures can be found in file `linear_models/paths_and_hist.jl <https://github.com/QuantEcon/lecture-source-jl/blob/master/rst_files/_static/code/linear_models/paths_and_hist.jl>`__)
 
 Here is another figure, this time with 100 observations
 
@@ -1521,7 +1521,7 @@ Exercise 4
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42); 
+    Random.seed!(42);
 
 .. code-block:: julia
 
