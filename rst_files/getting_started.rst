@@ -182,7 +182,7 @@ Using QuantEcon Lecture Packages
 To use the curated set of packages in the QuantEcon lecture notes, 
 copy the following text into a notebook cell, and hit ``Shift-Enter`` to run the cell
 
-   .. literalinclude:: /_static/includes/deps.jl    
+.. literalinclude:: /_static/includes/deps.jl    
 
 This downloads, installs, and compiles the correct version of all of packages used in the QuantEcon lectures
 
