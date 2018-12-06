@@ -29,18 +29,18 @@ Like Python, and unlike Matlab and Stata, there is a looser connection between J
 Because of this, you have much more flexibility in how you write and edit your code, whether
 that be locally or on the cloud, in a text-editor or IDE, etc.
 
-Several interfaces are built upon `Jupyter <http://jupyter.org/>`_  which provides 
-a browser-based interface to access computational kernels for different languages (e.g. Julia, Python, R, etc.)
+One example is `Jupyter <http://jupyter.org/>`_ , which provides 
+a browser-based interface to execute code in different languages (e.g. Julia, Python, R, etc.)
 
 While you will eventually use other editors, there are some advantages to starting with Jupyter while learning Julia
 
-* Nicely formatted output in the browser, including tables, figures, animation, video, etc.
+* The ability to mix formatted text (including mathematical expressions) and code in a single document
 
-* The ability to mix in formatted text and mathematical expressions between cells
+* Nicely formatted output including tables, figures, animation, video, etc.
 
-* Functions to generate PDF slides, static HTML, etc.
+* Conversion tools to generate PDF slides, static HTML, etc.
 
-* It requires no installation if you used a cloud-based solution
+* Can be used in the cloud without requiring installation
 
 Whether you end up using Jupyter as your primary work environment or not, you'll find learning about it an excellent investment
 
@@ -53,9 +53,9 @@ Installing Julia and Dependencies
 .. While using the Docker instance is convenient and error-proof, you may eventually want to install things locally
 
 The easiest approach to using Julia with Jupyter on your desktop is to 
-install `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
+install the latest version of `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
 
-* Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
+* Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_
 
     * Make sure you click yes to "add Anaconda to my PATH"
 
@@ -64,14 +64,21 @@ install `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
     * We do not recommend `JuliaPro <https://juliacomputing.com/products/juliapro.html>`_
       due to its limited number of available packages
 
-* Open Julia, by navigating to Julia through your menus or desktop icons
+* Open Julia by navigating to Julia through your menus or desktop icons or 
+  typing ``julia`` into a terminal or windows console
 
-Either way you should now be looking at something like this (modulo your operating system)
+Either way you should now be looking at something like this
 
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 100%
 
-This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more :ref:`below <julia_repl>`
+This is called the JULIA *REPL* (Read-Evaluate-Print-Loop)
+
+We examine the REPL and its different modes in more detail in the :doc:`tools and editors <tools_editors>` lecture  
+
+We'll start by installing some key Julia packages needed to run code in the lectures
+
+Typing ``]`` into the REPL switches to the package manager, where we can add packages
 
 * In the Julia terminal, type the following
 
@@ -80,15 +87,7 @@ This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss mor
 
         ] add IJulia InstantiateFromURL; precompile
 
-This installs enough Julia packages to begin using the lecture notes
-
 *Note:* On OS/X you will need to type the ``]`` separately and cannot copy/paste the whole string
-
-* To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type 
-
-.. code-block:: none
-
-    jupyter lab
 
 
 .. _jl_jupyter:
@@ -102,8 +101,13 @@ Using Jupyter
 Getting Started
 -----------------------
 
-After you have started Jupyter, your web browser should open to a page on the 
-local machine that looks something like this
+To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type 
+
+.. code-block:: none
+
+    jupyter lab
+
+Your web browser should open to a page that looks something like this
 
 .. figure:: /_static/figures/starting_nb_julia.png
    :scale: 100%
@@ -114,82 +118,48 @@ If you click on "Julia 1.0.x" you should have the option to start a Julia notebo
 
 Here's what your Julia notebook should look like
 
+The notebook displays an *active cell*, which you can type Julia commands into
+
 .. figure:: /_static/figures/nb2_julia.png
    :scale: 100%
 
-The notebook displays an *active cell*, which you can type Julia commands into
 
 .. Not sure this is helpful
 .. **Note** The address ``localhost:8888/lab`` you see in the image indicates that the browser is communicating with a Jupyter lab session via port 8888 of the local machine
 
 
-Using QuantEcon Lecture Packages
--------------------------------------------
-
-To use the curated set of packages in the QuantEcon lecture notes, 
-put the following text in a notebook cell, and hit ``Shift-Enter`` to run the cell
-
-    .. literalinclude:: /_static/includes/deps.jl    
-
-This downloads, installs, and compiles the correct version of all of packages used in the QuantEcon lectures
-
-Depending on your computer, this may take **10-15 minutes** to run the **first-time**, but be virtually instantaneous thereafter
-
-This code can be put at the top of any notebook in order to get a tested set of 
-packages compatible with the code in the QuantEcon notes
-
-More details on packages are explained in a :doc:`later lecture <tools_editors>`
-
-Notebook Basics
-------------------
-
-Notice that in the previous figure the cell is surrounded by a blue border
-
-This means that the cell is selected, and double-clicking will place it in edit mode
-
-As a result, you can type in Julia code and it will appear in the cell
-
-When you're ready to execute these commands, hit ``Shift-Enter``
-
-.. figure:: /_static/figures/nb3_julia.png
-   :scale: 100%
-
-
 Modal Editing
 ^^^^^^^^^^^^^^^^^^^^
 
-The next thing to understand about the Jupyter notebook is that it uses a *modal* editing system
+The Jupyter notebook uses a *modal* editing system
 
 This means that the effect of typing at the keyboard **depends on which mode you are in**
 
 The two modes are
 
-#. Edit mode
+#. Edit mode (hit ``Enter`` to get edit mode)
 
     * Indicated by a green border around one cell, as in the pictures above
 
     * Whatever you type appears as is in that cell
 
-#. Command mode
+#. Command mode (hit ``Esc`` to get command mode)
 
     * The green border is replaced by a blue border
 
     * Key strokes are interpreted as commands --- for example, typing `b` adds a new cell below  the current one
 
-
 (To learn about other commands available in command mode, go to "Keyboard Shortcuts" in the "Help" menu)
 
+Notice that in the previous figure the cell is surrounded by a blue border
 
-Switching modes
-^^^^^^^^^^^^^^^^^
+Press ``Enter`` to get edit mode and type the following code into a cell -- hit ``Shift-Enter`` to execute
 
-* To switch to command mode from edit mode, hit the ``Esc`` key
+.. code-block:: julia
 
-* To switch to edit mode from command mode, hit ``Enter`` or click in a cell
-
-The modal behavior of the Jupyter notebook is a little tricky at first but very efficient when you get used to it
-
-
+    a = 2
+    b = 5
+    a + b
 
 Working with Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -206,15 +176,35 @@ If it's a long file, however, you have the alternative of
 The present working directory can be found by executing the command ``pwd()``
 
 
+Using QuantEcon Lecture Packages
+-------------------------------------------
+
+To use the curated set of packages in the QuantEcon lecture notes, 
+copy the following text into a notebook cell, and hit ``Shift-Enter`` to run the cell
+
+   .. literalinclude:: /_static/includes/deps.jl    
+
+This downloads, installs, and compiles the correct version of all of packages used in the QuantEcon lectures
+
+Depending on your computer, this may take **10-15 minutes** to run the **first-time**, but be virtually instantaneous thereafter
+
+This code can be put at the top of any notebook in order to get a tested set of 
+packages compatible with the code in the QuantEcon lectures
+
+More details on packages are explained in a :doc:`later lecture <tools_editors>`
+
+
+
+Working with the Notebook
+-----------------------------
+
+Let's go over some more Jupyter notebook features --- enough so that we can press ahead with programming
+
 
 Plots
 ^^^^^^^
 
 Let's generate some plots
-
-First, ensure that you have activated a set of packages within the current Jupyter notebook
-
-.. literalinclude:: /_static/includes/deps.jl    
 
 Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
@@ -224,41 +214,25 @@ Now try copying the following into a notebook cell and hit ``Shift-Enter``
     gr(fmt=:png)
     plot(sin, -2π, 2π, label="sin(x)")
 
-You'll see something like this (although the style of plot depends on your
-installation --- more on this later)
 
 **Note**: The "time-to-first-plot" in Julia takes a while, since it needs to precompile everything
-
-.. figure:: /_static/figures/nb4_julia.png
-   :scale: 100%
-
-
-Working with the Notebook
------------------------------
-
-Let's go over some more Jupyter notebook features --- enough so that we can press ahead with programming
 
 
 Tab Completion
 ^^^^^^^^^^^^^^^^^^
 
-A simple but useful feature of `IJulia <https://github.com/JuliaLang/IJulia.jl>`_ 
-(the Jupyter kernel for Julia) is tab completion
+Tab completion in Jupyter makes it easy to find Julia commands and functions available
 
 For example if you type ``rep`` and hit the tab key you'll get a list of all
 commands that start with ``rep``
 
 .. figure:: /_static/figures/nb5_julia.png
-   :scale: 100%
-
-IJulia offers up the possible completions
-
-This helps remind you of what's available and saves a bit of typing
+   :scale: 80%
 
 
 .. _gs_help:
 
-Online Help
+Getting Help
 ^^^^^^^^^^^^^^^
 
 To get help on the Julia function such as ``repmat``, enter ``?repmat``
@@ -270,52 +244,45 @@ Documentation should now appear in the browser
 Other Content
 ^^^^^^^^^^^^^^^
 
-In addition to executing code, the Jupyter notebook allows you to embed text, equations, figures and even videos in the page
+In addition to executing code, the Jupyter notebook allows you to embed text, 
+equations, figures and even videos in the document
 
 For example, here we enter a mixture of plain text and LaTeX instead of code
 
 .. figure:: /_static/figures/nb6_julia.png
-   :scale: 100%
+   :scale: 80%
 
 Next we ``Esc`` to enter command mode and then type ``m`` to indicate that we
 are writing `Markdown <http://daringfireball.net/projects/markdown/>`_, a mark-up language similar to (but simpler than) LaTeX
 
 (You can also use your mouse to select ``Markdown`` from the ``Code`` drop-down box just below the list of menu items)
 
-Now we ``Shift + Enter`` to produce this
+Now we ``Shift + Enter`` the Markdown cell to produce this
 
 .. figure:: /_static/figures/nb7_julia.png
-   :scale: 100%
+   :scale: 80%
 
    
 Inserting unicode (e.g. Greek letters)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Julia supports the use of `unicode characters <https://docs.julialang.org/en/v1/manual/unicode-input/>`__
-such as α and β in your code
+such as ``α`` and ``β`` in your code
 
 Unicode characters can be typed quickly in Jupyter using the ``tab`` key
 
-Try creating a new code cell and typing ``\\alpha``, then hitting the ``tab`` key on your keyboard
+Try creating a new code cell and typing ``\alpha``, then hitting the ``tab`` key on your keyboard
 
 Shell Commands
 ^^^^^^^^^^^^^^^^
 
-You can execute shell commands (system commands) in IJulia by prepending a semicolon
+You can execute shell commands (system commands) in Jupyter by prepending a semicolon
 
 For example, ``; ls`` will execute the UNIX style shell command ``ls``, 
 which --- at least for UNIX style operating systems --- lists the 
 contents of the current working directory
 
 These shell commands are handled by your default system shell and hence are platform specific
-
-
-Package Manager
-^^^^^^^^^^^^^^^^
-
-You can enter the package manager by prepending a ``]``
-
-For example, ``] st`` will give the status of installed packages in the current environment
 
 
 Sharing Notebooks
@@ -336,38 +303,6 @@ which provides a static HTML representations of notebooks
 
 QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ website, where you can upload and share your notebooks with other economists and the QuantEcon community
 
-.. _julia_repl: 
-
-The REPL
-------------
-
-While we have not emphasized it, on any :ref:`JupyterHub <jl_jupyterhub>` or local Jupyter 
-installation you will also have access to the Julia REPL
-
-This is a Julia specific terminal disconnected from the graphical interface of 
-Jupyter, and becomes increasingly important as you learn Julia
-
-For example, the REPL is what we used in the beginning of this lecture to install 
-``InstantiateFromURL.jl`` and ``IJulia``
-
-To start the REPL in a typical Jupyter lab environment
-
-#. Choose "New Launcher"
-#. Choose a ``Julia 1.0`` Console
-
-Otherwise, if you have a local installation, then  
-
-#. Navigate to Julia through your menus or desktop icons (Windows, OSX), or
-
-#. Open a terminal and type ``julia`` (Linux)
-
-The REPL is one of the best places to add and remove packages, so a good test is to see the current status of the package manager
-
-.. code-block:: julia
-
-    ] st
-
-We examine the REPL and its different modes in more detail in the :doc:`tools and editors <tools_editors>` lecture  
 
 .. _jl_juliaoptions:
 
@@ -388,7 +323,7 @@ don't let the environment get in the way of learning the language
 Using Jupyter Online
 ---------------------------
 
-If you have access to a cloud-based solution for Jupyter, then that is typically an easy solution
+If you have access to a cloud-based solution for Jupyter, then this is typically an easy solution
 
 * Students: ask your department if these resources are available 
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for 
