@@ -53,9 +53,9 @@ Installing Julia and Dependencies
 .. While using the Docker instance is convenient and error-proof, you may eventually want to install things locally
 
 The easiest approach to using Julia with Jupyter on your desktop is to 
-install `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
+install the latest version `Anaconda <https://www.anaconda.com/download/#macos>`_ and then Julia
 
-* Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`_ (3.7 version)
+* Install Anaconda by `downloading the binary <https://www.anaconda.com/download/>`
 
     * Make sure you click yes to "add Anaconda to my PATH"
 
