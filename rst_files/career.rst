@@ -152,7 +152,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 
 .. code-block:: julia
 
-  using Plots, QuantEcon, Distributions 
+  using Plots, QuantEcon, Distributions
   gr(fmt=:png)
 
   n = 50
@@ -197,8 +197,8 @@ The code for solving the DP problem described above is found below:
       G_probs = pdf.(dist_G, support(dist_G))
       F_mean = sum(θ .* F_probs)
       G_mean = sum(ϵ .* G_probs)
-      return (β = β, N = N, B = B, θ = θ, ϵ = ϵ, 
-              F_probs = F_probs, G_probs = G_probs, 
+      return (β = β, N = N, B = B, θ = θ, ϵ = ϵ,
+              F_probs = F_probs, G_probs = G_probs,
               F_mean = F_mean, G_mean = G_mean)
   end
 
@@ -277,9 +277,9 @@ Here's the value function
   v_init = fill(100.0, wp.N, wp.N)
   func(x) = update_bellman(wp, x)
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
- 
+
   plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
-       seriescolor=:plasma, gridalpha = 1)
+       seriescolor=:plasma, gridalpha = 1, accelerate = false) 
 
 The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
 
