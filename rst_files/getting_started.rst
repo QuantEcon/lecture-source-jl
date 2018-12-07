@@ -29,21 +29,20 @@ Like Python, and unlike Matlab and Stata, there is a looser connection between J
 Because of this, you have much more flexibility in how you write and edit your code, whether
 that be locally or on the cloud, in a text-editor or IDE, etc.
 
-Several interfaces are built upon `Jupyter <http://jupyter.org/>`_  which provides 
-a browser-based interface to access computational kernels for different languages (e.g. Julia, Python, R, etc.)
+One example is `Jupyter <http://jupyter.org/>`_,  which provides 
+a browser-based interface to execute code in different languages (e.g. Julia, Python, R, etc.)
 
 While you will eventually use other editors, there are some advantages to starting with Jupyter while learning Julia
 
-* Nicely formatted output in the browser, including tables, figures, animation, video, etc.
+* The ability to mix formatted text (including mathematical expressions) and code in a single document
 
-* The ability to mix in formatted text and mathematical expressions between cells
+* Nicely formatted output including tables, figures, animation, video, etc.
 
-* Functions to generate PDF slides, static HTML, etc.
+* Conversion tools to generate PDF slides, static HTML, etc.
 
-* It requires no installation if you used a cloud-based solution
+* Can be used in the cloud without requiring installation
 
 Whether you end up using Jupyter as your primary work environment or not, you'll find learning about it an excellent investment
-
 
 .. _jl_jupyterlocal:
 
