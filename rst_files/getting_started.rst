@@ -242,18 +242,13 @@ Let's go over some more Jupyter notebook features --- enough so that we can pres
 Tab Completion
 ^^^^^^^^^^^^^^^^^^
 
-A simple but useful feature of `IJulia <https://github.com/JuliaLang/IJulia.jl>`_ 
-(the Jupyter kernel for Julia) is tab completion
+Tab completion in Jupyter makes it easy to find Julia commands and functions available
 
 For example if you type ``rep`` and hit the tab key you'll get a list of all
 commands that start with ``rep``
 
 .. figure:: /_static/figures/nb5_julia.png
    :scale: 100%
-
-IJulia offers up the possible completions
-
-This helps remind you of what's available and saves a bit of typing
 
 
 .. _gs_help:
@@ -301,7 +296,7 @@ Try creating a new code cell and typing ``\alpha``, then hitting the ``tab`` key
 Shell Commands
 ^^^^^^^^^^^^^^^^
 
-You can execute shell commands (system commands) in IJulia by prepending a semicolon
+You can execute shell commands (system commands) in Jupyter by prepending a semicolon
 
 For example, ``; ls`` will execute the UNIX style shell command ``ls``, 
 which --- at least for UNIX style operating systems --- lists the 
