@@ -19,8 +19,8 @@
 
 .. only:: html
 
-    Table of Contents (Julia)
-    *************************************************************
+    Table of Contents 
+    *****************
 
 .. raw:: html
 
