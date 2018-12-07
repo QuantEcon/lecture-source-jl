@@ -338,8 +338,8 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 
 .. _julia_repl: 
 
-The REPL
-------------
+The REPL (Advanced)
+---------------------
 
 While we have not emphasized it, on any :ref:`JupyterHub <jl_jupyterhub>` or local Jupyter 
 installation you will also have access to the Julia REPL
