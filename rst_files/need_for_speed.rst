@@ -219,7 +219,7 @@ If the interpreter can't find a match in immediate parents (supertypes) it proce
 This is the process that leads to the following error (since we only added the ``+`` for adding ``Integer`` and ``String`` above)
 
 .. code-block:: julia
-    :class: no-test
+    :class: skip-test
 
     @show (typeof(100.0) <: Integer) == false
     100.0 + "100"
