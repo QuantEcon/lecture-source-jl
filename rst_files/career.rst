@@ -501,7 +501,25 @@ The medians are subject to randomness, but should be about 7 and 14 respectively
 Exercise 3
 ----------
 
-Here's one way to do this 
+Here's the code to reproduce the original figure
+
+.. code-block:: julia 
+
+    wp = CareerWorkerProblem(); 
+    v, optimal_policy = solve_wp(wp)
+
+    lvls = [0.5, 1.5, 2.5, 3.5]
+    x_grid = range(0, 5, length = 50)
+    y_grid = range(0, 5, length = 50)
+
+    contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
+            fillalpha=1, cbar = false)
+    contour!(xlabel="theta", ylabel="epsilon")
+    annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
+    annotate!([(4.5,2.5, text("new job", 14, :center))])
+    annotate!([(4.0,4.5, text("stay put", 14, :center))])
+
+Now, we need only swap out for the new parameters
 
 .. code-block:: julia 
 
