@@ -203,7 +203,11 @@ All of these objects are computed using the code below
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 .. code-block:: julia
     :class: test
@@ -548,7 +552,7 @@ Setup
         for ii in 0:nm-1
             li, ui = npaths*(ii), npaths*(ii + 1)
             LI, UI = 2ii, 2(ii + 1)
-            push!(mart_figs, 
+            push!(mart_figs,
                 plot_martingale_paths(T, mpath_mult[li + 1:ui, :],
                                                         mbounds_mult[LI + 1:UI, :], horline = 1))
             plot!(mart_figs[ii + 1], title = "Martingale components for many paths of y_(ii + 1)")
@@ -630,8 +634,8 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
 
 .. _addfunc_egcode:
 
-.. code-block:: julia 
-    :class: test 
+.. code-block:: julia
+    :class: test
 
     Random.seed!(42);
 
@@ -663,7 +667,7 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
     plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
     plot!(plots[1], title =  "A particular path of y_t")
     plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
-    plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot, 
+    plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot,
           label = "")
     plot!(plots[2], title = "Associated path of x_t")
 
