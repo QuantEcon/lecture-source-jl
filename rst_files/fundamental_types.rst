@@ -42,7 +42,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 Array Basics
 ================
@@ -1562,9 +1562,11 @@ Let's compute the asymptotic variance
 
 Now let's do the same thing using QuantEcon's ``solve_discrete_lyapunov()`` function and check we get the same result
 
+.. code-block:: julia
+    :class: hide-output
+
+    using QuantEcon 
 
 .. code-block:: julia
-
-    using QuantEcon
 
     norm(our_solution - solve_discrete_lyapunov(A, Σ * Σ'))
