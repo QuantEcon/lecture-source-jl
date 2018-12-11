@@ -74,7 +74,11 @@ For supplementary reading, see
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Introduction
 =================================
@@ -280,7 +284,7 @@ average process*, or ARMA(:math:`p,q`), if it can be written as
 .. math::
     :label: arma
 
-    X_t = \phi_1 X_{t-1} + \cdots + \phi_p X_{t-p} + 
+    X_t = \phi_1 X_{t-1} + \cdots + \phi_p X_{t-p} +
         \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}
 
 where :math:`\{ \epsilon_t \}` is white noise
@@ -783,7 +787,7 @@ Here are some functions to generate the plots
         plot!(plt, 0:(n-1), psi, seriestype=:sticks, marker=:circle,
               markersize=2, label="")
         plot!(plt, seriestype=:hline, [0], color=:red, label="")
-        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5), 
+        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5),
               xlabel="time", ylabel="response")
         return plt
     end
@@ -842,7 +846,7 @@ We'll use the model :math:`X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}`
   :class: test
 
   @testset begin
-    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555 
+    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555
     # As before, we need to repeat the calculations, since we don't have access to the results.
     @test (autocovariance(arma))[3] ≈ -0.5886222919837174
     @test (impulse_response(arma))[10] == -0.004296875
