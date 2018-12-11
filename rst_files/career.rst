@@ -501,35 +501,14 @@ The medians are subject to randomness, but should be about 7 and 14 respectively
 Exercise 3
 ----------
 
-Here's the code to reproduce the original figure
-
-.. code-block:: julia
-
-  lvls = [0.5, 1.5, 2.5, 3.5]
-  x_grid = range(0, 5, length = 50)
-  y_grid = range(0, 5, length = 50)
-
-  contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
-          fillalpha=1, cbar = false)
-  contour!(xlabel="theta", ylabel="epsilon")
-  annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
-  annotate!([(4.5,2.5, text("new job", 14, :center))])
-  annotate!([(4.0,4.5, text("stay put", 14, :center))])
-
-
-Now we want to set ``G_a = G_b = 100`` and generate a new figure with
-these parameters.
-
-To do this, use the new parameters as such: 
+Here's one way to do this 
 
 .. code-block:: julia 
 
-    wp = CareerWorkerProblem(G_a=100.0, G_b=100.0);
-    v_init = fill(100.0, wp.N, wp.N)
-    func(x) = update_bellman(wp, x)
-    v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
+    wp = CareerWorkerProblem(G_a=100.0, G_b=100.0); # use new params
+    v, optimal_policy = solve_wp(wp)
 
-        lvls = [0.5, 1.5, 2.5, 3.5]
+    lvls = [0.5, 1.5, 2.5, 3.5]
     x_grid = range(0, 5, length = 50)
     y_grid = range(0, 5, length = 50)
 
