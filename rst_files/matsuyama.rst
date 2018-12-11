@@ -326,7 +326,7 @@ Here's the main body of code
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -335,6 +335,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using Plots, Parameters
     gr(fmt = :png);
 

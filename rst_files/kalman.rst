@@ -33,7 +33,11 @@ Required knowledge: Familiarity with matrix manipulations, multivariate normal d
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 The Basic Idea
 ====================
@@ -129,7 +133,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     two_args_to_pdf(dist) = (x, y) -> pdf(dist, [x, y]) # returns a function to be plotted
 
     # plot
-    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = false, 
+    contour(x_grid, y_grid, two_args_to_pdf(dist), fill = false,
             color = :lighttest, cbar = false)
     contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, lw=1,
              color = :grays, cbar = false)
@@ -335,7 +339,7 @@ the update has used parameters
     predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
 
     # Plot Density 3
-    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1, color = :lighttest, 
+    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1, color = :lighttest,
             cbar = false)
     contour!(x_grid, y_grid, two_args_to_pdf(dist),
              color = :grays, cbar = false)

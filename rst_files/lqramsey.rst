@@ -66,7 +66,11 @@ Model Features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 The Ramsey Problem
 =====================
@@ -258,9 +262,9 @@ The associated Lagrangian is
     \mathscr L =
     \mathbb E  \sum_{t=0}^{\infty} \beta^t
     \left\{
-    -\frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] + 
+    -\frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] +
     \lambda
-    \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right] + 
+    \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right] +
     \mu_t
     [d_t + \ell_t - c_t - g_t]
     \right\}
@@ -577,9 +581,9 @@ Description and clarifications are given below
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LinearAlgebra, Parameters 
+    using QuantEcon, Plots, LinearAlgebra, Parameters
 
-    abstract type AbstractStochProcess end 
+    abstract type AbstractStochProcess end
 
     struct ContStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
         A::Matrix{TF}
@@ -659,7 +663,7 @@ Description and clarifications are given below
     end
 
 
-    function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T) 
+    function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T)
         # simplify notation
         @unpack β, Sg, Sd, Sb, Ss = econ
         @unpack P, x_vals = econ.proc
@@ -696,8 +700,8 @@ Description and clarifications are given below
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
 
-        return (g = g, d = d, b = b, s = s, c = c, 
-                l = l, p = p, τ = τ, rvn = rvn, B = B, 
+        return (g = g, d = d, b = b, s = s, c = c,
+                l = l, p = p, τ = τ, rvn = rvn, B = B,
                 R = R, π = π, Π = Π, ξ = ξ)
     end
 
@@ -754,9 +758,9 @@ Description and clarifications are given below
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
 
-        return (g = g, d = d, b = b, s = s, 
-                c = c, l = l, p = p, τ = τ, 
-                rvn = rvn, B = B, R = R, 
+        return (g = g, d = d, b = b, s = s,
+                c = c, l = l, p = p, τ = τ,
+                rvn = rvn, B = B, R = R,
                 π = π, Π = Π, ξ = ξ)
     end
 
@@ -936,13 +940,13 @@ Our second example adopts a discrete Markov specification for the exogenous proc
   @testset begin
     @test path.p[3] ≈ 1.5852129146694405
     @test path.B[13] ≈ 0.003279632025474284
-    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 
+    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
                      0.25, 0.25]
     @test path.rvn[7] ≈ 0.3188722725349599
     @test path.c[2] ≈ 0.6147870853305598
-    @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05, 
+    @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05,
                     1.05, 1.05, 1.05, 1.05, 1.05]
-    @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0, 
+    @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0,
                     1.0, 1.0, 1.0]
   end
 

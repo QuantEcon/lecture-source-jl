@@ -24,7 +24,11 @@ Topics:
 Setup
 ------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 
 Common Data Types
@@ -63,14 +67,14 @@ A particularly simple data type is a Boolean value, which can be either ``true``
 
 
 .. Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..    true + false
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..    sum([true, false, false, true])
 
 
@@ -137,14 +141,14 @@ Here we have used ``;`` to suppress the output on the last line, which otherwise
 
 .. I don't think this is useful quite yet, though perhaps later with broadcasting
 .. Also, you can use function (instead of infix) notation if you so desire
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     +(10, 20)
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     *(10, 20)
 
 
@@ -556,7 +560,7 @@ For "not equal" use ``!=`` or ``≠`` (``\ne<TAB>``)
 .. code-block:: julia
 
     x != 3
-    
+
 Julia can also test approximate equality with ``≈`` (``\approx<TAB>``)
 
 
@@ -569,15 +573,15 @@ Be careful when using this, however, as there are subtleties involving the scale
 
 .. I think this is a a bad practive
 .. We can chain inequalities:
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
     .. 1 < 2 < 3
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
-.. 
+..
 ..     1 ≤ 2 ≤ 3
 
 
@@ -585,13 +589,13 @@ Be careful when using this, however, as there are subtleties involving the scale
 .. This looked a little odd when reading
 .. .. code-block:: julia
 ..     :class: no-execute
-.. 
+..
 ..     while 0 println("foo") end
-.. 
-.. 
+..
+..
 .. .. code-block:: julia
 ..     :class: no-execute
-.. 
+..
 ..     if 1 print("foo") end
 
 
@@ -884,8 +888,8 @@ For/while loops and global variables in Jupyter vs. the REPL:
 * The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
-For more information on using globals outside of Jupyter, 
-(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to change in interactive modes in Julia 1.1 
+For more information on using globals outside of Jupyter,
+(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to change in interactive modes in Julia 1.1
 
 Functions
 ---------------
@@ -906,12 +910,12 @@ An obvious place to start is to notice that functions introduce their own local 
     y = 5
     f(y)
 
-This would be roughly equivalent to 
+This would be roughly equivalent to
 
 .. code-block:: julia
 
     function g() # scope within the `g` function
-        
+
         f(x) = x^2 # local `x` in scope
 
         # x is not bound to anything in this outer scope
@@ -940,7 +944,7 @@ The scoping also applies to named arguments in functions
     f(xval; y = yval)
 
 
-Due to scoping, you could write this as 
+Due to scoping, you could write this as
 
 .. code-block:: julia
 
@@ -959,9 +963,9 @@ Similarly to named arguments, the local scope also works with named tuples
 
     x = 0.1
     y = 2
-    
+
     # create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
-    (x = x, y = y) 
+    (x = x, y = y)
 
 As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
 
@@ -999,7 +1003,7 @@ While the above was convenient, there are other times when you want to simply fi
 
 When the function ``f`` is parsed in Julia, it will look to see if any of the variables are already defined in the current scope
 
-In this case, it finds the ``a`` since it was defined previously, whereas if the 
+In this case, it finds the ``a`` since it was defined previously, whereas if the
 code defines ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
 
 This also works when embedded in other functions
@@ -1030,7 +1034,7 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
         c = a + b
         return (a = a, b = b, c = c)  # note local scope of tuples!
     end
-    
+
     solvemodel(0.1)
 
 Higher-Order Functions
@@ -1047,22 +1051,22 @@ To see a simple example, consider functions that accept other functions (includi
     twice(f, x) = f(f(x))  # applies f to itself twice
     f(x) = x^2
     @show twice(f, 2.0)
-    
+
     twice(x -> x^2, 2.0)
     a = 5
     g(x) = a * x
-    @show twice(g, 2.0);   # using a closure 
+    @show twice(g, 2.0);   # using a closure
 
-This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic 
+This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic
 
 One example of using this in a library is `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_, where we can pass a function to the ``expectation`` function
 
 .. code-block:: julia
 
     using Expectations, Distributions
-    
+
     @show d = Exponential(2.0)
-    
+
     f(x) = x^2
     @show expectation(f, d);  # E(f(x))
 
@@ -1073,7 +1077,7 @@ Another example is for a function that returns a closure itself
     function multiplyit(a, g)
         return x -> a * g(x)  # function with `g` used in the closure
     end
-    
+
     f(x) = x^2
     h = multiplyit(2.0, f)    # use our quadratic, returns a new function which doubles the result
     h(2)     # returned function is like any other function
@@ -1092,15 +1096,15 @@ You can create and define using ``function`` as well
         end
         return f    # closure with the embedded a
     end
-    
+
     f(x) = x^2
     h = snapabove(f, 2.0)
 
     using Plots
-    
+
     gr(fmt=:png);
     plot(h, 0.0:0.1:3.0)
-   
+
 
 
 Loops
@@ -1131,7 +1135,7 @@ On the other hand just as with closures, if a variable is already defined it wil
     for i in 1:2   # introduces local i
         dval2 = i  # refers to outer variable
     end
-    
+
     dval2 # still can't refer to `i`
 
 Similarly, for while loops
@@ -1145,7 +1149,7 @@ Similarly, for while loops
         val = val / 2
         difference = val - old
     end
-    
+
     @show val;
     # @show difference fails, not in scope
 
@@ -1163,11 +1167,11 @@ A simple test of the difference is to take a segment of code and wrap it in a fu
     x = 2.0
     f(y) = x + y
     z = f(4.0)
-    
+
     for i in 1:3
         z += i
-    end 
-           
+    end
+
     println("z = $z")
 
 Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``y``, and the global variable ``z`` is modified in the ``for`` loop
@@ -1180,14 +1184,14 @@ However, you can simply wrap the entire code in a function
         x = 2.0
         f(y) = x + y
         z = f(4.0)
-        
+
         for i in 1:3
             z += i
-        end   
-             
+        end
+
         println("z = $z")
     end
-    
+
     wrapped()
 
 Now, there are no global variables
@@ -1421,7 +1425,7 @@ Exercise 5
 .. code-block:: julia
 
     function linapprox(f, a, b, n, x)
-        # evaluates the piecewise linear interpolant of f at x, 
+        # evaluates the piecewise linear interpolant of f at x,
         # on the interval [a, b], with n evenly spaced grid points.
 
         length_of_interval = b - a

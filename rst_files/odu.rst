@@ -41,7 +41,7 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 Model
 ========
@@ -172,6 +172,7 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
+  using LinearAlgebra, Statistics, Compat 
   using Distributions, Plots, QuantEcon, Interpolations, Parameters
 
   gr(fmt=:png);
@@ -245,10 +246,10 @@ The code is as follows
 
       nodes, weights = qnwlege(21, 0.0, w_max)
 
-      return (β = β, c = c, F = F, G = G, f = f, 
-              g = g, n_w = w_grid_size, w_max = w_max, 
-              w_grid = w_grid, n_π = π_grid_size, π_min = π_min, 
-              π_max = π_max, π_grid = π_grid, quad_nodes = nodes, 
+      return (β = β, c = c, F = F, G = G, f = f,
+              g = g, n_w = w_grid_size, w_max = w_max,
+              w_grid = w_grid, n_π = π_grid_size, π_min = π_min,
+              π_max = π_max, π_grid = π_grid, quad_nodes = nodes,
               quad_weights = weights)
   end
 
@@ -380,7 +381,7 @@ The optimal policy:
       w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
       Z = [pf(w_plot_grid[j], π_plot_grid[i])
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-      p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, 
+      p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true,
                   size=(400, 400), c=:coolwarm)
       plot!(xlabel="pi", ylabel="wage", xguidefont=font(12), cbar=false)
       annotate!(0.4, 1.0, "reject")
@@ -507,7 +508,7 @@ triangle inequality for integrals tells us that
     |(Q \psi)(\pi) - (Q \phi)(\pi)|
     \leq \beta \int
     \left|
-    \max \left\{w', \psi \circ q(w', \pi) \right\} - 
+    \max \left\{w', \psi \circ q(w', \pi) \right\} -
     \max \left\{w', \phi \circ q(w', \pi) \right\}
     \right|
     \, h_{\pi}(w') \, dw'

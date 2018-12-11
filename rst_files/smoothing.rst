@@ -308,7 +308,7 @@ We can then use the second equation of :eq:`cs_4a`  to deduce the restriction
 .. math::
     :label: cs_7
 
-    y(\bar s_1) - y(\bar s_2) + [q(\bar s_1\,|\, \bar s_1) - q(\bar s_1\,|\, \bar s_2) - 1 ] b_0 + 
+    y(\bar s_1) - y(\bar s_2) + [q(\bar s_1\,|\, \bar s_1) - q(\bar s_1\,|\, \bar s_2) - 1 ] b_0 +
     [q(\bar s_2\,|\,\bar s_1) + 1 - q(\bar s_2 \,|\, \bar s_2) ] b(\bar s_2) = 0 ,
 
 an equation in the unknown :math:`b(\bar s_2)`
@@ -345,7 +345,7 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
   :class: test
@@ -354,6 +354,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using Parameters, Plots, QuantEcon, Random
     gr(fmt = :png);
 

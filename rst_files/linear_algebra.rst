@@ -81,7 +81,7 @@ The following figure represents three vectors in this manner
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -90,7 +90,7 @@ Setup
 
 .. code-block:: julia
 
-    using Plots
+    using LinearAlgebra, Statistics, Compat, Plots
     gr(fmt=:png);
 
 .. code-block:: julia

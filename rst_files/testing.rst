@@ -65,16 +65,16 @@ This is all we need for now
 Julia Setup
 --------------------
 
-.. literalinclude:: /_static/includes/alldeps.jl
+.. literalinclude:: /_static/includes/alldeps_no_using.jl
 
-**Note:** Before these steps, make sure that you've either completed the :doc:`version control <version_control>` lecture or run 
+**Note:** Before these steps, make sure that you've either completed the :doc:`version control <version_control>` lecture or run
 
-**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets 
+**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets
 
-.. code-block:: julia 
-    :class: no-execute 
+.. code-block:: julia
+    :class: no-execute
 
-    git config -- global user.name "Your Name" 
+    git config -- global user.name "Your Name"
 
 To set up a project on Julia:
 
@@ -92,7 +92,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
 
-**Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID 
+**Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID
 
 * Create a specific project based off this template
 
@@ -100,12 +100,12 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
     generate("ExamplePackage.jl", ourTemplate)
 
-If we navigate to the package directory (shown in the output), we should see something like the following 
+If we navigate to the package directory (shown in the output), we should see something like the following
 
 .. figure:: /_static/figures/testing-dir.png
     :scale: 100%
-        
-**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder 
+
+**Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder
 
 Adding a Project to Git
 ------------------------
@@ -125,7 +125,7 @@ In particular
 
 * We should leave the boxes unchecked for the ``README.md``, ``LICENSE``, and ``.gitignore``, since these are handled by ``PkgTemplates``
 
-Then, 
+Then,
 
 * Drag and drop your folder from your ``~/.julia/dev`` directory to GitHub Desktop
 
@@ -138,7 +138,7 @@ If you navigate to your git repo (ours is `here <https://github.com/quanteconuse
 
 **Note:** Be sure that you don't separately clone the repo you just added to another location (i.e., to your desktop)
 
-A key note is that you have some set of files on your local machine (here in ``~/.julia/dev/ExamplePackage.jl``) and git is plugged into those files 
+A key note is that you have some set of files on your local machine (here in ``~/.julia/dev/ExamplePackage.jl``) and git is plugged into those files
 
 For convenience, you might want to create a shortcut to that location somewhere accessible
 
@@ -147,7 +147,7 @@ Adding a Project to the Julia Package Manager
 
 We also want Julia's package manager to be aware of the project
 
-* Open a REPL in the newly created project directory, either by noting the path printed above, or by running the following in a REPL 
+* Open a REPL in the newly created project directory, either by noting the path printed above, or by running the following in a REPL
 
 .. code-block:: julia
 
@@ -155,7 +155,7 @@ We also want Julia's package manager to be aware of the project
 
 Note the lack of ``.jl``!
 
-* Run the following 
+* Run the following
 
 .. code-block:: julia
 
@@ -163,7 +163,7 @@ Note the lack of ``.jl``!
 
 to get into the main Julia environment (more on environments in the second half of this lecture)
 
-* And run 
+* And run
 
 .. code-block:: julia
 
@@ -177,7 +177,7 @@ We see the change reflected in our default package list
 
     ] st
 
-For more on the package mode, see the :docs:`tools and editors <tools_editors>`_ lecture 
+For more on the package mode, see the :docs:`tools and editors <tools_editors>`_ lecture
 
 Using the Package Manager
 --------------------------------
@@ -231,7 +231,7 @@ The other important text files for now are
 
 * ``Project.toml`` and ``Manifest.toml``, which contain dependency information
 
-In particular, the ``Project.toml`` contains a list of dependencies, and the ``Manifest.toml`` specifies their exact versions and sub-dependencies 
+In particular, the ``Project.toml`` contains a list of dependencies, and the ``Manifest.toml`` specifies their exact versions and sub-dependencies
 
 * The ``.gitignore`` file (which may display as an untitled file), which contains files and paths for ``git`` to ignore
 
@@ -244,13 +244,13 @@ Dependency Management
 Environments
 ^^^^^^^^^^^^^^^^
 
-As :ref:`before <jl_packages>`, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information 
+As :ref:`before <jl_packages>`, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information
 
-The actual files are written in the `TOML language <https://github.com/toml-lang/toml>`_, which is a lightweight format to specify configuration options  
+The actual files are written in the `TOML language <https://github.com/toml-lang/toml>`_, which is a lightweight format to specify configuration options
 
 This information is the name of every package we depend on, along with the exact versions of those packages
 
-This information (in practice, the result of package operations we execute) will 
+This information (in practice, the result of package operations we execute) will
 be reflected in our ``ExamplePackage.jl`` directory's TOML, once that environment is activated (selected)
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it
@@ -268,8 +268,8 @@ For now, let's just try adding a dependency
 
     ] activate ExamplePackage
 
-This tells Julia to write the results of package operations to ``ExampleProject``'s TOML, 
-  and use the versions of packages specified there 
+This tells Julia to write the results of package operations to ``ExampleProject``'s TOML,
+  and use the versions of packages specified there
 
 Note that the base environment isn't special, except that it's what's loaded by a freshly-started REPL or Jupyter notebook
 
@@ -315,8 +315,8 @@ For example, let's say we add ``Distributions.jl``
 
 and edit the source (paste this into the file itself ) to read as follows
 
-.. code-block:: julia 
-    :class: no-execute 
+.. code-block:: julia
+    :class: no-execute
 
     module ExamplePackage
 
@@ -334,11 +334,11 @@ and edit the source (paste this into the file itself ) to read as follows
 
     end # module
 
-Let's try calling this 
+Let's try calling this
 
 .. code-block:: julia
 
-    ] activate 
+    ] activate
 
 .. code-block:: julia
 
@@ -377,7 +377,7 @@ The change will be reflected in the ``Project.toml`` file
 
 Note that, as usual, we had to first activate ``ExamplePackage`` first before making our dependency changes
 
-.. code-block:: julia 
+.. code-block:: julia
     :class: no-execute
 
     name = "ExamplePackage"
@@ -432,7 +432,7 @@ In particular, they can run
 
     ] activate ExamplePackage
 
-to load the list of dependencies, and 
+to load the list of dependencies, and
 
 .. code-block:: julia
 
@@ -494,7 +494,7 @@ Our ``tests/runtests.jl`` file should look like this
 **As before, this should be pasted into the file directly**
 
 .. code-block:: julia
-    :class: no-execute 
+    :class: no-execute
 
     using ExamplePackage
     using Test
@@ -519,9 +519,9 @@ Running Tests
 
 There are a few different ways to run the tests for your package
 
-* Run the actual ``runtests.jl``, say by hitting ``shift-enter`` on it in Atom 
+* Run the actual ``runtests.jl``, say by hitting ``shift-enter`` on it in Atom
 
-* From a fresh (``v1.0``) REPL, run ``] test ExamplePackage`` 
+* From a fresh (``v1.0``) REPL, run ``] test ExamplePackage``
 
 * From an activated (``ExamplePackage``) REPL, simply run ``] test`` (recall that you can activate with ``] activate ExamplePackage``)
 
@@ -587,7 +587,7 @@ For example, if we push our changes to the server and then click the Travis badg
 .. figure:: /_static/figures/travis-progress.png
     :scale: 100%
 
-Note that you may need to wait a bit and/or refresh your browser 
+Note that you may need to wait a bit and/or refresh your browser
 
 This gives us an overview of all the builds running for that commit
 
@@ -648,7 +648,7 @@ This shows us that our tests cover 50\% of our functions in ``src//``
 
 **Note:** To get a more detailed view, we can click the ``src//`` and the resultant filename
 
-**Note:** Codecov may take a few minutes to run for the first time 
+**Note:** Codecov may take a few minutes to run for the first time
 
 .. figure:: /_static/figures/codecov.png
     :scale: 100%
@@ -703,7 +703,7 @@ The ``] dev`` command will also add the target to the package manager, so that w
 
 * If you make some changes in a text editor and return to GitHub Desktop, you'll see something like
 
-**Note:** As before, we're editing the files directly in ``~/.julia/dev``, as opposed to cloning the repo again. 
+**Note:** As before, we're editing the files directly in ``~/.julia/dev``, as opposed to cloning the repo again.
 
 .. figure:: /_static/figures/testing-commit.png
     :scale: 100%
@@ -790,10 +790,10 @@ Additional Notes
 
 * The `JuliaCI <https://github.com/JuliaCI/>`_ organization provides more Julia utilities for continuous integration and testing
 
-Review 
+Review
 =============
 
-To review the workflow for creating, versioning, and testing a new project end-to-end 
+To review the workflow for creating, versioning, and testing a new project end-to-end
 
 1. Create the local package directory using the ``PkgTemplates.jl``
 
@@ -851,4 +851,3 @@ For the tests, you should have at the very minimum
 And anything else you can think of.  You should be able to run ``] test`` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI
 
 Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build
-

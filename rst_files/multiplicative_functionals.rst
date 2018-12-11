@@ -96,7 +96,7 @@ We'll do this by formulating the additive functional as a linear state space mod
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -105,6 +105,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using Distributions, Parameters, Plots, QuantEcon
     import Distributions: loglikelihood
     gr(fmt = :png);
@@ -439,7 +440,7 @@ Let's see a histogram of the log-likelihoods under the true and the alternative 
 .. code-block:: julia
 
     plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True", normed = true)
-    plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative", 
+    plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative",
           normed = true)
     vline!([mean(LLT)], color = :black, lw = 2, linestyle = :dash, label = "")
     vline!([mean(LLT2)], color = :black, lw = 2, linestyle = :dash, label = "")
@@ -697,7 +698,7 @@ Here is some code that tackles these tasks
     dens_to_plot = [Mtilde_t_density(amf_2, t, xmin=1e-8, xmax=6.0) for t in times_to_plot]
     ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
 
-    # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet 
+    # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet
     # supported in Plots
     plots = plot(layout = (3,2), size = (600,800))
 
