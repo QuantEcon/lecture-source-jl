@@ -520,19 +520,27 @@ Here's the code to reproduce the original figure
 Now we want to set ``G_a = G_b = 100`` and generate a new figure with
 these parameters.
 
-To do this replace:
+To do this, use the new parameters as such: 
 
-.. code-block:: julia
+.. code-block:: julia 
 
-    wp = CareerWorkerProblem()
+    wp = CareerWorkerProblem(G_a=100.0, G_b=100.0);
+    v_init = fill(100.0, wp.N, wp.N)
+    func(x) = update_bellman(wp, x)
+    v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
-with:
+        lvls = [0.5, 1.5, 2.5, 3.5]
+    x_grid = range(0, 5, length = 50)
+    y_grid = range(0, 5, length = 50)
 
-.. code-block:: julia
+    contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
+            fillalpha=1, cbar = false)
+    contour!(xlabel="theta", ylabel="epsilon")
+    annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
+    annotate!([(4.5,2.5, text("new job", 14, :center))])
+    annotate!([(4.0,4.5, text("stay put", 14, :center))])
 
-    wp = CareerWorkerProblem(G_a=100.0, G_b=100.0)
-
-In the new figure, you will see that the region for which the worker
+You will see that the region for which the worker
 will stay put has grown because the distribution for :math:`\epsilon`
 has become more concentrated around the mean, making high-paying jobs
 less realistic
