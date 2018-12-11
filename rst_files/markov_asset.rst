@@ -298,7 +298,7 @@ Setup
 .. code-block:: julia
 
     using Parameters, Plots, QuantEcon
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test

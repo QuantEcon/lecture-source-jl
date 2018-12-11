@@ -355,7 +355,7 @@ Setup
 .. code-block:: julia
 
     using Parameters, Plots, QuantEcon, Random
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

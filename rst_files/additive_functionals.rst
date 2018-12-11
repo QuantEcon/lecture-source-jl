@@ -217,7 +217,7 @@ Setup
 .. code-block:: julia
 
     using Distributions, Parameters, Plots, QuantEcon
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

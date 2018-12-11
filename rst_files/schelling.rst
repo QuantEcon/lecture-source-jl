@@ -141,7 +141,7 @@ Setup
 .. code-block:: julia
 
     using Parameters, Plots
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test

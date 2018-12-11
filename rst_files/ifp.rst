@@ -380,7 +380,7 @@ Setup
 
     using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
     using Optim: converged, maximum, maximizer, minimizer, iterations
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

@@ -295,7 +295,7 @@ Setup
 
 .. code-block:: julia
 
-    gr(fmt = :png);
+    gr(fmt = :png);;
 
 Here's the distribution of wage offers we'll work with
 

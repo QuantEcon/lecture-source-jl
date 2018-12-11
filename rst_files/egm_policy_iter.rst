@@ -144,7 +144,7 @@ Setup
 .. code-block:: julia
 
     using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

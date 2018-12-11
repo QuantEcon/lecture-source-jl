@@ -486,7 +486,7 @@ Setup
 .. code-block:: julia
 
     using Plots, QuantEcon, Interpolations, NLsolve
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

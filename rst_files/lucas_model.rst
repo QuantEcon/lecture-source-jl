@@ -395,7 +395,7 @@ Setup
 .. code-block:: julia
 
     using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

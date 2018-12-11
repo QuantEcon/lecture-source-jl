@@ -107,7 +107,7 @@ Setup
 
     using Distributions, Parameters, Plots, QuantEcon
     import Distributions: loglikelihood
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

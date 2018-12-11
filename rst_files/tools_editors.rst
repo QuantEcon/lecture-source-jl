@@ -249,7 +249,7 @@ The ``Plots`` pane captures Julia plots output (the code is as follows)
     :class: no-execute
 
     using Plots 
-    gr(fmt = :png)
+    gr(fmt = :png);
     data = rand(10, 10)
     h = heatmap(data)
 

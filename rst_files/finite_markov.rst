@@ -38,7 +38,7 @@ Setup
 
     using Distributions, Plots, Printf, QuantEcon, Random
 
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 Definitions
 ==============
