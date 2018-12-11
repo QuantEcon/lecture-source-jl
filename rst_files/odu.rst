@@ -174,7 +174,7 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
   using Distributions, Plots, QuantEcon, Interpolations, Parameters
 
-  gr(fmt=:png)
+  gr(fmt=:png);
 
   w_max = 2
   x = range(0,  w_max, length = 200)

@@ -1098,7 +1098,7 @@ You can create and define using ``function`` as well
 
     using Plots
     
-    gr(fmt=:png)
+    gr(fmt=:png);
     plot(h, 0.0:0.1:3.0)
    
 

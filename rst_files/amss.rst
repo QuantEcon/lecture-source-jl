@@ -1551,7 +1551,7 @@ triangle denote war
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
     titles = hcat("Consumption", "Labor Supply", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")
     sim_seq_l_plot = hcat(sim_seq_l[1:3]..., sim_seq_l[4],

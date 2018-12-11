@@ -1391,7 +1391,7 @@ Solutions
 .. code-block:: julia
 
     using QuantEcon, Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
 Exercise 1
 ----------

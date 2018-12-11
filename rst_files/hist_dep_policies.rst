@@ -666,7 +666,7 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 .. code-block:: julia 
 
     using QuantEcon, Roots, Plots, Parameters
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     function HistDepRamsey(A0, A1, d, Q0,
                            τ0, μ, β)

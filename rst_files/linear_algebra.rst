@@ -91,7 +91,7 @@ Setup
 .. code-block:: julia
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
 .. code-block:: julia
 

@@ -224,7 +224,7 @@ The next figure plots an example of this function for :math:`\phi = 0.8` and :ma
 .. code-block:: julia
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     plt_1=plot()
     plt_2=plot()

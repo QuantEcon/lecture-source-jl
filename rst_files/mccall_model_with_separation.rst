@@ -308,7 +308,7 @@ We'll use the default parameterizations found in the code above
 .. code-block:: julia
 
     # plots setting
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     mcm = McCallModel()
     @unpack V, U = solve_mccall_model(mcm)

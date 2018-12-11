@@ -153,7 +153,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 .. code-block:: julia
 
   using Plots, QuantEcon, Distributions
-  gr(fmt=:png)
+  gr(fmt=:png);
 
   n = 50
   a_vals = [0.5, 1, 100]

@@ -1141,5 +1141,5 @@ The main way to implement this in a generic language is with a design approach c
 .. .. code-block:: julia
 ..
 ..     using Plots
-..     gr(fmt=:png)
+..     gr(fmt=:png);
 ..     plot(X, legend=:none)
