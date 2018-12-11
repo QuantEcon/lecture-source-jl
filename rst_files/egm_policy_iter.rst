@@ -134,17 +134,19 @@ Here's an implementation of :math:`K` using EGM as described above
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
+    using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
+    gr(fmt = :png);
+
 
 .. code-block:: julia
     :class: test
 
     using Test
-
-.. code-block:: julia
-
-    using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
-    gr(fmt = :png);
 
 .. code-block:: julia
 

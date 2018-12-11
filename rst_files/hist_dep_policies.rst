@@ -44,7 +44,7 @@ Regarding techniques, we will make use of the methods described in
 
 #. the :doc:`linear regulator lecture<lqcontrol>`
 
-#. the  :doc:`solving LQ dynamic Stackelberg problems lecture<dyn_stack>` 
+#. the  :doc:`solving LQ dynamic Stackelberg problems lecture<dyn_stack>`
 
 .. :doc:`Stackelberg LQ models <lqstackelberg>`.
 
@@ -54,7 +54,11 @@ Regarding techniques, we will make use of the methods described in
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Two Sources of History Dependence
 ==================================
@@ -320,7 +324,7 @@ to maximize and the Lagrange multiplier :math:`\mu` to minimize
 subject to and :eq:`ES_4` and :eq:`ES_5`
 
 
-The Ramsey problem is a special case of the linear quadratic dynamic Stackelberg problem analyzed in :doc:`this lecture<dyn_stack>` 
+The Ramsey problem is a special case of the linear quadratic dynamic Stackelberg problem analyzed in :doc:`this lecture<dyn_stack>`
 
 The key implementability conditions are :eq:`ES_4` for :math:`t \geq 0`
 
@@ -437,7 +441,7 @@ a value function that takes only :math:`z_0` as given and is the indirect utilit
 Let :math:`v(Q_t, \tau_t, u_t)` be the optimum value function for the time :math:`t \geq 1` government administrator facing state
 :math:`Q_t, \tau_t, u_t`.
 
-Let :math:`w(Q_0)` be the value of the Ramsey plan starting from :math:`Q_0`     
+Let :math:`w(Q_0)` be the value of the Ramsey plan starting from :math:`Q_0`
 
 Subproblem 1
 --------------
@@ -484,7 +488,7 @@ The subproblem 2 Bellman equation is
     w(z_0) = \max_{u_0} v (Q_0,0, u_0)
 
 
-Details 
+Details
 --------
 
 Define the state vector to be
@@ -547,7 +551,7 @@ where
 
 * the optimal policy function is given by :math:`\tau_{t+1} = -F y_t` for :math:`F = (B'PB)^{-1}B'PA`
 
-Now we turn to subproblem 1.  
+Now we turn to subproblem 1.
 
 Evidently the optimal choice of :math:`u_0` satisfies :math:`\frac{\partial v}{\partial u_0} =0`
 
@@ -663,7 +667,7 @@ We'll discuss how to compute :math:`\mu` :ref:`below <sec:computing_mu>` but fir
 
 We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95, 100]` and compute the Ramsey plan with the following piece of code
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using QuantEcon, Roots, Plots, Parameters
     gr(fmt=:png);
@@ -692,15 +696,15 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
 
         P, F, _d = stationary_values(lq)
 
-        return (A0 = A0, A1 = A1, d = d, Q0 = Q0, τ0 = τ0, 
-                μ0 = μ0, β = β, R = R, A = A, B = B, Q = Q, 
+        return (A0 = A0, A1 = A1, d = d, Q0 = Q0, τ0 = τ0,
+                μ0 = μ0, β = β, R = R, A = A, B = B, Q = Q,
                 P = P, F = Array(F), lq = lq)
     end
 
 
     function compute_G(hdr, μ)
         # simplify notation
-        @unpack Q0, τ0, A, B, Q, β = hdr 
+        @unpack Q0, τ0, A, B, Q, β = hdr
 
         R = hdr.R
         R[2, 3] = R[3, 2] = -μ / 2
@@ -762,8 +766,8 @@ We take the parameter set :math:`[A_0, A_1, d, \beta, Q_0] = [100, .05, .2, .95,
         τhatdif[1] = 0
         y[:, 1] = vcat([1.0 hdr.Q0 hdr.τ0]', u0)
 
-        return (y = y, uhat = uhat, uhatdif = uhatdif, 
-                τhat = τhat, τhatdif = τhatdif, μ = μ, 
+        return (y = y, uhat = uhat, uhatdif = uhatdif,
+                τhat = τhat, τhatdif = τhatdif, μ = μ,
                 G = G, GPay = GPay)
     end
 
@@ -1227,10 +1231,10 @@ The plan is said to be **credible** if, for each :math:`t` and each state :math:
 
     \begin{aligned}
     J_t
-    & = A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 - \frac{d}{2} u_{t}^2 + 
+    & = A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 - \frac{d}{2} u_{t}^2 +
         \beta J_{t+1} (\hat \tau_{t+1}, \hat G_{t+1})
     \\
-    & \geq A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 - 
+    & \geq A_0 Q_{t} - \frac{A_1}{2} Q_{t}^2 -
         \frac{d}{2} u_{t}^2 +  \beta J_{t+1} ( \tau_{t+1}, G_{t+1})
     \end{aligned}
 

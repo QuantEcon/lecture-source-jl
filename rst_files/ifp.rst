@@ -369,7 +369,7 @@ Here's the code for a named-tuple constructor called ``ConsumerProblem`` that st
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -378,6 +378,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
     using Optim: converged, maximum, maximizer, minimizer, iterations
     gr(fmt = :png);

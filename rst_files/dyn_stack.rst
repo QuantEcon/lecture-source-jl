@@ -542,7 +542,7 @@ Including the implementability constraints, we can represent the constraints in 
     0 & 0 & 1 & 0 & 0 \\
     0 & 0 & 0 & 1 & 1 \\
     0 & 0 & 0 & 0 & {c\over \beta} \end{bmatrix}
-    \begin{bmatrix}  1 \\ v_t \\ Q_t \\ \overline q_t \\ \overline i_t \end{bmatrix} + 
+    \begin{bmatrix}  1 \\ v_t \\ Q_t \\ \overline q_t \\ \overline i_t \end{bmatrix} +
     \begin{bmatrix}  0 \\ 0 \\ 1 \\ 0 \\ 0  \end{bmatrix} u_t
     \end{aligned}
 
@@ -902,7 +902,11 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat, QuantEcon, Roots
 
 .. code-block:: julia
     :class: test
@@ -910,8 +914,6 @@ Setup
     using Test
 
 .. code-block:: julia
-
-    using QuantEcon, Roots
 
     function Oligopoly(;a0 = 100.0,
                         a1 = 1.0,
