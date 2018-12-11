@@ -35,7 +35,11 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Model
 ========
@@ -279,7 +283,7 @@ Here's the value function
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
   plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
-       seriescolor=:plasma, gridalpha = 1) 
+       seriescolor=:plasma, gridalpha = 1)
 
 The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
 
