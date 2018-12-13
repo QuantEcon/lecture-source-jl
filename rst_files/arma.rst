@@ -233,7 +233,7 @@ The next figure plots an example of this function for :math:`\phi = 0.8` and :ma
     for (i, ϕ) in enumerate((0.8, -0.8))
         times = 0:16
         acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
-        label = "autocovariance, phi = phi_var"
+        label = "autocovariance, phi = $ϕ"
         plot!(plots[i], times, acov, color=:blue, lw=2, marker=:circle, markersize=3,
               alpha=0.6, label=label)
         plot!(plots[i], legend=:topright, xlabel="time", xlim=(0,15))
@@ -280,7 +280,7 @@ average process*, or ARMA(:math:`p,q`), if it can be written as
 .. math::
     :label: arma
 
-    X_t = \phi_1 X_{t-1} + \cdots + \phi_p X_{t-p} + 
+    X_t = \phi_1 X_{t-1} + \cdots + \phi_p X_{t-p} +
         \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}
 
 where :math:`\{ \epsilon_t \}` is white noise
@@ -485,7 +485,7 @@ Plotting :eq:`ar1_sd_ed` reveals the shape of the spectral density for the AR(1)
 
     for (i, ϕ) in enumerate((0.8, -0.8))
         sd = ar1_sd(ϕ, ω_s)
-        label = "spectral density, phi = phi_var"
+        label = "spectral density, phi = $ϕ"
         plot!(plots[i], ω_s, sd, color=:blue, alpha=0.6, lw=2, label=label)
         plot!(plots[i], legend=:top, xlabel="frequency", xlim=(0,π))
     end
@@ -783,7 +783,7 @@ Here are some functions to generate the plots
         plot!(plt, 0:(n-1), psi, seriestype=:sticks, marker=:circle,
               markersize=2, label="")
         plot!(plt, seriestype=:hline, [0], color=:red, label="")
-        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5), 
+        plot!(plt, title="Impluse response", xlim=(-0.5,n-0.5),
               xlabel="time", ylabel="response")
         return plt
     end
@@ -842,7 +842,7 @@ We'll use the model :math:`X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}`
   :class: test
 
   @testset begin
-    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555 
+    @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555
     # As before, we need to repeat the calculations, since we don't have access to the results.
     @test (autocovariance(arma))[3] ≈ -0.5886222919837174
     @test (impulse_response(arma))[10] == -0.004296875
