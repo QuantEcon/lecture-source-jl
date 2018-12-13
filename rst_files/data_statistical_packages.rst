@@ -14,7 +14,7 @@ Overview
 
 This lecture explores some of the key packages for working with data and doing statistics in Julia
 
-In particular, we will examine the ``DataFrame`` object in detail (i.e., construction, manipulation, querying, visualization, and nuances like missing data) 
+In particular, we will examine the ``DataFrame`` object in detail (i.e., construction, manipulation, querying, visualization, and nuances like missing data)
 
 While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution
 
@@ -27,11 +27,11 @@ Setup
 
 .. literalinclude:: /_static/includes/alldeps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat 
-    using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, Vegalite 
+    using LinearAlgebra, Statistics, Compat
+    using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
     using DataVoyager, GLM, RegressionTables, FixedEffectModels
 
 DataFrames
@@ -62,7 +62,7 @@ The first is to set up columns and construct a dataframe by assigning names
     last_price = [4.2, 11.3, 12.1, missing]
     df = DataFrame(commod = commodities, price = last_price)
 
-Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[:row]`` or a struct-style ``df.row``, as below 
+Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[:row]`` or a struct-style ``df.row``, as below
 
 .. code-block:: julia
 
@@ -90,7 +90,7 @@ While often data will be generated all at once, or read from a file, you can add
 
     nt = (commod = "nickel", price= 5.1)
     push!(df, nt)
-    
+
 Named tuples can also be used to construct a ``DataFrame``, and have it properly deduce all types
 
 .. code-block:: julia
@@ -104,8 +104,8 @@ Working with Missing
 
 As we discussed in :ref:`fundamental types <missing>`, the semantics of ``missing`` are that mathematical operations will not silently ignore it
 
-In order to allow ``missing`` in a column, you can create/load the ``DataFrame`` 
-from a source with ``missing``'s, or call ``allowmissing!`` on a column 
+In order to allow ``missing`` in a column, you can create/load the ``DataFrame``
+from a source with ``missing``'s, or call ``allowmissing!`` on a column
 
 .. code-block:: julia
 
@@ -149,7 +149,7 @@ For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/
     y = ["old", "young", "young", "old"]
     y = CategoricalArray(y)
     df = DataFrame(id=id, y=y)
-    
+
 .. code-block:: julia
 
     levels(df.y)
@@ -160,7 +160,7 @@ Visualization, Querying, and Plots
 
 The ``DataFrame`` (and similar types that fulfill a standard generic interface) can fit into a variety of packages
 
-One set of them is the `QueryVerse <https://github.com/queryverse>`_  
+One set of them is the `QueryVerse <https://github.com/queryverse>`_
 
 **Note:** The QueryVerse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax ``|>``
 
@@ -187,11 +187,11 @@ To give an example directly from the source of the LINQ inspired `Query.jl <http
         @collect DataFrame
     end
 
-While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `Vegalite.jl <http://fredo-dedup.github.io/VegaLite.jl/latest/>`_
+While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <http://fredo-dedup.github.io/VegaLite.jl/latest/>`_
 
 .. code-block:: julia
 
-    using RDatasets, VegaLite 
+    using RDatasets, VegaLite
     iris = dataset("datasets", "iris")
 
     iris |> @vlplot(
@@ -223,7 +223,7 @@ A few to point out
 * `StatsBase <https://github.com/JuliaStats/StatsBase.jl>`_ has basic statistical functions such as geometric and harmonic means, auto-correlations, robust statistics, etc.
 * `StatsFuns <https://github.com/JuliaStats/StatsFuns.jl>`_ has a variety of mathematical functions and constants such as `pdf` and `cdf` of many distributions, `softmax`, etc.
 
-General Linear Models 
+General Linear Models
 ------------------------------
 
 To run linear regressions and similar statistics, use the `GLM <http://juliastats.github.io/GLM.jl/latest/>`_ package
@@ -238,8 +238,8 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
     ols = lm(@formula(y ~ x), df) # R-style notation
 
 
-To display the results in a useful tables for LaTeX and the REPL, use 
-`RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output 
+To display the results in a useful tables for LaTeX and the REPL, use
+`RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output
 similar to the Stata package `esttab` and the R package `stargazer`
 
 .. code-block:: julia
@@ -247,25 +247,25 @@ similar to the Stata package `esttab` and the R package `stargazer`
     using RegressionTables
     regtable(ols)
     # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
-.. 
-.. 
+..
+..
 .. To print a full dataframe, and other functions, use the `LatexPrint <https://github.com/scheinerman/LatexPrint.jl#the-tabular-function>`_ package
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     using LatexPrint
-.. 
+..
 ..     id = [1, 2, 3, 4]
 ..     y = ["old", "young", "young", "old"]
 ..     y = CategoricalArray(y)
 ..     df = DataFrame(id=id, y=y)
 ..     tabular(df)
-..     
+..
 
 Fixed Effects
 ----------------
 
-While Julia may be overkill for estimating a simple linear regression, 
+While Julia may be overkill for estimating a simple linear regression,
 fixed-effects estimation with dummies for multiple variables are much more computationally intensive
 
 

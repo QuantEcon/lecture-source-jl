@@ -131,7 +131,7 @@ then increase the number of agents.
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -140,8 +140,8 @@ Setup
 
 .. code-block:: julia
 
-    using Parameters, Plots
-    gr(fmt = :png)
+    using Parameters, Plots, LinearAlgebra, Statistics, Compat 
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test

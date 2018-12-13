@@ -55,9 +55,11 @@ Its many applications include:
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
+.. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
 
 The Linear State Space Model
 ===============================
@@ -1391,7 +1393,7 @@ Solutions
 .. code-block:: julia
 
     using QuantEcon, Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
 Exercise 1
 ----------

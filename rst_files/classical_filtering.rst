@@ -54,7 +54,11 @@ Useful references include :cite:`Whittle1963`, :cite:`HanSar1980`, :cite:`Orfani
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Infinite Horizon Prediction and Filtering Problems
 =====================================================
@@ -555,12 +559,12 @@ Code that computes solutions to  LQ control and filtering problems  using the me
 
 Here's how it looks
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
   using Polynomials, LinearAlgebra
 
@@ -605,7 +609,7 @@ Here's how it looks
           y_m = y_m * β.^(- collect(1:m)/2)
       end
 
-      return (d = d, h = h, y_m = y_m, m = m, ϕ = ϕ, β = β, 
+      return (d = d, h = h, y_m = y_m, m = m, ϕ = ϕ, β = β,
               ϕ_r = ϕ_r, k = k)
   end
 
@@ -819,13 +823,13 @@ Let's check that it "flips roots" as required
 
     roots_of_characteristic(example)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test coeffs_of_c(example) == [2.0, -1.0]
     @test roots_of_characteristic(example) == ([2.0], -2.0, [0.5])
-  end 
+  end
 
 Now let's form the covariance matrix of a time series vector of length :math:`N`
 and put it in :math:`V`
@@ -849,13 +853,13 @@ Notice how the lower rows of the "autoregressive representations" are converging
 
     L = inv(Li)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test L[2, 1] ≈ 0.1951800145897066
     @test L[3, 3] ≈ 0.4970501217477084
-  end 
+  end
 
 **Remark** Let :math:`\pi (z) = \sum^m_{j=0} \pi_j z^j` and let :math:`z_1, \ldots,
 z_k` be the zeros of :math:`\pi (z)` that are inside the unit circle, :math:`k < m`
@@ -929,13 +933,13 @@ We proceed in the same way as example 1
 
     L = inv(Li)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
-    @test L[3, 1] ≈ 0.30860669992418377 
+  @testset begin
+    @test L[3, 1] ≈ 0.30860669992418377
     @test L[2, 2] ≈ 0.5773502691896257
-  end 
+  end
 
 Prediction
 -------------

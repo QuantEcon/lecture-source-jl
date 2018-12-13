@@ -128,7 +128,7 @@ Using QuantEcon Lecture Packages
 To use the curated set of packages in the QuantEcon lecture notes,
 put the following text in a notebook cell, and hit ``Shift-Enter`` to run the cell
 
-    .. literalinclude:: /_static/includes/deps.jl
+    .. literalinclude:: /_static/includes/deps_no_using.jl
 
 This downloads, installs, and compiles the correct version of all of packages used in the QuantEcon lectures
 
@@ -213,14 +213,14 @@ Let's generate some plots
 
 First, ensure that you have activated a set of packages within the current Jupyter notebook
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 Now try copying the following into a notebook cell and hit ``Shift-Enter``
 
 .. code-block:: julia
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
     plot(sin, -2π, 2π, label="sin(x)")
 
 You'll see something like this (although the style of plot depends on your

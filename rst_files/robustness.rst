@@ -146,7 +146,11 @@ Our discussion in this lecture is based on
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 The Model
 ================
@@ -1165,9 +1169,9 @@ This is the content of the next lemma
 .. math::
     :label: rb_a2be
 
-    \tilde P = -R - \hat F' Q \hat F - 
+    \tilde P = -R - \hat F' Q \hat F -
     \beta^2 (A - B \hat F)' \tilde P C
-    (\beta \theta I + \beta C' \tilde P C)^{-1} C' \tilde P (A - B \hat F) + 
+    (\beta \theta I + \beta C' \tilde P C)^{-1} C' \tilde P (A - B \hat F) +
     \beta (A - B \hat F)' \tilde P (A - B \hat F)
 
 

@@ -618,7 +618,7 @@ Solutions
 .. code-block:: julia
 
     using DataFrames, Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
 Compute the value function, policy and equilibrium prices
 

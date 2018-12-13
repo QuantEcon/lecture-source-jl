@@ -474,7 +474,7 @@ Setup
 .. code-block:: julia
 
     using BenchmarkTools, Plots, QuantEcon
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

@@ -213,7 +213,7 @@ Setup
 
 .. code-block:: julia
 
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

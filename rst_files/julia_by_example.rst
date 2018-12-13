@@ -124,7 +124,7 @@ Other functions require importing all of the names from an external library
 .. code-block:: julia
 
     using Plots
-    gr(fmt=:png) # setting for easier display in jupyter notebooks
+    gr(fmt=:png); # setting for easier display in jupyter notebooks
  
     n = 100
     ϵ = randn(n)
@@ -1138,7 +1138,7 @@ Here's one solution
 .. code-block:: julia
 
     using Plots
-    gr(fmt=:png) # setting for easier display in jupyter notebooks
+    gr(fmt=:png); # setting for easier display in jupyter notebooks
     α = 0.9
     n = 200
     x = zeros(n + 1)

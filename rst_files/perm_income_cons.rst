@@ -61,7 +61,11 @@ The model will prove useful for illustrating concepts such as
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 
 Introduction
@@ -353,7 +357,7 @@ First we create the objects for the optimal linear regulator
 
     using QuantEcon, LinearAlgebra
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     # Set parameters
     α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0
@@ -654,7 +658,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 
         xvals = 1:T
 
-        # first fanchart 
+        # first fanchart
         plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
         plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
         plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
@@ -662,7 +666,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         plot!(plt_1, title="Consumption/Debt over time",
               ylim=(cmean-15, cmean+15), ylabel="consumption")
 
-        # second fanchart 
+        # second fanchart
         plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
         plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
         plot!(xvals, fill_between=(d_perc_95m, d_perc_95p), alpha=0.25, color=:blue,label="")

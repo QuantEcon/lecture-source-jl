@@ -149,7 +149,11 @@ References for this lecture include
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 
 Defining Rational Expectations Equilibrium
@@ -790,8 +794,8 @@ Here's our solution
   :class: test
 
   @testset begin
-    @test F[1] == 0.07347294403502992
-    @test F[2] == -73.47294403502833
+    @test F[1] == -2.3625545964023384e-15
+    @test F[2] == 0.04628205128205243
     @test h0 == 96.94871794872053
   end
 

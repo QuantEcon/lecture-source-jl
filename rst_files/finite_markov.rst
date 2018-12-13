@@ -32,13 +32,13 @@ Prerequisite knowledge is basic probability and linear algebra
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat
     using Distributions, Plots, Printf, QuantEcon, Random
-
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 Definitions
 ==============
@@ -236,7 +236,7 @@ For this task we'll use a Categorical random variable (i.e. a discrete random va
 .. code-block:: julia
 
     d = Categorical([0.5, 0.3, 0.2]) # 3 discrete states
-    @show rand(d, 5) 
+    @show rand(d, 5)
     @show supertype(typeof(d))
     @show pdf(d, 1) # the probability to be in state 1
     @show support(d)

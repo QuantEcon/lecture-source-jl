@@ -38,7 +38,11 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 The Savings Problem
 ====================
@@ -513,7 +517,7 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
 .. code-block:: julia
 
   using Plots, Random
-  gr(fmt=:png)
+  gr(fmt=:png);
 
   Random.seed!(42)
 

@@ -199,7 +199,7 @@ Using standard formulas for expectations of `lognormal <https://en.wikipedia.org
     \frac{1}{a}
         \left(
             1 - \exp \left(
-                -a \mu + a F_m + 
+                -a \mu + a F_m +
                 \frac{a^2 \left( \frac{1}{\gamma} + \frac{1}{\gamma_x} \right)}{2}
                 \right)
         \right) - c > 0
@@ -226,7 +226,7 @@ The function `UncertaintyTrapEcon` encodes as default values the parameters we'l
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -235,6 +235,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using DataFrames, Parameters, Plots
 
 .. code-block:: julia

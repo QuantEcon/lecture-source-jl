@@ -74,7 +74,11 @@ For supplementary reading, see
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Introduction
 =================================
@@ -224,7 +228,7 @@ The next figure plots an example of this function for :math:`\phi = 0.8` and :ma
 .. code-block:: julia
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     plt_1=plot()
     plt_2=plot()

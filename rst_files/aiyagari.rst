@@ -203,7 +203,11 @@ The object also includes a default set of parameters that we'll adopt unless oth
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
 
 .. code-block:: julia
     :class: test
@@ -213,7 +217,7 @@ Setup
 .. code-block:: julia
 
     using Parameters, Plots, QuantEcon
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 
@@ -231,7 +235,7 @@ Setup
                           s_vals = gridmake(a_vals, z_chain.state_values),
                           s_i_vals = gridmake(1:a_size, 1:z_size),
                           u = σ == 1 ? x -> log(x) : x -> (x^(1 - σ) - 1) / (1 - σ),
-                          R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u), 
+                          R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
                           # -Inf is the utility of dying (0 consumption)
                           Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain))
 

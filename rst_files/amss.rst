@@ -36,7 +36,11 @@ We begin with an introduction to the model
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
 
 Competitive Equilibrium with Distorting Taxes
 ===================================================
@@ -124,7 +128,7 @@ The government’s budget constraint in period :math:`t` at history :math:`s^t` 
 
     \begin{aligned}
     b_t(s^{t-1})
-        & =    \tau^n_t(s^t) n_t(s^t) - g_t(s_t) - T_t(s^t) + 
+        & =    \tau^n_t(s^t) n_t(s^t) - g_t(s_t) - T_t(s^t) +
                 {b_{t+1}(s^t) \over R_t(s^t )}
         \\
         & \equiv z(s^t) + {b_{t+1}(s^t) \over R_t(s^t )},
@@ -328,7 +332,7 @@ Then a Lagrangian for the Ramsey problem can  be represented as
        &= \mathbb{E}\,_{0} \sum_{t=0}^\infty \beta^t
                              \biggl\{ u\left(c_t(s^t), 1-c_t(s^t)-g_t(s_t)\right)
             \\
-       &  \qquad + \Psi_t(s^t)\, u_c(s^{t}) \,z(s^{t}) - 
+       &  \qquad + \Psi_t(s^t)\, u_c(s^{t}) \,z(s^{t}) -
        \gamma_t(s^t)\, u_c(s^{t}) \, b_t(s^{t-1})  \biggr\}
     \end{aligned}
 
@@ -356,7 +360,7 @@ to :math:`c_t(s^t)` can be expressed as
 
     \begin{aligned}
       u_c(s^t)-u_{\ell}(s^t) &+ \Psi_t(s^t)\left\{ \left[
-        u_{cc}(s^t) - u_{c\ell}(s^{t})\right]z(s^{t}) + 
+        u_{cc}(s^t) - u_{c\ell}(s^{t})\right]z(s^{t}) +
         u_{c}(s^{t})\,z_c(s^{t}) \right\}
         \\
         & \hspace{35mm} - \gamma_t(s^t)\left[
@@ -798,7 +802,7 @@ Write equation :eq:`eqn:AMSSapp2` as
 .. math::
     :label: eqn:AMSSapp2b
 
-    b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t) + 
+    b_t(s^{t-1})  = c_t(s^t) -  { \frac{u_{l,t}(s^t)}{u_{c,t}(s^t)}} n_t(s^t) +
     {\frac{\beta (\mathbb{E}\,_t u_{c,t+1}) b_{t+1}(s^t)}{u_{c,t}}}
 
 
@@ -835,7 +839,7 @@ satisfies the Bellman equation
 .. math::
     :label: eqn:AMSSapp5
 
-    V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s) - 
+    V(x_-,s_-) = \max_{\{n(s), x(s)\}} \sum_s \Pi(s|s_-) \left[ u(n(s) -
     g(s), 1-n(s)) + \beta V(x(s),s) \right]
 
 
@@ -1551,7 +1555,7 @@ triangle denote war
     sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
     titles = hcat("Consumption", "Labor Supply", "Government Debt",
                   "Tax Rate", "Government Spending", "Output")
     sim_seq_l_plot = hcat(sim_seq_l[1:3]..., sim_seq_l[4],
@@ -1693,7 +1697,7 @@ state contingent debt (circles) and the economy with only a risk-free bond
     plot!(p, title = titles)
     for i = vcat(collect(1:4), 6)
         plot!(p[i], sim_seq_plot[:, i], marker=:circle, color=:black, lab=labels[i][1])
-        plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:blue, lab=labels[i][2], 
+        plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:blue, lab=labels[i][2],
               legend=:bottomright)
     end
     plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:blue, lab="")
@@ -1733,7 +1737,7 @@ the two policies over 200 periods
     plot!(p, title = titles)
     for i = 1:6
         plot!(p[i], sim_seq_long_plot[:, i], color=:black, linestyle=:solid, lab=labels[i][1])
-        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2], 
+        plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2],
               legend=:bottomright)
     end
     p

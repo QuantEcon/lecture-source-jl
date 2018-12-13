@@ -35,7 +35,11 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Model
 ========
@@ -153,7 +157,7 @@ Here's a figure showing the effect of different shape parameters when :math:`n=5
 .. code-block:: julia
 
   using Plots, QuantEcon, Distributions
-  gr(fmt=:png)
+  gr(fmt=:png);
 
   n = 50
   a_vals = [0.5, 1, 100]
@@ -279,7 +283,7 @@ Here's the value function
   v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
   plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
-       seriescolor=:plasma, gridalpha = 1, accelerate = false) 
+       seriescolor=:plasma, gridalpha = 1)
 
 The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
 
@@ -499,36 +503,41 @@ Exercise 3
 
 Here's the code to reproduce the original figure
 
-.. code-block:: julia
+.. code-block:: julia 
 
-  lvls = [0.5, 1.5, 2.5, 3.5]
-  x_grid = range(0, 5, length = 50)
-  y_grid = range(0, 5, length = 50)
+    wp = CareerWorkerProblem(); 
+    v, optimal_policy = solve_wp(wp)
 
-  contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
-          fillalpha=1, cbar = false)
-  contour!(xlabel="theta", ylabel="epsilon")
-  annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
-  annotate!([(4.5,2.5, text("new job", 14, :center))])
-  annotate!([(4.0,4.5, text("stay put", 14, :center))])
+    lvls = [0.5, 1.5, 2.5, 3.5]
+    x_grid = range(0, 5, length = 50)
+    y_grid = range(0, 5, length = 50)
 
+    contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
+            fillalpha=1, cbar = false)
+    contour!(xlabel="theta", ylabel="epsilon")
+    annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
+    annotate!([(4.5,2.5, text("new job", 14, :center))])
+    annotate!([(4.0,4.5, text("stay put", 14, :center))])
 
-Now we want to set ``G_a = G_b = 100`` and generate a new figure with
-these parameters.
+Now, we need only swap out for the new parameters
 
-To do this replace:
+.. code-block:: julia 
 
-.. code-block:: julia
+    wp = CareerWorkerProblem(G_a=100.0, G_b=100.0); # use new params
+    v, optimal_policy = solve_wp(wp)
 
-    wp = CareerWorkerProblem()
+    lvls = [0.5, 1.5, 2.5, 3.5]
+    x_grid = range(0, 5, length = 50)
+    y_grid = range(0, 5, length = 50)
 
-with:
+    contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
+            fillalpha=1, cbar = false)
+    contour!(xlabel="theta", ylabel="epsilon")
+    annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
+    annotate!([(4.5,2.5, text("new job", 14, :center))])
+    annotate!([(4.0,4.5, text("stay put", 14, :center))])
 
-.. code-block:: julia
-
-    wp = CareerWorkerProblem(G_a=100.0, G_b=100.0)
-
-In the new figure, you will see that the region for which the worker
+You will see that the region for which the worker
 will stay put has grown because the distribution for :math:`\epsilon`
 has become more concentrated around the mean, making high-paying jobs
 less realistic

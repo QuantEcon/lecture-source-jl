@@ -53,7 +53,11 @@ You should read our :doc:`earlier lecture <generic_programming>` on types, metho
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
 
 Understanding Multiple Dispatch in Julia
 ===============================================
@@ -219,7 +223,7 @@ If the interpreter can't find a match in immediate parents (supertypes) it proce
 This is the process that leads to the following error (since we only added the ``+`` for adding ``Integer`` and ``String`` above)
 
 .. code-block:: julia
-    :class: no-test
+    :class: skip-test
 
     @show (typeof(100.0) <: Integer) == false
     100.0 + "100"
@@ -294,7 +298,7 @@ We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but
 
 The ``@code_warntype`` macro compiles ``f(x)`` using the type of ``x`` as an example -- i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
 
-Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the 
+Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the
 function, when called with types like ``[1, 2, 3]``, is always a vector of integers
 
 In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
@@ -575,14 +579,14 @@ The purpose of this section is to highlight potential issues and show you how
 to circumvent them
 
 
-BenchmarkTools 
+BenchmarkTools
 ------------------
 
 The main Julia package for benchmarking is `BenchmarkTools.jl <https://www.github.com/JuliaCI/BenchmarkTools.jl>`_
 
 Below, we'll use the ``@btime`` macro it exports to evaluate the performance of Julia code
 
-As mentioned in an :doc:`earlier lecture <testing>`, we can also save benchmark results to a file and guard against performance regressions in code 
+As mentioned in an :doc:`earlier lecture <testing>`, we can also save benchmark results to a file and guard against performance regressions in code
 
 For more, see the package docs
 

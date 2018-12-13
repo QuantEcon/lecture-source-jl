@@ -388,7 +388,7 @@ Setup
 
     using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
 
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 .. code-block:: julia
 

@@ -52,7 +52,11 @@ Useful references include :cite:`Whittle1963`, :cite:`HanSar1980`, :cite:`Orfani
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 A Control Problem
 ====================================
@@ -878,10 +882,10 @@ Implementation
 Code that computes solutions to the LQ problem using the methods described
 above can be found in file `control_and_filter.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/lu_tricks/control_and_filter.jl>`__
 
-Here's how it looks 
+Here's how it looks
 
-.. code-block:: julia 
-    :class: collapse 
+.. code-block:: julia
+    :class: collapse
 
     using Polynomials
 
@@ -901,7 +905,7 @@ Here's how it looks
                     y_m::Vector{TR};
                     r::Union{Vector{TR},Nothing}=nothing,
                     β::Union{TR,Nothing}=nothing,
-                    h_eps::Union{TR,Nothing}=nothing) where TR <: Real 
+                    h_eps::Union{TR,Nothing}=nothing) where TR <: Real
 
 
         m = length(d) - 1
@@ -998,7 +1002,7 @@ Here's how it looks
 
     function roots_of_characteristic(lqf::LQFilter)
         m, ϕ = lqf.m, lqf.ϕ
-        
+
         # Calculate the roots of the 2m-polynomial
         ϕ_poly=Poly(ϕ[end:-1:1])
         proots = roots(ϕ_poly)
@@ -1036,7 +1040,7 @@ Here's how it looks
         if !(typeof(N) <: Integer)
             throw(ArgumentError("N must be Integer!"))
         end
-            
+
         ϕ_r, k = lqf.ϕ_r, lqf.k
         V = zeros(N, N)
         for i in 1:N
@@ -1151,7 +1155,7 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
 .. code-block:: julia
 
   using Plots, Random
-  gr(fmt=:png)
+  gr(fmt=:png);
 
   # set seed and generate a_t sequence
   Random.seed!(123)
@@ -1168,9 +1172,9 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
 
     # plot simulation results
     time = 1:length(y)
-    plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle, 
+    plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle,
                markersize = 2, label="a_t")
-    plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8,      
+    plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8,
           label="y_t")
     plot!(plt, xlabel="Time", grid=true, xlim=(0,maximum(time)), legend=:bottomleft)
   end

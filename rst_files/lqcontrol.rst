@@ -477,7 +477,7 @@ where
     :label: lq_finr
 
     P_{T-1}
-    = R - \beta^2 A' P_T B (Q + \beta B' P_T B)^{-1} B' P_T A + 
+    = R - \beta^2 A' P_T B (Q + \beta B' P_T B)^{-1} B' P_T A +
     \beta A' P_T A
 
 and
@@ -495,7 +495,7 @@ If we continue working backwards in this manner, it soon becomes clear that :mat
     :label: lq_pr
 
     P_{t-1}
-    = R - \beta^2 A' P_t B (Q + \beta B' P_t B)^{-1} B' P_t A + 
+    = R - \beta^2 A' P_t B (Q + \beta B' P_t B)^{-1} B' P_t A +
     \beta A' P_t A
     \quad \text{with } \quad
     P_T = R_f
@@ -640,7 +640,7 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -649,6 +649,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using Plots, Plots.PlotMeasures, QuantEcon
 
 .. code-block:: julia
@@ -800,7 +801,7 @@ The sequence :math:`\{P_t\}` from :eq:`lq_pr` becomes
     :label: lq_pr_cp
 
     P_{t-1}
-    = R - (\beta B' P_t A + N)' (Q + \beta B' P_t B)^{-1} (\beta B' P_t A + N) + 
+    = R - (\beta B' P_t A + N)' (Q + \beta B' P_t B)^{-1} (\beta B' P_t A + N) +
     \beta A' P_t A
     \quad \text{with } \quad
     P_T = R_f
@@ -856,7 +857,7 @@ The stationary matrix :math:`P` is the solution to the
 .. math::
     :label: lq_pr_ih
 
-    P = R - (\beta B' P A + N)' (Q + \beta B' P B)^{-1} (\beta B' P A + N) + 
+    P = R - (\beta B' P A + N)' (Q + \beta B' P B)^{-1} (\beta B' P A + N) +
     \beta A' P A
 
 Equation :eq:`lq_pr_ih` is also called the *LQ Bellman equation*, and the map

@@ -32,8 +32,8 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
     using LinearAlgebra, Statistics, Compat
     using Distributions, QuantEcon, Interpolations, Expectations, Parameters
@@ -185,8 +185,8 @@ The following code solves the DP problem described above
 .. code-block:: julia
 
   using Distributions, QuantEcon, Interpolations, Expectations, Parameters
-        
-    # model object 
+
+    # model object
     function JvWorker(;A = 1.4,
                 α = 0.6,
                 β = 0.96,
@@ -209,7 +209,7 @@ The following code solves the DP problem described above
         # CoordInterpGrid below
         x_grid = range(ϵ, grid_max, length = grid_size)
 
-        return (A = A, α = α, β = β, x_grid = x_grid, G = G, 
+        return (A = A, α = α, β = β, x_grid = x_grid, G = G,
                 π_func = π_func, F = F, E = E, ϵ = ϵ)
     end
 
@@ -387,7 +387,7 @@ The code is as follows
 .. code-block:: julia
 
     using Plots, NLsolve
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
@@ -503,7 +503,7 @@ Here's code to produce the 45 degree diagram
 .. code-block:: julia
 
     wp = JvWorker(grid_size=25)
-    # simplify notation 
+    # simplify notation
     @unpack G, π_func, F = wp
 
     v_init = collect(wp.x_grid) * 0.5
@@ -558,7 +558,7 @@ Here's code to produce the 45 degree diagram
   @testset "More Solutions 1 Tests" begin
     @test [xs[4], ys[4]] ≈ [0.0, 0.44530420013435007]
     @test ticks == [0.25, 0.5, 0.75, 1.0]
-    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2 
+    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2
     @test length(plot_grid) == plot_grid_size && plot_grid_size == 100
   end
 

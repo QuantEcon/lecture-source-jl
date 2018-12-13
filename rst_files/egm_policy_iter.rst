@@ -134,17 +134,19 @@ Here's an implementation of :math:`K` using EGM as described above
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
+    using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
+    gr(fmt = :png);
+
 
 .. code-block:: julia
     :class: test
 
     using Test
-
-.. code-block:: julia
-
-    using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
-    gr(fmt = :png)
 
 .. code-block:: julia
 
@@ -217,7 +219,7 @@ The first step is to bring in the model that we used in the :doc:`Coleman policy
                       grid_min = 1e-6, # smallest grid point
                       grid_max = 4.0,  # largest grid point
                       grid_size = 200, # grid size
-                      u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function 
+                      u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function
                       u′ = c-> c^(-γ), # u'
                       f = k-> k^α, # production function
                       f′ = k -> α*k^(α-1), # f'
@@ -311,9 +313,9 @@ In fact it's easy to see that the difference is essentially zero:
 
     @testset "Discrepancy Test" begin
         # check that the error is the same as it was before
-        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) ≈ 4.440892098500626e-16 
+        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) ≈ 1.3322676295501878e-15
         # test that the error is objectively very small
-        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-5 
+        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-5
     end
 
 Next let's try iterating from an arbitrary initial condition and see if we

@@ -205,7 +205,7 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -214,6 +214,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using StatPlots, Distributions, Random, Statistics
     gr(fmt = :png, size = (900, 500))
 
@@ -229,7 +230,7 @@ Setup
         plot!(1:n, observations, color = :grey, markershape = :circle,
               alpha = 0.5, label = "", linewidth = 0)
         if !isnan(μ)
-            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false, 
+            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false,
                    label = ["Mean"])
         end
         plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green,
@@ -454,7 +455,7 @@ Here's some code that does exactly this for the exponential distribution
         y = mean(y, dims = 1)
         y = √n * vec(y)
         density(y, label = "Empirical Distribution")
-        return plot!(Normal(0, σ), linestyle = :dash, color = :black, 
+        return plot!(Normal(0, σ), linestyle = :dash, color = :black,
                      label = "Normal(0.00, $(σ^2))")
     end
 
