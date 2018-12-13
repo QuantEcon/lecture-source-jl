@@ -15,7 +15,7 @@ pkg"add IJulia; precompile"
 pkg"add InstantiateFromURL; precompile"
 using InstantiateFromURL
 activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
-activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.5"
+activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.5")
 ```
 
 This may take a long time, as it will install and precompile every package used by the lecture notes.
