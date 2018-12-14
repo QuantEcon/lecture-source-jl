@@ -872,7 +872,7 @@ Here's one solution (assuming as usual that you've executed everything above)
 
     @testset begin
         @test y[5] ≈ 0.489631315122766
-        @test σ[3] ≈ 0.02508603753450376
+        @test σ[3] ≈ 0.02508603753450376 atol = 1e-6
         @test Tw[4] ≈ -22.27089960340596
         @test v_star_approx[50] ≈ -17.79360247626825
     end
