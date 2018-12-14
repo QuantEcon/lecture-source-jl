@@ -1,6 +1,6 @@
 .. _mccall:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -116,7 +116,7 @@ A crucial observation is that this function :math:`V` must satisfy the recursion
     V(w)
     = \max \left\{
             \frac{w}{1 - \beta}, \, c + \beta \sum_{i=1}^n V(w_i) p_i
-        \right\}\quad\quad\quad
+        \right\}
 
 for every possible :math:`w_i`  in :math:`w_1, \ldots, w_n`
 
@@ -155,7 +155,7 @@ In our case, the state is the current wage offer :math:`w`
 Given *any* :math:`w`, we can read off the corresponding best choice (accept or
 reject) by picking the max on the r.h.s. of :eq:`odu_pv`
 
-Thus, we have a map from :math:`\RR` to :math:`\{0, 1\}`, with 1 meaning accept and zero meaning reject
+Thus, we have a map from :math:`\mathbb{R}` to :math:`\{0, 1\}`, with 1 meaning accept and zero meaning reject
 
 We can write the policy as follows
 
@@ -177,7 +177,7 @@ where
 .. math::
     :label: odu_barw
 
-    \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}\quad\quad\quad
+    \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}
 
 Here :math:`\bar w` is a constant depending on :math:`\beta, c` and the wage distribution, called the *reservation wage*
 
@@ -261,7 +261,7 @@ itself via
 the r.h.s. at each :math:`i`)
 
 One can show that the conditions of the Banach contraction mapping theorem are
-satisfied by :math:`T` as a self-mapping on :math:`\RR^n`
+satisfied by :math:`T` as a self-mapping on :math:`\mathbb{R}^n`
 
 One implication is that :math:`T` has a unique fixed point in :math:`\mathbb R^n`
 
@@ -280,7 +280,13 @@ Implementation
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+    :class: hide-output
+
+    using LinearAlgebra, Statistics, Compat 
+    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots, Parameters 
 
 .. code-block:: julia
     :class: test
@@ -289,8 +295,7 @@ Setup
 
 .. code-block:: julia
 
-    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots
-    gr(fmt = :png);
+    gr(fmt = :png);;
 
 Here's the distribution of wage offers we'll work with
 
@@ -298,6 +303,7 @@ Here's the distribution of wage offers we'll work with
 
     n = 50
     dist = BetaBinomial(n, 200, 100) # probability distribution
+    @show support(dist)
     w = range(10.0, 60.0, length = n+1) # linearly space wages
     plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
@@ -306,25 +312,26 @@ We can explore taking expectations over this distribution
 .. code-block:: julia
 
     E = expectation(dist) # expectation operator
-
+    
     # exploring the properties of the operator
     wage(i) = w[i+1] # +1 to map from support of 0
     E_w = E(wage)
-    E_w_2 = E(i -> (w[i+1])^2 - E_w^2) # variance
+    E_w_2 = E(i -> wage(i)^2) - E_w^2 # variance
     @show E_w, E_w_2
 
     # use operator with left-multiply
-    @show E * w; # identity
+    @show E * w # the `w` are values assigned for the discrete states
+    @show dot(pdf.(dist, support(dist)), w); # identical calculation
 
 
-To impllement our algorithm, let's have a look at the sequence of approximate value functions that
+To implement our algorithm, let's have a look at the sequence of approximate value functions that
 this fixed point algorithm generates
 
 Default parameter values are embedded in the function
 
 Our initial guess :math:`v` is the value of accepting at every given wage
 
-.. code:: julia
+.. code-block:: julia
 
     # parameters and constant objects
  
@@ -333,7 +340,8 @@ Our initial guess :math:`v` is the value of accepting at every given wage
     num_plots = 6
 
     # Operator
-    T(v) = max.(w/(1 - β), c + β * E*v) # (5)
+    T(v) = max.(w/(1 - β), c + β * E*v) # (5) broadcasts over the w, fixes the v
+    # alternatively, T(v) = [max(wval/(1 - β), c + β * E*v) for wval in w]
 
     # fill in  matrix of vs
     vs = zeros(n + 1, 6) # data to fill
@@ -351,8 +359,14 @@ between successive iterates is below `tol`
 
 .. code-block:: julia 
 
-    function compute_reservation_wage_direct(c, β; v_iv = collect(w ./(1-β)), max_iter = 500, tol = 1e-6)
-        v = copy(v_iv) # start at initial value
+    function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500, 
+                                             tol = 1e-6)
+        @unpack c, β, w = params
+        
+        # create a closure for the T operator
+        T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
+        
+        v = copy(v_iv) # start at initial value.  copy to prevent v_iv modification
         v_next = similar(v)
         i = 0
         error = Inf
@@ -360,11 +374,22 @@ between successive iterates is below `tol`
             v_next .= T(v) # (4)
             error = norm(v_next - v)
             i += 1
-            v .= v_next  # copy contents into v
+            v .= v_next  # copy contents into v.  Also could have used v[:] = v_next
         end
         # now compute the reservation wage
-        return (1 - β) * (c + β * E*v) # (3)
+        return (1 - β) * (c + β * E*v) # (2)
     end
+
+In the above, we use ``v = copy(v_iv)`` rather than just ``v_iv = v``
+
+To understand why, first recall that ``v_iv`` is a function argument -- either defaulting to the given value, or passed into the function
+
+  * If we had gone ``v = v_iv`` instead, then it would have simply created a new name ``v`` which binds to whatever is located at ``v_iv``
+  * Since we later use ``v .= v_next`` later in the algorithm, the values in it would be modified
+  * Hence, we would be modifying the ``v_iv`` vector we were passed in, which may not be what the caller of the function wanted
+  * The big issue this creates are "side-effects" where you can call a function and strange things can happen outside of the function that you didn't expect
+  * If you intended for the modification to potentially occur, then the Julia style guide says that we should call the function ``compute_reservation_wage_direct!`` to make the possible side-effects clear
+
 
 As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone 
 
@@ -372,25 +397,30 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
 
 .. code-block:: julia
 
-  function compute_reservation_wage(c, β; v_iv = collect(w ./(1-β)), iterations = 500, ftol = 1e-6, m = 6)
-      v_star = fixedpoint(T, v_iv, inplace = false, iterations = iterations, ftol = ftol, m = 6).zero # (5)
-      return (1 - β) * (c + β * E*v_star) # (3)
-  end
+    function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500, 
+                                      ftol = 1e-6, m = 6)
+        @unpack c, β, w = params
+        T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
+        
+        v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol, 
+                            m = 6).zero # (5)
+        return (1 - β) * (c + β * E*v_star) # (3)
+    end
 
 Let's compute the reservation wage at the default parameters
 
 .. code-block:: julia
 
-    c = 25.0
-    β = 0.99
-    compute_reservation_wage(c, β)
+    mcm = @with_kw (c=25.0, β=0.99, w=w) # named tuples
+
+    compute_reservation_wage(mcm()) # call with default parameters
 
 .. code-block:: julia
     :class: test
 
     @testset "Reservation Wage Tests" begin
-        @test compute_reservation_wage(c, β) ≈ 47.316499766546215
-        @test compute_reservation_wage_direct(c, β) ≈ 47.31649975736077
+        @test compute_reservation_wage(mcm()) ≈ 47.316499766546215
+        @test compute_reservation_wage_direct(mcm()) ≈ 47.31649975736077
     end
 
 Comparative Statics
@@ -405,14 +435,14 @@ In particular, let's look at what happens when we change :math:`\beta` and
 .. code:: julia
 
     grid_size = 25
-    R = rand(Float64, grid_size, grid_size)
+    R = rand(grid_size, grid_size)
 
     c_vals = range(10.0, 30.0, length = grid_size)
     β_vals = range(0.9, 0.99, length = grid_size)
 
     for (i, c) in enumerate(c_vals)
         for (j, β) in enumerate(β_vals)
-            R[i, j] = compute_reservation_wage(c, β)
+            R[i, j] = compute_reservation_wage(mcm(c=c, β=β)) # change from defaults
         end
     end
 
@@ -420,10 +450,10 @@ In particular, let's look at what happens when we change :math:`\beta` and
     :class: test
 
     @testset "Comparative Statics Tests" begin
-        @test R[4, 4] ≈ 40.59687500000215 # Arbitrary reservation wage.
+        @test R[4, 4] ≈ 41.15851842606614 # Arbitrary reservation wage.
         @test grid_size == 25 # grid invariance.
-        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0 # c grid invariance.
-        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99 # β grid invariance.
+        @test length(c_vals) == grid_size && c_vals[1] == 10.0 && c_vals[end] == 30.0
+        @test length(β_vals) == grid_size && β_vals[1] == 0.9 && β_vals[end] == 0.99
     end
 
 .. code-block:: julia
@@ -456,7 +486,7 @@ That is,
 
     \psi
     = c + \beta
-        \sum_{i=1}^n V(w_i) p_i\quad\quad\quad
+        \sum_{i=1}^n V(w_i) p_i
 
 where :math:`V` is the value function
 
@@ -477,7 +507,7 @@ Substituting this last equation into :eq:`j1` gives
         \sum_{i=1}^n
         \max \left\{
             \frac{w_i}{1 - \beta}, \psi
-        \right\}  p_i\quad\quad\quad
+        \right\}  p_i
 
 Which we could also write as :math:`\psi = T_{\psi}(\psi)` for the appropriate operator
 
@@ -499,7 +529,7 @@ Step 2: compute the update :math:`\psi'` via
         \sum_{i=1}^n
         \max \left\{
             \frac{w_i}{1 - \beta}, \psi
-        \right\}  p_i\quad\quad\quad
+        \right\}  p_i
 
 Step 3: calculate the deviation :math:`|\psi - \psi'|`
 
@@ -515,9 +545,11 @@ Here's an implementation:
 
 .. code-block:: julia
 
-    function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
-        T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7), using vectors since fixedpoint doesn't support scalar
-        ψ_star = fixedpoint(T_ψ, [ψ_iv], inplace = false).zero[1]
+    function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, 
+                                        tol = 1e-5) 
+        T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7)
+        # using vectors since fixedpoint doesn't support scalar 
+        ψ_star = fixedpoint(T_ψ, [ψ_iv]).zero[1]
         return (1 - β) * (c + β * ψ_star) # (2)
     end
     compute_reservation_wage_ψ(c, β)
@@ -528,7 +560,8 @@ Another option is to solve for the root of the  :math:`T_{\psi}(\psi) - \psi` eq
 
 .. code-block:: julia
 
-    function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, tol = 1e-5)
+    function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500, 
+                                         tol = 1e-5)
         root_ψ(ψ) = c + β * E*max.((w ./ (1 - β)), ψ) - ψ # (7)
         ψ_star = find_zero(root_ψ, ψ_iv)
         return (1 - β) * (c + β * ψ_star) # (2)
@@ -567,7 +600,8 @@ Here's one solution
         Random.seed!(seed)
         stopping_time = 0
         t = 1
-        @assert length(w) - 1 ∈ support(dist) && w_bar <= w[end] # make sure the constraint is sometimes binding
+        # make sure the constraint is sometimes binding
+        @assert length(w) - 1 ∈ support(dist) && w_bar <= w[end] 
         while true
             # Generate a wage draw
             w_val = w[rand(dist)] # the wage dist set up earlier
@@ -581,7 +615,9 @@ Here's one solution
         return stopping_time
     end
 
-    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> compute_stopping_time(w_bar, seed = i), 1:num_reps)
+    compute_mean_stopping_time(w_bar, num_reps=10000) = mean(i -> 
+                                                             compute_stopping_time(w_bar, 
+                                                             seed = i), 1:num_reps)
     c_vals = range(10,  40, length = 25)
     stop_times = similar(c_vals)
 

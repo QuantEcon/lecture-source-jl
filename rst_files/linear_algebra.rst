@@ -1,6 +1,6 @@
 .. _linear_algebra:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***********************************
 Linear Algebra
@@ -81,7 +81,7 @@ The following figure represents three vectors in this manner
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -90,8 +90,8 @@ Setup
 
 .. code-block:: julia
 
-    using Plots
-    gr(fmt=:png)
+    using LinearAlgebra, Statistics, Compat, Plots
+    gr(fmt=:png);
 
 .. code-block:: julia
 
@@ -282,20 +282,21 @@ The span is a 2 dimensional plane passing through these two points and the origi
 .. code-block:: julia
     :class: collapse
 
-    # Fixed linear function, to generate a plane
+    # fixed linear function, to generate a plane
     f(x, y) = 0.2x + 0.1y
 
-    # Lines to vectors
+    # lines to vectors
     x_vec = [0 0; 3 3]
     y_vec = [0 0; 4 -4]
     z_vec = [0 0; f(3, 4) f(3, -4)]
 
-    # Draw the plane
+    # draw the plane
     n = 20
     grid = range(-5, 5, length = n)
     z2 = [ f(grid[row], grid[col]) for row in 1:n, col in 1:n ]
-    surface(grid, grid, z2, fill = :blues)
-    plot!(x_vec, y_vec, z_vec, color = [:yellow :pink], labels = "")
+    wireframe(grid, grid, z2, fill = :blues, gridalpha =1 )
+    plot!(x_vec, y_vec, z_vec, color = [:blue :green], linewidth = 3, labels = "",
+          colorbar = false)
 
 .. code-block:: julia
     :class: test
@@ -549,8 +550,7 @@ According to the preceding rule, this gives us an :math:`n \times 1` column vect
 .. math::
     :label: la_atx
 
-    A x
-    =
+    A x =
     \left[
     \begin{array}{ccc}
         a_{11} &  \cdots & a_{1k} \\
@@ -564,8 +564,7 @@ According to the preceding rule, this gives us an :math:`n \times 1` column vect
         \vdots  \\
         x_{k}
     \end{array}
-    \right]
-    :=
+    \right] :=
     \left[
     \begin{array}{c}
         a_{11} x_1 + \cdots + a_{1k} x_k \\
@@ -685,10 +684,12 @@ The answer to both these questions is negative, as the next figure shows
     plt1 = plot(f, xlim = (-2, 2), label = "f")
     hline!(plt1, [f(0.5)], linestyle = :dot, linewidth = 2, label = "")
     vline!(plt1, [-1.07, -0.5, 0.5, 1.07], linestyle = :dot, linewidth = 2, label = "")
-    plot!(plt1, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue, label = ["range of f" ""])
+    plot!(plt1, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue,
+          label = ["range of f" ""])
     plt2 = plot(f, xlim = (-2, 2), label = "f")
     hline!(plt2, [2], linestyle = :dot, linewidth = 2, label = "")
-    plot!(plt2, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue, label = ["range of f" ""])
+    plot!(plt2, fill(0, 2), [y_min y_min; y_max y_max], lw = 3, color = :blue,
+          label = ["range of f" ""])
     plot(plt1, plt2, layout = (2, 1), ylim = (0, 3.5))
 
 In the first plot there are multiple solutions, as the function is not one-to-one, while

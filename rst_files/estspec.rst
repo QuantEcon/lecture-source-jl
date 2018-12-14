@@ -1,6 +1,6 @@
 .. _estspec:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -35,7 +35,11 @@ For supplementary reading, see :cite:`Sargent1987` or :cite:`CryerChan2008`.
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 .. _periodograms:
 

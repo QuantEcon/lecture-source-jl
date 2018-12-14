@@ -1,6 +1,6 @@
 .. _ree:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *********************************************
 :index:`Rational Expectations Equilibrium`
@@ -149,7 +149,11 @@ References for this lecture include
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 
 Defining Rational Expectations Equilibrium
@@ -305,7 +309,7 @@ where
 .. math::
     :label: ree_opbe
 
-    h(y, Y) := \argmax_{y'}
+    h(y, Y) := \mathop{\mathrm{arg\,max}}_{y'}
     \left\{ a_0 y - a_1 y Y - \frac{ \gamma (y' - y)^2}{2}   + \beta v(y', H(Y))\right\}
 
 
@@ -321,7 +325,7 @@ The first-order necessary condition for choosing :math:`y'` is
 .. math::
     :label: comp5
 
-    - \gamma (y' - y) + \beta v_y(y',H(Y)) =0
+    -\gamma (y' - y) + \beta v_y(y',H(Y)) =0
 
 
 An important useful envelope result of Benveniste-Scheinkman  :cite:`BenvenisteScheinkman1979` implies that to
@@ -487,7 +491,7 @@ The associated first order condition is
 .. math::
     :label: comp14
 
-    - \gamma (Y' - Y) + \beta V'(Y') = 0
+    -\gamma (Y' - Y) + \beta V'(Y') = 0
 
 
 Applying the same Benveniste-Scheinkman formula gives
@@ -754,17 +758,17 @@ Here's our solution
 
 .. code-block:: julia
 
-    # == Model parameters == #
+    # model parameters
     a0 = 100
     a1 = 0.05
     β = 0.95
     γ = 10.0
 
-    # == Beliefs == #
+    # beliefs
     κ0 = 95.5
     κ1 = 0.95
 
-    # == Formulate the LQ problem == #
+    # formulate the LQ problem
     A = [1  0  0
          0 κ1 κ0
          0  0  1]
@@ -777,7 +781,7 @@ Here's our solution
 
     Q = 0.5 * γ
 
-    # == Solve for the optimal policy == #
+    # solve for the optimal policy
     lq = QuantEcon.LQ(Q, R, A, B; bet = β)
     P, F, d = stationary_values(lq)
 
@@ -788,10 +792,10 @@ Here's our solution
 
 .. code-block:: julia
   :class: test
-  
+
   @testset begin
-    @test F[1] == 0.07347294403502992
-    @test F[2] == -73.47294403502833
+    @test F[1] == -2.3625545964023384e-15
+    @test F[2] == 0.04628205128205243
     @test h0 == 96.94871794872053
   end
 
@@ -927,8 +931,8 @@ we can obtain the implied aggregate law of motion via
 
 .. code-block:: julia
 
-    # == Formulate the planner's LQ problem == #
-    A = Matrix{Float64}(I, 2, 2)
+    # formulate the planner's LQ problem
+    A = I + zeros(2, 2)
     B = [1.0, 0.0]
 
     R = [ a1 / 2.0  -a0 / 2.0
@@ -936,11 +940,11 @@ we can obtain the implied aggregate law of motion via
 
     Q = γ / 2.0
 
-    # == Solve for the optimal policy == #
+    # solve for the optimal policy
     lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
 
-    # == Print the results == #
+    # print the results
     κ0, κ1 = -F[2], 1 - F[1]
     println("κ0=$κ0\tκ1=$κ1")
 
@@ -975,8 +979,8 @@ The problem can be solved as follows
 
 .. code-block:: julia
 
-    # == Formulate the monopolist's LQ problem == #
-    A = Matrix{Float64}(I, 2, 2)
+    # formulate the monopolist's LQ problem
+    A = I + zeros(2, 2)
     B = [1.0, 0.0]
 
     R = [       a1   -a0 / 2.0
@@ -984,11 +988,11 @@ The problem can be solved as follows
 
     Q = γ / 2.0
 
-    # == Solve for the optimal policy == #
+    # solve for the optimal policy
     lq = QuantEcon.LQ(Q, R, A, B; bet=β)
     P, F, d = stationary_values(lq)
 
-    # == Print the results == #
+    # print the results
     m0, m1 = -F[2], 1 - F[1]
     println("m0=$m0\tm1=$m1")
 

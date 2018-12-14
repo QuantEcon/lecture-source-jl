@@ -257,10 +257,8 @@ latex_elements = {
 \usetikzlibrary{decorations}
 \usepackage{pgf}
 \usepackage{pgfplots}
-
-
 \usepackage{bbm}
-\newcommand{\RR}{\mathbbm R}
+
 \newcommand{\NN}{\mathbbm N}
 \newcommand{\PP}{\mathbbm P}
 \newcommand{\EE}{\mathbbm E \,}
@@ -393,7 +391,7 @@ jupyter_kernels = {
     },
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 1.0",
+            "display_name": "Julia",
             "language": "julia",
             "name": "julia-1.0"
             },
@@ -415,9 +413,14 @@ jupyter_welcome_block = ""
 
 #Allow .. only:: html pass through 
 jupyter_allow_html_only = True
+jupyter_target_html_urlpath = "https://lectures.quantecon.org/jl/"
+
 
 #Adjust links to target html (rather than ipynb) when targeting html through nbconvert
 jupyter_target_html = True
 
 #Drop Tests Embedded in Lectures
-jupyter_drop_tests = False
+jupyter_drop_tests = True
+
+#Use urlprefix images
+jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/"

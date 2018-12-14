@@ -1,6 +1,6 @@
 .. _lssm:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -55,9 +55,11 @@ Its many applications include:
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
+.. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat
 
 The Linear State Space Model
 ===============================
@@ -663,7 +665,7 @@ The values of :math:`y_T` are represented by black dots in the left-hand figure
 In the right-hand figure, these values are converted into a rotated histogram
 that shows relative frequencies from our sample of 20 :math:`y_T`'s
 
-(The parameters and source code for the figures can be found in file `linear_models/paths_and_hist.jl <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/linear_models/paths_and_hist.jl>`__)
+(The parameters and source code for the figures can be found in file `linear_models/paths_and_hist.jl <https://github.com/QuantEcon/lecture-source-jl/blob/master/rst_files/_static/code/linear_models/paths_and_hist.jl>`__)
 
 Here is another figure, this time with 100 observations
 
@@ -1390,8 +1392,8 @@ Solutions
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LaTeXStrings
-    pyplot()
+    using QuantEcon, Plots
+    gr(fmt=:png);
 
 Exercise 1
 ----------
@@ -1411,14 +1413,14 @@ Exercise 1
 
     x, y = simulate(lss, 50)
     plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-    plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    plot!(xlabel="time", ylabel = "y_t", legend = :none)
 
 .. code-block:: julia
     :class: test
 
-    @testset "Testing Exercice 1" begin
-        @test x[10] == 1
-        @test y[13] == 1.0889186488319997
+    @testset "Testing Exercise 1" begin
+        @test x[10] ≈ 1.
+        @test y[13] ≈ 1.0889186488319997 atol = 1e-6
     end
 
 Exercise 2
@@ -1446,7 +1448,7 @@ Exercise 2
     x, y = simulate(ar, 200)
 
     plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-    plot!(xlabel="time", ylabel = L"$y_t$", legend = :none)
+    plot!(xlabel="time", ylabel = "y_t", legend = :none)
 
 .. code-block:: julia
     :class: test
@@ -1494,16 +1496,16 @@ Exercise 3
 
     ensemble_mean = ensemble_mean ./ I
     plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
-    plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"$\bar y_t$")
+    plot!(ensemble_mean, color = :blue, linewidth = 2, label = "y_t_bar")
     m = moment_sequence(ar)
-    pop_means = Float64[]
+    pop_means = zeros(0)
     for (i, t) ∈ enumerate(m)
         (μ_x, μ_y, Σ_x, Σ_y) = t
         push!(pop_means, μ_y[1])
         i == 50 && break
     end
-    plot!(pop_means, color = :green, linewidth = 2, label = L"$G\mu_t$")
-    plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"$y_t$", legendfont = font(12))
+    plot!(pop_means, color = :green, linewidth = 2, label = "G mu_t")
+    plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = "y_t", legendfont = font(12))
 
 .. code-block:: julia
     :class: test
@@ -1521,7 +1523,7 @@ Exercise 4
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42); 
+    Random.seed!(42);
 
 .. code-block:: julia
 
@@ -1565,8 +1567,8 @@ Exercise 4
     plot(ys, linewidth = 0.8, alpha = 0.5)
     plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
     scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
-    plot!(ylims=(ymin, ymax), ylabel = L"$y_t$", xticks =[], yticks = ymin:0.2:ymax)
-    plot!(annotations = [(T0+1, -0.55, L"$T$");(T1+1, -0.55, L"$T'$");(T2+1, -0.55, L"$T''$")])
+    plot!(ylims=(ymin, ymax), ylabel = "y_t", xticks =[], yticks = ymin:0.2:ymax)
+    plot!(annotations = [(T0+1, -0.55, "T");(T1+1, -0.55, "T'");(T2+1, -0.55, "T''")])
 
 .. code-block:: julia
     :class: test

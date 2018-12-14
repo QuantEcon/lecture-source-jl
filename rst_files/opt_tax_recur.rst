@@ -1,6 +1,6 @@
 .. _opt_tax_recur:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 *********************************************
 Optimal Taxation with State-Contingent Debt
@@ -48,8 +48,12 @@ See :doc:`Optimal taxation <lqramsey>` for an analysis within a linear-quadratic
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat
+    using QuantEcon, NLsolve, NLopt, Interpolations
 
 A Competitive Equilibrium with Distorting Taxes
 ================================================
@@ -105,8 +109,8 @@ The government has a sequence of budget constraints whose time :math:`t \geq 0` 
 .. math::
     :label: TS_govr
 
-    g_t(s^t) =   \tau_t(s^t)  n_t(s^t) + \sum_{s_{t+1}} p_{t+1}(s_{t+1} | s^t) b_{t+1}(s_{t+1} | s^t)
-    - b_t(s_t | s^{t-1})
+    g_t(s^t) =   \tau_t(s^t)  n_t(s^t) + \sum_{s_{t+1}} p_{t+1}(s_{t+1} | s^t) b_{t+1}(s_{t+1} | s^t) -
+    b_t(s_t | s^{t-1})
 
 where
 
@@ -218,8 +222,8 @@ another, we can obtain the household's present-value budget constraint:
     :label: TS_bcPV2
 
     \sum_{t=0}^\infty \sum_{s^t} q^0_t(s^t) c_t(s^t) =
-    \sum_{t=0}^\infty \sum_{s^t} q^0_t(s^t) [1-\tau_t(s^t)] n_t(s^t)
-    +  b_0
+    \sum_{t=0}^\infty \sum_{s^t} q^0_t(s^t) [1-\tau_t(s^t)] n_t(s^t) +
+    b_0
 
 :math:`\{q^0_t(s^t)\}_{t=1}^\infty` can be interpreted as a time :math:`0`
 Arrow-Debreu price system
@@ -259,8 +263,8 @@ taxes and prices from :eq:`TS_bcPV2`, we derive the *implementability condition*
     :label: TSs_cham1
 
     \sum_{t=0}^\infty  \sum_{s^t} \beta^t \pi_t(s^t)
-             [u_c(s^t) c_t(s^t) - u_\ell(s^t) n_t(s^t)]
-          - u_c(s^0) b_0 = 0.
+             [u_c(s^t) c_t(s^t) - u_\ell(s^t) n_t(s^t)] -
+             u_c(s^0) b_0 = 0.
 
 The **Ramsey problem** is to choose a feasible  allocation  that maximizes
 
@@ -281,9 +285,9 @@ First define a "pseudo utility function"
     :label: TS_cham17
 
     V\left[c_t(s^t), n_t(s^t), \Phi\right] =
-    u[c_t(s^t),1-n_t(s^t)]
-        + \Phi \left[ u_c(s^t) c_t(s^t)
-          -  u_\ell(s^t) n_t(s^t) \right]
+    u[c_t(s^t),1-n_t(s^t)] +
+    \Phi \left[ u_c(s^t) c_t(s^t) -
+    u_\ell(s^t) n_t(s^t) \right]
 
 where :math:`\Phi` is a Lagrange multiplier on the implementability condition :eq:`TS_bcPV2`
 
@@ -313,12 +317,12 @@ The first-order conditions for the Ramsey problem for periods :math:`t \geq 1` a
 
      \begin{aligned}
         c_t(s^t)\rm{:} &
-        \; (1+\Phi) u_c(s^t) + \Phi \left[u_{cc}(s^t) c_t(s^t)
-           -  u_{\ell c}(s^t) n_t(s^t) \right]  - \theta_t(s^t) = 0, \quad t \geq 1
+        \; (1+\Phi) u_c(s^t) + \Phi \left[u_{cc}(s^t) c_t(s^t) -
+        u_{\ell c}(s^t) n_t(s^t) \right]  - \theta_t(s^t) = 0, \quad t \geq 1
         \\
         n_t(s^t)\rm{:} &
-        \; -(1+\Phi) u_{\ell}(s^t) - \Phi \left[u_{c\ell}(s^t) c_t(s^t)
-           -  u_{\ell \ell}(s^t) n_t(s^t) \right] + \theta_t(s^t) = 0, \quad t \geq 1
+        \; -(1+\Phi) u_{\ell}(s^t) - \Phi \left[u_{c\ell}(s^t) c_t(s^t) -
+        u_{\ell \ell}(s^t) n_t(s^t) \right] + \theta_t(s^t) = 0, \quad t \geq 1
     \end{aligned}
 
 and
@@ -328,13 +332,13 @@ and
 
     \begin{aligned}
         c_0(s^0, b_0)\rm{:} &
-        \; (1+\Phi) u_c(s^0, b_0) + \Phi \left[u_{cc}(s^0, b_0) c_0(s^0, b_0)
-           -  u_{\ell c}(s^0, b_0) n_0(s^0, b_0) \right]  - \theta_0(s^0, b_0)   \\
+        \; (1+\Phi) u_c(s^0, b_0) + \Phi \left[u_{cc}(s^0, b_0) c_0(s^0, b_0) -
+        u_{\ell c}(s^0, b_0) n_0(s^0, b_0) \right]  - \theta_0(s^0, b_0)   \\
            & \quad \quad \quad \quad \quad \quad  - \Phi u_{cc}(s^0, b_0) b_0 = 0
         \\
         n_0(s^0, b_0)\rm{:} &
-        \; -(1+\Phi) u_{\ell}(s^0, b_0) - \Phi \left[u_{c\ell}(s^0, b_0) c_0(s^0, b_0)
-           -  u_{\ell \ell}(s^0, b_0) n_0(s^0, b_0) \right] + \theta_0(s^0, b_0) \\
+        \; -(1+\Phi) u_{\ell}(s^0, b_0) - \Phi \left[u_{c\ell}(s^0, b_0) c_0(s^0, b_0) -
+        u_{\ell \ell}(s^0, b_0) n_0(s^0, b_0) \right] + \theta_0(s^0, b_0) \\
           & \quad \quad \quad \quad \quad \quad + \Phi u_{c \ell}(s^0, b_0) b_0 = 0
     \end{aligned}
 
@@ -349,11 +353,11 @@ For convenience, we suppress the time subscript and the index :math:`s^t` and ob
     :label: TS_barg
 
     \begin{aligned}
-      (1+\Phi) &u_c(c,1-c-g) + \Phi \bigl[c u_{cc}(c,1-c-g)
-        -  (c+g) u_{\ell c}(c,1-c-g) \bigr]
+      (1+\Phi) &u_c(c,1-c-g) + \Phi \bigl[c u_{cc}(c,1-c-g) -
+      (c+g) u_{\ell c}(c,1-c-g) \bigr]
         \\
-        &= (1+\Phi) u_{\ell}(c,1-c-g) + \Phi \bigl[c u_{c\ell}(c,1-c-g)
-        -  (c+g) u_{\ell \ell}(c,1-c-g)  \bigr]
+        &= (1+\Phi) u_{\ell}(c,1-c-g) + \Phi \bigl[c u_{c\ell}(c,1-c-g) -
+        (c+g) u_{\ell \ell}(c,1-c-g)  \bigr]
     \end{aligned}
 
 where we have imposed conditions :eq:`feas1_opt_tax` and :eq:`TSs_techr_opt_tax`
@@ -367,11 +371,11 @@ We also know that  time :math:`t=0` quantities :math:`c_0` and :math:`n_0` satis
     :label: TS_barg_aust
 
     \begin{aligned}
-          (1+\Phi) &u_c(c,1-c-g) + \Phi \bigl[c u_{cc}(c,1-c-g)
-            -  (c+g) u_{\ell c}(c,1-c-g) \bigr]
+          (1+\Phi) &u_c(c,1-c-g) + \Phi \bigl[c u_{cc}(c,1-c-g) -
+          (c+g) u_{\ell c}(c,1-c-g) \bigr]
             \\
-            &= (1+\Phi) u_{\ell}(c,1-c-g) + \Phi \bigl[c u_{c\ell}(c,1-c-g)
-            -  (c+g) u_{\ell \ell}(c,1-c-g)  \bigr] + \Phi (u_{cc} - u_{c,\ell}) b_0
+            &= (1+\Phi) u_{\ell}(c,1-c-g) + \Phi \bigl[c u_{c\ell}(c,1-c-g) -
+            (c+g) u_{\ell \ell}(c,1-c-g)  \bigr] + \Phi (u_{cc} - u_{c,\ell}) b_0
     \end{aligned}
 
 Notice that a counterpart to :math:`b_0` does *not* appear
@@ -479,10 +483,9 @@ the household budget constraint gives
     :label: LSA_budget
 
     \begin{aligned}
-        u_c(s^t) [ n_t(s^t) - g_t(s^t)]
-        + \beta \sum_{s_{t+1}} \Pi (s_{t+1}| s_t) u_c(s^{t+1}) b_{t+1}(s_{t+1} | s^t)
-          \\
-        = u_l (s^t) n_t(s^t) + u_c(s^t) b_t(s_t | s^{t-1})
+        u_c(s^t) [ n_t(s^t) - g_t(s^t)] +
+        \beta \sum_{s_{t+1}} \Pi (s_{t+1}| s_t) u_c(s^{t+1}) b_{t+1}(s_{t+1} | s^t) = \\
+        u_l (s^t) n_t(s^t) + u_c(s^t) b_t(s_t | s^{t-1})
     \end{aligned}
 
 Define :math:`x_t(s^t) = u_c(s^t) b_t(s_t | s^{t-1})`
@@ -704,39 +707,39 @@ The above steps are implemented in a type called `SequentialAllocation`
 
   import QuantEcon: simulate
 
-  mutable struct Model{TF <: AbstractFloat,
-                       TM <: AbstractMatrix{TF},
-                       TV <: AbstractVector{TF}}
-      β::TF
-      Π::TM
-      G::TV
-      Θ::TV
-      transfers::Bool
-      U::Function
-      Uc::Function
-      Ucc::Function
-      Un::Function
-      Unn::Function
-      n_less_than_one::Bool
-  end
+    mutable struct Model{TF <: AbstractFloat,
+                        TM <: AbstractMatrix{TF},
+                        TV <: AbstractVector{TF}}
+        β::TF
+        Π::TM
+        G::TV
+        Θ::TV
+        transfers::Bool
+        U::Function
+        Uc::Function
+        Ucc::Function
+        Un::Function
+        Unn::Function
+        n_less_than_one::Bool
+    end
 
-  struct SequentialAllocation{TP <: Model,
-                              TI <: Integer,
-                              TV <: AbstractVector}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      cFB::TV
-      nFB::TV
-      ΞFB::TV
-      zFB::TV
-  end
+    struct SequentialAllocation{TP <: Model,
+                                TI <: Integer,
+                                TV <: AbstractVector}
+        model::TP
+        mc::MarkovChain
+        S::TI
+        cFB::TV
+        nFB::TV
+        ΞFB::TV
+        zFB::TV
+    end
 
   function SequentialAllocation(model)
       β, Π, G, Θ = model.β, model.Π, model.G, model.Θ
       mc = MarkovChain(Π)
       S = size(Π, 1)   # Number of states
-      # Now find the first best allocation
+      # now find the first best allocation
       cFB, nFB, ΞFB, zFB = find_first_best(model, S, 1)
 
       return SequentialAllocation(model, mc, S, cFB, nFB, ΞFB, zFB)
@@ -785,9 +788,9 @@ The above steps are implemented in a type called `SequentialAllocation`
           c = z[1:S]
           n = z[S+1:2S]
           Ξ = z[2S+1:end]
-          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ         # FOC c
-          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ    # FOC n
-          out[2S+1:end] = Θ .* n - c - G                                       # Resource constraint
+          out[1:S] = Uc(c, n) .- μ * (Ucc(c, n) .* c .+ Uc(c, n)) .- Ξ # FOC c
+          out[S+1:2S] = Un(c, n) .- μ * (Unn(c, n) .* n .+ Un(c, n)) + Θ .* Ξ # FOC n
+          out[2S+1:end] = Θ .* n - c - G # Resource constraint
           return out
       end
       # Find the root of the FOC
@@ -875,21 +878,21 @@ The above steps are implemented in a type called `SequentialAllocation`
       return cHist, nHist, Bhist, ΤHist, sHist, μHist, RHist
   end
 
-  mutable struct BellmanEquation{TP <: Model,
-                                 TI <: Integer,
-                                 TV <: AbstractVector,
-                                 TM <: AbstractMatrix{TV},
-                                 TVV <: AbstractVector{TV}}
-      model::TP
-      S::TI
-      xbar::TV
-      time_0::Bool
-      z0::TM
-      cFB::TV
-      nFB::TV
-      xFB::TV
-      zFB::TVV
-  end
+    mutable struct BellmanEquation{TP <: Model,
+                                TI <: Integer,
+                                TV <: AbstractVector,
+                                TM <: AbstractMatrix{TV},
+                                TVV <: AbstractVector{TV}}
+        model::TP
+        S::TI
+        xbar::TV
+        time_0::Bool
+        z0::TM
+        cFB::TV
+        nFB::TV
+        xFB::TV
+        zFB::TVV
+    end
 
   function BellmanEquation(model, xgrid, policies0)
       S = size(model.Π, 1) # Number of states
@@ -1276,18 +1279,19 @@ The above steps are implemented in a type called `RecursiveAllocation`
 .. code-block:: julia
   :class: collapse
 
-  struct RecursiveAllocation{TP <: Model, TI <: Integer,
-                             TVg <: AbstractVector, TVv <: AbstractVector,
-                             TVp <: AbstractArray}
-      model::TP
-      mc::MarkovChain
-      S::TI
-      T::BellmanEquation
-      μgrid::TVg
-      xgrid::TVg
-      Vf::TVv
-      policies::TVp
-  end
+    struct RecursiveAllocation{TP <: Model, TI <: Integer,
+                            TVg <: AbstractVector, TVv <: AbstractVector,
+                            TVp <: AbstractArray}
+        model::TP
+        mc::MarkovChain
+        S::TI
+        T::BellmanEquation
+        μgrid::TVg
+        xgrid::TVg
+        Vf::TVv
+        policies::TVp
+    end
+
 
   function RecursiveAllocation(model, μgrid)
       mc = MarkovChain(model.Π)
@@ -1312,9 +1316,9 @@ The above steps are implemented in a type called `RecursiveAllocation`
           c[i, :], n[i, :], x[i, :], V[i, :] = time1_value(PP, μ)
       end
       Vf = Vector{AbstractInterpolation}(undef, 2)
-      cf = Vector{AbstractInterpolation}(undef, 2)
-      nf = Vector{AbstractInterpolation}(undef, 2)
-      xprimef = Matrix{AbstractInterpolation}(undef, 2, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, 2, S)
       for s in 1:2
           cf[s] = LinearInterpolation(x[:, s][end:-1:1], c[:, s][end:-1:1])
           nf[s] = LinearInterpolation(x[:, s][end:-1:1], n[:, s][end:-1:1])
@@ -1356,11 +1360,11 @@ The above steps are implemented in a type called `RecursiveAllocation`
   function fit_policy_function(PP, PF, xgrid)
       S = PP.S
       Vf = Vector{AbstractInterpolation}(undef, S)
-      cf = Vector{AbstractInterpolation}(undef, S)
-      nf = Vector{AbstractInterpolation}(undef, S)
-      xprimef = Matrix{AbstractInterpolation}(undef, S, S)
+      cf = similar(Vf)
+      nf = similar(Vf)
+      xprimef = similar(Vf, S, S)
       for s in 1:S
-          PFvec = Matrix{typeof(PP.model).parameters[1]}(undef, length(xgrid), 3+S)
+          PFvec = zeros(length(xgrid), 3+S)
           for (i_x, x) in enumerate(xgrid)
               PFvec[i_x, :] = PF(i_x, x, s)
           end
@@ -1392,7 +1396,6 @@ The above steps are implemented in a type called `RecursiveAllocation`
       model, S, policies = pab.model, pab.S, pab.policies
       β, Π, Uc = model.β, model.Π, model.Uc
       cf, nf, xprimef = policies[1], policies[2], policies[3]
-      TF = typeof(model).parameters[1]
       cHist = zeros(T)
       nHist = similar(cHist)
       Bhist = similar(cHist)
@@ -1481,7 +1484,7 @@ This utility function is implemented in the type `CRRAutility`
         γ = 2.0,
         Π = 0.5 * ones(2, 2),
         G = [0.1, 0.2],
-        Θ = ones(Float64, 2),
+        Θ = ones(2),
         transfers = false
         )
         function U(c, n)
@@ -1534,7 +1537,7 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
     sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
 
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
     titles = hcat("Consumption",
                   "Labor Supply",
                   "Government Debt",
@@ -1562,9 +1565,13 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
 
   @testset begin
     @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917, 0.9945696863679917]
+    @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917,
+                                                       0.9945696863679917, 0.9945696863679917,
+                                                       0.9945696863679917, 0.9945696863679917,
+                                                       0.9945696863679917]
     @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
-    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434, 1.111111111111111, 1.111111111111111, 1.111111111111111]
+    @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434,
+                            1.111111111111111, 1.111111111111111, 1.111111111111111]
   end
 
 **Tax smoothing**
@@ -1687,9 +1694,9 @@ above)
 
     PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
 
-    B_vec = range(-1.5,  1.0, length = 100)
+    B_vec = range(-1.5, 1.0, length = 100)
     taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...)')
-    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in     B_vec]...)')
+    interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
 
     titles = ["Tax Rate" "Gross Interest Rate"]
     labels = [["Time , t = 0", "Time , t >= 0"], ""]
@@ -1794,7 +1801,7 @@ For example, let the period utility function be
 
     u(c,n) = \log(c) + 0.69 \log(1-n)
 
-We will create a new type `LogUtility` to represent this utility function
+We will write a new constructor `LogUtility` to represent this utility function
 
 .. code-block:: julia
 
@@ -1874,9 +1881,9 @@ The figure below plots a sample path of the Ramsey tax rate
     @test sim_seq_plot[4][14] ≈ 0.3631746680706347
     @test sim_seq_plot[5][14] == 0.2
     @test sim_seq_plot[6][14] ≈ 0.5839693539786998
-    @test sim_bel_plot[3][5] ≈ 0.5230509296608254
+    @test sim_bel_plot[3][5] ≈ 0.5230509296608254 atol = 1e-3
     @test sim_bel_plot[5][7] == 0.1
-    @test sim_bel_plot[2][3] ≈ 0.5402933557593538
+    @test sim_bel_plot[2][3] ≈ 0.5402933557593538 atol = 1e-3
   end
 
 As should be expected, the recursive and sequential solutions produce almost

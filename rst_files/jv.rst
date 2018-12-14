@@ -1,6 +1,6 @@
 .. _jv:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -30,8 +30,14 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
+.. code-block:: julia
+    :class: hide-output
+
+    using LinearAlgebra, Statistics, Compat
+    using Distributions, QuantEcon, Interpolations, Expectations, Parameters
+    using Plots, NLsolve, Random
 
 Model
 ========
@@ -178,64 +184,41 @@ The following code solves the DP problem described above
 
 .. code-block:: julia
 
-  using Distributions, QuantEcon, Interpolations
+  using Distributions, QuantEcon, Interpolations, Expectations, Parameters
 
-  # NOTE: only brute-force approach is available in bellman operator.
-  # Waiting on a simple constrained optimizer to be written in pure Julia
+    # model object
+    function JvWorker(;A = 1.4,
+                α = 0.6,
+                β = 0.96,
+                grid_size = 50,
+                ϵ = 1e-4)
 
-  struct JvWorker{TR <: Real,
-                  TF <: AbstractFloat,
-                  TUD <: UnivariateDistribution,
-                  TAV <: AbstractVector,
-                  TV <: Vector}
-      A::TR
-      α::TR
-      β::TF
-      x_grid::TAV
-      G::Function
-      π_func::Function
-      F::TUD
-      quad_nodes::TV
-      quad_weights::TV
-      ϵ::TF
+        G(x, ϕ) = A .* (x .* ϕ).^α
+        π_func = sqrt
+        F = Beta(2, 2)
 
-  end
+        # expectation operator
+        E = expectation(F)
 
-  function JvWorker(;A = 1.4,
-                     α = 0.6,
-                     β = 0.96,
-                     grid_size = 50,
-                     ϵ = 1e-4)
+        # Set up grid over the state space for DP
+        # Max of grid is the max of a large quantile value for F and the
+        # fixed point y = G(y, 1).
+        grid_max = max(A^(1.0 / (1.0 - α)), quantile(F, 1 - ϵ))
 
-      G(x, ϕ) = A .* (x .* ϕ).^α
-      π_func = sqrt
-      F = Beta(2, 2)
+        # range for range(ϵ, grid_max, grid_size). Needed for
+        # CoordInterpGrid below
+        x_grid = range(ϵ, grid_max, length = grid_size)
 
-      # integration bounds
-      a, b = quantile(F, 0.005), quantile(F, 0.995)
+        return (A = A, α = α, β = β, x_grid = x_grid, G = G,
+                π_func = π_func, F = F, E = E, ϵ = ϵ)
+    end
 
-      # quadrature nodes/weights
-      nodes, weights = qnwlege(21, a, b)
-
-      # Set up grid over the state space for DP
-      # Max of grid is the max of a large quantile value for F and the
-      # fixed point y = G(y, 1).
-      grid_max = max(A^(1.0 / (1.0 - α)), quantile(F, 1 - ϵ))
-
-      # range for range(ϵ, grid_max, grid_size). Needed for
-      # CoordInterpGrid below
-      x_grid = range(ϵ, grid_max, length = grid_size)
-
-      JvWorker(A, α, β, x_grid, G, π_func, F, nodes, weights, ϵ)
-  end
-
-  function bellman_operator!(jv::JvWorker,
-                             V::AbstractVector,
+  function bellman_operator!(jv,
+                             V,
                              new_V::AbstractVector)
 
       # simplify notation
-      G, π_func, F, β, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.ϵ
-      nodes, weights = jv.quad_nodes, jv.quad_weights
+      @unpack G, π_func, F, β, E, ϵ = jv
 
       # prepare interpoland of value function
       Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -251,8 +234,8 @@ The following code solves the DP problem described above
 
           function w(z)
               s, ϕ = z
-              h(u) = [Vf(max(G(x, ϕ), uval)) * pdf(F, uval) for uval in u]
-              integral = do_quad(h, nodes, weights)
+              h(u) = Vf(max(G(x, ϕ), u))
+              integral = E(h)
               q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, ϕ))
 
               return - x * (1.0 - ϕ - s) - β * q
@@ -271,13 +254,12 @@ The following code solves the DP problem described above
       end
   end
 
-  function bellman_operator!(jv::JvWorker,
-                             V::AbstractVector,
+  function bellman_operator!(jv,
+                             V,
                              out::Tuple{AbstractVector, AbstractVector})
 
       # simplify notation
-      G, π_func, F, β, ϵ = jv.G, jv.π_func, jv.F, jv.β, jv.ϵ
-      nodes, weights = jv.quad_nodes, jv.quad_weights
+      @unpack G, π_func, F, β, E, ϵ = jv
 
       # prepare interpoland of value function
       Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -296,8 +278,8 @@ The following code solves the DP problem described above
 
           function w(z)
               s, ϕ = z
-              h(u) = [Vf(max(G(x, ϕ), uval)) * pdf(F, uval) for uval in u]
-              integral = do_quad(h, nodes, weights)
+              h(u) = Vf(max(G(x, ϕ), u))
+              integral = E(h)
               q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, ϕ))
 
               return - x * (1.0 - ϕ - s) - β * q
@@ -335,7 +317,7 @@ Regarding the imports
 
 
 
-Next we build a type called ``JvWorker`` that
+Next we write a constructor called ``JvWorker`` that
 
 * packages all the parameters and other basic attributes of a given model
 
@@ -363,7 +345,7 @@ where
     \right\}
 
 
-Here we are minimizing instead of maximizing to fit with SciPy's optimization routines
+Here we are minimizing instead of maximizing to fit with optimization routines
 
 When we represent :math:`V`, it will be with a Julia array ``V`` giving values on grid ``x_grid``
 
@@ -385,12 +367,9 @@ Hence in the preliminaries of ``bellman_operator``
 Inside the ``for`` loop, for each ``x`` in the grid over the state space, we
 set up the function :math:`w(z) = w(s, \phi)` defined in :eq:`defw`.
 
-The function is minimized over all feasible :math:`(s, \phi)` pairs, either by
+The function is minimized over all feasible :math:`(s, \phi)` pairs, either by brute-force search over a grid, or specialized solver routines
 
-* a relatively sophisticated solver from SciPy called ``fmin_slsqp``, or
-* brute force search over a grid
-
-The former is much faster, but convergence to the global optimum is not
+The latter is much faster, but convergence to the global optimum is not
 guaranteed.  Grid search is a simple way to check results
 
 
@@ -407,21 +386,21 @@ The code is as follows
 
 .. code-block:: julia
 
-    using Plots, LaTeXStrings, NLsolve
-    gr(fmt=:png)
+    using Plots, NLsolve
+    gr(fmt=:png);
 
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
     f(x) = bellman_operator(wp, x)
-    V = fixedpoint(f, v_init, inplace = false)
+    V = fixedpoint(f, v_init)
     sol_V = V.zero
 
     s_policy, ϕ_policy = bellman_operator(wp, sol_V, ret_policies = true)
 
-    # === plot solution === #
+    # plot solution
     p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
-             title = ["ϕ policy" "s policy" "value function"],
+             title = ["phi policy" "s policy" "value function"],
              color = [:orange :blue :green],
              xaxis = ("x", (0.0, maximum(wp.x_grid))),
              yaxis = ((-0.1, 1.1)), size = (800, 800),
@@ -524,11 +503,12 @@ Here's code to produce the 45 degree diagram
 .. code-block:: julia
 
     wp = JvWorker(grid_size=25)
-    G, π_func, F = wp.G, wp.π_func, wp.F       # Simplify names
+    # simplify notation
+    @unpack G, π_func, F = wp
 
     v_init = collect(wp.x_grid) * 0.5
     f2(x) = bellman_operator(wp, x)
-    V2 = fixedpoint(f2, v_init, inplace = false)
+    V2 = fixedpoint(f2, v_init)
     sol_V2 = V2.zero
     s_policy, ϕ_policy = bellman_operator(wp, sol_V2, ret_policies=true)
 
@@ -570,7 +550,7 @@ Here's code to produce the 45 degree diagram
 
     plot(plot_grid, plot_grid, color=:black, linestyle=:dash, legend=:none)
     scatter!(xs, ys, alpha=0.25, color=:green, lims=(0, plot_grid_max), ticks=ticks)
-    plot!(xlabel=L"x_t", ylabel=L"x_{t+1}", guidefont=font(16))
+    plot!(xlabel="x_t", ylabel="x_{t+1}", guidefont=font(16))
 
 .. code-block:: julia
   :class: test
@@ -578,7 +558,8 @@ Here's code to produce the 45 degree diagram
   @testset "More Solutions 1 Tests" begin
     @test [xs[4], ys[4]] ≈ [0.0, 0.44530420013435007]
     @test ticks == [0.25, 0.5, 0.75, 1.0]
-    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2 && length(plot_grid) == plot_grid_size && plot_grid_size == 100
+    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2
+    @test length(plot_grid) == plot_grid_size && plot_grid_size == 100
   end
 
 Looking at the dynamics, we can see that
@@ -608,8 +589,8 @@ Exercise 2
     ϕ_grid = range(0, 1, length = 100)
 
     plot(ϕ_grid, [xbar(ϕ) * (1 - ϕ) for ϕ in ϕ_grid], color = :blue,
-        label = L"$w^*(\phi)$", legendfont = font(12), xlabel = L"$\phi$",
-        guidefont = font(16), grid = false, legend = :topleft)
+         label = "w^phi", legendfont = font(12), xlabel = "phi",
+         guidefont = font(16), grid = false, legend = :topleft)
 
 
 Observe that the maximizer is around 0.6

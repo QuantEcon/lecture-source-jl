@@ -1,23 +1,22 @@
 .. _additive_functionals:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
-***********************
+********************
 Additive Functionals
-***********************
+********************
 
 .. index::
     single: Models; Additive functionals
 
 .. contents:: :depth: 2
 
-
-Co-authored with Chase Coleman and Balint Szoke.
+Co-authored with Chase Coleman and Balint Szoke
 
 Overview
-=============
+========
 
 Some time series are nonstationary
 
@@ -45,13 +44,8 @@ In the :doc:`next lecture <multiplicative_functionals>` we discuss multiplicativ
 
 We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent :cite:`Hans_Sarg_book_2016`
 
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
-
 A Particular Additive Functional
-====================================
+================================
 
 This lecture focuses on a particular type of additive functional: a scalar process :math:`\{y_t\}_{t=0}^\infty` whose increments are driven by a Gaussian vector autoregression
 
@@ -63,7 +57,6 @@ This additive functional consists of two components, the first of which is a **f
     :label: old1_additive_functionals
 
     x_{t+1} = A x_t + B z_{t+1}
-
 
 Here
 
@@ -93,16 +86,14 @@ In particular,
 
     y_{t+1} - y_{t} = \nu + D x_{t} + F z_{t+1}
 
-
 Here :math:`y_0 \sim {\cal N}(\mu_{y0}, \Sigma_{y0})` is a random
 initial condition
 
 The nonstationary random process :math:`\{y_t\}_{t=0}^\infty` displays
 systematic but random *arithmetic growth*
 
-
 A linear state space representation
-------------------------------------
+-----------------------------------
 
 One way to represent the overall dynamics is to use a :doc:`linear state space system <linear_models>`
 
@@ -139,7 +130,6 @@ Now we construct the state space system
     \end{bmatrix}
     z_{t+1}
 
-
 .. math::
 
     \begin{bmatrix}
@@ -170,7 +160,7 @@ To study it, we could map it into an instance of `LSS <https://github.com/QuantE
 We will in fact use a different set of code for simulation, for reasons described below
 
 Dynamics
-============
+========
 
 Let's run some simulations to build intuition
 
@@ -181,10 +171,9 @@ In doing so we'll assume that :math:`z_{t+1}` is scalar and that :math:`\tilde x
 .. math::
     :label: ftaf
 
-    \tilde x_{t+1} = \phi_1 \tilde x_{t} + \phi_2 \tilde x_{t-1}
-    + \phi_3 \tilde x_{t-2}
-    + \phi_4 \tilde x_{t-3} + \sigma z_{t+1}
-
+    \tilde x_{t+1} = \phi_1 \tilde x_{t} + \phi_2 \tilde x_{t-1} +
+    \phi_3 \tilde x_{t-2} +
+    \phi_4 \tilde x_{t-3} + \sigma z_{t+1}
 
 Let the increment in :math:`\{y_t\}` obey
 
@@ -192,20 +181,18 @@ Let the increment in :math:`\{y_t\}` obey
 
     y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
 
-
 with an initial condition for :math:`y_0`
 
 While :eq:`ftaf` is not a first order system like :eq:`old1_additive_functionals`, we know that it can be mapped  into a first order system
 
 * for an example of such a mapping, see :ref:`this example <lss_sode>`
 
-
 In fact this whole model can be mapped into the additive functional system definition in :eq:`old1_additive_functionals` -- :eq:`old2_additive_functionals`  by appropriate selection of the matrices :math:`A, B, D, F`
 
 You can try writing these matrices down now as an exercise --- the correct expressions will appear in the code below
 
 Simulation
----------------
+----------
 
 When simulating we embed our variables into a bigger system
 
@@ -213,33 +200,33 @@ This system also constructs the components of the decompositions of :math:`y_t` 
 
 All of these objects are computed using the code below
 
+Setup
+-----
+
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
 .. code-block:: julia
-  :class: test
 
-  using Test
+    using LinearAlgebra, Statistics, Compat 
+
+.. code-block:: julia
+    :class: test
+
+    using Test, Random
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, Distributions, LinearAlgebra
+    using Distributions, Parameters, Plots, QuantEcon
+    gr(fmt = :png);
 
-    struct AMF_LSS_VAR
-        A::Matrix{Float64}
-        B::Matrix{Float64}
-        D::Matrix{Float64}
-        F::Matrix{Float64}
-        ν::Matrix{Float64}
-        nx::Int
-        nk::Int
-        nm::Int
-        lss::LSS
-    end
+.. code-block:: julia
 
     function AMF_LSS_VAR(A, B, D, F = nothing; ν = nothing)
 
         if B isa AbstractVector
             B = reshape(B, length(B), 1)
         end
-        # Unpack required elements
+        # unpack required elements
         nx, nk = size(B)
 
         # checking the dimension of D (extended from the scalar case)
@@ -253,14 +240,14 @@ All of these objects are computed using the code below
             D = reshape(D, 1, length(D))
         end
 
-        # Set F
+        # set F
         if F === nothing
             F = zeros(nk, 1)
         elseif ndims(F) == 1
             F = reshape(F, length(F), 1)
         end
 
-        # Set ν
+        # set ν
         if ν === nothing
             ν = zeros(nm, 1)
         elseif ndims(ν) == 1
@@ -273,10 +260,10 @@ All of these objects are computed using the code below
             error("The size of ν is inconsistent with D!")
         end
 
-        # Construct BIG state space representation
+        # construct BIG state space representation
         lss = construct_ss(A, B, D, F, ν, nx, nk, nm)
 
-        return AMF_LSS_VAR(A, B, D, F, ν, nx, nk, nm, lss)
+        return (A = A, B = B, D = D, F = F, ν = ν, nx = nx, nk = nk, nm = nm, lss = lss)
     end
 
     AMF_LSS_VAR(A, B, D) =
@@ -289,39 +276,39 @@ All of these objects are computed using the code below
 
         H, g = additive_decomp(A, B, D, F, nx)
 
-        # Auxiliary blocks with 0's and 1's to fill out the lss matrices
+        # auxiliary blocks with 0's and 1's to fill out the lss matrices
         nx0c = zeros(nx, 1)
         nx0r = zeros(1, nx)
         nx1 = ones(1, nx)
         nk0 = zeros(1, nk)
         ny0c = zeros(nm, 1)
         ny0r = zeros(1, nm)
-        ny1m = Matrix{Float64}(I, nm, nm)
+        ny1m = I + zeros(nm, nm)
         ny0m = zeros(nm, nm)
         nyx0m = similar(D)
 
-        # Build A matrix for LSS
-        # Order of states is: [1, t, xt, yt, mt]
-        A1 = hcat(1, 0, nx0r, ny0r, ny0r)          # Transition for 1
-        A2 = hcat(1, 1, nx0r, ny0r, ny0r)          # Transition for t
-        A3 = hcat(nx0c, nx0c, A, nyx0m', nyx0m')   # Transition for x_{t+1}
-        A4 = hcat(ν, ny0c, D, ny1m, ny0m)          # Transition for y_{t+1}
-        A5 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)   # Transition for m_{t+1}
+        # build A matrix for LSS
+        # order of states is: [1, t, xt, yt, mt]
+        A1 = hcat(1, 0, nx0r, ny0r, ny0r)          # transition for 1
+        A2 = hcat(1, 1, nx0r, ny0r, ny0r)          # transition for t
+        A3 = hcat(nx0c, nx0c, A, nyx0m', nyx0m')   # transition for x_{t+1}
+        A4 = hcat(ν, ny0c, D, ny1m, ny0m)          # transition for y_{t+1}
+        A5 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)   # transition for m_{t+1}
         Abar = vcat(A1, A2, A3, A4, A5)
 
-        # Build B matrix for LSS
+        # build B matrix for LSS
         Bbar = vcat(nk0, nk0, B, F, H)
 
-        # Build G matrix for LSS
-        # Order of observation is: [xt, yt, mt, st, tt]
-        G1 = hcat(nx0c, nx0c, I, nyx0m', nyx0m')          # Selector for x_{t}
-        G2 = hcat(ny0c, ny0c, nyx0m, ny1m, ny0m)          # Selector for y_{t}
-        G3 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)          # Selector for martingale
-        G4 = hcat(ny0c, ny0c, -g, ny0m, ny0m)             # Selector for stationary
-        G5 = hcat(ny0c, ν, nyx0m, ny0m, ny0m)             # Selector for trend
+        # build G matrix for LSS
+        # order of observation is: [xt, yt, mt, st, tt]
+        G1 = hcat(nx0c, nx0c, I, nyx0m', nyx0m')          # selector for x_{t}
+        G2 = hcat(ny0c, ny0c, nyx0m, ny1m, ny0m)          # selector for y_{t}
+        G3 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)          # selector for martingale
+        G4 = hcat(ny0c, ny0c, -g, ny0m, ny0m)             # selector for stationary
+        G5 = hcat(ny0c, ν, nyx0m, ny0m, ny0m)             # selector for trend
         Gbar = vcat(G1, G2, G3, G4, G5)
 
-        # Build LSS type
+        # build LSS type
         x0 = hcat(1, 0, nx0r, ny0r, ny0r)
         S0 = zeros(length(x0), length(x0))
         lss = LSS(Abar, Bbar, Gbar, zeros(nx+4nm, 1), x0, S0)
@@ -330,32 +317,31 @@ All of these objects are computed using the code below
     end
 
     function additive_decomp(A, B, D, F, nx)
-        A_res = \(I-A, I)
+        A_res = \(I - A, I)
         g = D * A_res
         H = F .+ D * A_res * B
 
         return H, g
     end
 
-
     function multiplicative_decomp(A, B, D, F, ν, nx)
         H, g = additive_decomp(A, B, D, F, nx)
-        ν_tilde = ν .+ 0.5*diag(H*H')
+        ν_tilde = ν .+ 0.5 * diag(H * H')
 
         return H, g, ν_tilde
     end
 
     function loglikelihood_path(amf, x, y)
-        A, B, D, F = amf.A, amf.B, amf.D, amf.F
+        @unpack A, B, D, F = amf
         k, T = size(y)
-        FF = F*F'
+        FF = F * F'
         FFinv = inv(FF)
         temp = y[:, 2:end]-y[:, 1:end-1] - D*x[:, 1:end-1]
         obs =  temp .* FFinv .* temp
         obssum = cumsum(obs)
-        scalar = (log(det(FF)) + k*log(2*pi))*collect(1:T)
+        scalar = (logdet(FF) + k * log(2π)) * (1:T)
 
-        return -0.5*(obssum + scalar)
+        return -(obssum + scalar) / 2
     end
 
     function loglikelihood(amf, x, y)
@@ -366,46 +352,46 @@ All of these objects are computed using the code below
 
     function plot_additive(amf, T; npaths = 25, show_trend = true)
 
-        # Pull out right sizes so we know how to increment
-        nx, nk, nm = amf.nx, amf.nk, amf.nm
+        # pull out right sizes so we know how to increment
+        @unpack nx, nk, nm = amf
 
-        # Allocate space (nm is the number of additive functionals - we want npaths for each)
+        # allocate space (nm is the number of additive functionals - we want npaths for each)
         mpath = zeros(nm*npaths, T)
-        mbounds = zeros(nm*2, T)
+        mbounds = zeros(2nm, T)
         spath = zeros(nm*npaths, T)
-        sbounds = zeros(nm*2, T)
+        sbounds = zeros(2nm, T)
         tpath = zeros(nm*npaths, T)
         ypath = zeros(nm*npaths, T)
 
-        # Simulate for as long as we wanted
+        # simulate for as long as we wanted
         moment_generator = moment_sequence(amf.lss)
 
-        # Pull out population moments
+        # pull out population moments
         for (t, x) in enumerate(moment_generator)
             ymeans = x[2]
             yvar = x[4]
 
-            # Lower and upper bounds - for each additive functional
+            # lower and upper bounds - for each additive functional
             for ii in 1:nm
-                li, ui = (ii-1)*2+1, ii*2
-                if sqrt(yvar[nx+nm+ii, nx+nm+ii]) != 0.0
-                    madd_dist = Normal(ymeans[nx+nm+ii], sqrt(yvar[nx+nm+ii, nx+nm+ii]))
+                li, ui = 2(ii - 1) + 1, 2ii
+                if sqrt(yvar[nx + nm + ii, nx + nm + ii]) != 0.0
+                    madd_dist = Normal(ymeans[nx + nm + ii], sqrt(yvar[nx + nm + ii, nx + nm + ii]))
                     mbounds[li, t] = quantile(madd_dist, 0.01)
                     mbounds[ui, t] = quantile(madd_dist, 0.99)
-                elseif sqrt(yvar[nx+nm+ii, nx+nm+ii]) == 0.0
-                    mbounds[li, t] = ymeans[nx+nm+ii]
-                    mbounds[ui, t] = ymeans[nx+nm+ii]
+                elseif sqrt(yvar[nx + nm + ii, nx + nm + ii]) == 0.0
+                    mbounds[li, t] = ymeans[nx + nm + ii]
+                    mbounds[ui, t] = ymeans[nx + nm + ii]
                 else
                     error("standard error is negative")
                 end
 
-                if sqrt(yvar[nx+2*nm+ii, nx+2*nm+ii]) != 0.0
-                    sadd_dist = Normal(ymeans[nx+2*nm+ii], sqrt(yvar[nx+2*nm+ii, nx+2*nm+ii]))
+                if sqrt(yvar[nx + 2nm + ii, nx + 2nm + ii]) != 0.0
+                    sadd_dist = Normal(ymeans[nx + 2nm + ii], sqrt(yvar[nx + 2nm + ii, nx + 2nm + ii]))
                     sbounds[li, t] = quantile(sadd_dist, 0.01)
                     sbounds[ui, t] = quantile(sadd_dist, 0.99)
-                elseif sqrt(yvar[nx+2*nm+ii, nx+2*nm+ii]) == 0.0
-                    sbounds[li, t] = ymeans[nx+2*nm+ii]
-                    sbounds[ui, t] = ymeans[nx+2*nm+ii]
+                elseif sqrt(yvar[nx + 2nm + ii, nx + 2nm + ii]) == 0.0
+                    sbounds[li, t] = ymeans[nx + 2nm + ii]
+                    sbounds[ui, t] = ymeans[nx + 2nm + ii]
                 else
                     error("standard error is negative")
                 end
@@ -413,75 +399,74 @@ All of these objects are computed using the code below
             t == T && break
         end
 
-        # Pull out paths
+        # pull out paths
         for n in 1:npaths
             x, y = simulate(amf.lss,T)
-            for ii in 0:nm-1
-                ypath[npaths*ii+n, :] = y[nx+ii+1, :]
-                mpath[npaths*ii+n, :] = y[nx+nm + ii+1, :]
-                spath[npaths*ii+n, :] = y[nx+2*nm + ii+1, :]
-                tpath[npaths*ii+n, :] = y[nx+3*nm + ii+1, :]
+            for ii in 0:nm - 1
+                ypath[npaths * ii + n, :] = y[nx + ii + 1, :]
+                mpath[npaths * ii + n, :] = y[nx + nm + ii + 1, :]
+                spath[npaths * ii + n, :] = y[nx + 2nm + ii + 1, :]
+                tpath[npaths * ii + n, :] = y[nx + 3nm + ii + 1, :]
             end
         end
 
-        add_figs = Vector{Any}(undef, nm)
+        add_figs = []
 
         for ii in 0:nm-1
-            li, ui = npaths*(ii), npaths*(ii+1)
-            LI, UI = 2*(ii), 2*(ii+1)
-            add_figs[ii+1] =
-                plot_given_paths(T, ypath[li+1:ui, :], mpath[li+1:ui, :], spath[li+1:ui, :],
-                                tpath[li+1:ui, :], mbounds[LI+1:UI, :], sbounds[LI+1:UI, :],
-                                show_trend=show_trend)
+            li, ui = npaths*(ii), npaths*(ii + 1)
+            LI, UI = 2ii, 2(ii + 1)
+            push!(add_figs,
+                plot_given_paths(T, ypath[li + 1:ui, :], mpath[li + 1:ui, :], spath[li + 1:ui, :],
+                                tpath[li + 1:ui, :], mbounds[LI + 1:UI, :], sbounds[LI + 1:UI, :],
+                                show_trend = show_trend))
         end
-
         return add_figs
     end
 
     function plot_multiplicative(amf, T, npaths = 25, show_trend = true)
-        # Pull out right sizes so we know how to increment
-        nx, nk, nm = amf.nx, amf.nk, amf.nm
-        # Matrices for the multiplicative decomposition
+        # pull out right sizes so we know how to increment
+        @unpack nx, nk, nm = amf
+        # matrices for the multiplicative decomposition
         H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
 
-        # Allocate space (nm is the number of functionals - we want npaths for each)
-        mpath_mult = zeros(nm*npaths, T)
-        mbounds_mult = zeros(nm*2, T)
-        spath_mult = zeros(nm*npaths, T)
-        sbounds_mult = zeros(nm*2, T)
-        tpath_mult = zeros(nm*npaths, T)
-        ypath_mult = zeros(nm*npaths, T)
+        # allocate space (nm is the number of functionals - we want npaths for each)
+        mpath_mult = zeros(nm * npaths, T)
+        mbounds_mult = zeros(2nm, T)
+        spath_mult = zeros(nm * npaths, T)
+        sbounds_mult = zeros(2nm, T)
+        tpath_mult = zeros(nm * npaths, T)
+        ypath_mult = zeros(nm * npaths, T)
 
-        # Simulate for as long as we wanted
+        # simulate for as long as we wanted
         moment_generator = moment_sequence(amf.lss)
 
-        # Pull out population moments
+        # pull out population moments
         for (t, x) in enumerate(moment_generator)
             ymeans = x[2]
             yvar = x[4]
 
-            # Lower and upper bounds - for each multiplicative functional
+            # lower and upper bounds - for each multiplicative functional
             for ii in 1:nm
-                li, ui = (ii-1)*2+1, ii*2
-                if yvar[nx+nm+ii, nx+nm+ii] != 0.0
-                    Mdist = LogNormal(ymeans[nx+nm+ii]- t*0.5*diag(H * H')[ii],
-                                    sqrt(yvar[nx+nm+ii, nx+nm+ii]))
+                li, ui = 2(ii - 1)+1, 2ii
+                if yvar[nx + nm + ii, nx + nm + ii] != 0.0
+                    Mdist = LogNormal(ymeans[nx + nm + ii]- 0.5t * diag(H * H')[ii],
+                                    sqrt(yvar[nx + nm + ii, nx + nm + ii]))
                     mbounds_mult[li, t] = quantile(Mdist, 0.01)
                     mbounds_mult[ui, t] = quantile(Mdist, 0.99)
-                elseif yvar[nx+nm+ii, nx+nm+ii] == 0.0
-                    mbounds_mult[li, t] = exp.(ymeans[nx+nm+ii]- t*0.5*diag(H * H')[ii])
-                    mbounds_mult[ui, t] = exp.(ymeans[nx+nm+ii]- t*0.5*diag(H * H')[ii])
+                elseif yvar[nx + nm + ii, nx + nm + ii] == 0.0
+                    mbounds_mult[li, t] = exp.(ymeans[nx + nm + ii] - 0.5t * diag(H * H')[ii])
+                    mbounds_mult[ui, t] = exp.(ymeans[nx + nm + ii] - 0.5t * diag(H * H')[ii])
                 else
                     error("standard error is negative")
                 end
-                if yvar[nx+2*nm+ii, nx+2*nm+ii] != 0.0
-                    Sdist = LogNormal(-ymeans[nx+2*nm+ii],
-                                    sqrt(yvar[nx+2*nm+ii, nx+2*nm+ii]))
+                if yvar[nx + 2nm + ii, nx + 2nm + ii] != 0.0
+                    Sdist = LogNormal(-ymeans[nx + 2nm + ii],
+                                    sqrt(yvar[nx + 2nm + ii, nx + 2nm + ii]))
                     sbounds_mult[li, t] = quantile(Sdist, 0.01)
                     sbounds_mult[ui, t] = quantile(Sdist, 0.99)
-                elseif yvar[nx+2*nm+ii, nx+2*nm+ii] == 0.0
-                    sbounds_mult[li, t] = exp.(-ymeans[nx+2*nm+ii])
-                    sbounds_mult[ui, t] = exp.(-ymeans[nx+2*nm+ii])
+                elseif yvar[nx + 2nm + ii, nx + 2nm + ii] == 0.0
+                    sbounds_mult[li, t] = exp.(-ymeans[nx + 2nm + ii])
+                    sbounds_mult[ui, t] = exp.(-ymeans[nx + 2nm + ii])
                 else
                     error("standard error is negative")
                 end
@@ -489,63 +474,63 @@ All of these objects are computed using the code below
             t == T && break
         end
 
-        # Pull out paths
+        # pull out paths
         for n in 1:npaths
             x, y = simulate(amf.lss,T)
             for ii in 0:nm-1
-                ypath_mult[npaths*ii+n, :] = exp.(y[nx+ii+1, :])
-                mpath_mult[npaths*ii+n, :] =
+                ypath_mult[npaths * ii + n, :] = exp.(y[nx+ii+1, :])
+                mpath_mult[npaths * ii + n, :] =
                     exp.(y[nx+nm + ii+1, :] - collect(1:T)*0.5*diag(H * H')[ii+1])
-                spath_mult[npaths*ii+n, :] = 1 ./exp.(-y[nx+2*nm + ii+1, :])
-                tpath_mult[npaths*ii+n, :] =
-                    exp.(y[nx+3*nm + ii+1, :] + collect(1:T)*0.5*diag(H * H')[ii+1])
+                spath_mult[npaths * ii + n, :] = 1 ./exp.(-y[nx+2*nm + ii+1, :])
+                tpath_mult[npaths * ii + n, :] =
+                    exp.(y[nx + 3nm + ii+1, :] + (1:T) * 0.5 * diag(H * H')[ii + 1])
             end
         end
 
-        mult_figs = Vector{Any}(undef, nm)
+        mult_figs = []
 
         for ii in 0:nm-1
-            li, ui = npaths*(ii), npaths*(ii+1)
-            LI, UI = 2*(ii), 2*(ii+1)
-            mult_figs[ii+1] =
+            li, ui = npaths * ii, npaths * (ii + 1)
+            LI, UI = 2ii, 2(ii + 1)
+            push!(mult_figs,
                 plot_given_paths(T, ypath_mult[li+1:ui, :], mpath_mult[li+1:ui, :],
                                 spath_mult[li+1:ui, :], tpath_mult[li+1:ui, :],
                                 mbounds_mult[LI+1:UI, :], sbounds_mult[LI+1:UI, :],
-                                horline = 1.0, show_trend=show_trend)
+                                horline = 1.0, show_trend=show_trend))
         end
 
         return mult_figs
     end
 
-    function plot_martingales(amf::AMF_LSS_VAR, T, npaths = 25)
+    function plot_martingales(amf, T, npaths = 25)
 
-        # Pull out right sizes so we know how to increment
-        nx, nk, nm = amf.nx, amf.nk, amf.nm
-        # Matrices for the multiplicative decomposition
-        H, g, ν_tilde = multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν, amf.nx)
+        # pull out right sizes so we know how to increment
+        @unpack A, B, D, F, ν, nx, nk, nm = amf
+        # matrices for the multiplicative decomposition
+        H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
 
-        # Allocate space (nm is the number of functionals - we want npaths for each)
-        mpath_mult = zeros(nm*npaths, T)
-        mbounds_mult = zeros(nm*2, T)
+        # allocate space (nm is the number of functionals - we want npaths for each)
+        mpath_mult = zeros(nm * npaths, T)
+        mbounds_mult = zeros(2nm, T)
 
-        # Simulate for as long as we wanted
+        # simulate for as long as we wanted
         moment_generator = moment_sequence(amf.lss)
-        # Pull out population moments
+        # pull out population moments
         for (t, x) in enumerate(moment_generator)
             ymeans = x[2]
             yvar = x[4]
 
-            # Lower and upper bounds - for each functional
+            # lower and upper bounds - for each functional
             for ii in 1:nm
-                li, ui = (ii-1)*2+1, ii*2
-                if yvar[nx+nm+ii, nx+nm+ii] != 0.0
-                    Mdist = LogNormal(ymeans[nx+nm+ii]-t*(.5)*diag(H*H')[ii],
-                                sqrt(yvar[nx+nm+ii, nx+nm+ii]))
+                li, ui = 2(ii - 1) + 1, 2ii
+                if yvar[nx + nm + ii, nx + nm + ii] != 0.0
+                    Mdist = LogNormal(ymeans[nx + nm + ii] - 0.5^2 * t * diag(H * H')[ii],
+                                sqrt(yvar[nx + nm + ii, nx + nm + ii]))
                     mbounds_mult[li, t] = quantile(Mdist, 0.01)
                     mbounds_mult[ui, t] = quantile(Mdist, 0.99)
-                elseif yvar[nx+nm+ii, nx+nm+ii] == 0.0
-                    mbounds_mult[li, t] = ymeans[nx+nm+ii]-t*(.5)*diag(H*H')[ii]
-                    mbounds_mult[ui, t] = ymeans[nx+nm+ii]-t*(.5)*diag(H*H')[ii]
+                elseif yvar[nx + nm + ii, nx + nm + ii] == 0.0
+                    mbounds_mult[li, t] = ymeans[nx + nm + ii] - 0.5^2 * t * diag(H * H')[ii]
+                    mbounds_mult[ui, t] = ymeans[nx + nm + ii]- 0.5t * diag(H * H')[ii]
                 else
                     error("standard error is negative")
                 end
@@ -553,23 +538,24 @@ All of these objects are computed using the code below
             t == T && break
         end
 
-        # Pull out paths
+        # pull out paths
         for n in 1:npaths
             x, y = simulate(amf.lss, T)
             for ii in 0:nm-1
-                mpath_mult[npaths*ii+n, :] =
-                    exp.(y[nx+nm + ii+1, :] - (1:T)*0.5*diag(H*H')[ii+1])
+                mpath_mult[npaths * ii + n, :] =
+                    exp.(y[nx+nm + ii+1, :] - (1:T) * 0.5 * diag(H * H')[ii+1])
             end
         end
 
-        mart_figs = Vector{Any}(undef, nm)
+        mart_figs = []
 
         for ii in 0:nm-1
-            li, ui = npaths*(ii), npaths*(ii+1)
-            LI, UI = 2*(ii), 2*(ii+1)
-            mart_figs[ii+1] = plot_martingale_paths(T, mpath_mult[li+1:ui, :],
-                                                        mbounds_mult[LI+1:UI, :], horline=1)
-            plot!(mart_figs[ii+1], title="Martingale components for many paths of y_(ii+1)")
+            li, ui = npaths*(ii), npaths*(ii + 1)
+            LI, UI = 2ii, 2(ii + 1)
+            push!(mart_figs,
+                plot_martingale_paths(T, mpath_mult[li + 1:ui, :],
+                                                        mbounds_mult[LI + 1:UI, :], horline = 1))
+            plot!(mart_figs[ii + 1], title = "Martingale components for many paths of y_(ii + 1)")
         end
 
         return mart_figs
@@ -578,87 +564,86 @@ All of these objects are computed using the code below
     function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
                               horline = 0.0, show_trend = true)
 
-        # Allocate space
+        # allocate space
         trange = 1:T
 
-        # Allocate transpose
+        # allocate transpose
         mpathᵀ = Matrix(mpath')
 
-        # Create figure
-        plots=plot(layout=(2,2), size=(800,800))
+        # create figure
+        plots=plot(layout = (2, 2), size = (800, 800))
 
-        # Plot all paths together
+        # plot all paths together
 
-        plot!(plots[1], trange, ypath[1, :], label="y_t", color=:black)
-        plot!(plots[1], trange, mpath[1, :], label="m_t", color=:magenta)
-        plot!(plots[1], trange, spath[1, :], label="s_t", color=:green)
-        if show_trend == true
-            plot!(plots[1], trange, tpath[1, :], label="t_t", color=:red)
+        plot!(plots[1], trange, ypath[1, :], label = "y_t", color = :black)
+        plot!(plots[1], trange, mpath[1, :], label = "m_t", color = :magenta)
+        plot!(plots[1], trange, spath[1, :], label = "s_t", color = :green)
+        if show_trend
+            plot!(plots[1], trange, tpath[1, :], label = "t_t", color = :red)
         end
-        plot!(plots[1], seriestype=:hline, [horline], color=:black, linestyle=:dash, label="")
+        plot!(plots[1], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
         plot!(plots[1], title = "One Path of All Variables", legend=:topleft)
 
-
-        # Plot Martingale Component
-        plot!(plots[2], trange, mpath[1, :], color=:magenta, label="")
-        plot!(plots[2], trange, mpathᵀ, alpha=0.45, color=:magenta, label="")
+        # plot martingale component
+        plot!(plots[2], trange, mpath[1, :], color = :magenta, label = "")
+        plot!(plots[2], trange, mpathᵀ, alpha = 0.45, color = :magenta, label = "")
         ub = mbounds[2, :]
         lb = mbounds[1, :]
-        plot!(plots[2], ub, fill_between=(lb,ub), alpha=0.25, color=:magenta, label="")
-        plot!(plots[2], seriestype=:hline, [horline], color=:black, linestyle =:dash, label="")
-        plot!(plots[2], title="Martingale Components for Many Paths")
+        plot!(plots[2], ub, fill_between = (lb, ub), alpha = 0.25, color = :magenta, label = "")
+        plot!(plots[2], seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
+        plot!(plots[2], title = "Martingale Components for Many Paths")
 
-
-        # Plot Stationary Component
-        plot!(plots[3], spath[1, :], color=:green, label="")
-        plot!(plots[3], Matrix(spath'), alpha=0.25, color=:green, label="")
+        # plot stationary component
+        plot!(plots[3], spath[1, :], color = :green, label = "")
+        plot!(plots[3], Matrix(spath'), alpha = 0.25, color = :green, label = "")
         ub = sbounds[2, :]
         lb = sbounds[1, :]
-        plot!(plots[3], ub, fill_between=(lb, ub), alpha=0.25, color=:green, label="")
-        plot!(plots[3], seriestype=:hline, [horline], color=:black, linestyle=:dash, label="")
-        plot!(plots[3], title="Stationary Components for Many Paths")
+        plot!(plots[3], ub, fill_between = (lb, ub), alpha = 0.25, color = :green, label = "")
+        plot!(plots[3], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
+        plot!(plots[3], title = "Stationary Components for Many Paths")
 
-        # Plot Trend Component
+        # plot trend component
         if show_trend == true
-            plot!(plots[4], Matrix(tpath'), color=:red, label="")
+            plot!(plots[4], Matrix(tpath'), color = :red, label = "")
         end
-        plot!(plots[4], seriestype=:hline, [horline], color=:black, linestyle =:dash, label="")
-        plot!(plots[4], title="Trend Components for Many Paths")
+        plot!(plots[4], seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
+        plot!(plots[4], title = "Trend Components for Many Paths")
 
         return plots
     end
 
     function plot_martingale_paths(T, mpath, mbounds;
-                               horline = 1, show_trend = false)
-        # Allocate space
+                                   horline = 1, show_trend = false)
+        # allocate space
         trange = 1:T
 
-        # Create the plot
+        # create the plot
         plt = plot()
 
-        # Plot Martingale Component
+        # plot martingale component
         ub = mbounds[2, :]
         lb = mbounds[1, :]
-        plot!(plt, lb, fill_between=(lb, ub), alpha = 0.25, color=:magenta, label="")
-        plot!(plt, seriestype=:hline, [horline], color=:black, linestyle =:dash, label="")
-        plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color=:black, label="")#, color="#4c4c4c")
+        plot!(plt, lb, fill_between = (lb, ub), alpha = 0.25, color = :magenta, label = "")
+        plot!(plt, seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
+        plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")
 
         return plt
     end
-
 
 For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a description of exactly how we compute them
 
 .. _addfunc_egcode:
 
 .. code-block:: julia
+    :class: test
 
-    using Random
-    Random.seed!(42) # For reproducible results.
+    Random.seed!(42);
+
+.. code-block:: julia
 
     ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
     σ = 0.01
-    ν = 0.01 # Growth rate
+    ν = 0.01 # growth rate
 
     # A matrix should be n x n
     A = [ϕ_1 ϕ_2 ϕ_3 ϕ_4;
@@ -670,36 +655,37 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
     B = [σ, 0, 0, 0]
 
     D = [1 0 0 0] * A
-    F = dot([1, 0, 0, 0], vec(B))
+    F = [1, 0, 0, 0] ⋅ vec(B)
 
     amf = AMF_LSS_VAR(A, B, D, F, ν)
 
     T = 150
     x, y = simulate(amf.lss, T)
 
-    plots=plot(layout=(2,1))
+    plots = plot(layout = (2, 1))
 
-    plot!(plots[1], 1:T, y[amf.nx+1, :], color=:black, lw=2, label="")
-    plot!(plots[1], title= "A particular path of y_t")
-    plot!(plots[2], 1:T, y[1, :], color=:green, lw=2, label="")
-    plot!(plots[2], seriestype=:hline, [0], color=:black, lw=2, linestyle=:dashdot, label="")
-    plot!(plots[2], title="Associated path of x_t")
+    plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
+    plot!(plots[1], title =  "A particular path of y_t")
+    plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
+    plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot,
+          label = "")
+    plot!(plots[2], title = "Associated path of x_t")
 
     plot(plots)
 
 .. code-block:: julia
-  :class: test
+    :class: test
 
-  @testset begin
-    @test y[79] ≈ -0.07268127992877046
-    @test y[amf.nx+1, :][19] ≈ 0.09115348523102862
-    @test F == 0.01 && T == 150 # A few constants.
-  end
+    @testset begin
+        @test y[79] ≈ -0.07268127992877046
+        @test y[amf.nx + 1, :][19] ≈ 0.09115348523102862
+        @test F == 0.01 && T == 150 # a few constants.
+    end
 
 Notice the irregular but persistent growth in :math:`y_t`
 
 Decomposition
----------------
+-------------
 
 Hansen and Sargent :cite:`Hans_Sarg_book_2016` describe how to construct a decomposition of
 an additive functional into four parts:
@@ -836,7 +822,7 @@ By picking out components of :math:`\tilde y_t`, we can track all variables of
 interest
 
 Code
-=====================
+====
 
 The type `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ mentioned above does all that we want to study our additive functional
 
@@ -869,7 +855,7 @@ Notice tell-tale signs of these probability coverage shaded areas
    constant band
 
 An associated multiplicative functional
-------------------------------------------
+---------------------------------------
 
 Where :math:`\{y_t\}` is our additive functional, let :math:`M_t = \exp(y_t)`
 
@@ -919,7 +905,7 @@ Comparing this figure and the last also helps show how geometric growth differs 
 arithmetic growth
 
 A peculiar large sample property
----------------------------------
+--------------------------------
 
 Hansen and Sargent :cite:`Hans_Sarg_book_2016` (ch. 6) note that the martingale component
 :math:`\widetilde M_t` of the multiplicative decomposition has a peculiar property
@@ -935,7 +921,6 @@ The following simulation of many paths of :math:`\widetilde M_t` illustrates thi
 .. code-block:: julia
     :class: test
 
-    using Random
     Random.seed!(10021987);
 
 .. code-block:: julia

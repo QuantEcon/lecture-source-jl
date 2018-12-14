@@ -1,6 +1,6 @@
 .. _topics_in_economic_dynamics:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 ***************************************
 Dynamic Programming Squared
@@ -22,5 +22,3 @@ Here we look at models in which a value function for one Bellman equation has as
     lqramsey
     opt_tax_recur
     amss
-    hist_dep_policies
-

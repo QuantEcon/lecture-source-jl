@@ -1,6 +1,6 @@
 .. _mccall_with_sep:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -32,7 +32,13 @@ Once separation enters the picture, the agent comes to view
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia 
+    :class: hide-output 
+
+    using LinearAlgebra, Statistics, Compat 
+    using Distributions, Expectations, Parameters, NLsolve, Plots 
 
 The Model
 ============
@@ -163,8 +169,8 @@ and
     :label: bell02_mccall
 
     U = u(c) +
-      \beta (1 - \gamma) U
-          + \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
+      \beta (1 - \gamma) U + 
+      \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
 Solving the Bellman Equations
 -------------------------------
@@ -197,8 +203,8 @@ and
     :label: bell2001
 
     U_{n+1} = u(c) +
-        \beta (1 - \gamma) U_n
-         + \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
+        \beta (1 - \gamma) U_n + 
+        \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
 
 
 starting from some initial conditions :math:`U_0, V_0`
@@ -237,7 +243,8 @@ Let's implement this iterative process
 
     using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, iter = 2_000)
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
+                                iter = 2_000)
         # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
         @unpack α, β, σ, c, γ, w, dist, u = mcm 
         
@@ -259,7 +266,7 @@ Let's implement this iterative process
 
         # value function iteration  
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv; inplace = false, iterations = iter, xtol = tol).zero 
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
         V = xstar[1:end-1]
         U = xstar[end]
         
@@ -271,7 +278,8 @@ Let's implement this iterative process
             w_bar = w[wbarindex] # otherwise, return the number
         end
 
-        return (V = V, U = U, w_bar = w_bar) # return a NamedTuple, so we can select values by name  
+        # return a NamedTuple, so we can select values by name  
+        return (V = V, U = U, w_bar = w_bar) 
     end 
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
@@ -300,7 +308,7 @@ We'll use the default parameterizations found in the code above
 .. code-block:: julia
 
     # plots setting
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     mcm = McCallModel()
     @unpack V, U = solve_mccall_model(mcm)
@@ -312,8 +320,8 @@ We'll use the default parameterizations found in the code above
     :class: test
 
     @testset "First Plot Tests" begin
-        @test U ≈ 45.623503368698636 # U value
-        @test V[3] ≈ 45.58092816408433 # Arbitrary V
+        @test U ≈ 45.62374663606431 # U value
+        @test V[3] ≈ 45.58117143145003 # Arbitrary V
     end
 
 
@@ -355,7 +363,7 @@ The Reservation Wage and Unemployment Compensation
 
 First, let's look at how :math:`\bar w` varies with unemployment compensation
 
-In the figure below, we use the default parameters in the `McCallModel` type, apart from
+In the figure below, we use the default parameters in the `McCallModel` tuple, apart from
 `c` (which takes the values given on the horizontal axis)
 
 .. figure:: /_static/figures/mccall_resw_c.png
@@ -452,7 +460,8 @@ Note that we could've done the above in one pass (which would be important if, f
 
 .. code-block:: julia
 
-    w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals]; # doesn't allocate new arrays for models and solutions 
+    w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals]; 
+    # doesn't allocate new arrays for models and solutions 
 
 .. code-block:: julia
     :class: test
@@ -460,7 +469,8 @@ Note that we could've done the above in one pass (which would be important if, f
     @testset "Solutions 1 Tests" begin
         @test w_bar_vals[10] ≈ 11.35593220338983
         @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25
-        @test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791 # Just a sanity check on how these things relate.
+        @test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791 
+        # Just a sanity check on how these things relate.
     end
 
 
@@ -477,7 +487,8 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
     sols = solve_mccall_model.(models)
     w_bar_vals = [sol.w_bar for sol in sols]
 
-    plot(γ_vals, w_bar_vals, lw = 2, α = 0.7, xlabel = "job offer rate", ylabel = "reservation wage", label = "w_bar as a function of gamma")
+    plot(γ_vals, w_bar_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
+         ylabel = "reservation wage", label = "w_bar as a function of gamma")
 
 .. code-block:: julia
     :class: test

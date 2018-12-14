@@ -1,6 +1,6 @@
 .. _lln_clt:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -205,7 +205,7 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
     :class: test
@@ -214,6 +214,7 @@ Setup
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat 
     using StatPlots, Distributions, Random, Statistics
     gr(fmt = :png, size = (900, 500))
 
@@ -229,15 +230,18 @@ Setup
         plot!(1:n, observations, color = :grey, markershape = :circle,
               alpha = 0.5, label = "", linewidth = 0)
         if !isnan(μ)
-            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false, label = ["Mean"])
+            hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false,
+                   label = ["Mean"])
         end
-        plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green, label = "Sample mean")
+        plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green,
+              label = "Sample mean")
         return plot!(title = title)
     end
 
 .. code-block:: julia
 
-    distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5), Exponential(1)]
+    distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5),
+                     Exponential(1)]
 
 Here is in an example for the standard normal distribution
 
@@ -451,7 +455,8 @@ Here's some code that does exactly this for the exponential distribution
         y = mean(y, dims = 1)
         y = √n * vec(y)
         density(y, label = "Empirical Distribution")
-        return plot!(Normal(0, σ), linestyle = :dash, color = :black, label = "Normal(0.00, $(σ^2))")
+        return plot!(Normal(0, σ), linestyle = :dash, color = :black,
+                     label = "Normal(0.00, $(σ^2))")
     end
 
 .. code-block:: julia
@@ -573,7 +578,7 @@ The *variance-covariance matrix* of random vector :math:`\mathbf X` is defined a
 
 .. math::
 
-    \Var[\mathbf X]
+    \mathop{\mathrm{Var}}[\mathbf X]
     := \mathbb E
     [ (\mathbf X - \boldsymbol \mu) (\mathbf X - \boldsymbol \mu)']
 
@@ -581,7 +586,7 @@ Expanding this out, we get
 
 .. math::
 
-    \Var[\mathbf X]
+    \mathop{\mathrm{Var}}[\mathbf X]
     =
     \left(
     \begin{array}{ccc}
@@ -699,8 +704,8 @@ First, if :math:`\mathbf X` is a random vector in :math:`\mathbb R^k` and :math:
 
 .. math::
 
-    \Var[\mathbf A \mathbf X]
-    = \mathbf A \Var[\mathbf X] \mathbf A'
+    \mathop{\mathrm{Var}}[\mathbf A \mathbf X]
+    = \mathbf A \mathop{\mathrm{Var}}[\mathbf X] \mathbf A'
 
 Second, by the `continuous mapping theorem <https://en.wikipedia.org/wiki/Continuous_mapping_theorem>`_, if :math:`\mathbf Z_n \stackrel{d}{\to} \mathbf Z` in :math:`\mathbb R^k` and :math:`\mathbf A` is constant and :math:`k \times k`, then
 
@@ -798,7 +803,8 @@ Here is one solution
         y = vec(y)
         error_obs = sqrt(n) .* (g.(y) .- g.(μ))
         density(error_obs, label = "Empirical Density")
-        return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic", color = :black)
+        return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic",
+                     color = :black)
     end
     exercise1()
 

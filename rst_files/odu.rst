@@ -1,6 +1,6 @@
 .. _odu:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -41,7 +41,7 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 Model
 ========
@@ -172,9 +172,10 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
-  using Distributions
-  using Plots
-  gr(fmt=:png)
+  using LinearAlgebra, Statistics, Compat 
+  using Distributions, Plots, QuantEcon, Interpolations, Parameters
+
+  gr(fmt=:png);
 
   w_max = 2
   x = range(0,  w_max, length = 200)
@@ -225,27 +226,6 @@ The code is as follows
 
 .. code-block:: julia
 
-  using QuantEcon, Interpolations
-
-  struct SearchProblem{TR<:Real, TI<:Integer, TF<:AbstractFloat,
-                      TAVw<:AbstractVector{TF}, TAVpi<:AbstractVector{TF}}
-      β::TR
-      c::TR
-      F::Distribution
-      G::Distribution
-      f::Function
-      g::Function
-      n_w::TI
-      w_max::TR
-      w_grid::TAVw
-      n_π::TI
-      π_min::TR
-      π_max::TR
-      π_grid::TAVpi
-      quad_nodes::Vector{TF}
-      quad_weights::Vector{TF}
-  end
-
   # use key word argment
   function SearchProblem(;β = 0.95, c = 0.6, F_a = 1, F_b = 1,
                          G_a = 3, G_b = 1.2, w_max = 2.0,
@@ -254,8 +234,7 @@ The code is as follows
       F = Beta(F_a, F_b)
       G = Beta(G_a, G_b)
 
-      # NOTE: the x./w_max)./w_max in these functions makes our dist match
-      #       the scipy one with scale=w_max given
+      # scaled pdfs
       f(x) = pdf.(F, x/w_max)/w_max
       g(x) = pdf.(G, x/w_max)/w_max
 
@@ -267,9 +246,11 @@ The code is as follows
 
       nodes, weights = qnwlege(21, 0.0, w_max)
 
-      SearchProblem(β, c, F, G, f, g,
-                  w_grid_size, w_max, w_grid,
-                  π_grid_size, π_min, π_max, π_grid, nodes, weights)
+      return (β = β, c = c, F = F, G = G, f = f,
+              g = g, n_w = w_grid_size, w_max = w_max,
+              w_grid = w_grid, n_π = π_grid_size, π_min = π_min,
+              π_max = π_max, π_grid = π_grid, quad_nodes = nodes,
+              quad_weights = weights)
   end
 
   function q(sp, w, π_val)
@@ -281,8 +262,8 @@ The code is as follows
 
   function bellman_operator!(sp, v, out;
                              ret_policy = false)
-      # Simplify names
-      f, g, β, c = sp.f, sp.g, sp.β, sp.c
+      # simplify names
+      @unpack f, g, β, c = sp
       nodes, weights = sp.quad_nodes, sp.quad_weights
 
       vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
@@ -297,7 +278,7 @@ The code is as follows
 
           for (π_j, _π) in enumerate(sp.π_grid)
               # calculate v2
-              integrand(m) = [vf[m[i], q.(Ref(sp), m[i], _π)] *
+              integrand(m) = [vf(m[i], q.(Ref(sp), m[i], _π)) *
                           (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
               integral = do_quad(integrand, nodes, weights)
               # integral = do_quad(integrand, q_nodes, q_weights)
@@ -323,11 +304,11 @@ The code is as follows
   get_greedy(sp, v) = bellman_operator(sp, v, ret_policy = true)
 
   function res_wage_operator!(sp, ϕ, out)
-      # Simplify name
-      f, g, β, c = sp.f, sp.g, sp.β, sp.c
+      # simplify name
+      @unpack f, g, β, c = sp
 
       # Construct interpolator over π_grid, given ϕ
-      ϕ_f = LinInterp(sp.π_grid, ϕ)
+      ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())
 
       # set up quadrature nodes/weights
       q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
@@ -361,8 +342,6 @@ Here's the value function:
 
 .. code-block:: julia
 
-  using LaTeXStrings
-
   # Set up the problem and initial guess, solve by VFI
   sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
   v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
@@ -380,11 +359,11 @@ Here's the value function:
                               π_plot_grid_size = 100)
     π_plot_grid = range(0.001,  0.99, length =  π_plot_grid_size)
     w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
-    Z = [vf[w_plot_grid[j], π_plot_grid[i]]
+    Z = [vf(w_plot_grid[j], π_plot_grid[i])
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
                 fill=true, size=(400, 400), c=:lightrainbow)
-    plot!(xlabel=L"$\pi$", ylabel="2", xguidefont=font(12))
+    plot!(xlabel="pi", ylabel="w", xguidefont=font(12))
     return p
   end
 
@@ -400,10 +379,11 @@ The optimal policy:
                                 π_plot_grid_size = 100)
       π_plot_grid = range(0.001,  0.99, length = π_plot_grid_size)
       w_plot_grid = range(0,  sp.w_max, length = w_plot_grid_size)
-      Z = [pf[w_plot_grid[j], π_plot_grid[i]]
+      Z = [pf(w_plot_grid[j], π_plot_grid[i])
               for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-      p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true, size=(400, 400), c=:coolwarm)
-      plot!(xlabel=L"$\pi$", ylabel="wage", xguidefont=font(12), cbar=false)
+      p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true,
+                  size=(400, 400), c=:coolwarm)
+      plot!(xlabel="pi", ylabel="wage", xguidefont=font(12), cbar=false)
       annotate!(0.4, 1.0, "reject")
       annotate!(0.7, 1.8, "accept")
       return p
@@ -528,8 +508,8 @@ triangle inequality for integrals tells us that
     |(Q \psi)(\pi) - (Q \phi)(\pi)|
     \leq \beta \int
     \left|
-    \max \left\{w', \psi \circ q(w', \pi) \right\}
-    - \max \left\{w', \phi \circ q(w', \pi) \right\}
+    \max \left\{w', \psi \circ q(w', \pi) \right\} -
+    \max \left\{w', \phi \circ q(w', \pi) \right\}
     \right|
     \, h_{\pi}(w') \, dw'
 
@@ -651,9 +631,9 @@ The code takes a few minutes to run.
                       Gridded(Linear())), Flat())
 
   # Holds the employment state and beliefs of an individual agent.
-  mutable struct Agent
-      _π
-      employed
+  mutable struct Agent{TF <: AbstractFloat, TI <: Integer}
+      _π::TF
+      employed::TI
   end
 
   Agent(_π=1e-3) = Agent(_π, 1)
@@ -661,7 +641,7 @@ The code takes a few minutes to run.
   function update!(ag, H)
       if ag.employed == 0
           w = rand(H) * 2   # account for scale in julia
-          if w ≥ w_bar[ag._π]
+          if w ≥ w_bar(ag._π)
               ag.employed = 1
           else
               ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))

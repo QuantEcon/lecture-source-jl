@@ -1,6 +1,6 @@
 .. _harrison_kreps:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -54,7 +54,11 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Structure of the Model
 =======================
@@ -114,10 +118,10 @@ Investors of  type :math:`b` think the transition matrix is
 
 The stationary (i.e., invariant) distributions of these two matrices can be calculated as follows:
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
 .. code-block:: julia
 
@@ -134,8 +138,8 @@ The stationary (i.e., invariant) distributions of these two matrices can be calc
 
     stB = stationary_distributions(mcB)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
   @testset begin
     @test stA ≈ [[0.5714285714285715, 0.4285714285714286]]
@@ -321,15 +325,15 @@ The first two rows of of the table report :math:`p_a(s)` and :math:`p_b(s)`
 
 Here's a function that can be used to compute these values
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    using LinearAlgebra 
+    using LinearAlgebra
 
-    function price_single_beliefs(transition::AbstractMatrix, dividend_payoff::AbstractVector;
-                                β::AbstractFloat=.75)
+    function price_single_beliefs(transition, dividend_payoff;
+                                β=.75)
         # First compute inverse piece
         imbq_inv = inv(I - β * transition)
-        
+
         # Next compute prices
         prices = β * ((imbq_inv * transition) * dividend_payoff)
 
@@ -459,11 +463,12 @@ Investors of type :math:`a` want to sell the asset in state :math:`1` while inve
 
 Here's code to solve for :math:`\bar p`, :math:`\hat p_a` and :math:`\hat p_b` using the iterative method described above
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    function price_optimistic_beliefs(transitions::AbstractVector, dividend_payoff::AbstractVector;
-                                    β::AbstractFloat=.75, max_iter::Integer=50000,
-                                    tol::AbstractFloat=1e-16)
+    function price_optimistic_beliefs(transitions,
+                                      dividend_payoff;
+                                      β=.75, max_iter=50000,
+                                      tol=1e-16)
 
         # We will guess an initial price vector of [0, 0]
         p_new = [0,0]
@@ -529,11 +534,12 @@ Constraints on short sales prevent that
 
 Here's code to solve for :math:`\check p` using iteration
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    function price_pessimistic_beliefs(transitions::AbstractVector, dividend_payoff::AbstractVector;
-                                    β::AbstractFloat=.75, max_iter::Integer=50000,
-                                    tol::AbstractFloat=1e-16)
+    function price_pessimistic_beliefs(transitions,
+                                       dividend_payoff;
+                                       β=.75, max_iter=50000,
+                                       tol=1e-16)
         # We will guess an initial price vector of [0, 0]
         p_new = [0, 0]
         p_old = [10.0, 10.0]
@@ -635,19 +641,19 @@ investors are optimistic or pessimistic
         println("State 1: $s1")
         println(repeat("-", 20))
     end
-        
-.. code-block:: julia 
-  :class: test 
+
+.. code-block:: julia
+  :class: test
 
   price_valsA = price_single_beliefs(qa, dividendreturn)
   price_valsB = price_single_beliefs(qb, dividendreturn)
 
-  @testset begin 
-    @test price_valsA ≈ [1.3333333333333335, 1.2222222222222223] 
+  @testset begin
+    @test price_valsA ≈ [1.3333333333333335, 1.2222222222222223]
     @test price_valsB ≈ [1.4545454545454544, 1.9090909090909092]
-  end 
-    
-We will use the `price_optimistic_beliefs` function to find the price under 
+  end
+
+We will use the `price_optimistic_beliefs` function to find the price under
 heterogeneous beliefs
 
 
@@ -665,20 +671,20 @@ heterogeneous beliefs
         println("State 1: $s1")
         println(repeat("-", 20))
     end
-        
-.. code-block:: julia 
-  :class: test 
+
+.. code-block:: julia
+  :class: test
 
   opt_vals = price_optimistic_beliefs([qa, qb], dividendreturn)
 
-  @testset begin 
+  @testset begin
     @test opt_vals[1] ≈ [1.846153846151143, 2.076923076920374]
     @test opt_vals[2] ≈ [1.846153846151143, 1.6923076923049891]
-    @test opt_vals[3] ≈ [1.6923076923049891, 2.076923076920374] 
-  end 
-    
+    @test opt_vals[3] ≈ [1.6923076923049891, 2.076923076920374]
+  end
 
-    
+
+
 Notice that the equilibrium price with heterogeneous beliefs is equal to the price under single beliefs
 with optimistic investors - this is due to the marginal investor being the temporarily optimistic type
 

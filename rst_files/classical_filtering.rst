@@ -1,6 +1,6 @@
 .. _classical_filtering:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -54,7 +54,11 @@ Useful references include :cite:`Whittle1963`, :cite:`HanSar1980`, :cite:`Orfani
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 Infinite Horizon Prediction and Filtering Problems
 =====================================================
@@ -364,8 +368,7 @@ Thus, we have
     \left[
         \sum^\infty_{j=0} \delta^j X_{t+j}\vert X_t,\, x_{t-1},
         \ldots
-    \right]
-    =
+    \right]  =
     \left[
         {1-\delta c (\delta) L^{-1} c(L)^{-1} \over 1 - \delta L^{-1}}
     \right]
@@ -556,25 +559,14 @@ Code that computes solutions to  LQ control and filtering problems  using the me
 
 Here's how it looks
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  using Test 
+  using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
   using Polynomials, LinearAlgebra
-
-  struct LQFilter{TF_ <: Union{Vector{Float64},Nothing}, TI_ <: Union{Int,Nothing}}
-      d::Vector{Float64}
-      h::Float64
-      y_m::Vector{Float64}
-      m::Int
-      ϕ::Vector{Float64}
-      β::Float64
-      ϕ_r::TF_
-      k::TI_
-  end
 
   function LQFilter(d, h, y_m;
                     r = nothing,
@@ -582,24 +574,17 @@ Here's how it looks
                     h_eps = nothing)
 
       m = length(d) - 1
-
       m == length(y_m) ||
           throw(ArgumentError("y_m and d must be of same length = $m"))
 
-      #---------------------------------------------
-      # Define the coefficients of ϕ up front
-      #---------------------------------------------
-
+      # define the coefficients of ϕ up front
       ϕ = zeros(2m + 1)
       for i in -m:m
           ϕ[m-i+1] = sum(diag(d*d', -i))
       end
       ϕ[m+1] = ϕ[m+1] + h
 
-      #-----------------------------------------------------
-      # If r is given calculate the vector ϕ_r
-      #-----------------------------------------------------
-
+      # if r is given calculate the vector ϕ_r
       if r === nothing
           k = nothing
           ϕ_r = nothing
@@ -616,9 +601,7 @@ Here's how it looks
           end
       end
 
-      #-----------------------------------------------------
-      # If β is given, define the transformed variables
-      #-----------------------------------------------------
+      # if β is given, define the transformed variables
       if β === nothing
           β = 1.0
       else
@@ -626,7 +609,8 @@ Here's how it looks
           y_m = y_m * β.^(- collect(1:m)/2)
       end
 
-      return LQFilter(d, h, y_m, m, ϕ, β, ϕ_r, k)
+      return (d = d, h = h, y_m = y_m, m = m, ϕ = ϕ, β = β,
+              ϕ_r = ϕ_r, k = k)
   end
 
   function construct_W_and_Wm(lqf, N)
@@ -636,14 +620,11 @@ Here's how it looks
       W = zeros(N + 1, N + 1)
       W_m = zeros(N + 1, m)
 
-      #---------------------------------------
-      # Terminal conditions
-      #---------------------------------------
-
+      # terminal conditions
       D_m1 = zeros(m + 1, m + 1)
       M = zeros(m + 1, m)
 
-      # (1) Constuct the D_{m+1} matrix using the formula
+      # (1) constuct the D_{m+1} matrix using the formula
 
       for j in 1:(m+1)
           for k in j:(m+1)
@@ -663,9 +644,7 @@ Here's how it looks
       end
       M
 
-      #----------------------------------------------
       # Euler equations for t = 0, 1, ..., N-(m+1)
-      #----------------------------------------------
       ϕ, h = lqf.ϕ, lqf.h
 
       W[1:(m + 1), 1:(m + 1)] = D_m1 + h * I
@@ -775,9 +754,7 @@ Here's how it looks
       if t === nothing                      # if the problem is deterministic
           a_hist = J * a_hist
 
-          #--------------------------------------------
-          # Transform the a sequence if β is given
-          #--------------------------------------------
+          # transform the a sequence if β is given
           if β != 1
               a_hist =  reshape(a_hist * (β^(collect(N:0)/ 2)), N + 1, 1)
           end
@@ -788,9 +765,7 @@ Here's how it looks
           # Reverse the order of y_bar with the matrix J
           J = reverse(Matrix(I, N + m + 1, N + m + 1), dims = 2)
           y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
-          #--------------------------------------------
-          # Transform the optimal sequence back if β is given
-          #--------------------------------------------
+          # transform the optimal sequence back if β is given
           if β != 1
               y_hist = y_hist .* β.^(- collect(-m:N)/2)
           end
@@ -848,13 +823,13 @@ Let's check that it "flips roots" as required
 
     roots_of_characteristic(example)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test coeffs_of_c(example) == [2.0, -1.0]
     @test roots_of_characteristic(example) == ([2.0], -2.0, [0.5])
-  end 
+  end
 
 Now let's form the covariance matrix of a time series vector of length :math:`N`
 and put it in :math:`V`
@@ -878,13 +853,13 @@ Notice how the lower rows of the "autoregressive representations" are converging
 
     L = inv(Li)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
+  @testset begin
     @test L[2, 1] ≈ 0.1951800145897066
     @test L[3, 3] ≈ 0.4970501217477084
-  end 
+  end
 
 **Remark** Let :math:`\pi (z) = \sum^m_{j=0} \pi_j z^j` and let :math:`z_1, \ldots,
 z_k` be the zeros of :math:`\pi (z)` that are inside the unit circle, :math:`k < m`
@@ -958,13 +933,13 @@ We proceed in the same way as example 1
 
     L = inv(Li)
 
-.. code-block:: julia 
-  :class: test 
+.. code-block:: julia
+  :class: test
 
-  @testset begin 
-    @test L[3, 1] ≈ 0.30860669992418377 
+  @testset begin
+    @test L[3, 1] ≈ 0.30860669992418377
     @test L[2, 2] ≈ 0.5773502691896257
-  end 
+  end
 
 Prediction
 -------------

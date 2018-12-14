@@ -1,6 +1,6 @@
 .. _matsuyama:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -10,7 +10,7 @@ Globalization and Cycles
 
 .. contents:: :depth: 2
 
-Co-authored with Chase Coleman.
+Co-authored with Chase Coleman
 
 Overview
 =====================================
@@ -39,11 +39,6 @@ On the technical side, the paper introduces the concept of `coupled oscillators 
 As we will see, coupled oscillators arise endogenously within the model
 
 Below we review the model and replicate some of the results on synchronization of innovation across countries
-
-Setup
-------------------
-
-.. literalinclude:: /_static/includes/deps.jl
 
 Key Ideas
 ==========================
@@ -108,7 +103,6 @@ via
 
     Y_{k, t} = C_{k, t} = \left( \frac{X^o_{k, t}}{1 - \alpha} \right)^{1-\alpha} \left( \frac{X_{k, t}}{\alpha} \right)^{\alpha}
 
-
 Here :math:`X^o_{k, t}` is a homogeneous input which can be produced from labor using a linear, one-for-one technology
 
 It is freely tradeable, competitively supplied, and homogeneous across countries
@@ -120,7 +114,6 @@ The good :math:`X_{k, t}` is a composite, built from many differentiated goods v
 .. math::
 
     X_{k, t}^{1 - \frac{1}{\sigma}} = \int_{\Omega_t} \left[ x_{k, t}(\nu) \right]^{1 - \frac{1}{\sigma}} d \nu
-
 
 Here :math:`x_{k, t}(\nu)` is the total amount of a differentiated good :math:`\nu \in \Omega_t` that is produced
 
@@ -252,7 +245,6 @@ the dynamic equation for the measure of firms becomes
 
     N_{j, t+1}^c = \delta (N_{j, t}^c + N_{j, t}^m) = \delta (N_{j, t}^c + \theta(M_{j, t} - N_{j, t}^c))
 
-
 We will work with a normalized measure of varieties
 
 .. math::
@@ -331,16 +323,23 @@ For some parameterizations, synchronization will occur for "most" initial condit
 
 Here's the main body of code
 
-.. code-block:: julia 
-  :class: test 
+Setup
+-----
 
-  using Test 
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+    :class: test
+
+    using Test
 
 .. code-block:: julia
 
-    using Plots 
+    using LinearAlgebra, Statistics, Compat 
+    using Plots, Parameters
+    gr(fmt = :png);
 
-    gr(fmt=:png)
+.. code-block:: julia
 
     function h_j(j, nk, s1, s2, θ, δ, ρ)
         # Find out who's h we are evaluating
@@ -444,45 +443,27 @@ Here's the main body of code
         for (i, n1_0) in enumerate(unit_range)
             for (j, n2_0) in enumerate(unit_range)
                 synchronized, pers_2_sync = pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ,
-                                                            s1, s2, θ, δ, ρ,
-                                                            maxiter, npers)
+                                                           s1, s2, θ, δ, ρ,
+                                                           maxiter, npers)
                 time_2_sync[i, j] = pers_2_sync
             end
         end
-
         return time_2_sync
     end
 
-
-    # == Now we define a type for the model == #
-
-    struct MSGSync
-        s1::Float64
-        s2::Float64
-        s1_ρ::Float64
-        s2_ρ::Float64
-        θ::Float64
-        δ::Float64
-        ρ::Float64
-    end
-
+    # model
     function MSGSync(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
         # Store other cutoffs and parameters we use
         s2 = 1 - s1
         s1_ρ = min((s1 - ρ * s2) / (1 - ρ), 1)
         s2_ρ = 1 - s1_ρ
 
-        model = MSGSync(s1, s2, s1_ρ, s2_ρ, θ, δ, ρ)
-
-        return model
+        return (s1 = s1, s2 = s2, s1_ρ = s1_ρ, s2_ρ = s2_ρ, θ = θ, δ = δ, ρ = ρ)
     end
 
-    unpack_params(model::MSGSync) =
-        model.s1, model.s2, model.θ, model.δ, model.ρ, model.s1_ρ, model.s2_ρ
-
-    function simulate_n(model::MSGSync, n1_0, n2_0, T)
+    function simulate_n(model, n1_0, n2_0, T)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
         # Allocate space
         n1 = zeros(T)
@@ -498,24 +479,24 @@ Here's the main body of code
         return n1, n2
     end
 
-    function pers_till_sync(model::MSGSync, n1_0, n2_0,
+    function pers_till_sync(model, n1_0, n2_0,
                             maxiter = 500, npers = 3)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
         return pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2,
                             θ, δ, ρ, maxiter, npers)
     end
 
-    function create_attraction_basis(model::MSGSync;
-                                     maxiter=250,
-                                     npers=3,
-                                     npts=50)
+    function create_attraction_basis(model;
+                                     maxiter = 250,
+                                     npers = 3,
+                                     npts = 50)
         # Unpack parameters
-        s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = unpack_params(model)
+        @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
         ab = create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ,
-                                    ρ, maxiter, npers, npts)
+                                     ρ, maxiter, npers, npts)
         return ab
     end
 
@@ -532,7 +513,7 @@ Here's the function
 
 .. code-block:: julia
 
-    function plot_timeseries(n1_0, n2_0, s1=0.5, θ=2.5, δ=0.7, ρ=0.2)
+    function plot_timeseries(n1_0, n2_0, s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
         model = MSGSync(s1, θ, δ, ρ)
         n1, n2 = simulate_n(model, n1_0, n2_0, 25)
         return [n1 n2]
@@ -544,9 +525,9 @@ Here's the function
 
     plot(data_ns, title = "Not Synchronized", legend = false)
 
-.. code-block:: julia 
+.. code-block:: julia
 
-     plot(data_s, title = "Synchronized", legend = false)
+    plot(data_s, title = "Synchronized", legend = false)
 
 In the first case, innovation in the two countries does not synchronize
 
@@ -571,7 +552,7 @@ Dark colors indicate synchronization, while light colors indicate failure to syn
 .. _matsrep:
 
 .. figure:: /_static/figures/matsuyama_14.png
-   :scale: 60%
+    :scale: 60%
 
 As you can see, larger values of :math:`\rho` translate to more synchronization
 
@@ -593,7 +574,7 @@ Exercise 1
 
 .. code-block:: julia
 
-    function plot_attraction_basis(s1=0.5, θ=2.5, δ=0.7, ρ=0.2; npts=250)
+    function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
         # Create attraction basis
         unitrange = range(0,  1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
@@ -601,36 +582,35 @@ Exercise 1
         plt = Plots.heatmap(ab, legend = false)
     end
 
-
 .. code-block:: julia
 
     params = [[0.5, 2.5, 0.7, 0.2],
-            [0.5, 2.5, 0.7, 0.4],
-            [0.5, 2.5, 0.7, 0.6],
-            [0.5, 2.5, 0.7, 0.8]]
+              [0.5, 2.5, 0.7, 0.4],
+              [0.5, 2.5, 0.7, 0.6],
+              [0.5, 2.5, 0.7, 0.8]]
 
-    plots = [plot_attraction_basis(p...) for p in params]
+    plots = (plot_attraction_basis(p...) for p in params)
     plot(plots..., size = (1000, 1000))
 
-.. code-block:: julia 
-  :class: julia 
+.. code-block:: julia
+    :class: test
 
-  function plot_attraction_basis(s1=0.5,
-                               θ=2.5,
-                               δ=0.7,
-                               ρ=0.2;
-                               npts=250)
+    function plot_attraction_basis(s1 = 0.5,
+                                θ = 2.5,
+                                δ = 0.7,
+                                ρ = 0.2;
+                                npts = 250)
         # Create attraction basis
         unitrange = range(0,  1, length = npts)
         model = MSGSync(s1, θ, δ, ρ)
-        ab = create_attraction_basis(model,npts=npts)
+        ab = create_attraction_basis(model, npts = npts)
     end
 
-    abvec = plots = [plot_attraction_basis(p...) for p in params]
+    abvec = [plot_attraction_basis(p...) for p in params]
 
     @testset begin
-    @test abvec[1][5] == 194.0 
-    @test abvec[2][17] == 102.0 
-    @test abvec[3][50] == 76.0
-    @test abvec[4][end-1] == 86.0
+        @test abvec[1][5] == 194.0
+        @test abvec[2][17] == 102.0
+        @test abvec[3][50] == 76.0
+        @test abvec[4][end-1] == 86.0
     end

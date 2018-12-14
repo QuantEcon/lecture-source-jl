@@ -1,6 +1,6 @@
 .. _lqramsey:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -66,7 +66,11 @@ Model Features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 The Ramsey Problem
 =====================
@@ -93,7 +97,7 @@ for labor and consumption to maximize
 .. math::
     :label: lq_hu
 
-    - \mathbb E \frac{1}{2} \sum_{t=0}^{\infty} \beta^t
+    -\mathbb E \frac{1}{2} \sum_{t=0}^{\infty} \beta^t
     \left[
        (c_t - b_t)^2 + \ell_t^2
     \right]
@@ -255,14 +259,13 @@ The associated Lagrangian is
 .. math::
     :label: lq_rp
 
-    \mathscr L
-    =
+    \mathscr L =
     \mathbb E  \sum_{t=0}^{\infty} \beta^t
     \left\{
-    - \frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right]
-    + \lambda
-    \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right]
-    + \mu_t
+    -\frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] +
+    \lambda
+    \left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right] +
+    \mu_t
     [d_t + \ell_t - c_t - g_t]
     \right\}
 
@@ -270,7 +273,7 @@ The first order conditions associated with :math:`c_t` and :math:`\ell_t` are
 
 .. math::
 
-    - (c_t - b_t ) + \lambda [- \ell_t + (g_t + s_t )] = \mu_t
+    -(c_t - b_t ) + \lambda [- \ell_t + (g_t + s_t )] = \mu_t
 
 and
 
@@ -578,7 +581,7 @@ Description and clarifications are given below
 
 .. code-block:: julia
 
-    using QuantEcon, Plots, LaTeXStrings, LinearAlgebra
+    using QuantEcon, Plots, LinearAlgebra, Parameters
 
     abstract type AbstractStochProcess end
 
@@ -586,6 +589,7 @@ Description and clarifications are given below
         A::Matrix{TF}
         C::Matrix{TF}
     end
+
 
     struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
         P::Matrix{TF}
@@ -598,33 +602,15 @@ Description and clarifications are given below
         Sd::Matrix{TF}
         Sb::Matrix{TF}
         Ss::Matrix{TF}
-        is_discrete::Bool
         proc::SP
     end
 
-    struct Path{TF <: AbstractFloat}
-        g::Vector{TF}
-        d::Vector{TF}
-        b::Vector{TF}
-        s::Vector{TF}
-        c::Vector{TF}
-        l::Vector{TF}
-        p::Vector{TF}
-        τ::Vector{TF}
-        rvn::Vector{TF}
-        B::Vector{TF}
-        R::Vector{TF}
-        π::Vector{TF}
-        Π::Vector{TF}
-        ξ::Vector{TF}
-    end
-
     function compute_exog_sequences(econ, x)
-        # Compute exogenous variable sequences
+        # compute exogenous variable sequences
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
         g, d, b, s = [dropdims(S * x, dims = 1) for S in (Sg, Sd, Sb, Ss)]
 
-        #= Solve for Lagrange multiplier in the govt budget constraint
+        #= solve for Lagrange multiplier in the govt budget constraint
         In fact we solve for ν = λ / (1 + 2*λ).  Here ν is the
         solution to a quadratic equation a(ν^2 - ν) + b = 0 where
         a and b are expected discounted sums of quadratic forms of the state. =#
@@ -637,7 +623,7 @@ Description and clarifications are given below
     function compute_allocation(econ, Sm, ν, x, b)
         Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
 
-        # Solve for the allocation given ν and x
+        # solve for the allocation given ν and x
         Sc = 0.5 .* (Sb + Sd - Sg - ν .* Sm)
         Sl = 0.5 .* (Sb - Sd + Sg - ν .* Sm)
         c = dropdims(Sc * x, dims = 1)
@@ -677,11 +663,10 @@ Description and clarifications are given below
     end
 
 
-    function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess},
-                           T)
+    function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T)
         # simplify notation
-        β, Sg, Sd, Sb, Ss = econ.β, econ.Sg, econ.Sd, econ.Sb, econ.Ss
-        P, x_vals = econ.proc.P, econ.proc.x_vals
+        @unpack β, Sg, Sd, Sb, Ss = econ
+        @unpack P, x_vals = econ.proc
 
         mc = MarkovChain(P)
         state = simulate(mc, T, init=1)
@@ -715,22 +700,24 @@ Description and clarifications are given below
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
 
-        Path(g, d, b, s, c, l, p, τ, rvn, B, R, π, Π, ξ)
+        return (g = g, d = d, b = b, s = s, c = c,
+                l = l, p = p, τ = τ, rvn = rvn, B = B,
+                R = R, π = π, Π = Π, ξ = ξ)
     end
 
     function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
-        # Simplify notation
-        β, Sg, Sd, Sb, Ss = econ.β, econ.Sg, econ.Sd, econ.Sb, econ.Ss
-        A, C = econ.proc.A, econ.proc.C
+        # simplify notation
+        @unpack β, Sg, Sd, Sb, Ss = econ
+        @unpack A, C = econ.proc
 
-        # Generate an initial condition x0 satisfying x0 = A x0
+        # generate an initial condition x0 satisfying x0 = A x0
         nx, nx = size(A)
         x0 = nullspace(I - A)
         x0 = x0[end] < 0 ? -x0 : x0
         x0 = x0 ./ x0[end]
         x0 = dropdims(x0, dims = 2)
 
-        # Generate a time series x of length T starting from x0
+        # generate a time series x of length T starting from x0
         nx, nw = size(C)
         x = zeros(nx, T)
         w = randn(nw, T)
@@ -739,7 +726,7 @@ Description and clarifications are given below
             x[:, t] = A *x[:, t-1] + C * w[:, t]
         end
 
-        # Compute exogenous sequence
+        # compute exogenous sequence
         g, d, b, s, Sm = compute_exog_sequences(econ, x)
 
         # compute a0 and b0
@@ -751,7 +738,7 @@ Description and clarifications are given below
         # compute lagrange multiplier
         ν = compute_ν(a0, b0)
 
-        # Solve for the allocation given ν and x
+        # solve for the allocation given ν and x
         Sc, Sl, c, l, p, τ, rvn = compute_allocation(econ, Sm, ν, x, b)
 
         # compute remaining variables
@@ -771,18 +758,21 @@ Description and clarifications are given below
         # compute π
         π, Π = compute_Π(B, R, rvn, g, ξ)
 
-        Path(g, d, b, s, c, l, p, τ, rvn, B, R, π, Π, ξ)
+        return (g = g, d = d, b = b, s = s,
+                c = c, l = l, p = p, τ = τ,
+                rvn = rvn, B = B, R = R,
+                π = π, Π = Π, ξ = ξ)
     end
 
-    function gen_fig_1(path::Path)
+    function gen_fig_1(path)
         T = length(path.c)
 
-        plt_1 = plot(path.rvn, lw=2, label = "tau_t")
+        plt_1 = plot(path.rvn, lw=2, label = "tau_t l_t")
         plot!(plt_1, path.g, lw=2, label= "g_t")
         plot!(plt_1, path.c, lw=2, label= "c_t")
         plot!(xlabel="Time", grid=true)
 
-        plt_2 = plot(path.rvn, lw=2, label="tau_t")
+        plt_2 = plot(path.rvn, lw=2, label="tau_t l_t")
         plot!(plt_2, path.g, lw=2, label="g_t")
         plot!(plt_2, path.B[2:end], lw=2, label="B_(t+1)")
         plot!(xlabel="Time", grid=true)
@@ -790,7 +780,7 @@ Description and clarifications are given below
         plt_3 = plot(path.R, lw=2, label="R_(t-1)")
         plot!(plt_3, xlabel="Time", grid=true)
 
-        plt_4 = plot(path.rvn, lw=2, label="tau_t")
+        plt_4 = plot(path.rvn, lw=2, label="tau_t l_t")
         plot!(plt_4, path.g, lw=2, label="g_t")
         plot!(plt_4, path.π, lw=2, label="pi_t")
         plot!(plt_4, xlabel="Time", grid=true)
@@ -798,7 +788,7 @@ Description and clarifications are given below
         plot(plt_1, plt_2, plt_3, plt_4, layout=(2,2), size = (800,600))
     end
 
-    function gen_fig_2(path::Path)
+    function gen_fig_2(path)
 
         T = length(path.c)
 
@@ -854,24 +844,22 @@ Here's the code
 
 .. code-block:: julia
 
-    # For reproducible results
+    # for reproducible results
     using Random
     Random.seed!(42)
 
-    # == Parameters == #
+    # parameters
     β = 1 / 1.05
     ρ, mg = .7, .35
-    A = Matrix{Float64}(I, 2, 2)
     A = [ρ mg*(1 - ρ); 0.0 1.0]
     C = [sqrt(1 - ρ^2) * mg / 10 0.0; 0 0]
     Sg = [1.0 0.0]
     Sd = [0.0 0.0]
     Sb = [0 2.135]
     Ss = [0.0 0.0]
-    discrete = false
     proc = ContStochProcess(A, C)
 
-    econ = Economy(β, Sg, Sd, Sb, Ss, discrete, proc)
+    econ = Economy(β, Sg, Sd, Sb, Ss, proc)
     T = 50
     path = compute_paths(econ, T)
 
@@ -881,15 +869,15 @@ Here's the code
   :class: test
 
   @testset begin
-    @test path.p[3] ≈ 1.5395294981420302 # Randomness check.
-    @test path.g[31] ≈ 0.31995784745763833 # Stuff we plot. --
+    @test path.p[3] ≈ 1.5395294981420302 # randomness check.
+    @test path.g[31] ≈ 0.31995784745763833 # stuff we plot
     @test path.c[36] ≈ 0.6387556584133354
     @test path.B[9] ≈ 0.07442403655989423
     @test path.rvn[27] ≈ 0.35087848425010165
     @test path.π[31] ≈ 0.002863930880184773
     @test path.R[43] ≈ 1.055269758955539
     @test path.ξ[43] ≈ 0.9867651305840917
-    @test path.Π[43] ≈ -0.18634133373855144 # -- Plot tests
+    @test path.Π[43] ≈ -0.18634133373855144 # plot tests
   end
 
 The legends on the figures indicate the variables being tracked
@@ -938,10 +926,9 @@ Our second example adopts a discrete Markov specification for the exogenous proc
     Sd = [0.0 1.0 0.0 0.0 0.0]
     Sb = [0.0 0.0 1.0 0.0 0.0]
     Ss = [0.0 0.0 0.0 1.0 0.0]
-    discrete = true
     proc = DiscreteStochProcess(P, x_vals)
 
-    econ = Economy(β, Sg, Sd, Sb, Ss, discrete, proc)
+    econ = Economy(β, Sg, Sd, Sb, Ss, proc)
     T = 15
     path = compute_paths(econ, T)
 
@@ -953,11 +940,14 @@ Our second example adopts a discrete Markov specification for the exogenous proc
   @testset begin
     @test path.p[3] ≈ 1.5852129146694405
     @test path.B[13] ≈ 0.003279632025474284
-    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
+    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+                     0.25, 0.25]
     @test path.rvn[7] ≈ 0.3188722725349599
     @test path.c[2] ≈ 0.6147870853305598
-    @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05, 1.05]
-    @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    @test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05,
+                    1.05, 1.05, 1.05, 1.05, 1.05]
+    @test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0,
+                    1.0, 1.0, 1.0]
   end
 
 The call ``gen_fig_2(path)`` generates
@@ -1001,8 +991,9 @@ Solutions
     Random.seed!(42);
 
 .. code-block:: julia
+    :class: hide-output
 
-    # Parameters
+    # parameters
     β = 1 / 1.05
     ρ, mg = .95, .35
     A = [0. 0. 0. ρ  mg*(1-ρ);
@@ -1016,9 +1007,8 @@ Solutions
     Sd = [0. 0. 0. 0. 0.]
     Sb = [0. 0. 0. 0. 2.135]
     Ss = [0. 0. 0. 0. 0.]
-    discrete = false
     proc = ContStochProcess(A, C)
-    econ = Economy(β, Sg, Sd, Sb, Ss, discrete, proc)
+    econ = Economy(β, Sg, Sd, Sb, Ss, proc)
 
     T = 50
     path = compute_paths(econ, T)

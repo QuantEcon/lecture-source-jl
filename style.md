@@ -20,13 +20,13 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
-## Naming Conventions, Comments, etc.
+## Naming Conventions
 
 - **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
     - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
     - Use `∈` and `∉` when implementing math for sets
-- **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.  **TODO** 
+- **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms. 
 - **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
 ```julia
 # BAD!
@@ -61,17 +61,18 @@ A = [1 2;
 - **Avoid the use of LaTeX** as it does not work well with most graphics backends
   - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
 - **Prefer** `in` to `∈` 
-- Comment spacing
-  - Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
+
+## Comment Spacing 
+- Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
 ```julia
 x = 1
 
 # comment1
 x = 2
 ```
-  - Comments on the same line of code
+- Comments on the same line of code (note the two spaced before the `#`
 ```julia
-x = 1 # comment2
+x = 1  # comment2
 ```
 - **Add comment for equation to code correspondence whenever possible**.  That is, if there was a formula in the document at some point, say `b = a x^2 (14)` where the `14` is the equation number when rendering, then the code which implements it should be
 ```julia
@@ -243,21 +244,7 @@ y = [1; 2; 3]
 # GOOD!
 y = [1, 2, 3]
 ```
-- **Leave matrix/vector types as returned types as long as possible**.  That is, avoid `Matrix(...)` just for conversion, leaving multiple-dispatch to do its job.
-```julia
-x = [1 0; 0 1]
 
-# note, typeof(Q) ==  LinearAlgebra.QRCompactWYQ{Float64,Array{Float64,2}}
-Q, R = qr(x)
-
-
-# BAD!
-Q = Matrix(Q)
-val = Q * Q' # some calculation using Q and other things
-
-# GOOD!
-val = Q * Q' # directly, without any conversion
-```
 - **Don't use  `push!` when clearer alternatives exist** as it is harder for introductory reasoning and the size is preallocated.  But try to use broadcasting, comprehensions, etc. if clearer
 ```julia
 # BAD!
@@ -459,15 +446,15 @@ x_iv = [1.0]
 #f(x) = 1.1 * x # fixed-point blows
 
 # BAD!
-xstar = fixedpoint(f, x_iv, inplace=false).zero # assumes convergence
-xsol = nlsolve(f, x_iv, inplace=false).zero # assumes convergence
+xstar = fixedpoint(f, x_iv).zero # assumes convergence
+xsol = nlsolve(f, x_iv).zero # assumes convergence
 
 # GOOD!
-result = fixedpoint(f, x_iv, inplace=false)
+result = fixedpoint(f, x_iv)
 converged(result) || error("Failed to converge in $(result.iterations) iterations")
 xstar = result.zero
 
-result = nlsolve(f, x_iv, inplace=false)
+result = nlsolve(f, x_iv)
 converged(result) || error("Failed to converge in $(result.iterations) iterations")
 xsol = result.zero
 ```
@@ -475,7 +462,7 @@ xsol = result.zero
 ```julia
 function g(a)
     f(x) = a * x # won't succeed if a > 1
-    result = fixedpoint(f, [1.0], inplace = false)
+    result = fixedpoint(f, [1.0])
     converged(result) || return nothing
     xstar = result.zero
     
@@ -483,9 +470,9 @@ function g(a)
     return xstar
 end
 val = g(0.8)
-@show val == nothing
+@show val === nothing  # or isnothing(val) is preferred soon
 val = g(1.1)
-@show val == nothing;
+@show val === nothing;
 ```
 - **Use similar patterns with the Optim and other libraries**
   - Although there is (currently) an inconsistency in the usage of the minimum and maximum in Optim.
@@ -522,5 +509,10 @@ fmax = maximum(result)
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
+## Other 
+
+- When taking screenshots for use in lectures (e.g., `tools_editors`, `version_control`, etc.), make sure you zoom in a level or two on the text for legibility in HTML. And store the image at 100% unless you have a reason to change it.
+
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
+

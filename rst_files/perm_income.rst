@@ -1,6 +1,6 @@
 .. _perm_income:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -38,7 +38,11 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 The Savings Problem
 ====================
@@ -513,7 +517,7 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
 .. code-block:: julia
 
   using Plots, Random
-  gr(fmt=:png)
+  gr(fmt=:png);
 
   Random.seed!(42)
 
@@ -526,7 +530,7 @@ The next figure shows a typical realization with :math:`r = 0.05`, :math:`\mu = 
   function time_path2()
       w = randn(T+1)
       w[1] =  0.0
-      b = zeros(Float64, T+1)
+      b = zeros(T+1)
       for t=2:T+1
           b[t] = sum(w[1:t])
       end
@@ -601,8 +605,7 @@ First, to represent the solution for :math:`b_t`, shift :eq:`sprob8` forward one
 
 .. math::
 
-    c_{t+1} = (1-\beta)\sum_{j=0}^\infty \beta^j  \mathbb{E}_{t+1} [y_{t+j+1}]
-    - (1-\beta) \left[ \beta^{-1} (c_t + b_t - y_t) \right]
+    c_{t+1} = (1-\beta)\sum_{j=0}^\infty \beta^j  \mathbb{E}_{t+1} [y_{t+j+1}] - (1-\beta) \left[ \beta^{-1} (c_t + b_t - y_t) \right]
 
 
 If we add and subtract :math:`\beta^{-1} (1-\beta) \sum_{j=0}^\infty \beta^j \mathbb{E}_t y_{t+j}` from the right side of the preceding equation and rearrange, we obtain

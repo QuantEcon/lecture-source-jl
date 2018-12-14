@@ -1,6 +1,6 @@
 .. _mc:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -32,13 +32,13 @@ Prerequisite knowledge is basic probability and linear algebra
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
 
 .. code-block:: julia
 
+    using LinearAlgebra, Statistics, Compat
     using Distributions, Plots, Printf, QuantEcon, Random
-
-    gr(fmt = :png)
+    gr(fmt = :png);
 
 Definitions
 ==============
@@ -226,7 +226,7 @@ The Markov chain is then constructed as discussed above.  To repeat:
 
 In order to implement this simulation procedure, we need a method for generating draws from a discrete distributions
 
-For this task we'll use a Bernoulli random variable with two states.
+For this task we'll use a Categorical random variable (i.e. a discrete random variable with assigned probabilities)
 
 .. code-block:: julia
     :class: test
@@ -235,17 +235,12 @@ For this task we'll use a Bernoulli random variable with two states.
 
 .. code-block:: julia
 
-    Random.seed!(42) # for result reproducibility
-
-    d = Bernoulli(0.9) # d = 0 with probability .1, and d = 1 with probability .9
-    init = rand(d, 5)
-
-.. code-block:: julia
-    :class: test
-
-    @testset "Initial Block" begin
-        @test init == [1, 1, 1, 1, 0] # Mainly to check seeding invariance.
-    end
+    d = Categorical([0.5, 0.3, 0.2]) # 3 discrete states
+    @show rand(d, 5)
+    @show supertype(typeof(d))
+    @show pdf(d, 1) # the probability to be in state 1
+    @show support(d)
+    @show pdf.(d, support(d)); # broadcast the pdf over the whole support
 
 We'll write our code as a function that takes the following three arguments
 
@@ -265,11 +260,11 @@ We'll write our code as a function that takes the following three arguments
         dists = [Categorical(P[i, :]) for i in 1:N]
 
         # setup the simulation
-        X = fill(0, sample_size) # allocate memory
+        X = fill(0, sample_size) # allocate memory, or zeros(Int64, sample_size)
         X[1] = init # set the initial state
 
         for t in 2:sample_size
-            dist = dists[X[t-1]] # get discrete RV from previous state's transition distribution
+            dist = dists[X[t-1]] # get discrete RV from last state's transition distribution
             X[t] = rand(dist) # draw new value
         end
         return X
@@ -300,8 +295,8 @@ If you run the following code you should get roughly that answer
 .. code-block:: julia
 
     P = [0.4 0.6; 0.2 0.8]
-    X = mc_sample_path(P, sample_size = 100_000);
-    μ_1 = mean(X .== 1)
+    X = mc_sample_path(P, sample_size = 100_000); # note 100_000 = 100000
+    μ_1 = count(X .== 1)/length(X) # .== broadcasts test for equality. Could use mean(X .== 1)
 
 .. code-block:: julia
     :class: test
@@ -328,7 +323,7 @@ Here's an illustration using the same `P` as the preceding example
     P = [0.4 0.6; 0.2 0.8];
     mc = MarkovChain(P)
     X = simulate(mc, 100_000);
-    μ_2 = mean(isone, X)
+    μ_2 = count(X .== 1)/length(X) # or mean(x -> x == 1, X)
 
 .. code-block:: julia
     :class: test
@@ -853,7 +848,8 @@ The convergence in the theorem is illustrated in the next figure
     mc = MarkovChain(P)
     ψ_star = stationary_distributions(mc)[1]
     x_star, y_star, z_star = ψ_star # unpack the stationary dist
-    plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors, gridalpha = 0.5, legend = :none)
+    plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors,
+                  gridalpha = 0.5, legend = :none)
     plot!(plt, camera = (45,45))
 
 .. code-block:: julia
@@ -1075,7 +1071,7 @@ course
 
 .. figure:: /_static/figures/mc_ex1_plot.png
 
-(You don't need to add the fancy touches to the graph---see the solution if you're interested)
+(You don't need to add the fancy touches to the graph --- see the solution if you're interested)
 
 .. _mc_ex2:
 
@@ -1335,7 +1331,7 @@ Exercise 2
 Exercise 3
 ----------
 
-A solution from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ can be found `here <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`_
+A solution from `QuantEcon.jl <https://github.com/QuantEcon/QuantEcon.jl>`_ can be found `here <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl>`__
 
 .. rubric:: Footnotes
 

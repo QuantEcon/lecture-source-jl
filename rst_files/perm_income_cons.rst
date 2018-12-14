@@ -1,6 +1,6 @@
 .. _perm_income_cons:
 
-.. include:: /_static/includes/lecture_howto_jl.raw
+.. include:: /_static/includes/lecture_howto_jl_full.raw
 
 .. highlight:: julia
 
@@ -61,7 +61,11 @@ The model will prove useful for illustrating concepts such as
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps.jl
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+.. code-block:: julia
+
+    using LinearAlgebra, Statistics, Compat 
 
 
 Introduction
@@ -353,7 +357,7 @@ First we create the objects for the optimal linear regulator
 
     using QuantEcon, LinearAlgebra
     using Plots
-    gr(fmt=:png)
+    gr(fmt=:png);
 
     # Set parameters
     α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0
@@ -432,13 +436,13 @@ Now create the appropriate instance of an LQ model
 
 
 
-We'll save the implied optimal policy function soon compare them with what we get by
+We'll save the implied optimal policy function soon and compare with what we get by
 employing an alternative solution method
 
 .. code-block:: julia
 
-    P, F, d = stationary_values(LQPI)    #  Compute value function and decision rule
-    ABF = ALQ - BLQ * F                  #  Form closed loop system
+    P, F, d = stationary_values(LQPI)    #  compute value function and decision rule
+    ABF = ALQ - BLQ * F    #  form closed loop system
 
 .. code-block:: julia
     :class: test
@@ -560,7 +564,7 @@ Comparing sample paths with population distributions at each date :math:`t` is a
 
 .. code-block:: julia
 
-    lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0)
+    lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0);
 
 
 Population and sample panels
@@ -580,13 +584,13 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 
         lss = LSS(A, C, G, mu_0=μ_0, Sigma_0=Σ_0)
 
-        # Simulation/Moment Parameters
+        # simulation/Moment Parameters
         moment_generator = moment_sequence(lss)
 
-        # Simulate various paths
-        bsim = zeros(Float64, npaths, T)
-        csim = zeros(Float64, npaths, T)
-        ysim = zeros(Float64, npaths, T)
+        # simulate various paths
+        bsim = zeros(npaths, T)
+        csim = zeros(npaths, T)
+        ysim = zeros(npaths, T)
 
         for i in 1:npaths
             sims = simulate(lss,T)
@@ -595,7 +599,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
             ysim[i, :] = sims[2][1, :]
         end
 
-        # Get the moments
+        # get the moments
         cons_mean = zeros(T)
         cons_var = similar(cons_mean)
         debt_mean = similar(cons_mean)
@@ -611,74 +615,50 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
 
     function consumption_income_debt_figure(bsim, csim, ysim)
 
-        # Get T
+        # get T
         T =  size(bsim, 2)
 
-        # Create first figure
+        # create first figure
         xvals = 1:T
 
-        # Plot consumption and income
-        ax[1][:plot](csim[1, :], label="c", color="b")
-        ax[1][:plot](ysim[1, :], label="y", color="g")
-        ax[1][:plot](csim', alpha=.1, color="b")
-        ax[1][:plot](ysim', alpha=.1, color="g")
-        ax[1][:legend](loc=4)
-        ax[1][:set](title="Nonfinancial Income, Consumption, and Debt",
-                    xlabel="t", ylabel="y and c")
+        # plot consumption and income
+        plt_1 = plot(csim[1,:], label="c", color=:blue, lw=2)
+        plot!(plt_1, ysim[1, :], label="y", color=:green, lw=2)
+        plot!(plt_1, csim', alpha=0.1, color=:blue, label="")
+        plot!(plt_1, ysim', alpha=0.1, color=:green, label="")
+        plot!(plt_1, title="Nonfinancial Income, Consumption, and Debt",
+              xlabel="t", ylabel="y and c",legend=:bottomright)
 
-        # Plot debt
-        ax[2][:plot](bsim[1, :], label="b", color="r")
-        ax[2][:plot](bsim', alpha=.1, color="r")
-        ax[2][:legend](loc=4)
-        ax[2][:set](xlabel="t", ylabel="debt")
+        # plot debt
+        plt_2 = plot(bsim[1,: ], label="b", color=:red, lw=2)
+        plot!(plt_2, bsim', alpha=0.1, color=:red,label="")
+        plot!(plt_2, xlabel="t", ylabel="debt",legend=:bottomright)
 
-        fig[:tight_layout]
+        plot(plt_1, plt_2, layout=(2,1), size=(800,600))
     end
 
     function consumption_debt_fanchart(csim, cons_mean, cons_var,
                                        bsim, debt_mean, debt_var)
-        # Get T
+        # get T
         T =  size(bsim, 2)
 
-        # Create Percentiles of cross-section distributions
+        # create percentiles of cross-section distributions
         cmean = mean(cons_mean)
         c90 = 1.65 * sqrt.(cons_var)
         c95 = 1.96 * sqrt.(cons_var)
         c_perc_95p, c_perc_95m = cons_mean + c95, cons_mean - c95
         c_perc_90p, c_perc_90m = cons_mean + c90, cons_mean - c90
 
-        # Create Percentiles of cross-section distributions
+        # create percentiles of cross-section distributions
         dmean = mean(debt_mean)
         d90 = 1.65 * sqrt.(debt_var)
         d95 = 1.96 * sqrt.(debt_var)
         d_perc_95p, d_perc_95m = debt_mean + d95, debt_mean - d95
         d_perc_90p, d_perc_90m = debt_mean + d90, debt_mean - d90
 
-        # Create second figure
-
         xvals = 1:T
 
-        #fig[:suptitle]("Consumption/Debt over time")
-
-        # Consumption fan
-        ax[1][:plot](xvals, cons_mean, color="k")
-        ax[1][:plot](xvals, csim', color="k", alpha=.25)
-        ax[1][:fill_between](xvals, c_perc_95m, c_perc_95p, alpha=.25, color="b")
-        ax[1][:fill_between](xvals, c_perc_90m, c_perc_90p, alpha=.25, color="r")
-        ax[1][:set](title="Consumption/Debt over time",
-                    ylim=(cmean-15, cmean+15), ylabel="consumption")
-
-        # Debt fan
-        ax[2][:plot](xvals, debt_mean, color="k")
-        ax[2][:plot](xvals, bsim', color="k", alpha=.25)
-        ax[2][:fill_between](xvals, d_perc_95m, d_perc_95p, alpha=.25, color="b")
-        ax[2][:fill_between](xvals, d_perc_90m, d_perc_90p, alpha=.25, color="r")
-        ax[2][:set](ylabel="debt", xlabel="t")
-
-        fig[:tight_layout]
-    end
-
-
+        # first fanchart
         plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
         plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
         plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
@@ -686,7 +666,7 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         plot!(plt_1, title="Consumption/Debt over time",
               ylim=(cmean-15, cmean+15), ylabel="consumption")
 
-        # Debt fan
+        # second fanchart
         plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
         plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
         plot!(xvals, fill_between=(d_perc_95m, d_perc_95p), alpha=0.25, color=:blue,label="")
@@ -780,7 +760,7 @@ By altering initial conditions, we shall remove this transient in our second exa
 .. code-block:: julia
 
     function cointegration_figure(bsim, csim)
-        # Create figure
+        # create figure
         plot((1 - β) * bsim[1, :] + csim[1, :], color=:black,lw=2,label="")
         plot!((1 - β) * bsim' + csim', color=:black, alpha=.1,label="")
         plot!(title="Cointegration of Assets and Consumption", xlabel="t")
