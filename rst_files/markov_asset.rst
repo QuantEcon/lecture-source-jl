@@ -297,7 +297,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using Parameters, Plots, QuantEcon
     gr(fmt = :png);
 
@@ -423,8 +423,8 @@ Here's the code, including a test of the spectral radius condition
     :class: test
 
     @testset begin
-        @test v[2] == 3.4594684257743284
-        @test v[1] == 3.2560393349907755
+        @test v[2] ≈ 3.4594684257743284 atol = 1e-7
+        @test v[1] ≈ 3.2560393349907755 
         @test v[5] ≈ 4.526909446326235
         @test K[8] ≈ 8.887213530262768e-10
     end
