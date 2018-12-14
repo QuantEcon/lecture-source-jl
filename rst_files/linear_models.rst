@@ -59,7 +59,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 The Linear State Space Model
 ===============================
@@ -1418,9 +1418,9 @@ Exercise 1
 .. code-block:: julia
     :class: test
 
-    @testset "Testing Exercice 1" begin
+    @testset "Testing Exercise 1" begin
         @test x[10] == 1
-        @test y[13] == 1.0889186488319997
+        @test y[13] ≈ 1.0889186488319997 atol = 1e-6
     end
 
 Exercise 2
