@@ -1419,7 +1419,7 @@ Exercise 1
     :class: test
 
     @testset "Testing Exercise 1" begin
-        @test x[10] == 1
+        @test x[10] ≈ 1.
         @test y[13] ≈ 1.0889186488319997 atol = 1e-6
     end
 
