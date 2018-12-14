@@ -22,5 +22,3 @@ Here we look at models in which a value function for one Bellman equation has as
     lqramsey
     opt_tax_recur
     amss
-    hist_dep_policies
-

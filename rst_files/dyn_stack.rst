@@ -175,9 +175,6 @@ So we solve equation :eq:`eqn:xlawforward` forward to get
 In choosing :math:`u_t` for :math:`t \geq 1` at time :math:`0`, the government  takes into account how future :math:`z` and :math:`u` affect earlier
 :math:`x` through equation :eq:`bell101`.
 
-The lecture on :doc:`history dependent policies <hist_dep_policies>` analyzes an example about *Ramsey taxation* in which, as is typical in such problems, the last :math:`n_x` equations of :eq:`new3` or :eq:`new30` constitute
-*implementability constraints* that are formed by the Euler equations of a competitive fringe or private sector
-
 A :ref:`certainty equivalence principle <lq_cert_eq>` allows us to work with a nonstochastic model (see :doc:`LQ dynamic programming <lqcontrol>`)
 
 That is, we would attain the same decision rule if we were to replace :math:`x_{t+1}` with the forecast :math:`E_t x_{t+1}` and to add a shock process :math:`C \epsilon_{t+1}` to the right side of :eq:`new30`, where :math:`\epsilon_{t+1}` is an IID random vector with mean  zero and identity covariance matrix
@@ -200,7 +197,7 @@ But :math:`x_0` is among the objects to be chosen by the Stackelberg leader
 
 The optimal decision rule is history dependent, meaning that :math:`u_t` depends not only on :math:`z_t` but at :math:`t \geq 1` also on lags of :math:`z`
 
-History dependence has two sources: (a) the government's ability to commit [#f2]_ to a sequence of rules at time :math:`0` as in the lecture on :doc:`history dependent policies <hist_dep_policies>`, and (b) the forward-looking behavior of the private sector embedded in the second block of equations :eq:`new3` as exhibited by :eq:`bell101`
+History dependence has two sources: (a) the government's ability to commit [#f2]_ to a sequence of rules at time :math:`0`, and (b) the forward-looking behavior of the private sector embedded in the second block of equations :eq:`new3` as exhibited by :eq:`bell101`
 
 Solving the Stackelberg Problem
 ===============================
@@ -891,7 +888,7 @@ for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
 
 .. [#f1] The problem assumes that there are no cross products between states and controls in the return function.  A simple transformation  converts a problem whose return function has cross products into an equivalent problem that has no cross products. For example, see :cite:`HansenSargent2008` (chapter 4, pp. 72-73).
 
-.. [#f2] The government would make different choices were it to choose sequentially, that is,  were it to select its time :math:`t` action at time :math:`t`. See the lecture on :doc:`history dependent policies <hist_dep_policies>`
+.. [#f2] The government would make different choices were it to choose sequentially, that is,  were it to select its time :math:`t` action at time :math:`t`.
 
 .. [#f8] :cite:`HansenSargent2008` (chapter 16), uses this model as a laboratory to illustrate an equilibrium concept featuring robustness in which at least one of the agents has doubts about the stochastic specification of the demand shock process.
 
@@ -1022,7 +1019,7 @@ Setup
         @test y1[3] ≈ 21.829608211752173
     end
 
-.. [#f12] For another application of the techniques in this lecture and how they related to the method recommended by :cite:`KydlandPrescott1980`, please see :doc:`this lecture <hist_dep_policies>` .
+.. [#f12] For another application of the techniques in this lecture and how they related to the method recommended by :cite:`KydlandPrescott1980`.
 
 .. TODO: Is the reference to KydlandPrescott to the correct paper?  When I think Kydland Prescott 1980, this is the paper I think of.  Does Evans Sargent refer to your paper with David Evans on History Dependent Public Policy?  I couldn't find the journal or other information on this paper.
 
