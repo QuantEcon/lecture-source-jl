@@ -27,6 +27,9 @@ This may take a long time, as it will install and precompile every package used 
   2. Execute all of the notebooks with `./run-all-notebooks.sh`.  This will take a long-time the first execution.
   3. `cd` to the `/notebooks` directory, and run `jupyter lab` to examine them. 
 
+## Contributing 
+
+All contributions should be made through PR. If you aren't an admin on the repo, you might need an admin review before the PR is mergeable. You can request reviews from the right hand dropdown. 
 
 ## Development Tools
 
