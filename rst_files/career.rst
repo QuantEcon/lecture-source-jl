@@ -39,7 +39,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 Model
 ========
@@ -431,8 +431,8 @@ Exercise 1
   :class: test
 
   @testset begin
-    @test v[10] == 160.0457666508633
-    @test optimal_policy[30] == 3.0
+    @test v[10] ≈ 160.04576665086336
+    @test optimal_policy[30] ≈ 3.0
   end
 
 
@@ -503,9 +503,9 @@ Exercise 3
 
 Here's the code to reproduce the original figure
 
-.. code-block:: julia 
+.. code-block:: julia
 
-    wp = CareerWorkerProblem(); 
+    wp = CareerWorkerProblem();
     v, optimal_policy = solve_wp(wp)
 
     lvls = [0.5, 1.5, 2.5, 3.5]
@@ -521,7 +521,7 @@ Here's the code to reproduce the original figure
 
 Now, we need only swap out for the new parameters
 
-.. code-block:: julia 
+.. code-block:: julia
 
     wp = CareerWorkerProblem(G_a=100.0, G_b=100.0); # use new params
     v, optimal_policy = solve_wp(wp)
