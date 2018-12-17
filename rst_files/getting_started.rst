@@ -83,12 +83,6 @@ This installs enough Julia packages to begin using the lecture notes
 
 *Note:* On OS/X you will need to type the ``]`` separately and cannot copy/paste the whole string
 
-* To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type
-
-.. code-block:: none
-
-    jupyter lab
-
 
 .. _jl_jupyter:
 
@@ -100,6 +94,12 @@ Using Jupyter
 
 Getting Started
 -----------------------
+
+To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type
+
+.. code-block:: none
+
+    jupyter lab
 
 After you have started Jupyter, your web browser should open to a page on the
 local machine that looks something like this
