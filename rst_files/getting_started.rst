@@ -63,7 +63,11 @@ install the latest version `Anaconda <https://www.anaconda.com/download/#macos>`
     * We do not recommend `JuliaPro <https://juliacomputing.com/products/juliapro.html>`_
       due to its limited number of available packages
 
-* Open Julia, by navigating to Julia through your menus or desktop icons
+* Open Julia, by either:
+
+    #. Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+
+    #. Opening a terminal and typing ``julia`` (Linux)
 
 Either way you should now be looking at something like this (modulo your operating system)
 
@@ -336,7 +340,7 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 The REPL
 ------------
 
-While we have not emphasized it, on any :ref:`JupyterHub <jl_jupyterhub>` or local Jupyter
+On any :ref:`JupyterHub <jl_jupyterhub>` or local Jupyter
 installation you will also have access to the Julia REPL
 
 This is a Julia specific terminal disconnected from the graphical interface of
@@ -345,16 +349,6 @@ Jupyter, and becomes increasingly important as you learn Julia
 For example, the REPL is what we used in the beginning of this lecture to install
 ``InstantiateFromURL.jl`` and ``IJulia``
 
-To start the REPL in a typical Jupyter lab environment
-
-#. Choose "New Launcher"
-#. Choose a ``Julia 1.0`` Console
-
-Otherwise, if you have a local installation, then
-
-#. Navigate to Julia through your menus or desktop icons (Windows, OSX), or
-
-#. Open a terminal and type ``julia`` (Linux)
 
 The REPL is one of the best places to add and remove packages, so a good test is to see the current status of the package manager
 
