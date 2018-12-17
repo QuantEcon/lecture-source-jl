@@ -81,6 +81,16 @@ This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss mor
 
 This installs enough Julia packages to begin using the lecture notes
 
+More specifically:
+
+1. Julia needs to install additional code in order to run the programs in the lectures
+    
+2. This code comes in libraries called packages, about which we will say more below
+
+3. The QE team has organized a collection of useful packages and the line of code above installs them in one go
+
+See `this article <https://medium.com/quantecon-blog/new-quantecon-julia-packages-97b6ae1df852>`_ for more information
+
 *Note:* On OS/X you will need to type the ``]`` separately and cannot copy/paste the whole string
 
 * To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type
