@@ -730,12 +730,12 @@ The tree structure has worked well for the above examples, but it doesn't allow 
 For example, a semi-group type would be useful for a writing generic code (e.g. 
 continuous-time solutions for ODEs and matrix-free methods), but cannot be 
 implemented rigorously since the ``Matrix`` type is a semi-group as well 
-as an ``AbstractArray``, but not all semi-groups are ``AbstractArray``s
+as an ``AbstractArray``, but not all semi-groups are ``AbstractArray`` s
 
 The main way to implement this in a generic language is with a design approach called "traits"
 
-    * See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
-    * A complete description of the traits pattern as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
+* See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
+* A complete description of the traits pattern as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
 
 
 .. Functions
