@@ -125,13 +125,13 @@ Otherwise, if you are missing packages, you will need to go open a Jupyter noteb
 
     ] add InstantiateFromURL
 
-If you see an error, then your online JupyterHub may not support adding new packages
+If you see an error, then your online JupyterHub may not support adding new packages programmatically
 
-You can try adding new packages manually as-needed (i.e., by typing ``] add Package1 Package2 Package3...`` into its own cell)
+In this case, you can try adding new packages manually as-needed (i.e., by typing ``] add Package1 Package2 Package3...`` into its own cell)
 
 If that doesn't work, though, you may need to contact the administrator of your cloud setup
 
-Then, run
+Assuming that the above command was successful, run
 
 .. code-block:: julia
 

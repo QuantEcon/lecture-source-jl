@@ -52,7 +52,7 @@ As before, there are two cases:
 
 * If you followed the instructions for a cloud-based or virtualized setup, then you either (a) installed packages manually (i.e., ran ``] add Package1 Package2 Package3...``), at which point you're in the above case, or
 
-* (b) Used the ``activate_github`` approach, in which case you will need to run
+* (b) Used the ``activate_github`` approach, in which case you will need to add the following to the top of your notebook
 
 .. code-block:: julia
    :class: no-execute
@@ -228,7 +228,7 @@ You can enter the package manager by prepending a ``]``
 
 For example, ``] st`` will give the status of installed packages in the current environment
 
-This is what we've been using, e.g. to install packages 
+This is what we've been using, e.g. to install packages
 
 Sharing Notebooks
 ------------------------
