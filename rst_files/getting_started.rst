@@ -50,6 +50,8 @@ If you want to install these tools locally on your machine
     * We do not recommend `JuliaPro <https://juliacomputing.com/products/juliapro.html>`_
       due to its limited number of available packages
 
+.. _intro_repl:
+
 * Open Julia, by either:
 
     #. Navigating to Julia through your menus or desktop icons (Windows, OSX), or

@@ -253,26 +253,14 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 The REPL
 ------------
 
-On any Jupyter setup you will also have access to the Julia REPL
-
-This is a Julia specific terminal disconnected from the graphical interface of
-Jupyter, and becomes increasingly important as you learn Julia
-
-For example, the REPL is what we used in the beginning of this lecture to install
-``InstantiateFromURL.jl`` and ``IJulia``
-
-To start the REPL in a typical Jupyter lab environment
+The desktop-based REPL we saw :ref:`previously <intro_repl>` is also available inside the Jupyter browser
 
 #. Choose "New Launcher"
 #. Choose a ``Julia 1.0`` Console
 
-Otherwise, if you have a local installation, then
+This is a Julia specific terminal disconnected from the standard notebook setup, and becomes increasingly important as you learn Julia
 
-#. Navigate to Julia through your menus or desktop icons (Windows, OSX), or
-
-#. Open a terminal and type ``julia`` (Linux)
-
-The REPL is one of the best places to add and remove packages, so a good test is to see the current status of the package manager
+The REPL is the easiest way to add and remove packages, so a good test is to see the current status of the package manager
 
 .. code-block:: julia
 
