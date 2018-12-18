@@ -15,6 +15,8 @@ In this lecture we will cover how to get up and running with Julia
 
 There are a few different permutations of the setup (cloud-based vs on your machine, native vs :ref:`virtual <jl_jupyterdocker>`, etc.), so some sections may not apply to you
 
+That said, you **should still read through them**, as the Julia information is generally applicable
+
 We'll simultaneously introduce `Jupyter <http://jupyter.org/>`_, which is the browser-based blend of text, math, and code that these lectures are written in
 
 A Note on Jupyter
