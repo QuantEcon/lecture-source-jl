@@ -50,9 +50,17 @@ As before, there are two cases:
 
 * If you followed the instructions for a local setup, then the package list you installed can be used directly without any setup
 
-* If you followed the instructions for a cloud-based or virtualized setup, then you will need to either install packages manually, or run the ``using InstantiateFromURL; activate_github(...)`` at the top of your notebook
+* If you followed the instructions for a cloud-based or virtualized setup, then you either (a) installed packages manually (i.e., ran ``] add Package1 Package2 Package3...``), at which point you're in the above case, or
 
-Both of these workflows are documented in the :ref:`previous lecture <getting_started>`
+* (b) Used the ``activate_github`` approach, in which case you will need to run
+
+.. code-block:: julia
+   :class: no-execute
+
+   using InstantiateFromURL
+   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
+
+Both of these workflows are documented in the :doc:`previous lecture <getting_started>`
 
 Notebook Basics
 ------------------
@@ -220,6 +228,7 @@ You can enter the package manager by prepending a ``]``
 
 For example, ``] st`` will give the status of installed packages in the current environment
 
+This is what we've been using, e.g. to install packages 
 
 Sharing Notebooks
 ------------------------

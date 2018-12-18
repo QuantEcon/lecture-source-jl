@@ -32,7 +32,9 @@ While you will eventually use other editors, there are some advantages to starti
 
 * Can be used in the :ref`cloud <jl_jupyterhub>` without requiring installation
 
-We'll discuss the workflow on these features in the :ref:`next lecture <julia_environment>`
+We'll discuss the workflow on these features in the :doc:`next lecture <julia_environment>`
+
+.. _jl_jupyterlocal:
 
 Desktop Installation of Julia and Jupyter
 ==============================================
@@ -76,13 +78,13 @@ Depending on your computer, this may take **10-15 minutes** to run the **first-t
 
 More precisely:
 
-1. The QuantEcon lectures depend on outside pieces of code called packages, which are standalone code bundles that provide specific functionality (we'll discuss some :ref:`useful ones <general_packages>` later on)
+1. The QuantEcon lectures depend on outside pieces of code called packages, which are standalone code bundles that provide specific functionality (we'll discuss some :doc:`useful ones <general_packages>` later on)
 
 2. The first line installs the ``IJulia`` package (which connects Jupyter to Julia), and the ``InstantiateFromURL`` package, which is a tool the QE team produced to manage dependencies for the lectures
 
-3. The second line says that we want to use the functionality from that second tool
+3. The second line says that we want to use functionality from that second tool
 
-4. The third line will grab a curated set of packages from the ``QuantEcon/QuantEconLecturePackages`` GitHub repository (we talk about GitHub in :ref:`version control <version_control>`), install them, and also add these to the default ``v1.0`` environment so we can use these right away (for more on Julia environments, see :ref:`tools and editors <tools_editors>`)
+4. The third line will grab a curated set of packages from the ``QuantEcon/QuantEconLecturePackages`` GitHub repository (we talk about GitHub in :doc:`version control <version_control>`), install them on the machine, and also add them to the default ``v1.0`` environment so we can use them right away (for more on Julia environments, see :doc:`tools and editors <tools_editors>`)
 
 * To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type
 
@@ -114,7 +116,7 @@ If you have access to a cloud-based solution for Jupyter, then that is typically
   help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes
 * `JuliaBox <http://www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
 
-If you are using an online Jupyter installation for a class, you may not need to do anything to begin using these notebooks
+If you're using a cloud setup, you may not need to do anything to begin using these notebooks
 
 Otherwise, if you are missing packages, you will need to go open a Jupyter notebook and type
 
@@ -125,11 +127,9 @@ Otherwise, if you are missing packages, you will need to go open a Jupyter noteb
 
 If you see an error, then your online JupyterHub may not support adding new packages
 
-You can try adding new packages manually as-needed (i.e., by typing ``] add foo bar baz...`` into its own cell)
+You can try adding new packages manually as-needed (i.e., by typing ``] add Package1 Package2 Package3...`` into its own cell)
 
 If that doesn't work, though, you may need to contact the administrator of your cloud setup
-
-whenever you want to use the curated package list.
 
 Then, run
 
@@ -138,9 +138,9 @@ Then, run
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
 
-This is similar to the above, except it doesn't try to propagate changes to the default Julia environment
+This is similar to the above, except it doesn't try to propagate changes to the default Julia environment (which may be impossible due to permissions, etc.)
 
-This means that you will have to run these lines whenever you want to use the packages in the curated set
+This means that you will have to run these lines (i.e., "activate" the QuantEcon environment) whenever you want to use the packages in the curated set
 
 .. _jl_jupyterdocker:
 
