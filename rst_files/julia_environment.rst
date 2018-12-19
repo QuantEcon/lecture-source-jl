@@ -24,8 +24,11 @@ Getting Started
 Recall that, to start Jupyter on your local machine, you should ``cd`` there in your terminal and type
 
 .. code-block:: none
+   :class: no-execute
 
    jupyter lab
+
+If you are using an online Jupyter, then you can directly open a new notebook
 
 Your web browser should open to a page that looks something like this
 
@@ -122,9 +125,9 @@ Try copying the following into a notebook cell and hit ``Shift-Enter``
     plot(sin, -2π, 2π, label="sin(x)")
 
 You'll see something like this (although the style of plot depends on your
-installation --- more on this later)
+installation)
 
-**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to precompile everything
+**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to compile many functions - but is almost instantenous the second time you run the cell
 
 .. figure:: /_static/figures/nb4_julia.png
    :scale: 100%
@@ -230,14 +233,22 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 
 .. _julia_repl:
 
-The REPL
-------------
+Using the REPL
+================
 
-The REPL we saw :ref:`with the desktop setup <intro_repl>` is also available inside the Jupyter browser
+As we saw in the :ref:`desktop installation <intro_repl>`, the REPL is a Julia specific terminal
+
+It becomes increasingly important as you learn Julia, and you will find it to be a useful tool for interacting with Julia and installing packages
+
+As a reminder, to open the REPL on your desktop, either 
+
+    #. Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+
+    #. Opening a terminal and typing ``julia`` (Linux)
+
+If you are using a JupyterHub installation, you can start the REPL in JupyterLab by choosing
 
 #. Choose "New Launcher"
 #. Choose a ``Julia 1.0`` Console
-
-This is a Julia specific terminal disconnected from the standard notebook, and becomes increasingly important as you learn Julia
 
 We examine the REPL and its different modes in more detail in the :doc:`tools and editors <tools_editors>` lecture
