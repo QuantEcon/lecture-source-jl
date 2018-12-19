@@ -80,6 +80,55 @@ This is the ``IJulia`` kernel which links Julia to Jupyter (i.e., allows your br
 
     jupyter lab
 
+.. _package_setup:
+
+Package Setup
+------------------
+
+To install a curated set of packages that we use with the lectures
+
+* Inside the Julia REPL, run
+
+.. code-block:: julia
+   :class: no-execute
+
+   ] add InstantiateFromURL
+
+This will install a tool written by the QE team to manage dependencies for the lectures
+
+* Next, run
+
+.. code-block:: julia
+   :class: no-execute
+
+   using InstantiateFromURL
+
+This will load the functions defined in the ``InstantiateFromURL`` package
+
+* Next, run
+
+.. code-block:: julia
+   :class: no-execute
+
+   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5", add_default_environment = true)
+
+This function will:
+
+1. Download two files, ``Project.toml`` and ``Manifest.toml``, containing exact dependency information for ``v0.9.5`` of the QuantEconLecturePackages set
+
+2. Install those packages to your machine.
+
+3. Add them to the ``v1.0`` environment, which is what a fresh Julia instance starts from.
+
+The last line simply means that Julia is capable of storing multiple (and even mutually inconsistent) versions of the same packages
+
+The package manager knows which ones you mean (i.e., what to load when you type ``using ExamplePackage``) by investigating the **active environment**
+
+An environment in Julia is simply a pair of TOML files (as above), where the ``Project.toml`` is a list of dependencies, and the ``Manifest.toml`` provides exact version information
+
+We will cover this more in depth later in the lectures, but the upshot is that you won't need to run any further code to use these packages
+
+
 Cloud-Based and Virtual Alternatives
 =====================================
 
@@ -106,6 +155,46 @@ If you have access to a cloud-based solution for Jupyter, then that is typically
 
 .. _jl_jupyterdocker:
 
+Package Setup
+^^^^^^^^^^^^^^
+
+As :ref:`above <package_setup>`, these lectures depend on functionality (like plotting, benchmarking, and statistics) that doesn't always come with base Julia
+
+To solve this issue, we've created two objects:
+
+1. A curated `list of packages <https://github.com/quantecon/quanteconlecturepackages>`_ that we use in testing
+
+2. A Julia package, ``InstantiateFromURL.jl``, for installing and loading them
+
+Here are the steps to follow:
+
+* Make sure that you don't have the packages we use already installed (i.e., run ``] st`` in the REPL). Many JupyterHub setups will come with a large set of pre-installed packages.
+
+* If they aren't installed, hit ``]`` and run the following
+
+.. code-block:: julia
+
+   add InstantiateFromURL
+
+* If that works, hit backspace (to get back into the main Julia REPL)
+
+.. code-block:: julia
+   :class: no-execute
+
+   using InstantiateFromURL
+   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
+
+We describe what these functions do in the relevant part of the :ref:`earlier section <package_setup>`
+
+But, at a glance, this function will download dependency information for the packages we use as a Julia "environment" (Julia can maintain multiple such "environments," which allow for mutually inconsistent package versions to be installed on the same machine)
+
+And it will act on that dependency information; namely, making sure that the specified versions exist on the machine
+
+* If the above two steps failed, you can try adding individual packages as needed (i.e., ``] add Expectations StatPlots NLsolve...``).
+
+* Depending on your JupyterHub setup, this might also fail (i.e., maybe you don't have permission to install, or they lock down the packages from which you can choose). In that case, you'd need to speak to an administrator for the setup
+
+
 Installing a Pre-built Jupyter Image
 ---------------------------------------
 
@@ -117,8 +206,15 @@ While it is largely used for running code in the cloud, it is also convenient fo
 
 QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
 
-For instructions on how to set this up, see the :doc:`tools and editors <tools_editors>` lecture
+For instructions on how to use it, see the :doc:`tools and editors <tools_editors>` lecture
 
 **Note:** The Docker installation is easy and complete, but it has limitations
 on operating systems (in particular, Windows 10 is only supported for the Professional
 and Education editions, and not the Home edition)
+
+Package Setup
+^^^^^^^^^^^^^^^^^
+
+One of the key advantages of the Docker is that all the setup steps are baked in
+
+As a result, these images come with the full set of packages out-of-the-box
