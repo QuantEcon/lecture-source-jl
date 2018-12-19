@@ -67,12 +67,15 @@ Either way you should now be looking at something like this (modulo your operati
 
 This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more :ref:`later <julia_repl>`
 
-* In the Julia REPL, type (**don't paste**) the following
+* In the Julia REPL, hit ``]`` to enter package mode and then enter
 
 .. code-block:: julia
     :class: no-execute
 
-    ] add IJulia InstantiateFromURL
+    add IJulia InstantiateFromURL
+
+* Then, hit backspace to come into the main REPL mode and enter the following
+
     using InstantiateFromURL
     activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5", add_default_environment = true)
 
