@@ -115,6 +115,8 @@ Plots
 
 Try copying the following into a notebook cell and hit ``Shift-Enter``
 
+(If you get an error with the package, see the last section of this lecture)
+
 .. code-block:: julia
 
     using Plots
