@@ -307,9 +307,11 @@ Cloud-Based Options
 
 1. First, check that you don't have these packages already installed (i.e., run a ``] st`` in the REPL). Many JupyterHub installations will come with a large set of pre-installed packages.
 
-2. If you don't, try running ``] add InstantiateFromURL``. If this fails, you probably don't have install access (formally, "write access to the Julia user depot"), and will need to get in touch with a sysyadmin
+2. If you don't, try running ``] add InstantiateFromURL``. If this fails, you might not have install access (formally, "write access to the Julia user depot"), and will need to get in touch with a sysyadmin
 
-3. If that worked, then run
+2b. Alternately, on some setups, you can only choose from a certain set of packages. In that case, you can try installing them as-needed (i.e., ``] add Expectations StatPlots NLsolve...``). If that works, then you need not continue
+
+3. If you were able to install ``InstantiateFromURL``, run the following 
 
 .. code-block:: julia
    :class: no-execute
