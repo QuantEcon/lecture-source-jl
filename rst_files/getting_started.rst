@@ -163,6 +163,7 @@ If your online Jupyter does not come with QuantEcon packages pre-installed, you 
 To add this package, in an online Jupyter notebook run (typically with ``<Shift-Enter>``)
 
 .. code-block:: julia
+    :class: hide-output 
 
    ] add InstantiateFromURL
 

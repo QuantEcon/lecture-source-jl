@@ -18,9 +18,7 @@ We'll discuss a few of them here, such as
 
 * The Julia REPL, which has specialized modes for package management, shell commands, and help
 
-* The Docker setup we mentioned in :doc:`getting started <getting_started>`, which provides a painless pre-configured environment on your machine
-
-Note that we assume you've already completed the :doc:`getting started <getting_started>` lecture
+Note that we assume you've already completed the :doc:`getting started <getting_started>` and :doc:`interacting with Julia <julia_environment>` lectures
 
 Preliminary Setup
 ====================
@@ -66,7 +64,7 @@ To add the file:
 
 On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
 
-.. _repl_main: 
+.. _repl_main:
 
 The REPL
 =============

@@ -117,12 +117,13 @@ Note that if you're using a JupyterHub setup, you will need to first run
 
 .. literalinclude:: /_static/includes/alldeps_no_using.jl
 
+in a new cell (i.e., ``Shift + Enter``)
+
 This might take 15-20 minutes depending on your setup
 
-Try running the following cell with ``Shift-Enter``
+Run the following cell
 
 .. code-block:: julia
-   :class: hide-output
 
     using Plots
     gr(fmt=:png);
@@ -131,10 +132,10 @@ Try running the following cell with ``Shift-Enter``
 You'll see something like this (although the style of plot depends on your
 installation)
 
-**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to compile many functions - but is almost instantenous the second time you run the cell
-
 .. figure:: /_static/figures/nb4_julia.png
    :scale: 100%
+
+**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to compile many functions - but is almost instantenous the second time you run the cell
 
 Working with the Notebook
 -----------------------------
