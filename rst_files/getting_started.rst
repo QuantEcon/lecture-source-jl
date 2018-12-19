@@ -15,8 +15,6 @@ In this lecture we will cover how to get up and running with Julia
 
 There are a few different permutations of the setup (cloud-based vs on your machine, native vs :ref:`virtual <jl_jupyterdocker>`, etc.), so some sections may not directly apply to you
 
-That said, you **should still read through them**, as there is useful information throughout
-
 We'll simultaneously introduce `Jupyter <http://jupyter.org/>`_, which is the browser-based blend of text, math, and code that these lectures are written in
 
 A Note on Jupyter
@@ -72,26 +70,9 @@ This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss mor
 .. code-block:: julia
     :class: no-execute
 
-    add IJulia InstantiateFromURL
+    add IJulia
 
-* Then, hit backspace to come into the main REPL mode and enter the following
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5", add_default_environment = true)
-
-This installs enough Julia packages to begin using the lecture notes
-
-Depending on your computer, this may take **10-15 minutes** to run the **first-time**, but be virtually instantaneous thereafter
-
-More precisely:
-
-1. The QuantEcon lectures depend on outside pieces of code called packages, which are standalone code bundles that provide specific functionality (we'll discuss some :doc:`useful ones <general_packages>` later on)
-
-2. The first line installs the ``IJulia`` package (which connects Jupyter to Julia), and the ``InstantiateFromURL`` package, which is a tool the QE team produced to manage dependencies for the lectures
-
-3. The second line says that we want to use functionality from that second tool
-
-4. The third line will grab a curated set of packages from the ``QuantEcon/QuantEconLecturePackages`` GitHub repository (we talk about GitHub in :doc:`version control <version_control>`), install them on the machine, and also add them to the default ``v1.0`` environment so we can use them right away (for more on Julia environments, see :doc:`tools and editors <tools_editors>`)
+This is the ``IJulia`` kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.)
 
 * To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type
 
@@ -122,32 +103,6 @@ If you have access to a cloud-based solution for Jupyter, then that is typically
 * Universities and workgroups: email `contact@quantecon.org <mailto:contact@quantecon.org">`_ for
   help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes
 * `JuliaBox <http://www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
-
-If you're using a cloud setup, you may not need to do anything to begin using these notebooks
-
-Otherwise, if you are missing packages, you will need to go open a Jupyter notebook and type
-
-.. code-block:: julia
-    :class: no-execute
-
-    ] add InstantiateFromURL
-
-If you see an error, then your online JupyterHub may not support adding new packages programmatically
-
-In this case, you can try adding new packages manually as-needed (i.e., by typing ``] add Package1 Package2 Package3...`` into its own cell)
-
-If that doesn't work, though, you may need to contact the administrator of your cloud setup
-
-Assuming that the above command was successful, run
-
-.. code-block:: julia
-
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
-
-This is similar to the above, except it doesn't try to propagate changes to the default Julia environment (which may be impossible due to permissions, etc.)
-
-This means that you will have to run these lines (i.e., "activate" the QuantEcon environment) whenever you want to use the packages in the curated set
 
 .. _jl_jupyterdocker:
 

@@ -43,25 +43,6 @@ Here's what your Julia notebook should look like
 
 The notebook displays an *active cell*, into which you can type Julia commands
 
-Using QuantEcon Lecture Packages
----------------------------------------
-
-As before, there are two cases:
-
-* If you followed the instructions for a local setup, then the package list you installed can be used directly without any setup
-
-* If you followed the instructions for a cloud-based or virtualized setup, then you either (a) installed packages manually (i.e., ran ``] add Package1 Package2 Package3...``), at which point you're in the above case, or
-
-* (b) Used the ``activate_github`` approach, in which case you will need to add the following to the top of your notebook
-
-.. code-block:: julia
-   :class: no-execute
-
-   using InstantiateFromURL
-   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
-
-Both of these workflows are documented in the :doc:`previous lecture <getting_started>`
-
 Notebook Basics
 ------------------
 
@@ -220,15 +201,16 @@ contents of the current working directory
 
 These shell commands are handled by your default system shell and hence are platform specific
 
-
 Package Manager
 ^^^^^^^^^^^^^^^^
 
-You can enter the package manager by prepending a ``]``
+You can execute package operations by prepending a ``]``
 
 For example, ``] st`` will give the status of installed packages in the current environment
 
 This is what we've been using, e.g. to install packages
+
+**Note**: Cells where you use ``;`` and ``]`` must not have any other instructions in them (i.e., they should be one-liners)
 
 Sharing Notebooks
 ------------------------
@@ -253,17 +235,86 @@ QuantEcon also hosts the `QuantEcon Notes <http://notes.quantecon.org/>`_ websit
 The REPL
 ------------
 
-The desktop-based REPL we saw :ref:`previously <intro_repl>` is also available inside the Jupyter browser
+The REPL we saw :ref:`with the desktop setup <intro_repl>` is also available inside the Jupyter browser
 
 #. Choose "New Launcher"
 #. Choose a ``Julia 1.0`` Console
 
-This is a Julia specific terminal disconnected from the standard notebook setup, and becomes increasingly important as you learn Julia
-
-The REPL is the easiest way to add and remove packages, so a good test is to see the current status of the package manager
-
-.. code-block:: julia
-
-    ] st
+This is a Julia specific terminal disconnected from the standard notebook, and becomes increasingly important as you learn Julia
 
 We examine the REPL and its different modes in more detail in the :doc:`tools and editors <tools_editors>` lecture
+
+Using QuantEcon Lecture Packages
+=====================================
+
+Much of the functionality used in these lectures (such as plotting, statistics, benchmarking, etc.) does not come with base Julia
+
+Instead, it comes from Julia packages, which are standalone pieces of code that provide specific objects (we'll see some useful ones in :doc:`a later lecture <general_packages>`)
+
+The QuantEcon team has curated a set of packages that work well together for the lectures, and has written a tool to make it easy to use them
+
+Local Setup
+^^^^^^^^^^^^^^^
+
+If you installed locally-
+
+* Inside a new notebook, run
+
+.. code-block:: julia
+   :class: no-execute
+
+   ] add InstantiateFromURL
+
+This will install the aforementioned tool
+
+* Next, run
+
+.. code-block:: julia
+   :class: no-execute
+
+   using InstantiateFromURL
+
+This will load the functions defined in the ``InstantiateFromURL`` package
+
+* Next, run
+
+.. code-block:: julia
+   :class: no-execute
+
+   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5", add_default_environment = true)
+
+This function will:
+
+1. Download two files, ``Project.toml`` and ``Manifest.toml``, containing exact dependency information for ``v0.9.5`` of the QuantEconLecturePackages set
+
+2. Install those packages to your machine.
+
+3. Add them to the ``v1.0`` environment, which is what a fresh Julia instance starts from.
+
+The last line simply means that Julia is capable of storing multiple (and even mutually inconsistent) versions of the same packages
+
+The package manager knows which ones you mean (i.e., what to load when you type ``using ExamplePackage``) by investigating the **active environment**
+
+An environment in Julia is simply a pair of TOML files (as above), where the ``Project.toml`` is a list of dependencies, and the ``Manifest.toml`` provides exact version information
+
+We will cover this more in depth later in the lectures, but the upshot is that you won't need to run any further code to use these packages
+
+
+Cloud-Based Options
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. First, check that you don't have these packages already installed (i.e., run a ``] st`` in the REPL). Many JupyterHub installations will come with a large set of pre-installed packages.
+
+2. If you don't, try running ``] add InstantiateFromURL``. If this fails, you probably don't have install access (formally, "write access to the Julia user depot"), and will need to get in touch with a sysyadmin
+
+3. If that worked, then run
+
+.. code-block:: julia
+   :class: no-execute
+
+   using InstantiateFromURL
+   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
+
+This is identical in function to the above (and you can read the explanation there if you'd like), except that it doesn't try to propagate the changes to the default ``v1.0`` environment, as you may have permissions issues
+
+In order to use these packages, you'll then need to run the above in each notebook (as we do in these lectures)
