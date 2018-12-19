@@ -24,7 +24,6 @@ Getting Started
 Recall that, to start Jupyter on your local machine, you should ``cd`` there in your terminal and type
 
 .. code-block:: none
-   :class: no-execute
 
    jupyter lab
 
@@ -119,6 +118,7 @@ Plots
 Try copying the following into a notebook cell and hit ``Shift-Enter``
 
 .. code-block:: julia
+   :class: no-execute
 
     using Plots
     gr(fmt=:png);
@@ -240,9 +240,9 @@ As we saw in the :ref:`desktop installation <intro_repl>`, the REPL is a Julia s
 
 It becomes increasingly important as you learn Julia, and you will find it to be a useful tool for interacting with Julia and installing packages
 
-As a reminder, to open the REPL on your desktop, either 
+As a reminder, to open the REPL on your desktop, either
 
-    #. Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+    #. Navigating to Julia through your menus or desktop icons (Windows, Mac), or
 
     #. Opening a terminal and typing ``julia`` (Linux)
 
