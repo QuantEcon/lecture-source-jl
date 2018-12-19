@@ -15,16 +15,14 @@ In this lecture we will cover how to get up and running with Julia
 
 There are a few different options for using Julia, including a :ref:`local desktop installation <jl_jupyterlocal>` and :ref:`Jupyter hosted on the web<jl_jupyterhub>`
 
-If you have access to a web-based Jupyter and Julia installation, it is typically the most straightforward way to get started
-
-We'll simultaneously introduce `Jupyter <http://jupyter.org/>`_, which is the browser-based blend of text, math, and code that these lectures are written in
+If you have access to a web-based Jupyter and Julia setup, it is typically the most straightforward way to get started
 
 A Note on Jupyter
 =====================
 
 Like Python and R, and unlike products such as Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a specific development environment
 
-While you will eventually use other editors, there are some advantages to starting with Jupyter while learning Julia
+While you will eventually use other editors, there are some advantages to starting with the `Jupyter <http://jupyter.org/>`_ environment while learning Julia
 
 * The ability to mix formatted text (including mathematical expressions) and code in a single document
 
@@ -56,18 +54,16 @@ If you want to install these tools locally on your machine
 
 * Open Julia, by either
 
-    #. Navigating to Julia through your menus or desktop icons (Windows, OSX), or
+    #. Navigating to Julia through your menus or desktop icons (Windows, Mac), or
 
     #. Opening a terminal and typing ``julia`` (Linux)
-
 
 You should now be looking at something like this
 
 .. figure:: /_static/figures/julia_term_1.png
    :scale: 100%
 
-
-This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more :ref:`later <julia_repl>`
+This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more :ref:`later <repl_main>`
 
 * In the Julia REPL, hit ``]`` to enter package mode and then enter
 
@@ -89,17 +85,19 @@ Installing QuantEcon Packages
 
 The next step in the installation process is to download and install all of the packages used by the QuantEcon lecture notes
 
-*  Next, in the REPL run
+*  Next, in the main REPL (that is, hit backspace from the blue package mode) run
 
 .. code-block:: julia
+    :class: no-execute
 
-   using InstantiateFromURL
+    using InstantiateFromURL
 
 This will load the functions defined in the ``InstantiateFromURL`` package
 
 *  Next, run the following (which may take 15-20 minutes depending on your internet connection and computer)
 
 .. literalinclude:: /_static/includes/add_default_env.jl
+    :class: no-execute
 
 This function will:
 
@@ -115,8 +113,9 @@ This function will:
 
 .. An environment in Julia is simply a pair of files, where the ``Project.toml`` is a list of dependencies, and the ``Manifest.toml`` provides exact version information
 
-We will cover "environments" more in depth :doc:`later <tools_editors>`
-.. , but for those with Python experience they provide a way to segment package versions in a similar ``virtualenv`` or Conda ``virtual environments``
+We will cover "environments" more in depth :ref:`later <jl_packages>`
+
+.. but for those with Python experience they provide a way to segment package versions in a similar ``virtualenv`` or Conda ``virtual environments``
 
 Starting Jupyter
 ------------------
@@ -170,6 +169,7 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 After this step, you can download and use the :doc:`Interacting with Julia <julia_environment>` notebook to begin writing code
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run
+
 .. TODO: Add instructions for cloning from Git for most jupyterhub setups
 
 If the QuantEcon notebooks do not work after this installation step, you may need to speak to the JupyterHub administrator

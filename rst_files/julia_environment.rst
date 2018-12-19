@@ -110,15 +110,19 @@ If it's a long file, however, you have the alternative of
 
 The present working directory can be found by executing the command ``pwd()``
 
-
-
 Plots
 ^^^^^^^
 
-Try copying the following into a notebook cell and hit ``Shift-Enter``
+Note that if you're using a JupyterHub setup, you will need to first run
+
+.. literalinclude:: /_static/includes/deps_no_using.jl
+
+This might take 15-20 minutes depending on your setup
+
+Try running the following cell with ``Shift-Enter``
 
 .. code-block:: julia
-   :class: no-execute
+   :class: hide-output
 
     using Plots
     gr(fmt=:png);
@@ -251,4 +255,4 @@ If you are using a JupyterHub installation, you can start the REPL in JupyterLab
 #. Choose "New Launcher"
 #. Choose a ``Julia 1.0`` Console
 
-We examine the REPL and its different modes in more detail in the :doc:`tools and editors <tools_editors>` lecture
+We examine the REPL and its different modes in more detail in the :ref:`tools and editors <repl_main>` lecture
