@@ -135,7 +135,7 @@ installation)
 .. figure:: /_static/figures/nb4_julia.png
    :scale: 100%
 
-**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to compile many functions - but is almost instantenous the second time you run the cell
+**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to compile many functions - but is almost instantaneous the second time you run the cell
 
 Working with the Notebook
 -----------------------------
