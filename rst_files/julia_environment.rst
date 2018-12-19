@@ -115,7 +115,7 @@ Plots
 
 Try copying the following into a notebook cell and hit ``Shift-Enter``
 
-(If you get an error with the package, see the last section of this lecture)
+(If you get an error with the ``Plots`` package, see the last section of this lecture)
 
 .. code-block:: julia
 
@@ -311,7 +311,7 @@ Cloud-Based Options
 
 2b. Alternately, on some setups, you can only choose from a certain set of packages. In that case, you can try installing them as-needed (i.e., ``] add Expectations StatPlots NLsolve...``). If that works, then you need not continue
 
-3. If you were able to install ``InstantiateFromURL``, run the following 
+3. If you were able to install ``InstantiateFromURL``, run the following
 
 .. code-block:: julia
    :class: no-execute
