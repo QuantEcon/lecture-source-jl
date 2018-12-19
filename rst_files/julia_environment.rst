@@ -115,7 +115,7 @@ Plots
 
 Note that if you're using a JupyterHub setup, you will need to first run
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/alldeps_no_using.jl
 
 This might take 15-20 minutes depending on your setup
 
