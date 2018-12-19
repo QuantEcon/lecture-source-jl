@@ -92,7 +92,6 @@ The next step in the installation process is to download and install all of the 
 *  Next, in the REPL run
 
 .. code-block:: julia
-   :class: no-execute
 
    using InstantiateFromURL
 
@@ -100,11 +99,7 @@ This will load the functions defined in the ``InstantiateFromURL`` package
 
 *  Next, run the following (which may take 15-20 minutes depending on your internet connection and computer)
 
-.. code-block:: julia
-   :class: no-execute
-
-   activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5", add_default_environment = true)
-
+.. literalinclude:: /_static/includes/add_default_env.jl
 
 This function will:
 
@@ -142,7 +137,7 @@ Using Julia on the Web
 
 If you have access to an online Julia installation, it is the easiest way to get started
 
-Eventually, you will want to do a :ref:`local installation <jl_jupyterlocal>` and move from using only Jupyter to using other 
+Eventually, you will want to do a :ref:`local installation <jl_jupyterlocal>` and move from using only Jupyter to using other
 :doc:`tools and editors <tools_editors>` such as `Atom/Juno <http://junolab.org/>`_, but
 don't let the environment get in the way of learning the language
 
@@ -191,15 +186,15 @@ If the QuantEcon notebooks do not work after this installation step, you may nee
 .. NOT NECESARY FOR NOW.  The lack of support for basic Windows means this could confuse some users
 .. Installing a Pre-built Jupyter Image
 .. ---------------------------------------
-.. 
+..
 .. `Docker <https://www.docker.com/>`_ is a technology that you use to host
 .. a "`virtual <https://en.wikipedia.org/wiki/Operating-system-level_virtualization>`_"
 .. version of a software setup on another computer
-.. 
+..
 .. While it is largely used for running code in the cloud, it is also convenient for using on local computers
-.. 
+..
 .. QuantEcon has constructed a pre-built `docker image <https://hub.docker.com/u/quantecon/>`_
-.. 
+..
 .. For instructions on how to use it, see the :doc:`tools and editors <tools_editors>` lecture
 
 .. **Note:** The Docker installation is easy and complete, but it has limitations
@@ -208,7 +203,7 @@ If the QuantEcon notebooks do not work after this installation step, you may nee
 
 .. Package Setup
 .. ^^^^^^^^^^^^^^^^^
-.. 
+..
 .. One of the key advantages of the Docker is that all the setup steps are baked in
-.. 
+..
 .. As a result, these images come with the full set of packages out-of-the-box
