@@ -23,7 +23,7 @@ Getting Started
 
 Recall that the easiest way to get started with these notebooks is to follow the :ref:`cloning instructions <clone_lectures>` earlier
 
-In a nutshell, you should ``git clone`` the `notebooks repository <https://github.com/quantecon/lecture-jl-notebooks`, ``cd`` there in a terminal, and run
+To summarize, if on a desktop you should clone the `notebooks repository <https://github.com/quantecon/lecture-jl-notebooks>`, ``cd`` to the folder location in a terminal, and run
 
 .. code-block:: none
 
@@ -31,7 +31,7 @@ In a nutshell, you should ``git clone`` the `notebooks repository <https://githu
 
 If you are using an online Jupyter, then you can directly open a new notebook
 
-Your web browser should open to a page that looks something like this
+Either way, your web browser should open to a page that looks something like this
 
 .. figure:: /_static/figures/starting_nb_julia.png
    :scale: 100%
@@ -249,9 +249,9 @@ It becomes increasingly important as you learn Julia, and you will find it to be
 
 As a reminder, to open the REPL on your desktop, either
 
-    #. Navigating to Julia through your menus or desktop icons (Windows, Mac), or
+#. Navigating to Julia through your menus or desktop icons (Windows, Mac), or
 
-    #. Opening a terminal and typing ``julia`` (Linux)
+#. Opening a terminal and typing ``julia`` (Linux)
 
 If you are using a JupyterHub installation, you can start the REPL in JupyterLab by choosing
 

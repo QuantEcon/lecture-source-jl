@@ -101,13 +101,13 @@ This will load the functions defined in the ``InstantiateFromURL`` package
 
 This function will:
 
-1. Download two files, ``Project.toml`` and ``Manifest.toml``, containing a list of the latest (i.e. tag, or version) of the packages used in the the lecture notes
+1. Download two files, ``Project.toml`` and ``Manifest.toml``, containing a list of the latest versions of the packages used in the the lecture notes
 
 2. Install those packages to your machine
 
 3. Add them to default Julia environment, so you can access the packages outside of QuantEcon lectures
 
-.. The last line simply means that Julia is capable of storing multiple (and even mutually inconsistent) versions of the same packages
+**Note:** The number associated with the ``tag`` in the ``activate_github`` call is a snapshot of package versions used by the QuantEcon lectures at a particular point in time
 
 .. The package manager knows which ones you mean (i.e., what to load when you type ``using ExamplePackage``) by investigating the **active environment**
 
@@ -126,12 +126,12 @@ Next, let's install the QuantEcon lecture notes to our machine and run them (for
 
 1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-2. (**Optional, but easier**) Also, install the `GitHub Desktop <https://desktop.github.com/>`_ application
+2. (**Optional, but strongly recommended**) Install the `GitHub Desktop <https://desktop.github.com/>`_
 
 GitHub Desktop Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Click `this link <x-github-client://openRepo/https://github.com/QuantEcon/lecture-jl-notebooks>`_
+After installation, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/lecture-jl-notebooks>`_ on your desktop computer to automatically install the notebooks
 
 It should open a window in the GitHub desktop app like this
 
@@ -152,8 +152,10 @@ In the resulting terminal session, run
 
 You can open the :doc:`Interacting with Julia <julia_environment>` notebook to explore this interface and start writing code
 
-Git CLI Approach
-^^^^^^^^^^^^^^^^^
+Git Command Line Approach
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you do not wish to install the GitHub Desktop, you can get the notebooks using the Git command-line tool
 
 Open a new terminal session and run
 
@@ -163,11 +165,11 @@ Open a new terminal session and run
 
 This will download the repository with the notebooks in the working directory
 
-Then, ``cd`` to that location
+Then, ``cd`` to that location in your Mac, Linux, or Windows PowerShell terminal
 
 .. code-block:: none
 
-    cd lecture-jl-notebooks # Mac, Linux, Windows PowerShell
+    cd lecture-jl-notebooks
 
 Then, run
 
@@ -175,14 +177,14 @@ Then, run
 
     jupyter lab
 
-And proceed to the :doc:`next lecture <julia_environment>`
+And open the :doc:`Interacting With Julia <julia_environment>` lecture (the file ``julia_environment.ipynb`` in the list of notebooks in JupyterLab) to continue
 
 Using Julia on the Web
 =====================================
 
 If you have access to an online Julia installation, it is the easiest way to get started
 
-Eventually, you will want to do a :ref:`local installation <jl_jupyterlocal>` and move from using only Jupyter to using other
+Eventually, you will want to do a :ref:`local installation <jl_jupyterlocal>` in order to use other
 :doc:`tools and editors <tools_editors>` such as `Atom/Juno <http://junolab.org/>`_, but
 don't let the environment get in the way of learning the language
 
@@ -205,11 +207,9 @@ Your first step is to get a copy of the notebooks in your JupyterHub environment
 
 While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment
 
-JupyterHub installations have different methods for cloning repositories with the notebook url (``https://github.com/QuantEcon/lecture-jl-notebooks``)
+JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: ``https://github.com/QuantEcon/lecture-jl-notebooks``
 
-Usually you'll be able to run ``git clone https://github.com/...`` in a JupyterHub terminal
-
-The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture)
+.. The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture)
 
 Installing Packages
 ^^^^^^^^^^^^^^^^^^^^^
