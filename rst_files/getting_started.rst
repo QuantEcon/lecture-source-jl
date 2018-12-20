@@ -142,7 +142,7 @@ Choose a path you like and clone the repo
 
 At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
-**Note*:: On Windows, you may need to click the "open without git" button that comes up
+**Note**: On Windows, you may need to click the "open without git" button that comes up
 
 In the resulting terminal session, run
 
