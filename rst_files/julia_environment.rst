@@ -21,7 +21,9 @@ Using Jupyter
 Getting Started
 -----------------------
 
-Recall that, to start Jupyter on your local machine, you should ``cd`` there in your terminal and type
+Recall that the easiest way to get started with these notebooks is to follow the :ref:`cloning instructions <clone_lectures>` earlier
+
+In a nutshell, you should ``git clone`` the `notebooks repository <https://github.com/quantecon/lecture-jl-notebooks`, ``cd`` there in a terminal, and run
 
 .. code-block:: none
 
@@ -119,7 +121,7 @@ Note that if you're using a JupyterHub setup, you will need to first run
 
 in a new cell (i.e., ``Shift + Enter``)
 
-This might take 15-20 minutes depending on your setup
+This might take 15-20 minutes depending on your setup, as it installs a large set of packages for our use
 
 Run the following cell
 
