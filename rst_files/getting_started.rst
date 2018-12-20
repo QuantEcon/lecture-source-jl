@@ -120,6 +120,9 @@ We will cover "environments" more in depth :ref:`later <jl_packages>`
 Starting Jupyter
 ------------------
 
+.. TODO: STEPS TO CLONE THE GITHUB REPOS ON YOUR DESKTOP HERE?????  Screenshot of Github desktop, and/or installation instructions
+
+
 To run Jupyter, open a terminal or windows console, ``cd`` to the location you wish to write files and type
 
 .. code-block:: none
@@ -127,8 +130,6 @@ To run Jupyter, open a terminal or windows console, ``cd`` to the location you w
     jupyter lab
 
 From this installation, you can download and use the :doc:`Interacting with Julia <julia_environment>` notebook to begin writing code
-
-.. TODO: STEPS TO CLONE THE GITHUB REPOS ON YOUR DESKTOP HERE?????  Screenshot of Github desktop, and/or installation instructions
 
 
 Using Julia on the Web
@@ -153,7 +154,14 @@ If you have access to a web-based solution for Jupyter, then that is typically a
 * `JuliaBox <http://www.juliabox.com>`_  tightly controls allowed packages, and **does not** currently support the QuantEcon lectures
 
 
-As :ref:`above <package_setup>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web
+**TODOGITHUB**: 
+Your first step is to get a copy of the notebooks in your JupyterHub environment
+
+While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment
+
+JupyterHub installations have different methods for cloning repositories with the notebook url **TODOGITHUB:** ADD THE FULL URL WITH .git
+
+After you have some of the notebooks available, as in :ref:`above <package_setup>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web
 
 If your online Jupyter does not come with QuantEcon packages pre-installed, you can install the ``InstantiateFromURL`` package, which is a tool written by the QE team to manage package dependencies for the lectures
 
@@ -167,11 +175,11 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 
    ] add InstantiateFromURL
 
-After this step, you can download and use the :doc:`Interacting with Julia <julia_environment>` notebook to begin writing code
-
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run
 
-.. TODO: Add instructions for cloning from Git for most jupyterhub setups
+After this step, open the downloaded :doc:`Interacting with Julia <julia_environment>` notebook to begin writing code
+
+
 
 If the QuantEcon notebooks do not work after this installation step, you may need to speak to the JupyterHub administrator
 
