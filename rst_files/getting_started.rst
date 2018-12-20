@@ -152,7 +152,7 @@ Then, once you're in the right directory, run
 
     jupyter lab
 
-You can open the :doc:`Interacting with Julia <julia_environment>` notebook to begin writing code
+You can open the :doc:`Interacting with Julia <julia_environment>` notebook to explore this interface and start writing code 
 
 
 Using Julia on the Web
