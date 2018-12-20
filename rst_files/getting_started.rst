@@ -122,38 +122,58 @@ We will cover "environments" more in depth :ref:`later <jl_packages>`
 Starting Jupyter
 ------------------
 
-Next, let's install tools to pull the QuantEcon lecture notes to our machine (for more details, see our lecture on :doc:`version control <version_control>`)
+Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on :doc:`version control <version_control>`)
 
 1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-2. (**Optional, but simpler**) Install the `GitHub Desktop <https://desktop.github.com/>`_ application
+2. (**Optional, but easier**) Install the `GitHub Desktop <https://desktop.github.com/>`_ application
 
-Navigate to the `lecture repository <https://github.com/QuantEcon/lecture-jl-notebooks>`_ to see
+GitHub Desktop Approach
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /_static/figures/getting-started-git.png
+Click `this link <x-github-client://openRepo/https://github.com/QuantEcon/lecture-jl-notebooks>`_
+
+It should open a window in the GitHub desktop app like this
+
+.. figure:: /_static/figures/git-desktop-intro.png
    :scale: 100%
 
-You can either hit "open in desktop" to clone the repository through GitHub desktop, or run
+Choose a path you like and clone the repo
 
-.. code-block:: none
+At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
-    git clone https://github.com/QuantEcon/lecture-jl-notebooks
-
-Now, navigate to that location in a terminal
-
-.. code-block:: none
-
-    cd ~/path/to/cloned/repository (Mac, Linux)
-    cd "C:\Users\Foo Bar\Path\To\Repo" (PowerShell)
-
-Then, once you're in the right directory, run
+In the resulting terminal session, run
 
 .. code-block:: none
 
     jupyter lab
 
-You can open the :doc:`Interacting with Julia <julia_environment>` notebook to explore this interface and start writing code 
+You can open the :doc:`Interacting with Julia <julia_environment>` notebook to explore this interface and start writing code
 
+Git CLI Approach
+^^^^^^^^^^^^^^^^^
+
+Open a new terminal session and run
+
+.. code-block:: none
+
+    git clone https://github.com/quantecon/lecture-jl-notebooks
+
+This will download directory with the notebooks in the working directory
+
+Then, ``cd`` to that location
+
+.. code-block:: none
+
+    cd lecture-jl-notebooks # Mac, Linux, Windows PowerShell
+
+Then, run
+
+.. code-block:: none
+
+    jupyter lab
+
+And proceed to the :doc:`next lecture <julia_environment>`
 
 Using Julia on the Web
 =====================================
