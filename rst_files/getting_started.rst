@@ -126,7 +126,7 @@ Next, let's install the QuantEcon lecture notes to our machine and run them (for
 
 1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
-2. (**Optional, but easier**) Install the `GitHub Desktop <https://desktop.github.com/>`_ application
+2. (**Optional, but easier**) Also, install the `GitHub Desktop <https://desktop.github.com/>`_ application
 
 GitHub Desktop Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -141,6 +141,8 @@ It should open a window in the GitHub desktop app like this
 Choose a path you like and clone the repo
 
 At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
+
+**Note*:: On Windows, you may need to click the "open without git" button that comes up
 
 In the resulting terminal session, run
 
@@ -159,7 +161,7 @@ Open a new terminal session and run
 
     git clone https://github.com/quantecon/lecture-jl-notebooks
 
-This will download directory with the notebooks in the working directory
+This will download the repository with the notebooks in the working directory
 
 Then, ``cd`` to that location
 
