@@ -204,7 +204,7 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 .. code-block:: julia
     :class: hide-output
 
-   ] add InstantiateFromURL
+    ] add InstantiateFromURL
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run
 
