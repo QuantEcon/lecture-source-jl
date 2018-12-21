@@ -951,7 +951,7 @@ lecture.
     colors = []
     w = w_init
     for i in 0:n-1
-        w = bellman_operator(ddp, w)
+        w = T(ddp, w)
         push!(ws, w)
         push!(colors, RGBA(0, 0, 0, i/n))
     end
@@ -984,7 +984,7 @@ stages of iteration.
         c_policies = []
         w = w_init
         for n in 1:maximum(n_vals)
-            w = bellman_operator(ddp, w)
+            w = T(ddp, w)
             if n in n_vals
                 σ = compute_greedy(ddp, w)
                 c_policy = f(grid) - grid[σ]

@@ -213,7 +213,7 @@ The following code solves the DP problem described above
                 π_func = π_func, F = F, E = E, ϵ = ϵ)
     end
 
-  function bellman_operator!(jv,
+  function T!(jv,
                              V,
                              new_V::AbstractVector)
 
@@ -254,7 +254,7 @@ The following code solves the DP problem described above
       end
   end
 
-  function bellman_operator!(jv,
+  function T!(jv,
                              V,
                              out::Tuple{AbstractVector, AbstractVector})
 
@@ -298,9 +298,9 @@ The following code solves the DP problem described above
   end
   end
 
-  function bellman_operator(jv, V; ret_policies = false)
+  function T(jv, V; ret_policies = false)
       out = ifelse(ret_policies, (similar(V), similar(V)), similar(V))
-      bellman_operator!(jv, V, out)
+      T!(jv, V, out)
       return out
   end
 
@@ -321,9 +321,9 @@ Next we write a constructor called ``JvWorker`` that
 
 * packages all the parameters and other basic attributes of a given model
 
-* implements the method ``bellman_operator`` for value function iteration
+* implements the method ``T`` for value function iteration
 
-The ``bellman_operator`` method
+The ``T`` method
 takes a candidate value function :math:`V` and updates it to :math:`TV` via
 
 
@@ -353,7 +353,7 @@ But to evaluate the right-hand side of :eq:`defw`, we need a function, so
 we replace the arrays ``V`` and ``x_grid`` with a function ``Vf`` that gives linear
 interpolation of ``V`` on ``x_grid``
 
-Hence in the preliminaries of ``bellman_operator``
+Hence in the preliminaries of ``T``
 
 * from the array ``V`` we define a linear interpolation ``Vf`` of its values
 
@@ -392,11 +392,11 @@ The code is as follows
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5
 
-    f(x) = bellman_operator(wp, x)
+    f(x) = T(wp, x)
     V = fixedpoint(f, v_init)
     sol_V = V.zero
 
-    s_policy, ϕ_policy = bellman_operator(wp, sol_V, ret_policies = true)
+    s_policy, ϕ_policy = T(wp, sol_V, ret_policies = true)
 
     # plot solution
     p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
@@ -507,10 +507,10 @@ Here's code to produce the 45 degree diagram
     @unpack G, π_func, F = wp
 
     v_init = collect(wp.x_grid) * 0.5
-    f2(x) = bellman_operator(wp, x)
+    f2(x) = T(wp, x)
     V2 = fixedpoint(f2, v_init)
     sol_V2 = V2.zero
-    s_policy, ϕ_policy = bellman_operator(wp, sol_V2, ret_policies=true)
+    s_policy, ϕ_policy = T(wp, sol_V2, ret_policies=true)
 
     # Turn the policy function arrays into CoordInterpGrid objects for interpolation
     s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc=Line())

@@ -360,7 +360,7 @@ Implementation
 
 Here's the code for a named-tuple constructor called ``ConsumerProblem`` that stores primitives, as well as
 
-* a ``bellman_operator`` function, which implements the Bellman operator :math:`T` specified above
+* a ``T`` function, which implements the Bellman operator :math:`T` specified above
 
 * a ``coleman_operator`` function, which implements the Coleman operator :math:`K` specified above
 
@@ -403,7 +403,7 @@ Setup
         return (r = r, R = R, β = β, b = b, Π = Π, z_vals = z_vals, asset_grid = asset_grid)
     end
 
-    function bellman_operator!(cp, V, out; ret_policy = false)
+    function T!(cp, V, out; ret_policy = false)
 
         # unpack input, set up arrays
         @unpack R, Π, β, b, asset_grid, z_vals = cp
@@ -436,8 +436,8 @@ Setup
         out
     end
 
-    bellman_operator(cp, V; ret_policy = false) =
-        bellman_operator!(cp, V, similar(V); ret_policy = ret_policy)
+    T(cp, V; ret_policy = false) =
+        T!(cp, V, similar(V); ret_policy = ret_policy)
 
     get_greedy!(cp, V, out) =
         update_bellman!(cp, V, out, ret_policy = true)
@@ -493,7 +493,7 @@ Setup
         return V, c
     end
 
-Both ``bellman_operator`` and ``coleman_operator`` use linear interpolation along the asset grid to approximate the value and consumption functions
+Both ``T`` and ``coleman_operator`` use linear interpolation along the asset grid to approximate the value and consumption functions
 
 The following exercises walk you through several applications where policy functions are computed
 
@@ -547,7 +547,7 @@ In the Julia console, a comparison of the operators can be made as follows
 
 .. code-block:: julia
 
-    @btime bellman_operator(cp, v);
+    @btime T(cp, v);
 
 .. code-block:: julia
 
@@ -692,9 +692,9 @@ Exercise 1
     V, c = initialize(cp)
     println("Starting value function iteration")
     for i in 1:K
-        V = bellman_operator(cp, V)
+        V = T(cp, V)
     end
-    c1 = bellman_operator(cp, V, ret_policy=true)
+    c1 = T(cp, V, ret_policy=true)
 
     V2, c2 = initialize(cp)
     println("Starting policy function iteration")
