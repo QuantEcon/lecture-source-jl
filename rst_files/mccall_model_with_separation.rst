@@ -212,14 +212,14 @@ starting from some initial conditions :math:`U_0, V_0`
 Formally, we can define a "Bellman operator" T which maps:
 
 .. math::
-    :label: T
+    :label: bellman_operator
           
     TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U 
           
 In which case we are searching for a fixed point
     
 .. math::
-    :label: T_fp
+    :label: bellman_operator_fp
           
     TV^{*} = V^*              
 
