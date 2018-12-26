@@ -423,7 +423,7 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
     using Optim
 
-    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
+    function T(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
         # apply linear interpolation to w
@@ -594,12 +594,12 @@ discussed above
         g, w = g_init, w_init
 
         # two functions for simplification
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
+        bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
         coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
 
         g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
         w = iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
-        new_w, vf_g = bellman_operator(w, grid, β, u, f, shocks, compute_policy = true)
+        new_w, vf_g = T(w, grid, β, u, f, shocks, compute_policy = true)
 
         pf_error = c_star - g
         vf_error = c_star - vf_g
@@ -750,12 +750,12 @@ Here's the code, which will execute if you've run all the code above
         # initial policy and value
         g, w = g_init, w_init
         # iteration
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
+        bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
         coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
 
         g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
         w = iterate_updating(bellman_single_arg, u.(m.grid), sim_length = 20)
-        new_w, vf_g = bellman_operator(w, grid, β, u, f, shocks, compute_policy = true)
+        new_w, vf_g = T(w, grid, β, u, f, shocks, compute_policy = true)
 
         plot(grid, g, lw = 2, alpha = 0.6, label = "policy iteration")
         plot!(grid, vf_g, lw = 2, alpha = 0.6, label = "value iteration")
@@ -779,7 +779,7 @@ It assumes that you've just run the code from the previous exercise
 
     function bellman(m, shocks)
         @unpack grid, β, u, ∂u∂c, f, f′ = m
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
+        bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
         iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
     end
     function coleman(m, shocks)

@@ -260,7 +260,7 @@ The code is as follows
       return clamp(new_π, sp.π_min, sp.π_max)
   end
 
-  function bellman_operator!(sp, v, out;
+  function T!(sp, v, out;
                              ret_policy = false)
       # simplify names
       @unpack f, g, β, c = sp
@@ -291,17 +291,17 @@ The code is as follows
       return out
   end
 
-  function bellman_operator(sp, v;
+  function T(sp, v;
                             ret_policy = false)
       out_type = ret_policy ? Bool : Float64
       out = zeros(out_type, sp.n_w, sp.n_π)
-      bellman_operator!(sp, v, out, ret_policy=ret_policy)
+      T!(sp, v, out, ret_policy=ret_policy)
   end
 
 
-  get_greedy!(sp, v, out) = bellman_operator!(sp, v, out, ret_policy = true)
+  get_greedy!(sp, v, out) = T!(sp, v, out, ret_policy = true)
 
-  get_greedy(sp, v) = bellman_operator(sp, v, ret_policy = true)
+  get_greedy(sp, v) = T(sp, v, ret_policy = true)
 
   function res_wage_operator!(sp, ϕ, out)
       # simplify name
@@ -329,7 +329,7 @@ The code is as follows
 
 The type ``SearchProblem`` is used to store parameters and methods needed to compute optimal actions
 
-The Bellman operator is implemented as the method ``.bellman_operator()``, while ``.get_greedy()``
+The Bellman operator is implemented as the method ``.T()``, while ``.get_greedy()``
 computes an approximate optimal policy from a guess ``v`` of the value function
 
 We will omit a detailed discussion of the code because there is a more efficient solution method
@@ -345,7 +345,7 @@ Here's the value function:
   # Set up the problem and initial guess, solve by VFI
   sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
   v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
-  f(x) = bellman_operator(sp, x)
+  f(x) = T(sp, x)
   v = compute_fixed_point(f, v_init)
   policy = get_greedy(sp, v)
 
