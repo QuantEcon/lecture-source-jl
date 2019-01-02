@@ -69,12 +69,12 @@ Julia Setup
 
 **Note:** Before these steps, make sure that you've either completed the :doc:`version control <version_control>` lecture or run
 
-**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets
-
 .. code-block:: julia
     :class: no-execute
 
     git config -- global user.name "Your Name"
+
+**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets
 
 To set up a project on Julia:
 
@@ -177,7 +177,7 @@ We see the change reflected in our default package list
 
     ] st
 
-For more on the package mode, see the :docs:`tools and editors <tools_editors>`_ lecture
+For more on the package mode, see the :doc:`tools and editors <tools_editors>` lecture
 
 Using the Package Manager
 --------------------------------
