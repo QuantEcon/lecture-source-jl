@@ -288,7 +288,7 @@ Analyzing Function Return Types
 
 For the most part, time spent "optimizing" Julia code to run faster is about ensuring the compiler can correctly deduce types for all functions
 
-We will discuss this in more detail in :doc:`this lecture <need_for_speed>`, but the macro ``@code_warntype`` gives us a hint
+The macro ``@code_warntype`` gives us a hint
 
 .. code-block:: julia
 
