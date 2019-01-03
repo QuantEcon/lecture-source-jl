@@ -28,7 +28,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 
 Common Data Types
@@ -1174,7 +1174,7 @@ A simple test of the difference is to take a segment of code and wrap it in a fu
 
     println("z = $z")
 
-Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``y``, and the global variable ``z`` is modified in the ``for`` loop
+Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``x``, and the global variable ``z`` is modified in the ``for`` loop
 
 However, you can simply wrap the entire code in a function
 
