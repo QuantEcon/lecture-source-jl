@@ -329,7 +329,7 @@ The code is as follows
 
 The type ``SearchProblem`` is used to store parameters and methods needed to compute optimal actions
 
-The Bellman operator is implemented as the method ``.T()``, while ``.get_greedy()``
+The Bellman operator is implemented as the method ``T()``, while ``get_greedy()``
 computes an approximate optimal policy from a guess ``v`` of the value function
 
 We will omit a detailed discussion of the code because there is a more efficient solution method
