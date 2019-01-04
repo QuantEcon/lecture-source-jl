@@ -378,7 +378,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
     using Optim: converged, maximum, maximizer, minimizer, iterations
     gr(fmt = :png);
@@ -687,18 +687,18 @@ Exercise 1
 .. code-block:: julia
 
     cp = ConsumerProblem()
-    K = 80
+    N = 80
 
     V, c = initialize(cp)
     println("Starting value function iteration")
-    for i in 1:K
+    for i in 1:N
         V = T(cp, V)
     end
     c1 = T(cp, V, ret_policy=true)
 
     V2, c2 = initialize(cp)
     println("Starting policy function iteration")
-    for i in 1:K
+    for i in 1:N
         c2 = K(cp, c2)
     end
 
