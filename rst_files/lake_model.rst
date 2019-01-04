@@ -217,60 +217,76 @@ Setup
 
 .. code-block:: julia
 
-    function LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
+    LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
+
+    function A_matrices(lm)
+        @unpack λ, α, b, d = lm
         g = b - d
-        A = [(1 - λ) * (1 - d) + b (1 - d) * α + b   # carry out intermediate calculations
-            (1 - d) * λ            (1 - d) * (1 - α)]
+        A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
+            (1 - d) * λ                 (1 - d) * (1 - α)]
         A_hat = A ./ (1 + g)
-        return (λ = λ, α = α, b = b, d = d, g = g, A = A, A_hat = A_hat) # return a NamedTuple
+        return (g = g, A = A, A_hat = A_hat)
     end
 
     function rate_steady_state(lm)
-        sol = fixedpoint(x -> lm.A_hat * x, fill(0.5, 2))
+        A_hat = A_matrices(lm).A_hat
+        sol = fixedpoint(x -> A_hat * x, fill(0.5, 2))
         converged(sol) || error("Failed to converge in $(result.iterations) iterations")
         return sol.zero
     end
 
     function simulate_stock_path(lm, X0, T)
+        A = A_matrices(lm).A
         X_path = zeros(eltype(X0), 2, T)
         X = copy(X0)
         for t in 1:T
             X_path[:, t] = X
-            X = lm.A * X
+            X = A * X
         end
         return X_path
     end
 
     function simulate_rate_path(lm, x0, T)
+        A_hat = A_matrices(lm).A_hat
         x_path = zeros(eltype(x0), 2, T)
         x = copy(x0)
         for t in 1:T
             x_path[:, t] = x
-            x = lm.A_hat * x
+            x = A_hat * x
         end
         return x_path
     end
 
+Let's observe these matrices for the baseline model
+
 .. code-block:: julia
 
     lm = LakeModel()
-    lm.α
+    matrices = A_matrices(lm)
+    matrices.A
 
 .. code-block:: julia
 
-    lm.A
+    A_matrices(lm).A_hat
+
+And a revised model
 
 .. code-block:: julia
 
     lm = LakeModel(α = 2.0)
-    lm.A
+    matrices = A_matrices(lm)
+    matrices.A
+
+.. code-block:: julia
+
+    matrices.A_hat
 
 .. code-block:: julia
     :class: test
 
     @testset begin
         @test lm.α == 2.0
-        @test lm.A[1][1] == 0.7235062600000001
+        @test matrices.A[1][1] == 0.7235062600000001
     end
 
 Aggregate Dynamics
@@ -329,7 +345,8 @@ This is the case for our default parameters:
 .. code-block:: julia
 
     lm = LakeModel()
-    e, f = eigvals(lm.A_hat)
+    matrices = A_matrices(lm)
+    e, f = eigvals(matrices.A_hat)
     abs(e), abs(f)
 
 .. code-block:: julia
@@ -472,7 +489,7 @@ Let's plot the path of the sample averages over 5,000 periods
     lm = LakeModel(d = 0, b = 0)
     T = 5000                        # Simulation length
 
-    α, λ = lm.α, lm.λ
+    @unpack α, λ = lm
     P = [(1 - λ)     λ
          α      (1 - α)]
 
