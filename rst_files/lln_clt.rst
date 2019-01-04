@@ -292,8 +292,8 @@ Let's now have a look at the behavior of the sample mean
 .. code-block:: julia
 
     function plot_means(n = 1000)
-        sample_means = cumsum(rand(Cauchy(), n)) ./ (1:n)
-        plot(1:n, sample_means, color = :red, alpha = 0.6, label = "Sample Mean", linewidth = 3)
+        sample_mean = cumsum(rand(Cauchy(), n)) ./ (1:n)
+        plot(1:n, sample_mean, color = :red, alpha = 0.6, label = "Sample Mean", linewidth = 3)
         return hline!([0], color = :black, linestyle = :dash, label = "", grid = false)
     end
 

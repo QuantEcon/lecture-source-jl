@@ -7,7 +7,7 @@ Linear Algebra
 ***********************************
 
 .. index::
-    single: Linear Algebra ϵ γ β λ θ ψ
+    single: Linear Algebra
 
 .. contents:: :depth: 2
 
