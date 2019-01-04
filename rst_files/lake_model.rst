@@ -267,7 +267,7 @@ Let's observe these matrices for the baseline model
 
 .. code-block:: julia
 
-    A_matrices(lm).A_hat
+    matrices.A_hat
 
 And a revised model
 
