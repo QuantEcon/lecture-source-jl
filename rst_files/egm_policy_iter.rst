@@ -176,7 +176,7 @@ We'll also run our original implementation, which uses an exogenous grid and req
 
 .. code-block:: julia
 
-    function K!(Kg, g, grid, β, u′, f, f′, shocks)
+    function coleman_operator!(Kg, g, grid, β, u′, f, f′, shocks)
 
         # This function requires the container of the output value as argument Kg
 
@@ -195,8 +195,8 @@ We'll also run our original implementation, which uses an exogenous grid and req
     end
 
     # The following function does NOT require the container of the output value as argument
-    K(g, grid, β, u′, f, f′, shocks) =
-        K!(similar(g), g, grid, β, u′, f, f′, shocks)
+    coleman_operator(g, grid, β, u′, f, f′, shocks) =
+        coleman_operator!(similar(g), g, grid, β, u′, f, f′, shocks)
 
 Let's test out the code above on some example parameterizations, after the following imports
 
@@ -377,7 +377,7 @@ Here's the result
 
 .. code-block:: julia
 
-    crra_coleman(g, m, shocks) = K(g, m.grid, m.β, m.u′, m.f, m.f′, shocks)
+    crra_coleman(g, m, shocks) = coleman_operator(g, m.grid, m.β, m.u′, m.f, m.f′, shocks)
     crra_coleman_egm(g, m, shocks) = coleman_egm(g, m.grid, m.β, m.u′,
                                                  u′_inv, m.f, m.f′, shocks)
     function coleman(m = m, shocks = shocks; sim_length = 20)
