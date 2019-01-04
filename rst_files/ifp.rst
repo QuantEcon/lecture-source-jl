@@ -360,9 +360,9 @@ Implementation
 
 Here's the code for a named-tuple constructor called ``ConsumerProblem`` that stores primitives, as well as
 
-* a ``bellman_operator`` function, which implements the Bellman operator :math:`T` specified above
+* a ``T`` function, which implements the Bellman operator :math:`T` specified above
 
-* a ``coleman_operator`` function, which implements the Coleman operator :math:`K` specified above
+* a ``K`` function, which implements the Coleman operator :math:`K` specified above
 
 * an ``initialize``, which generates suitable initial conditions for iteration
 
@@ -378,7 +378,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
     using Optim: converged, maximum, maximizer, minimizer, iterations
     gr(fmt = :png);
@@ -403,7 +403,7 @@ Setup
         return (r = r, R = R, β = β, b = b, Π = Π, z_vals = z_vals, asset_grid = asset_grid)
     end
 
-    function bellman_operator!(cp, V, out; ret_policy = false)
+    function T!(cp, V, out; ret_policy = false)
 
         # unpack input, set up arrays
         @unpack R, Π, β, b, asset_grid, z_vals = cp
@@ -436,8 +436,8 @@ Setup
         out
     end
 
-    bellman_operator(cp, V; ret_policy = false) =
-        bellman_operator!(cp, V, similar(V); ret_policy = ret_policy)
+    T(cp, V; ret_policy = false) =
+        T!(cp, V, similar(V); ret_policy = ret_policy)
 
     get_greedy!(cp, V, out) =
         update_bellman!(cp, V, out, ret_policy = true)
@@ -445,7 +445,7 @@ Setup
     get_greedy(cp, V) =
         update_bellman(cp, V, ret_policy = true)
 
-    function coleman_operator!(cp, c, out)
+    function K!(cp, c, out)
         # simplify names, set up arrays
         @unpack R, Π, β, b, asset_grid, z_vals = cp
         z_idx = 1:length(z_vals)
@@ -473,7 +473,7 @@ Setup
         return out
     end
 
-    coleman_operator(cp, c) = coleman_operator!(cp, c, similar(c))
+    K(cp, c) = K!(cp, c, similar(c))
 
     function initialize(cp)
         # simplify names, set up arrays
@@ -493,7 +493,7 @@ Setup
         return V, c
     end
 
-Both ``bellman_operator`` and ``coleman_operator`` use linear interpolation along the asset grid to approximate the value and consumption functions
+Both ``T`` and ``K`` use linear interpolation along the asset grid to approximate the value and consumption functions
 
 The following exercises walk you through several applications where policy functions are computed
 
@@ -547,11 +547,11 @@ In the Julia console, a comparison of the operators can be made as follows
 
 .. code-block:: julia
 
-    @btime bellman_operator(cp, v);
+    @btime T(cp, v);
 
 .. code-block:: julia
 
-    @btime coleman_operator(cp, c);
+    @btime K(cp, c);
 
 .. _ifp_ex2:
 
@@ -589,7 +589,7 @@ The following figure is a 45 degree diagram showing the law of motion for assets
     m = ConsumerProblem(r = 0.03, grid_max = 4)
     v_init, c_init = initialize(m)
 
-    c = compute_fixed_point(c -> coleman_operator(m, c),
+    c = compute_fixed_point(c -> K(m, c),
                             c_init,
                             max_iter = 150,
                             verbose = false)
@@ -687,19 +687,19 @@ Exercise 1
 .. code-block:: julia
 
     cp = ConsumerProblem()
-    K = 80
+    N = 80
 
     V, c = initialize(cp)
     println("Starting value function iteration")
-    for i in 1:K
-        V = bellman_operator(cp, V)
+    for i in 1:N
+        V = T(cp, V)
     end
-    c1 = bellman_operator(cp, V, ret_policy=true)
+    c1 = T(cp, V, ret_policy=true)
 
     V2, c2 = initialize(cp)
     println("Starting policy function iteration")
-    for i in 1:K
-        c2 = coleman_operator(cp, c2)
+    for i in 1:N
+        c2 = K(cp, c2)
     end
 
     plot(cp.asset_grid, c1[:, 1], label = "value function iteration")
@@ -727,7 +727,7 @@ Exercise 2
     for r_val in r_vals
         cp = ConsumerProblem(r = r_val)
         v_init, c_init = initialize(cp)
-        c = compute_fixed_point(x -> coleman_operator(cp, x),
+        c = compute_fixed_point(x -> K(cp, x),
                                 c_init,
                                 max_iter = 150,
                                 verbose = false)
@@ -756,7 +756,7 @@ Exercise 3
         @unpack Π, z_vals, R = cp  # Simplify names
         z_idx = 1:length(z_vals)
         v_init, c_init = initialize(cp)
-        c = compute_fixed_point(x -> coleman_operator(cp, x), c_init,
+        c = compute_fixed_point(x -> K(cp, x), c_init,
                                 max_iter = 150, verbose = false)
 
         cf = interp(cp.asset_grid, c)

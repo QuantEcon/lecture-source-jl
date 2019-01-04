@@ -392,7 +392,7 @@ Setup
 
 .. code-block:: julia
 
-    function coleman_operator!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
+    function K!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
     # This function requires the container of the output value as argument Kg
         
         # Construct linear interpolation object
@@ -410,8 +410,8 @@ Setup
     end
 
     # The following function does NOT require the container of the output value as argument
-    coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks) =
-        coleman_operator!(similar(g), g, grid, β, ∂u∂c, f, f′, shocks)
+    K(g, grid, β, ∂u∂c, f, f′, shocks) =
+        K!(similar(g), g, grid, β, ∂u∂c, f, f′, shocks)
 
 It has some similarities to the code for the Bellman operator in our :doc:`optimal growth lecture <optgrowth>`
 
@@ -423,7 +423,7 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 
     using Optim
 
-    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
+    function T(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
 
         # apply linear interpolation to w
@@ -510,7 +510,7 @@ theory
     function verify_true_policy(m, shocks, c_star)
         # compute (Kc_star)
         @unpack grid, β, ∂u∂c, f, f′ = m
-        c_star_new = coleman_operator(c_star, grid, β, ∂u∂c, f, f′, shocks)
+        c_star_new = K(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
         # plot c_star and Kc_star
         plot(grid, c_star, label = "optimal policy cc_star")
@@ -547,7 +547,7 @@ The initial condition we'll use is the one that eats the whole pie: :math:`c(y) 
         g = g_init;
         plot(m.grid, g, lw = 2, alpha = 0.6, label = "intial condition c(y) = y")
         for i in 1:n_iter
-            new_g = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
+            new_g = K(g, grid, β, ∂u∂c, f, f′, shocks)
             g = new_g
             plot!(grid, g, lw = 2, alpha = 0.6, label = "")
         end
@@ -594,12 +594,12 @@ discussed above
         g, w = g_init, w_init
 
         # two functions for simplification
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
-        coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
+        bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
+        coleman_single_arg(g) = K(g, grid, β, ∂u∂c, f, f′, shocks)
 
         g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
         w = iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
-        new_w, vf_g = bellman_operator(w, grid, β, u, f, shocks, compute_policy = true)
+        new_w, vf_g = T(w, grid, β, u, f, shocks, compute_policy = true)
 
         pf_error = c_star - g
         vf_error = c_star - vf_g
@@ -750,12 +750,12 @@ Here's the code, which will execute if you've run all the code above
         # initial policy and value
         g, w = g_init, w_init
         # iteration
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
-        coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
+        bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
+        coleman_single_arg(g) = K(g, grid, β, ∂u∂c, f, f′, shocks)
 
         g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
         w = iterate_updating(bellman_single_arg, u.(m.grid), sim_length = 20)
-        new_w, vf_g = bellman_operator(w, grid, β, u, f, shocks, compute_policy = true)
+        new_w, vf_g = T(w, grid, β, u, f, shocks, compute_policy = true)
 
         plot(grid, g, lw = 2, alpha = 0.6, label = "policy iteration")
         plot!(grid, vf_g, lw = 2, alpha = 0.6, label = "value iteration")
@@ -779,12 +779,12 @@ It assumes that you've just run the code from the previous exercise
 
     function bellman(m, shocks)
         @unpack grid, β, u, ∂u∂c, f, f′ = m
-        bellman_single_arg(w) = bellman_operator(w, grid, β, u, f, shocks)
+        bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
         iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
     end
     function coleman(m, shocks)
         @unpack grid, β, ∂u∂c, f, f′ = m
-        coleman_single_arg(g) = coleman_operator(g, grid, β, ∂u∂c, f, f′, shocks)
+        coleman_single_arg(g) = K(g, grid, β, ∂u∂c, f, f′, shocks)
         iterate_updating(coleman_single_arg, grid, sim_length = 20)
     end
 

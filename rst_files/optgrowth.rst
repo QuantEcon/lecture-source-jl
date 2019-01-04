@@ -515,7 +515,7 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
     using Optim
 
-    function bellman_operator(w, grid, β, u, f, shocks, Tw = similar(w);
+    function T(w, grid, β, u, f, shocks, Tw = similar(w);
                               compute_policy = false)
         w_func = LinearInterpolation(grid, w)
         # objective for each grid point
@@ -652,10 +652,10 @@ In practice we expect some small numerical error
 
 .. code-block:: julia
 
-  w = bellman_operator(v_star.(grid_y), grid_y, β, log, k -> k^α, shocks)
+  w = T(v_star.(grid_y), grid_y, β, log, k -> k^α, shocks)
 
   plt = plot(ylim = (-35,-24))
-  plot!(plt, grid_y, w, linewidth = 2, alpha = 0.6, label = "bellman_operator(v_star)")
+  plot!(plt, grid_y, w, linewidth = 2, alpha = 0.6, label = "T(v_star)")
   plot!(plt, v_star, grid_y, linewidth = 2, alpha=0.6, label = "v_star")
   plot!(plt, legend = :bottomright)
 
@@ -683,7 +683,7 @@ The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
     lb = "initial condition"
     plt = plot(grid_y, w, color = :black, linewidth = 2, alpha = 0.8, label = lb)
     for i in 1:n
-        w = bellman_operator(w, grid_y, β, log, k -> k^α, shocks)
+        w = T(w, grid_y, β, log, k -> k^α, shocks)
         plot!(grid_y, w, color = RGBA(i/n, 0, 1 - i/n, 0.8), linewidth = 2, alpha = 0.6,
               label = "")
     end
@@ -715,7 +715,7 @@ We can write a function that computes the exact fixed point
 
     function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
         Tw = similar(grid_y)
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw),
+        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw),
                                    initial_w).zero # gets returned
     end
 
@@ -755,7 +755,7 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
 
 .. code-block:: julia
 
-    Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks;
+    Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks;
                              compute_policy = true)
     cstar = (1 - α * β) * grid_y
 
@@ -842,9 +842,9 @@ Here's one solution (assuming as usual that you've executed everything above)
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw),
+        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw),
                                    initial_w).zero
-        Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks,
+        Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
                                  compute_policy = true)
         σ_func = LinearInterpolation(grid_y, σ)
         y = simulate_og(σ_func)
@@ -863,9 +863,9 @@ Here's one solution (assuming as usual that you've executed everything above)
 
     Tw = similar(grid_y)
     initial_w = 5 * log.(grid_y)
-    v_star_approx = fixedpoint(w -> bellman_operator(w, grid_y, β, u, f, shocks, Tw),
+    v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw),
                                initial_w).zero
-    Tw, σ = bellman_operator(v_star_approx, grid_y, β, log, k -> k^α, shocks,
+    Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
                              compute_policy = true)
     σ_func = LinearInterpolation(grid_y, σ)
     y = simulate_og(σ_func);

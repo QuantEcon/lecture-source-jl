@@ -460,11 +460,11 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
     using LinearAlgebra, Statistics, Compat, BenchmarkTools, Plots, QuantEcon
-    using SparseArrays 
+    using SparseArrays
 
 .. code-block:: julia
     :class: test
@@ -584,7 +584,7 @@ can easily simulate it, compute its stationary distribution and so on
 
     @testset "Stationary Distributions Test" begin
         @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
-        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 
+        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166
         # Only one element of this `mc` field.
     end
 
