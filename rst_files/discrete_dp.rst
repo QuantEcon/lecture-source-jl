@@ -460,11 +460,11 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
     using LinearAlgebra, Statistics, Compat, BenchmarkTools, Plots, QuantEcon
-    using SparseArrays 
+    using SparseArrays
 
 .. code-block:: julia
     :class: test
@@ -584,7 +584,7 @@ can easily simulate it, compute its stationary distribution and so on
 
     @testset "Stationary Distributions Test" begin
         @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
-        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166 
+        @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166
         # Only one element of this `mc` field.
     end
 
@@ -951,7 +951,7 @@ lecture.
     colors = []
     w = w_init
     for i in 0:n-1
-        w = T(ddp, w)
+        w = bellman_operator(ddp, w)
         push!(ws, w)
         push!(colors, RGBA(0, 0, 0, i/n))
     end
@@ -984,7 +984,7 @@ stages of iteration.
         c_policies = []
         w = w_init
         for n in 1:maximum(n_vals)
-            w = T(ddp, w)
+            w = bellman_operator(ddp, w)
             if n in n_vals
                 σ = compute_greedy(ddp, w)
                 c_policy = f(grid) - grid[σ]
