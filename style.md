@@ -17,6 +17,7 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 8. Beyond the [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/), avoid unnecessary whitespace lines and redundant comments
 9. Don't use fancy features and control flow from Julia - unless it makes the code look closer to the math
 10. Avoid both micro-optimizations and coding patterns that pessimize (i.e. poor performance with no benefit in code clarity)
+11. Avoid creating objects without foundations in the math or economics.
 
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
@@ -26,7 +27,7 @@ We want users to be able to say _"the code is clearer than Matlab, and even clos
 - **Use ascii for control flow** That is,
     - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
     - Use `∈` and `∉` when implementing math for sets
-- **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms. 
+- **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.
 - **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
 ```julia
 # BAD!
@@ -34,7 +35,7 @@ foo(a) #Calls the foo function
 
 # == Parameters == #
 
-bar = 2.0 
+bar = 2.0
 
 # GOOD!
 foo(a)
@@ -60,9 +61,9 @@ A = [1 2;
 - **Feel free** to use the `⋅` unicode symbol, i.e. `\cdot<TAB>` instead of `dot( , )`
 - **Avoid the use of LaTeX** as it does not work well with most graphics backends
   - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
-- **Prefer** `in` to `∈` 
+- **Prefer** `in` to `∈`
 
-## Comment Spacing 
+## Comment Spacing
 - Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
 ```julia
 x = 1
@@ -126,23 +127,23 @@ f(param)
 
 - **Return Named Tuples** from functions with multiple return values.  That is,
 
-```julia 
+```julia
 # BAD
 function foo(x, y, z)
-    return (x, y, z) # Julia does this anyway 
-end 
+    return (x, y, z) # Julia does this anyway
+end
 
 ~, ~, z = foo(x, y, z) # when we want z
 
-# GOOD 
+# GOOD
 function foo(x, y, z)
     return (x = x, y = y, z = z)
 end
 
-# when we want z 
+# when we want z
 @unpack z = foo(x, y, z)
 z = foo(x, y, z).z
-``` 
+```
 
 - **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
 ```julia
@@ -172,7 +173,7 @@ f(x) = 2 * x
 a < 0 && error("`a` parameter invalid")
 
 # GOOD!
-@assert a < 0 
+@assert a < 0
 ```
 - **Use** the adjoint notation, `A'` instead of calling `transpose(A)` directly when working with real matrices (where they are identical).  With complex matrices, use whichever is appropriate.
 - **Use** the notation for stacking instead of the functions.  That is,
@@ -193,7 +194,7 @@ vcat(a, b)
 - **Use `I`**, the `UniformScaling` type, instead of constructing concrete matrices.
 ```julia
 using LinearAlgebra
-A = [1 2; 3 4] 
+A = [1 2; 3 4]
 
 # BAD!
 Ival = [1 0; 0 1]
@@ -211,7 +212,7 @@ A + 2*I
 A = [1 2; 3 4]
 A[:, 1]
 
-#GOOD when views necessary 
+#GOOD when views necessary
 A = [1 2; 3 4]
 @views A[:, 1]
 
@@ -219,7 +220,7 @@ A = [1 2; 3 4]
 A = [1 2; 3 4]
 view(A, :, 1)
 ```
-- **Preallocate with `similar`** whenever possible, and avoid type annotations unless necessary.  The goal is to maintain code independent of types, which will aid later in generic programming.  Where you cannot, just allocate zeros, etc. instead 
+- **Preallocate with `similar`** whenever possible, and avoid type annotations unless necessary.  The goal is to maintain code independent of types, which will aid later in generic programming.  Where you cannot, just allocate zeros, etc. instead
 ```julia
 N = 5
 x = [1.0, 2.0, 3.0, 4.0, 5.0]
@@ -332,7 +333,7 @@ for i in eachindex(A)
     B[i] = A[i]^2
 end
 ```
-TODO: when you need the `i` and `j` what do you do?  Just loop over both... 
+TODO: when you need the `i` and `j` what do you do?  Just loop over both...
 
 - **Avoid `range` when possible** and use the `1.0:0.1:1.0` style notation, etc.
 ```julia
@@ -340,7 +341,7 @@ TODO: when you need the `i` and `j` what do you do?  Just loop over both...
  range(1, stop=5)
 
 # GOOD!
-1:5 
+1:5
 ```    
   - Furthermore, if you don't really care if if hits the `zstop` exactly and are willing to give a stepsize then, the following is the clearest
 ```julia
@@ -354,7 +355,7 @@ r = zmin:step:zstop
 # CAREFUL!
 r = 0.0:0.22:1.0 # note the end isn't a multiple of the step...
 @assert r == 0.0:0.22:0.88
-@assert maximum(r) == 0.88 # use to get the maxium of the range, perhaps != 
+@assert maximum(r) == 0.88 # use to get the maxium of the range, perhaps !=
 ```
 - **Use the new `range` from Compat.jl**. This provides code compatible with Julia 1.1
 ```julia
@@ -412,7 +413,7 @@ f.(X)
 
 - **Careful with function programming patterns**.  Sometimes they can be clear, but be careful.  In particular, be wary of uses of `reduce`, `mapreduce` and excessive use of `map`
 ```julia
-# BAD! 
+# BAD!
 x = 1:3
 mapreduce(xval -> xval^2, +, x)
 
@@ -423,7 +424,7 @@ sum(x.^2)
 X = [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [5.0, 6.0, 7.0]]
 reduce(hcat, X)
 
-# GOOD, if verbose 
+# GOOD, if verbose
 Y = ones(3,3)
 for i in 1:3
     Y[:,i] = X[i]
@@ -465,7 +466,7 @@ function g(a)
     result = fixedpoint(f, [1.0])
     converged(result) || return nothing
     xstar = result.zero
-    
+
     #do calculations...
     return xstar
 end
@@ -509,10 +510,23 @@ fmax = maximum(result)
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 
-## Other 
+## Object Creation
+
+Avoid defining objects that exist solely in the computation. For example, say we have some `model` (i.e., a named tuple that holds parameters) from which we compute some transition objects.
+
+```
+# BAD!
+transition = transition_objects(model)
+some_operation(transition.obj1, transition.obj2)
+
+# Better
+obj1, obj2 = transition_objects(model)
+some_operation(obj1, obj2)
+```
+
+## Other
 
 - When taking screenshots for use in lectures (e.g., `tools_editors`, `version_control`, etc.), make sure you zoom in a level or two on the text for legibility in HTML. And store the image at 100% unless you have a reason to change it.
 
 ## Work in Progress Discussions
 1. How best to stack arrays and unpack them for use with solvers/etc.?  `vec` was mentioned?
-
