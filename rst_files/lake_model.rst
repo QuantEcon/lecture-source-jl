@@ -219,24 +219,24 @@ Setup
 
     LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
 
-    function A_matrices(lm)
+    function transition_matrices(lm)
         @unpack λ, α, b, d = lm
         g = b - d
         A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
             (1 - d) * λ                 (1 - d) * (1 - α)]
-        A_hat = A ./ (1 + g)
-        return (g = g, A = A, A_hat = A_hat)
+        Â = A ./ (1 + g)
+        return (A = A, Â = Â)
     end
 
     function rate_steady_state(lm)
-        A_hat = A_matrices(lm).A_hat
-        sol = fixedpoint(x -> A_hat * x, fill(0.5, 2))
+        @unpack Â = transition_matrices(lm)
+        sol = fixedpoint(x -> Â * x, fill(0.5, 2))
         converged(sol) || error("Failed to converge in $(result.iterations) iterations")
         return sol.zero
     end
 
     function simulate_stock_path(lm, X0, T)
-        A = A_matrices(lm).A
+        @unpack A = transition_matrices(lm)
         X_path = zeros(eltype(X0), 2, T)
         X = copy(X0)
         for t in 1:T
@@ -247,12 +247,12 @@ Setup
     end
 
     function simulate_rate_path(lm, x0, T)
-        A_hat = A_matrices(lm).A_hat
+        @unpack Â = transition_matrices(lm)
         x_path = zeros(eltype(x0), 2, T)
         x = copy(x0)
         for t in 1:T
             x_path[:, t] = x
-            x = A_hat * x
+            x = Â * x
         end
         return x_path
     end
@@ -262,31 +262,31 @@ Let's observe these matrices for the baseline model
 .. code-block:: julia
 
     lm = LakeModel()
-    matrices = A_matrices(lm)
-    matrices.A
+    A, Â = transition_matrices(lm)
+    A
 
 .. code-block:: julia
 
-    matrices.A_hat
+    Â
 
 And a revised model
 
 .. code-block:: julia
 
     lm = LakeModel(α = 2.0)
-    matrices = A_matrices(lm)
-    matrices.A
+    A, Â = transition_matrices(lm)
+    A
 
 .. code-block:: julia
 
-    matrices.A_hat
+    Â
 
 .. code-block:: julia
     :class: test
 
     @testset begin
         @test lm.α == 2.0
-        @test matrices.A[1][1] == 0.7235062600000001
+        @test A[1][1] == 0.7235062600000001
     end
 
 Aggregate Dynamics
@@ -345,8 +345,8 @@ This is the case for our default parameters:
 .. code-block:: julia
 
     lm = LakeModel()
-    matrices = A_matrices(lm)
-    e, f = eigvals(matrices.A_hat)
+    A, Â = transition_matrices(lm)
+    e, f = eigvals(Â)
     abs(e), abs(f)
 
 .. code-block:: julia
