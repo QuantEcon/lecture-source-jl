@@ -480,7 +480,7 @@ Setup
 
     SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
 
-    function QR_matrices(g)
+    function transition_matrices(g)
         @unpack B, M, α, β = g
         u(c) = c^α
         n = B + M + 1
@@ -505,7 +505,7 @@ Let's run this code and create an instance of ``SimpleOG``
 .. code-block:: julia
 
     g = SimpleOG();
-    matrices = QR_matrices(g);
+    Q, R = transition_matrices(g);
 
 In case the preceding code was too concise, we can see a more verbose form
 
@@ -554,7 +554,7 @@ Let's create an instance using the objects stored in ``g``
 
 .. code-block:: julia
 
-    ddp = DiscreteDP(matrices.R, matrices.Q, g.β);
+    ddp = DiscreteDP(R, Q, g.β);
 
 Now that we have an instance ``ddp`` of ``DiscreteDP`` we can solve it as follows
 
@@ -643,9 +643,9 @@ What happens if the agent is more patient?
 .. code-block:: julia
 
     g_2 = SimpleOG(β=0.99);
-    matrices_2 = QR_matrices(g_2);
+    Q_2, R_2 = transition_matrices(g_2);
 
-    ddp_2 = DiscreteDP(matrices_2.R, matrices_2.Q, g_2.β)
+    ddp_2 = DiscreteDP(R_2, Q_2, g_2.β)
 
     results_2 = solve(ddp_2, PFI)
 
