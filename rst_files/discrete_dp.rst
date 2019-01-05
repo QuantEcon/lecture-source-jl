@@ -473,13 +473,15 @@ Setup
 
 .. code-block:: julia
 
-    using BenchmarkTools, Plots, QuantEcon
+    using BenchmarkTools, Plots, QuantEcon, Parameters
     gr(fmt = :png);
 
 .. code-block:: julia
 
-    function SimpleOG(;B = 10, M = 5, α = 0.5, β = 0.9)
+    SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
 
+    function QR_matrices(g)
+        @unpack B, M, α, β = g
         u(c) = c^α
         n = B + M + 1
         m = M + 1
@@ -494,14 +496,57 @@ Setup
             end
         end
 
-        return (B = B, M = M, α = α, β = β, R = R, Q = Q)
+        return (Q = Q, R = R)
     end
+
 
 Let's run this code and create an instance of ``SimpleOG``
 
 .. code-block:: julia
 
-    g = SimpleOG()
+    g = SimpleOG();
+    matrices = QR_matrices(g);
+
+In case the preceding code was too concise, we can see a more verbose form
+
+.. code-block:: julia
+    :class: collapse
+
+    function verbose_matrices(g)
+        @unpack B, M, α, β = g
+        u(c) = c^α
+
+        #Matrix dimensions. The +1 is due to the 0 state.
+        n = B + M + 1
+        m = M + 1
+
+        R = fill(-Inf, n, m) #Start assuming nothing is feasible
+        Q = zeros(n,m,n) #Assume 0 by default
+
+        #Create the R matrix
+        #Note: indexing into matrix complicated since Julia starts indexing at 1 instead of 0
+        #but the state s and choice a can be 0
+        for a in 0:M
+             for s in 0:(B + M)
+                if a <= s #i.e. if feasible
+                    R[s + 1, a + 1] = u(s - a)
+                end
+            end
+        end
+
+        #Create the Q multi-array
+        for s in 0:(B+M) #For each state
+            for a in 0:M #For each action
+                for sp in 0:(B+M) #For each state next period
+                    if( sp >= a && sp <= a + B) # The support of all realizations
+                        Q[s + 1, a + 1, sp + 1] = 1 / (B + 1) # Same prob of all
+                    end
+                end
+                @assert sum(Q[s + 1, a + 1, :]) ≈ 1 #Optional check that matrix is stochastic
+             end
+        end
+        return (Q = Q, R = R)
+    end
 
 Instances of ``DiscreteDP`` are created using the signature ``DiscreteDP(R, Q, β)``
 
@@ -509,7 +554,7 @@ Let's create an instance using the objects stored in ``g``
 
 .. code-block:: julia
 
-    ddp = DiscreteDP(g.R, g.Q, g.β)
+    ddp = DiscreteDP(matrices.R, matrices.Q, g.β);
 
 Now that we have an instance ``ddp`` of ``DiscreteDP`` we can solve it as follows
 
@@ -597,9 +642,10 @@ What happens if the agent is more patient?
 
 .. code-block:: julia
 
-    g_2 = SimpleOG(β=0.99)
+    g_2 = SimpleOG(β=0.99);
+    matrices_2 = QR_matrices(g_2);
 
-    ddp_2 = DiscreteDP(g_2.R, g_2.Q, g_2.β)
+    ddp_2 = DiscreteDP(matrices_2.R, matrices_2.Q, g_2.β)
 
     results_2 = solve(ddp_2, PFI)
 
@@ -616,10 +662,7 @@ What happens if the agent is more patient?
 
     bar(std_2, label = "stationary dist")
 
-If we look at the bar graph we can see the rightward shift in probability mass
-
-.. figure:: /_static/figures/finite_dp_simple_og2.png
-   :scale: 80%
+We can see the rightward shift in probability mass
 
 State-Action Pair Formulation
 -----------------------------
