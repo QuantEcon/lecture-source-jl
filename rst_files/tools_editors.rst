@@ -439,13 +439,25 @@ The first line will delete any existing volume we had with that name
 Usage
 ---------------------
 
-The basic, no-frills command is
+The basic command is (Linux, OS/X)
 
 .. code-block:: none
 
-    docker run --rm -p 8888:8888 quantecon/base
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base
 
-The ``rm`` instructs Docker to delete the container on exit, and the ``p`` flag is for browser access
+Or on Powershell on Windows
+
+.. code-block:: none
+
+    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
+
+* The ``rm`` instructs Docker to delete the container on exit,
+
+* The ``PWD`` statement will mount the local directory (i.e., where the terminal is) to the Docker for exchanging files
+
+* The ``p`` flag is for browser access
+
+* The ``quantecon:/home/jovyan/.julia`` mount is for persisting changes we make to the Julia user depot
 
 You will see something like
 
@@ -485,42 +497,6 @@ We can see that some packages are already pre-installed for our use
 
 .. figure:: /_static/figures/docker-packages-preinstalled.png
     :scale: 100%
-
-Persisting Julia Changes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-As above, you may want to persist changes in your environment (like added packages) from one session to the next
-
-The command here is
-
-.. code-block:: none
-
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia quantecon/base
-
-This will have Docker write all changes to the user depot to the ``quantecon`` data volume we created
-
-Accessing Local Files
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The Docker image can exchange files locally (and recursively below in the tree) to where it is run
-
-Open a terminal and ``cd`` to the directory you are interested in storing local files
-
-To run an image local to those files, type the following in the terminal (on Linux and OSX)
-
-.. code-block:: none
-
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base
-
-Or on Powershell on Windows
-
-.. code-block:: none
-
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
-
-This will load the folder we ``cd``'d into as the ``local`` directory in the image for both reading and writing
-
-Notice how we stacked this command with the one above it, so that Julia package changes will also be persisted
 
 Maintenance and Troubleshooting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
