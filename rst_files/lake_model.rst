@@ -958,16 +958,16 @@ Here are the other parameters:
 
 .. code-block:: julia
 
-    b_hat = 0.003
-    T_hat = 20
+    b̂ = 0.003
+    T̂ = 20
 
 Let's increase :math:`b` to the new value and simulate for 20 periods
 
 .. code-block:: julia
 
-    lm = LakeModel(b=b_hat)
-    X_path1 = simulate_stock_path(lm, x0 * N0, T_hat)   # simulate stocks
-    x_path1 = simulate_rate_path(lm, x0, T_hat)         # simulate rates
+    lm = LakeModel(b=b̂)
+    X_path1 = simulate_stock_path(lm, x0 * N0, T̂)   # simulate stocks
+    x_path1 = simulate_rate_path(lm, x0, T̂)         # simulate rates
 
 Now we reset :math:`b` to the original value and then, using the state
 after 20 periods for the new initial conditions, we simulate for the
@@ -976,8 +976,8 @@ additional 30 periods
 .. code-block:: julia
 
     lm = LakeModel(b = 0.0124)
-    X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T_hat+1)    # simulate stocks
-    x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T_hat+1)     # simulate rates
+    X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T̂+1)    # simulate stocks
+    x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rates
 
 Finally we combine these two paths and plot
 
