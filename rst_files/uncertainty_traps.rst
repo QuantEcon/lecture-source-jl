@@ -209,19 +209,14 @@ Implementation
 
 We want to simulate this economy
 
-As a first step, let's put together a struct that bundles
+We'll want a named tuple generator of the kind that we've seen before
 
-* the parameters, the current value of :math:`\theta` and the current values of the
-  two belief parameters :math:`\mu` and :math:`\gamma`
-
-* methods to update :math:`\theta`, :math:`\mu` and :math:`\gamma`, as well as to determine the number of active firms and their outputs
+And we need methods to update :math:`\theta`, :math:`\mu` and :math:`\gamma`, as well as to determine the number of active firms and their outputs
 
 The updating methods follow the laws of motion for :math:`\theta`, :math:`\mu` and :math:`\gamma` given above
 
 The method to evaluate the number of active firms generates :math:`F_1,
 \ldots, F_{\bar M}` and tests condition :eq:`firm_test` for each firm
-
-The function `UncertaintyTrapEcon` encodes as default values the parameters we'll use in the simulations below
 
 Setup
 -----
@@ -235,60 +230,22 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using DataFrames, Parameters, Plots
 
 .. code-block:: julia
 
-    @with_kw mutable struct UncertaintyTrapEcon{TF <: AbstractFloat, TI <: Integer}
-        a::TF = 1.5             # Risk aversion
-        γ_x::TF = 0.5           # Production shock precision
-        ρ::TF = 0.99            # Correlation coefficient for θ
-        σ_θ::TF = 0.5           # Standard dev of θ shock
-        num_firms::TI = 100     # Number of firms
-        σ_F::TF = 1.5           # Std dev of fixed costs
-        c::TF = -420.0          # External opportunity cost
-        μ::TF = 0.0             # Initial value for μ
-        γ::TF = 4.0             # Initial value for γ
-        θ::TF = 0.0             # Initial value for θ
-        σ_x = sqrt(a / γ_x) # Standard deviation of shock
-    end
-
-    function ψ(uc, F)
-        @unpack a, μ, γ_x, c, γ = uc
-        temp1 = -a * (μ - F)
-        temp2 = 0.5 * a^2 / (γ + γ_x)
-        return (1 - exp(temp1 + temp2)) / a - c
-    end
-
-    function update_beliefs!(uc, X, M)
-        # Simplify names
-        @unpack γ, γ_x, ρ, σ_θ,μ = uc
-
-        # Update μ
-        temp1 = ρ * (γ * μ + M * γ_x * X)
-        temp2 = γ + M * γ_x
-        uc.μ =  temp1 / temp2
-
-        # Update γ
-        uc.γ = 1 / (ρ^2 / (γ + M * γ_x) + σ_θ^2)
-    end
-
-    update_θ!(uc, w) = (uc.θ = uc.ρ * uc.θ + uc.σ_θ * w)
-
-    function gen_aggregates(uc)
-        @unpack σ_F, num_firms, θ, σ_x = uc
-        F_vals = σ_F * randn(num_firms)
-
-        M = sum(ψ.(Ref(uc), F_vals) .> 0)  # Counts number of active firms
-        if any(ψ(uc, f) > 0 for f in F_vals) # ∃ an active firms
-            x_vals = θ .+ σ_x * randn(M)
-            X = mean(x_vals)
-        else
-            X = 0.0
-        end
-        return X, M
-    end
+    UncertaintyTrapEcon = @with_kw (a = 1.5, # risk aversion
+                                    γ_x = 0.5, # production shock precision
+                                    ρ = 0.99, # correlation coefficient for θ
+                                    σ_θ = 0.5, # standard dev. of θ shock
+                                    num_firms = 100, # number of firms
+                                    σ_F = 1.5, # standard dev. of fixed costs
+                                    c = -420.0, # external opportunity cost
+                                    μ_init = 0.0, # initial value for μ
+                                    γ_init = 4.0, # initial value for γ
+                                    θ_init = 0.0, # initial value for θ
+                                    σ_x = sqrt(a / γ_x)) # standard dev. of shock
 
 In the results below we use this code to simulate time series for the major variables
 
@@ -434,49 +391,69 @@ different values of :math:`M`
 The points where the curves hit the 45 degree lines are the long run
 steady states corresponding to each :math:`M`, if that value of
 :math:`M` was to remain fixed. As the number of firms falls, so does the
-long run steady state of precision.
+long run steady state of precision
 
 Next let's generate time series for beliefs and the aggregates -- that
-is, the number of active firms and average output.
+is, the number of active firms and average output
 
 .. code-block:: julia
 
-    function simulate!(uc, capT = 2_000)
-
-        # allocate memory
-        μ_vec = zeros(capT)
-        θ_vec = zeros(capT)
-        γ_vec = zeros(capT)
-        X_vec = zeros(capT)
-        M_vec = fill(0, capT)
-
-        # set initial using fields from object
-        μ_vec[1] = uc.μ
-        γ_vec[1] = uc.γ
-        θ_vec[1] = 0
+    function simulate(uc, capT = 2_000)
+        # unpack parameters
+        @unpack a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init, γ_init, θ_init, σ_x = uc
 
         # draw standard normal shocks
         w_shocks = randn(capT)
 
-        for t in 1:capT-1
-            X, M = gen_aggregates(uc)
-            X_vec[t] = X
-            M_vec[t] = M
+        # define auxiliary functions
+        # update θ
+        new_θ(θ, w) = ρ * θ + σ_θ * w
 
-            update_beliefs!(uc, X, M)
-            update_θ!(uc, w_shocks[t])
-
-            μ_vec[t+1] = uc.μ
-            γ_vec[t+1] = uc.γ
-            θ_vec[t+1] = uc.θ
+        # update γ, μ
+        function new_beliefs(γ, μ, X, M)
+            # update μ
+            temp1 = ρ * (γ * μ + M * γ_x * X)
+            temp2 = γ + M * γ_x
+            μ = temp1 / temp2
+            # update γ
+            γ = 1 / (ρ^2 / (γ + M * γ_x) + σ_θ^2)
+            return (γ = γ, μ = μ)
         end
 
-        # Record final values of aggregates
-        X, M = gen_aggregates(uc)
-        X_vec[end] = X
-        M_vec[end] = M
+        # intermediary for computing X, M
+        function ψ(γ, μ, F)
+            temp1 = -a * (μ - F)
+            temp2 = 0.5 * a^2 / (γ + γ_x)
+            return (1 - exp(temp1 + temp2)) / a - c
+        end
 
-        return μ_vec, γ_vec, θ_vec, X_vec, M_vec
+        # compute X, M
+        function gen_aggregates(γ, μ, θ)
+            F_vals = σ_F * randn(num_firms)
+            M = sum(ψ.(Ref(γ), Ref(μ), F_vals) .> 0) # counts number of active firms
+            if any(ψ(γ, μ, f) > 0 for f in F_vals) # ∃ an active firm
+                x_vals = θ .+ σ_x * randn(M)
+                X = mean(x_vals)
+            else
+                X = 0.0
+            end
+            return (X = X, M = M)
+        end
+
+        # initialize dataframe
+        X_init, M_init = gen_aggregates(γ_init, μ_init, θ_init)
+        df = DataFrame(γ = γ_init, μ = μ_init, θ = θ_init, X = X_init, M = M_init)
+
+        # update dataframe
+        for t in 2:capT
+            θ = new_θ(df.θ[end], w_shocks[t-1])
+            γ, μ = new_beliefs(df.γ[end], df.μ[end], df.X[end], df.M[end])
+            X, M = gen_aggregates(γ, μ, θ)
+            push!(df, (γ = γ, μ = μ, θ = θ, X = X, M = M))
+        end
+
+        # return
+        return df
     end
 
 First let's see how well :math:`\mu` tracks :math:`\theta` in these
@@ -489,29 +466,27 @@ simulations
 
 .. code-block:: julia
 
-    μ_vec, γ_vec, θ_vec, X_vec, M_vec = simulate!(econ)
+    df = simulate(econ)
 
-    plot(eachindex(μ_vec), μ_vec, lw = 2, label = "Mu")
-    plot!(eachindex(θ_vec), θ_vec, lw = 2, label = "Theta")
+    plot(eachindex(df.μ), df.μ, lw = 2, label = "Mu")
+    plot!(eachindex(df.θ), df.θ, lw = 2, label = "Theta")
     plot!(xlabel = "x", ylabel = "y", legend_title = "Variable", legend = :bottomright)
 
 .. code-block:: julia
     :class: test
 
     @testset begin
-        @test θ_vec[1000] ≈ -7.122237942560729 rtol = 1e-4
-        @test θ_vec[1500] ≈ 0.9768886175345713 rtol = 1e-4
-        @test θ_vec[1750] ≈ 3.8193327654508775 rtol = 1e-4
+        @test df.θ[1000] ≈ -7.122237942560729 rtol = 1e-4
+        @test df.θ[1500] ≈ 0.9768886175345713 rtol = 1e-4
+        @test df.θ[1750] ≈ 3.8193327654508775 rtol = 1e-4
     end
 
 Now let's plot the whole thing together
 
 .. code-block:: julia
 
-    mdf = DataFrame(t = eachindex(θ_vec), θ = θ_vec, μ = μ_vec, γ = γ_vec, M = M_vec)
-
-    len = eachindex(θ_vec)
-    yvals = [θ_vec, μ_vec, γ_vec, M_vec]
+    len = eachindex(df.θ)
+    yvals = [df.θ, df.μ, df.γ, df.M]
     vars = ["Theta", "Mu", "Gamma", "M"]
 
     plt = plot(layout = (4,1), size = (600, 600))
@@ -524,6 +499,8 @@ Now let's plot the whole thing together
 
 .. code-block:: julia
     :class: test
+
+    mdf = DataFrame(t = eachindex(df.θ), θ = df.θ, μ = df.μ, γ = df.γ, M = df.M)
 
     @testset begin
         @test stack(mdf, collect(2:5))[:value][3] ≈ -0.49742498224730913
