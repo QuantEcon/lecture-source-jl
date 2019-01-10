@@ -131,6 +131,10 @@ Next, let's install the QuantEcon lecture notes to our machine and run them (for
 GitHub Desktop Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+**Note**: This workflow requires Git LFS (Large File Storage)
+
+If you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog which appears while following these instructions
+
 After installation, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-jl>`_ on your desktop computer to automatically install the notebooks
 
 It should open a window in the GitHub desktop app like this
@@ -139,10 +143,6 @@ It should open a window in the GitHub desktop app like this
    :scale: 100%
 
 Choose a path you like and clone the repo
-
-**Note**: This workflow requires Git LFS (Large File Storage)
-
-If you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog
 
 At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
