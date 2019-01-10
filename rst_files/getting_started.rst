@@ -131,7 +131,7 @@ Next, let's install the QuantEcon lecture notes to our machine and run them (for
 GitHub Desktop Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After installation, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/lecture-jl-notebooks>`_ on your desktop computer to automatically install the notebooks
+After installation, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-jl>`_ on your desktop computer to automatically install the notebooks
 
 It should open a window in the GitHub desktop app like this
 
@@ -161,7 +161,7 @@ Open a new terminal session and run
 
 .. code-block:: none
 
-    git clone https://github.com/quantecon/lecture-jl-notebooks
+    git clone https://github.com/quantecon/quantecon-notebooks-jl
 
 This will download the repository with the notebooks in the working directory
 
@@ -169,7 +169,7 @@ Then, ``cd`` to that location in your Mac, Linux, or Windows PowerShell terminal
 
 .. code-block:: none
 
-    cd lecture-jl-notebooks
+    cd quantecon-notebooks-jl
 
 Then, run
 
@@ -207,7 +207,7 @@ Your first step is to get a copy of the notebooks in your JupyterHub environment
 
 While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment
 
-JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: ``https://github.com/QuantEcon/lecture-jl-notebooks``
+JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: ``https://github.com/QuantEcon/quantecon-notebooks-jl``
 
 .. The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture)
 
