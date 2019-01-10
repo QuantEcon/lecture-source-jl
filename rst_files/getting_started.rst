@@ -140,6 +140,18 @@ It should open a window in the GitHub desktop app like this
 
 Choose a path you like and clone the repo
 
+**Note**: This workflow requires Git LFS (Large File Storage)
+
+* If you're using GitHub Desktop, if you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog
+
+* If you're using Linux and/or command-line git, you should run the following
+
+.. code-block:: none
+
+    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+    sudo apt-get install git-lfs
+    git lfs install
+
 At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
 **Note**: On Windows, you may need to click the "open without git" button that comes up
