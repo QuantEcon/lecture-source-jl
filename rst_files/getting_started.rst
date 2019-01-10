@@ -142,15 +142,7 @@ Choose a path you like and clone the repo
 
 **Note**: This workflow requires Git LFS (Large File Storage)
 
-* If you're using GitHub Desktop, if you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog
-
-* If you're using Linux and/or command-line git, you should run the following
-
-.. code-block:: none
-
-    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-    sudo apt-get install git-lfs
-    git lfs install
+If you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog
 
 At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
@@ -168,6 +160,14 @@ Git Command Line Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you do not wish to install the GitHub Desktop, you can get the notebooks using the Git command-line tool
+
+First, run the following to install Git LFS (Linux/OSX)
+
+.. code-block:: none
+
+    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+    sudo apt-get install git-lfs
+    git lfs install
 
 Open a new terminal session and run
 
