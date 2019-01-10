@@ -135,7 +135,7 @@ GitHub Desktop Approach
 
 If you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog which appears while following these instructions
 
-After installation, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-jl>`_ on your desktop computer to automatically install the notebooks
+After installing the Git Desktop application, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-jl>`_ on your desktop computer to automatically install the notebooks
 
 It should open a window in the GitHub desktop app like this
 
@@ -168,6 +168,8 @@ First, run the following to install Git LFS (Linux/OSX)
     curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
     sudo apt-get install git-lfs
     git lfs install
+
+As output from the last command, you should see ``Git LFS initialized.``
 
 Open a new terminal session and run
 
