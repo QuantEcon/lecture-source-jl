@@ -51,8 +51,8 @@ Set Up
 
 We assume that you've worked your way through :doc:`our getting started lecture <getting_started>` already
 
-In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon 
-notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :ref:`here <jl_jupyter>`
+In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon
+notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :doc:`here <getting_started>`
 
 
 Other References
@@ -85,7 +85,7 @@ The first step is to activate a project environment, which is encapsulated by ``
 
 There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
 
-#. ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)  
+#. ``add`` the packages directly into your global installation (e.g. ``Pkg.add("MyPackage")`` or ``] add MyPackage``)
 #. download an ``Project.toml`` and ``Manifest.toml`` file in the same directory as the notebook (i.e. from the ``@__DIR__`` argument), and then call ``using Pkg; Pkg.activate(@__DIR__);``
 #. use the ``InstantiateFromURL`` package
 
@@ -93,7 +93,7 @@ There are three ways to install packages and versions (where the first two metho
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
 
-This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_ 
+This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_
 
 We will discuss it more in :ref:`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code
 
@@ -120,12 +120,12 @@ Some functions are built into the base Julia, such as ``randn``, which returns a
 
 
 Other functions require importing all of the names from an external library
- 
+
 .. code-block:: julia
 
     using Plots
     gr(fmt=:png); # setting for easier display in jupyter notebooks
- 
+
     n = 100
     ϵ = randn(n)
     plot(1:n, ϵ)
@@ -135,7 +135,7 @@ Let's break this down and see how it works
 
 The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available
 
-Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files 
+Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files
 
 The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries, but require an explicit using
 
@@ -147,10 +147,10 @@ Arrays
 --------
 
 
-As a language intended for mathematical and scientific computing, Julia has 
+As a language intended for mathematical and scientific computing, Julia has
 strong support for using unicode characters
 
-In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>`` 
+In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>``
 
 The return type is one of the most fundamental Julia data types: an array
 
@@ -167,7 +167,7 @@ The information from ``typeof()`` tells us that ``ϵ`` is an array of 64 bit flo
 
 In Julia, one-dimensional arrays are interpreted as column vectors for purposes of linear algebra
 
-The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ`` 
+The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ``
 
 Notice from the above that
 
@@ -179,7 +179,7 @@ To get **help and examples** in Jupyter or other julia editor, use the ``?`` bef
 
 .. code-block:: julia
     :class: no-execute
- 
+
     ?typeof
 
     search: typeof typejoin TypeError
@@ -196,7 +196,7 @@ To get **help and examples** in Jupyter or other julia editor, use the ``?`` bef
     julia> M = [1 2; 3.5 4];
 
     julia> typeof(M)
-    Array{Float64,2}    
+    Array{Float64,2}
 
 For Loops
 ---------------
@@ -206,14 +206,14 @@ program, for the sake of learning syntax let's rewrite our program to use a
 ``for`` loop for generating the data
 
 .. note::
-    
+
     In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
 
 Starting with the most direct version, and pretending we are in a world where ``randn`` can only return a single value
 
 .. code-block:: julia
 
-        # poor style 
+        # poor style
         n = 100
         ϵ = zeros(n)
         for i in 1:n
@@ -239,16 +239,16 @@ To fix this, use ``eachindex``
 
 .. code-block:: julia
 
-        # better style 
+        # better style
         n = 100
         ϵ = zeros(n)
         for i in eachindex(ϵ)
             ϵ[i] = randn()
         end
-     
+
 Here, ``eachindex(ϵ)`` returns an iterator of indices which can be used to access ``ϵ``
 
-While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code 
+While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code
 
 In Julia you can also loop directly over arrays themselves, like so
 
@@ -344,24 +344,24 @@ We can even drop the ``function`` if we define it on a single line
 
     # good style
     generatedata(n) = randn(n).^2
-    data = generatedata(5)    
+    data = generatedata(5)
 
 Finally, we can broadcast any function, where squaring is only a special case
-    
+
 .. code-block:: julia
 
     # good style
-    f(x) = x^2 # simple square function 
+    f(x) = x^2 # simple square function
     generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
     data = generatedata(5)
 
-As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply to a function 
-    
+As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply to a function
+
 .. code-block:: julia
 
     generatedata(n, gen) = gen.(randn(n)) # uses broadcast for some function `gen`
-    
-    f(x) = x^2 # simple square function 
+
+    f(x) = x^2 # simple square function
     data = generatedata(5, f) # applies f
 
 Whether this example is better or worse than the previous version depends on how it is used
@@ -373,7 +373,7 @@ For this particular case, the clearest and most general solution is probably the
 .. code-block:: julia
 
     # direct solution with broadcasting, and small user-defined function
-    n = 100    
+    n = 100
     f(x) = x^2
 
     x = randn(n)
@@ -490,7 +490,7 @@ where
 .. math::
 
     f(v) := p + \beta v
- 
+
 
 Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem
 
@@ -525,12 +525,12 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
 
     # setup the algorithm
     v_old = v_iv
-    normdiff = Inf 
+    normdiff = Inf
     iter = 1
     while normdiff > tolerance && iter <= maxiter
         v_new = p + β * v_old # the f(v) map
         normdiff = norm(v_new - v_old)
-        
+
         # replace and continue
         v_old = v_new
         iter = iter + 1
@@ -549,7 +549,7 @@ An alternative approach is to use a ``for`` loop, and check for convergence in e
 
     # setup the algorithm
     v_old = v_iv
-    normdiff = Inf 
+    normdiff = Inf
     iter = 1
     for i in 1:maxiter
         v_new = p + β * v_old # the f(v) map
@@ -576,18 +576,18 @@ The first problem with this setup is that it depends on being sequentially run -
     function v_fp(β, ρ, v_iv, tolerance, maxiter)
         # setup the algorithm
         v_old = v_iv
-        normdiff = Inf 
+        normdiff = Inf
         iter = 1
         while normdiff > tolerance && iter <= maxiter
             v_new = p + β * v_old # the f(v) map
             normdiff = norm(v_new - v_old)
-            
+
             # replace and continue
             v_old = v_new
             iter = iter + 1
         end
         return (v_old, normdiff, iter) # returns a tuple
-    end    
+    end
 
     # some values
     p = 1.0 # note 1.0 rather than 1
@@ -615,7 +615,7 @@ A key feature of languages like Julia, is the ability to efficiently handle func
     function fixedpointmap(f, iv, tolerance, maxiter)
         # setup the algorithm
         x_old = iv
-        normdiff = Inf 
+        normdiff = Inf
         iter = 1
         while normdiff > tolerance && iter <= maxiter
             x_new = f(x_old) # use the passed in map
@@ -624,7 +624,7 @@ A key feature of languages like Julia, is the ability to efficiently handle func
             iter = iter + 1
         end
         return (x_old, normdiff, iter)
-    end    
+    end
 
     # define a map and parameters
     p = 1.0
@@ -661,14 +661,14 @@ To enable this, Julia has two features:  named function parameters, and named tu
             iter = iter + 1
         end
         return (value = x_old, normdiff=normdiff, iter=iter) # A named tuple
-    end    
+    end
 
     # define a map and parameters
     p = 1.0
     β = 0.9
     f(v) = p + β * v # note that p and β are used in the function!
 
-    sol = fixedpointmap(f, iv=0.8, tolerance=1.0E-8) # don't need to pass 
+    sol = fixedpointmap(f, iv=0.8, tolerance=1.0E-8) # don't need to pass
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
             " iterations")
 
@@ -701,7 +701,7 @@ But best of all is to avoid writing code altogether
     using NLsolve
 
     p = 1.0
-    β = 0.9     
+    β = 0.9
     f(v) = p .+ β * v # broadcast the +
     sol = fixedpoint(f, [0.8])
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
@@ -722,7 +722,7 @@ While a key benefit of using a package is that the code is clearer, and the impl
     β = 0.9
     iv = [0.8]
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " * 
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
 Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
@@ -764,7 +764,7 @@ The only change we will need to our model in order to use a different floating p
 
     # otherwise identical
     sol = fixedpoint(v -> p .+ β * v, iv)
-    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " * 
+    println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
 Here, the literal ``BigFloat(0.8)`` takes the number ``0.8`` and changes it to an arbitrary precision number
@@ -795,7 +795,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
 .. code-block:: julia
 
     using NLsolve
-    
+
     p = [1.0, 2.0, 0.1]
     β = 0.9
     iv =[0.8, 2.0, 51.0]
@@ -987,7 +987,7 @@ For those impatient to use more advanced features of Julia, implement a version 
     f_prime = D(f)
 
     f(0.1), f_prime(0.1)
-    
+
 #. Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative
 
 #. Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``
