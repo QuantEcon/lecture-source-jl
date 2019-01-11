@@ -405,22 +405,8 @@ is, the number of active firms and average output
         # draw standard normal shocks
         w_shocks = randn(capT)
 
-        # define auxiliary functions
-        # update θ
-        new_θ(θ, w) = ρ * θ + σ_θ * w
-
-        # update γ, μ
-        function new_beliefs(γ, μ, X, M)
-            # update μ
-            temp1 = ρ * (γ * μ + M * γ_x * X)
-            temp2 = γ + M * γ_x
-            μ = temp1 / temp2
-            # update γ
-            γ = 1 / (ρ^2 / (γ + M * γ_x) + σ_θ^2)
-            return (γ = γ, μ = μ)
-        end
-
-        # intermediary for computing X, M
+        # aggregate functions
+        # auxiliary function ψ
         function ψ(γ, μ, F)
             temp1 = -a * (μ - F)
             temp2 = 0.5 * a^2 / (γ + γ_x)
@@ -446,8 +432,15 @@ is, the number of active firms and average output
 
         # update dataframe
         for t in 2:capT
-            θ = new_θ(df.θ[end], w_shocks[t-1])
-            γ, μ = new_beliefs(df.γ[end], df.μ[end], df.X[end], df.M[end])
+            # unpack old variables
+            θ_old, γ_old, μ_old, X_old, M_old = (df.θ[end], df.γ[end], df.μ[end], df.X[end], df.M[end])
+
+            # define new beliefs
+            θ = ρ * θ_old + σ_θ * w_shocks[t-1]
+            μ = (ρ * (γ_old * μ_old + M_old * γ_x * X_old))/(γ_old + M_old * γ_x)
+            γ = 1 / (ρ^2 / (γ_old + M_old * γ_x) + σ_θ^2)
+
+            # compute new aggregates
             X, M = gen_aggregates(γ, μ, θ)
             push!(df, (γ = γ, μ = μ, θ = θ, X = X, M = M))
         end
