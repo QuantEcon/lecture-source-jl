@@ -500,9 +500,9 @@ Let's plot the path of the sample averages over 5,000 periods
     xbar = rate_steady_state(lm)
 
     s_path = simulate(mc, T; init=2)
-    s_bar_e = cumsum(s_path) ./ (1:T)
-    s_bar_u = 1 .- s_bar_e
-    s_bars = [s_bar_u s_bar_e]
+    s̄_e = cumsum(s_path) ./ (1:T)
+    s̄_u = 1 .- s̄_e
+    s_bars = [s̄_u s̄_e]
 
     plt_unemp = plot(title = "Percent of time unemployed", 1:T, s_bars[:,1],color = :blue, lw = 2,
                      alpha = 0.5, label = "", grid = true)
@@ -662,13 +662,13 @@ We will make use of (with some tweaks) the code we wrote in the :doc:`McCall mod
         # compute the reservation wage
         w_barindex = searchsortedfirst(V .- U, 0.0)
         if w_barindex >= length(w) # if this is true, you never want to accept
-            w_bar = Inf
+            w̄ = Inf
         else
-            w_bar = w[w_barindex] # otherwise, return the number
+            w̄ = w[w_barindex] # otherwise, return the number
         end
 
         # return a NamedTuple, so we can select values by name
-        return (V = V, U = U, w_bar = w_bar)
+        return (V = V, U = U, w̄ = w̄)
     end
 
 And the McCall object
@@ -724,15 +724,15 @@ function of the unemployment compensation rate
                           w = w_vec .- τ, # post-tax wages
                           E = E) # expectation operator
 
-        @unpack V, U, w_bar = solve_mccall_model(mcm)
-        indicator = wage -> wage > w_bar
+        @unpack V, U, w̄ = solve_mccall_model(mcm)
+        indicator = wage -> wage > w̄
         λ = γ * E * indicator.(w_vec .- τ)
 
-        return w_bar, λ, V, U
+        return w̄, λ, V, U
     end
 
     function compute_steady_state_quantities(c, τ)
-        w_bar, λ_param, V, U = compute_optimal_quantities(c, τ)
+        w̄, λ_param, V, U = compute_optimal_quantities(c, τ)
 
         # compute steady state employment and unemployment rates
         lm = LakeModel(λ = λ_param, α = α_q, b = b_param, d = d_param)
@@ -740,8 +740,8 @@ function of the unemployment compensation rate
         u_rate, e_rate = x
 
         # compute steady state welfare
-        indicator(wage) = wage > w_bar
-        indicator(wage) = wage > w_bar
+        indicator(wage) = wage > w̄
+        indicator(wage) = wage > w̄
         decisions = indicator.(w_vec .- τ)
         w = (E * (V .* decisions)) / (E * decisions)
         welfare = e_rate .* w + u_rate .* U

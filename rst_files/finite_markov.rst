@@ -1255,7 +1255,7 @@ to the stationary probability.
     α = 0.1 # probability of getting hired
     β = 0.1 # probability of getting fired
     N = 10_000
-    p_bar = β / (α + β) # steady-state probabilities
+    p̄ = β / (α + β) # steady-state probabilities
     P = [1 - α   α
          β   1 - β] # stochastic matrix
     mc = MarkovChain(P)
@@ -1264,8 +1264,8 @@ to the stationary probability.
 
     for x0 in 1:2
         X = simulate_indices(mc, N; init = x0) # generate the sample path
-        X_bar = cumsum(X .== 1) ./ (1:N) # compute state fraction. ./ required for precedence
-        y_vals[x0] = X_bar .- p_bar # plot divergence from steady state
+        X̄ = cumsum(X .== 1) ./ (1:N) # compute state fraction. ./ required for precedence
+        y_vals[x0] = X̄ .- p̄ # plot divergence from steady state
     end
 
     plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,

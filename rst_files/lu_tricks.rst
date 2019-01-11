@@ -56,7 +56,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 A Control Problem
 ====================================
@@ -1094,12 +1094,12 @@ Here's how it looks
                 a_hist =  reshape(a_hist * (β^(collect(N:0)/ 2)), N + 1, 1)
             end
 
-            a_bar = a_hist - W_m * y_m        # a_bar from the lecutre
-            Uy = \(L, a_bar)                  # U @ y_bar = L^{-1}a_bar from the lecture
-            y_bar = \(U, Uy)                  # y_bar = U^{-1}L^{-1}a_bar
-            # Reverse the order of y_bar with the matrix J
+            ā = a_hist - W_m * y_m        # ā from the lecutre
+            Uy = \(L, ā)                  # U @ ȳ = L^{-1}ā from the lecture
+            ȳ = \(U, Uy)                  # ȳ = U^{-1}L^{-1}ā
+            # Reverse the order of ȳ with the matrix J
             J = reverse(I + zeros(N+m+1, N + m + 1), dims = 2)
-            y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
+            y_hist = J * vcat(ȳ, y_m)     # y_hist : concatenated y_m and ȳ
             # transform the optimal sequence back if β is given
             if β != 1
                 y_hist = y_hist .* β.^(- collect(-m:N)/2)
@@ -1109,15 +1109,15 @@ Here's how it looks
             Ea_hist = reshape(predict(a_hist, t), N + 1, 1)
             Ea_hist = J * Ea_hist
 
-            a_bar = Ea_hist - W_m * y_m       # a_bar from the lecutre
-            Uy = \(L, a_bar)                  # U @ y_bar = L^{-1}a_bar from the lecture
-            y_bar = \(U, Uy)                  # y_bar = U^{-1}L^{-1}a_bar
+            ā = Ea_hist - W_m * y_m       # ā from the lecutre
+            Uy = \(L, ā)                  # U @ ȳ = L^{-1}ā from the lecture
+            ȳ = \(U, Uy)                  # ȳ = U^{-1}L^{-1}ā
 
-            # Reverse the order of y_bar with the matrix J
+            # Reverse the order of ȳ with the matrix J
             J = reverse(I + zeros(N + m + 1, N + m + 1), dims = 2)
-            y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
+            y_hist = J * vcat(ȳ, y_m)     # y_hist : concatenated y_m and ȳ
         end
-        return y_hist, L, U, y_bar
+        return y_hist, L, U, ȳ
     end
 
 Example

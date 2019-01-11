@@ -354,7 +354,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using Parameters, Plots, QuantEcon, Random
     gr(fmt = :png);
 
@@ -377,10 +377,10 @@ Setup
         # Using equation (7) calculate b2
         b2 = (y2 - y1 - (Q[1, 1] - Q[2, 1] - 1) * b1) / (Q[1, 2] + 1 - Q[2, 2])
 
-        # Using equation (5) calculae c_bar
-        c_bar = y1 - b0 + ([b1 b2] * Q[1, :])[1]
+        # Using equation (5) calculae c̄
+        c̄ = y1 - b0 + ([b1 b2] * Q[1, :])[1]
 
-        return c_bar, b1, b2
+        return c̄, b1, b2
     end
 
     function consumption_incomplete(cp; N_simul = 150)
@@ -417,17 +417,17 @@ Let's test by checking that :math:`\bar c` and :math:`b_2` satisfy the budget co
 .. code-block:: julia
 
     cp = ConsumptionProblem()
-    c_bar, b1, b2 = consumption_complete(cp)
+    c̄, b1, b2 = consumption_complete(cp)
     debt_complete = [b1, b2]
-    isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
+    isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
 
 .. code-block:: julia
     :class: test
 
     @testset "Budget Constraint Tests" begin
         # assert that the object above is always true
-        @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
-        @test c_bar ≈ 1.7241558441558444 # default example invariance
+        @test isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
+        @test c̄ ≈ 1.7241558441558444 # default example invariance
         @test debt_complete[2] ≈ 2.188311688311688 # one of the other objects
     end
 
@@ -582,14 +582,14 @@ Let's try this, using the same parameters in both complete and incomplete market
     N_simul = 150
     cp = ConsumptionProblem()
 
-    c_bar, b1, b2 = consumption_complete(cp)
+    c̄, b1, b2 = consumption_complete(cp)
     debt_complete = [b1, b2]
 
     c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul=N_simul)
 
     plt_cons = plot(title = "Consumption paths", xlabel = "Periods", ylim = [1.4,2.1])
     plot!(plt_cons, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-    plot!(plt_cons, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+    plot!(plt_cons, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
     plot!(plt_cons, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6, linestyle = :dash)
     plot!(plt_cons, legend = :bottom)
 
@@ -629,7 +629,7 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
 
     plt_tax = plot(title = "Tax collection paths", x_label = "Periods", ylim = [1.4,2.1])
     plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-    plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+    plot!(plt_tax, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
     plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash,
           lw = 2)
 
@@ -697,13 +697,13 @@ Here's our code to compute a quantitative example with zero debt in peace time:
     Q = β * P
     N_simul = 150
 
-    c_bar, b1, b2 = consumption_complete(cp)
+    c̄, b1, b2 = consumption_complete(cp)
     debt_complete = [b1, b2]
 
     println("P = $P")
     println("Q = $Q")
     println("Govt expenditures in peace and war = $y")
-    println("Constant tax collections = $c_bar")
+    println("Constant tax collections = $c̄")
     println("Govt assets in two states = $debt_complete")
 
     msg = """
@@ -720,9 +720,9 @@ Here's our code to compute a quantitative example with zero debt in peace time:
 
     println("\n")
     println("Government tax collections plus asset levels in peace and war")
-    TB1 = c_bar + b1
+    TB1 = c̄ + b1
     println("T+b in peace = $TB1")
-    TB2 = c_bar + b2
+    TB2 = c̄ + b2
     println("T+b in war = $TB2")
 
     println("\n")
@@ -745,7 +745,7 @@ Here's our code to compute a quantitative example with zero debt in peace time:
     :class: test
 
     @testset "Peace and War Debt Tests" begin
-        @test c_bar ≈ 1.3116883116883118
+        @test c̄ ≈ 1.3116883116883118
         @test G2 ≈ 2.9350649350649354
         @test G1 ≈ 1.3116883116883118
         @test AS2 ≈ 0.9350649350649349

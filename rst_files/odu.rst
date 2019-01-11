@@ -172,7 +172,7 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
-  using LinearAlgebra, Statistics, Compat 
+  using LinearAlgebra, Statistics, Compat
   using Distributions, Plots, QuantEcon, Interpolations, Parameters
 
   gr(fmt=:png);
@@ -595,11 +595,11 @@ time is much shorter than that of the value function approach in
 
   ϕ_init = ones(sp.n_π)
   f_ex1(x) = res_wage_operator(sp, x)
-  w_bar = compute_fixed_point(f_ex1, ϕ_init)
+  w̄ = compute_fixed_point(f_ex1, ϕ_init)
 
-  plot(sp.π_grid, w_bar, linewidth = 2, color=:black,
+  plot(sp.π_grid, w̄, linewidth = 2, color=:black,
        fill_between = 0, fillalpha = 0.15, fillcolor = :blue)
-  plot!(sp.π_grid, 2 * ones(length(w_bar)), linewidth = 0, fill_between = w_bar,
+  plot!(sp.π_grid, 2 * ones(length(w̄)), linewidth = 0, fill_between = w̄,
         fillalpha = 0.12, fillcolor = :green, legend = :none)
   plot!(ylims = (0, 2), annotations = [(0.42, 1.2, "reject"),
                                        (0.7, 1.8, "accept")])
@@ -622,12 +622,12 @@ The code takes a few minutes to run.
   using Random
   Random.seed!(42)
 
-  # Set up model and compute the function w_bar
+  # Set up model and compute the function w̄
   sp = SearchProblem(π_grid_size = 50, F_a = 1, F_b = 1)
   ϕ_init = ones(sp.n_π)
   g(x) = res_wage_operator(sp, x)
-  w_bar_vals = compute_fixed_point(g, ϕ_init)
-  w_bar = extrapolate(interpolate((sp.π_grid, ), w_bar_vals,
+  w̄_vals = compute_fixed_point(g, ϕ_init)
+  w̄ = extrapolate(interpolate((sp.π_grid, ), w̄_vals,
                       Gridded(Linear())), Flat())
 
   # Holds the employment state and beliefs of an individual agent.
@@ -641,7 +641,7 @@ The code takes a few minutes to run.
   function update!(ag, H)
       if ag.employed == 0
           w = rand(H) * 2   # account for scale in julia
-          if w ≥ w_bar(ag._π)
+          if w ≥ w̄(ag._π)
               ag.employed = 1
           else
               ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
