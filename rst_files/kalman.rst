@@ -618,7 +618,7 @@ Exercise 1
     densities = zeros(200, 5) # one column per round of updating
     for i in 1:5
         # record the current predicted mean and variance, and plot their densities
-        m, v = kalman.cur_x̂, kalman.cur_sigma
+        m, v = kalman.cur_x_hat, kalman.cur_sigma
         densities[:, i] = pdf.(Normal(m, sqrt(v)), xgrid)
 
         # generate the noisy signal
@@ -657,7 +657,7 @@ Exercise 2
     z = zeros(T)
     for t in 1:T
         # Record the current predicted mean and variance, and plot their densities
-        m, v = kalman.cur_x̂, kalman.cur_sigma
+        m, v = kalman.cur_x_hat, kalman.cur_sigma
         dist = Normal(m, sqrt(v))
         E = expectation(dist, nodes)
         integral = E(x -> 1) # Just take the pdf integral
@@ -727,7 +727,7 @@ Exercise 3
         # update state and record error
         Ax = A * x
         x = rand(MultivariateNormal(Ax, Q))
-        e1[t] = sum((a - b)^2 for (a, b) in zip(x, kn.cur_x̂))
+        e1[t] = sum((a - b)^2 for (a, b) in zip(x, kn.cur_x_hat))
         e2[t] = sum((a - b)^2 for (a, b) in zip(x, Ax))
     end
 
