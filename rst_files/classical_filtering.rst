@@ -58,7 +58,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 Infinite Horizon Prediction and Filtering Problems
 =====================================================
@@ -828,7 +828,7 @@ Let's check that it "flips roots" as required
 
   @testset begin
     @test coeffs_of_c(example) ≈ [2.0, -1.0]
-    @test roots_of_characteristic(example) ≈ ([2.0], -2.0, [0.5])
+    @test roots_of_characteristic(example) == ([2.0], -2.0, [0.5])
   end
 
 Now let's form the covariance matrix of a time series vector of length :math:`N`
