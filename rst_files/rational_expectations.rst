@@ -794,9 +794,9 @@ Here's our solution
   :class: test
 
   @testset begin
-    @test F[1] == -2.3625545964023384e-15
-    @test F[2] == 0.04628205128205243
-    @test h0 == 96.94871794872053
+    @test F[1] ≈ -2.3625545964023384e-15
+    @test F[2] ≈ 0.04628205128205243
+    @test h0 ≈ 96.94871794872053
   end
 
 The implication is that
@@ -867,7 +867,7 @@ The following code implements this test
   :class: test
 
   @testset begin
-    @test h0 == 96.94871794872053
+    @test h0 ≈ 96.94871794872053
   end
 
 The output tells us that the answer is pair (iii), which implies
@@ -1000,7 +1000,7 @@ The problem can be solved as follows
   :class: test
 
   @testset begin
-    @test m0 == 73.47294403502833
+    @test m0 ≈ 73.47294403502833
   end
 
 We see that the law of motion for the monopolist is approximately

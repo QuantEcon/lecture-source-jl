@@ -944,7 +944,7 @@ permanent income shocks using impulse-response functions
 
   @testset "Third Plot Tests" begin
     @test c1[14] ≈ 0.0071428571428571504
-    @test c2[13] == 0.15
+    @test c2[13] ≈ 0.15
   end
 
 Example 2

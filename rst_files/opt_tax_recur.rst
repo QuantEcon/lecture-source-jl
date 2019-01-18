@@ -1564,12 +1564,12 @@ We can now plot the Ramsey tax  under both realizations of time :math:`t = 3` go
   :class: test
 
   @testset begin
-    @test M_time_example.G[sHist_l] == [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+    @test M_time_example.G[sHist_l] ≈ [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
     @test M_time_example.Θ[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917,
                                                        0.9945696863679917, 0.9945696863679917,
                                                        0.9945696863679917, 0.9945696863679917,
                                                        0.9945696863679917]
-    @test M_time_example.G[sHist_h] == [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
+    @test M_time_example.G[sHist_h] ≈ [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
     @test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434,
                             1.111111111111111, 1.111111111111111, 1.111111111111111]
   end
@@ -1879,10 +1879,10 @@ The figure below plots a sample path of the Ramsey tax rate
     @test sim_seq_plot[2][14] ≈ 0.5839693539786998
     @test sim_seq_plot[3][14] ≈ 0.3951985593686047
     @test sim_seq_plot[4][14] ≈ 0.3631746680706347
-    @test sim_seq_plot[5][14] == 0.2
+    @test sim_seq_plot[5][14] ≈ 0.2
     @test sim_seq_plot[6][14] ≈ 0.5839693539786998
     @test sim_bel_plot[3][5] ≈ 0.5230509296608254 atol = 1e-3
-    @test sim_bel_plot[5][7] == 0.1
+    @test sim_bel_plot[5][7] ≈ 0.1
     @test sim_bel_plot[2][3] ≈ 0.5402933557593538 atol = 1e-3
   end
 

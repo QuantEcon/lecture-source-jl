@@ -495,7 +495,7 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 
     @testset "Solutions 2 Tests" begin
         @test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
-        @test γ_vals[1] == 0.05 && γ_vals[end] == 0.95 && length(γ_vals) == 25
+        @test γ_vals[1] ≈ 0.05 && γ_vals[end] ≈ 0.95 && length(γ_vals) == 25
     end
 
 As expected, the reservation wage increases in :math:`\gamma`
