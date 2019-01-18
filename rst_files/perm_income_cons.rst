@@ -394,7 +394,7 @@ First we create the objects for the optimal linear regulator
   :class: test
 
   @testset begin
-    @test sxbewley[6] == 5.263157894733971
+    @test sxbewley[6] ≈ 5.263157894733971
   end
 
 
@@ -448,7 +448,7 @@ employing an alternative solution method
     :class: test
 
     @testset "First Plot Tests" begin
-        @test ABF[4,2] == -0.6896550772889927
+        @test ABF[4,2] ≈ -0.6896550772889927
     end
 
 Comparison with the difference equation approach

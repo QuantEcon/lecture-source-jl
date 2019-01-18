@@ -507,9 +507,9 @@ The following code is example of usage for the stochastic growth model :ref:`des
     :class: test
 
     @testset "First Figure Tests" begin
-        @test laes[2].X[4] == 2.6707630703642655
-        @test length(ygrid) == 200 && ygrid[1] == 0.01 && ygrid[end] == 4.0
-        @test k[5, 5] == 0.461853841701963
+        @test laes[2].X[4] ≈ 2.6707630703642655
+        @test length(ygrid) == 200 && ygrid[1] ≈ 0.01 && ygrid[end] ≈ 4.0
+        @test k[5, 5] ≈ 0.461853841701963
     end
 
 The figure shows part of the density sequence :math:`\{\psi_t\}`, with each
@@ -865,9 +865,9 @@ To illustrate, let's generate three artificial data sets and compare them with a
     :class: test
 
     @testset "Exercise 3 Tests" begin
-        @test x[5] == 5.917186591766507
-        @test y[5] == 2.8356012641450112
-        @test z[5] == 3.921272296865464
+        @test x[5] ≈ 5.917186591766507
+        @test y[5] ≈ 2.8356012641450112
+        @test z[5] ≈ 3.921272296865464
     end
 
 The three data sets are
@@ -971,9 +971,9 @@ to get an idea of the speed of convergence.
     :class: test
 
     @testset "Solution 1 Tests" begin
-        @test length(ys) == 200 && ys[1] == -3.0 && ys[end] == 3.0
-        @test X[7] == 0.2729845006695114
-        @test Z[3] == 0.027155338009193845
+        @test length(ys) == 200 && ys[1] ≈ -3.0 && ys[end] ≈ 3.0
+        @test X[7] ≈ 0.2729845006695114
+        @test Z[3] ≈ 0.027155338009193845
     end
 
 Exercise 2
@@ -1043,8 +1043,8 @@ Here's one program that does the job.
     :class: test
 
     @testset "Solution 2 Tests" begin
-        @test laes[3].X[4] == 3.2212712128996204
-        @test length(ygrid) == 150 && ygrid[end] == 6.5 && ygrid[1] == 0.01
+        @test laes[3].X[4] ≈ 3.2212712128996204
+        @test length(ygrid) == 150 && ygrid[end] ≈ 6.5 && ygrid[1] ≈ 0.01
     end
 
 Exercise 3
@@ -1105,8 +1105,8 @@ series for one boxplot all at once.
     :class: test
 
     @testset "Solution 3 Tests" begin
-        @test X[end-5] == 0.48235969268877943
-        @test Z[1, 2, 3] == 0.7233220581593061
+        @test X[end-5] ≈ 0.48235969268877943
+        @test Z[1, 2, 3] ≈ 0.7233220581593061
     end
 
 Appendix
