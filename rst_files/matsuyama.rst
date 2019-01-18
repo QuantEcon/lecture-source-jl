@@ -609,8 +609,8 @@ Exercise 1
     abvec = [plot_attraction_basis(p...) for p in params]
 
     @testset begin
-        @test abvec[1][5] == 194.0
-        @test abvec[2][17] == 102.0
-        @test abvec[3][50] == 76.0
-        @test abvec[4][end-1] == 86.0
+        @test abvec[1][5] ≈ 194.0
+        @test abvec[2][17] ≈ 102.0
+        @test abvec[3][50] ≈ 76.0
+        @test abvec[4][end-1] ≈ 86.0
     end
