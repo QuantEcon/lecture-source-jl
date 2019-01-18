@@ -481,7 +481,7 @@ Setup
         shape = length(asset_grid), length(z_vals)
         V, c = zeros(shape...), zeros(shape...)
 
-        # Populate V and c
+        # populate V and c
         for (i_z, z) in enumerate(z_vals)
             for (i_a, a) in enumerate(asset_grid)
                 c_max = R * a + z + b
@@ -585,7 +585,6 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 .. code-block:: julia
 
     # solve for optimal consumption
-
     m = ConsumerProblem(r = 0.03, grid_max = 4)
     v_init, c_init = initialize(m)
 
@@ -597,7 +596,6 @@ The following figure is a 45 degree diagram showing the law of motion for assets
     R, z_vals = m.R, m.z_vals
 
     # generate savings plot
-
     plot(a, R * a .+ z_vals[1] - c[:, 1], label = "Low income")
     plot!(xlabel = "Current assets", ylabel = "Next period assets")
     plot!(a, R * a .+ z_vals[2] - c[:, 2], label = "High income")
@@ -753,7 +751,7 @@ Exercise 3
 .. code-block:: julia
 
     function compute_asset_series(cp, T = 500_000; verbose = false)
-        @unpack Π, z_vals, R = cp  # Simplify names
+        @unpack Π, z_vals, R = cp  # simplify names
         z_idx = 1:length(z_vals)
         v_init, c_init = initialize(cp)
         c = compute_fixed_point(x -> K(cp, x), c_init,
@@ -771,7 +769,7 @@ Exercise 3
     end
 
     cp = ConsumerProblem(r = 0.03, grid_max = 4)
-    Random.seed!(42) # For reproducibility
+    Random.seed!(42) # for reproducibility
     a = compute_asset_series(cp)
     histogram(a, nbins = 20, leg = false, normed = true, xlabel = "assets")
 
@@ -787,7 +785,7 @@ Exercise 4
 .. code-block:: julia
     :class: test
 
-    Random.seed!(42);  # For reproducibility
+    Random.seed!(42);  # for reproducibility
 
 .. code-block:: julia
 
@@ -819,5 +817,5 @@ Exercise 4
     @testset begin
         @test xs[1][10] ≈ -0.7842525469134315
         @test xs[2][5] ≈ -2.857179797124988
-        @test ys[1] == 0.0:0.0016666666666666668:0.04
+        @test ys[1] ≈ 0.0:0.0016666666666666668:0.04
     end
