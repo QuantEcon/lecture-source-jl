@@ -142,7 +142,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     :class: test
 
     @testset "First Plot Tests" begin
-        @test Q == [0.12 0.09; 0.09 0.135]
+        @test Q ≈ [0.12 0.09; 0.09 0.135]
         @test G isa UniformScaling
     end
 
@@ -338,9 +338,9 @@ the update has used parameters
     new_Σ = A * Σ_F * A' + Q
     predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
 
-    # Plot Density 3
-    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1, color = :lighttest,
-            cbar = false)
+    # plot Density 3
+    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1, 
+            color = :lighttest, cbar = false)
     contour!(x_grid, y_grid, two_args_to_pdf(dist),
              color = :grays, cbar = false)
     contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
@@ -636,8 +636,8 @@ Exercise 1
     :class: test
 
     @testset "Solution 1 Tests" begin
-        @test length(xgrid) == 200 && xgrid[1] == 5.0 && xgrid[end] == 12.0
-        @test densities[4, 1] == 0.006048628905320978
+        @test length(xgrid) == 200 && xgrid[1] ≈ 5.0 && xgrid[end] ≈ 12.0
+        @test densities[4, 1] ≈ 0.006048628905320978
     end
 
 Exercise 2
@@ -656,13 +656,13 @@ Exercise 2
     T = 600
     z = zeros(T)
     for t in 1:T
-        # Record the current predicted mean and variance, and plot their densities
+        # record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         dist = Normal(m, sqrt(v))
         E = expectation(dist, nodes)
-        integral = E(x -> 1) # Just take the pdf integral
+        integral = E(x -> 1) # just take the pdf integral
         z[t] = 1. - integral
-    # Generate the noisy signal and update the Kalman filter
+    # generate the noisy signal and update the Kalman filter
     update!(kalman, θ + randn())
     end
 
@@ -673,7 +673,7 @@ Exercise 2
     :class: test
 
     @testset "Solution 2 Tests" begin
-        @test z[4] == 0.9310333042533682
+        @test z[4] ≈ 0.9310333042533682
         @test T == 600
     end
 
@@ -740,9 +740,9 @@ Exercise 3
     :class: test
 
     @testset "Solution 3 Tests" begin
-        @test e1[2] == 2.3089149699078493
-        @test e2[19] == 0.0059756062750286705
-        @test x[1] == 0.35144174682463053 && x[2] == 0.5818007751668824
+        @test e1[2] ≈ 2.3089149699078493
+        @test e2[19] ≈ 0.0059756062750286705
+        @test x[1] ≈ 0.35144174682463053 && x[2] ≈ 0.5818007751668824
     end
 
 .. rubric:: Footnotes

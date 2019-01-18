@@ -989,7 +989,7 @@ Next we'll create an instance of `AssetPriceModel` to feed into the functions.
     :class: test
 
     @testset begin
-        @test v[2] == 21.935706611219704
+        @test v[2] ≈ 21.935706611219704
     end
 
 .. code-block:: julia

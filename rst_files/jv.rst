@@ -522,7 +522,7 @@ Here's code to produce the 45 degree diagram
   :class: test
 
   @testset "Solutions 1 Tests" begin
-    @test s(3) == 0.0001
+    @test s(3) ≈ 0.0001
     @test ϕ(4) ≈ 0.2857857142857143
   end
 
@@ -557,8 +557,8 @@ Here's code to produce the 45 degree diagram
 
   @testset "More Solutions 1 Tests" begin
     @test [xs[4], ys[4]] ≈ [0.0, 0.44530420013435007]
-    @test ticks == [0.25, 0.5, 0.75, 1.0]
-    @test plot_grid[1] == 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max == 1.2
+    @test ticks ≈ [0.25, 0.5, 0.75, 1.0]
+    @test plot_grid[1] ≈ 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max ≈ 1.2
     @test length(plot_grid) == plot_grid_size && plot_grid_size == 100
   end
 

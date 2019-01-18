@@ -308,7 +308,7 @@ As a first example of what we can do, let's compute and plot an optimal accumula
         @test a_vals[4] ≈ 0.3015075377869347
         @test a_star[4] ≈ 0.2010050252246231
         @test results.v[4] ≈ -27.48291672016239
-        @test z_vals == [0.1, 1.0]
+        @test z_vals ≈ [0.1, 1.0]
     end
 
 The plot shows asset accumulation policies at different values of the exogenous state

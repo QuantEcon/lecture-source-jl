@@ -523,8 +523,8 @@ We hope that the resulting policy will agree with `F1` as computed above
 
   @testset begin
     @test P1_ih[2, 2] ≈ 5.441368459897164
-    @test d == 0.0
-    @test Λ1[1, 1] == 1.0 && Λ1[3, 2] ≈ -0.07584666305807419
+    @test d ≈ 0.0
+    @test Λ1[1, 1] ≈ 1.0 && Λ1[3, 2] ≈ -0.07584666305807419
     @test F1_ih ≈ [-0.6684661291052371 0.29512481789806305 0.07584666292394007]
     @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true.
   end
@@ -566,8 +566,8 @@ The following program
     end
     q1 = x[2, :]
     q2 = x[3, :]
-    q = q1 + q2         # Total output, MPE
-    p = a0 .- a1 * q     # Price, MPE
+    q = q1 + q2         # total output, MPE
+    p = a0 .- a1 * q     # price, MPE
 
     plt = plot(q, color=:blue, lw=2, alpha=0.75, label="total output")
     plot!(plt, p, color=:green, lw=2, alpha=0.75, label="price")
@@ -945,10 +945,10 @@ we set up the matrices as follows:
   :class: test
 
   @testset begin
-    @test M1 == [0.0 0.0; 0.0 0.25]
-    @test M2 == [0.0 0.0; 0.0 0.25]
-    @test Q1 == [-1.5 0.0; 0.0 -1.0]
-    @test Q2 == [-1.5 0.0; 0.0 -1.0]
+    @test M1 ≈ [0.0 0.0; 0.0 0.25]
+    @test M2 ≈ [0.0 0.0; 0.0 0.25]
+    @test Q1 ≈ [-1.5 0.0; 0.0 -1.0]
+    @test Q2 ≈ [-1.5 0.0; 0.0 -1.0]
   end
 
 We can now compute the equilibrium using ``qe.nnash``
