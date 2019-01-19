@@ -940,7 +940,7 @@ Our second example adopts a discrete Markov specification for the exogenous proc
   @testset begin
     @test path.p[3] ≈ 1.5852129146694405
     @test path.B[13] ≈ 0.003279632025474284
-    @test path.g == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+    @test path.g ≈ [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
                      0.25, 0.25]
     @test path.rvn[7] ≈ 0.3188722725349599
     @test path.c[2] ≈ 0.6147870853305598
@@ -1023,7 +1023,7 @@ Solutions
     @test path.rvn[7]  ≈ 0.3516395027502925
     @test path.c[2]  ≈ 0.6259521929536346
     @test path.R[5][1]  ≈ 1.0501742289013196
-    @test path.ξ[10] == 1.0013523500366277
+    @test path.ξ[10] ≈ 1.0013523500366277
   end
 
 

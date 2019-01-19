@@ -679,7 +679,7 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
     @testset begin
         @test y[79] ≈ -0.07268127992877046
         @test y[amf.nx + 1, :][19] ≈ 0.09115348523102862
-        @test F == 0.01 && T == 150 # a few constants.
+        @test F ≈ 0.01 && T == 150 # a few constants.
     end
 
 Notice the irregular but persistent growth in :math:`y_t`

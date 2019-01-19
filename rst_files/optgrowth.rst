@@ -767,7 +767,7 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     :class: test
 
     @testset begin
-        @test cstar[102] == 1.2505758978894472
+        @test cstar[102] ≈ 1.2505758978894472
     end
 
 The figure shows that we've done a good job in this instance of approximating
@@ -807,7 +807,7 @@ We have also dialed down the shocks a bit
     :class: test
 
     @testset begin
-        @test shocks[25] == 0.8050318706532391
+        @test shocks[25] ≈ 0.8050318706532391
     end
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture

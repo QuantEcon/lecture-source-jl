@@ -302,7 +302,7 @@ If you run the following code you should get roughly that answer
     :class: test
 
     @testset "Sample Path Test" begin
-        @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
+        @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
         @test X[1:5] == [1, 2, 2, 1, 1]
     end
 
@@ -329,7 +329,7 @@ Here's an illustration using the same `P` as the preceding example
     :class: test
 
     @testset "QE Sample Path Test" begin
-        @test P == [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
+        @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
         @test X[1:5] == [2, 2, 1, 1, 2]
         @test μ_1 ≈ μ_2 atol = 1e-4
     end
@@ -677,7 +677,7 @@ We can confirm that the stochastic matrix is periodic as follows
     :class: test
 
     @testset "checking period" begin
-        @test P[2,1] == 0.5
+        @test P[2,1] ≈ 0.5
         @test period(mc) == 2
     end
 
@@ -856,8 +856,8 @@ The convergence in the theorem is illustrated in the next figure
     :class: test
 
     @testset "testing convergence to stationary" begin
-        @test x_vals[12] == 0.6401278316658368
-        @test y_vals[7] == 0.4773682392284884
+        @test x_vals[12] ≈ 0.6401278316658368
+        @test y_vals[7] ≈ 0.4773682392284884
     end
 
 Here
@@ -1275,7 +1275,7 @@ to the stationary probability.
     :class: test
 
     @testset "Exercise 1 Tests" begin
-        @test y_vals[2][5] == -0.5
+        @test y_vals[2][5] ≈ -0.5
         @test X[1:5] == [2, 2, 2, 2, 2]
     end
 
@@ -1324,8 +1324,8 @@ Exercise 2
     :class: test
 
     @testset "Exercise 2 Tests" begin
-        @test ranked_pages['g'] == 0.16070778858515053
-        @test ranked_pages['l'] == 0.032017852378295776
+        @test ranked_pages['g'] ≈ 0.16070778858515053
+        @test ranked_pages['l'] ≈ 0.032017852378295776
     end
 
 Exercise 3

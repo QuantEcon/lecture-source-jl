@@ -285,8 +285,8 @@ And a revised model
     :class: test
 
     @testset begin
-        @test lm.α == 2.0
-        @test A[1][1] == 0.7235062600000001
+        @test lm.α ≈ 2.0
+        @test A[1][1] ≈ 0.7235062600000001
     end
 
 Aggregate Dynamics
@@ -353,8 +353,8 @@ This is the case for our default parameters:
     :class: test
 
     @testset begin
-        @test abs(e) == 0.6953067378358462
-        @test abs(f) == 1.0
+        @test abs(e) ≈ 0.6953067378358462
+        @test abs(f) ≈ 1.0
     end
 
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
@@ -792,7 +792,7 @@ function of the unemployment compensation rate
     :class: test
 
     @testset begin
-        @test c_vec == 5.0:2.288135593220339:140.0
+        @test c_vec ≈ 5.0:2.288135593220339:140.0
         @test tax_vec[40] ≈ 55.78515130142509 atol = 1e-7
         @test empl_vec[50] ≈ 0.2787840354254594
         @test welfare_vec[17] ≈ 49.047098920686786 atol = 1e-7
@@ -951,7 +951,7 @@ state
     :class: test
 
     @testset begin
-        @test x0[1] == 0.08266626766923285
+        @test x0[1] ≈ 0.08266626766923285
     end
 
 Here are the other parameters:

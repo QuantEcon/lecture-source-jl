@@ -17,6 +17,7 @@ This first part of the course provides a relatively fast-paced introduction to e
     :maxdepth: 2
 
     getting_started
+    julia_environment
     julia_by_example
     julia_essentials
     fundamental_types

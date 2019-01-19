@@ -1353,7 +1353,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     :class: test
 
     @testset begin
-        @test ap[20] == -8.123970759436794
+        @test ap[20] ≈ -8.123970759436794
     end
 
 Exercise 2
@@ -1446,7 +1446,7 @@ the lecture.
     :class: test
 
     @testset begin
-        @test income[20] == 3.0809720173965855
+        @test income[20] ≈ 3.0809720173965855
     end
 
 Exercise 3
@@ -1531,6 +1531,7 @@ Our solution code is
     :class: test
 
     @testset begin
-        @test xp[20] == 2.8378651501210808
-        @test q̄[25] == 2.518687537862516
+        @test xp[20] ≈ 2.8378651501210808
+        @test q̄[25] ≈ 2.518687537862516
     end
+    

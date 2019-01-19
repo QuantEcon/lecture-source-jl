@@ -18,9 +18,9 @@ We'll discuss a few of them here, such as
 
 * The Julia REPL, which has specialized modes for package management, shell commands, and help
 
-* The Docker setup we mentioned in :doc:`getting started <getting_started>`, which provides a painless pre-configured environment on your machine
+* A virtualized Docker setup which provides a painless pre-configured environment on your machine
 
-Note that we assume you've already completed the :doc:`getting started <getting_started>` lecture
+Note that we assume you've already completed the :doc:`getting started <getting_started>` and :doc:`interacting with Julia <julia_environment>` lectures
 
 Preliminary Setup
 ====================
@@ -65,6 +65,8 @@ To add the file:
 * For convenience, you may find it useful on your operating system to change the directory where the REPL starts
 
 On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``
+
+.. _repl_main:
 
 The REPL
 =============
@@ -382,12 +384,12 @@ What this ``activate_github`` function does is
 
 #. ``] instantiate`` and ``] precompile``, if necessary
 
-.. _docker_main:
+_docker_main:
 
 Docker
 ===========
 
-As discussed :ref:`earlier <jl_jupyterdocker>`, Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
+Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
 
 The advantage of a Docker-based workflow is that it's perfectly reproducible, and that setup (of Julia versions and dependencies, etc.) is handled upstream by the image maintainer
 

@@ -677,7 +677,7 @@ Compute the bond price schedule as seen in figure 3 of Arellano (2008)
     @testset begin
         @test q_high[4] ≈ 0.2664149144450229
         @test q_low[20] ≈ 2.2418853380628388e-5
-        @test x[17] == -0.2976
+        @test x[17] ≈ -0.2976
     end
 
 Draw a plot of the value functions
@@ -743,7 +743,7 @@ Plot a time series of major variables simulated from the model
         @test def_breaks == Bool[false, false, true, false, false, false, true, false, false]
         @test defs == [60, 61, 62, 154, 155, 156, 157, 196, 197, 198]
         @test y_vec[4] ≈ 1.0712139563752547
-        @test B_vec[40] == -0.0768
+        @test B_vec[40] ≈ -0.0768
         @test q_vec[140] ≈ 0.9738927780828847
         @test default_vec[240] == false
     end
