@@ -4,7 +4,7 @@
 
     ****
     Home
-    ****   
+    ****
 
 .. only:: latex
 
@@ -29,21 +29,21 @@
         <li><a href="/jl/index_undergrad.html">Undergraduate course</a></li>
         <li class="active"><a href="/jl/index_postgrad.html">Graduate course</a></li>
     </ul>
-    
+
 .. toctree::
     :maxdepth: 2
     :titlesonly:
 
 
-    index_getting_started_julia
-    index_more_julia
-    index_tools_and_techniques_grad
-    index_dynamic_programming_grad
-    index_multi_agent_models_grad
-    index_time_series_models_grad
+    getting_started_julia/index
+    more_julia/index
+    tools_and_techniques/index_grad
+    dynamic_programming/index_grad
+    multi_agent_models/index_grad
+    time_series_models/index_grad
     zreferences
 
-    
+
 .. image:: /_static/banner.png
     :scale: 30%
     :align: center
@@ -52,6 +52,6 @@
 
     Acknowledgements:  These lectures have benefitted greatly from comments and
     suggestion from our colleagues, students and friends.  Special thanks go to
-    Anmol Bhandari, Long Bui, Jeong-Hun Choi, Chase Coleman, David Evans, Shunsuke Hori, 
-    Chenghan Hou, Doc-Jin Jang, Spencer Lyon, Qingyin Ma, Akira Matsushita, 
+    Anmol Bhandari, Long Bui, Jeong-Hun Choi, Chase Coleman, David Evans, Shunsuke Hori,
+    Chenghan Hou, Doc-Jin Jang, Spencer Lyon, Qingyin Ma, Akira Matsushita,
     Matthew McKay, Tomohito Okabe, Alex Olssen, Nathan Palmer and Yixiao Zhou.
