@@ -37,7 +37,7 @@ References
 
 Prior to reading the following you might like to review our lectures on
 
-* :doc:`Markov chains <finite_markov>`
+* :doc:`Markov chains <../tools_and_techniques/finite_markov>`
 
 * :doc:`Asset pricing with finite state space <markov_asset>`
 
@@ -58,7 +58,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 Structure of the Model
 =======================

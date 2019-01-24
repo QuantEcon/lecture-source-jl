@@ -30,7 +30,7 @@ We will focus much of our attention on linear covariance stationary models with 
 
 In particular, we will study stationary ARMA processes, which form a cornerstone of the standard theory of time series analysis
 
-Every ARMA processes can be represented in :doc:`linear state space <linear_models>` form
+Every ARMA processes can be represented in :doc:`linear state space <../tools_and_techniques/linear_models>` form
 
 However, ARMA have some important structure that makes it valuable to study them separately
 
@@ -78,7 +78,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 Introduction
 =================================

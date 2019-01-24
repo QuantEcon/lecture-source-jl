@@ -57,10 +57,10 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using Distributions, StatPlots, QuadGK, Polynomials, Interpolations
 
 Exploring Type Trees
@@ -81,13 +81,13 @@ Concrete types (i.e., ``Float64`` or ``Array{Float64, 2}``) are the data structu
     @show supertype(typeof(x))
 
     # pipe operator, |>, is is equivalent
-    @show typeof(x) |> supertype  
+    @show typeof(x) |> supertype
     @show supertype(typeof(y))
     @show typeof(z) |> supertype
     @show typeof(x) <: Any;
 
 
-Beyond the ``typeof`` and ``supertype`` functions, a few other useful tools for analyzing the tree of types are discussed in the :doc:`introduction to types lecture <introduction_to_types>`
+Beyond the ``typeof`` and ``supertype`` functions, a few other useful tools for analyzing the tree of types are discussed in the :doc:`introduction to types lecture <../getting_started_julia/introduction_to_types>`
 
 .. code-block:: julia
 
@@ -157,7 +157,7 @@ To see this with built-in types
 .. code-block:: julia
 
     x = [1, 2]
-    show(x)    
+    show(x)
 
 The ``Any`` type is useful, because it provides a fall-back implementation for a variety of functions
 
@@ -279,7 +279,7 @@ First, consider working with "distributions"
 
 Algorithms using distributions might (1) draw random numbers for Monte-Carlo methods; and (2) calculate the pdf or cdf -- if it is defined
 
-The process of using concrete distributions in these sorts of applications led 
+The process of using concrete distributions in these sorts of applications led
 to the creation of the `Distributions.jl <https://github.com/JuliaStats/Distributions.jl>`_ package
 
 Let's examine the tree of types for a `Normal` distribution
@@ -297,13 +297,13 @@ The ``Sampleable{Univariate,Continuous}`` type has a limited number of functions
 
     @show rand(d1);
 
-The purpose of that abstract type is to provide an interface for drawing from a 
+The purpose of that abstract type is to provide an interface for drawing from a
 variety of distributions, some of which may not have a well-defined predefined pdf
 
-If you were writing a function to simulate a stochastic process with arbitrary 
+If you were writing a function to simulate a stochastic process with arbitrary
 iid shocks, where you did not need to assume an existing pdf etc., this is a natural candidate
 
-For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where 
+For example, to simulate :math:`x_{t+1} = a x_t + b \epsilon_{t+1}` where
 :math:`\epsilon \sim D` for some :math:`D`, which allows drawing random values
 
 .. code-block:: julia
@@ -358,7 +358,7 @@ As an example, consider the `StatPlots <https://github.com/JuliaPlots/StatPlots.
     d = Normal(2.0, 1.0)
     plot(d) # note no other arguments!
 
-Calling ``plot`` on any subtype of ``Distributions{Univariate, Continuous}`` 
+Calling ``plot`` on any subtype of ``Distributions{Univariate, Continuous}``
 displays the ``pdf`` and uses ``minimum`` and ``maximum`` to determine the range
 
 Let's create our own distribution type
@@ -393,14 +393,14 @@ In the background, the ``Distributions.jl`` package  has something like the foll
 
         Distributions.support(d::Distribution) = RealInterval(minimum(d), maximum(d))
 
-Since ``OurTruncatedExponential <: Distribution``, and we 
-implemented ``minimum`` and ``maximum``, calls to ``support`` get this 
+Since ``OurTruncatedExponential <: Distribution``, and we
+implemented ``minimum`` and ``maximum``, calls to ``support`` get this
 implementation as a fallback
 
 These functions are enough to use the  ``StatPlots.jl`` package
 
 .. code-block:: julia
-    
+
     plot(d) # uses the generic code!
 
 A few things to point out
@@ -416,13 +416,13 @@ A few things to point out
     plot(d)
 
 .. Which, of course, is also written in terms of the generic type
-.. 
+..
 .. .. code-block:: julia
-.. 
+..
 ..     d = Truncated(OurTruncatedExponential(1.0,2.0), 0.1, 1.5) # truncate again!
 ..     @show typeof(d)
 ..     plot(d)
-.. 
+..
 .. Crucially, the ``StatPlots.jl``, ``Distributions.jl``, and our code are **separate**, so this is a composition of different packages that have simply agreed on a set of appropriate functions and abstract types
 
 This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions
@@ -447,7 +447,7 @@ While this skips over some parts of the mathematical definition, this algebraic 
     * **Remark:** We use the term "motivation" because they are not formally connected and the mapping is imperfect
     * The main difficulty when dealing with numbers that can be concretely created on a computer is that the requirement that the operators are closed in the set are difficult to ensure (e.g. floating points have finite numbers of bits of information)
 
-Let ``typeof(a) = typeof(b) = T <: Number``, then under an informal definition of the **generic interface** for 
+Let ``typeof(a) = typeof(b) = T <: Number``, then under an informal definition of the **generic interface** for
 ``Number``, the following must be defined
 
     * the additive operator: ``a + b``
@@ -457,7 +457,7 @@ Let ``typeof(a) = typeof(b) = T <: Number``, then under an informal definition o
     * an additive identity: ``zero(T)`` or ``zero(a)`` for convenience
     * a multiplicative identity: ``one(T)`` or ``one(a)`` for convenience
 
-The core of generic programming is that, given the knowledge that a value is of type ``Number``, we can design algorithms using any of these functions and not concern ourselves with the particular concrete type 
+The core of generic programming is that, given the knowledge that a value is of type ``Number``, we can design algorithms using any of these functions and not concern ourselves with the particular concrete type
 
 Furthermore, that generality in designing algorithms comes with no compromises on performance compared to carefully designed algorithms written for that particular type
 
@@ -476,7 +476,7 @@ To demonstrate this for a complex number, where ``Complex{Float64} <: Number``
     @show zero(a)
     @show one(a);
 
-And for an arbitrary precision integer where ``BigInt <: Number`` 
+And for an arbitrary precision integer where ``BigInt <: Number``
 (i.e., a different type than the ``Int64`` you have worked with, but nevertheless a ``Number``)
 
 .. code-block:: julia
@@ -501,7 +501,7 @@ The ``Complex`` numbers require some sort of storage for their underlying real a
 
 This data structure is defined to work with any type ``<: Number``, and is parameterized (e.g. ``Complex{Float64}`` is a complex number storing the imaginary and real parts in ``Float64``)
 
-.. code-block:: julia 
+.. code-block:: julia
 
     x = 4.0 + 1.0im
     @show x, typeof(x)
@@ -509,9 +509,9 @@ This data structure is defined to work with any type ``<: Number``, and is param
     xbig = BigFloat(4.0) + 1.0im
     @show xbig, typeof(xbig);
 
-The implementation of the ``Complex`` numbers use the underlying operations of 
-storage type, so as long as ``+``, ``*`` etc. are defined -- as they should be 
-for any ``Number`` -- the complex operation can be defined 
+The implementation of the ``Complex`` numbers use the underlying operations of
+storage type, so as long as ``+``, ``*`` etc. are defined -- as they should be
+for any ``Number`` -- the complex operation can be defined
 
 .. code-block:: julia
 
@@ -531,7 +531,7 @@ The rest of the function has been carefully written to use functions defined for
 To follow another example , look at the implementation of ``abs`` specialized for complex numbers
 
 .. code-block:: julia
-    
+
     @which abs(x)
 
 The source is
@@ -574,7 +574,7 @@ Hopefully this showcases the power of generic programming:  with a well-designed
 
 Reals and Algebraic Structures
 =======================================
- 
+
 Thinking back to the mathematical motivation, a `field <https://en.wikipedia.org/wiki/Field_\(mathematics\)>`_ is a ``ring`` with a few additional properties, among them
 
     * a multiplicative inverse: :math:`a^{-1}`
@@ -663,7 +663,7 @@ In order to generate fast code, the implementation details may define specialize
 
 Note that the reason  ``Float64 <: Real`` calls this implementation rather than the one given above, is that ``Float64 <: Real``, and Julia chooses the most specialized implementation for each function
 
-The specialized implementations are often more subtle than you may realize due to `floating point arithmetic <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>`_, `underflow <https://en.wikipedia.org/wiki/Arithmetic_underflow>`_, etc.  
+The specialized implementations are often more subtle than you may realize due to `floating point arithmetic <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>`_, `underflow <https://en.wikipedia.org/wiki/Arithmetic_underflow>`_, etc.
 
 
 Functions, and Function-Like Types
@@ -679,7 +679,7 @@ For example, we can use a standard function
 
     using QuadGK
     f(x) = x^2
-    @show quadgk(f, 0.0, 1.0)  # integral 
+    @show quadgk(f, 0.0, 1.0)  # integral
 
     function plotfunctions(f)
         intf(x) = quadgk(f, 0.0, x)[1]  # int_0^x f(x) dx
@@ -727,9 +727,9 @@ You will notice that types in Julia represent a tree with ``Any`` at the root
 
 The tree structure has worked well for the above examples, but it doesn't allow us to associate multiple categorizations of types
 
-For example, a semi-group type would be useful for a writing generic code (e.g. 
-continuous-time solutions for ODEs and matrix-free methods), but cannot be 
-implemented rigorously since the ``Matrix`` type is a semi-group as well 
+For example, a semi-group type would be useful for a writing generic code (e.g.
+continuous-time solutions for ODEs and matrix-free methods), but cannot be
+implemented rigorously since the ``Matrix`` type is a semi-group as well
 as an ``AbstractArray``, but not all semi-groups are ``AbstractArray`` s
 
 The main way to implement this in a generic language is with a design approach called "traits"
@@ -742,24 +742,24 @@ The main way to implement this in a generic language is with a design approach c
 .. ------------
 
 .. s another common example of the separation between data structures and algorithms is the use of functions
-.. 
+..
 .. n Julia, anything which can be called with a ``()`` is a function or function-like object
-.. 
+..
 .. or example, we have already seen user defined function can be called and passed to various algorithms
-.. 
+..
 .. . code-block:: julia
-.. 
+..
 ..    using QuadGk
 ..    f(x) = x^2
 ..    y = 1:5
 ..    @show sum(f, y) # i.e., algorithm takes function as first argument and iterator
 ..    @show quadgk(f, 0.0, 1.0) # calculate an integral
 ..    plot(f, 0.0, 1.0) # plot recipe for any function
-.. 
-.. ut this works for other types, such as intepolation and polynomials 
-.. 
+..
+.. ut this works for other types, such as intepolation and polynomials
+..
 .. . code-block:: julia
-.. 
+..
 ..    Using Interpolations, Polynomials
 ..    f(x) = x^2
 ..    x = 0:0.1:1.0

@@ -616,7 +616,7 @@ where :math:`\overline y_t = \begin{bmatrix}  1 & v_t & Q_t & \overline q_t & \o
 Recursive formulation of a follower's problem
 ---------------------------------------------
 
-We now make use of a "Big :math:`K`, little :math:`k`" trick (see  :doc:`rational expectations equilibrium <rational_expectations>`)  to formulate a recursive version of a follower's problem cast in terms of an ordinary Bellman equation
+We now make use of a "Big :math:`K`, little :math:`k`" trick (see  :doc:`rational expectations equilibrium <../multi_agent_models/rational_expectations>`)  to formulate a recursive version of a follower's problem cast in terms of an ordinary Bellman equation
 
 The individual firm faces :math:`\{p_t\}` as a price taker and believes
 

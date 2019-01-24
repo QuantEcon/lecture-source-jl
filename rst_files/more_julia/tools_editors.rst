@@ -20,7 +20,7 @@ We'll discuss a few of them here, such as
 
 * A virtualized Docker setup which provides a painless pre-configured environment on your machine
 
-Note that we assume you've already completed the :doc:`getting started <getting_started>` and :doc:`interacting with Julia <julia_environment>` lectures
+Note that we assume you've already completed the :doc:`getting started <../getting_started_julia/getting_started>` and :doc:`interacting with Julia <../getting_started_julia/julia_environment>` lectures
 
 Preliminary Setup
 ====================
@@ -153,7 +153,7 @@ will succeed
 Atom
 =========
 
-As discussed :doc:`previously <getting_started>`, eventually you will want to use a fully fledged text editor
+As discussed :doc:`previously <../getting_started_julia/getting_started>`, eventually you will want to use a fully fledged text editor
 
 The most feature-rich one for Julia development is `Atom <https://atom.io/>`_, with the `Juno <http://junolab.org/>`_ package
 

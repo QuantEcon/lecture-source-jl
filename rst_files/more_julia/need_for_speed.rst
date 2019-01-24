@@ -301,7 +301,7 @@ The ``@code_warntype`` macro compiles ``f(x)`` using the type of ``x`` as an exa
 Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the
 function, when called with types like ``[1, 2, 3]``, is always a vector of integers
 
-In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <fundamental_types>`
+In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <../getting_started_julia/fundamental_types>`
 
 .. code-block:: julia
 

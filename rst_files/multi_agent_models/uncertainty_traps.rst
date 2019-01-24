@@ -29,7 +29,7 @@ In the model,
 
 * The output of active entrepreneurs is observable, supplying a noisy signal that helps everyone inside the model infer fundamentals
 
-* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via :doc:`Kalman filtering <kalman>`
+* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via :doc:`Kalman filtering <../tools_and_techniques/kalman>`
 
 Uncertainty traps emerge because:
 
