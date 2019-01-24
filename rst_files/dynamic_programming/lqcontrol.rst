@@ -26,11 +26,11 @@ Moreover, while the linear-quadratic structure is restrictive, it is in fact far
 
 These themes appear repeatedly below
 
-Mathematically, LQ control problems are closely related to :doc:`the Kalman filter <kalman>`
+Mathematically, LQ control problems are closely related to :doc:`the Kalman filter <../tools_and_techniques/kalman>`
 
 * Recursive formulations of linear-quadratic control problems and Kalman filtering problems both involve matrix **Riccati equations**
 
-* Classical formulations of linear control and linear filtering problems make use of similar matrix decompositions (see for example :doc:`this lecture <lu_tricks>` and :doc:`this lecture <classical_filtering>`)
+* Classical formulations of linear control and linear filtering problems make use of similar matrix decompositions (see for example :doc:`this lecture <../time_series_models/lu_tricks>` and :doc:`this lecture <../time_series_models/classical_filtering>`)
 
 In reading what follows, it will be useful to have some familiarity with
 

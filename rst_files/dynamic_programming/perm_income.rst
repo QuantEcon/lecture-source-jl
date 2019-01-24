@@ -42,7 +42,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 The Savings Problem
 ====================
@@ -148,7 +148,7 @@ Assumptions
 
 For the remainder of this lecture, we follow Friedman and Hall in assuming that :math:`(1 + r)^{-1} = \beta`
 
-Regarding the endowment process, we assume it has the :doc:`state-space representation <linear_models>`
+Regarding the endowment process, we assume it has the :doc:`state-space representation <../tools_and_techniques/linear_models>`
 
 .. math::
     :label: sprob15ab
@@ -427,7 +427,7 @@ Then we can express equation  :eq:`pi_ssr` as
     \end{aligned}
 
 
-We can use the following formulas from :doc:`linear state space models <linear_models>` to compute population mean :math:`\mu_t = \mathbb{E}    x_t` and covariance :math:`\Sigma_t := \mathbb{E} [ (x_t - \mu_t) (x_t - \mu_t)']`
+We can use the following formulas from :doc:`linear state space models <../tools_and_techniques/linear_models>` to compute population mean :math:`\mu_t = \mathbb{E}    x_t` and covariance :math:`\Sigma_t := \mathbb{E} [ (x_t - \mu_t) (x_t - \mu_t)']`
 
 
 .. math::
@@ -713,7 +713,7 @@ Cross-Sectional Implications
 -----------------------------------
 
 Consider again :eq:`sprob16abcd`, this time in light of our discussion of
-distribution dynamics in the :doc:`lecture on linear systems <linear_models>`
+distribution dynamics in the :doc:`lecture on linear systems <../tools_and_techniques/linear_models>`
 
 The dynamics of :math:`c_t` are given by
 
@@ -1001,7 +1001,7 @@ In the same discussion in :cite:`Ljungqvist2012` it is shown that :math:`K \in [
 
 In other words, :math:`K` increases as the ratio of the standard deviation of the permanent shock to that of the transitory shock increases
 
-Please see  :doc:`first look at the Kalman filter <kalman>`
+Please see  :doc:`first look at the Kalman filter <../tools_and_techniques/kalman>`
 
 Applying formulas :eq:`sprob16abcd` implies
 

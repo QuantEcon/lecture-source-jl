@@ -201,7 +201,7 @@ Creating Arrays from Existing Arrays
 
 For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own
 
-The reasons for this, discussed in more detail in :doc:`this lecture <generic_programming>`, are to ensure both clarity and generality
+The reasons for this, discussed in more detail in :doc:`this lecture <../more_julia/generic_programming>`, are to ensure both clarity and generality
 
 One place this can be inconvenient is when we need to create an array based on an existing array
 
@@ -1479,7 +1479,7 @@ Given these parameters
   :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and
   :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
 
-Later, we will interpret some of these in :doc:`this lecture <lln_clt>`
+Later, we will interpret some of these in :doc:`this lecture <../tools_and_techniques/lln_clt>`
 
 Exercise 3
 --------------
@@ -1565,7 +1565,7 @@ Now let's do the same thing using QuantEcon's ``solve_discrete_lyapunov()`` func
 .. code-block:: julia
     :class: hide-output
 
-    using QuantEcon 
+    using QuantEcon
 
 .. code-block:: julia
 

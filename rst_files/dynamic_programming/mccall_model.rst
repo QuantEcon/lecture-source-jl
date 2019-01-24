@@ -395,7 +395,7 @@ To understand why, first recall that ``v_iv`` is a function argument -- either d
 
 As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone
 
-In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Julia by Example lecture <julia_by_example>`  to find the fixed point of the :math:`T` operator
+In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the :math:`T` operator
 
 .. code-block:: julia
 

@@ -122,7 +122,7 @@ We will cover "environments" more in depth :ref:`later <jl_packages>`
 Starting Jupyter
 ------------------
 
-Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on :doc:`version control <version_control>`)
+Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on :doc:`version control <../more_julia/version_control>`)
 
 1. Install `git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/>`_
 
@@ -206,7 +206,7 @@ Using Julia on the Web
 If you have access to an online Julia installation, it is the easiest way to get started
 
 Eventually, you will want to do a :ref:`local installation <jl_jupyterlocal>` in order to use other
-:doc:`tools and editors <tools_editors>` such as `Atom/Juno <http://junolab.org/>`_, but
+:doc:`tools and editors <../more_julia/tools_editors>` such as `Atom/Juno <http://junolab.org/>`_, but
 don't let the environment get in the way of learning the language
 
 .. _jl_jupyterhub:
