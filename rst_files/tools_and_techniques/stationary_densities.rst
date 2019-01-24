@@ -29,7 +29,7 @@ In this lecture, our focus will be on continuous Markov models that
 
 The fact that we accommodate nonlinear models here is significant, because
 linear stochastic models have their own highly developed tool set, as we'll
-see :doc:`later on <arma>`
+see :doc:`later on <../time_series_models/arma>`
 
 The question that interests us most is: Given a particular stochastic dynamic
 model, how will the state of the system evolve over time?

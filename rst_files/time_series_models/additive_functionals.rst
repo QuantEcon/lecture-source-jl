@@ -95,7 +95,7 @@ systematic but random *arithmetic growth*
 A linear state space representation
 -----------------------------------
 
-One way to represent the overall dynamics is to use a :doc:`linear state space system <linear_models>`
+One way to represent the overall dynamics is to use a :doc:`linear state space system <../tools_and_techniques/linear_models>`
 
 To do this, we set up state and observation vectors
 
@@ -207,7 +207,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 .. code-block:: julia
     :class: test
@@ -733,7 +733,7 @@ It is convenient for us to introduce the following notation:
 
 We want to characterize and simulate components :math:`\tau_t, m_t, s_t` of the decomposition.
 
-A convenient way to do this is to construct an appropriate instance of a :doc:`linear state space system <linear_models>` by using `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
+A convenient way to do this is to construct an appropriate instance of a :doc:`linear state space system <../tools_and_techniques/linear_models>` by using `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
 
 This will allow us to use the routines in `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ to study dynamics
 

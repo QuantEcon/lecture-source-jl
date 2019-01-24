@@ -12,7 +12,7 @@ Classical Control with Linear Algebra
 Overview
 ============
 
-In an earlier lecture :doc:`Linear Quadratic Dynamic Programming Problems<lqcontrol>` we have studied how to solve a special
+In an earlier lecture :doc:`Linear Quadratic Dynamic Programming Problems <../dynamic_programming/lqcontrol>` we have studied how to solve a special
 class of dynamic optimization and prediction problems by applying the method of dynamic programming. In this class of problems
 
   * the objective function is **quadratic** in **states** and **controls**
@@ -23,7 +23,7 @@ class of dynamic optimization and prediction problems by applying the method of 
 
 In this lecture and a companion lecture :doc:`Classical Filtering with Linear Algebra<classical_filtering>`, we study the classical theory of linear-quadratic (LQ) optimal control problems.
 
-The classical approach does not use the two closely related methods -- dynamic programming and  Kalman filtering -- that we describe in other lectures, namely, :doc:`Linear Quadratic Dynamic Programming Problems<lqcontrol>` and :doc:`A First Look at the Kalman Filter<kalman>`
+The classical approach does not use the two closely related methods -- dynamic programming and  Kalman filtering -- that we describe in other lectures, namely, :doc:`Linear Quadratic Dynamic Programming Problems <../dynamic_programming/lqcontrol>` and :doc:`A First Look at the Kalman Filter <../tools_and_techniques/kalman>`
 
 Instead they use either
 
@@ -99,7 +99,7 @@ Example
 The formulation of the LQ problem given above is broad enough to encompass
 many useful models
 
-As a simple illustration, recall that in :doc:`lqcontrol` we consider a monopolist facing stochastic demand
+As a simple illustration, recall that in :doc:`lqcontrol <../dynamic_programming/lqcontrol>` we consider a monopolist facing stochastic demand
 shocks and adjustment costs
 
 Let's consider a deterministic version of this problem, where the monopolist

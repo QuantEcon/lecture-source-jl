@@ -1013,7 +1013,7 @@ We leave it to the reader to apply the usual isomorphism to deduce the correspon
 Government Manipulation of  Arrow Securities Prices
 ----------------------------------------------------
 
-In :doc:`optimal taxation in an LQ economy<lqramsey>` and :doc:`recursive optimal taxation <opt_tax_recur>`, we study **complete-markets**
+In :doc:`optimal taxation in an LQ economy <../dynamic_programming_squared/lqramsey>` and :doc:`recursive optimal taxation <../dynamic_programming_squared/opt_tax_recur>`, we study **complete-markets**
 models in which the government recognizes that it can manipulate  Arrow securities prices
 
 In :doc:`optimal taxation with incomplete markets <../dynamic_programming_squared/amss>`, we study an **incomplete-markets** model in which the government  manipulates asset prices

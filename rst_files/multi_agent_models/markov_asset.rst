@@ -277,7 +277,7 @@ You can think of
 
 * :math:`\ln g_t = \ln (d_{t+1} / d_t)` is the growth rate of dividends
 
-(For a refresher on notation and theory for finite Markov chains see :doc:`this lecture <finite_markov>`)
+(For a refresher on notation and theory for finite Markov chains see :doc:`this lecture <../tools_and_techniques/finite_markov>`)
 
 The next figure shows a simulation, where
 
@@ -424,7 +424,7 @@ Here's the code, including a test of the spectral radius condition
 
     @testset begin
         @test v[2] ≈ 3.4594684257743284 atol = 1e-7
-        @test v[1] ≈ 3.2560393349907755 
+        @test v[1] ≈ 3.2560393349907755
         @test v[5] ≈ 4.526909446326235
         @test K[8] ≈ 8.887213530262768e-10
     end

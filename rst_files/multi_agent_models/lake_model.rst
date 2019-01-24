@@ -39,7 +39,7 @@ The "flows" between the lakes are caused by
 For the first part of this lecture, the parameters governing transitions into
 and out of unemployment and employment are exogenous
 
-Later, we'll determine some of these transition rates endogenously using the :doc:`McCall search model <mccall_model>`
+Later, we'll determine some of these transition rates endogenously using the :doc:`McCall search model <../dynamic_programming/mccall_model>`
 
 We'll also use some nifty concepts like ergodicity, which provides a fundamental link between *cross-sectional* and *long run time series* distributions
 
@@ -49,9 +49,9 @@ Prerequisites
 -------------
 
 Before working through what follows, we recommend you read the :doc:`lecture
-on finite Markov chains <finite_markov>`
+on finite Markov chains <../tools_and_techniques/finite_markov>`
 
-You will also need some basic :doc:`linear algebra <linear_algebra>` and probability
+You will also need some basic :doc:`linear algebra <../tools_and_techniques/linear_algebra>` and probability
 
 The Model
 =========
@@ -389,7 +389,7 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 Dynamics of an Individual Worker
 ================================
 
-An individual worker's employment dynamics are governed by a :doc:`finite state Markov process <finite_markov>`
+An individual worker's employment dynamics are governed by a :doc:`finite state Markov process <../tools_and_techniques/finite_markov>`
 
 The worker can be in one of two states:
 
@@ -420,7 +420,7 @@ We know :ref:`from an earlier discussion <mc_md>` that :math:`\psi_t` follows th
 
     \psi_{t+1} = \psi_t P
 
-We also know from the :doc:`lecture on finite Markov chains <finite_markov>`
+We also know from the :doc:`lecture on finite Markov chains <../tools_and_techniques/finite_markov>`
 that if :math:`\alpha \in (0, 1)` and :math:`\lambda \in (0, 1)`, then
 :math:`P` has a unique stationary distribution, denoted here by :math:`\psi^*`
 
@@ -533,7 +533,7 @@ We now make the hiring rate endogenous
 
 The transition rate from unemployment to employment will be determined by the McCall search model :cite:`McCall1970`
 
-All details relevant to the following discussion can be found in :doc:`our treatment <mccall_model>` of that model
+All details relevant to the following discussion can be found in :doc:`our treatment <../dynamic_programming/mccall_model>` of that model
 
 Reservation Wage
 ----------------
@@ -545,7 +545,7 @@ are characterized by a reservation wage :math:`\bar w`
 
 *  Otherwise, the worker rejects
 
-As we saw in :doc:`our discussion of the model <mccall_model>`, the reservation wage depends on the wage offer distribution and the parameters
+As we saw in :doc:`our discussion of the model <../dynamic_programming/mccall_model>`, the reservation wage depends on the wage offer distribution and the parameters
 
 * :math:`\alpha`, the separation rate
 
@@ -612,7 +612,7 @@ We use a steady state welfare criterion
 
     W := e \,  {\mathbb E} [V \, | \,  \text{employed}] + u \,  U
 
-where the notation :math:`V` and :math:`U` is as defined in the :doc:`McCall search model lecture <mccall_model>`
+where the notation :math:`V` and :math:`U` is as defined in the :doc:`McCall search model lecture <../dynamic_programming/mccall_model>`
 
 The wage offer distribution will be a discretized version of the lognormal distribution :math:`LN(\log(20),1)`, as shown in the next figure
 
@@ -634,7 +634,7 @@ Following :cite:`davis2006flow`, we set :math:`\alpha`, the hazard rate of leavi
 Fiscal Policy Code
 -----------------------
 
-We will make use of (with some tweaks) the code we wrote in the :doc:`McCall model lecture <mccall_model>`, embedded below for convenience
+We will make use of (with some tweaks) the code we wrote in the :doc:`McCall model lecture <../dynamic_programming/mccall_model>`, embedded below for convenience
 
 .. code-block:: julia
 

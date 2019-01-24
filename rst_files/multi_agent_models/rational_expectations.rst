@@ -25,7 +25,7 @@ This 1971 paper is one of a small number of research articles that kicked off th
 
 We follow Lucas and Prescott by employing a setting that is readily "Bellmanized" (i.e., capable of being formulated in terms of dynamic programming problems)
 
-Because we use linear quadratic setups for demand and costs, we can adapt the LQ programming techniques described in :doc:`this lecture <lqcontrol>`
+Because we use linear quadratic setups for demand and costs, we can adapt the LQ programming techniques described in :doc:`this lecture <../dynamic_programming/lqcontrol>`
 
 We will learn about how a representative agent's problem differs from a planner's, and how a planning problem can be used to compute rational expectations quantities
 
@@ -442,7 +442,7 @@ A Planning Problem Approach
 
 Our plan of attack is to match the Euler equations of the market problem with those for a  single-agent choice problem
 
-As we'll see, this planning problem can be solved by LQ control (:doc:`linear regulator <lqcontrol>`)
+As we'll see, this planning problem can be solved by LQ control (:doc:`linear regulator <../dynamic_programming/lqcontrol>`)
 
 The optimal quantities from the planning problem are rational expectations equilibrium quantities
 

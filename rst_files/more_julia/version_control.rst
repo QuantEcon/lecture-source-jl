@@ -409,7 +409,7 @@ The key pieces are
 
 * A list of the commits we're proposing
 * A list of reviewers, who can approve or modify our changes
-* Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues 
+* Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues
 
 Here's an `example pull request <https://github.com/quanteconuser/example_repository/pull/3>`_
 
@@ -529,7 +529,7 @@ Exercise 1a
 Follow the instructions to create a :ref:`new repository <new_repo_workflow>` for one of your GitHub accounts
 In this repository
 
-* Take the code from one of your previous assignments, such as :ref:`Newton's method <jbe_ex8a>` in :doc:`Introductory Examples <julia_by_example>` (either as a ``.jl`` file or a Jupyter notebook)
+* Take the code from one of your previous assignments, such as :ref:`Newton's method <jbe_ex8a>` in :doc:`Introductory Examples <../getting_started_julia/julia_by_example>` (either as a ``.jl`` file or a Jupyter notebook)
 * Put in a ``README.md`` with some text
 * Put in a ``.gitignore`` file, ignoring the Jupyter files ``.ipynb_checkpoints`` and the project files, ``.projects``
 

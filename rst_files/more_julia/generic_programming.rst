@@ -87,7 +87,7 @@ Concrete types (i.e., ``Float64`` or ``Array{Float64, 2}``) are the data structu
     @show typeof(x) <: Any;
 
 
-Beyond the ``typeof`` and ``supertype`` functions, a few other useful tools for analyzing the tree of types are discussed in the :doc:`introduction to types lecture <introduction_to_types>`
+Beyond the ``typeof`` and ``supertype`` functions, a few other useful tools for analyzing the tree of types are discussed in the :doc:`introduction to types lecture <../getting_started_julia/introduction_to_types>`
 
 .. code-block:: julia
 
