@@ -41,14 +41,14 @@ In this lecture, we'll
 
 * show how the solution to the LQ permanent income model can be obtained using LQ control methods
 
-* represent the model as a linear state space system as in :doc:`this lecture <linear_models>`
+* represent the model as a linear state space system as in :doc:`this lecture <../tools_and_techniques/linear_models>`
 
 * apply `QuantEcon <http://quantecon.org/julia_index.html>`__'s `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__ type to characterize statistical features of the consumer's optimal consumption and borrowing plans
 
 We'll then use these characterizations to construct a simple model of cross-section wealth and
 consumption dynamics in the spirit of Truman Bewley :cite:`Bewley86`
 
-(Later we'll study other Bewley models---see :doc:`this lecture <aiyagari>`)
+(Later we'll study other Bewley models---see :doc:`this lecture <../multi_agent_models/aiyagari>`)
 
 The model will prove useful for illustrating concepts such as
 
@@ -65,7 +65,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 
 Introduction
@@ -172,7 +172,7 @@ For the purposes of this lecture, let's assume :math:`\{y_t\}` is a second-order
 
 
 We can map this into the linear state space framework in :eq:`sprob15ab2`, as
-discussed in our lecture on  :doc:`linear models<linear_models>`
+discussed in our lecture on  :doc:`linear models <../tools_and_techniques/linear_models>`
 
 To do so we take
 

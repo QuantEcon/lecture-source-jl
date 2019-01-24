@@ -11,7 +11,7 @@ Dynamic Stackelberg Problems
 Overview
 ========
 
-Previous lectures including :doc:`LQ dynamic programming <lqcontrol>`, :doc:`rational expectations equilibrium <rational_expectations>`, and :doc:`Markov perfect equilibrium <markov_perf>`  lectures have studied  decision problems that are recursive in what we can call "natural" state variables, such as
+Previous lectures including :doc:`LQ dynamic programming <../dynamic_programming/lqcontrol>`, :doc:`rational expectations equilibrium <../multi_agent_models/rational_expectations>`, and :doc:`Markov perfect equilibrium <../multi_agent_models/markov_perf>`  lectures have studied  decision problems that are recursive in what we can call "natural" state variables, such as
 
 * stocks of capital (fiscal, financial and human)
 * wealth
@@ -64,7 +64,7 @@ It is based on chapter 19 of :cite:`Ljungqvist2012`
 The Stackelberg Problem
 =======================
 
-We use the optimal linear regulator (a.k.a. the linear-quadratic dynamic programming problem described in :doc:`LQ Dynamic Programming problems <lqcontrol>`)  to solve a linear quadratic version of what is known as a dynamic Stackelberg problem
+We use the optimal linear regulator (a.k.a. the linear-quadratic dynamic programming problem described in :doc:`LQ Dynamic Programming problems <../dynamic_programming/lqcontrol>`)  to solve a linear quadratic version of what is known as a dynamic Stackelberg problem
 
 For now we refer to the Stackelberg leader as the government and the Stackelberg follower as the representative agent or private sector
 
@@ -175,7 +175,7 @@ So we solve equation :eq:`eqn:xlawforward` forward to get
 In choosing :math:`u_t` for :math:`t \geq 1` at time :math:`0`, the government  takes into account how future :math:`z` and :math:`u` affect earlier
 :math:`x` through equation :eq:`bell101`.
 
-A :ref:`certainty equivalence principle <lq_cert_eq>` allows us to work with a nonstochastic model (see :doc:`LQ dynamic programming <lqcontrol>`)
+A :ref:`certainty equivalence principle <lq_cert_eq>` allows us to work with a nonstochastic model (see :doc:`LQ dynamic programming <../dynamic_programming/lqcontrol>`)
 
 That is, we would attain the same decision rule if we were to replace :math:`x_{t+1}` with the forecast :math:`E_t x_{t+1}` and to add a shock process :math:`C \epsilon_{t+1}` to the right side of :eq:`new30`, where :math:`\epsilon_{t+1}` is an IID random vector with mean  zero and identity covariance matrix
 
@@ -281,7 +281,7 @@ Substituting :math:`v(y) = - y'P y` into  Bellman equation :eq:`bell1_dyn_stack`
 
     -y' P y = {\rm max}_{  u, y^*} \left\{ -  y' R y -   u'Q     u - \beta y^{* \prime} P y^* \right\}
 
-which as in  lecture :doc:`linear regulator <lqcontrol>` gives rise to the algebraic matrix Riccati equation
+which as in  lecture :doc:`linear regulator <../dynamic_programming/lqcontrol>` gives rise to the algebraic matrix Riccati equation
 
 .. math::
     :label: bell3_dyn_stack
@@ -405,7 +405,7 @@ This is true because at :math:`t=0`, there are no past promises about :math:`u` 
 But the multipliers :math:`\mu_x` take nonzero values thereafter, reflecting future costs to the government of confirming the private sector's
 earlier expectations about its time :math:`t` actions
 
-From  the :doc:`linear regulator <lqcontrol>` lecture, the formula :math:`\mu_t = P y_t` for the vector of
+From  the :doc:`linear regulator <../dynamic_programming/lqcontrol>` lecture, the formula :math:`\mu_t = P y_t` for the vector of
 shadow prices on the transition equations is
 
 .. math::

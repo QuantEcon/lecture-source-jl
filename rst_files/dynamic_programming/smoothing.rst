@@ -70,15 +70,15 @@ We'll spend most of this lecture studying the finite-state Markov specification,
 Relationship to Other Lectures
 ------------------------------
 
-This lecture can be viewed as a followup to :doc:`perm_income_cons` and  a warm up for a model of tax smoothing described in :doc:`opt_tax_recur`
+This lecture can be viewed as a followup to :doc:`perm_income_cons` and  a warm up for a model of tax smoothing described in :doc:`opt_tax_recur <../dynamic_programming_squared/opt_tax_recur>`
 
-Linear-quadratic versions of the Lucas-Stokey tax-smoothing model are described in :doc:`lqramsey`
+Linear-quadratic versions of the Lucas-Stokey tax-smoothing model are described in :doc:`lqramsey <../dynamic_programming_squared/lqramsey>`
 
 The key differences between those lectures and this one are
 
 * Here the decision maker takes all prices as exogenous, meaning that his decisions do not affect them
 
-* In :doc:`lqramsey` and :doc:`opt_tax_recur`, the decision maker -- the government in the case of these lectures -- recognizes that his decisions affect prices
+* In :doc:`lqramsey <../dynamic_programming_squared/lqramsey>` and :doc:`opt_tax_recur <../dynamic_programming_squared/opt_tax_recur>`, the decision maker -- the government in the case of these lectures -- recognizes that his decisions affect prices
 
 So these later lectures are partly about how the government should  manipulate prices of government debt
 
@@ -354,7 +354,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using Parameters, Plots, QuantEcon, Random
     gr(fmt = :png);
 
@@ -793,7 +793,7 @@ In that model, there were
 
 * incomplete markets: the consumer could trade only a single risk-free one-period bond bearing gross one-period risk-free interest rate equal to :math:`\beta^{-1}`
 
-* the consumer's exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about :doc:`linear state space models <linear_models>`
+* the consumer's exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about :doc:`linear state space models <../tools_and_techniques/linear_models>`
 
 We'll write down a complete markets counterpart of that model
 
@@ -1016,4 +1016,4 @@ Government Manipulation of  Arrow Securities Prices
 In :doc:`optimal taxation in an LQ economy<lqramsey>` and :doc:`recursive optimal taxation <opt_tax_recur>`, we study **complete-markets**
 models in which the government recognizes that it can manipulate  Arrow securities prices
 
-In :doc:`optimal taxation with incomplete markets <amss>`, we study an **incomplete-markets** model in which the government  manipulates asset prices
+In :doc:`optimal taxation with incomplete markets <../dynamic_programming_squared/amss>`, we study an **incomplete-markets** model in which the government  manipulates asset prices

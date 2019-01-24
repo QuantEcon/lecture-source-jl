@@ -72,7 +72,7 @@ The next two types use curly bracket notation to express the fact that they are 
     @show typeof(1.0 + 1im)
     @show typeof(ones(2, 2));
 
-We will learn more details about :doc:`generic programming <generic_programming>` later, but the key is to interpret the curly brackets as swappable parameters for a given type
+We will learn more details about :doc:`generic programming <../more_julia/generic_programming>` later, but the key is to interpret the curly brackets as swappable parameters for a given type
 
 For example, ``Array{Float64, 2}`` can be read as
 
@@ -233,7 +233,7 @@ And the ``subtypes`` which gives a list of the available subtypes for any packag
 Deducing and Declaring Types
 =============================
 
-We will discuss this in detail in :doc:`generic programming <generic_programming>`,
+We will discuss this in detail in :doc:`generic programming <../more_julia/generic_programming>`,
 but much of Julia's performance gains and generality of notation comes from its type system
 
 For example
@@ -950,7 +950,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 Exercise 2
 -------------
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from :doc:`the Kalman lecture <kalman>`
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from :doc:`the Kalman lecture <../tools_and_techniques/kalman>`
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 

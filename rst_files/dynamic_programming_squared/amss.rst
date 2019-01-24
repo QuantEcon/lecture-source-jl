@@ -97,7 +97,7 @@ where
 
 The government imposes a flat rate tax :math:`\tau_t(s^t)` on labor income at time :math:`t`, history :math:`s^t`
 
-Lucas and Stokey assumed that there are complete markets in one-period Arrow securities; also see :doc:`smoothing models<smoothing>`
+Lucas and Stokey assumed that there are complete markets in one-period Arrow securities; also see :doc:`smoothing models <../dynamic_programming/smoothing>`
 
 It is at this point that AMSS :cite:`AMSS_2002` modify the Lucas and Stokey economy
 
