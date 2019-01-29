@@ -649,7 +649,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using Plots, Plots.PlotMeasures, QuantEcon
 
 .. code-block:: julia
@@ -663,7 +663,7 @@ Setup
     r = 0.05
     β = 1 / (1 + r)
     T = 45
-    c_bar = 2.0
+    c̄ = 2.0
     σ = 0.25
     μ = 1.0
     q = 1e6
@@ -672,7 +672,7 @@ Setup
     Q = 1.0
     R = zeros(2, 2)
     Rf = zeros(2, 2); Rf[1, 1] = q
-    A = [1 + r -c_bar + μ; 0  1]
+    A = [1 + r -c̄ + μ; 0  1]
     B = [-1.0, 0]
     C = [σ, 0]
 
@@ -683,7 +683,7 @@ Setup
 
     # convert back to assets, consumption and income
     assets = vec(xp[1, :]) # a_t
-    c = vec(up .+ c_bar) # c_t
+    c = vec(up .+ c̄) # c_t
     income = vec(σ * wp[1, 2:end] .+ μ) # y_t
 
     # plot results
@@ -743,7 +743,7 @@ relatively more weight on later consumption values
 
     # convert back to assets, consumption and income
     assets = vec(xp[1, :]) # a_t
-    c = vec(up .+ c_bar) # c_t
+    c = vec(up .+ c̄) # c_t
     income = vec(σ * wp[1, 2:end] .+ μ) # y_t
 
     # plot results
@@ -1313,7 +1313,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     r = 0.05
     β = 1 / (1 + r)
     T = 50
-    c_bar = 1.5
+    c̄ = 1.5
     σ = 0.15
     μ = 2
     q = 1e4
@@ -1324,7 +1324,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
     Q = 1.0
     R = zeros(4, 4)
     Rf = zeros(4, 4); Rf[1, 1] = q
-    A = [1 + r -c_bar m1 m2;
+    A = [1 + r -c̄ m1 m2;
          0     1      0  0;
          0     1      1  0;
          0     1      2  1]
@@ -1338,7 +1338,7 @@ where :math:`\{w_t\}` is iid :math:`N(0, 1)` and the coefficients
 
     # convert results back to assets, consumption and income
     ap = vec(xp[1, 1:end]) # assets
-    c = vec(up .+ c_bar) # consumption
+    c = vec(up .+ c̄) # consumption
     time = 1:T
     income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2 # income
 
@@ -1371,7 +1371,7 @@ the lecture.
     β = 1/(1 + r)
     T = 60
     K = 40
-    c_bar = 4
+    c̄ = 4
     σ = 0.35
     μ = 4
     q = 1e4
@@ -1383,7 +1383,7 @@ the lecture.
     Q = 1.0
     R = zeros(4, 4)
     Rf = zeros(4, 4); Rf[1, 1] = q
-    A = [1+r  s-c_bar 0 0;
+    A = [1+r  s-c̄ 0 0;
          0     1      0 0;
          0     1      1 0;
          0     1      2 1]
@@ -1406,7 +1406,7 @@ the lecture.
     # formulate LQ problem 2 (working life)
     Q = 1.0
     R = zeros(4, 4)
-    A = [1 + r -c_bar m1 m2;
+    A = [1 + r -c̄ m1 m2;
          0     1      0  0;
          0     1      1  0;
          0     1      2  1]
@@ -1428,7 +1428,7 @@ the lecture.
     assets = vec(xp[1, :]) # assets
 
     up = [up_w up_r]
-    c = vec(up .+ c_bar) # consumption
+    c = vec(up .+ c̄) # consumption
 
     time = 1:K
     income_w = σ * vec(wp_w[1, 2:K+1]) + m1 .* time + m2 .* time.^2 # income
@@ -1516,11 +1516,11 @@ Our solution code is
     # simulate state / control paths
     x0 = [m0, 2, 1]
     xp, up, wp = compute_sequence(lq, x0, 150)
-    q_bar = vec(xp[1, :])
+    q̄ = vec(xp[1, :])
     q = vec(xp[2, :])
 
     # plot simulation results
-    p3 = plot(eachindex(q), [q_bar q],
+    p3 = plot(eachindex(q), [q̄ q],
               lab = ["q bar" "q"],
               color = [:black :blue],
               xaxis = "Time", title = "Dynamics with γ = $γ",
@@ -1532,5 +1532,6 @@ Our solution code is
 
     @testset begin
         @test xp[20] ≈ 2.8378651501210808
-        @test q_bar[25] ≈ 2.518687537862516
+        @test q̄[25] ≈ 2.518687537862516
     end
+    

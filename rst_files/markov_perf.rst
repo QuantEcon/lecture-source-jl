@@ -40,7 +40,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat, QuantEcon 
+    using LinearAlgebra, Statistics, Compat, QuantEcon
 
 Background
 ================
@@ -831,14 +831,14 @@ resulting dynamics of :math:`\{q_t\}`, starting at :math:`q_0 = 2.0`
     A = B = 1
     lq_alt = QuantEcon.LQ(Q, R, A, B, bet=β)
     P, F, d = stationary_values(lq_alt)
-    q_bar = a0 / (2.0 * a1)
+    q̄ = a0 / (2.0 * a1)
     qm = zeros(n)
     qm[1] = 2
-    x0 = qm[1]-q_bar
+    x0 = qm[1]-q̄
     x = x0
     for i in 2:n
         x = A * x - B * F[1] * x
-        qm[i] = float(x) + q_bar
+        qm[i] = float(x) + q̄
     end
     pm = a0 .- a1 * qm
 

@@ -34,11 +34,11 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat 
-    using Distributions, Expectations, Parameters, NLsolve, Plots 
+    using LinearAlgebra, Statistics, Compat
+    using Distributions, Expectations, Parameters, NLsolve, Plots
 
 The Model
 ============
@@ -169,7 +169,7 @@ and
     :label: bell02_mccall
 
     U = u(c) +
-      \beta (1 - \gamma) U + 
+      \beta (1 - \gamma) U +
       \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i
 
 Solving the Bellman Equations
@@ -203,7 +203,7 @@ and
     :label: bell2001
 
     U_{n+1} = u(c) +
-        \beta (1 - \gamma) U_n + 
+        \beta (1 - \gamma) U_n +
         \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i
 
 
@@ -213,15 +213,15 @@ Formally, we can define a "Bellman operator" T which maps:
 
 .. math::
     :label: bellman_operator
-          
-    TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U 
-          
+
+    TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U
+
 In which case we are searching for a fixed point
-    
+
 .. math::
     :label: bellman_operator_fp
-          
-    TV^{*} = V^*              
+
+    TV^{*} = V^*
 
 As before, the system always converges to the true solutions---in this case,
 the :math:`V` and :math:`U` that solve :eq:`bell01_mccall` and :eq:`bell02_mccall`
@@ -239,21 +239,21 @@ Let's implement this iterative process
 
     using Test
 
-.. code-block:: julia 
+.. code-block:: julia
 
     using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
 
-    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, 
+    function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                                 iter = 2_000)
         # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
-        @unpack α, β, σ, c, γ, w, dist, u = mcm 
-        
+        @unpack α, β, σ, c, γ, w, dist, u = mcm
+
         # parameter validation
         @assert c > 0.0
-        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here 
-        
-        # necessary objects 
-        u_w = u.(w, σ) 
+        @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here
+
+        # necessary objects
+        u_w = u.(w, σ)
         u_c = u(c, σ)
         E = expectation(dist) # expectation operator for wage distribution
 
@@ -262,25 +262,25 @@ Let's implement this iterative process
             V = x[1:end-1]
             U = x[end]
             [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
-        end 
+        end
 
-        # value function iteration  
+        # value function iteration
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero 
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero
         V = xstar[1:end-1]
         U = xstar[end]
-        
+
         # compute the reservation wage 
         wbarindex = searchsortedfirst(V .- U, 0.0)
         if wbarindex >= length(w) # if this is true, you never want to accept
-            w_bar = Inf
+            w̄ = Inf
         else
-            w_bar = w[wbarindex] # otherwise, return the number
+            w̄ = w[wbarindex] # otherwise, return the number
         end
 
-        # return a NamedTuple, so we can select values by name  
-        return (V = V, U = U, w_bar = w_bar) 
-    end 
+        # return a NamedTuple, so we can select values by name
+        return (V = V, U = U, w̄ = w̄)
+    end
 
 The approach is to iterate until successive iterates are closer together than some small tolerance level
 
@@ -293,17 +293,17 @@ We'll use the default parameterizations found in the code above
 .. code-block:: julia
 
     # a default utility function
-    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ) 
+    u(c, σ) = (c^(1 - σ) - 1) / (1 - σ)
 
     # model constructor
-    McCallModel = @with_kw (α = 0.2, 
-        β = 0.98, # discount rate 
-        γ = 0.7, 
-        c = 6.0, # unemployment compensation 
-        σ = 2.0, 
-        u = u, # utility function 
+    McCallModel = @with_kw (α = 0.2,
+        β = 0.98, # discount rate
+        γ = 0.7,
+        c = 6.0, # unemployment compensation
+        σ = 2.0,
+        u = u, # utility function
         w = range(10, 20, length = 60), # wage values
-        dist = BetaBinomial(59, 600, 400)) # distribution over wage values 
+        dist = BetaBinomial(59, 600, 400)) # distribution over wage values
 
 .. code-block:: julia
 
@@ -327,7 +327,7 @@ We'll use the default parameterizations found in the code above
 
 The value :math:`V` is increasing because higher :math:`w` generates a higher wage flow conditional on staying employed
 
-At this point, it's natural to ask how the model would respond if we perturbed the parameters 
+At this point, it's natural to ask how the model would respond if we perturbed the parameters
 
 These calculations, called comparative statics, are performed in the next section
 
@@ -446,30 +446,30 @@ we can create an array for reservation wages for different values of :math:`c`,
 
     models = [McCallModel(c = cval) for cval in c_vals]
     sols = solve_mccall_model.(models)
-    w_bar_vals = [sol.w_bar for sol in sols] 
-    
+    w̄_vals = [sol.w̄ for sol in sols]
+
     plot(c_vals,
-        w_bar_vals,
+        w̄_vals,
         lw = 2,
         α = 0.7,
         xlabel = "unemployment compensation",
         ylabel = "reservation wage",
-        label = "w_bar as a function of c")
+        label = "w̄ as a function of c")
 
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large)
 
 .. code-block:: julia
 
-    w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals]; 
-    # doesn't allocate new arrays for models and solutions 
+    w̄_vals = [solve_mccall_model(McCallModel(c = cval)).w̄ for cval in c_vals];
+    # doesn't allocate new arrays for models and solutions
 
 .. code-block:: julia
     :class: test
 
     @testset "Solutions 1 Tests" begin
-        @test w_bar_vals[10] ≈ 11.35593220338983
+        @test w̄_vals[10] ≈ 11.35593220338983
         @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25
-        @test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791 
+        @test w̄_vals[17] - c_vals[17] ≈ 4.72316384180791
         # Just a sanity check on how these things relate.
     end
 
@@ -482,19 +482,19 @@ Similar to above, we can plot :math:`\bar w` against :math:`\gamma` as follows
 .. code-block:: julia
 
     γ_vals = range(0.05,  0.95, length = 25)
-    
+
     models = [McCallModel(γ = γval) for γval in γ_vals]
     sols = solve_mccall_model.(models)
-    w_bar_vals = [sol.w_bar for sol in sols]
+    w̄_vals = [sol.w̄ for sol in sols]
 
-    plot(γ_vals, w_bar_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
-         ylabel = "reservation wage", label = "w_bar as a function of gamma")
+    plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
+         ylabel = "reservation wage", label = "w̄ as a function of gamma")
 
 .. code-block:: julia
     :class: test
 
     @testset "Solutions 2 Tests" begin
-        @test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
+        @test w̄_vals[17] ≈ 11.35593220338983 # same as w̄_vals[10] before.
         @test γ_vals[1] ≈ 0.05 && γ_vals[end] ≈ 0.95 && length(γ_vals) == 25
     end
 

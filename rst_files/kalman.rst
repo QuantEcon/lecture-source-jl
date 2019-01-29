@@ -37,7 +37,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 The Basic Idea
 ====================
@@ -111,7 +111,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     # set up prior objects
     Σ = [0.4  0.3
          0.3  0.45]
-    x_hat = [0.2, -0.2]
+    x̂ = [0.2, -0.2]
 
     # define G and R from the equation y = Gx + N(0, R)
     G = I # this is a generic identity object that conforms to the right dimensions
@@ -129,7 +129,7 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
     y_grid = range(-3.1, 1.7, length = 100)
 
     # generate distribution
-    dist = MvNormal(x_hat, Σ)
+    dist = MvNormal(x̂, Σ)
     two_args_to_pdf(dist) = (x, y) -> pdf(dist, [x, y]) # returns a function to be plotted
 
     # plot
@@ -221,11 +221,11 @@ The original density is left in as contour lines for comparison
 
     # define posterior objects
     M = Σ * G' * inv(G * Σ * G' + R)
-    x_hat_F = x_hat + M * (y - G * x_hat)
+    x̂_F = x̂ + M * (y - G * x̂)
     Σ_F = Σ - M * G * Σ
 
     # plot the new density on the old plot
-    newdist = MvNormal(x_hat_F, Symmetric(Σ_F)) # because Σ_F
+    newdist = MvNormal(x̂_F, Symmetric(Σ_F)) # because Σ_F
     contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false,
              color = :lighttest, cbar = false)
     contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
@@ -334,9 +334,9 @@ the update has used parameters
 .. code-block:: julia
 
     # get the predictive distribution
-    new_x_hat = A * x_hat_F
+    new_x̂ = A * x̂_F
     new_Σ = A * Σ_F * A' + Q
-    predictdist = MvNormal(new_x_hat, Symmetric(new_Σ))
+    predictdist = MvNormal(new_x̂, Symmetric(new_Σ))
 
     # plot Density 3
     contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1, 
@@ -351,7 +351,7 @@ the update has used parameters
     :class: test
 
     @testset "Prediction Test" begin
-        @test new_x_hat ≈ [1.9199999999999995, 0.26666666666666655]
+        @test new_x̂ ≈ [1.9199999999999995, 0.26666666666666655]
         @test new_Σ ≈ [0.312 0.066; 0.066 0.141]
     end
 
@@ -608,11 +608,11 @@ Exercise 1
     # parameters
     θ = 10
     A, G, Q, R = 1.0, 1.0, 0.0, 1.0
-    x_hat_0, Σ_0 = 8.0, 1.0
+    x̂_0, Σ_0 = 8.0, 1.0
 
     # initialize Kalman filter
     kalman = Kalman(A, G, Q, R)
-    set_state!(kalman, x_hat_0, Σ_0)
+    set_state!(kalman, x̂_0, Σ_0)
 
     xgrid = range(θ - 5, θ + 2, length = 200)
     densities = zeros(200, 5) # one column per round of updating
@@ -649,7 +649,7 @@ Exercise 2
     Random.seed!(42)  # reproducible results
     ϵ = 0.1
     kalman = Kalman(A, G, Q, R)
-    set_state!(kalman, x_hat_0, Σ_0)
+    set_state!(kalman, x̂_0, Σ_0)
 
     nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
 
@@ -697,11 +697,11 @@ Exercise 3
     # define the prior density
     Σ = [0.9 0.3
             0.3 0.9]
-    x_hat = [8, 8]
+    x̂ = [8, 8]
 
     # initialize the Kalman filter
     kn = Kalman(A, G, Q, R)
-    set_state!(kn, x_hat, Σ)
+    set_state!(kn, x̂, Σ)
 
     # set the true initial value of the state
     x = zeros(2)
