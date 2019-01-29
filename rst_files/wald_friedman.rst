@@ -160,11 +160,11 @@ Setup
 
 .. literalinclude:: /_static/includes/deps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat 
-    using Distributions, Parameters, Printf, Random, Roots, StatPlots, Plots
+    using LinearAlgebra, Statistics, Compat
+    using Distributions, Parameters, Printf, Random, Roots, Plots
 
 .. code-block:: julia
     :class: test
@@ -173,6 +173,8 @@ Setup
 
 .. code-block:: julia
 
+    using StatsPlots
+
     begin
         base_dist = [Beta(1, 1), Beta(3, 3)]
         mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
@@ -180,7 +182,7 @@ Setup
              plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"],
                   title = "Distribution Mixtures"),
              # Global settings across both plots
-             ylab = "Density", ylim = (0, 2), layout = (2, 1) 
+             ylab = "Density", ylim = (0, 2), layout = (2, 1)
              )
     end
 

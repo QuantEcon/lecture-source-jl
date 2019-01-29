@@ -286,7 +286,7 @@ Setup
     :class: hide-output
 
     using LinearAlgebra, Statistics, Compat
-    using Distributions, Expectations, NLsolve, Roots, Random, StatPlots, Parameters
+    using Distributions, Expectations, NLsolve, Roots, Random, Plots, Parameters
 
 .. code-block:: julia
     :class: test
@@ -305,6 +305,8 @@ Here's the distribution of wage offers we'll work with
     dist = BetaBinomial(n, 200, 100) # probability distribution
     @show support(dist)
     w = range(10.0, 60.0, length = n+1) # linearly space wages
+
+    using StatsPlots
     plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
 
 We can explore taking expectations over this distribution
@@ -637,4 +639,3 @@ Here's one solution
     @testset begin
         @test stop_times[4] ≈ 8.1627
     end
-

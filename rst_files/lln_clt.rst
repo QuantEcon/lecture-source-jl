@@ -215,7 +215,7 @@ Setup
 .. code-block:: julia
 
     using LinearAlgebra, Statistics, Compat
-    using StatPlots, Distributions, Random, Statistics
+    using Plots, Distributions, Random, Statistics
     gr(fmt = :png, size = (900, 500))
 
 .. code-block:: julia
@@ -447,6 +447,8 @@ Here's some code that does exactly this for the exponential distribution
 (Please experiment with other choices of :math:`F`, but remember that, to conform with the conditions of the CLT, the distribution must have finite second moment)
 
 .. code-block:: julia
+
+    using StatsPlots
 
     function simulation1(distribution, n = 250, k = 10_000)
         σ = std(distribution)
