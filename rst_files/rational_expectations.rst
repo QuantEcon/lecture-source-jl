@@ -153,7 +153,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
 
 
 Defining Rational Expectations Equilibrium
@@ -867,7 +867,7 @@ The following code implements this test
   :class: test
 
   @testset begin
-    @test h0 ≈ 96.94871794872053
+    @test h0 ≈ 95.081891001308
   end
 
 The output tells us that the answer is pair (iii), which implies
