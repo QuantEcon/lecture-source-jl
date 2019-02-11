@@ -72,7 +72,7 @@ Julia Setup
 .. code-block:: julia
     :class: no-execute
 
-    git config -- global user.name "Your Name"
+    git config --global user.name "Your Name"
 
 **Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets
 
