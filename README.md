@@ -14,8 +14,8 @@ using Pkg
 pkg"add IJulia; precompile"
 pkg"add InstantiateFromURL; precompile"
 using InstantiateFromURL
-activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.5")
-activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.5")
+activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.6")
+activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.6")
 ```
 
 This may take a long time, as it will install and precompile every package used by the lecture notes.
@@ -25,12 +25,12 @@ This may take a long time, as it will install and precompile every package used 
   1. In the main directory of the repo: `make jupyter` or `make jupyter-tests` if you want it with testing code
     * Alternatively, you could edit `rst_files/conf.py` and modify the setting `jupyter_drop_tests = False`
   2. Execute all of the notebooks with `./run-all-notebooks.sh`.  This will take a long-time the first execution.
-  3. `cd` to the `/notebooks` directory, and run `jupyter lab` to examine them. 
+  3. `cd` to the `/notebooks` directory, and run `jupyter lab` to examine them.
 
-## Contributing 
+## Contributing
 
-All contributions should be made through PR. If you aren't an admin on the repo, you might need an admin review before the PR is mergeable. You can request reviews from the right hand dropdown. 
+All contributions should be made through PR. If you aren't an admin on the repo, you might need an admin review before the PR is mergeable. You can request reviews from the right hand dropdown.
 
 ## Development Tools
 
-On top of the above, we have the following dev scripts: 
+On top of the above, we have the following dev scripts:
