@@ -1,2 +1,2 @@
 using InstantiateFromURL
-activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.6");
+activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.7");

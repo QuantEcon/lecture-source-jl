@@ -18,10 +18,10 @@ Setup
 
 .. literalinclude:: /_static/includes/alldeps_no_using.jl
 
-.. code-block:: julia 
-    :class: hide-output 
+.. code-block:: julia
+    :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics, Compat
     using ForwardDiff, Flux, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve
     using LeastSquaresOptim, Flux.Tracker
     using Flux.Tracker: update!
@@ -57,7 +57,7 @@ There are essentially four ways to calculate the gradient or Jacobian on a compu
 
 * Automatic Differentiation
 
-    * Essentially the same as symbolic differentiation, just occurring at a different time in the compilation process 
+    * Essentially the same as symbolic differentiation, just occurring at a different time in the compilation process
     * Equivalent to analytical derivatives since it uses the chain rule, etc.
 
 We will explore AD packages in Julia rather than the alternatives
@@ -163,7 +163,7 @@ Flux.jl
 
 Another is `Flux.jl <https://github.com/FluxML/Flux.jl>`_, a machine learning library in Julia
 
-AD is one of the main reasons that machine learning has become so powerful in 
+AD is one of the main reasons that machine learning has become so powerful in
 recent years, and is an essential component of any machine learning package
 
 .. code-block:: julia
@@ -239,16 +239,16 @@ The other reason is that different types of optimization problems require differ
 Optim.jl
 ---------------------
 
-A good pure-Julia solution for the (unconstrained or box-bounded) optimization of 
+A good pure-Julia solution for the (unconstrained or box-bounded) optimization of
 univariate and multivariate function is the `Optim.jl <https://github.com/JuliaNLSolvers/Optim.jl>`_ package
 
-By default, the algorithms in ``Optim.jl`` target minimization rather than 
+By default, the algorithms in ``Optim.jl`` target minimization rather than
 maximization, so if a function is called ``optimize`` it will mean minimization
 
 Univariate Functions on Bounded Intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`Univariate optimization <http://julianlsolvers.github.io/Optim.jl/stable/#user/minimization/#minimizing-a-univariate-function-on-a-bounded-interval>`_ 
+`Univariate optimization <http://julianlsolvers.github.io/Optim.jl/stable/#user/minimization/#minimizing-a-univariate-function-on-a-bounded-interval>`_
 defaults to a robust hybrid optimization routine called `Brent's method <https://en.wikipedia.org/wiki/Brent%27s_method>`_
 
 .. code-block:: julia
@@ -348,7 +348,7 @@ For derivative-free methods, you can change the algorithm -- and have no need to
 However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global-convergence properties
 
 
-See the `maximum likelihood <http://julianlsolvers.github.io/Optim.jl/stable/#examples/generated/maxlikenlm/>`_ 
+See the `maximum likelihood <http://julianlsolvers.github.io/Optim.jl/stable/#examples/generated/maxlikenlm/>`_
 example and the accompanying `Jupyter notebook <https://nbviewer.jupyter.org/github/JuliaNLSolvers/Optim.jl/blob/gh-pages/v0.15.3/examples/generated/maxlikenlm.ipynb>`_
 
 JuMP.jl
@@ -356,7 +356,7 @@ JuMP.jl
 
 The `JuMP.jl <https://github.com/JuliaOpt/JuMP.jl>`_ package is an ambitious implementation of a modelling language for optimization problems in Julia
 
-In that sense, it is more like an AMPL (or Pyomo) built on top of the Julia 
+In that sense, it is more like an AMPL (or Pyomo) built on top of the Julia
 language with macros, and able to use a variety of different commerical and open source solvers
 
 If you have a linear, quadratic, conic, mixed-integer linear, etc. problem then this will likely be the ideal "meta-package" for calling various solvers
@@ -367,55 +367,54 @@ See the `quick start guide <http://www.juliaopt.org/JuMP.jl/0.18/quickstart.html
 
 The following is an example of calling a linear objective with a nonlinear constraint (provided by an external function)
 
-Here ``Ipopt`` stands for ``Interior Point OPTimizer``, a `nonlinear solver <https://github.com/JuliaOpt/Ipopt.jl>`_ in Julia 
+Here ``Ipopt`` stands for ``Interior Point OPTimizer``, a `nonlinear solver <https://github.com/JuliaOpt/Ipopt.jl>`_ in Julia
 
 .. code-block:: julia
 
-    using JuMP, Ipopt
-    # solve
-    # max( x[1] + x[2] )
-    # st sqrt(x[1]^2 + x[2]^2) <= 1
+	using JuMP, Ipopt
+	# solve
+	# max( x[1] + x[2] )
+	# st sqrt(x[1]^2 + x[2]^2) <= 1
 
-    function squareroot(x) # pretending we don't know sqrt()
-        z = x # Initial starting point for Newton’s method
-        while abs(z*z - x) > 1e-13
-            z = z - (z*z-x)/(2z)
-        end
-        return z
-    end
-    m = Model(solver = IpoptSolver())
-    # need to register user defined functions for AD
-    JuMP.register(m,:squareroot, 1, squareroot, autodiff=true)
+	function squareroot(x) # pretending we don't know sqrt()
+	    z = x # Initial starting point for Newton’s method
+	    while abs(z*z - x) > 1e-13
+	        z = z - (z*z-x)/(2z)
+	    end
+	    return z
+	end
+	m = Model(with_optimizer(Ipopt.Optimizer))
+	# need to register user defined functions for AD
+	JuMP.register(m,:squareroot, 1, squareroot, autodiff=true)
 
-    @variable(m, x[1:2], start=0.5) # start is the initial condition
-    @objective(m, Max, sum(x))
-    @NLconstraint(m, squareroot(x[1]^2+x[2]^2) <= 1)
-    @show solve(m)
+	@variable(m, x[1:2], start=0.5) # start is the initial condition
+	@objective(m, Max, sum(x))
+	@NLconstraint(m, squareroot(x[1]^2+x[2]^2) <= 1)
+	@show JuMP.optimize!(m)
 
 
 And this is an example of a quadratic objective
 
 .. code-block:: julia
 
-    # solve
-    # min (1-x)^2 + 100(y-x^2)^2)
-    # st x + y >= 10
+	# solve
+	# min (1-x)^2 + 100(y-x^2)^2)
+	# st x + y >= 10
 
-    using JuMP,Ipopt
-    m = Model(solver = IpoptSolver(print_level=0)) # settings for the solver
-    @variable(m, x, start = 0.0)
-    @variable(m, y, start = 0.0)
+	using JuMP,Ipopt
+	m = Model(with_optimizer(Ipopt.Optimizer)) # settings for the solver
+	@variable(m, x, start = 0.0)
+	@variable(m, y, start = 0.0)
 
-    @NLobjective(m, Min, (1-x)^2 + 100(y-x^2)^2)
+	@NLobjective(m, Min, (1-x)^2 + 100(y-x^2)^2)
 
-    solve(m)
-    println("x = ", getvalue(x), " y = ", getvalue(y))
+	JuMP.optimize!(m)
+	println("x = ", value(x), " y = ", value(y))
 
-    # adding a (linear) constraint
-    @constraint(m, x + y == 10)
-    solve(m)
-    println("x = ", getvalue(x), " y = ", getvalue(y))
-
+	# adding a (linear) constraint
+	@constraint(m, x + y == 10)
+	JuMP.optimize!(m)
+	println("x = ", value(x), " y = ", value(y))
 
 BlackBoxOptim.jl
 ---------------------
@@ -544,7 +543,7 @@ From the documentation
 **Note:** Because there is a name clash between ``Optim.jl`` and this package, to use both we need to qualify the use of the ``optimize`` function (i.e. ``LeastSquaresOptim.optimize``)
 
 
-Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobian, 
+Here, by default it will use AD with ``ForwardDiff.jl`` to calculate the Jacobian,
 but you could also provide your own calculation of the Jacobian (analytical or using finite differences) and/or calculate the function inplace
 
 .. code-block:: julia
@@ -567,7 +566,7 @@ but you could also provide your own calculation of the Jacobian (analytical or u
                                     f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
 
 
-Additional Notes 
+Additional Notes
 ====================
 
 Watch `this video <https://www.youtube.com/watch?v=vAp6nUMrKYg&feature=youtu.be>`_ from one of Julia's creators on automatic differentiation
