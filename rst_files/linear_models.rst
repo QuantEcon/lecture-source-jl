@@ -1574,9 +1574,9 @@ Exercise 4
     :class: test
 
     @testset "Exercise 4 Tests" begin
-        @test ys[4][7] == 0.011484225879516554
-        @test ar.A[1, 4] == 0.5
-        @test Σ_y[1] == 0.020833333252863163
+        @test ys[4][7] ≈ 0.011484225879516554
+        @test ar.A[1, 4] ≈ 0.5
+        @test Σ_y[1] ≈ 0.020833333252863163
     end
 
 .. rubric:: Footnotes
