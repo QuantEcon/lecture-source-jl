@@ -383,6 +383,8 @@ jupyter_static_file_path = ["_static"]
 jupyter_default_lang = "julia"
 
 # Configure Jupyter Kernels
+jupyter_default_lang = "julia"
+
 jupyter_kernels = {
     "python3": {
         "kernelspec": {
