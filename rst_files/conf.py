@@ -380,6 +380,8 @@ jupyter_write_metadata = False
 jupyter_static_file_path = ["_static"]
 
 # Configure Jupyter Kernels
+jupyter_default_lang = "julia"
+
 jupyter_kernels = {
     "python3": {
         "kernelspec": {
@@ -391,9 +393,9 @@ jupyter_kernels = {
     },
     "julia": {
         "kernelspec": {
-            "display_name": "Julia",
+            "display_name": "Julia 1.1.0",
             "language": "julia",
-            "name": "julia-1.0"
+            "name": "julia-1.1"
             },
         "file_extension": ".jl"
     }
@@ -411,7 +413,7 @@ jupyter_headers = {
 # Filename for the file containing the welcome block
 jupyter_welcome_block = ""
 
-#Allow .. only:: html pass through 
+#Allow .. only:: html pass through
 jupyter_allow_html_only = True
 jupyter_target_html_urlpath = "https://lectures.quantecon.org/jl/"
 
