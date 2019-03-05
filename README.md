@@ -29,7 +29,3 @@ This may take a long time, as it will install and precompile every package used 
 ## Contributing
 
 All contributions should be made through PR. If you aren't an admin on the repo, you might need an admin review before the PR is mergeable. You can request reviews from the right hand dropdown.
-
-## Development Tools
-
-On top of the above, we have the following dev scripts:
