@@ -23,7 +23,6 @@ This may take a long time, as it will install and precompile every package used 
 ## Generating, testing, and executing the notebooks
 - To generate the notebooks and execute them
   1. In the main directory of the repo: `make jupyter` or `make jupyter-tests` if you want it with testing code
-    * Alternatively, you could edit `rst_files/conf.py` and modify the setting `jupyter_drop_tests = False`
   2. Execute all of the notebooks with `./run-all-notebooks.sh`.  This will take a long-time the first execution.
   3. `cd` to the `/notebooks` directory, and run `jupyter lab` to examine them.
 
