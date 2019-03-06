@@ -35,15 +35,15 @@ The model features
 
 After first presenting the model in a space of sequences, we shall represent it
 recursively in terms of two Bellman equations formulated along lines that we
-encountered in :doc:`Dynamic Stackelberg models <dyn_stack>`
+encountered in :doc:`Dynamic Stackelberg models <../dynamic_programming_squared/dyn_stack>`
 
-As in :doc:`Dynamic Stackelberg models <dyn_stack>`, to apply dynamic programming
+As in :doc:`Dynamic Stackelberg models <../dynamic_programming_squared/dyn_stack>`, to apply dynamic programming
 we shall define the state vector artfully
 
 In particular, we shall include forward-looking variables that summarize  optimal
 responses of private agents to a Ramsey plan
 
-See :doc:`Optimal taxation <lqramsey>` for an analysis within a linear-quadratic setting
+See :doc:`Optimal taxation <../dynamic_programming_squared/lqramsey>` for an analysis within a linear-quadratic setting
 
 Setup
 ------------------
@@ -613,7 +613,7 @@ We shall discuss this more below
 Specification with CRRA Utility
 ----------------------------------------
 
-In our calculations below and in a :doc:`subsequent lecture <amss>` based on an extension of the Lucas-Stokey model
+In our calculations below and in a :doc:`subsequent lecture <../dynamic_programming_squared/amss>` based on an extension of the Lucas-Stokey model
 by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`, we shall modify the one-period utility function assumed above.
 
 (We adopted the preceding utility specification because it was the one used in  the original :cite:`LucasStokey1983` paper)
@@ -1896,7 +1896,7 @@ Instead the government raises the tax rate when :math:`g_t` is high
 Further Comments
 ======================
 
-A :doc:`related lecture <amss>` describes an extension of the Lucas-Stokey model
+A :doc:`related lecture <../dynamic_programming_squared/amss>` describes an extension of the Lucas-Stokey model
 by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`
 
 In th AMSS economy, only a risk-free bond is traded

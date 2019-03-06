@@ -13,7 +13,7 @@
 Overview
 ============
 
-In this lecture we'll continue our :doc:`earlier study <optgrowth>` of the stochastic optimal growth model
+In this lecture we'll continue our :doc:`earlier study <../dynamic_programming/optgrowth>` of the stochastic optimal growth model
 
 In that lecture we solved the associated discounted dynamic programming problem using value function iteration
 
@@ -25,12 +25,12 @@ The stochastic optimal growth model has plenty of structure to exploit for this 
 
 We'll use this structure to obtain an **Euler equation**  based method that's more efficient than value function iteration for this and some other closely related applications
 
-In a :doc:`subsequent lecture <egm_policy_iter>` we'll see that the numerical implementation part of the Euler equation method can be further adjusted to obtain even more efficiency
+In a :doc:`subsequent lecture <../dynamic_programming/egm_policy_iter>` we'll see that the numerical implementation part of the Euler equation method can be further adjusted to obtain even more efficiency
 
 The Euler Equation
 ==========================
 
-Let's take the model set out in :doc:`the stochastic growth model lecture <optgrowth>` and add the assumptions that
+Let's take the model set out in :doc:`the stochastic growth model lecture <../dynamic_programming/optgrowth>` and add the assumptions that
 
 #. :math:`u` and :math:`f` are continuously differentiable and strictly concave
 
@@ -413,7 +413,7 @@ Setup
     K(g, grid, β, ∂u∂c, f, f′, shocks) =
         K!(similar(g), g, grid, β, ∂u∂c, f, f′, shocks)
 
-It has some similarities to the code for the Bellman operator in our :doc:`optimal growth lecture <optgrowth>`
+It has some similarities to the code for the Bellman operator in our :doc:`optimal growth lecture <../dynamic_programming/optgrowth>`
 
 For example, it evaluates integrals by Monte Carlo and approximates functions using linear interpolation
 
@@ -454,11 +454,11 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 Testing on the Log / Cobb--Douglas case
 ------------------------------------------
 
-As we :doc:`did for value function iteration <optgrowth>`, let's start by
+As we :doc:`did for value function iteration <../dynamic_programming/optgrowth>`, let's start by
 testing our method in the presence of a model that does have an analytical
 solution
 
-Here's an object containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <optgrowth>`
+Here's an object containing data from the log-linear growth model we used in the :doc:`value function iteration lecture <../dynamic_programming/optgrowth>`
 
 .. code-block:: julia
 

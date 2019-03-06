@@ -53,11 +53,11 @@ How to Read this Lecture
 
 We use dynamic programming many applied lectures, such as
 
-* The :doc:`shortest path lecture <short_path>`
+* The :doc:`shortest path lecture <../dynamic_programming/short_path>`
 
-* The :doc:`McCall search model lecture <mccall_model>`
+* The :doc:`McCall search model lecture <../dynamic_programming/mccall_model>`
 
-* The :doc:`optimal growth lecture <optgrowth>`
+* The :doc:`optimal growth lecture <../dynamic_programming/optgrowth>`
 
 The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case
 
@@ -725,7 +725,7 @@ Here's how we could set up these objects for the preceding example
 Exercises
 =========
 
-In the stochastic optimal growth lecture :doc:`dynamic programming lecture <optgrowth>`, we solve a
+In the stochastic optimal growth lecture :doc:`dynamic programming lecture <../dynamic_programming/optgrowth>`, we solve a
 :ref:`benchmark model <benchmark_growth_mod>` that has an analytical solution to check we could replicate it numerically
 
 The exercise is to replicate this solution using ``DiscreteDP``
