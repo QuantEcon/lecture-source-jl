@@ -40,7 +40,7 @@ Hansen and Sargent :cite:`Hans_Sarg_book_2016` (chs. 5 and 6) describe discrete 
 
 In this lecture we discuss the former (i.e., additive functionals)
 
-In the :doc:`next lecture <multiplicative_functionals>` we discuss multiplicative functionals
+In the :doc:`next lecture <../time_series_models/multiplicative_functionals>` we discuss multiplicative functionals
 
 We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent :cite:`Hans_Sarg_book_2016`
 

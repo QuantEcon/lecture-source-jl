@@ -18,7 +18,7 @@ Co-authored with Chase Coleman and Balint Szoke
 Overview
 ========
 
-This lecture is a sequel to the :doc:`lecture on additive functionals <additive_functionals>`
+This lecture is a sequel to the :doc:`lecture on additive functionals <../time_series_models/additive_functionals>`
 
 That lecture
 

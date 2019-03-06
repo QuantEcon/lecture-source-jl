@@ -16,7 +16,7 @@ Asset Pricing II: The Lucas Asset Pricing Model
 Overview
 =====================================
 
-As stated in an :doc:`earlier lecture <markov_asset>`, an asset is a claim on a stream of prospective payments
+As stated in an :doc:`earlier lecture <../multi_agent_models/markov_asset>`, an asset is a claim on a stream of prospective payments
 
 What is the correct price to pay for such a claim?
 
@@ -26,7 +26,7 @@ While we mentioned some consequences of Lucas' model :ref:`earlier <mass_pra>`, 
 
 A side benefit of studying Lucas' model is that it provides a beautiful illustration of model building in general and equilibrium pricing in competitive models in particular
 
-Another difference to our :doc:`first asset pricing lecture <markov_asset>` is that the state space and shock will be continous rather than discrete
+Another difference to our :doc:`first asset pricing lecture <../multi_agent_models/markov_asset>` is that the state space and shock will be continous rather than discrete
 
 The Lucas Model
 ========================

@@ -41,7 +41,7 @@ In this lecture we focus on
 Further Reading
 ----------------
 
-For background and foundational concepts, see our lecture :doc:`on linear algebra <linear_algebra>`
+For background and foundational concepts, see our lecture :doc:`on linear algebra <../tools_and_techniques/linear_algebra>`
 
 For more proofs and greater theoretical detail, see `A Primer in Econometric Theory <http://www.johnstachurski.net/emet.html>`_
 
@@ -642,7 +642,7 @@ One description of this procedure is as follows:
 
 The sequence :math:`u_1, \ldots, u_k` has the stated properties
 
-A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in :doc:`A First Look at the Kalman filter<kalman>`
+A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in :doc:`A First Look at the Kalman filter<../tools_and_techniques/kalman>`
 
 In some exercises below you are asked to implement this algorithm and test it using projection
 
