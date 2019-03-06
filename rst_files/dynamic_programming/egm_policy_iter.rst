@@ -15,8 +15,8 @@ Overview
 
 We solved the stochastic optimal growth model using
 
-#. :doc:`value function iteration <optgrowth>`
-#. :doc:`Euler equation based time iteration <coleman_policy_iter>`
+#. :doc:`value function iteration <../dynamic_programming/optgrowth>`
+#. :doc:`Euler equation based time iteration <../dynamic_programming/coleman_policy_iter>`
 
 We found time iteration to be significantly more accurate at each step
 
@@ -38,7 +38,7 @@ Let's start by reminding ourselves of the theory and then see how the numerics f
 Theory
 ------
 
-Take the model set out in :doc:`the time iteration lecture <coleman_policy_iter>`, following the same terminology and notation
+Take the model set out in :doc:`the time iteration lecture <../dynamic_programming/coleman_policy_iter>`, following the same terminology and notation
 
 The Euler equation is
 
@@ -63,13 +63,13 @@ It returns a new function :math:`Kg`,  where :math:`(Kg)(y)` is the :math:`c \in
 Exogenous Grid
 -------------------
 
-As discussed in :doc:`the lecture on time iteration <coleman_policy_iter>`, to implement the method on a computer we need numerical approximation
+As discussed in :doc:`the lecture on time iteration <../dynamic_programming/coleman_policy_iter>`, to implement the method on a computer we need numerical approximation
 
 In particular, we represent a policy function by a set of values on a finite grid
 
 The function itself is reconstructed from this representation when necessary, using interpolation or some other method
 
-:doc:`Previously <coleman_policy_iter>`, to obtain a finite representation of an updated consumption policy we
+:doc:`Previously <../dynamic_programming/coleman_policy_iter>`, to obtain a finite representation of an updated consumption policy we
 
 * fixed a grid of income points :math:`\{y_i\}`
 
@@ -203,9 +203,9 @@ Let's test out the code above on some example parameterizations, after the follo
 Testing on the Log / Cobb--Douglas case
 ------------------------------------------
 
-As we :doc:`did for value function iteration <optgrowth>` and :doc:`time iteration <coleman_policy_iter>`, let's start by testing our method with the log-linear benchmark
+As we :doc:`did for value function iteration <../dynamic_programming/optgrowth>` and :doc:`time iteration <../dynamic_programming/coleman_policy_iter>`, let's start by testing our method with the log-linear benchmark
 
-The first step is to bring in the model that we used in the :doc:`Coleman policy function iteration <coleman_policy_iter>`
+The first step is to bring in the model that we used in the :doc:`Coleman policy function iteration <../dynamic_programming/coleman_policy_iter>`
 
 .. code-block:: julia
 
@@ -356,7 +356,7 @@ Speed
 Now let's compare the clock times per iteration for the standard Coleman
 operator (with exogenous grid) and the EGM version
 
-We'll do so using the CRRA model adopted in the exercises of the :doc:`Euler equation time iteration lecture <coleman_policy_iter>`
+We'll do so using the CRRA model adopted in the exercises of the :doc:`Euler equation time iteration lecture <../dynamic_programming/coleman_policy_iter>`
 
 Here's the model and some convenient functions
 
