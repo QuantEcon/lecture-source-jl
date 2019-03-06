@@ -24,7 +24,7 @@ This is an essential sub-problem for many representative macroeconomic models
 * etc.
 
 It is related to the decision problem in the :doc:`stochastic optimal growth
-model <optgrowth>` and yet differs in important ways
+model <../dynamic_programming/optgrowth>` and yet differs in important ways
 
 For example, the choice problem for the agent includes an additive income term that leads to an occasionally binding constraint
 
@@ -40,7 +40,7 @@ Our presentation of the model will be relatively brief
     * For further details on economic intuition, implication and models, see :cite:`Ljungqvist2012`
     * Proofs of all mathematical results stated below can be found in `this paper <https://lectures.quantecon.org/_downloads/pi2.pdf>`__
 
-To solve the model we will use Euler equation based time iteration, similar to :doc:`this lecture <coleman_policy_iter>`
+To solve the model we will use Euler equation based time iteration, similar to :doc:`this lecture <../dynamic_programming/coleman_policy_iter>`
 
 This method turns out to be
 
@@ -499,7 +499,7 @@ The following exercises walk you through several applications where policy funct
 
 In exercise 1 you will see that while VFI and TI produce similar results, the latter is much faster
 
-Intuition behind this fact was provided in :doc:`a previous lecture on time iteration <coleman_policy_iter>`
+Intuition behind this fact was provided in :doc:`a previous lecture on time iteration <../dynamic_programming/coleman_policy_iter>`
 
 Exercises
 =============

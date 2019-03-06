@@ -469,7 +469,7 @@ For our assumed quadratic utility function this implies
 
 which is Hall's (1978) conclusion that consumption follows a random walk
 
-As we saw in our first lecture on the :doc:`permanent income model <perm_income>`, this leads to
+As we saw in our first lecture on the :doc:`permanent income model <../dynamic_programming/perm_income>`, this leads to
 
 .. math::
     :label: cs_9
@@ -787,7 +787,7 @@ war in debt and :math:`b_2 = -10`
 Linear State Space Version of Complete Markets Model
 =====================================================
 
-Now we'll use a setting like that in  :doc:`first lecture on the permanent income model <perm_income>`
+Now we'll use a setting like that in  :doc:`first lecture on the permanent income model <../dynamic_programming/perm_income>`
 
 In that model, there were
 
@@ -1003,8 +1003,8 @@ Incomplete Markets Version
 --------------------------
 
 The incomplete markets version of the model with nonfinancial income being governed by a linear state space system
-is described in the first lecture on the :doc:`permanent income model <perm_income>` and the followup
-lecture on  the :doc:`permanent income model <perm_income_cons>`
+is described in the first lecture on the :doc:`permanent income model <../dynamic_programming/perm_income>` and the followup
+lecture on  the :doc:`permanent income model <../dynamic_programming/perm_income_cons>`
 
 In that version, consumption follows a random walk and the consumer's debt follows a process with a unit root
 

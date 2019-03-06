@@ -17,7 +17,7 @@ Job Search II: Search and Separation
 Overview
 ===============
 
-Previously :doc:`we looked <mccall_model>` at the McCall job search model :cite:`McCall1970` as a way of understanding unemployment and worker decisions
+Previously :doc:`we looked <../dynamic_programming/mccall_model>` at the McCall job search model :cite:`McCall1970` as a way of understanding unemployment and worker decisions
 
 One unrealistic feature of the model is that every job is permanent
 
@@ -60,7 +60,7 @@ He wants to maximize
 
     {\mathbb E} \sum_{t=0}^\infty \beta^t u(Y_t)
 
-The only difference from the :doc:`baseline model <mccall_model>` is that
+The only difference from the :doc:`baseline model <../dynamic_programming/mccall_model>` is that
 we've added some flexibility over preferences by introducing a utility function :math:`u`
 
 It satisfies :math:`u'> 0` and :math:`u'' < 0`
@@ -90,7 +90,7 @@ When employed, the agent faces a constant probability :math:`\alpha` of becoming
 
 
 (Note: we do not allow for job search while employed---this topic is taken
-up in a :doc:`later lecture <jv>`)
+up in a :doc:`later lecture <../dynamic_programming/jv>`)
 
 
 Solving the Model using Dynamic Programming
@@ -177,7 +177,7 @@ Solving the Bellman Equations
 
 
 We'll use the same iterative approach to solving the Bellman equations that we
-adopted in the :doc:`first job search lecture <mccall_model>`
+adopted in the :doc:`first job search lecture <../dynamic_programming/mccall_model>`
 
 Here this amounts to
 
