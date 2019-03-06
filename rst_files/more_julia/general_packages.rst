@@ -25,7 +25,7 @@ Not only does this make the libraries more portable, it makes them much easier t
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics
 
-Also see :doc:`data and statistical packages <data_statistical_packages>` and :doc:`optimization, solver, and related packages <optimization_solver_packages>` for more domain specific packages
+Also see :doc:`data and statistical packages <../more_julia/data_statistical_packages>` and :doc:`optimization, solver, and related packages <../more_julia/optimization_solver_packages>` for more domain specific packages
 
 Setup
 ------------------

@@ -320,7 +320,7 @@ However, since most of the algorithms require derivatives, you will often want t
     println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
     "$(results.iterations) iterations")
 
-Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the :doc:`generic programming lecture <generic_programming>` )
+Note that we did not need to use ``ForwardDiff.jl`` directly, as long as our ``f(x)`` function was written to be generic (see the :doc:`generic programming lecture <../more_julia/generic_programming>` )
 
 Alternatively, with an analytical gradient
 

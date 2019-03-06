@@ -48,7 +48,7 @@ This lecture covers the key points
 Requirements
 -------------
 
-You should read our :doc:`earlier lecture <generic_programming>` on types, methods and multiple dispatch before this one
+You should read our :doc:`earlier lecture <../more_julia/generic_programming>` on types, methods and multiple dispatch before this one
 
 Setup
 ------------------
@@ -586,7 +586,7 @@ The main Julia package for benchmarking is `BenchmarkTools.jl <https://www.githu
 
 Below, we'll use the ``@btime`` macro it exports to evaluate the performance of Julia code
 
-As mentioned in an :doc:`earlier lecture <testing>`, we can also save benchmark results to a file and guard against performance regressions in code
+As mentioned in an :doc:`earlier lecture <../more_julia/testing>`, we can also save benchmark results to a file and guard against performance regressions in code
 
 For more, see the package docs
 

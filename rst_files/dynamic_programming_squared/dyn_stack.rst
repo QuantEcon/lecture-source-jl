@@ -759,8 +759,8 @@ Concluding Remarks
 
 This lecture is our first encounter with a class of problems in which optimal decision rules are history dependent [#f12]_
 
-We shall encounter other examples in lectures :doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
-and :doc:`optimal taxation without state-contingent debt <amss>`
+We shall encounter other examples in lectures :doc:`optimal taxation with state-contingent debt <../dynamic_programming_squared/opt_tax_recur>`
+and :doc:`optimal taxation without state-contingent debt <../dynamic_programming_squared/amss>`
 
 Many more examples of  such problems are described in chapters 20-24 of :cite:`Ljungqvist2012`
 
