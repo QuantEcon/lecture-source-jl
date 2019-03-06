@@ -159,7 +159,7 @@ The most feature-rich one for Julia development is `Atom <https://atom.io/>`_, w
 
 There are several reasons to use a text editor like Atom, including
 
-* Git integration (more on this in the :doc:`next lecture <version_control>`)
+* Git integration (more on this in the :doc:`next lecture <../more_julia/version_control>`)
 
 * Painless inspection of variables and data
 
@@ -286,7 +286,7 @@ This way, you can work with (and specify) the dependencies (i.e., required packa
 
 * An ``environment`` is a set of packages specified by a ``Project.toml`` (and optionally, a ``Manifest.toml``)
 
-* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see :doc:`version control <version_control>`)
+* A ``registry`` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see :doc:`version control <../more_julia/version_control>`)
 
 * A ``depot`` is a directory, like ``~/.julia``, which contains assets (compile caches, registries, package source directories, etc.)
 

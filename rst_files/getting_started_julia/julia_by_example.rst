@@ -49,10 +49,10 @@ In this lecture, we will often start with a direct MATLAB/FORTRAN approach which
 Set Up
 --------
 
-We assume that you've worked your way through :doc:`our getting started lecture <getting_started>` already
+We assume that you've worked your way through :doc:`our getting started lecture <../getting_started_julia/getting_started>` already
 
 In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon
-notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :doc:`here <getting_started>`
+notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :doc:`here <../getting_started_julia/getting_started>`
 
 
 Other References

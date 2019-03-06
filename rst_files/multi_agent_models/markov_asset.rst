@@ -142,7 +142,7 @@ It is useful to regard equation :eq:`lteeqs102`   as a generalization of equatio
 
 Equation :eq:`lteeqs102` asserts that the covariance of the stochastic discount factor with the one period payout :math:`d_{t+1} + p_{t+1}` is an important determinant of the price :math:`p_t`
 
-We give examples of some models of stochastic discount factors that have been proposed later in this lecture and also in a :doc:`later lecture <lucas_model>`
+We give examples of some models of stochastic discount factors that have been proposed later in this lecture and also in a :doc:`later lecture <../multi_agent_models/lucas_model>`
 
 The Price-Dividend Ratio
 ------------------------
@@ -468,7 +468,7 @@ As in :cite:`Lucas1978`, suppose that the stochastic discount factor takes the f
 
 where :math:`u` is a concave utility function and :math:`c_t` is time :math:`t` consumption of a representative consumer
 
-(A derivation of this expression is given in a :doc:`later lecture <lucas_model>`)
+(A derivation of this expression is given in a :doc:`later lecture <../multi_agent_models/lucas_model>`)
 
 Assume the existence of an endowment that follows :eq:`mass_fmce`
 

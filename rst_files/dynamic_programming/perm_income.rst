@@ -237,7 +237,7 @@ Now let's deduce the optimal decision rule [#fod]_
 .. note::
 
     One way to solve the consumer's problem is to apply *dynamic programming*
-    as in :doc:`this lecture <lqcontrol>`.  We do this later. But first we use
+    as in :doc:`this lecture <../dynamic_programming/lqcontrol>`.  We do this later. But first we use
     an alternative approach that is revealing and shows the work that dynamic
     programming does for us behind the scenes
 

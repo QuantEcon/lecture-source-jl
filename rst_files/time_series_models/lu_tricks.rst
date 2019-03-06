@@ -21,7 +21,7 @@ class of dynamic optimization and prediction problems by applying the method of 
 
   * shocks are i.i.d. Gaussian or martingale differences
 
-In this lecture and a companion lecture :doc:`Classical Filtering with Linear Algebra<classical_filtering>`, we study the classical theory of linear-quadratic (LQ) optimal control problems.
+In this lecture and a companion lecture :doc:`Classical Filtering with Linear Algebra<../time_series_models/classical_filtering>`, we study the classical theory of linear-quadratic (LQ) optimal control problems.
 
 The classical approach does not use the two closely related methods -- dynamic programming and  Kalman filtering -- that we describe in other lectures, namely, :doc:`Linear Quadratic Dynamic Programming Problems <../dynamic_programming/lqcontrol>` and :doc:`A First Look at the Kalman Filter <../tools_and_techniques/kalman>`
 
@@ -31,7 +31,7 @@ Instead they use either
 
  * matrix decompositions applied to linear systems of first-order conditions for optimum problems.
 
-In this lecture and the sequel :doc:`Classical Filtering with Linear Algebra<classical_filtering>`, we mostly rely on  elementary linear algebra
+In this lecture and the sequel :doc:`Classical Filtering with Linear Algebra<../time_series_models/classical_filtering>`, we mostly rely on  elementary linear algebra
 
 The main tool from linear algebra we'll put to work here is `LU decomposition <https://en.wikipedia.org/wiki/LU_decomposition>`_
 

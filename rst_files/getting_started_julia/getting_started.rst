@@ -32,7 +32,7 @@ While you will eventually use other editors, there are some advantages to starti
 
 * :ref:`Online Jupyter <jl_jupyterhub>` may be available, and requires no installation
 
-We'll discuss the workflow on these features in the :doc:`next lecture <julia_environment>`
+We'll discuss the workflow on these features in the :doc:`next lecture <../getting_started_julia/julia_environment>`
 
 .. _jl_jupyterlocal:
 
@@ -161,7 +161,7 @@ In the resulting terminal session, run
 
     jupyter lab
 
-You can open the :doc:`Interacting with Julia <julia_environment>` notebook to explore this interface and start writing code
+You can open the :doc:`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to explore this interface and start writing code
 
 Git Command Line Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +198,7 @@ Then, run
 
     jupyter lab
 
-And open the :doc:`Interacting With Julia <julia_environment>` lecture (the file ``julia_environment.ipynb`` in the list of notebooks in JupyterLab) to continue
+And open the :doc:`Interacting With Julia <../getting_started_julia/julia_environment>` lecture (the file ``julia_environment.ipynb`` in the list of notebooks in JupyterLab) to continue
 
 Using Julia on the Web
 =====================================
@@ -251,7 +251,7 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run
 
-After this step, open the downloaded :doc:`Interacting with Julia <julia_environment>` notebook to begin writing code
+After this step, open the downloaded :doc:`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to begin writing code
 
 If the QuantEcon notebooks do not work after this installation step, you may need to speak to the JupyterHub administrator
 

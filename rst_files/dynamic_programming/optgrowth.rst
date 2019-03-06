@@ -28,8 +28,8 @@ The model is a version of the standard one sector infinite horizon growth model 
 The technique we use to solve the model is dynamic programming
 
 Our treatment of dynamic programming follows on from earlier
-treatments in our lectures on :doc:`shortest paths <short_path>` and
-:doc:`job search <mccall_model>`
+treatments in our lectures on :doc:`shortest paths <../dynamic_programming/short_path>` and
+:doc:`job search <../dynamic_programming/mccall_model>`
 
 We'll discuss some of the technical details of dynamic programming as we
 go along

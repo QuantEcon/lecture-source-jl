@@ -16,7 +16,7 @@
 Overview
 ========
 
-In a :doc:`previous lecture <finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models
+In a :doc:`previous lecture <../tools_and_techniques/finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models
 
 The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains
 
@@ -84,7 +84,7 @@ Once we've built some intuition we'll cover the general case
 Definitions and Basic Properties
 --------------------------------
 
-In our :doc:`lecture on finite Markov chains <finite_markov>`, we studied discrete time Markov chains that evolve on a finite state space :math:`S`
+In our :doc:`lecture on finite Markov chains <../tools_and_techniques/finite_markov>`, we studied discrete time Markov chains that evolve on a finite state space :math:`S`
 
 In this setting, the dynamics of the model are described by a stochastic matrix --- a nonnegative square matrix :math:`P = P[i, j]` such that each row :math:`P[i, \cdot]` sums to one
 
@@ -603,7 +603,7 @@ One good option is simulation as before, combined with the `empirical distributi
 Stability
 =========
 
-In our :doc:`lecture <finite_markov>` on finite Markov chains we also studied stationarity, stability and ergodicity
+In our :doc:`lecture <../tools_and_techniques/finite_markov>` on finite Markov chains we also studied stationarity, stability and ergodicity
 
 Here we will cover the same topics for the continuous case
 

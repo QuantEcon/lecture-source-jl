@@ -157,7 +157,7 @@ The Model
 
 For simplicity, we present ideas in the context of a class of problems with linear transition laws and quadratic objective functions
 
-To fit in with :doc:`our earlier lecture on LQ control <lqcontrol>`, we will treat loss minimization rather than value maximization
+To fit in with :doc:`our earlier lecture on LQ control <../dynamic_programming/lqcontrol>`, we will treat loss minimization rather than value maximization
 
 To begin, recall the :ref:`infinite horizon LQ problem <lq_ih>`, where an agent chooses a sequence of controls :math:`\{u_t\}` to minimize
 
@@ -251,7 +251,7 @@ Analyzing the Bellman equation
 
 So what does :math:`J` in :eq:`rb_wcb0` look like?
 
-As with the :doc:`ordinary LQ control model <lqcontrol>`, :math:`J` takes the form :math:`J(x) = x' P x` for some symmetric positive definite matrix :math:`P`
+As with the :doc:`ordinary LQ control model <../dynamic_programming/lqcontrol>`, :math:`J` takes the form :math:`J(x) = x' P x` for some symmetric positive definite matrix :math:`P`
 
 One of our main tasks will be to analyze and compute the matrix :math:`P`
 

@@ -12,7 +12,7 @@ Optimal Taxation without State-Contingent Debt
 Overview
 ==========
 
-In :doc:`an earlier lecture <opt_tax_recur>` we described a model of
+In :doc:`an earlier lecture <../dynamic_programming_squared/opt_tax_recur>` we described a model of
 optimal taxation with state-contingent debt due to
 Robert E. Lucas, Jr.,  and Nancy Stokey  :cite:`LucasStokey1983`
 
@@ -46,7 +46,7 @@ Competitive Equilibrium with Distorting Taxes
 ===================================================
 
 
-Many but not all features of the economy are identical to those of :doc:`the Lucas-Stokey economy <opt_tax_recur>`
+Many but not all features of the economy are identical to those of :doc:`the Lucas-Stokey economy <../dynamic_programming_squared/opt_tax_recur>`
 
 Let's start with things that are identical
 
@@ -395,7 +395,7 @@ for the Lucas-Stokey economy
 while the multiplier :math:`\Phi` in the Lucas-Stokey economy is time invariant
 
 
-We need some code from our :doc:`an earlier lecture <opt_tax_recur>`
+We need some code from our :doc:`an earlier lecture <../dynamic_programming_squared/opt_tax_recur>`
 on optimal taxation with state-contingent debt  sequential allocation implementation:
 
 .. code-block:: julia
@@ -703,7 +703,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 
 
 To analyze the AMSS model, we find it useful to adopt a recursive formulation
-using techniques like those in our lectures on :doc:`dynamic Stackelberg models <dyn_stack>` and :doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
+using techniques like those in our lectures on :doc:`dynamic Stackelberg models <../dynamic_programming_squared/dyn_stack>` and :doc:`optimal taxation with state-contingent debt <../dynamic_programming_squared/opt_tax_recur>`
 
 
 
@@ -935,7 +935,7 @@ Along a Ramsey plan, the state variable :math:`x_t = x_t(s^t, b_0)`
 becomes a function of the history :math:`s^t` and initial
 government debt :math:`b_0`
 
-In :doc:`Lucas-Stokey model<opt_tax_recur>`, we
+In :doc:`Lucas-Stokey model<../dynamic_programming_squared/opt_tax_recur>`, we
 found that
 
 * a counterpart to :math:`V_x(x,s)` is time invariant and equal to
@@ -1421,7 +1421,7 @@ We now turn to some examples
 Anticipated One-Period War
 ----------------------------------
 
-In our lecture on :doc:`optimal taxation with state contingent debt <opt_tax_recur>`
+In our lecture on :doc:`optimal taxation with state contingent debt <../dynamic_programming_squared/opt_tax_recur>`
 we studied how the government manages uncertainty in a simple setting
 
 As in that lecture, we assume the one-period utility function
@@ -1437,7 +1437,7 @@ As in that lecture, we assume the one-period utility function
 
 
 We consider the same government expenditure process studied in the lecture on
-:doc:`optimal taxation with state contingent debt <opt_tax_recur>`
+:doc:`optimal taxation with state contingent debt <../dynamic_programming_squared/opt_tax_recur>`
 
 Government expenditures are known for sure in all periods except one
 
@@ -1480,7 +1480,7 @@ The government expenditure at  each state is
     g = \left(\begin{matrix} 0.1\\0.1\\0.1\\0.1\\0.2\\0.1 \end{matrix}\right)
 
 
-We assume the same utility parameters as in the :doc:`Lucas-Stokey economy <opt_tax_recur>`
+We assume the same utility parameters as in the :doc:`Lucas-Stokey economy <../dynamic_programming_squared/opt_tax_recur>`
 
 This utility function is implemented in the following constructor
 
@@ -1628,7 +1628,7 @@ History dependence occurs more dramatically in a case in which the government
 perpetually faces the prospect  of war
 
 This case was studied in the final example of the lecture on
-:doc:`optimal taxation with state-contingent debt <opt_tax_recur>`
+:doc:`optimal taxation with state-contingent debt <../dynamic_programming_squared/opt_tax_recur>`
 
 There, each period the government faces a constant probability, :math:`0.5`, of war
 

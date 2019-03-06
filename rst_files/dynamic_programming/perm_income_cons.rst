@@ -21,7 +21,7 @@ Overview
 
 This lecture continues our analysis of the linear-quadratic (LQ) permanent income model of savings and consumption
 
-As we saw in our :doc:`previous lecture <perm_income>` on this topic, Robert Hall :cite:`Hall1978` used the LQ permanent income model to restrict and interpret intertemporal comovements of nondurable consumption, nonfinancial income, and financial wealth
+As we saw in our :doc:`previous lecture <../dynamic_programming/perm_income>` on this topic, Robert Hall :cite:`Hall1978` used the LQ permanent income model to restrict and interpret intertemporal comovements of nondurable consumption, nonfinancial income, and financial wealth
 
 For example, we saw how the model asserts that for any covariance stationary process for nonfinancial income
 
@@ -72,7 +72,7 @@ Introduction
 ======================
 
 
-Let's recall the basic features of the model  discussed in  :doc:`permanent income model<perm_income>`
+Let's recall the basic features of the model  discussed in  :doc:`permanent income model<../dynamic_programming/perm_income>`
 
 Consumer preferences are ordered  by
 
@@ -104,7 +104,7 @@ and the no-Ponzi condition
 
 
 The interpretation of all variables and parameters are the same as in the
-:doc:`previous lecture <perm_income>`
+:doc:`previous lecture <../dynamic_programming/perm_income>`
 
 We continue to assume that :math:`(1 + r) \beta = 1`
 
@@ -120,7 +120,7 @@ The dynamics of :math:`\{y_t\}` again follow the linear state space model
     \end{aligned}
 
 
-The restrictions on the shock process and parameters are the same as in our :doc:`previous lecture <perm_income>`
+The restrictions on the shock process and parameters are the same as in our :doc:`previous lecture <../dynamic_programming/perm_income>`
 
 
 Digression on a useful isomorphism
@@ -158,7 +158,7 @@ then the two models are mathematically equivalent
 
 All characterizations of a :math:`\{c_t, y_t, b_t\}` in the LQ permanent income model automatically apply to a :math:`\{T_t, G_t, B_t\}` process in the Barro model of tax smoothing
 
-See :doc:`consumption and tax smoothing models <smoothing>` for further exploitation of an isomorphism between consumption and tax smoothing models
+See :doc:`consumption and tax smoothing models <../dynamic_programming/smoothing>` for further exploitation of an isomorphism between consumption and tax smoothing models
 
 
 A specification of the nonfinancial income process
@@ -205,7 +205,7 @@ The LQ Approach
 
 :ref:`Previously <odr_pi>` we solved the permanent income model  by solving a system of linear expectational difference equations subject to two boundary conditions
 
-Here we solve the same model using :doc:`LQ methods <lqcontrol>` based on dynamic programming
+Here we solve the same model using :doc:`LQ methods <../dynamic_programming/lqcontrol>` based on dynamic programming
 
 After confirming that answers produced by the two methods agree, we apply `QuantEcon <http://quantecon.org/julia_index.html>`__'s `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__
 type to illustrate features of the model
@@ -226,7 +226,7 @@ On the other hand, formulating the model in terms of an LQ dynamic programming p
 The LQ Problem
 ---------------------------
 
-Recall from our :doc:`lecture on LQ theory <lqcontrol>` that the optimal linear regulator problem is to choose
+Recall from our :doc:`lecture on LQ theory <../dynamic_programming/lqcontrol>` that the optimal linear regulator problem is to choose
 a decision rule for :math:`u_t` to minimize
 
 .. math::
@@ -336,7 +336,7 @@ Let's write some code to solve the model
 
 One comment before we start is that the bliss level of consumption :math:`\gamma` in the utility function has no effect on the optimal decision rule
 
-We saw this in the previous lecture  :doc:`permanent income <perm_income>`
+We saw this in the previous lecture  :doc:`permanent income <../dynamic_programming/perm_income>`
 
 The reason is that it drops out of the Euler equation for consumption
 
@@ -454,7 +454,7 @@ employing an alternative solution method
 Comparison with the difference equation approach
 --------------------------------------------------------------
 
-In our :doc:`first lecture <perm_income>` on the infinite horizon permanent
+In our :doc:`first lecture <../dynamic_programming/perm_income>` on the infinite horizon permanent
 income problem we used a different solution method
 
 The method was based around
@@ -700,7 +700,7 @@ For our simulation, we have set initial conditions :math:`b_0 = y_{-1} = y_{-2} 
 Because :math:`y_{-1} = y_{-2} = 0`, nonfinancial income :math:`y_t` starts far below its stationary mean :math:`\mu_{y, \infty}` and rises early in each simulation
 
 
-Recall from  the :doc:`previous lecture <perm_income>` that we can represent the optimal decision rule for consumption in terms of the **co-integrating relationship**
+Recall from  the :doc:`previous lecture <../dynamic_programming/perm_income>` that we can represent the optimal decision rule for consumption in terms of the **co-integrating relationship**
 
 .. math::
     :label: old12

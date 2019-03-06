@@ -14,7 +14,7 @@ Overview
 ============
 
 
-In this lecture we consider an extension of the :doc:`previously studied <mccall_model>` job search model of McCall :cite:`McCall1970`
+In this lecture we consider an extension of the :doc:`previously studied <../dynamic_programming/mccall_model>` job search model of McCall :cite:`McCall1970`
 
 In the McCall model, an unemployed worker decides when to accept a permanent position at a specified wage, given
 
@@ -59,7 +59,7 @@ The Basic McCall Model
 .. index::
     single: McCall Model
 
-Recall that, :doc:`in the baseline model <mccall_model>`, an unemployed worker is presented in each period with a
+Recall that, :doc:`in the baseline model <../dynamic_programming/mccall_model>`, an unemployed worker is presented in each period with a
 permanent job offer at wage :math:`W_t`
 
 At time :math:`t`, our worker either

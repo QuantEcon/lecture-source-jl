@@ -39,7 +39,7 @@ Prior to reading the following you might like to review our lectures on
 
 * :doc:`Markov chains <../tools_and_techniques/finite_markov>`
 
-* :doc:`Asset pricing with finite state space <markov_asset>`
+* :doc:`Asset pricing with finite state space <../multi_agent_models/markov_asset>`
 
 
 Bubbles
@@ -299,7 +299,7 @@ Single Belief Prices
 
 We’ll start by pricing the asset under homogeneous beliefs
 
-(This is the case treated in :doc:`the lecture <markov_asset>` on asset pricing with finite Markov states)
+(This is the case treated in :doc:`the lecture <../multi_agent_models/markov_asset>` on asset pricing with finite Markov states)
 
 Suppose that there is only one type of investor, either of type :math:`a` or :math:`b`, and that this investor always "prices the asset"
 
