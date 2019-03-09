@@ -1,30 +1,31 @@
 # "Lectures in Quantitative Economics"-- Julia Version
 
-## Setup Instructions
-1. Clone this repo
-2. Install Conda and Julia on your target operating system.  If on Windows, install the [Windows Substyem for Linux](https://github.com/econtoolkit/tutorials/blob/master/julia/WSL.md)
-3. Assuming that python is in your path, install the dependencies `pip install sphinxcontrib-bibtex`
-4. Clone with `git clone https://github.com/QuantEcon/sphinxcontrib-jupyter`
-5. `cd` to the `sphinxcontrib-jupyter`
-6. Install with `python setup.py install`
-7. In a Julia terminal run
 
-```julia
-using Pkg
-pkg"add IJulia; precompile"
-pkg"add InstantiateFromURL; precompile"
-using InstantiateFromURL
-activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.7")
-activate_github("QuantEcon/QuantEconLectureAllPackages", tag = "v0.9.7")
-```
+## About this Repository 
 
-This may take a long time, as it will install and precompile every package used by the lecture notes.
+This is the source repository for the QuantEcon datascience lectures. 
 
-## Generating, testing, and executing the notebooks
-- To generate the notebooks and execute them
-  1. In the main directory of the repo: `make jupyter` or `make jupyter-tests` if you want it with testing code
-  2. Execute all of the notebooks with `./run-all-notebooks.sh`.  This will take a long-time the first execution.
-  3. `cd` to the `/notebooks` directory, and run `jupyter lab` to examine them.
+## Usage
+
+To build the lectures from source: 
+
+0. Open a terminal (powershell on windows) and `cd` to the location of this file
+
+1. `docker pull arnavsood/jupinx:latest`
+
+2. Start the container:
+  - Powershell: `docker run --name quantecon-docker -it -d -v ${PWD}:/home/jovyan/work arnavsood/jupinx`
+  - Linux/Mac: `docker run --name quantecon-docker -it -d -v "$(pwd)":/home/jovyan/work arnavsood/jupinx`
+
+3. Then `docker exec quantecon-docker bash -c "cd work && ./docker_run.sh"`
+
+4. Once you're done, `docker rm -f quantecon-docker`.
+
+The above includes a call to `make jupyter`.
+
+## Development Tools
+
+We provide `run-all-notebooks.sh`, `run-all-inplace.sh`, and `run-notebook.sh` (which you can run from within the docker by adapting step (3) above, or by starting a terminal with `docker exec -it quantecon-docker /bin/bash` (`/bin/sh` on Powershell?). 
 
 ## Contributing
 
