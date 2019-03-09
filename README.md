@@ -1,9 +1,10 @@
 # "Lectures in Quantitative Economics"-- Julia Version
 
-
 ## About this Repository 
 
-This is the source repository for the QuantEcon datascience lectures. 
+This is the source repository for the QuantEcon Julia-flavored macroeconomics lectures. 
+
+See `LICENSE.md` for licensing and copyright information. 
 
 ## Usage
 
