@@ -17,7 +17,7 @@ To build the lectures from source:
   - Powershell: `docker run --name quantecon-docker -it -d -v ${PWD}:/home/jovyan/work arnavsood/jupinx`
   - Linux/Mac: `docker run --name quantecon-docker -it -d -v "$(pwd)":/home/jovyan/work arnavsood/jupinx`
 
-3. Then `docker exec quantecon-docker bash -c "cd work && ./docker_run.sh"`
+3. Then `docker exec quantecon-docker bash -c "cd work && make jupyter"` (`jupyter-tests` for tests).
 
 4. Once you're done, `docker rm -f quantecon-docker`.
 
