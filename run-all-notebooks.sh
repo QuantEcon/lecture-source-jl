@@ -4,7 +4,8 @@ red=`tput setaf 1` # For errors
 green=`tput setaf 2`
 blue=`tput setaf 4`
 
-for f in $(find _build/jupyter -name "*.ipynb"); do
+parallel() {
+  local run=$1
   lec=$(basename $f) # For ease of use
   if [[ $lec =~ .*index.* ]]; then
     echo "${green} skipping index file: $lec"
@@ -32,4 +33,5 @@ for f in $(find _build/jupyter -name "*.ipynb"); do
       echo "${green} target is not older than source."
     fi
   fi
-done
+}
+for f in $(find notebooks -name "*.ipynb"); do parallel "$f" & done
