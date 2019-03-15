@@ -4,7 +4,27 @@ red=`tput setaf 1` # For errors
 green=`tput setaf 2`
 blue=`tput setaf 4`
 
-for f in $(find _build/jupyter -name "*.ipynb"); do
+open_sem(){
+    mkfifo pipe-$$
+    exec 3<>pipe-$$
+    rm pipe-$$
+    local i=$1
+    for((;i>0;i--)); do
+        printf %s 000 >&3
+    done
+}
+
+run_with_lock(){
+    local x
+    read -u 3 -n 3 x && ((0==x)) || exit $x
+    (
+     ( "$@"; )
+    printf '%.3d' $? >&3
+    )&
+}
+
+run_notebook() {
+  local run=$1
   lec=$(basename $f) # For ease of use
   if [[ $lec =~ .*index.* ]]; then
     echo "${green} skipping index file: $lec"
@@ -32,4 +52,11 @@ for f in $(find _build/jupyter -name "*.ipynb"); do
       echo "${green} target is not older than source."
     fi
   fi
+}
+
+# Specify N the maximum number of processes to spawn
+N=4
+open_sem $N
+for f in $(find _build/jupyter -name "*.ipynb"); do
+  run_with_lock run_notebook $f
 done
