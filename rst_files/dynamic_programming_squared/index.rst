@@ -1,6 +1,6 @@
 .. _topics_in_economic_dynamics:
 
-.. include:: /_static/includes/lecture_howto_jl_full.raw
+.. include:: /_static/includes/header.raw
 
 ***************************************
 Dynamic Programming Squared

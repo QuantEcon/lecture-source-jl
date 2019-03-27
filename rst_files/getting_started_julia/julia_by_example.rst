@@ -1,6 +1,6 @@
 .. _julia_by_example:
 
-.. include:: /_static/includes/lecture_howto_jl_full.raw
+.. include:: /_static/includes/header.raw
 
 ******************************************
 Introductory Examples

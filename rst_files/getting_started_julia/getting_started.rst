@@ -1,6 +1,6 @@
 .. _getting_started:
 
-.. include:: /_static/includes/lecture_howto_jl_full.raw
+.. include:: /_static/includes/header.raw
 
 *************************************
 Setting up Your Julia Environment

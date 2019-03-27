@@ -1,6 +1,6 @@
 .. _learning_julia:
 
-.. include:: /_static/includes/lecture_howto_jl_full.raw
+.. include:: /_static/includes/header.raw
 
 *********************************
 Getting Started with Julia

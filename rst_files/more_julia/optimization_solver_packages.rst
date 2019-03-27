@@ -1,6 +1,6 @@
 .. _optimization_solver_packages:
 
-.. include:: /_static/includes/lecture_howto_jl_full.raw
+.. include:: /_static/includes/header.raw
 
 ***************************************************
 Solvers, Optimizers, and Automatic Differentiation
