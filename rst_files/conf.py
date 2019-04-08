@@ -434,10 +434,10 @@ jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/lectures.quant
 jupyter_execute_notebooks = True
 
 # Location of template folder for coverage reports
-jupyter_template_coverage_file_path = "templates\lectures-nbconvert.tpl"
+jupyter_template_coverage_file_path = "templates/error_report_template.html"
 
 # generate html from IPYNB files
 jupyter_generate_html = True
 
 # html template specific to your website needs
-jupyter_html_template = "/path_to_html_template.tpl"
+jupyter_html_template = "templates/lectures-nbconvert.tpl"
