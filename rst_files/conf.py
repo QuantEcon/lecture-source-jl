@@ -428,7 +428,7 @@ jupyter_target_html = True
 jupyter_drop_tests = True
 
 #Use urlprefix images
-jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static"
+jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/"
 
 #allow execution of notebooks
 jupyter_execute_notebooks = True
