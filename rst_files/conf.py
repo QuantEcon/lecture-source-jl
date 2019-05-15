@@ -418,9 +418,9 @@ jupyter_welcome_block = ""
 
 #Allow .. only:: html pass through
 jupyter_allow_html_only = True
-jupyter_target_html_urlpath = "https://lectures.quantecon.org/jl/"
+jupyter_download_nb_urlpath = "https://lectures.quantecon.org"
 
-
+jupyter_download_nb = True
 #Adjust links to target html (rather than ipynb) when targeting html through nbconvert
 jupyter_target_html = True
 
