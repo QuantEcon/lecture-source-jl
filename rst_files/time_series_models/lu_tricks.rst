@@ -56,6 +56,7 @@ Setup
 
 .. code-block:: julia
 
+    using Polynomials, Plots, Random, Parameters
     using LinearAlgebra, Statistics, Compat
 
 A Control Problem
@@ -887,34 +888,16 @@ Here's how it looks
 .. code-block:: julia
     :class: collapse
 
-    using Polynomials
-
-    struct LQFilter{TR<:Real, TI<:Integer, TF<:AbstractFloat}
-        d::Vector{TF}
-        h::TR
-        y_m::Vector{TF}
-        m::TI
-        ϕ::Vector{TF}
-        β::TR
-        ϕ_r::Union{Vector{TF},Nothing}
-        k::Union{TI,Nothing}
-    end
-
-    function LQFilter(d::Vector{TR},
-                    h::TR,
-                    y_m::Vector{TR};
-                    r::Union{Vector{TR},Nothing}=nothing,
-                    β::Union{TR,Nothing}=nothing,
-                    h_eps::Union{TR,Nothing}=nothing) where TR <: Real
-
+    function LQFilter(d, h, y_m;
+                        r = nothing,
+                        β = nothing,
+                        h_eps = nothing)
 
         m = length(d) - 1
-
-        m == length(y_m) ||
-            throw(ArgumentError("y_m and d must be of same length = $m"))
+        m == length(y_m) || throw(ArgumentError("y_m and d must be of same length = $m"))
 
         # define the coefficients of ϕ up front
-        ϕ = Vector{TR}(undef, 2m + 1)
+        ϕ = zeros(2m + 1)
         for i in -m:m
             ϕ[m-i+1] = sum(diag(d*d', -i))
         end
@@ -922,11 +905,11 @@ Here's how it looks
 
         # if r is given calculate the vector ϕ_r
         if r == nothing
-            k=nothing
+            k = nothing
             ϕ_r = nothing
         else
             k = size(r, 1) - 1
-            ϕ_r = Vector{TR}(undef, 2k + 1)
+            ϕ_r = zeros(2k + 1)
 
             for i = -k:k
                 ϕ_r[k-i+1] = sum(diag(r*r', -i))
@@ -945,13 +928,12 @@ Here's how it looks
             y_m = y_m * β.^(- collect(1:m)/2)
         end
 
-        return LQFilter(d, h, y_m, m, ϕ, β, ϕ_r, k)
+        return (d = d, h = h, y_m = y_m, m = m, ϕ = ϕ, β = β, ϕ_r = ϕ_r, k = k)
     end
 
-    function construct_W_and_Wm(lqf::LQFilter, N::Integer)
+    function construct_W_and_Wm(lqf, N)
 
-        d, m = lqf.d, lqf.m
-
+        @unpack d, m = lqf
         W = zeros(N + 1, N + 1)
         W_m = zeros(N + 1, m)
 
@@ -980,7 +962,7 @@ Here's how it looks
         M
 
         # Euler equations for t = 0, 1, ..., N-(m+1)
-        ϕ, h = lqf.ϕ, lqf.h
+        @unpack ϕ, h = lqf
 
         W[1:(m + 1), 1:(m + 1)] = D_m1 + h * I
         W[1:(m + 1), (m + 2):(2m + 1)] = M
@@ -1000,12 +982,13 @@ Here's how it looks
         return W, W_m
     end
 
-    function roots_of_characteristic(lqf::LQFilter)
-        m, ϕ = lqf.m, lqf.ϕ
+    function roots_of_characteristic(lqf)
+        @unpack m, ϕ = lqf
 
         # Calculate the roots of the 2m-polynomial
         ϕ_poly=Poly(ϕ[end:-1:1])
         proots = roots(ϕ_poly)
+
         # sort the roots according to their length (in descending order)
         roots_sorted = sort(proots, by=abs)[end:-1:1]
         z_0 = sum(ϕ) / polyval(poly(proots), 1.0)
@@ -1014,7 +997,7 @@ Here's how it looks
         return z_1_to_m, z_0, λ
     end
 
-    function coeffs_of_c(lqf::LQFilter)
+    function coeffs_of_c(lqf)
         m = lqf.m
         z_1_to_m, z_0, λ = roots_of_characteristic(lqf)
         c_0 = (z_0 * prod(z_1_to_m) * (-1.0)^m)^(0.5)
@@ -1022,7 +1005,7 @@ Here's how it looks
         return c_coeffs
     end
 
-    function solution(lqf::LQFilter)
+    function solution(lqf)
         z_1_to_m, z_0, λ = roots_of_characteristic(lqf)
         c_0 = coeffs_of_c(lqf)[end]
         A = zeros(lqf.m)
@@ -1033,15 +1016,8 @@ Here's how it looks
         return λ, A
     end
 
-    function construct_V(lqf::LQFilter; N::Integer=nothing)
-        if N == nothing
-            error("N must be provided!!")
-        end
-        if !(typeof(N) <: Integer)
-            throw(ArgumentError("N must be Integer!"))
-        end
-
-        ϕ_r, k = lqf.ϕ_r, lqf.k
+    function construct_V(lqf; N=nothing)
+        @unpack ϕ_r, k = lqf
         V = zeros(N, N)
         for i in 1:N
             for j in 1:N
@@ -1053,15 +1029,15 @@ Here's how it looks
         return V
     end
 
-    function simulate_a(lqf::LQFilter, N::Integer)
-        V = construct_V(N + 1)
+    function simulate_a(lqf, N)
+        V = construct_V(lqf, N + 1)
         d = MVNSampler(zeros(N + 1), V)
         return rand(d)
     end
 
-    function predict(lqf::LQFilter, a_hist::Vector, t::Integer)
+    function predict(lqf, a_hist, t)
         N = length(a_hist) - 1
-        V = construct_V(N + 1)
+        V = construct_V(lqf, N + 1)
 
         aux_matrix = zeros(N + 1, N + 1)
         aux_matrix[1:t+1 , 1:t+1 ] .= I + zeros(t+1, t+1)
@@ -1071,8 +1047,8 @@ Here's how it looks
         return Ea_hist
     end
 
-    function optimal_y(lqf::LQFilter, a_hist::Vector, t = nothing)
-        β, y_m, m = lqf.β, lqf.y_m, lqf.m
+    function optimal_y(lqf, a_hist, t = nothing)
+        @unpack β, y_m, m = lqf
 
         N = length(a_hist) - 1
         W, W_m = construct_W_and_Wm(lqf, N)
@@ -1105,8 +1081,8 @@ Here's how it looks
                 y_hist = y_hist .* β.^(- collect(-m:N)/2)
             end
 
-        else                                  # if the problem is stochastic and we look at it
-            Ea_hist = reshape(predict(a_hist, t), N + 1, 1)
+        else  # if the problem is stochastic and we look at it
+            Ea_hist = reshape(predict(lqf, a_hist, t), N + 1, 1)
             Ea_hist = J * Ea_hist
 
             ā = Ea_hist - W_m * y_m       # ā from the lecutre
@@ -1154,7 +1130,6 @@ Here's some code that generates a plot when :math:`\gamma = 0.8`
 
 .. code-block:: julia
 
-  using Plots, Random
   gr(fmt=:png);
 
   # set seed and generate a_t sequence
