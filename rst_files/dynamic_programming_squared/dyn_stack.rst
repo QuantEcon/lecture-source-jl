@@ -8,97 +8,310 @@ Dynamic Stackelberg Problems
 
 .. contents:: :depth: 2
 
-Overview
-========
+This notebook formulates and computes a plan that a **Stackelberg
+leader** uses to manipulate forward-looking decisions of a **Stackelberg
+follower** that depend on continuation sequences of decisions made once
+and for all by the Stackelberg leader at time :math:`0`
 
-Previous lectures including :doc:`LQ dynamic programming <../dynamic_programming/lqcontrol>`, :doc:`rational expectations equilibrium <../multi_agent_models/rational_expectations>`, and :doc:`Markov perfect equilibrium <../multi_agent_models/markov_perf>`  lectures have studied  decision problems that are recursive in what we can call "natural" state variables, such as
+To facilitate computation and interpretation, we formulate things in a
+context that allows us to apply linear optimal dynamic programming
 
-* stocks of capital (fiscal, financial and human)
-* wealth
-* information that helps forecast future prices and quantities that impinge on future payoffs
+From the beginning we carry along a linear-quadratic model of duopoly in
+which firms face adjustment costs that make them want to forecast
+actions of other firms that influence future prices
 
-Optimal decision rules are functions of the natural state variables in problems that are recursive in the natural state variables
+Duopoly
+=======
 
-In this lecture, we  describe   problems that are not recursive in the natural state variables
+Time is discrete and is indexed by :math:`t = 0, 1, \ldots`
 
-Kydland and Prescott :cite:`KydlandPrescott1977`, :cite:`Prescott1977` and Calvo :cite:`Calvo1978` gave examples of such decision problems
+Two firms produce a single good whose demand is governed by the linear
+inverse demand curve
 
-These problems  have the following features
+.. math::  p_t = a_0 - a_1 (q_{1t}+ q_{2t} )
 
-* Time :math:`t \geq 0` actions of decision makers called  followers depend on  time :math:`s \geq t` decisions of another decision maker called a Stackelberg leader
+where :math:`q_{it}` is output of firm :math:`i` at time :math:`t` and
+:math:`a_0` and :math:`a_1` are both positive
 
-* At  time :math:`t=0`, the Stackelberg leader chooses his actions for all times :math:`s \geq 0`
+:math:`q_{10}, q_{20}` are given numbers that serve as initial
+conditions at time :math:`0`
 
-* In choosing actions for all times at time :math:`0`, the  Stackelberg leader can be said to *commit to a plan*
+By incurring a cost of change
 
-* The Stackelberg leader has distinct optimal decision rules at time :math:`t=0`, on the one hand, and at times :math:`t \geq 1`, on the other hand
+.. math::  \gamma v_{it}^2
 
-* The Stackelberg leader's decision rules for :math:`t=0` and :math:`t \geq 1` have distinct state variables
+where :math:`\gamma > 0`, firm :math:`i` can change its output according
+to
 
-* Variables that encode *history dependence* appear in optimal decision rules of the  Stackelberg leader at times :math:`t \geq 1`
+.. math::  q_{it+1} = q_{it} + v_{it}
 
-* These properties of the Stackelberg leader's  decision rules are symptoms of the *time inconsistency of optimal government plans*
+Firm :math:`i`'s profits at time :math:`t` equal
 
-An example of a time inconsistent optimal rule is that of a
+.. math::  \pi_{it} = p_t q_{it} - \gamma v_{it}^2
 
-* a large agent (e.g., a government) that confronts a competitive market composed of many small private agents, and in which
+Firm :math:`i` wants to maximize the present value of its profits
 
-* private agents' decisions at each date are influenced by their *forecasts* of the large agent's future actions
+.. math::  \sum_{t=0}^\infty \beta^t \pi_{it}
 
-The *rational expectations* equilibrium concept plays an essential role
+where :math:`\beta \in (0,1)` is a time discount factor
 
-A rational expectations restriction implies that when it chooses its future actions, the Stackelberg leader also chooses the followers' expectations about those actions
 
-The Stackelberg leader understands and exploits that situation
 
-In a rational expectations equilibrium,  the Stackelberg leader's time :math:`t` actions confirm private agents' forecasts of those actions
+Stackelberg Leader and Follower
+--------------------------------
 
-The requirement to confirm prior followers' forecasts puts constraints on the Stackelberg leader's  time :math:`t` decisions that prevent its problem from being recursive in natural state variables
+Each firm :math:`i=1,2` chooses a sequence
+:math:`\vec q_i \equiv \{q_{it+1}\}_{t=0}^\infty` once and for all at
+time :math:`0`
 
-These additional constraints make the Stackelberg leader's decision rule at :math:`t` depend on the entire history of the natural state variables from time :math:`0` to time :math:`t`
+We let firm 2 be a **Stackelberg leader** and firm 1 be a **Stackelberg
+follower**
 
-This lecture displays these principles within the tractable framework of linear quadratic problems
+The leader firm 2 goes first and chooses
+:math:`\{q_{2t+1}\}_{t=0}^\infty` once and for all at time :math:`0`
 
-It is based on chapter 19 of :cite:`Ljungqvist2012`
+Knowing that firm 2 has chosen :math:`\{q_{2t+1}\}_{t=0}^\infty`, the
+follower firm 1 goes second and chooses
+:math:`\{q_{1t+1}\}_{t=0}^\infty` once and for all at time :math:`0`
+
+In choosing :math:`\vec q_2`, firm 2 takes into account that firm 1 will
+base its choice of :math:`\vec q_1` on firm 2's choice of
+:math:`\vec q_2`
+
+
+Abstract Statement of the Leader's and Follower's Problems
+-----------------------------------------------------------
+
+We can express firm 1's problem as
+
+.. math::  \max_{\vec q_1} \Pi_1(\vec q_1; \vec q_2)
+
+where the appearance behind the semi-colon indicates thata
+:math:`\vec q_2` is given
+
+Firm 1's problem induces a best response mapping
+
+.. math::  \vec q_1 = B(\vec q_2)
+
+(Here :math:`B` maps a sequence into a sequence)
+
+The Stackelberg leader's problem is
+
+.. math::  \max_{\vec q_2} \Pi_2 (B(\vec q_2), \vec q_2)
+
+whose maximizer is a sequence :math:`\vec q_2` that depends on the
+initial conditions :math:`q_{10}, q_{20}` and the parameters of the
+model :math:`a_0, a_1, \gamma`
+
+This formulation captures key features of the model
+
+-  Both firms make once-and-for-all choices at time :math:`0`
+
+-  This is true even though both firms are choosing sequences of
+   quantities that are indexed by **time**
+
+-  The Stackelberg leader chooses first **within time** :math:`0`,
+   knowing that the Stackelberg follower will choose second **within
+   time** :math:`0`
+
+While our abstract formulation reveals the timing protocol and
+equilibrium concept well, it obscures details that must be addressed
+when we want to compute and interpret a Stackelberg plan and the
+follower's best response to it
+
+To gain insights about these things, we study them in more detail
+
+Firms' Problems
+----------------
+
+Firm 1 acts as if firm 2's sequence :math:`\{q_{2t+1}\}_{t=0}^\infty` is
+given and beyond its control
+
+Firm 2 knows that firm 1 chooses second and takes this into account in
+choosing :math:`\{q_{2t+1}\}_{t=0}^\infty`
+
+In the spirit of *working backwards*, we study firm 1's problem first,
+taking :math:`\{q_{2t+1}\}_{t=0}^\infty` as given
+
+We can formulate firm 1's optimum problem in terms of the Lagrangian
+
+.. math:: L=\sum_{t=0}^{\infty}\beta^{t}\{a_{0}q_{1t}-a_{1}q_{1t}^{2}-a_{1}q_{1t}q_{2t}-\gamma v_{1t}^{2}+\lambda_{t}[q_{1t}+v_{1t}-q_{1t+1}]\}
+
+Firm 1 seeks a maximum with respect to
+:math:`\{q_{1t+1}, v_{1t} \}_{t=0}^\infty` and a minimum with respect to
+:math:`\{ \lambda_t\}_{t=0}^\infty`
+
+We approach this problem using methods described in Ljungqvist and
+Sargent RMT5 chapter 2, appendix A and Macroeconomic Theory, 2nd
+edition, chapter IX
+
+First-order conditions for this problem are
+
+.. math::
+
+   \eqalign{ \frac{\partial L}{\partial q_{1t}} & = a_0 - 2 a_1 q_{1t} - a_1 q_{2t} + \lambda_t - \beta^{-1}
+                \lambda_{t-1} = 0 , \quad t \geq 1 \cr
+                \frac{\partial L}{\partial v_{1t}} & = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0  \cr }
+
+These first-order conditions and the constraint :math:`q_{1t+1} = q_{1t} + v_{1t}` can be rearranged to take the form
+
+.. math::
+
+    \eqalign{ v_{1t} & = \beta v_{1t+1} + \frac{\beta a_0}{2 \gamma} - \frac{\beta a_1}{\gamma} q_{1t+1} -
+                          \frac{\beta a_1}{2 \gamma} q_{2t+1} \cr
+                q_{t+1} & = q_{1t} + v_{1t} }
+
+We can substitute the second equation into the first equation to obtain
+
+.. math::  (q_{1t+1} - q_{1t} ) = \beta (q_{1t+2} - q_{1t+1}) + c_0 - c_1 q_{1t+1} - c_2 q_{2t+1}
+
+where
+:math:`c_0 = \frac{\beta a_0}{2 \gamma}, c_1 = \frac{\beta a_1}{\gamma}, c_2 = \frac{\beta a_1}{2 \gamma}`
+
+This equation can in turn be rearranged to become the second-order
+difference equation
+
+.. math::
+    :label: sstack1
+
+    q_{1t} + (1+\beta + c_1) q_{1t+1} - \beta q_{1t+2} = c_0 - c_2 q_{2t+1}
+
+Equation :eq:`sstack1` is a second-order difference equation in the sequence
+:math:`\vec q_1` whose solution we want
+
+It satisfies **two boundary conditions:**
+
+-  an initial condition that :math:`q_{1,0}`, which is given
+
+-  a terminal condition requiring that
+   :math:`\lim_{T \rightarrow + \infty} \beta^T q_{1t}^2 < + \infty`
+
+Using the lag operators described in chapter IX of *Macroeconomic
+Theory, Second edition (1987)*, difference equation
+:eq:`sstack1` can be written as
+
+.. math::  \beta(1 - \frac{1+\beta + c_1}{\beta} L + \beta^{-1} L^2 ) q_{1t+2} = - c_0 + c_2 q_{2t+1}
+
+The polynomial in the lag operator on the left side can be **factored**
+as
+
+.. math::
+    :label: sstack2
+
+    (1 - \frac{1+\beta + c_1}{\beta} L + \beta^{-1} L^2 )  = ( 1 - \delta_1 L ) (1 - \delta_2 L)
+
+where :math:`0 < \delta_1 < 1 < \frac{1}{\sqrt{\beta}} < \delta_2`
+
+Because :math:`\delta_2 > \frac{1}{\sqrt{\beta}}` the operator
+:math:`(1 - \delta_2 L)` contributes an **unstable** component if solved
+**backwards** but a **stable** component if solved **forwards**
+
+Mechanically, write
+
+.. math::  (1- \delta_2 L) = -\delta_{2} L (1 - \delta_2^{-1} L^{-1} )
+
+and compute the following inverse operator
+
+.. math::  \left[-\delta_{2} L (1 - \delta_2^{-1} L^{-1} )\right]^{-1} = - \delta_2 (1 - {\delta_2}^{-1} )^{-1} L^{-1}
+
+Operating on both sides of equation :eq:`sstack2` with
+:math:`\beta^{-1}` times this inverse operator gives the follower's
+decision rule for setting :math:`q_{1t+1}` in the
+**feedback-feedforward** form
+
+.. math::
+    :label: sstack3
+
+    q_{1t+1} = \delta_1 q_{1t} - c_0 \delta_2^{-1} \beta^{-1}  \frac{1}{1 -\delta_2^{-1}}  + c_2 \delta_2^{-1} \beta^{-1} \sum_{j=0}^\infty \delta_2^j q_{2t+j+1} ,  \quad t \geq 0
+
+The problem of the Stackelberg leader firm 2 is to choose the sequence
+:math:`\{q_{2t+1}\}_{t=0}^\infty` to maximize its discounted profits
+
+.. math::  \sum_{t=0}^\infty \beta^t \{ (a_0 -  a_1 (q_{1t} + q_{2t}) ) q_{2t} - \gamma (q_{2t+1} - q_{2t})^2 \}
+
+subject to the sequence of constraints :eq:`sstack3` for :math:`t \geq 0`
+
+We can put a sequence :math:`\{\theta_t\}_{t=0}^\infty` of Lagrange
+multipliers on the sequence of equations :eq:`sstack3`
+and formulate the following Lagrangian for the Stackelberg leader firm
+2's problem
+
+.. math::
+    :label: sstack4
+
+    \eqalign{ \tilde L & = \sum_{t=0}^\infty  \beta^t\{ (a_0 -  a_1 (q_{1t} + q_{2t}) ) q_{2t} - \gamma (q_{2t+1} - q_{2t})^2 \} \cr
+     &  + \sum_{t=0}^\infty \beta^t \theta_t \{ \delta_1 q_{1t} -  c_0 \delta_2^{-1} \beta^{-1}  \frac{1}{1 -\delta_2^{-1}} +  c_2 \delta_2^{-1} \beta^{-1}
+       \sum_{j=0}^\infty \delta_2^{-j} q_{2t+j+1} - q_{1t+1} \} }
+
+subject to initial conditions for :math:`q_{1t}, q_{2t}` at :math:`t=0`
+
+**Comments:** We have formulated the Stackelberg problem in a space of
+sequences
+
+The max-min problem associated with Lagrangian
+:eq:`sstack4` is unpleasant because the time :math:`t`
+component of firm :math:`1`'s payoff function depends on the entire
+future of its choices of :math:`\{q_{1t+j}\}_{j=0}^\infty`
+
+This renders a direct attack on the problem cumbersome
+
+Therefore, below, we will formulate the Stackelberg leader's problem
+recursively
+
+We'll put our little duopoly model into a broader class of models with
+the same conceptual structure
 
 The Stackelberg Problem
-=======================
+========================
 
-We use the optimal linear regulator (a.k.a. the linear-quadratic dynamic programming problem described in :doc:`LQ Dynamic Programming problems <../dynamic_programming/lqcontrol>`)  to solve a linear quadratic version of what is known as a dynamic Stackelberg problem
+We formulate a class of linear-quadratic Stackelberg leader-follower
+problems of which our duopoly model is an instance
 
-For now we refer to the Stackelberg leader as the government and the Stackelberg follower as the representative agent or private sector
+We use the optimal linear regulator (a.k.a. the linear-quadratic dynamic
+programming problem described in `LQ Dynamic Programming
+problems <https://lectures.quantecon.org/py/lqcontrol.html>`__) to
+represent a Stackelberg leader's problem recursively
 
-Soon we'll give an application with another interpretation of these two decision makers
+Let :math:`z_t` be an :math:`n_z \times 1` vector of **natural
+state variables**
 
-Let :math:`z_t` be an :math:`n_z \times 1` vector of natural state variables
+Let :math:`x_t` be an :math:`n_x \times 1` vector of endogenous
+forward-looking variables that are physically free to jump at :math:`t`
 
-Let :math:`x_t` be an :math:`n_x \times 1` vector of endogenous forward-looking variables that are physically free to jump at :math:`t`
+In our duopoly example :math:`x_t = v_{1t}`, the time :math:`t` decision
+of the Stackelberg **follower**
 
-Let :math:`u_t` be a vector of government instruments
+Let :math:`u_t` be a vector of decisions chosen by the Stackelberg leader
+at :math:`t`
 
 The :math:`z_t` vector is inherited physically from the past
 
-But :math:`x_t` is inherited  as a consequence of decisions made by the Stackelberg planner at time :math:`t=0`
+But :math:`x_t` is a decision made by the Stackelberg follower at time
+:math:`t` that is the follower's best response to the choice of an
+entire sequence of decisions made by the Stackelberg leader at time
+:math:`t=0`
 
-Included in :math:`x_t` might be prices and quantities that adjust instantaneously to clear markets at time :math:`t`
-
-Let :math:`y_t = \begin{bmatrix} z_t \\ x_t \end{bmatrix}`
-
-Define the government's one-period loss function [#f1]_
-
-.. math::
-    :label: target
-
-    r(y, u)  =  y' R y  + u' Q u
-
-Subject to an initial condition for :math:`z_0`, but not for :math:`x_0`, a government wants to maximize
+Let
 
 .. math::
-    :label: new1_dyn_stack
+
+   y_t = \begin{bmatrix} z_t \\ x_t \end{bmatrix}
+
+Represent the Stackelberg leader's one-period loss function as
+
+.. math::
+
+   r(y, u)  =  y' R y  + u' Q u
+
+Subject to an initial condition for :math:`z_0`, but not for :math:`x_0`, the
+Stackelberg leader wants to maximize
+
+.. math::
+    :label: maxeq
 
     -\sum_{t=0}^\infty \beta^t r(y_t, u_t)
 
-The government makes policy in light of the model
+The Stackelberg leader faces the model
 
 .. math::
     :label: new2
@@ -107,9 +320,10 @@ The government makes policy in light of the model
     \begin{bmatrix}    z_{t+1} \\  x_{t+1} \end{bmatrix}
     = \begin{bmatrix}  \hat A_{11}  &  \hat A_{12} \\ \hat A_{21} & \hat A_{22}  \end{bmatrix} \begin{bmatrix}  z_t \\ x_t \end{bmatrix} + \hat B u_t
 
-We assume that the matrix on the left is invertible, so that we can multiply both sides of :eq:`new2` by its inverse to obtain
-
-.. NOTE: I omitted a footnote here.
+We assume that the matrix
+:math:`\begin{bmatrix} I & 0 \\ G_{21} & G_{22} \end{bmatrix}` on the
+left side of equation :eq:`new2` is invertible, so that we
+can multiply both sides by its inverse to obtain
 
 .. math::
     :label: new3
@@ -121,906 +335,1030 @@ We assume that the matrix on the left is invertible, so that we can multiply bot
 or
 
 .. math::
-    :label: new30
+    :label: constrainteq
 
     y_{t+1} = A y_t + B u_t
 
-The private sector's behavior is summarized by the second block of equations of :eq:`new3` or :eq:`new30`
+Interpretation of the Second Block of Equations
+-------------------------------------------------
 
-These equations typically include the first-order conditions of private agents' optimization problem (i.e., their Euler equations)
+The Stackelberg follower's best response mapping is summarized by the
+second block of equations of :eq:`new3`
 
-These Euler equations summarize the forward-looking aspect of private agents' behavior and express how their time :math:`t` decisions depend on government actions at times :math:`s \geq t`
+In particular, these equations are the first-order conditions of the
+Stackelberg follower's optimization problem (i.e., its Euler equations)
 
-When combined with a stability condition to be imposed below, the
-Euler equations
-summarize the private sector's best response to the
-sequence of actions by the government.
+These Euler equations summarize the forward-looking aspect of the
+follower's behavior and express how its time :math:`t` decision depends on
+the leader's actions at times :math:`s \geq t`
 
-The government maximizes :eq:`new1_dyn_stack` by choosing sequences :math:`\{u_t, x_t, z_{t+1}\}_{t=0}^\infty` subject to :eq:`new30` and an initial condition for :math:`z_0`
+When combined with a stability condition to be imposed below, the Euler
+equations summarize the follower’s best response to the sequence of
+actions by the leader
 
-Note that we have an initial condition for :math:`z_0` but  not for :math:`x_0`
+The Stackelberg leader maximizes :eq:`maxeq` by
+choosing sequences :math:`{u_t, x_t, z_{t+1}}\_{t=0}^{\infty}`
+subject to :eq:`constrainteq` and an initial condition for :math:`z_0`
 
-:math:`x_0` is among the variables to be chosen at time :math:`0` by the Stackelberg leader
+Note that we have an initial condition for :math:`z_0` but not for :math:`x_0`
 
-The government uses its understanding of the responses restricted by :eq:`new30` to manipulate private sector actions
+:math:`x_0` is among the variables to be chosen at time :math:`0` by the
+Stackelberg leader
 
-To indicate the features of the Stackelberg leader's problem that make :math:`x_t` a vector of forward-looking
-variables, write the second block of system :eq:`new2`
-as
+The Stackelberg leader uses its understanding of the responses
+restricted by :eq:`constrainteq` to manipulate the follower's
+decisions
 
-.. math::
-    :label: eqn:xlawforward
+More Mechanical Details
+--------------------------
 
-    x_t =  \phi_1 z_t + \phi_2 z_{t+1} +  \phi_3 u_t + \phi_0 x_{t+1} ,
-
-where :math:`\phi_0 = \hat A_{22}^{-1} G_{22}`.
-
-The models we study in this chapter typically satisfy
-
-*Forward-Looking Stability Condition*
-The eigenvalues of :math:`\phi_0`
-are bounded in modulus by :math:`\beta^{-.5}`.
-
-This stability condition  makes equation  :eq:`eqn:xlawforward` explosive if solved 'backwards' but stable if solved 'forwards'.
-
-See the appendix of chapter 2 of :cite:`Ljungqvist2012`
-
-So we solve equation :eq:`eqn:xlawforward` forward to get
-
-.. math::
-    :label: bell101
-
-    x_t = \sum_{j=0}^\infty \phi_0^j \left[ \phi_1 z_{t+j} + \phi_2 z_{t+j+1} + \phi_3 u_{t+j} \right] .
-
-In choosing :math:`u_t` for :math:`t \geq 1` at time :math:`0`, the government  takes into account how future :math:`z` and :math:`u` affect earlier
-:math:`x` through equation :eq:`bell101`.
-
-A :ref:`certainty equivalence principle <lq_cert_eq>` allows us to work with a nonstochastic model (see :doc:`LQ dynamic programming <../dynamic_programming/lqcontrol>`)
-
-That is, we would attain the same decision rule if we were to replace :math:`x_{t+1}` with the forecast :math:`E_t x_{t+1}` and to add a shock process :math:`C \epsilon_{t+1}` to the right side of :eq:`new30`, where :math:`\epsilon_{t+1}` is an IID random vector with mean  zero and identity covariance matrix
-
-Let :math:`s^t` denote the history of any variable :math:`s` from :math:`0` to :math:`t`
-
-:cite:`MillerSalmon1985`, :cite:`HansenEppleRoberds1985`, :cite:`PearlmanCurrieLevine1986`, :cite:`Sargent1987`, :cite:`Pearlman1992`, and others have all studied versions of the following problem:
-
-.. CC: Also listed was  Miller and Salmon 1982.  I found a 1983 version of their same paper that was published in '85, but not another one, so I'm not sure what paper this referred to.
-
-**Problem S:** The *Stackelberg problem* is to maximize :eq:`new1_dyn_stack` by choosing an :math:`x_0` and a sequence of decision rules, the time :math:`t` component of which maps a time :math:`t` history of the natural state :math:`z^t` into a time :math:`t` decision :math:`u_t` of the Stackelberg leader
-
-The Stackelberg leader chooses this sequence of decision rules once and for all at time :math:`t=0`
-
-Another way to say this is that he *commits* to this sequence of decision rules at time :math:`0`
-
-The maximization is subject to a given initial condition for :math:`z_0`
-
-But :math:`x_0` is among the objects to be chosen by the Stackelberg leader
-
-The optimal decision rule is history dependent, meaning that :math:`u_t` depends not only on :math:`z_t` but at :math:`t \geq 1` also on lags of :math:`z`
-
-History dependence has two sources: (a) the government's ability to commit [#f2]_ to a sequence of rules at time :math:`0`, and (b) the forward-looking behavior of the private sector embedded in the second block of equations :eq:`new3` as exhibited by :eq:`bell101`
-
-Solving the Stackelberg Problem
-===============================
-
-Some Basic Notation
--------------------
-
-For any vector :math:`a_t`, define :math:`\vec a_t = [a_t, a_{t+1}, \ldots]`.
+For any vector :math:`a_t`, define :math:`\vec a_t = [a_t,
+a\_{t+1} \ldots ]`
 
 Define a feasible set of :math:`(\vec y_1, \vec u_0)` sequences
 
 .. math::
 
-    \Omega(y_0) = \left\{ (\vec y_1, \vec u_0) :  y_{t+1} = A y_t + B u_t, \forall t \geq 0 \right\}
 
-Note that in the definition of :math:`\Omega(y_0)`, :math:`y_0` is taken as given.
+   \Omega(y_0) = \left\{ (\vec y_1, \vec u_0) :  y_{t+1} = A y_t + B u_t, \forall t \geq 0 \right\}
 
-Eventually, the  :math:`x_0` component of :math:`y_0` will be chosen, though it is taken as given in :math:`\Omega(y_0)`
+Please remember that the follower's Euler equation is embedded in the
+system of dynamic equations :math:`y_{t+1} = A y_t + B u_t`
+
+Note that in the definition of :math:`\Omega(y_0)`, :math:`y_0`
+is taken as given
+
+Although it is taken as given in :math:`\Omega(y_0)`,
+eventually, the :math:`x_0` component of :math:`y_0` will be chosen by the
+Stackelberg leader
 
 Two Subproblems
----------------
+----------------
 
 Once again we use backward induction
 
-We express the Stackelberg problem in terms of **two subproblems**:
+We express the Stackelberg problem in terms of **two subproblems**
 
-Subproblem 1 is solved by a **continuation Stackelberg leader** at each date :math:`t \geq 1`
+Subproblem 1 is solved by a **continuation Stackelberg leader** at each
+date :math:`t \geq 0`
 
 Subproblem 2 is solved the **Stackelberg leader** at :math:`t=0`
 
+The two subproblems are designed
+
+-  to respect the protocol in which the follower chooses
+   :math:`\vec q_1` after seeing :math:`\vec q_2` chosen by the leader
+
+-  to make the leader choose :math:`\vec q_2` while respecting that
+   :math:`\vec q_1` will be the follower's best response to
+   :math:`\vec q_2`
+
+-  to represent the leader's problem recursively by artfully choosing
+   the state variables confronting and the control variables available
+   to the leader
+
 Subproblem 1
-^^^^^^^^^^^^
+~~~~~~~~~~~~~
 
 .. math::
-    :label: stacksub1
 
-    v(y_0) = \max_{(\vec y_1, \vec u_0) \in \Omega(y_0)} - \sum_{t=0}^\infty \beta^t r(y_t, u_t)
+
+   v(y_0) = \max_{(\vec y_1, \vec u_0) \in \Omega(y_0)} - \sum_{t=0}^\infty \beta^t r(y_t, u_t)
 
 Subproblem 2
-^^^^^^^^^^^^
+~~~~~~~~~~~~~~
 
 .. math::
-    :label: stacksub2
 
-    w(z_0) = \max_{x_0} v(y_0)
 
-Subproblem 1 takes the vector of forward-looking variables  :math:`x_0` as given
+   w(z_0) = \max_{x_0} v(y_0)
 
-Subproblem 2 optimizes over  :math:`x_0`
+Subproblem 1 takes the vector of forward-looking variables :math:`x_0` as
+given
 
-The value function :math:`w(z_0)` tells the value of the Stackelberg plan as a function of the vector of natural state variables at time :math:`0`,
+Subproblem 2 optimizes over :math:`x_0`
+
+The value function :math:`w(z_0)` tells the value of the Stackelberg plan
+as a function of the vector of natural state variables at time :math:`0`,
 :math:`z_0`
 
-Two Bellman equations
----------------------
+Two Bellman Equations
+-----------------------
 
 We now describe Bellman equations for :math:`v(y)` and :math:`w(z_0)`
 
 Subproblem 1
-------------
+~~~~~~~~~~~~
 
-The value function :math:`v(y)` in  subproblem 1 satisfies the Bellman equation
+The value function :math:`v(y)` in subproblem 1 satisfies the Bellman
+equation
 
 .. math::
-    :label: bell1_dyn_stack
+    :label: bellman-stack
 
     v(y) = \max_{u, y^*}  \left\{ - r(y,u) + \beta v(y^*) \right\}
 
 where the maximization is subject to
 
 .. math::
-    :label: bell2_dyn_stack
 
-    y^* = A y + B u
+   y^* = A y + B u
 
-and  :math:`y^*` denotes next period's value.
+and :math:`y^*` denotes next period’s value
 
-Substituting :math:`v(y) = - y'P y` into  Bellman equation :eq:`bell1_dyn_stack`  gives
+Substituting :math:`v(y) = - y'P y` into Bellman equation :eq:`bellman-stack` gives
+
+.. math::
+
+
+   -y' P y = {\rm max}_{  u, y^*} \left\{ -  y' R y -   u'Q     u - \beta y^{* \prime} P y^* \right\}
+
+which as in lecture `linear regulator <https://lectures.quantecon.org/py/lqcontrol.html>`__ gives
+rise to the algebraic matrix Riccati equation
 
 .. math::
 
-    -y' P y = {\rm max}_{  u, y^*} \left\{ -  y' R y -   u'Q     u - \beta y^{* \prime} P y^* \right\}
 
-which as in  lecture :doc:`linear regulator <../dynamic_programming/lqcontrol>` gives rise to the algebraic matrix Riccati equation
-
-.. math::
-    :label: bell3_dyn_stack
-
-    P = R + \beta A' P A - \beta^2 A' P   B (  Q  + \beta   B' P   B)^{-1}   B' P A
+   P = R + \beta A' P A - \beta^2 A' P   B (  Q  + \beta   B' P   B)^{-1}   B' P A
 
 and the optimal decision rule coefficient vector
 
 .. math::
-    :label: bell4_dyn_stack
 
-    F = \beta(   Q + \beta   B' P   B)^{-1}  B' P A ,
+
+   F = \beta(   Q + \beta   B' P   B)^{-1}  B' P A
 
 where the optimal decision rule is
 
 .. math::
-    :label: bell5_dyn_stack
 
-    u_t = - F y_t.
+
+   u_t = - F y_t
 
 Subproblem 2
-------------
+~~~~~~~~~~~~
 
-The value function :math:`v(y_0)` satisfies
-
-.. math::
-    :label: valuefny
-
-    v(y_0) = - z_0 ' P_{11} z_0 - 2 x_0' P_{21} z_0 - x_0' P_{22} x_0
-
-where
+We find an optimal :math:`x_0` by equating to zero the gradient of :math:`v(y_0)`
+with respect to :math:`x_0`:
 
 .. math::
 
-    P
-    =
-    \left[
-    \begin{array}{cc}
-        P_{11} & P_{12} \\
-        P_{21} & P_{22}
-    \end{array}
-    \right]
 
-We find an optimal :math:`x_0` by equating to zero the gradient of :math:`v(y_0)` with respect to  :math:`x_0`:
-
-.. math::
-
-    -2 P_{21} z_0 - 2 P_{22} x_0 =0,
+   -2 P_{21} z_0 - 2 P_{22} x_0 =0,
 
 which implies that
 
 .. math::
-    :label:  king6x0
 
-    x_0 = - P_{22}^{-1} P_{21} z_0.
+   x_0 = - P_{22}^{-1} P_{21} z_0
 
-Summary
--------
+Stackelberg Plan
+=================
 
-We solve the Stackelberg problem by
+Now let's map our duopoly model into the above setup.
 
-* formulating a particular optimal linear regulator
+We we'll formulate a state space system
 
-* solving the associated matrix Riccati equation :eq:`bell3_dyn_stack` for :math:`P`
+.. math::  y_t = \begin{bmatrix} z_t \cr x_t \end{bmatrix}
 
-* computing :math:`F`
+where in this instance :math:`x_t = v_{1t}`, the time :math:`t` decision
+of the follower firm 1
 
-* then partitioning :math:`P` to obtain representation :eq:`king6x0`
+Calculations to Prepare Duopoly Model
+----------------------------------------
 
-Manifestation of time inconsistency
------------------------------------
+Now we'll proceed to cast our duopoly model within the framework of the
+more general linear-quadratic structure described above
 
-We have seen that for :math:`t \geq 0` the optimal decision rule for the Stackelberg leader has the form
+That will allow us to compute a Stackelberg plan simply by enlisting a
+Riccati equation to solve a linear-quadratic dynamic program
+
+As emphasized above, firm 1 acts as if firm 2's decisions
+:math:`\{q_{2t+1}, v_{2t}\}_{t=0}^\infty` are given and beyond its
+control
+
+Firm 1's Problem
+-------------------
+
+We again formulate firm 1's optimum problem in terms of the Lagrangian
+
+.. math:: L=\sum_{t=0}^{\infty}\beta^{t}\{a_{0}q_{1t}-a_{1}q_{1t}^{2}-a_{1}q_{1t}q_{2t}-\gamma v_{1t}^{2}+\lambda_{t}[q_{1t}+v_{1t}-q_{1t+1}]\}
+
+Firm 1 seeks a maximum with respect to
+:math:`\{q_{1t+1}, v_{1t} \}_{t=0}^\infty` and a minimum with respect to
+:math:`\{ \lambda_t\}_{t=0}^\infty`
+
+First-order conditions for this problem are
 
 .. math::
 
-    u_t = - F y_t
+   \eqalign{ \frac{\partial L}{\partial q_{1t}} & = a_0 - 2 a_1 q_{1t} - a_1 q_{2t} + \lambda_t - \beta^{-1}
+                \lambda_{t-1} = 0 , \quad t \geq 1 \cr
+                \frac{\partial L}{\partial v_{1t}} & = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0  \cr }
+
+These first-order order conditions and the constraint :math:`q_{1t+1} =
+q_{1t} + v_{1t}` can be rearranged to take the form
+
+.. math::
+
+    \eqalign{ v_{1t} & = \beta v_{1t+1} + \frac{\beta a_0}{2 \gamma} - \frac{\beta a_1}{\gamma} q_{1t+1} -
+                          \frac{\beta a_1}{2 \gamma} q_{2t+1} \cr
+                q_{t+1} & = q_{1t} + v_{1t} }
+
+We use these two equations as components of the following linear system
+that confronts a Stackelberg continuation leader at time :math:`t`
+
+.. math::
+
+    \begin{bmatrix}       1 & 0 & 0 & 0 \cr
+                           0 & 1 & 0 & 0 \cr
+                           0 & 0 & 1 & 0 \cr
+           \frac{\beta a_0}{2 \gamma} & - \frac{\beta a_1}{2 \gamma} & -\frac{\beta a_1}{\gamma} & \beta \end{bmatrix}
+           \begin{bmatrix} 1 \cr q_{2t+1} \cr q_{1t+1} \cr v_{1t+1} \end{bmatrix}
+           = \begin{bmatrix} 1 & 0 & 0 & 0 \cr
+                             0 & 1 & 0 & 0 \cr
+                              0 & 0 & 1 & 1 \cr
+                              0 & 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t} \cr v_{1t} \end{bmatrix}
+           + \begin{bmatrix} 0 \cr 1 \cr 0 \cr 0 \end{bmatrix} v_{2t}
+
+Time :math:`t` revenues of firm 2 are
+:math:`\pi_{2t} = a_0 q_{2t} - a_1 q_{2t}^2 - a_1 q_{1t} q_{2t}` which
+evidently equal
+
+.. math::
+
+    z_t' R_1 z_t \equiv \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t}  \end{bmatrix}'
+      \begin{bmatrix} 0 & \frac{a_0}{2}& 0 \cr
+                      \frac{a_0}{2} & -a_1 & -\frac{a_1}{2}\cr
+                      0 & -\frac{a_1}{2} & 0 \end{bmatrix}
+   \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t}  \end{bmatrix}
+
+If we set :math:`Q = \gamma`, then firm 2's period :math:`t` profits can
+then be written
+
+.. math::  y_t' R y_t - Q v_{2t}^2
+
+where
+
+.. math::
+
+   y_t = \begin{bmatrix} z_t \cr x_t \end{bmatrix}
+
+with :math:`x_t = v_{1t}` and
+
+.. math::
+    R =
+    \begin{bmatrix} R_1 & 0 \cr 0 & 0 \end{bmatrix}
+
+We'll report results of implementing this code soon
+
+But first we want to represent the Stackelberg leader's optimal choices
+recursively
+
+It is important to do this for several reasons:
+
+-  properly to interpret a representation of the Stackelberg leaders's
+   choice as a sequence of history-dependent functions
+
+-  to formulate a recursive version of the follower's choice problem
+
+First let's get a recursive representation of the Stackelberg leader's
+choice of :math:`\vec q_2` for our duopoly model
+
+
+
+
+Recursive Representation of Stackelberg Plan
+=============================================
+
+In order to attain an appropriate representation of the Stackelberg
+leader's history-dependent plan, we will employ what amounts to a
+version of the **Big K, little k** device often used in
+macroeconomics by distinguishing :math:`z_t`, which depends partly on
+decisions :math:`x_t` of the followers, from another vector
+:math:`\check z_t`, which does not
+
+We will use :math:`\check z_t` and its history :math:`\check z^t
+= [\check z_t, \check z_{t-1}, \ldots, \check z_0]` to describe the
+sequence of the Stackelberg leader's decisions that the Stackelberg
+follower takes as given
+
+Thus, we let
+:math:`\check y_t' = \begin{bmatrix}\check z_t' & \check x_t'\end{bmatrix}`
+with initial condition :math:`\check z_0 = z_0` given
+
+That we distinguish :math:`\check z_t` from :math:`z_t` is part and
+parcel of the **Big K, little k** device in this
+instance
+
+We have demonstrated that a Stackelberg plan for
+:math:`\{u_t\}_{t=0}^\infty` has a recursive representation
+
+.. math::
+
+    \eqalign{ \check x_0 & = - P_{22}^{-1} P_{21} z_0 \cr
+                u_t & = - F \check y_t, \quad t \geq 0 \cr
+                \check y_{t+1} & = (A - BF) \check y_t, \quad t \geq 0 }
+
+From this representation we can deduce the sequence of functions
+:math:`\sigma = \{\sigma_t(\check z^t)\}_{t=0}^\infty` that comprise a
+Stackelberg plan
+
+For convenience, let :math:`\check A \equiv A - BF` and partition
+:math:`\check A` conformably to the partition
+:math:`y_t = \begin{bmatrix}\check z_t \cr \check x_t \end{bmatrix}` as
+
+.. math::
+
+   \begin{bmatrix}\check A_{11} & \check A_{12} \cr \check A_{21} & \check A_{22} \end{bmatrix}
+
+Let :math:`H^0_0 \equiv - P_{22}^{-1} P_{21}` so that
+:math:`\check x_0 = H^0_0 \check z_0`
+
+Then iterations on :math:`\check y_{t+1} = \check A \check y_t` starting from initial
+condition :math:`\check y_0 = \begin{bmatrix}\check z_0 \cr H^0_0 \check z_0\end{bmatrix}`
+imply that for :math:`t \geq 1`
+
+.. math::
+
+    x_t = \sum_{j=1}^t H_j^t \check z_{t-j}
+
+where
+
+.. math::
+
+   \eqalign{ H^t_1 & = \check A_{21} \cr
+               H^t_2 & = \check A_{22} \check A_{21} \cr
+              \ \   \vdots \  \  &  \  \ \quad \vdots \cr
+              H^t_{t-1} & = \check A_{22}^{t-2} \check A_{21} \cr
+               H^t_t & = \check A_{22}^{t-1}(\check A_{21} + \check A_{22} H^0_0 ) }
+
+An optimal decision rule for the Stackelberg's choice of :math:`u_t` is
+
+.. math::
+
+    u_t  = - F \check y_t \equiv - \begin{bmatrix} F_z & F_x \cr \end{bmatrix}
+   \begin{bmatrix}\check z_t \cr x_t \cr \end{bmatrix}
 
 or
 
 .. math::
+    :label: finalrule
 
-    u_t  = f_{11}  z_{t} + f_{12} x_{t}
+    u_t  = - F_z \check z_t - F_x \sum_{j=1}^t H^t_j z_{t-j} = \sigma_t(\check z^t)
 
-where for :math:`t \geq 1`, :math:`x_t` is effectively a state variable, albeit not a *natural* one,  inherited from the past
+Representation :eq:`finalrule` confirms that whenever
+:math:`F_x \neq 0`, the typical situation, the time :math:`t` component
+:math:`\sigma_t` of a Stackelberg plan is **history dependent**, meaning
+that the Stackelberg leader's choice :math:`u_t` depends not just on
+:math:`\check z_t` but on components of :math:`\check z^{t-1}`
 
-The means that for :math:`t \geq 1`, :math:`x_t` is  *not* a  function of :math:`z_t` only (though it is at :math:`t=0`) and that :math:`x_t` exerts an independent influence on :math:`u_t`
 
-The situation is different at :math:`t=0`
 
-For :math:`t=0`, the optimal choice of :math:`x_0 = - P_{22}^{-1} P_{21} z_0` described in equation :eq:`king6x0`   implies that
+Comments and Interpretations
+-------------------------------
 
-.. math::
-    :label: vonzer3c
+After all, at the end of the day, it will turn out that because we set
+:math:`\check z_0 = z_0`, it will be true that :math:`z_t = \check z_t`
+for all :math:`t \geq 0`
 
-    u_0 = (f_{11} - f_{12}P_{22}^{-1} P_{2,1})  z_0
+Then why did we distinguish :math:`\check z_t` from :math:`z_t`?
 
-So for :math:`t=0`, :math:`u_0` is a linear function of the natural state variable :math:`z_0` only
+The answer is that if we want to present to the Stackelberg **follower**
+a history-dependent representation of the Stackelberg **leader's**
+sequence :math:`\vec q_2`, we must use representation
+:eq:`finalrule` cast in terms of the history
+:math:`\check z^t` and **not** a corresponding representation cast in
+terms of :math:`z^t`
 
-But for :math:`t \geq 0`, :math:`x_t \neq - P_{22}^{-1} P_{21} z_t`
 
-Nor does :math:`x_t` equal any other linear combination of :math:`z_t`  for :math:`t \geq 1`
 
-This means that :math:`x_t` has an independent role in shaping :math:`u_t` for :math:`t \geq 1`
+Dynamic Programming and Time Consistency of **follower's** Problem
+--------------------------------------------------------------------
 
-All of this means that  the Stackelberg leader's decision rule at :math:`t \geq 1` differs from its decision rule at :math:`t =0`
+Given the sequence :math:`\vec q_2` chosen by the Stackelberg leader in
+our duopoly model, it turns out that the Stackelberg **follower's**
+problem is recursive in the *natural* state variables that confront a
+follower at any time :math:`t \geq 0`
 
-As indicated at the beginning of this lecture, this difference is a symptom of the *time inconsistency* of the optimal Stackelberg plan
+This means that the follower's plan is time consistent
 
-Shadow prices
-=============
+To verify these claims, we'll formulate a recursive version of a
+follower's problem that builds on our recursive representation of the
+Stackelberg leader's plan and our use of the **Big K, little k** idea
 
-The history dependence of the government's plan can be expressed in the dynamics of Lagrange multipliers :math:`\mu_x` on the last :math:`n_x` equations of :eq:`new2` or :eq:`new3`
+Recursive Formulation of a Follower’s Problem
+----------------------------------------------
 
-These multipliers measure the cost today of honoring past government promises about current and future settings of :math:`u`
+We now use what amounts to another “Big :math:`K`, little :math:`k`” trick (see
+`rational expectations equilibrium <https://lectures.quantecon.org/py/rational_expectations.html>`__)
+to formulate a recursive version of a follower’s problem cast in terms
+of an ordinary Bellman equation
 
-We shall soon show that as a result of optimally choosing :math:`x_0`, it is appropriate to initialize the multipliers to zero at time :math:`t=0`
-
-This is true because at :math:`t=0`, there are no past promises about :math:`u` to honor
-
-But the multipliers :math:`\mu_x` take nonzero values thereafter, reflecting future costs to the government of confirming the private sector's
-earlier expectations about its time :math:`t` actions
-
-From  the :doc:`linear regulator <../dynamic_programming/lqcontrol>` lecture, the formula :math:`\mu_t = P y_t` for the vector of
-shadow prices on the transition equations is
-
-.. math::
-
-    \mu_t
-    =
-    \left[\begin{array}{c}
-    \mu_{zt} \\
-    \mu_{xt}
-    \end{array}
-    \right]
-
-The shadow price :math:`\mu_{xt}` on the forward-looking variables :math:`x_t` evidently equals
-
-.. math::
-    :label: eqnmux
-
-    \mu_{xt} = P_{21} z_t + P_{22} x_t.
-
-So  :eq:`king6x0` is equivalent with
+Firm 1, the follower, faces :math:`\{q_{2t}\}_{t=0}^\infty` as
+a given quantity sequence chosen by the leader and believes that its
+output price at :math:`t` satisfies
 
 .. math::
-    :label: mu0condition
 
-    \mu_{x0} = 0 .
+    p_t  = a_0 - a_1 ( q_{1t} + q_{2t})  , \quad t \geq 0
 
-A Large Firm With a Competitive Fringe
-======================================
+Our challenge is to represent :math:`\{q_{2t}\}_{t=0}^\infty` as
+a given sequence
 
-As an example, this section studies the equilibrium of an industry with a large firm that acts as a Stackelberg leader with respect to a competitive fringe
+To do so, recall that under the Stackelberg plan, firm 2 sets output
+according to the :math:`q_{2t}` component of
 
-Sometimes the large firm is called ‘the monopolist' even though there are actually many firms in the industry
+.. math::  y_{t+1} = \begin{bmatrix}  1 \cr q_{2t} \cr q_{1t} \cr x_t \end{bmatrix}
 
-The industry produces a single nonstorable homogeneous good, the quantity of which is chosen in the previous period
+which is governed by
 
-One large firm produces :math:`Q_t` and a representative firm in a competitive fringe produces :math:`q_t`
+.. math::  y_{t+1} = (A - BF) y_t
 
-The representative firm in the competitive fringe acts as a price taker and chooses sequentially
+To obtain a recursive representation of a :math:`\{q_{2t}\}` sequence
+that is exogenous to firm 1, we define a state :math:`\tilde y_t`
 
-The large firm commits to a policy at time :math:`0`, taking into account its ability to manipulate the price sequence, both directly through the effects of its quantity choices on prices, and indirectly through the responses of the competitive fringe to its forecasts of prices [#f8]_
+.. math::  \tilde y_t = \begin{bmatrix}  1 \cr q_{2t} \cr \tilde q_{1t} \cr \tilde x_t \end{bmatrix}
 
-The costs of production are :math:`{\cal C}_t = e Q_t + .5 g Q_t^2+ .5 c (Q_{t+1} - Q_{t})^2` for the large firm and :math:`\sigma_t= d q_t + .5 h q_t^2 + .5 c (q_{t+1} - q_t)^2` for the competitive firm, where :math:`d>0, e >0, c>0, g >0, h>0` are cost parameters
+that evolves according to
 
-There is a linear inverse demand curve
+.. math::  \tilde y_{t+1} = (A - BF) \tilde y_t
 
-.. math::
-    :label: oli1
+subject to the initial condition :math:`\tilde q_{10} = q_{10}` and
+:math:`\tilde x_0 = x_0` where :math:`x_0 = - P_{22}^{-1} P_{21}` as
+stated above
 
-    p_t = A_0 - A_1 (Q_t + \overline q_t) + v_t,
+Firm 1's state vector is
 
-where :math:`A_0, A_1` are both positive and :math:`v_t` is a disturbance to demand governed by
+.. math::  X_t = \begin{bmatrix} \tilde y_t \cr q_{1t}  \end{bmatrix}
 
-.. math::
-    :label: oli2
-
-    v_{t+1}= \rho v_t + C_\epsilon \check \epsilon_{t+1}
-
-where :math:`| \rho | < 1` and :math:`\check \epsilon_{t+1}` is an IID sequence of random variables with mean zero and variance :math:`1`
-
-In :eq:`oli1`, :math:`\overline q_t` is equilibrium output of the representative competitive firm
-
-In equilibrium, :math:`\overline q_t = q_t`, but we must distinguish between :math:`q_t` and :math:`\overline q_t` in posing the optimum problem of a competitive firm
-
-The competitive fringe
-----------------------
-
-The representative competitive firm regards :math:`\{p_t\}_{t=0}^\infty` as an exogenous stochastic process and chooses an output plan to maximize
+It follows that the follower firm 1 faces law of motion
 
 .. math::
-    :label: oli3
+    :label: law-motion
 
-    E_0 \sum_{t=0}^\infty \beta^t \left\{ p_t q_t - \sigma_t \right\}, \quad \beta \in(0,1)
+    \begin{bmatrix} \tilde y_{t+1} \\
+    q_{1t+1} \end{bmatrix} = \begin{bmatrix} A - BF & 0 \\
+    0  & 1 \end{bmatrix}  \begin{bmatrix} \tilde y_{t} \\
+    q_{1t} \end{bmatrix} + \begin{bmatrix} 0 \cr 1 \end{bmatrix} x_t
 
-subject to :math:`q_0` given, where :math:`E_t` is the mathematical expectation based on time :math:`t` information
+This specfification assures that from the point of the view of a firm 1,
+:math:`q_{2t}` is an exogenous process
 
-Let :math:`i_t = q_{t+1} - q_t`
+Here
 
-We regard :math:`i_t` as the representative firm's control at :math:`t`
+-  :math:`\tilde q_{1t}, \tilde x_t` play the role of **Big K**
+-  :math:`q_{1t}, x_t` play the role of **little k**
 
-The first-order conditions for maximizing :eq:`oli3` are
-
-.. math::
-    :label: oli4
-
-    i_t =  E_t  \beta i_{t+1} -c^{-1} \beta h  q_{t+1} + c^{-1} \beta  E_t( p_{t+1} -d)
-
-for :math:`t \geq 0`
-
-We appeal to a :ref:`certainty equivalence principle <lq_cert_eq>` to justify working with a non-stochastic version of :eq:`oli4` formed by dropping the expectation operator and the random term :math:`\check \epsilon_{t+1}` from :eq:`oli2`
-
-We use a method of :cite:`Sargent1979` and :cite:`Townsend1983` [#f9]_
-
-We shift :eq:`oli1` forward one period, replace conditional expectations with realized values, use :eq:`oli1` to substitute for :math:`p_{t+1}` in :eq:`oli4`, and set :math:`q_t = \overline q_t` and :math:`i_t = \overline i_t` for all :math:`t\geq 0` to get
-
-.. math::
-    :label: oli5
-
-    \overline i_t = \beta \overline i_{t+1}  - c^{-1} \beta h \overline q_{t+1} + c^{-1} \beta (A_0-d) - c^{-1} \beta    A_1 \overline q_{t+1} -  c^{-1} \beta    A_1 Q_{t+1} + c^{-1} \beta    v_{t+1}
-
-Given sufficiently stable sequences :math:`\{Q_t, v_t\}`, we could solve :eq:`oli5` and :math:`\overline i_t = \overline q_{t+1} - \overline q_t` to express the competitive fringe's output sequence as a function of the (tail of the) monopolist's output sequence
-
-(This would be a version of representation :eq:`bell101`)
-
-It is this feature that makes the monopolist's problem fail to be recursive in the natural state variables :math:`\overline q, Q`
-
-The monopolist arrives at period :math:`t >0` facing the constraint that it must confirm the expectations about its time :math:`t` decision upon which the competitive fringe based its decisions at dates before :math:`t`
-
-The monopolist's problem
-------------------------
-
-The monopolist views the sequence of the competitive firm's  Euler equations as constraints on its own opportunities
-
-They are *implementability constraints* on the monopolist's choices
-
-Including the implementability constraints, we can represent the constraints in terms of the transition law facing the monopolist:
-
-.. math::
-    :label: oli6
-
-    \begin{aligned}
-    \begin{bmatrix}
-    1 & 0 & 0 & 0 & 0 \\
-    0 & 1 & 0 & 0 & 0 \\
-    0 & 0 & 1 & 0 & 0 \\
-    0 & 0 & 0 & 1 & 0 \\
-    A_0 -d & 1 & - A_1 & - A_1 -h & c \end{bmatrix}
-    \begin{bmatrix}  1 \\ v_{t+1} \\ Q_{t+1} \\ \overline q_{t+1} \\ \overline i_{t+1} \end{bmatrix}
-    & = \begin{bmatrix}
-    1 & 0 & 0 & 0 & 0 \\
-    0 & \rho & 0 & 0 & 0 \\
-    0 & 0 & 1 & 0 & 0 \\
-    0 & 0 & 0 & 1 & 1 \\
-    0 & 0 & 0 & 0 & {c\over \beta} \end{bmatrix}
-    \begin{bmatrix}  1 \\ v_t \\ Q_t \\ \overline q_t \\ \overline i_t \end{bmatrix} +
-    \begin{bmatrix}  0 \\ 0 \\ 1 \\ 0 \\ 0  \end{bmatrix} u_t
-    \end{aligned}
-
-where :math:`u_t = Q_{t+1} - Q_t` is the control of the monopolist at time :math:`t`
-
-The last row portrays the implementability constraints :eq:`oli5`
-
-Represent :eq:`oli6` as
-
-.. math::
-    :label: oli6a
-
-    y_{t+1} = A y_t + B u_t
-
-Although we have included the competitive fringe's choice variable :math:`\overline i_t` as a component of the "state" :math:`y_t` in the monopolist's transition law :eq:`oli6a`, :math:`\overline i_t` is actually a "jump" variable
-
-Nevertheless, the analysis above implies that the solution of the large firm's problem is encoded in the Riccati equation associated with :eq:`oli6a` as the transition law
-
-Let's decode it
-
-To match our general setup, we partition :math:`y_t` as :math:`y_t' = \begin{bmatrix} z_t' &  x_t' \end{bmatrix}` where :math:`z_t' = \begin{bmatrix}  1 & v_t & Q_t & \overline q_t  \end{bmatrix}` and :math:`x_t = \overline i_t`
-
-The monopolist's problem is
+The time :math:`t` component of firm 1's objective is
 
 .. math::
 
-    \max_{\{u_t, p_{t+1}, Q_{t+1}, \overline q_{t+1}, \overline i_t\}}
-    \sum_{t=0}^\infty \beta^t \left\{ p_t Q_t  - {\cal C}_t \right\}
+    \tilde X_t' \tilde R x_t - x_t^2 \tilde Q = \begin{bmatrix} 1 \cr q_{2t} \cr \tilde q_{1t} \cr \tilde x_t \cr q_{1t} \end{bmatrix}'
+     \begin{bmatrix} 0 & 0 & 0 & 0 & \frac{a_0}{2} \cr
+                     0 & 0 & 0 & 0 & - \frac{a_1}{2} \cr
+                     0 & 0 & 0 & 0 & 0 \cr
+                     0 & 0 & 0 & 0 & 0 \cr
+                     \frac{a_0}{2} &  -\frac{a_1}{2} & 0 & 0 & - a_1 \end{bmatrix}
+     \begin{bmatrix} 1 \cr q_{2t} \cr \tilde q_{1t} \cr \tilde x_t \cr q_{1t} \end{bmatrix} - \gamma
+        x_t^2
 
-subject to the given initial condition for :math:`z_0`, equations :eq:`oli1` and :eq:`oli5` and :math:`\overline i_t = \overline q_{t+1} - \overline q_t`, as well as the laws of motion of the natural state variables :math:`z`
+Firm 1's optimal decision rule is
 
-Notice that the monopolist in effect chooses the price sequence, as well as the quantity sequence of the competitive fringe, albeit subject to the restrictions imposed by the behavior of consumers, as summarized by the demand curve :eq:`oli1` and the implementability constraint :eq:`oli5` that describes the best responses  of firms in  the competitive fringe
+.. math::  x_t = - \tilde F X_t
 
-By substituting :eq:`oli1` into the above objective function, the monopolist's problem can be expressed as
+and it's state evolves according to
 
-.. math::
-    :label: oli7
+.. math::  \tilde X_{t+1} = (\tilde A - \tilde B \tilde F) X_t
 
-    \max_{\{u_t\}} \sum_{t=0}^\infty \beta^t \left\{ (A_0 - A_1 (\overline q_t + Q_t) + v_t) Q_t - eQ_t - .5gQ_t^2 - .5 c u_t^2 \right\}
+under its optimal decision rule
 
-subject to :eq:`oli6a`
+Later we shall compute :math:`\tilde F` and verify that when we set
 
-This can be written
+.. math::  X_0 = \begin{bmatrix} 1 \cr q_{20} \cr  q_{10} \cr  x_0 \cr q_{10} \end{bmatrix}
 
-.. math::
-    :label: oli9
+we recover
 
-    \max_{\{u_t\}} - \sum_{t=0}^\infty \beta^t \left\{ y_t' R y_t +   u_t' Q u_t \right\}
+.. math::  x_0 = - \tilde F \tilde X_0
 
-subject to :eq:`oli6a` where
+which will verify that we have properly set up a recursive
+representation of the follower's problem facing the Stackelberg leader's
+:math:`\vec q_2`
 
-.. math::
+Time Consistency of Follower's Plan
+-------------------------------------
 
-    R =  - \begin{bmatrix}
-    0 & 0 & {A_0-e \over 2} & 0 & 0 \\
-    0 & 0 & {1 \over 2} & 0 & 0 \\
-    {A_0-e \over 2} & {1 \over 2} & - A_1 -.5g
-    & -{A_1 \over 2} & 0 \\
-    0 & 0 & -{A_1 \over 2} & 0 & 0 \\
-    0 & 0 & 0 & 0 & 0 \end{bmatrix}
-
-and :math:`Q= {c \over 2}`
-
-Under the Stackelberg plan, :math:`u_t = - F y_t`, which implies that
-the evolution of :math:`y`  under the Stackelberg plan as
-
-.. math::
-    :label: oli20
-
-    \overline y_{t+1} = (A - BF) \overline y_t
-
-where :math:`\overline y_t = \begin{bmatrix}  1 & v_t & Q_t & \overline q_t & \overline i_t  \end{bmatrix}'`
-
-Recursive formulation of a follower's problem
----------------------------------------------
-
-We now make use of a "Big :math:`K`, little :math:`k`" trick (see  :doc:`rational expectations equilibrium <../multi_agent_models/rational_expectations>`)  to formulate a recursive version of a follower's problem cast in terms of an ordinary Bellman equation
-
-The individual firm faces :math:`\{p_t\}` as a price taker and believes
-
-.. math::
-    :label: oli22
-
-    \begin{aligned}
-    p_t & = a_0 - a_1 Q_t -a_1 \overline q_t + v_t \\
-        &  \equiv E_p \begin{bmatrix} \overline y_t  \end{bmatrix}
-    \end{aligned}
-
-(Please remember that :math:`\overline q_t` is a component of :math:`\overline y_t`)
-
-From the point of the view of a representative firm in the competitive fringe, :math:`\{\overline y_t\}` is an exogenous process
-
-A representative fringe firm wants to forecast :math:`\overline y` because it wants to forecast what it regards as the exogenous price process :math:`\{p_t\}`
-
-Therefore it wants to forecast the determinants of future prices
-
-    * future values of :math:`Q` and
-
-    * future values of :math:`\overline q`
-
-An individual follower firm  confronts state :math:`\begin{bmatrix} \overline y_t & q_t \end{bmatrix}'` where :math:`q_t` is its current output as opposed to :math:`\overline q` within :math:`\overline y`
-
-It believes that it chooses future values of :math:`q_t` but not future values of :math:`\overline q_t`
-
-(This is an application of a ''Big :math:`K`, little :math:`k`'' idea)
-
-The follower faces law of motion
-
-.. math::
-    :label: oli21
-
-    \begin{bmatrix} \overline y_{t+1} \\
-    q_{t+1} \end{bmatrix} = \begin{bmatrix} A - BF & 0 \\
-    0  & 1 \end{bmatrix}  \begin{bmatrix} \overline y_{t} \\
-    q_{t} \end{bmatrix} + \begin{bmatrix} 0 \cr 1 \end{bmatrix} i_t
-
-We calculated :math:`F` and therefore :math:`A - B F` earlier
-
-We can restate the optimization problem of the representative competitive firm
-
-The firm takes :math:`\overline y_t` as an exogenous process and  chooses an output plan :math:`\{q_t\}` to maximize
+Since the follower can solve its problem using dynamic programming its
+problem is recursive in what for it are the **natural state variables**,
+namely
 
 .. math::
 
-    E_0 \sum_{t=0}^\infty \beta^t \left\{ p_t q_t - \sigma_t \right\}, \quad \beta \in(0,1)
+   \begin{bmatrix} 1 \cr q_{2t} \cr \tilde q_{10} \cr \tilde x_0   \end{bmatrix}
 
-subject to :math:`q_0` given the law of motion :eq:`oli20` and the price function :eq:`oli22` and where the costs are still :math:`\sigma_t= d q_t + .5 h q_t^2 + .5 c (q_{t+1} - q_t)^2`
+It follows that the follower's plan is time consistent
 
-The representative firm's problem is a linear-quadratic dynamic programming problem with matrices :math:`A_s, B_s, Q_s, R_s` that can be constructed
-easily from the above information.
 
-The representative firm's decision rule can be represented as
 
-.. math::
-    :label: oli23
+Computing the Stackelberg Plan
+===============================
 
-    i_t = - F_s \begin{bmatrix} 1 \\
-                                v_t \\
-                                Q_t \\
-                                \overline q_t \\
-                                \overline i_t \\
-                                q_t \end{bmatrix}
-
-Now let's stare at the decision rule :eq:`oli23` for :math:`i_t`, apply "Big :math:`K`, little :math:`k`" logic again, and ask what we want in order to  verify a recursive representation of a representative follower's choice problem
-
-* We want decision rule :eq:`oli23` to have the property that :math:`i_t = \overline i_t` when we evaluate it at :math:`q_t = \overline q_t`
-
-We inherit these desires from a "Big :math:`K`, little :math:`k`" logic
-
-Here we apply a  "Big :math:`K`, little :math:`k`" logic in two parts to make the "representative firm be representative" *after* solving the
-representative firm's optimization problem
-
-    * We want :math:`q_t = \overline q_t`
-
-    * We want :math:`i_t = \overline i_t`
-
-Numerical example
------------------
-
-We computed the optimal Stackelberg plan for parameter settings :math:`A_0, A_1, \rho, C_\epsilon, c, d, e, g, h,  \beta` = :math:`100, 1, .8, .2, 1,  20, 20, .2, .2, .95` [#f10]_
-
-.. TODO: The parameter listing might look better in a table or maybe an math align style equation.  It is hard to tell what value goes with what parameter when they are grouped like this.
-
-For these parameter values the monopolist's decision rule is
-
-.. math::
-
-    u_t = (Q_{t+1} - Q_t) =\begin{bmatrix}  83.98 & 0.78 &  -0.95 &  -1.31  &  -2.07   \end{bmatrix}
-    \begin{bmatrix} 1 \\
-                                 v_t \\
-                                 Q_t \\
-                                 \overline q_t \\
-                                 \overline i_t
-                                 \end{bmatrix}
-
-for :math:`t \geq 0`
-
-and
-
-.. math::
-
-    x_0 \equiv \overline i_0 = \begin{bmatrix} 31.08 &   0.29  & -0.15  & -0.56     \end{bmatrix} \begin{bmatrix} 1 \\
-                                v_0 \\
-                                Q_0 \\
-                                \overline q_0
-                                \end{bmatrix}
-
-For this example, starting from :math:`z_0 =\begin{bmatrix} 1 & v_0 & Q_0 & \overline q_0\end{bmatrix}  = \begin{bmatrix} 1& 0 & 25 & 46 \end{bmatrix}`,  the monopolist chooses to set :math:`i_0=1.43`
-
-That choice implies that
-
-    * :math:`i_1=0.25`, and
-
-    * :math:`z_1 = \begin{bmatrix} 1 &  v_1 & Q_1 & \overline {q}_1 \end{bmatrix}  =  \begin{bmatrix} 1 & 0 & 21.83 & 47.43 \end{bmatrix}`
-
-A monopolist who started from the initial conditions :math:`\tilde z_0= z_1` would set :math:`i_0=1.10` instead of :math:`.25` as called for under the original optimal plan
-
-The preceding little calculation reflects the time inconsistency of the monopolist's optimal plan
-
-The recursive representation of the decision rule for a representative fringe firm  is
-
-.. math::
-
-    i_t = \begin{bmatrix} 0 & 0 & 0 & .34 & 1 & - .34   \end{bmatrix}  \begin{bmatrix} 1 \\
-                                v_t \\
-                                Q_t \\
-                                \overline q_t \\
-                                \overline i_t \\
-                                q_t \end{bmatrix} ,
-
-which we have computed by solving the appropriate  linear-quadratic dynamic programming problem described above
-
-Notice that, as expected, :math:`i_t = \overline i_t` when we evaluate this decision rule at :math:`q_t = \overline q_t`
-
-Concluding Remarks
-==================
-
-This lecture is our first encounter with a class of problems in which optimal decision rules are history dependent [#f12]_
-
-We shall encounter other examples in lectures :doc:`optimal taxation with state-contingent debt <../dynamic_programming_squared/opt_tax_recur>`
-and :doc:`optimal taxation without state-contingent debt <../dynamic_programming_squared/amss>`
-
-Many more examples of  such problems are described in chapters 20-24 of :cite:`Ljungqvist2012`
-
-Exercises
-=========
-
-Exercise 1
-----------
-
-There is no uncertainty
-
-For :math:`t \geq 0`, a monetary authority sets the growth of (the log of) money according to
-
-.. math::
-    :label: ex1a
-
-    m_{t+1} = m_t + u_t
-
-subject to the initial condition :math:`m_0>0` given
-
-The demand for money is
-
-.. math::
-    :label: ex1b
-
-    m_t - p_t = - \alpha (p_{t+1} - p_t)
-
-where :math:`\alpha > 0` and :math:`p_t` is the log of the price level
-
-Equation :eq:`ex1a` can be interpreted as the Euler equation of the holders of money
-
-**a.** Briefly interpret how :eq:`ex1a` makes the demand for real balances vary inversely with the expected rate of inflation. Temporarily (only for this part of the exercise) drop :eq:`ex1a` and assume instead that :math:`\{m_t\}` is a given sequence satisfying :math:`\sum_{t=0}^\infty m_t^2 < + \infty`. Solve the difference  equation :eq:`ex1a` "forward" to express :math:`p_t` as a function of current and future values of :math:`m_s`. Note how future values of :math:`m` influence the current price level.
-
-At time :math:`0`, a monetary authority chooses (commits to) a possibly history-dependent strategy for setting :math:`\{u_t\}_{t=0}^\infty`
-
-The monetary authority orders sequences :math:`\{m_t, p_t\}_{t=0}^\infty` according to
-
-.. math::
-    :label: ex1c
-
-    -\sum_{t=0}^\infty .95^t \left[  (p_t - \overline p)^2 +
-    u_t^2 + .00001 m_t^2  \right]
-
-Assume that :math:`m_0=10, \alpha=5, \bar p=1`
-
-**b.** Please briefly interpret this problem as one where the monetary authority wants to stabilize the price level, subject to costs of adjusting the money supply and some implementability constraints. (We include the term :math:`.00001m_t^2` for purely technical reasons that you need not discuss.)
-
-**c.** Please write and run a Julia program to find the optimal sequence :math:`\{u_t\}_{t=0}^\infty`
-
-**d.** Display the optimal decision rule for :math:`u_t` as a function of :math:`u_{t-1},  m_t, m_{t-1}`
-
-**e.** Compute the optimal :math:`\{m_t, p_t\}_t` sequence for :math:`t=0, \ldots,  10`
-
-*Hints:*
-
-* The optimal :math:`\{m_t\}` sequence must satisfy :math:`\sum_{t=0}^\infty (.95)^t m_t^2 < +\infty`
-
-* Code can be found in the file `lqcontrol.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lqcontrol.jl>`_ from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package that implements the optimal linear regulator
-
-Exercise 2
-----------
-
-A representative consumer has quadratic utility functional
-
-.. math::
-    :label: ex2a
-
-    \sum_{t=0}^\infty \beta^t \left\{ -.5 (b -c_t)^2 \right\}
-
-where :math:`\beta \in (0,1)`, :math:`b = 30`, and :math:`c_t` is time :math:`t` consumption
-
-The consumer faces a sequence of budget constraints
-
-.. math::
-    :label: ex2b
-
-    c_t + a_{t+1} = (1+r)a_t + y_t - \tau_t
-
-where
-
-* :math:`a_t` is the household's holdings of an asset at the beginning of :math:`t`
-
-* :math:`r >0` is a constant net interest rate satisfying :math:`\beta (1+r) <1`
-
-* :math:`y_t` is the consumer's endowment at :math:`t`
-
-The consumer's plan for :math:`(c_t, a_{t+1})` has to obey the boundary condition :math:`\sum_{t=0}^\infty \beta^t a_t^2 < + \infty`
-
-Assume that :math:`y_0, a_0` are given initial conditions and that :math:`y_t` obeys
-
-.. math::
-    :label: ex2c
-
-    y_t = \rho y_{t-1}, \quad t \geq 1,
-
-where :math:`|\rho| <1`. Assume that :math:`a_0=0`, :math:`y_0=3`, and :math:`\rho=.9`
-
-At time :math:`0`, a planner commits to a plan for taxes :math:`\{\tau_t\}_{t=0}^\infty`
-
-The planner designs the plan to maximize
-
-.. math::
-    :label: ex2d
-
-    \sum_{t=0}^\infty \beta^t \left\{ -.5 (c_t-b)^2 -   \tau_t^2\right\}
-
-over :math:`\{c_t, \tau_t\}_{t=0}^\infty` subject to the implementability constraints in :eq:`ex2b` for :math:`t \geq 0` and
-
-.. math::
-    :label: ex2e
-
-    \lambda_t =  \beta (1+r) \lambda_{t+1}
-
-for :math:`t\geq 0`, where :math:`\lambda_t \equiv (b-c_t)`
-
-**a.** Argue that :eq:`ex2e` is the Euler equation for a consumer who maximizes :eq:`ex2a` subject to :eq:`ex2b`, taking :math:`\{\tau_t\}` as a given sequence
-
-**b.** Formulate the planner's problem as a Stackelberg problem
-
-**c.** For :math:`\beta=.95, b=30, \beta(1+r)=.95`, formulate an artificial optimal linear regulator problem and use it to solve the Stackelberg problem
-
-**d.** Give a recursive representation of the Stackelberg plan for :math:`\tau_t`
-
-.. rubric:: Footnotes
-
-.. [#f1] The problem assumes that there are no cross products between states and controls in the return function.  A simple transformation  converts a problem whose return function has cross products into an equivalent problem that has no cross products. For example, see :cite:`HansenSargent2008` (chapter 4, pp. 72-73).
-
-.. [#f2] The government would make different choices were it to choose sequentially, that is,  were it to select its time :math:`t` action at time :math:`t`.
-
-.. [#f8] :cite:`HansenSargent2008` (chapter 16), uses this model as a laboratory to illustrate an equilibrium concept featuring robustness in which at least one of the agents has doubts about the stochastic specification of the demand shock process.
-
-.. [#f9] They used this method to compute a rational expectations competitive equilibrium.  Their key step was to eliminate price and output by substituting from the inverse demand curve and the production function into the firm's first-order conditions to get a difference equation in capital.
-
-.. [#f10] These calculations were performed by these functions:
-
-Setup
------
-
-.. literalinclude:: /_static/includes/deps_no_using.jl
+Here is our code to compute a Stackelberg plan via a linear-quadratic
+dynamic program as outlined above
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat, QuantEcon, Roots
+    using InstantiateFromURL
+    activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.8")
+    using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
 
 .. code-block:: julia
     :class: test
 
     using Test
 
+We define named tuples and default values for the model and solver settings, and
+instantiate one copy of each
+
 .. code-block:: julia
 
-    function Oligopoly(;a0 = 100.0,
-                        a1 = 1.0,
-                        rho = 0.8,
-                        c_eps = 0.2,
-                        c = 1.0,
-                        d = 20.0,
-                        e = 20.0,
-                        g = 0.2,
-                        h = 0.2,
-                        beta = 0.95)
+    model = @with_kw (a0 = 10,
+                      a1 = 2,
+                      β = 0.96,
+                      γ = 120.,
+                      n = 300)
 
-        # left-hand side of (37)
-        Alhs = I + zeros(5, 5)
-        Alhs[5, :] = [a0-d 1 -a1 -a1-h c]
-        Alhsinv = inv(Alhs)
+    # things like tolerances, etc.
+    settings = @with_kw (tol0 = 1e-8,
+                         tol1 = 1e-16,
+                         tol2 = 1e-2)
 
-        # right-hand side of (37)
-        Brhs = [0; 0; 1; 0; 0]
-        Arhs = I + zeros(5, 5)
-        Arhs[2, 2] = rho
-        Arhs[4, 5] = 1
-        Arhs[5, 5] = c / beta
+    defaultModel = model();
+    defaultSettings = settings();
 
-        R = [0 0 (a0-e) / 2 0 0
-             0 0 1/2 0 0
-             (a0-e) / 2 1 / 2 -a1 - g / 2 -a1 / 2 0
-             0 0 -a1 / 2 0 0
-             0 0 0 0 0]
+Now we can compute the actual policy using the LQ routine from QuantEcon.jl
 
-        Rf = [0 0 0 0 0 (a0-d) / 2
-              0 0 0 0 0 1/2
-              0 0 0 0 0 -a1/2
-              0 0 0 0 0 -a1/2
-              0 0 0 0 0 0
-              (a0-d) / 2 1 / 2 -a1 / 2 -a1 / 2 0 -h / 2]
+.. code-block:: julia
 
-        Q = c / 2
+    @unpack a0, a1, β, γ, n = defaultModel
+    @unpack tol0, tol1, tol2 = defaultSettings
 
-        A = Alhsinv * Arhs
-        B = Alhsinv * Brhs
+    βs = [β^x for x = 0:n-1]
+    Alhs = I + zeros(4, 4);
+    Alhs[4, :] = [β * a0 / (2 * γ), -β * a1 / (2 * γ), -β * a1 / γ, β] # Euler equation coefficients
+    Arhs = I + zeros(4, 4);
+    Arhs[3, 4] = 1.;
+    Alhsinv = inv(Alhs);
 
-        return (a0 = a0, a1 = a1, rho = rho, c_eps = c_eps,
-                c = c, d = d, e = e, g = g, h = h, beta = beta,
-                A = A, B = B, Q = Q, R = R, Rf = Rf)
+    A = Alhsinv * Arhs;
+    B = Alhsinv * [0, 1, 0, 0,];
+    R = [0 -a0/2 0 0; -a0/2 a1 a1/2 0; 0 a1/2 0 0; 0 0 0 0];
+    Q = γ;
+    lq = QuantEcon.LQ(Q, R, A, B, bet=β);
+    P, F, d = stationary_values(lq)
+
+    P22 = P[4:end, 4:end];
+    P21 = P[4:end, 1:3];
+    P22inv = inv(P22);
+    H_0_0 = -P22inv * P21;
+
+    # simulate forward
+    π_leader = zeros(n);
+    z0 = [1, 1, 1];
+    x0 = H_0_0 * z0;
+    y0 = vcat(z0, x0);
+
+    Random.seed!(1) # for reproducibility
+    yt, ut = compute_sequence(lq, y0, n);
+    π_matrix = R + F' * Q * F;
+
+    for t in 1:n
+        π_leader[t] = -(yt[:, t]' * π_matrix * yt[:, t]);
     end
 
-    function find_PFd(olig)
-        lq = QuantEcon.LQ(olig.Q, -olig.R, olig.A, olig.B; bet=olig.beta)
-        P, F, d = stationary_values(lq)
-
-        Af = vcat(hcat(olig.A-olig.B*F, [0; 0; 0; 0; 0]), [0 0 0 0 0 1])
-        Bf = [0; 0; 0; 0; 0; 1]
-
-        lqf = QuantEcon.LQ(olig.Q, -olig.Rf, Af, Bf; bet=olig.beta)
-        Pf, Ff, df = stationary_values(lqf)
-
-        return P, F, d, Pf, Ff, df
-    end
-
-    function solve_for_opt_policy(olig, eta0 = 0.0, Q0 = 0.0, q0 = 0.0)
-
-        # step 1 & 2: formulate/solve the optimal linear regulator
-        P, F, d, Pf, Ff, df = find_PFd(olig)
-
-        # step 3: convert implementation into state variables (find coeffs)
-        P22 = P[end, end]
-        P21 = transpose(P[end, 1:end-1])
-        P22inv = inv(P22)
-
-        # step 4: find optimal x_0 and \mu_{x, 0}
-        z0 = [1; eta0; Q0; q0]
-        x0 = -P22inv * P21 * z0
-        D0 = -P22inv * P21
-
-        # return -F and -Ff because we use u_t = -F y_t
-        return P, -F, D0, Pf, -Ff
-
-    end
-
-    olig = Oligopoly()
-    P, F, D0, Pf, Ff = solve_for_opt_policy(olig)
-
-    # checking time-inconsistency
-    # arbitrary initial z_0
-    y0 = [1; 0; 25; 46]
-    # optimal x_0 = i_0
-    i0 = D0 * y0
-    # iterate one period using the closed-loop system
-    y1 = (olig.A + olig.B * F) * [y0; i0]
-    # the last element of y_1 is x_1 = i_1
-    i1_0 = y1[end, 1]
-
-    # compare this to the case when the leader solves a Stackelberg problem
-    # in period 1. if in period 1 the leader could choose i1 given
-    # (1, v_1, Q_1, \bar{q}_1)
-    i1_1 = D0 * y1[1:end - 1, 1]
+    println("Computed policy for Stackelberg leader: $F")
 
 .. code-block:: julia
     :class: test
 
-    @testset begin
-        @test i1_1 ≈ 1.1038392392871046 # think this is the most important value.
-        @test i1_0 ≈ 0.24833302229796866
-        @test i0 ≈ 1.4288731635600485
-        @test y1[3] ≈ 21.829608211752173
+    @test F ≈ [-1.580044538772657, 0.29461312747031404, 0.6748093760774972, 6.539705936147515]'
+
+Implied Time Series for Price and Quantities
+---------------------------------------------
+
+The following code plots the price and quantities
+
+.. code-block:: julia
+
+    q_leader = yt[2, 1:end];
+    q_follower = yt[3, 1:end];
+    q = q_leader + q_follower;
+    p = a0 .- a1*q;
+
+    plot(1:n+1, [q_leader, q_follower, p],
+        title = "Output and Prices, Stackelberg Duopoly",
+        labels = ["leader output", "follower output", "price"],
+        xlabel = "t")
+
+Value of Stackelberg Leader
+----------------------------
+
+We'll compute the present value earned by the Stackelberg leader
+
+We'll compute it two ways (they give identical answers -- just a check
+on coding and thinking)
+
+.. code-block:: julia
+
+    v_leader_forward = sum(βs .* π_leader);
+    v_leader_direct = -yt[:, 1]' * P * yt[:, 1];
+
+    println("v_leader_forward (forward sim) is $v_leader_forward")
+    println("v_leader_direct is $v_leader_direct")
+
+.. code-block:: julia
+    :class: test
+
+    @test v_leader_forward ≈ 150.0316212532547
+    @test v_leader_direct ≈ 150.03237147548967
+
+.. code-block:: julia
+
+    # manually check whether P is an approximate fixed point
+    P_next = (R + F' * Q * F + β * (A - B * F)' * P * (A - B * F));
+    all(P - P_next .< tol0)
+
+.. code-block:: julia
+    :class: test
+
+    @test all(P - P_next .< tol0)
+
+.. code-block:: julia
+
+    # manually checks whether two different ways of computing the
+    # value function give approximately the same answer
+    v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
+               β * (y0' * (A - B * F)' * P * (A - B * F) * y0)));
+    (v_leader_direct - v_expanded < tol0)[1, 1]
+
+.. code-block:: julia
+    :class: test
+
+    @test (v_leader_direct - v_expanded < tol0)[1, 1]
+
+Exhibiting Time Inconsistency of Stackelberg Plan
+==================================================
+
+In the code below we compare two values
+
+-  the continuation value :math:`- y_t P y_t` earned by a continuation
+   Stackelberg leader who inherits state :math:`y_t` at :math:`t`
+
+-  the value of a **reborn Stackelberg leader** who inherits state
+   :math:`z_t` at :math:`t` and sets :math:`x_t = - P_{22}^{-1} P_{21}`
+
+The difference between these two values is a tell-tale time of the time
+inconsistency of the Stackelberg plan
+
+.. code-block:: julia
+
+    # Compute value function over time with reset at time t
+    vt_leader = zeros(n);
+    vt_reset_leader = similar(vt_leader);
+
+    yt_reset = copy(yt)
+    yt_reset[end, :] = (H_0_0 * yt[1:3, :])
+
+    for t in 1:n
+        vt_leader[t] = -yt[:, t]' * P * yt[:, t]
+        vt_reset_leader[t] = -yt_reset[:, t]' * P * yt_reset[:, t]
     end
 
-.. [#f12] For another application of the techniques in this lecture and how they related to the method recommended by :cite:`KydlandPrescott1980`.
+    p1 = plot(1:n+1, [(-F * yt)', (-F * yt_reset)'], labels = ["Stackelberg Leader", "Continuation Leader at t"],
+            title = "Leader Control Variable", xlabel = "t");
+    p2 = plot(1:n+1, [yt[4, :], yt_reset[4, :]], title = "Follower Control Variable", xlabel = "t", legend = false);
+    p3 = plot(1:n, [vt_leader, vt_reset_leader], legend = false,
+                xlabel = "t", title = "Leader Value Function");
+    plot(p1, p2, p3, layout = (3, 1), size = (800, 600))
 
-.. TODO: Is the reference to KydlandPrescott to the correct paper?  When I think Kydland Prescott 1980, this is the paper I think of.  Does Evans Sargent refer to your paper with David Evans on History Dependent Public Policy?  I couldn't find the journal or other information on this paper.
+Recursive Formulation of the Follower's Problem
+================================================
 
-.. TODO: in f4, f13 we need to fill in section link given placeholder XXXXXX (CC: What links?)
+We now formulate and compute the recursive version of the follower's
+problem
+
+We check that the recursive **Big** :math:`K` **, little** :math:`k` formulation of the follower's problem produces the same output path
+:math:`\vec q_1` that we computed when we solved the Stackelberg problem
+
+.. code-block:: julia
+
+    Ã = I + zeros(5, 5);
+    Ã[1:4, 1:4] .= A - B * F;
+    R̃ = [0 0 0 0 -a0/2; 0 0 0 0 a1/2; 0 0 0 0 0; 0 0 0 0 0; -a0/2 a1/2 0 0 a1];
+    Q̃ = Q;
+    B̃ = [0, 0, 0, 0, 1];
+
+    lq_tilde = QuantEcon.LQ(Q̃, R̃, Ã, B̃, bet=β);
+    P̃, F̃, d̃ = stationary_values(lq_tilde);
+    y0_tilde = vcat(y0, y0[3]);
+    yt_tilde = compute_sequence(lq_tilde, y0_tilde, n)[1];
+
+.. code-block:: julia
+
+    # checks that the recursive formulation of the follower's problem gives
+    # the same solution as the original Stackelberg problem
+    plot(1:n+1, [yt_tilde[5, :], yt_tilde[3, :]], labels = ["q_tilde", "q"])
+
+Note: Variables with ``_tilde`` are obtained from solving the follower's
+problem -- those without are from the Stackelberg problem
+
+.. code-block:: julia
+
+    # maximum absolute difference in quantities over time between the first and second solution methods
+    max(abs(yt_tilde[5] - yt_tilde[3]))
+
+.. code-block:: julia
+    :class: test
+
+    @test max(abs(yt_tilde[5] - yt_tilde[3])) ≈ 0. atol = 1e-15
+
+.. code-block:: julia
+
+    # x0 == x0_tilde
+    yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
+
+.. code-block:: julia
+    :class: test
+
+    @test yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
+
+Explanation of Alignment
+--------------------------
+
+If we inspect the coefficients in the decision rule :math:`- \tilde F`,
+we can spot the reason that the follower chooses to set :math:`x_t =
+\tilde x_t` when it sets :math:`x_t = - \tilde F X_t` in
+the recursive formulation of the follower problem
+
+Can you spot what features of :math:`\tilde F` imply this?
+
+Hint: remember the components of :math:`X_t`
+
+.. code-block:: julia
+
+    F̃ # policy function in the follower's problem
+
+.. code-block:: julia
+
+    P # value function in the Stackelberg problem
+
+.. code-block:: julia
+
+    P̃ # value function in the follower's problem
+
+.. code-block:: julia
+
+    # manually check that P is an approximate fixed point
+    all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+
+.. code-block:: julia
+    :class: test
+
+    @test all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+
+.. code-block:: julia
+
+    # compute `P_guess` using `F_tilde_star`
+    F̃_star = -[0, 0, 0, 1, 0]';
+    P_guess = zeros(5, 5);
+
+    for i in 1:1000
+        P_guess = ((R̃ + F̃_star' * Q̃ * F̃_star) +
+                   β * (Ã - B̃ * F̃_star)' * P_guess
+                   * (Ã - B̃ * F̃_star));
+    end
+
+.. code-block:: julia
+
+    # value function in the follower's problem
+    -(y0_tilde' * P̃ * y0_tilde)[1, 1]
+
+.. code-block:: julia
+    :class: test
+
+    @test -(y0_tilde' * P̃ * y0_tilde)[1, 1] ≈ 112.65590740578173
+
+.. code-block:: julia
+
+    # value function using P_guess
+    -(y0_tilde' * P_guess * y0_tilde)[1, 1]
+
+.. code-block:: julia
+    :class: test
+
+    @test -(y0_tilde' * P_guess * y0_tilde)[1, 1] ≈ 112.65590740578186
+
+.. code-block:: julia
+
+    # c policy using policy iteration algorithm
+    F_iter = (β * inv(Q + β * B̃' * P_guess * B̃)
+          * B̃' * P_guess * Ã);
+    P_iter = zeros(5, 5);
+    dist_vec = zeros(5, 5);
+
+    for i in 1:100
+        # compute P_iter
+        dist_vec = similar(P_iter)
+        for j in 1:1000
+            P_iter = (R̃ + F_iter' * Q * F_iter) + β *
+                      (Ã - B̃ * F_iter)' * P_iter *
+                      (Ã - B̃ * F_iter);
+
+            # update F_iter
+            F_iter = β * inv(Q + β * B̃' * P_iter * B̃) *
+                        B̃' * P_iter * Ã;
+
+            dist_vec = P_iter - ((R̃ + F_iter' * Q * F_iter) +
+                    β * (Ã - B̃ * F_iter)' * P_iter *
+                    (Ã - B̃ * F_iter));
+        end
+    end
+
+    if maximum(abs.(dist_vec)) < 1e-8
+        dist_vec2 = F_iter - (β * inv(Q + β * B̃' * P_iter * B̃) * B̃' * P_iter * Ã)
+            if maximum(abs.(dist_vec2)) < 1e-8
+                @show F_iter
+            else
+                println("The policy didn't converge: try increasing the number of outer loop iterations")
+            end
+    else
+        println("The policy didn't converge: try increasing the number of inner loop iterations")
+    end
+
+.. code-block:: julia
+
+    yt_tilde_star = zeros(n, 5);
+    yt_tilde_star[1, :] = y0_tilde;
+
+    for t in 1:n-1
+        yt_tilde_star[t+1, :] = (Ã - B̃ * F̃_star) * yt_tilde_star[t, :];
+    end
+
+    plot([yt_tilde_star[:, 5], yt_tilde[3, :]], labels = ["q_tilde", "q"])
+
+.. code-block:: julia
+
+    maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1]))
+
+.. code-block:: julia
+    :class: test
+
+    @test maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1])) < 1e-15
+
+Markov Perfect Equilibrium
+============================
+
+The **state** vector is
+
+.. math::  z_t = \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t} \end{bmatrix}
+
+and the state transition dynamics are
+
+.. math::  z_{t+1} = A z_t + B_1 v_{1t}  +  B_2 v_{2t}
+
+where :math:`A` is a :math:`3 \times 3` identity matrix and
+
+.. math::
+
+    B_1 = \begin{bmatrix} 0 \cr 0 \cr 1 \end{bmatrix} ,
+    \quad B_2 = \begin{bmatrix} 0 \cr 1 \cr 0 \end{bmatrix}
+
+The Markov perfect decision rules are
+
+.. math::  v_{1t} = - F_1 z_t , \quad v_{2t} = - F_2 z_t
+
+and in the Markov perfect equilibrium the state evolves according to
+
+.. math::  z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
+
+.. code-block:: julia
+
+    # in LQ form
+    A = I + zeros(3, 3);
+    B1 = [0, 0, 1];
+    B2 = [0, 1, 0];
+    R1 = [0 0 -a0/2; 0 0 a1/2; -a0/2 a1/2 a1];
+    R2 = [0 -a0/2 0; -a0/2 a1 a1/2; 0 a1/2 0];
+    Q1 = Q2 = γ;
+    S1 = S2 = W1 = W2 = M1 = M2 = 0.;
+
+    # solve using nnash from QE
+    F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2,
+                            S1, S2, W1, W2, M1, M2,
+                            beta = β,
+                            tol = tol1);
+
+    # simulate forward
+    AF = A - B1 * F1 - B2 * F2;
+    z = zeros(3, n);
+    z[:, 1] .= 1;
+    for t in 1:n-1
+        z[:, t+1] = AF * z[:, t]
+    end
+
+    println("Policy for F1 is $F1")
+    println("Policy for F2 is $F2")
+
+.. code-block:: julia
+    :class: test
+
+    @test round(F1[1], digits = 4) == -0.227
+    @test round(F2[2], digits = 4) == 0.0945
+
+.. code-block:: julia
+
+    q1 = z[2, :];
+    q2 = z[3, :];
+    q = q1 + q2; # total output, MPE
+    p = a0 .- a1 * q; # total price, MPE
+    plot([q, p], labels = ["total ouput", "total price"], title = "Output and prices, duopoly MPE", xlabel = "t")
+
+.. code-block:: julia
+
+    # computes the maximum difference in quantities across firms
+    maximum(abs.(q1 - q2))
+
+.. code-block:: julia
+    :class: test
+
+    @test maximum(abs.(q1 - q2)) < 1e-14
+
+.. code-block:: julia
+
+    # compute values
+    u1 = -F1 * z;
+    u2 = -F2 * z;
+    π_1 = (p .* q1)' - γ * u1.^2;
+    π_2 = (p .* q2)' - γ * u2.^2;
+
+    v1_forward = π_1 * βs;
+    v2_forward = π_2 * βs;
+
+    v1_direct = -z[:, 1]' * P1 * z[:, 1];
+    v2_direct = -z[:, 1]' * P2 * z[:, 1];
+
+    println("Firm 1: Direct is $v1_direct, Forward is $(v1_forward[1])");
+    println("Firm 2: Direct is $v2_direct, Forward is $(v2_forward[1])");
+
+.. code-block:: julia
+    :class: test
+
+    @test round(v1_direct, digits = 4) == 133.3296
+    @test round(v2_direct, digits = 4) == 133.3296
+    @test round(v1_forward[1], digits = 4) == 133.3303
+    @test round(v2_forward[1], digits = 4) == 133.3303
+
+.. code-block:: julia
+
+    # sanity check
+    Λ_1 = A - B2 * F2;
+    lq1 = QuantEcon.LQ(Q1, R1, Λ_1, B1, bet = β);
+    P1_ih, F1_ih, d = stationary_values(lq1);
+
+    v2_direct_alt = -z[:, 1]' * P1_ih * z[:, 1] + d;
+    all(abs.(v2_direct - v2_direct_alt) < tol2)
+
+
+MPE vs. Stackelberg
+====================
+
+.. code-block:: julia
+
+    vt_MPE = zeros(n);
+    vt_follower = zeros(n);
+
+    for t in 1:n
+        vt_MPE[t] = -z[:, t]' * P1 * z[:, t];
+        vt_follower[t] = -yt_tilde[:, t]' * P̃ * yt_tilde[:, t];
+    end
+
+    plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE", "Stackelberg leader",
+            "Stackelberg follower"], title = "MPE vs Stackelberg Values",
+            xlabel = "t")
+
+.. code-block:: julia
+
+    # display values
+    println("vt_leader(y0) = $(vt_leader[1])");
+    println("vt_follower(y0) = $(vt_follower[1])")
+    println("vt_MPE(y0) = $(vt_MPE[1])");
+
+.. code-block:: julia
+
+    # total difference in value b/t Stackelberg and MPE
+    vt_leader[1] + vt_follower[1] - 2*vt_MPE[1]
+
+.. code-block:: julia
+    :class: test
+
+    @test round(vt_leader[1] + vt_follower[1] - 2*vt_MPE[1], digits = 4) == -3.9708
