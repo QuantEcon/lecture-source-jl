@@ -459,7 +459,7 @@ What's important here is that the function approximation scheme must not only pr
 
 .. only:: html
 
-    One good choice from both respects is continuous piecewise linear interpolation (see :download:`this paper </jl/_static/pdfs/3ndp.pdf>` for further discussion)
+    One good choice from both respects is continuous piecewise linear interpolation (see :download:`this paper <../_static/pdfs/3ndp.pdf>` for further discussion)
 
 .. only:: latex
 
