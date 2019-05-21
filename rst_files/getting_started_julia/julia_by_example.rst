@@ -207,7 +207,7 @@ program, for the sake of learning syntax let's rewrite our program to use a
 
 .. note::
 
-    In the current version of Julia v1.0, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
+    In Julia v0.7 and up, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
 
 Starting with the most direct version, and pretending we are in a world where ``randn`` can only return a single value
 

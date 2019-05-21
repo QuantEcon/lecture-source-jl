@@ -262,7 +262,7 @@ Pkg Operations
 
 For now, let's just try adding a dependency
 
-* Activate the package environment (to be run from the base, ``v1.0`` environment)
+* Activate the package environment (to be run from the base, ``v1.1`` environment)
 
 .. code-block:: julia
 
@@ -290,7 +290,7 @@ We can also run other operations, like ``] up``, ``] precompile``, etc.
 
 Package operations are listed in detail in the :doc:`tools and editors <../more_julia/tools_editors>` lecture
 
-Recall that, to quit the active environment and return to the base ``(v1.0)``, simply run
+Recall that, to quit the active environment and return to the base ``(v1.1)``, simply run
 
 .. code-block:: julia
 
@@ -521,7 +521,7 @@ There are a few different ways to run the tests for your package
 
 * Run the actual ``runtests.jl``, say by hitting ``shift-enter`` on it in Atom
 
-* From a fresh (``v1.0``) REPL, run ``] test ExamplePackage``
+* From a fresh (``v1.1``) REPL, run ``] test ExamplePackage``
 
 * From an activated (``ExamplePackage``) REPL, simply run ``] test`` (recall that you can activate with ``] activate ExamplePackage``)
 
@@ -558,7 +558,7 @@ We can see ours by opening it in Atom
     - linux
     - osx
     julia:
-    - 1.0
+    - 1.1
     - nightly
     matrix:
     allow_failures:
@@ -569,7 +569,7 @@ We can see ours by opening it in Atom
     after_success:
     - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
 
-This is telling Travis to build the project in Julia, on OSX and Linux, using Julia v1.0 and the latest ("nightly")
+This is telling Travis to build the project in Julia, on OSX and Linux, using Julia v1.1 and the latest development build ("nightly")
 
 It also says that if the nightly version doesn't work, that shouldn't register as a failure
 
@@ -797,7 +797,7 @@ To review the workflow for creating, versioning, and testing a new project end-t
 
 1. Create the local package directory using the ``PkgTemplates.jl``
 
-2. Add that package to the Julia package manager, by opening a Julia REPL in the ``~/.julia/dev/ExamplePackage.jl``, making sure the active environment is the default one ``(v1.0)``, and hitting ``] dev .``
+2. Add that package to the Julia package manager, by opening a Julia REPL in the ``~/.julia/dev/ExamplePackage.jl``, making sure the active environment is the default one ``(v1.1)``, and hitting ``] dev .``
 
 3. Drag-and-drop that folder to GitHub Desktop
 

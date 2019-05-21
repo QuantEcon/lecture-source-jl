@@ -292,7 +292,7 @@ This way, you can work with (and specify) the dependencies (i.e., required packa
 
 Essentially, an environment is a dependency tree for a project, or a "frame of mind" for Julia's package manager
 
-* We can see the default (``v1.0``) environment as such
+* We can see the default (``v1.1``) environment as such
 
 .. code-block:: julia
 
