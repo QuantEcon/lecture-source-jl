@@ -18,4 +18,4 @@ See `LICENSE.md` for licensing and copyright information.
 
 All contributions should be made through PR. If you aren't an admin on the repo, you might need an admin review before the PR is mergeable. You can request reviews from the right hand dropdown.
 
-Make sure you have a look at the [style guide](style.md) before you start writing.
+Make sure you have a look at the [style guide](style.md) before you start writing. The [unicode](unicode.jl) is a concise summary of which unicode patterns we use.
