@@ -10,7 +10,9 @@ See `LICENSE.md` for licensing and copyright information.
 
 To build the lectures from source: 
 
-0. Open a terminal (powershell on windows) and `cd` to the location of this file
+0. Open a terminal (powershell on windows) and `cd` to the location of this file. Run `make setup`.
+
+:warning: This might not work on Windows, due to a symlink.
 
 1. `docker pull arnavsood/jupinx:latest`
 

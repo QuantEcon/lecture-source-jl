@@ -9,6 +9,9 @@ SOURCEDIR     = source/rst
 BUILDDIR      = _build
 
 # Put it first so that "make" without argument is like "make help".
+setup:
+	cd source/rst && ln -s ../_static _static
+
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
