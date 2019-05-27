@@ -904,7 +904,7 @@ Here's how it looks
         ϕ[m+1] = ϕ[m+1] + h
 
         # if r is given calculate the vector ϕ_r
-        if r == nothing
+        if isnothing(r)
             k = nothing
             ϕ_r = nothing
         else
@@ -921,7 +921,7 @@ Here's how it looks
         end
 
         # if β is given, define the transformed variables
-        if β == nothing
+        if isnothing(β)
             β = 1.0
         else
             d = β.^(collect(0:m)/2) * d
@@ -1062,7 +1062,7 @@ Here's how it looks
 
         J = reverse(I + zeros(N+1, N + 1), dims = 2)
 
-        if t == nothing                      # if the problem is deterministic
+        if isnothing(t)                     # if the problem is deterministic
             a_hist = J * a_hist
 
             # transform the a sequence if β is given

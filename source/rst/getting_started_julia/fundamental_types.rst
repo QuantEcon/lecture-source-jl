@@ -1138,7 +1138,7 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
         end
 
         # later, can check `x`
-        if x === nothing
+        if isnothing(x)
             println("x was not set")
         else
             println("x = $x")
@@ -1167,8 +1167,8 @@ Similarly, if needed, you can return a ``nothing`` from a function to indicate t
     y1 = f(x1)
     y2 = f(x2)
 
-    # check results with === nothing
-    if y1 === nothing
+    # check results with isnothing
+    if isnothing(y1)
         println("f($x2) successful")
     else
         println("f($x2) failed");
@@ -1226,7 +1226,7 @@ Finally, ``nothing`` is a good way to indicate an optional parameter in a functi
 
     function f(x; z = nothing)
 
-        if(z === nothing)
+        if isnothing(z)
             println("No z given with $x")
         else
             println("z = $z given with $x")

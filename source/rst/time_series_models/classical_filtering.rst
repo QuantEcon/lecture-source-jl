@@ -585,7 +585,7 @@ Here's how it looks
       ϕ[m+1] = ϕ[m+1] + h
 
       # if r is given calculate the vector ϕ_r
-      if r === nothing
+      if isnothing(r)
           k = nothing
           ϕ_r = nothing
       else
@@ -596,13 +596,13 @@ Here's how it looks
               ϕ_r[k-i+1] = sum(diag(r*r', -i))
           end
 
-          if h_eps !== nothing
+          if isnothing(h_eps) == false 
               ϕ_r[k+1] = ϕ_r[k+1] + h_eps
           end
       end
 
       # if β is given, define the transformed variables
-      if β === nothing
+      if isnothing(β)
           β = 1.0
       else
           d = β.^(collect(0:m)/2) * d
@@ -699,7 +699,7 @@ Here's how it looks
   end
 
   function construct_V(lqf; N = nothing)
-      if N === nothing
+      if isnothing(N)
           error("N must be provided!!")
       end
       if !(N isa Integer)
@@ -751,7 +751,7 @@ Here's how it looks
 
       J = reverse(Matrix(I, N + 1, N + 1), dims = 2)
 
-      if t === nothing                      # if the problem is deterministic
+      if isnothing(t)                      # if the problem is deterministic
           a_hist = J * a_hist
 
           # transform the a sequence if β is given
