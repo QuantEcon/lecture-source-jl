@@ -715,6 +715,10 @@ Although the last two operations give the same result, the first one is numerica
 
 Multiplying two **one** dimensional vectors gives an error -- which is reasonable since the meaning is ambiguous
 
+More precisely, the error is that there isn't an implementation of ``*`` for two one dimensional vectors
+
+The output explains this, and lists some other methods of ``*`` which Julia thinks are close to what we want
+
 .. code-block:: julia
     :class: skip-test
 
