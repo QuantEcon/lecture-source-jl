@@ -8,7 +8,7 @@ See `LICENSE.md` for licensing and copyright information.
 
 ## Usage
 
-0. Follow the [local setup instructions](https://lectures.quantecon.org/jl/getting_started.html) to get setup with Anaconda Python and Julia. Install [Jupinx](https://github.com/QuantEcon/sphinxcontrib-jupyter).
+0. Follow the [local setup instructions](https://lectures.quantecon.org/jl/getting_started.html) to get setup with Anaconda Python and Julia **1.1**. Install [Jupinx](https://github.com/QuantEcon/sphinxcontrib-jupyter).
 
 1. Clone or download the repo and run `make setup` to instantiate necessary links, etc.
 
