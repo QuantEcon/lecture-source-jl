@@ -420,7 +420,7 @@ jupyter_welcome_block = ""
 jupyter_allow_html_only = True
 
 #path to download notebooks from 
-jupyter_download_nb_urlpath = "https://lectures.quantecon.org/jl/"
+jupyter_download_nb_urlpath = "https://lectures.quantecon.org/"
 
 #allow downloading of notebooks
 jupyter_download_nb = True
