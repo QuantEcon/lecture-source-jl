@@ -565,7 +565,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
         model = pas.model
         Π, β, Uc = model.Π, model.β, model.Uc
 
-        if sHist === nothing
+        if isnothing(sHist)
             sHist = QuantEcon.simulate(pas.mc, T, init=s_0)
         end
         cHist = zeros(T)

@@ -1,9 +1,0 @@
-Max Huber
-Balint Szoke
-Victoria Gregory
-Willem Hekman
-Guanlong Ren (with Will, for solving Ex. 1 in linear_algebra)
-Alberto Polo (for editing the Wald_Friedman_jl.ipynb
-Ranjan Ananthamaran (for working on lss.jl in QuantEcon, which powers the linear_models lecture).
-Zac Cranko (for the lqcontrol file in the QuantEcon package).
-Colin Beckingham (for work on the QuantEcon.jl/src/markov/markov_approx.jl file, which solves Exercise 3).

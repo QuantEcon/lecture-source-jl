@@ -482,7 +482,7 @@ Here are some resources to help
 
 * Kate Hudson's excellent `git flight rules <https://github.com/k88hudson/git-flight-rules/>`_, which is a near-exhaustive list of situations you could encounter, and command-line fixes
 * The GitHub `Learning Lab <https://lab.github.com/>`_, an interactive sandbox environment for git
-
+* The docs for forking on `GitHub Desktop <https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/>`_ and `the GitHub Website <https://guides.github.com/activities/forking/>`_
 
 .. _version_control_commandline:
 

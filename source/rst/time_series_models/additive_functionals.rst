@@ -241,14 +241,14 @@ Setup
         end
 
         # set F
-        if F === nothing
+        if isnothing(F)
             F = zeros(nk, 1)
         elseif ndims(F) == 1
             F = reshape(F, length(F), 1)
         end
 
         # set ν
-        if ν === nothing
+        if isnothing(ν)
             ν = zeros(nm, 1)
         elseif ndims(ν) == 1
             ν = reshape(ν, length(ν), 1)

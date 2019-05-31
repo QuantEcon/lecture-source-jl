@@ -471,9 +471,9 @@ function g(a)
     return xstar
 end
 val = g(0.8)
-@show val === nothing  # or isnothing(val) is preferred soon
+@show isnothing(val)
 val = g(1.1)
-@show val === nothing;
+@show isnothing(val)
 ```
 - **Use similar patterns with the Optim and other libraries**
   - Although there is (currently) an inconsistency in the usage of the minimum and maximum in Optim.

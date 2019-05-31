@@ -726,6 +726,9 @@ The green check mark indicates that Travis tests passed for this commit
 
 For more on PRs, see the relevant section of the :doc:`version control <../more_julia/version_control>` lecture
 
+For more on forking, see the docs on `GitHub Desktop <https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/>`_ and `the GitHub Website <https://guides.github.com/activities/forking/>`_
+
+
 Case with Write Access
 ---------------------------
 
