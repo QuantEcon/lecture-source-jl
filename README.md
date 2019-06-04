@@ -18,3 +18,4 @@ See `LICENSE.md` for licensing and copyright information.
 
 4. After it's done, in the same terminal run `docker stop quantecon-docker` and `docker rm quantecon-docker`. This will garbage-collect the container, and free the name `quantecon-docker` for your next run. If you're having trouble, run `docker rm -f quantecon-docker` to force removal. 
 
+5. Grab a coffee. 
