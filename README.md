@@ -2,7 +2,7 @@
 
 ## About this Repository 
 
-This is the source repository for the QuantEcon Julia-flavored macroeconomics lectures. 
+This is the source repository for the QuantEcon Julia-flavored [lectures](https://lectures.quantecon.org/jl).
 
 See `LICENSE.md` for licensing and copyright information. 
 
