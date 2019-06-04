@@ -23,6 +23,9 @@ jupyter:
 jupyter-tests:
 	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) -D jupyter_drop_tests=0
 
+preview:
+	cd _build/jupyter_html/ && python -m http.server
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
