@@ -8,14 +8,13 @@ See `LICENSE.md` for licensing and copyright information.
 
 ## Usage
 
-0. Follow the [local setup instructions](https://lectures.quantecon.org/jl/getting_started.html) to get setup with Anaconda Python and Julia **1.1**. Install [Jupinx](https://github.com/QuantEcon/sphinxcontrib-jupyter).
+0. Install [Docker](https://www.docker.com/).
 
-1. Clone or download the repo and run `make setup` to instantiate necessary links, etc.
+1. Run `docker pull quantecon/jupinx`. 
 
-2. Run `make jupyter` to generate notebooks without tests, and `make jupyter-tests` to generate notebooks with tests.
+2. In a terminal, run `docker run --name quantecon-docker -it -d -v "$(pwd)":/home/jovyan/work quantecon/jupinx` from inside the directory (Linux/macOS). It should spit out a container ID string then exit. Try `${PWD}` on Windows, but note that **Windows isn't mentioned in the [docs](https://docs.docker.com/storage/bind-mounts/) for bind mounts.**  
 
-## Contributing
+3. In the same terminal (i.e., not inside the container), run `docker exec quantecon-docker bash -c "cd work && make jupyter".` Change it to `jupyter-tests` if you want it to output/execute the test blocks. 
 
-All contributions should be made through PR. If you aren't an admin on the repo, you might need an admin review before the PR is mergeable. You can request reviews from the right hand dropdown.
+4. After it's done, in the same terminal run `docker stop quantecon-docker` and `docker rm quantecon-docker`. This will garbage-collect the container, and free the name `quantecon-docker` for your next run. If you're having trouble, run `docker rm -f quantecon-docker` to force removal. 
 
-Make sure you have a look at the [style guide](style.md) before you start writing. The [unicode](unicode.jl) is a concise summary of which unicode patterns we use.
