@@ -1,4 +1,4 @@
-# "Lectures in Quantitative Economics"-- Julia Version
+# "Lectures in Quantitative Economics": Julia Version
 
 ## About this Repository 
 
