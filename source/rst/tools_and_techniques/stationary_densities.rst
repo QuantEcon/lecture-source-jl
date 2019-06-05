@@ -507,9 +507,9 @@ The following code is example of usage for the stochastic growth model :ref:`des
     :class: test
 
     @testset "First Figure Tests" begin
-        @test laes[2].X[4] ≈ 2.6707630703642655
+        @test laes[2].X[4] ≈ 2.606090690969538
         @test length(ygrid) == 200 && ygrid[1] ≈ 0.01 && ygrid[end] ≈ 4.0
-        @test k[5, 5] ≈ 0.461853841701963
+        @test k[5, 5] ≈ 0.8597155601089135
     end
 
 The figure shows part of the density sequence :math:`\{\psi_t\}`, with each
@@ -1043,7 +1043,7 @@ Here's one program that does the job.
     :class: test
 
     @testset "Solution 2 Tests" begin
-        @test laes[3].X[4] ≈ 3.2212712128996204
+        @test laes[3].X[4] ≈ 3.165182625666698
         @test length(ygrid) == 150 && ygrid[end] ≈ 6.5 && ygrid[1] ≈ 0.01
     end
 
