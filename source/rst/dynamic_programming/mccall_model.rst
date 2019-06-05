@@ -637,5 +637,5 @@ Here's one solution
 
     # Just eyeball the plot pending undeprecation and rewrite.
     @testset begin
-        @test stop_times[4] ≈ 8.1627
+        @test stop_times[4] ≈ 8.1822
     end

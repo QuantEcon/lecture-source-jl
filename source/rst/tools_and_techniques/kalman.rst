@@ -339,7 +339,7 @@ the update has used parameters
     predictdist = MvNormal(new_x̂, Symmetric(new_Σ))
 
     # plot Density 3
-    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1, 
+    contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1,
             color = :lighttest, cbar = false)
     contour!(x_grid, y_grid, two_args_to_pdf(dist),
              color = :grays, cbar = false)
@@ -651,15 +651,13 @@ Exercise 2
     kalman = Kalman(A, G, Q, R)
     set_state!(kalman, x̂_0, Σ_0)
 
-    nodes, weights = qnwlege(21, θ-ϵ, θ+ϵ)
-
     T = 600
     z = zeros(T)
     for t in 1:T
         # record the current predicted mean and variance, and plot their densities
         m, v = kalman.cur_x_hat, kalman.cur_sigma
         dist = Normal(m, sqrt(v))
-        E = expectation(dist, nodes)
+        E = expectation(dist)
         integral = E(x -> 1) # just take the pdf integral
         z[t] = 1. - integral
     # generate the noisy signal and update the Kalman filter
