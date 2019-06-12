@@ -449,6 +449,3 @@ jupyter_html_template = "theme/templates/lectures-nbconvert.tpl"
 #make website
 jupyter_make_site = True
 
-#serial execution flags
-jupyter_threads_per_worker=1
-jupyter_number_workers=1
