@@ -81,6 +81,7 @@ To set up a project on Julia:
 * Load the `PkgTemplates <https://github.com/invenia/PkgTemplates.jl/>`_ package
 
 .. code-block:: julia
+    :class: no-execute
 
     using PkgTemplates
 
@@ -89,6 +90,7 @@ To set up a project on Julia:
 This specifies metadata like the license we'll be using (MIT by default), the location (``~/.julia/dev`` by default), etc.
 
 .. code-block:: julia
+    :class: no-execute
 
     ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
 
@@ -97,13 +99,16 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 * Create a specific project based off this template
 
 .. code-block:: julia
+    :class: no-execute
 
     generate("ExamplePackage.jl", ourTemplate)
 
-If we navigate to the package directory (shown in the output), we should see something like the following
+If we navigate to the package directory, we should see something like the following
 
 .. figure:: /_static/figures/testing-dir.png
     :scale: 100%
+
+As a reminder, the location of your ``.julia`` folder can be found by running ``DEPOT_PATH[1]`` in a REPL 
 
 **Note:** On Mac, this may be hidden; you can either start a terminal, ``cd ~`` and then ``cd .julia``, or make `hidden files visible <https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/>`_ in the Finder
 
@@ -150,6 +155,7 @@ We also want Julia's package manager to be aware of the project
 * Open a REPL in the newly created project directory, either by noting the path printed above, or by running the following in a REPL
 
 .. code-block:: julia
+    :class: no-execute
 
     cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
 
@@ -158,6 +164,7 @@ Note the lack of ``.jl``!
 * Run the following
 
 .. code-block:: julia
+    :class: no-execute
 
     ] activate
 
@@ -166,14 +173,16 @@ to get into the main Julia environment (more on environments in the second half 
 * And run
 
 .. code-block:: julia
+    :class: no-execute
 
     ] dev .
 
 to add the package
 
-We see the change reflected in our default package list
+You can see the change reflected in our default package list by running
 
 .. code-block:: julia
+    :class: no-execute
 
     ] st
 
@@ -264,7 +273,8 @@ For now, let's just try adding a dependency
 
 * Activate the package environment (to be run from the base, ``v1.1`` environment)
 
-.. code-block:: julia
+.. code-block:: julia   
+    :class: no-execute
 
     ] activate ExamplePackage
 
@@ -276,6 +286,7 @@ Note that the base environment isn't special, except that it's what's loaded by 
 * Add a package
 
 .. code-block:: julia
+    :class: no-execute
 
     ] add Expectations
 
@@ -293,6 +304,7 @@ Package operations are listed in detail in the :doc:`tools and editors <../more_
 Recall that, to quit the active environment and return to the base ``(v1.1)``, simply run
 
 .. code-block:: julia
+    :class: no-execute
 
     ] activate
 
@@ -306,10 +318,12 @@ The basic idea is to work in ``tests/runtests.jl``, while reproducible functions
 For example, let's say we add ``Distributions.jl``
 
 .. code-block:: julia
+    :class: no-execute
 
     ] activate ExamplePackage
 
 .. code-block:: julia
+    :class: no-execute
 
     ] add Distributions
 
@@ -337,10 +351,12 @@ and edit the source (paste this into the file itself ) to read as follows
 Let's try calling this
 
 .. code-block:: julia
+    :class: no-execute
 
     ] activate
 
 .. code-block:: julia
+    :class: no-execute
 
     using ExamplePackage
     ExamplePackage.greet()
@@ -429,12 +445,14 @@ They can then collaborate as they would on other git repositories
 In particular, they can run
 
 .. code-block:: julia
+    :class: no-execute
 
     ] activate ExamplePackage
 
 to load the list of dependencies, and
 
 .. code-block:: julia
+    :class: no-execute
 
     ] instantiate
 
