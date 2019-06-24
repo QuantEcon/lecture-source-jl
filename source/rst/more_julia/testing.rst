@@ -301,14 +301,13 @@ We can also run other operations, like ``] up``, ``] precompile``, etc.
 
 Package operations are listed in detail in the :doc:`tools and editors <../more_julia/tools_editors>` lecture
 
-Recall that, to quit the active environment and return to the base ``(v1.1)``, simply run
+Recall that, to quit the active environment and return to the base ``(v1.1)``, simply run 
 
 .. code-block:: julia
     :class: no-execute
 
     ] activate
 
-Without any arguments
 
 Writing Code
 -----------------
@@ -412,7 +411,7 @@ Note that, as usual, we had to first activate ``ExamplePackage`` first before ma
     [targets]
     test = ["Test"]
 
-And the Manifest as well
+There will also be changes in the Manifest as well 
 
 Be sure to add ``output/.ipynb_checkpoints`` to your ``.gitignore`` file, so that's not checked in
 
