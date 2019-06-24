@@ -90,7 +90,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
 .. code-block:: julia
 
-    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()], dev = true)
+    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
 
 **Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID
 
@@ -147,9 +147,31 @@ Adding a Project to the Julia Package Manager
 
 We also want Julia's package manager to be aware of the project
 
-This was done automatically, by the ``dev = true`` argument in our template
+* Open a REPL in the newly created project directory, either by noting the path printed above, or by running the following in a REPL
 
-If we look at Julia's package list, we can see our package reflected there
+.. code-block:: julia
+
+    cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
+
+Note the lack of ``.jl``!
+
+* Run the following
+
+.. code-block:: julia
+
+    ] activate
+
+to get into the main Julia environment (more on environments in the second half of this lecture)
+
+* And run
+
+.. code-block:: julia
+
+    ] dev .
+
+to add the package
+
+We see the change reflected in our default package list
 
 .. code-block:: julia
 
