@@ -1,5 +1,6 @@
 _build/
 _build_website/
+_build_coverage/
 .DS_Store
 **/.ipynb_checkpoints/
 **/*.ipynb
