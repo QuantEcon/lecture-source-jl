@@ -553,10 +553,10 @@ Here's code to produce the 45 degree diagram
     plot!(xlabel="x_t", ylabel="x_{t+1}", guidefont=font(16))
 
 .. code-block:: julia
-  :class: test
+  :class: test 
 
   @testset "More Solutions 1 Tests" begin
-    @test [xs[4], ys[4]] ≈ [0.0, 0.44530420013435007]
+    @test round(ys[4], digits = 5) ≈ 0.30717
     @test ticks ≈ [0.25, 0.5, 0.75, 1.0]
     @test plot_grid[1] ≈ 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max ≈ 1.2
     @test length(plot_grid) == plot_grid_size && plot_grid_size == 100
