@@ -386,14 +386,6 @@ jupyter_default_lang = "julia"
 jupyter_default_lang = "julia"
 
 jupyter_kernels = {
-    "python3": {
-        "kernelspec": {
-            "display_name": "Python",
-            "language": "python3",
-            "name": "python3"
-            },
-        "file_extension": ".py",
-    },
     "julia": {
         "kernelspec": {
             "display_name": "Julia 1.1.0",
