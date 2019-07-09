@@ -408,36 +408,42 @@ jupyter_headers = {
 # Filename for the file containing the welcome block
 jupyter_welcome_block = ""
 
-#Allow .. only:: html pass through
-jupyter_allow_html_only = True
+#Adjust links to target html (rather than ipynb)
+jupyter_target_html = False
 
-#path to download notebooks from
-jupyter_download_nb_urlpath = "https://lectures.quantecon.org/"
+#path to download notebooks from 
+jupyter_download_nb_urlpath = None
 
 #allow downloading of notebooks
-jupyter_download_nb = True
-
-#Adjust links to target html (rather than ipynb) when targeting html through nbconvert
-jupyter_target_html = True
-
-#Drop Tests Embedded in Lectures
-jupyter_drop_tests = True
+jupyter_download_nb = False
 
 #Use urlprefix images
-jupyter_images_urlpath = "https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/"
+jupyter_images_urlpath = None
+
+#Allow ipython as a language synonym for blocks to be ipython highlighted
+jupyter_lang_synonyms = ["ipython"]
+
+#Execute skip-test code blocks for rendering of website (this will need to be ignored in coverage testing)
+jupyter_ignore_skip_test = True
 
 #allow execution of notebooks
-jupyter_execute_notebooks = True
+jupyter_execute_notebooks = False
 
 # Location of template folder for coverage reports
-jupyter_template_coverage_file_path = "theme/templates/error_report_template.html"
+jupyter_template_coverage_file_path = False
 
 # generate html from IPYNB files
-jupyter_generate_html = True
+jupyter_generate_html = False
 
 # html template specific to your website needs
-jupyter_html_template = "theme/templates/lectures-nbconvert.tpl"
+jupyter_html_template = None
 
 #make website
-jupyter_make_site = True
+jupyter_make_site = False
+
+#force markdown image inclusion
+jupyter_images_markdown = True
+
+#This is set true by default to pass html to the notebooks
+jupyter_allow_html_only=True
 
