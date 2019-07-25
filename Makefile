@@ -23,12 +23,12 @@ setup:
 
 preview:
 ifneq (,$(filter $(target),website Website))
-	cd _build/jupyter_html/ && python -m http.server
+	cd $(BUILDWEBSITE)/jupyter_html/ && python -m http.server
 else
 ifdef lecture
-	cd _build/jupyter/ && jupyter notebook $(basename $(lecture)).ipynb
+	cd $(BUILD)/jupyter/ && jupyter notebook $(basename $(lecture)).ipynb
 else
-	cd _build/jupyter/ && jupyter notebook
+	cd $(BUILD)/jupyter/ && jupyter notebook
 endif
 endif
 
