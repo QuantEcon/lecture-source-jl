@@ -5,5 +5,4 @@ dask-worker-space/
 .DS_Store
 **/.ipynb_checkpoints/
 **/*.ipynb
-*.toml
 **/.projects
