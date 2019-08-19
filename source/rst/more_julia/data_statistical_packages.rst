@@ -25,7 +25,7 @@ This list is not exhaustive, and others can be found in organizations such as `J
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps_no_using.jl
+.. literalinclude:: /_static/includes/deps_more_julia.jl
 
 .. code-block:: julia
     :class: hide-output

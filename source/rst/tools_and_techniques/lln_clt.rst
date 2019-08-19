@@ -205,7 +205,7 @@ In each of the three cases, convergence of :math:`\bar X_n` to :math:`\mu` occur
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
     :class: test

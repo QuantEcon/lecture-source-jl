@@ -35,7 +35,7 @@ For supplementary reading, see :cite:`Sargent1987` or :cite:`CryerChan2008`.
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
 

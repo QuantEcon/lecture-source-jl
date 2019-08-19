@@ -345,7 +345,7 @@ This function computes :math:`b(\bar s_1), b(\bar s_2), \bar c` as outcomes give
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
   :class: test

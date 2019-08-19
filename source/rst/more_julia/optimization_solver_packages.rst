@@ -16,7 +16,7 @@ In this lecture we introduce a few of the Julia libraries that we've found parti
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps_no_using.jl
+.. literalinclude:: /_static/includes/deps_more_julia.jl
 
 .. code-block:: julia
     :class: hide-output

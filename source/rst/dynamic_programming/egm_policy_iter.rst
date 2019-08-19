@@ -134,7 +134,7 @@ Here's an implementation of :math:`K` using EGM as described above
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
 

@@ -221,7 +221,7 @@ The method to evaluate the number of active firms generates :math:`F_1,
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
     :class: test

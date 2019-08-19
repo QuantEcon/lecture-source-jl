@@ -38,7 +38,7 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
 

@@ -61,7 +61,7 @@ The model will prove useful for illustrating concepts such as
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
 

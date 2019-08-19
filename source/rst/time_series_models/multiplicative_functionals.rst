@@ -96,7 +96,7 @@ We'll do this by formulating the additive functional as a linear state space mod
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
     :class: test

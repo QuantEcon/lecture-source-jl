@@ -36,7 +36,7 @@ Other references include chapter 7 of :cite:`Ljungqvist2012`
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
 

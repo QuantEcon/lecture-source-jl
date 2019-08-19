@@ -55,7 +55,7 @@ This lecture has the dual role of giving an introduction into the design of gene
 Setup
 ------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
 
 .. code-block:: julia
     :class: hide-output
