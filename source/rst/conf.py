@@ -447,6 +447,10 @@ jupyter_images_markdown = True
 #This is set true by default to pass html to the notebooks
 jupyter_allow_html_only=True
 
+## Theme specific variables
+jupyter_theme_path = 'theme'
+jupyter_template_path = 'theme/templates'
+
 # Jupyter dependencies
 jupyter_dependencies = {
     'dynamic_programming': [],
@@ -457,4 +461,3 @@ jupyter_dependencies = {
     'time_series_models': [],
     'tools_and_techniques': []
 }
-
