@@ -450,3 +450,14 @@ jupyter_allow_html_only=True
 ## Theme specific variables
 jupyter_theme_path = 'theme'
 jupyter_template_path = 'theme/templates'
+
+# Jupyter dependencies
+jupyter_dependencies = {
+    'dynamic_programming': [],
+    'dynamic_programming_squared': [],
+    'getting_started_julia': ['Manifest.toml', 'Project.toml'],
+    'more_julia': ['Manifest.toml', 'Project.toml'],
+    'multi_agent_models': [],
+    'time_series_models': [],
+    'tools_and_techniques': []
+}
