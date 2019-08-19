@@ -447,3 +447,14 @@ jupyter_images_markdown = True
 #This is set true by default to pass html to the notebooks
 jupyter_allow_html_only=True
 
+# Jupyter dependencies
+jupyter_dependencies = {
+    'dynamic_programming': [],
+    'dynamic_programming_squared': [],
+    'getting_started_julia': ['Manifest.toml', 'Project.toml'],
+    'more_julia': ['Manifest.toml', 'Project.toml'],
+    'multi_agent_models': [],
+    'time_series_models': [],
+    'tools_and_techniques': []
+}
+
