@@ -451,7 +451,7 @@ jupyter_allow_html_only=True
 jupyter_dependencies = {
     'dynamic_programming': [],
     'dynamic_programming_squared': [],
-    'getting_started_julia': [],
+    'getting_started_julia': ['Manifest.toml', 'Project.toml'],
     'more_julia': ['Manifest.toml', 'Project.toml'],
     'multi_agent_models': [],
     'time_series_models': [],
