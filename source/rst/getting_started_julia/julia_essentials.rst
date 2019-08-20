@@ -94,7 +94,7 @@ handled in a different way)
     typeof(1)
 
 
-If you're running a 32 bit system you'll still see ``Float64``, but you will see ``Int32`` instead of ``Int64`` (see `the section on Integer types <https://docs.julialang.org/en/latest/manual/integers-and-floating-point-numbers/#Integers-1>`_ from the Julia manual)
+If you're running a 32 bit system you'll still see ``Float64``, but you will see ``Int32`` instead of ``Int64`` (see `the section on Integer types <https://docs.julialang.org/en/v1.1/manual/integers-and-floating-point-numbers/#Integers-1>`_ from the Julia manual)
 
 Arithmetic operations are fairly standard
 
