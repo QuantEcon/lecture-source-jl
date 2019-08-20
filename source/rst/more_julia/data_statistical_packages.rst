@@ -187,7 +187,7 @@ To give an example directly from the source of the LINQ inspired `Query.jl <http
         @collect DataFrame
     end
 
-While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <http://fredo-dedup.github.io/VegaLite.jl/latest/>`_
+While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <https://github.com/queryverse/VegaLite.jl>`_
 
 .. code-block:: julia
 

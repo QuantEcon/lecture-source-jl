@@ -248,7 +248,7 @@ maximization, so if a function is called ``optimize`` it will mean minimization
 Univariate Functions on Bounded Intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`Univariate optimization <http://julianlsolvers.github.io/Optim.jl/stable/#user/minimization/#minimizing-a-univariate-function-on-a-bounded-interval>`_
+`Univariate optimization <http://julianlsolvers.github.io/Optim.jl/stable/user/minimization/#minimizing-a-univariate-function-on-a-bounded-interval>`_
 defaults to a robust hybrid optimization routine called `Brent's method <https://en.wikipedia.org/wiki/Brent%27s_method>`_
 
 .. code-block:: julia
@@ -286,7 +286,7 @@ Or to maximize
 Unconstrained Multivariate Optimization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There are a variety of `algorithms and options <http://julianlsolvers.github.io/Optim.jl/stable/#user/minimization/#_top>`_ for multivariate optimization
+There are a variety of `algorithms and options <http://julianlsolvers.github.io/Optim.jl/stable/user/minimization/#_top>`_ for multivariate optimization
 
 From the documentation, the simplest version is
 
@@ -298,7 +298,7 @@ From the documentation, the simplest version is
 
 The default algorithm in ``NelderMead``, which is derivative-free and hence requires many function evaluations
 
-To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.jl/stable/#algo/lbfgs/>`_
+To change the algorithm type to `L-BFGS <http://julianlsolvers.github.io/Optim.jl/stable/algo/lbfgs/>`_
 
 .. code-block:: julia
 
@@ -348,7 +348,7 @@ For derivative-free methods, you can change the algorithm -- and have no need to
 However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global-convergence properties
 
 
-See the `maximum likelihood <http://julianlsolvers.github.io/Optim.jl/stable/#examples/generated/maxlikenlm/>`_
+See the `maximum likelihood <http://julianlsolvers.github.io/Optim.jl/stable/examples/generated/maxlikenlm/>`_
 example and the accompanying `Jupyter notebook <https://nbviewer.jupyter.org/github/JuliaNLSolvers/Optim.jl/blob/gh-pages/v0.15.3/examples/generated/maxlikenlm.ipynb>`_
 
 JuMP.jl
