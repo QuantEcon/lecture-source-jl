@@ -91,7 +91,9 @@ Otherwise - or in addition - you can install it directly from the Julia REPL
 
 Choose the default, ``y`` when asked to install Jupyter and then Jupyterlab via Conda
 
-After the installation, a jupyterlab tab should open in your browser
+After the installation, a Jupyterlab tab should open in your browser
+
+(Optional) To enable launching Jupyterlab from a terminal, use :ref:`add Julia's Jupyter to your path <add_jupyter_to_path>`
 
 .. _package_setup:
 
@@ -158,6 +160,7 @@ Choose a path you like and clone the repo
 **Note:** the workflow will be easiest if you clone the repo to the default location relative to the home folder for your user
 
 From a Julia REPL, start Jupyterlab by executing
+
 .. code-block:: julia
     :class: no-execute
 
@@ -165,7 +168,7 @@ From a Julia REPL, start Jupyterlab by executing
     jupyterlab(detached = true)
 
 
-Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installation <jupyter_installation>` then  run ``jupyter lab`` in your terminal
+Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal
 
 .. At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
