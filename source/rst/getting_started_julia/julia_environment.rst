@@ -28,8 +28,9 @@ To summarize, if on a desktop you should clone the `notebooks repository <https:
 .. code-block:: julia
     :class: no-execute
 
-    using IJulia
-    jupyterlab(detached = true)
+    using IJulia; jupyterlab(detached = true)
+
+Hint: Julia will remember the last commands in the REPL, so you can use up-arrow to restart JupyterLab
 
 Alternatively, if you are using an online Jupyter, then you can directly open a new notebook
 
@@ -268,14 +269,14 @@ If you are using a JupyterHub installation, you can start the REPL in JupyterLab
 
 We examine the REPL and its different modes in more detail in the :ref:`tools and editors <repl_main>` lecture
 
- 
+
 .. _add_jupyter_to_path:
 
 (Optional) Adding Jupyter to the Path
 =====================================
 
 If you :ref:`installed Jupyter using Julia <jupyter_installation>`, then you may find it convenient to add it to your system path
-in order to launch Jupyterlab without running a Julia terminal.
+in order to launch JupyterLab without running a Julia terminal.
 
 The default location for the Jupyter binaries is relative to the ``.julia`` folder (e.g., ``"C:\Users\USERNAME\.julia\conda\3\Scripts`` on Windows)
 
@@ -297,4 +298,3 @@ On Windows, to add directly to the path, type ``;`` to enter shell mode and then
     :class: no-execute
 
     setx PATH "$(Conda.SCRIPTDIR);%PATH%"
-    

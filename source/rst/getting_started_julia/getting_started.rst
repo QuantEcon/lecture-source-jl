@@ -86,14 +86,13 @@ Otherwise - or in addition - you can install it directly from the Julia REPL
 .. code-block:: julia
     :class: no-execute
 
-    using IJulia
-    jupyterlab(detached = true)
+    using IJulia; jupyterlab(detached = true)
 
-Choose the default, ``y`` when asked to install Jupyter and then Jupyterlab via Conda
+Choose the default, ``y`` when asked to install Jupyter and then JupyterLab via Conda
 
-After the installation, a Jupyterlab tab should open in your browser
+After the installation, a JupyterLab tab should open in your browser
 
-(Optional) To enable launching Jupyterlab from a terminal, use :ref:`add Julia's Jupyter to your path <add_jupyter_to_path>`
+(Optional) To enable launching JupyterLab from a terminal, use :ref:`add Julia's Jupyter to your path <add_jupyter_to_path>`
 
 .. _package_setup:
 
@@ -159,13 +158,12 @@ Choose a path you like and clone the repo
 
 **Note:** the workflow will be easiest if you clone the repo to the default location relative to the home folder for your user
 
-From a Julia REPL, start Jupyterlab by executing
+From a Julia REPL, start JupyterLab by executing
 
 .. code-block:: julia
     :class: no-execute
 
-    using IJulia
-    jupyterlab(detached = true)
+    using IJulia; jupyterlab(detached = true)
 
 
 Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal
@@ -173,13 +171,13 @@ Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installatio
 .. At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
 .. **Note**: On Windows, you may need to click the "open without git" button that comes up
-.. 
+..
 .. In the resulting terminal session, run
-.. 
+..
 .. .. code-block:: none
-.. 
+..
 ..     jupyter lab
-.. 
+..
 
 Navigate to the location you stored the lecture notes, and open the :doc:`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to explore this interface and start writing code
 
