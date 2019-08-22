@@ -453,6 +453,7 @@ jupyter_template_path = 'theme/templates'
 
 # Jupyter dependencies
 jupyter_dependencies = {
+    '': ['Manifest.toml', 'Project.toml'],
     'dynamic_programming': [],
     'dynamic_programming_squared': [],
     'getting_started_julia': ['Manifest.toml', 'Project.toml'],
