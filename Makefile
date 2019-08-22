@@ -41,9 +41,9 @@ clean-website:
 
 coverage:
 ifneq (,$(filter $(parallel),true True))
-	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDCOVERAGE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_coverage=1 -D jupyter_execute_notebooks=1 -D jupyter_ignore_skip_test=0 -D jupyter_template_coverage_file_path="theme/templates/error_report_template.html" -D jupyter_number_workers=$(CORES)
+	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDCOVERAGE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_coverage=1 -D jupyter_execute_notebooks=1 -D jupyter_drop_tests=0 -D jupyter_ignore_skip_test=0 -D jupyter_template_coverage_file_path="theme/templates/error_report_template.html" -D jupyter_number_workers=$(CORES)
 else
-	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDCOVERAGE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_coverage=1 -D jupyter_execute_notebooks=1 -D jupyter_ignore_skip_test=0 -D jupyter_template_coverage_file_path="theme/templates/error_report_template.html"
+	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDCOVERAGE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_coverage=1 -D jupyter_execute_notebooks=1 -D jupyter_drop_tests=0 -D jupyter_ignore_skip_test=0 -D jupyter_template_coverage_file_path="theme/templates/error_report_template.html"
 endif
 
 website:
