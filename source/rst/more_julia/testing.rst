@@ -65,7 +65,8 @@ This is all we need for now
 Julia Setup
 --------------------
 
-.. literalinclude:: /_static/includes/alldeps_no_using.jl
+.. literalinclude:: /_static/includes/deps_more_julia.jl
+     :class: hide-output
 
 **Note:** Before these steps, make sure that you've either completed the :doc:`version control <../more_julia/version_control>` lecture or run
 

@@ -203,7 +203,8 @@ The object also includes a default set of parameters that we'll adopt unless oth
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 .. code-block:: julia
 

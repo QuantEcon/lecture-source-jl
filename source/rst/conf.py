@@ -388,7 +388,7 @@ jupyter_default_lang = "julia"
 jupyter_kernels = {
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 1.1.0",
+            "display_name": "Julia 1.1",
             "language": "julia",
             "name": "julia-1.1"
             },
@@ -447,3 +447,18 @@ jupyter_images_markdown = True
 #This is set true by default to pass html to the notebooks
 jupyter_allow_html_only=True
 
+## Theme specific variables
+jupyter_theme_path = 'theme'
+jupyter_template_path = 'theme/templates'
+
+# Jupyter dependencies
+jupyter_dependencies = {
+    '': ['Manifest.toml', 'Project.toml'],
+    'dynamic_programming': [],
+    'dynamic_programming_squared': [],
+    'getting_started_julia': ['Manifest.toml', 'Project.toml'],
+    'more_julia': ['Manifest.toml', 'Project.toml'],
+    'multi_agent_models': [],
+    'time_series_models': [],
+    'tools_and_techniques': []
+}

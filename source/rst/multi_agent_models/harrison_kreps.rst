@@ -54,7 +54,8 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 .. code-block:: julia
 

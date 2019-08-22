@@ -640,7 +640,8 @@ The shocks :math:`\{w_t\}` were taken to be iid and standard normal
 Setup
 -----
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 .. code-block:: julia
     :class: test

@@ -30,7 +30,8 @@ Model features
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 .. code-block:: julia
     :class: hide-output
@@ -553,7 +554,7 @@ Here's code to produce the 45 degree diagram
     plot!(xlabel="x_t", ylabel="x_{t+1}", guidefont=font(16))
 
 .. code-block:: julia
-  :class: test 
+  :class: test
 
   @testset "More Solutions 1 Tests" begin
     @test round(ys[4], digits = 5) ≈ 0.30717
@@ -571,7 +572,7 @@ Looking at the dynamics, we can see that
 
 Referring back to the figure here
 
-http://quant-econ.net/jl/jv.html#solving-for-policies
+https://lectures.quantecon.org/jl/jv.html#Solving-for-Policies
 
 we see that :math:`x_t \approx 1` means that
 :math:`s_t = s(x_t) \approx 0` and

@@ -30,7 +30,8 @@ Also see :doc:`data and statistical packages <../more_julia/data_statistical_pac
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps_no_using.jl
+.. literalinclude:: /_static/includes/deps_more_julia.jl
+     :class: hide-output
 
 .. code-block:: julia 
     :class: hide-output 

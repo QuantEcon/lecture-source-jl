@@ -55,7 +55,8 @@ This lecture has the dual role of giving an introduction into the design of gene
 Setup
 ------
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 .. code-block:: julia
     :class: hide-output
@@ -346,7 +347,7 @@ These match the mathematics, such as ``pdf``, ``cdf``, ``quantile``, ``support``
     @show maximum(d1)
     @show maximum(d2);
 
-You could create your own ``Distributions{Univariate, Continuous}`` type by implementing those functions -- as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends.html>`_
+You could create your own ``Distributions{Univariate, Continuous}`` type by implementing those functions -- as is described in `the documentation <https://juliastats.github.io/Distributions.jl/latest/extends/>`_
 
 If you fulfill all of the conditions of a particular interface, you can use algorithms from the present, past, and future  that are written for the abstract ``Distributions{Univariate, Continuous}`` type
 

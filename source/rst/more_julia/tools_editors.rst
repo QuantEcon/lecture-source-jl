@@ -374,7 +374,8 @@ InstantiateFromURL
 
 With this knowledge, we can explain the operation of the setup block
 
-.. literalinclude:: /_static/includes/deps_no_using.jl
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 What this ``activate_github`` function does is
 

@@ -25,7 +25,8 @@ This list is not exhaustive, and others can be found in organizations such as `J
 Setup
 ------------------
 
-.. literalinclude:: /_static/includes/alldeps_no_using.jl
+.. literalinclude:: /_static/includes/deps_more_julia.jl
+     :class: hide-output
 
 .. code-block:: julia
     :class: hide-output
@@ -62,11 +63,11 @@ The first is to set up columns and construct a dataframe by assigning names
     last_price = [4.2, 11.3, 12.1, missing]
     df = DataFrame(commod = commodities, price = last_price)
 
-Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[:row]`` or a struct-style ``df.row``, as below
+Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[!, :col]`` or a struct-style ``df.col``, as below
 
 .. code-block:: julia
 
-    df[:price]
+    df[!, :price]
 
 .. code-block:: julia
 
@@ -187,7 +188,7 @@ To give an example directly from the source of the LINQ inspired `Query.jl <http
         @collect DataFrame
     end
 
-While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <http://fredo-dedup.github.io/VegaLite.jl/latest/>`_
+While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <https://github.com/queryverse/VegaLite.jl>`_
 
 .. code-block:: julia
 

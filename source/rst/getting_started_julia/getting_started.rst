@@ -97,6 +97,7 @@ This will load the functions defined in the ``InstantiateFromURL`` package
 *  Next, run the following (which may take 15-20 minutes depending on your internet connection and computer)
 
 .. literalinclude:: /_static/includes/add_default_env.jl
+     :class: hide-output
     :class: no-execute
 
 This function will:
@@ -135,7 +136,7 @@ GitHub Desktop Approach
 
 If you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog which appears while following these instructions
 
-After installing the Git Desktop application, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-jl>`_ on your desktop computer to automatically install the notebooks
+After installing the Git Desktop application, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-julia>`_ on your desktop computer to automatically install the notebooks
 
 It should open a window in the GitHub desktop app like this
 
@@ -182,7 +183,7 @@ Open a new terminal session and run
 
 .. code-block:: none
 
-    git clone https://github.com/quantecon/quantecon-notebooks-jl
+    git clone https://github.com/quantecon/quantecon-notebooks-julia
 
 This will download the repository with the notebooks in the working directory
 
@@ -190,7 +191,7 @@ Then, ``cd`` to that location in your Mac, Linux, or Windows PowerShell terminal
 
 .. code-block:: none
 
-    cd quantecon-notebooks-jl
+    cd quantecon-notebooks-julia
 
 Then, run
 
@@ -228,7 +229,7 @@ Your first step is to get a copy of the notebooks in your JupyterHub environment
 
 While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment
 
-JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: ``https://github.com/QuantEcon/quantecon-notebooks-jl``
+JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: ``https://github.com/QuantEcon/quantecon-notebooks-julia``
 
 .. The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture)
 
