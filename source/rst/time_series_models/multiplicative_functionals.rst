@@ -97,6 +97,7 @@ Setup
 -----
 
 .. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 .. code-block:: julia
     :class: test

@@ -97,6 +97,7 @@ This will load the functions defined in the ``InstantiateFromURL`` package
 *  Next, run the following (which may take 15-20 minutes depending on your internet connection and computer)
 
 .. literalinclude:: /_static/includes/add_default_env.jl
+     :class: hide-output
     :class: no-execute
 
 This function will:

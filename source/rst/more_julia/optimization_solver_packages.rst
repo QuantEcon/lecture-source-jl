@@ -17,6 +17,7 @@ Setup
 ------------------
 
 .. literalinclude:: /_static/includes/deps_more_julia.jl
+     :class: hide-output
 
 .. code-block:: julia
     :class: hide-output
