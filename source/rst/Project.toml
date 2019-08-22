@@ -1,4 +1,4 @@
-name = "QuantEconLecturePackages"
+name = "quantecon-notebooks-julia"
 authors = ["arnavs <soodarnav01@gmail.com>"]
 version = "0.9.10"
 

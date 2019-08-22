@@ -1,4 +1,4 @@
-name = "QuantEconLectureAllPackages"
+name = "quantecon-notebooks-julia/getting_started_julia"
 authors = ["arnavs <soodarnav01@gmail.com>"]
 version = "0.9.10"
 
