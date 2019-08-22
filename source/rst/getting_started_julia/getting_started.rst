@@ -41,14 +41,9 @@ Desktop Installation of Julia and Jupyter
 
 If you want to install these tools locally on your machine
 
-* Install Anaconda Python by `downloading the binary <https://www.anaconda.com/download/>`
-
-    * Make sure you click yes to "add Anaconda to my PATH"
-
 * Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options
 
     * We do **not** recommend `JuliaPro <https://juliacomputing.com/products/juliapro.html>`_
-      due to its limited number of available packages
 
 .. _intro_repl:
 
@@ -77,6 +72,26 @@ This adds packages for
 * The  ``IJulia`` kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.)
 
 * The ``InstantiateFromURL`` which is a tool written by the QE team to manage package dependencies for the lectures
+
+.. _jupyter_installation:
+
+Installing Jupyter
+-------------------
+
+If you have previously installed Jupyter (e.g., installing Anaconda Python by `downloading the binary <https://www.anaconda.com/download/>`)
+then the ``add IJulia`` installs everything you need into your existing environment
+
+Otherwise - or in addition - you can install it directly from the Julia REPL
+
+.. code-block:: julia
+    :class: no-execute
+
+    using IJulia
+    jupyterlab(detached = true)
+
+Choose the default, ``y`` when asked to install Jupyter and then Jupyterlab via Conda
+
+After the installation, a jupyterlab tab should open in your browser
 
 .. _package_setup:
 
@@ -131,10 +146,6 @@ Next, let's install the QuantEcon lecture notes to our machine and run them (for
 GitHub Desktop Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Note**: This workflow requires Git LFS (Large File Storage)
-
-If you have not previously used Git LFS, choose to "Initialize Git LFS" at the dialog which appears while following these instructions
-
 After installing the Git Desktop application, click `this link <x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-jl>`_ on your desktop computer to automatically install the notebooks
 
 It should open a window in the GitHub desktop app like this
@@ -144,39 +155,35 @@ It should open a window in the GitHub desktop app like this
 
 Choose a path you like and clone the repo
 
-At this point, you should see the Git LFS dialog:
+**Note:** the workflow will be easiest if you clone the repo to the default location relative to the home folder for your user
 
-.. figure:: /_static/figures/git-lfs-dialog.png
-   :scale: 100%
+From a Julia REPL, start Jupyterlab by executing
+.. code-block:: julia
+    :class: no-execute
 
-Hit accept
+    using IJulia
+    jupyterlab(detached = true)
 
-At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
-**Note**: On Windows, you may need to click the "open without git" button that comes up
+Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installation <jupyter_installation>` then  run ``jupyter lab`` in your terminal
 
-In the resulting terminal session, run
+.. At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
-.. code-block:: none
+.. **Note**: On Windows, you may need to click the "open without git" button that comes up
+.. 
+.. In the resulting terminal session, run
+.. 
+.. .. code-block:: none
+.. 
+..     jupyter lab
+.. 
 
-    jupyter lab
-
-You can open the :doc:`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to explore this interface and start writing code
+Navigate to the location you stored the lecture notes, and open the :doc:`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to explore this interface and start writing code
 
 Git Command Line Approach
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you do not wish to install the GitHub Desktop, you can get the notebooks using the Git command-line tool
-
-First, run the following to install Git LFS (Linux/OSX)
-
-.. code-block:: none
-
-    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-    sudo apt-get install git-lfs
-    git lfs install
-
-As output from the last command, you should see ``Git LFS initialized.``
 
 Open a new terminal session and run
 
@@ -192,11 +199,7 @@ Then, ``cd`` to that location in your Mac, Linux, or Windows PowerShell terminal
 
     cd quantecon-notebooks-jl
 
-Then, run
-
-.. code-block:: none
-
-    jupyter lab
+Then, either using the ``using IJulia; jupyterlab(detached = true)`` or execute ``jupyter lab`` within your shell
 
 And open the :doc:`Interacting With Julia <../getting_started_julia/julia_environment>` lecture (the file ``julia_environment.ipynb`` in the list of notebooks in JupyterLab) to continue
 
