@@ -94,45 +94,6 @@ After the installation, a JupyterLab tab should open in your browser
 
 (Optional) To enable launching JupyterLab from a terminal, use :ref:`add Julia's Jupyter to your path <add_jupyter_to_path>`
 
-.. _package_setup:
-
-Installing QuantEcon Packages
----------------------------------
-
-The next step in the installation process is to download and install all of the packages used by the QuantEcon lecture notes
-
-*  Next, in the main REPL (that is, hit backspace from the blue package mode) run
-
-.. code-block:: julia
-    :class: no-execute
-
-    using InstantiateFromURL
-
-This will load the functions defined in the ``InstantiateFromURL`` package
-
-*  Next, run the following (which may take 15-20 minutes depending on your internet connection and computer)
-
-.. literalinclude:: /_static/includes/add_default_env.jl
-    :class: no-execute
-
-This function will:
-
-1. Download two files, ``Project.toml`` and ``Manifest.toml``, containing a list of the latest versions of the packages used in the the lecture notes
-
-2. Install those packages to your machine
-
-3. Add them to default Julia environment, so you can access the packages outside of QuantEcon lectures
-
-**Note:** The number associated with the ``tag`` in the ``activate_github`` call is a snapshot of package versions used by the QuantEcon lectures at a particular point in time
-
-.. The package manager knows which ones you mean (i.e., what to load when you type ``using ExamplePackage``) by investigating the **active environment**
-
-.. An environment in Julia is simply a pair of files, where the ``Project.toml`` is a list of dependencies, and the ``Manifest.toml`` provides exact version information
-
-We will cover "environments" more in depth :ref:`later <jl_packages>`
-
-.. but for those with Python experience they provide a way to segment package versions in a similar ``virtualenv`` or Conda ``virtual environments``
-
 .. _clone_lectures:
 
 Starting Jupyter
@@ -236,10 +197,12 @@ JupyterHub installations have different methods for cloning repositories, with w
 
 .. The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture)
 
-Installing Packages
-^^^^^^^^^^^^^^^^^^^^^
+.. _package_setup: 
 
-After you have some of the notebooks available, as in :ref:`above <package_setup>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web
+Installing Packages
+=====================
+
+After you have some of the notebooks available, as in :ref:`above <clone_lectures>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web
 
 If your online Jupyter does not come with QuantEcon packages pre-installed, you can install the ``InstantiateFromURL`` package, which is a tool written by the QE team to manage package dependencies for the lectures
 
