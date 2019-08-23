@@ -83,7 +83,7 @@ The ``DataFrames.jl`` package provides a number of methods for acting on ``DataF
 
 .. code-block:: julia
 
-    describe(df)
+    DataFrames.describe(df)
 
 While often data will be generated all at once, or read from a file, you can add to a ``DataFrame`` by providing the key parameters
 
