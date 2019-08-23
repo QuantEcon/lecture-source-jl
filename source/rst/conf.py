@@ -456,7 +456,7 @@ jupyter_dependencies = {
     '': ['Manifest.toml', 'Project.toml'],
     'dynamic_programming': [],
     'dynamic_programming_squared': [],
-    'getting_started_julia': ['Manifest.toml', 'Project.toml'],
+    'getting_started_julia': [],
     'more_julia': ['Manifest.toml', 'Project.toml'],
     'multi_agent_models': [],
     'time_series_models': [],
