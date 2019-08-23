@@ -388,9 +388,9 @@ jupyter_default_lang = "julia"
 jupyter_kernels = {
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 1.1.0",
+            "display_name": "Julia 1.2",
             "language": "julia",
-            "name": "julia-1.1"
+            "name": "julia-1.2"
             },
         "file_extension": ".jl"
     }
@@ -418,7 +418,7 @@ jupyter_download_nb_urlpath = None
 jupyter_download_nb = False
 
 #Use urlprefix images
-jupyter_images_urlpath = None
+jupyter_download_nb_image_urlpath = None
 
 #Allow ipython as a language synonym for blocks to be ipython highlighted
 jupyter_lang_synonyms = ["ipython"]
@@ -453,6 +453,7 @@ jupyter_template_path = 'theme/templates'
 
 # Jupyter dependencies
 jupyter_dependencies = {
+    '': ['Manifest.toml', 'Project.toml'],
     'dynamic_programming': [],
     'dynamic_programming_squared': [],
     'getting_started_julia': ['Manifest.toml', 'Project.toml'],

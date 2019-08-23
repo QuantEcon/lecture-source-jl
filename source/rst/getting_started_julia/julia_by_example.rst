@@ -90,6 +90,7 @@ There are three ways to install packages and versions (where the first two metho
 #. use the ``InstantiateFromURL`` package
 
 .. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
 

@@ -1,5 +1,5 @@
-name = "QuantEconLecturePackages"
-authors = ["arnavs <soodarnav01@gmail.com>"]
+name = "quantecon-notebooks-julia"
+authors = ["arnavs <me@arnavsood.com>"]
 version = "0.9.10"
 
 [deps]
