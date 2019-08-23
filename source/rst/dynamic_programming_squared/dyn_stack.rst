@@ -866,10 +866,11 @@ Computing the Stackelberg Plan
 Here is our code to compute a Stackelberg plan via a linear-quadratic
 dynamic program as outlined above
 
+.. literalinclude:: /_static/includes/deps_generic.jl
+     :class: hide-output
+
 .. code-block:: julia
 
-    using InstantiateFromURL
-    activate_github("QuantEcon/QuantEconLecturePackages", tag = "v0.9.8")
     using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
 
 .. code-block:: julia
