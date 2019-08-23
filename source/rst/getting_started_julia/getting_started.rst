@@ -88,7 +88,7 @@ Otherwise - or in addition - you can install it directly from the Julia REPL
 
     using IJulia; jupyterlab(detached = true)
 
-Choose the default, ``y`` when asked to install Jupyter and then JupyterLab via Conda
+Choose the default, ``y`` if asked to install Jupyter and then JupyterLab via Conda
 
 After the installation, a JupyterLab tab should open in your browser
 
