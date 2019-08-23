@@ -86,7 +86,7 @@ Otherwise - or in addition - you can install it directly from the Julia REPL
 .. code-block:: julia
     :class: no-execute
 
-    using IJulia; jupyterlab(detached = true)
+    using IJulia; jupyterlab()
 
 Choose the default, ``y`` if asked to install Jupyter and then JupyterLab via Conda
 
@@ -124,7 +124,7 @@ From a Julia REPL, start JupyterLab by executing
 .. code-block:: julia
     :class: no-execute
 
-    using IJulia; jupyterlab(detached = true)
+    using IJulia; jupyterlab()
 
 
 Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal
@@ -161,7 +161,7 @@ Then, ``cd`` to that location in your Mac, Linux, or Windows PowerShell terminal
 
     cd quantecon-notebooks-julia
 
-Then, either using the ``using IJulia; jupyterlab(detached = true)`` or execute ``jupyter lab`` within your shell
+Then, either using the ``using IJulia; jupyterlab()`` or execute ``jupyter lab`` within your shell
 
 And open the :doc:`Interacting With Julia <../getting_started_julia/julia_environment>` lecture (the file ``julia_environment.ipynb`` in the list of notebooks in JupyterLab) to continue
 

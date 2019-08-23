@@ -28,7 +28,7 @@ To summarize, if on a desktop you should clone the `notebooks repository <https:
 .. code-block:: julia
     :class: no-execute
 
-    using IJulia; jupyterlab(detached = true)
+    using IJulia; jupyterlab()
 
 Hint: Julia will remember the last commands in the REPL, so you can use up-arrow to restart JupyterLab
 
