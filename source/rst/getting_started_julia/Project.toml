@@ -1,5 +1,5 @@
 name = "quantecon-notebooks-julia/getting_started_julia"
-authors = ["arnavs <soodarnav01@gmail.com>"]
+authors = ["arnavs <me@arnavsood.com>"]
 version = "0.9.10"
 
 [deps]
