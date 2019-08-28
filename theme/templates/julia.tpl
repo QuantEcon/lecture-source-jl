@@ -171,7 +171,6 @@
 							{% endif %}
 							<li><a href="/{{nb_lang}}/status.html"><img src="https://img.shields.io/badge/Execution%20test-not%20available-lightgrey.svg" id="executability_status_badge"></a></li>
 							<li class="ml-a"><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><img src="/_static/img/github-icon.svg"></a></li>
-                            <!-- <li><a href="https://github.com/QuantEcon/quantecon-notebooks-julia" target="_blank" id="cloneButton"><i class="fab fa-github">Clone</i></a></li> -->
 						</ul>
 						<div class="how-to">
 							<a href="#" class="toggle"><span class="icon icon-angle-double-down"></span>How to read this lecture...</a>
