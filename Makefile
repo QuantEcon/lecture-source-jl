@@ -27,9 +27,9 @@ ifneq (,$(filter $(target),website Website))
 	cd $(BUILDWEBSITE)/jupyter_html/ && python -m http.server
 else
 ifdef lecture
-	cd $(BUILD)/jupyter/ && jupyter notebook $(basename $(lecture)).ipynb
+	cd $(BUILDDIR)/jupyter/ && jupyter notebook $(basename $(lecture)).ipynb
 else
-	cd $(BUILD)/jupyter/ && jupyter notebook
+	cd $(BUILDDIR)/jupyter/ && jupyter notebook
 endif
 endif
 
