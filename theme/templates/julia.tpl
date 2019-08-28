@@ -170,9 +170,9 @@
 								<li><a href="/_downloads/pdf/jl/{{nb_filename_with_path}}.pdf"><img src="/_static/img/pdf-download-blue.svg" id="pdf_download_badge"></a></li>
 							{% endif %}
 							<li><a href="/{{nb_lang}}/status.html"><img src="https://img.shields.io/badge/Execution%20test-not%20available-lightgrey.svg" id="executability_status_badge"></a></li>
-							<li class="ml-a"><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst"><img src="/_static/img/github-icon.svg"></a></li>
+							<li class="ml-a"><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><img src="/_static/img/github-icon.svg"></a></li>
+                            <!-- <li><a href="https://github.com/QuantEcon/quantecon-notebooks-julia" target="_blank" id="cloneButton"><i class="fab fa-github">Clone</i></a></li> -->
 						</ul>
-
 						<div class="how-to">
 							<a href="#" class="toggle"><span class="icon icon-angle-double-down"></span>How to read this lecture...</a>
 							<div class="how-to-content">
@@ -318,6 +318,34 @@
 								</ul>
 							</div>
 						</div>
+
+                        <div id="cloneModal" style="display: none;">
+
+                          <p class="modal-title">GitHub Repository</p>
+
+                          <div class="modal-desc">
+                            <p>
+                              The "Clone" button helps you obtain a local copy of the lecture notebooks
+                            </p>
+                          </div>
+
+                          <p class="modal-subtitle">Select an option</p>
+
+                          <ul class="modal-github-links">
+                            <li><i class="fas fa-external-link-square-alt"></i> <a target="_blank" href="https://github.com/QuantEcon/quantecon-notebooks-julia">Open repository</a></li>
+                            <li><i class="fas fa-clipboard"></i> <a href="#" id="cloneCopy">Copy clone command to clipboard</a></li>
+                            <li><i class="fas fa-desktop"></i> <a href="x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-julia">Open in GitHub Desktop</a></li>
+                          </ul>
+
+                          <script>
+                          // Copy clone command to clipboard
+                          document.querySelector("#cloneCopy").onclick = function(e) {
+                              e.preventDefault();
+                              var result = copyToClipboard('git clone https://github.com/QuantEcon/quantecon-notebooks-julia');
+                          }
+                          </script>
+
+                        </div>
 
 {% endif %}
 

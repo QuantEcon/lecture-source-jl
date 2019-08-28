@@ -97,3 +97,43 @@ if ( document.getElementById('launchButton') ) {
 	  interactive: true
 	});
 }
+
+// Clone popup
+if ( document.getElementById('cloneButton') ) {
+	const template = document.getElementById('cloneModal');
+	template.style.display = 'block';
+	tippy('#cloneButton', {
+	  content: template,
+	  theme: 'light-border',
+	  animation: 'shift-away',
+	  inertia: true,
+	  duration: [200,200],
+	  arrow: true,
+	  arrowType: 'round',
+	  delay: [200, 200],
+	  interactive: true
+	});
+}
+
+// Copies a string to the clipboard
+function copyToClipboard(text) {
+    if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return clipboardData.setData("Text", text);
+
+    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return false;
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+}
