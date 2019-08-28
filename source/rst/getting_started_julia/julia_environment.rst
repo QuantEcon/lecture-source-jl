@@ -23,7 +23,7 @@ Getting Started
 
 Recall that the easiest way to get started with these notebooks is to follow the :ref:`cloning instructions <clone_lectures>` earlier
 
-To summarize, if on a desktop you should clone the `notebooks repository <https://github.com/quantecon/lecture-jl-notebooks>`, then in a Julia REPL type
+To summarize, if on a desktop you should clone the `notebooks repository <https://github.com/quantecon/quantecon-notebooks-julia>`, then in a Julia REPL type
 
 .. code-block:: julia
     :class: no-execute
