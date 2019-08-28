@@ -164,7 +164,7 @@
 {% if not indexPage %}
 
 						<ul class="badges">
-							<li><a target="_blank" href="https://colab.research.google.com/github/QuantEcon/lecture-jl-notebooks/blob/master/{{nb_filename_with_path}}.ipynb" id="launchButton"><img src="/_static/img/jupyter-notebook-run-006400.svg" id="notebook_run_badge"></a></li>
+							<li><a target="_blank" href="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia/blob/master/{{nb_filename_with_path}}.ipynb" id="launchButton"><img src="/_static/img/jupyter-notebook-run-006400.svg" id="notebook_run_badge"></a></li>
 							{% if download_nb == True %}
 								<li><a href="/{{nb_lang}}/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><img src="/_static/img/jupyter-notebook-download-blue.svg" id="notebook_download_badge"></a></li>
 								<li><a href="/_downloads/pdf/jl/{{nb_filename_with_path}}.pdf"><img src="/_static/img/pdf-download-blue.svg" id="pdf_download_badge"></a></li>
@@ -172,7 +172,7 @@
 							<li><a href="/{{nb_lang}}/status.html"><img src="https://img.shields.io/badge/Execution%20test-not%20available-lightgrey.svg" id="executability_status_badge"></a></li>
 							<li class="ml-a"><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst"><img src="/_static/img/github-icon.svg"></a></li>
 						</ul>
-						
+
 						<div class="how-to">
 							<a href="#" class="toggle"><span class="icon icon-angle-double-down"></span>How to read this lecture...</a>
 							<div class="how-to-content">
@@ -216,9 +216,9 @@
 				              <span class="label">Public</span>
 
 				              <select id="launcher-public-input">
-				                <option value="https://quantecon.syzygy.ca/jupyter/hub/user-redirect/git-pull?repo=https://github.com/QuantEcon/quantecon-notebooks-datascience&urlpath=lab/tree/quantecon-notebooks-datascience/">PIMS</option>
-				                <option value="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-datascience/master?filepath=">binder</option>
-				                <option value="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-datascience/blob/master/">colab</option>
+				                <option value="https://quantecon.syzygy.ca/jupyter/hub/user-redirect/git-pull?repo=https://github.com/QuantEcon/quantecon-notebooks-julia&urlpath=lab/tree/quantecon-notebooks-julia/">PIMS</option>
+				                <option value="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath=">binder</option>
+				                <option value="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia/blob/master/">colab</option>
 				              </select>
 
 				              <i class="fas fa-check-circle"></i>
@@ -291,7 +291,7 @@
 				          // Function to update the "Launch Notebook" link href
 				          function setLaunchServer(){
 				            if ( localStorage.launcherType == 'launcher-private' ) {
-				              const repoPrefix = "/hub/user-redirect/git-pull?repo=https://github.com/QuantEcon/quantecon-notebooks-datascience&urlpath=lab/tree/quantecon-notebooks-datascience";
+				              const repoPrefix = "/hub/user-redirect/git-pull?repo=https://github.com/QuantEcon/quantecon-notebooks-julia&urlpath=lab/tree/quantecon-notebooks-julia";
 				              launchNotebookLinkURL = localStorage.launcherPrivate.replace(/\/$/, "") + repoPrefix + notebookPath;
 				            } else if ( localStorage.launcherType == 'launcher-public' ){
 				              launchNotebookLinkURL = localStorage.launcherPublic + notebookPath;
@@ -305,7 +305,7 @@
 				          </script>
 
 				        </div>
-						
+
 						<div class="how-to">
 							<a href="#" class="toggle"><span class="icon icon-angle-double-down"></span>How to read this lecture...</a>
 							<div class="how-to-content">
@@ -359,7 +359,7 @@
 </div>
 {%- endblock empty_in_prompt %}
 
-{# 
+{#
   output_prompt doesn't do anything in HTML,
   because there is a prompt div in each output area (see output block)
 #}
@@ -544,8 +544,8 @@ var element = $('#{{ div_id }}');
 
 {%- block data_widget_state scoped %}
 {% set div_id = uuid4() %}
-{% set datatype_list = output.data | filter_data_type %} 
-{% set datatype = datatype_list[0]%} 
+{% set datatype_list = output.data | filter_data_type %}
+{% set datatype = datatype_list[0]%}
 <div id="{{ div_id }}"></div>
 <div class="output_subarea output_widget_state {{ extra_class }}">
 <script type="text/javascript">
@@ -559,8 +559,8 @@ var element = $('#{{ div_id }}');
 
 {%- block data_widget_view scoped %}
 {% set div_id = uuid4() %}
-{% set datatype_list = output.data | filter_data_type %} 
-{% set datatype = datatype_list[0]%} 
+{% set datatype_list = output.data | filter_data_type %}
+{% set datatype = datatype_list[0]%}
 <div id="{{ div_id }}"></div>
 <div class="output_subarea output_widget_view {{ extra_class }}">
 <script type="text/javascript">
@@ -573,7 +573,7 @@ var element = $('#{{ div_id }}');
 {%- endblock data_widget_view -%}
 
 {%- block footer %}
-{% set mimetype = 'application/vnd.jupyter.widget-state+json'%} 
+{% set mimetype = 'application/vnd.jupyter.widget-state+json'%}
 {% if mimetype in nb.metadata.get("widgets",{})%}
 <script type="{{ mimetype }}">
 {{ nb.metadata.widgets[mimetype] | json_dumps }}

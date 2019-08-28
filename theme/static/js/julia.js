@@ -77,7 +77,7 @@ $(function () {
 
 	/* Display coverage badges */
 	load_percentages(lang);
-    
+
 
 });
 
@@ -93,7 +93,7 @@ if ( document.getElementById('launchButton') ) {
 	  duration: [200,200],
 	  arrow: true,
 	  arrowType: 'round',
-	  delay: [200, 2000],
+	  delay: [200, 200],
 	  interactive: true
 	});
 }
