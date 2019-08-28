@@ -33,7 +33,7 @@ Setup
 
     using LinearAlgebra, Statistics, Compat
     using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
-    using DataVoyager, GLM, RegressionTables, FixedEffectModels
+    using DataVoyager, GLM, FixedEffectModels
 
 DataFrames
 ========================
@@ -239,15 +239,15 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
     ols = lm(@formula(y ~ x), df) # R-style notation
 
 
-To display the results in a useful tables for LaTeX and the REPL, use
-`RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output
-similar to the Stata package `esttab` and the R package `stargazer`
+.. To display the results in a useful tables for LaTeX and the REPL, use
+.. `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output
+.. similar to the Stata package `esttab` and the R package `stargazer`
 
-.. code-block:: julia
+.. .. code-block:: julia
 
-    using RegressionTables
-    regtable(ols)
-    # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
+..    using RegressionTables
+..    regtable(ols)
+..    # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
 ..
 ..
 .. To print a full dataframe, and other functions, use the `LatexPrint <https://github.com/scheinerman/LatexPrint.jl#the-tabular-function>`_ package
