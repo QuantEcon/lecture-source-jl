@@ -127,7 +127,7 @@ From a Julia REPL, start JupyterLab by executing
     using IJulia; jupyterlab()
 
 
-Alternatively, if you installed Jupyter separately in :ref:` Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal
+Alternatively, if you installed Jupyter separately in :ref:`Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal
 
 .. At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows)
 
