@@ -460,5 +460,7 @@ jupyter_dependencies = {
     'more_julia': [],
     'multi_agent_models': [],
     'time_series_models': [],
-    'tools_and_techniques': []
+    'tools_and_techniques': [],
+    'utilities': ['userimg.jl', 'startup.jl', 'mccall_model.ipynb'],
+    'binder': ['Dockerfile', 'sudoers.txt']
 }
