@@ -75,7 +75,7 @@ There are a few different targets, notably:
 
 Specifying parallel execution (i.e., `make coverage -e parallel=True`) will use 4 cores instead of 1. This leads to a notable speedup in build times. 
 
-You can build only a few notebooks by [**FILL IN PROCEDURE HERE**]
+You can build only a few notebooks by `jupinx -w --files source/rst/<file>.rst`.
 
 ### Containerized Build
 
