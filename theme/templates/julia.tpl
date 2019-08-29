@@ -172,18 +172,6 @@
 							<li><a href="/{{nb_lang}}/status.html"><img src="https://img.shields.io/badge/Execution%20test-not%20available-lightgrey.svg" id="executability_status_badge"></a></li>
 							<li class="ml-a"><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><img src="/_static/img/github-icon.svg"></a></li>
 						</ul>
-						<div class="how-to">
-							<a href="#" class="toggle"><span class="icon icon-angle-double-down"></span>How to read this lecture...</a>
-							<div class="how-to-content">
-								<p>Code should execute sequentially if run in a Jupyter notebook</p>
-								<ul>
-									<li>See the <a href="/jl/getting_started.html">set up page</a> to install Jupyter, Julia (1.0+) and all necessary libraries</li>
-									<li>Please direct feedback to <a href="mailto:contact@quantecon.org">contact@quantecon.org</a> or the <a href="http://discourse.quantecon.org/">discourse forum</a></li>
-									<li>For some notebooks, enable content with "Trust" on the command tab of Jupyter lab</li>
-									<li>If using QuantEcon lectures for the first time on a computer, execute <tt>] add InstantiateFromURL</tt> inside of a notebook or the REPL</li>
-								</ul>
-							</div>
-						</div>
 
 				        <div id="nb_filname_with_path" style="display:none;">{{nb_filename_with_path}}.ipynb</div>
 
