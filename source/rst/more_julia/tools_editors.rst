@@ -107,7 +107,7 @@ Hitting ``]`` brings you into package mode
 
 * ``] up`` will (intelligently) upgrade versions of your packages
 
-* ``] precompile`` will precompile everytihng possible
+* ``] precompile`` will precompile everything possible
 
 You can get a full list of package mode commands by running
 
