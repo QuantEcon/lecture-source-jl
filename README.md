@@ -11,14 +11,40 @@ See `LICENSE.md` for licensing and copyright information.
 ### Prerequisities
 
 * The latest `quantecon/jupinx` Docker image (see the **Containerization** section), or: 
+1. Ensure key dependencies are installed
+```bash
+sudo apt install make
+sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
+```
+2. Install Conda
+```bash
+wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
+bash Anaconda3-2019.07-Linux-x86_64.sh
+```
+3. Install Julia
+```bash
+wget https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz
+tar -xzvf julia-1.2.0-linux-x86_64.tar.gz
+```
 
-     * Julia 1.2.x
+4. Install Jupinx
+```bash
+pip install jupinx
+```
 
-     * Jupyter and Jupyter Lab
+5. Assuming you installed anaconda in your home directory (for `USERNAME`) then,
+- Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
+- Add something like the following:
+```bash
+export PATH=/home/USERNAME/anaconda3/bin:/home/USERNAME/julia-1.1.0/bin:$PATH
+```
+- Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 
-     * Jupinx (`sphinxcontrib-jupyter` on PyPi) 0.4.2 or later. 
-
-     * The `make` command-line utility.
+6. If you are using WSL, then it can be useful to add a symlink.  To do this from your home directory, with your Windows username as `WINDOWSUSERNAME`, do something like the following
+```bash
+ln -s /mnt/c/Users/WINDOWSUSERNAME/Documents/GitHub Documents
+```
+Restart ubuntu or WSL
 
 It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
 
