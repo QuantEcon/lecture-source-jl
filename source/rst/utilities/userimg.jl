@@ -1,13 +1,10 @@
-# necessary setup
-using Pkg 
-Pkg.activate("../Project.toml")
 using GR, Plots
 GR.__init__()
 
-# make sure the lecture runs
-plot = Plots.plot
-contour = Plots.contour
+# Methods from McCall
+x = rand(100)
+Plots.plot(x) 
 
-# include the McCall code 
-using NBInclude
-@nbinclude("mccall_model.ipynb")
+using Distributions, Expectations
+d = Normal()
+E = expectation(d)

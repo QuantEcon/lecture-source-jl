@@ -29,7 +29,7 @@ ENV JULIA_PKGDIR=/opt/julia
 ENV JULIA_VERSION=1.2.0
 
 # sudo setup 
-ADD sudoers.txt /etc/sudoers
+ADD binder/sudoers.txt /etc/sudoers
 RUN chmod 440 /etc/sudoers
 
 # Install Julia 
@@ -55,7 +55,7 @@ RUN julia -e "using Pkg; pkg\"add IJulia InstantiateFromURL PackageCompiler\"; p
 
 # Copy in files from repo 
 USER $NB_USER
-COPY --chown=1000 ../utilities/startup.jl /home/jovyan/.julia/config/startup.jl
+COPY --chown=1000 utilities/startup.jl /home/jovyan/.julia/config/startup.jl
 RUN sudo chmod 777 -R /home/jovyan/.julia
 
 # Jupyter kernelspec stuff 
@@ -64,8 +64,7 @@ RUN mv $HOME/.local/share/jupyter/kernels/julia* $CONDA_DIR/share/jupyter/kernel
     chmod -R go+rx $CONDA_DIR/share/jupyter && \
     rm -rf $HOME/.local && \
     fix-permissions $JULIA_PKGDIR $CONDA_DIR/share/jupyter
-COPY --chown=1000 ../utilities/mccall_model.ipynb $HOME/utilities/mccall_model.ipynb 
-COPY --chown=1000 ../utilities/userimg.jl $HOME/utilities/userimg.jl
+COPY --chown=1000 utilities/userimg.jl $HOME/utilities/userimg.jl
 RUN cd $HOME/utilities && julia -e "using PackageCompiler; PackageCompiler.build_sysimg(pwd(), \"userimg.jl\")"
 
 USER $NB_USER
