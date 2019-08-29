@@ -59,7 +59,7 @@ It's recommended that you install and precompile the packages used by the lectur
 ```julia
 ] activate .; instantiate; precompile
 ```
-This will take a long time to run.
+This will take a long time to run.  You can safely ignore build errors for `Electron`
  
 ### Building
 
