@@ -1,8 +1,8 @@
-# "Lectures in Quantitative Economics": Julia Version
+# "Quantitative Economics with Julia":
 
 ## About this Repository 
 
-This is the source repository for the QuantEcon Julia-flavored [lectures](https://lectures.quantecon.org/jl).
+This is the source repository for [Quantitative Economics with Julia](https://lectures.quantecon.org/jl).  These instructions required for authorig/editing the textbook and notebooks, and are not necessary for typical usage.
 
 See `LICENSE.md` for licensing and copyright information. 
 
@@ -11,6 +11,7 @@ See `LICENSE.md` for licensing and copyright information.
 ### Prerequisities
 
 * The latest `quantecon/jupinx` Docker image (see the **Containerization** section), or: 
+0. Start within your home directory, using [WSL](https://github.com/ubcecon/cluster_tools/blob/master/WSL.md#install-wsl-from-ubuntu-and-conda) if on Windows. 
 1. Ensure key dependencies are installed
 ```bash
 sudo apt install make
@@ -50,9 +51,15 @@ It's recommended that you install and precompile the packages used by the lectur
 
 1. (Optional) Delete your `~/.julia` folder to start fresh.
 
-2. `cd` to the `source/rst` folder in this repo. In a Julia REPL, run `] add InstantiateFromURL IJulia` and `] precompile`. 
-
-3. Then, run `] activate .`, followed by `] instantiate` and `] precompile`. 
+2. `cd` to the `source/rst` folder in this repo. In a Julia REPL (i.e. `julia` in terminal if your `.bashrc` was edited above), run
+```julia
+] add InstantiateFromURL IJulia; precompile`. 
+```
+3. Then (verifying you are in the `/lecture-source-jl/source/rst` diirectory),
+```julia
+] activate .; instantiate; precompile
+```
+This will take a long time to run.
  
 ### Building
 
