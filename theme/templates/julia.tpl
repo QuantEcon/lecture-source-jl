@@ -203,9 +203,9 @@
 				              <span class="label">Public</span>
 
 				              <select id="launcher-public-input">
-				                <option value="https://quantecon.syzygy.ca/jupyter/hub/user-redirect/git-pull?repo=https://github.com/QuantEcon/quantecon-notebooks-julia&urlpath=lab/tree/quantecon-notebooks-julia/">PIMS</option>
-								<option value="https://vse.syzygy.ca/jupyter/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FQuantEcon%2Fquantecon-notebooks-julia&urlpath=lab%2Ftree%2Fquantecon-notebooks-julia%2F">VSE</option>
-				                <option value="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath=">binder</option>
+							  	<option value="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath=">mybinder.org (Public)</option>
+				                <option value="https://quantecon.syzygy.ca/jupyter/hub/user-redirect/git-pull?repo=https://github.com/QuantEcon/quantecon-notebooks-julia&urlpath=lab/tree/quantecon-notebooks-julia/">quantecon.syzygy.ca (Public)</option>
+								<option value="https://vse.syzygy.ca/jupyter/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FQuantEcon%2Fquantecon-notebooks-julia&urlpath=lab%2Ftree%2Fquantecon-notebooks-julia%2F">vse.syzygy.ca (UBC Only)</option>
 				              </select>
 
 				              <i class="fas fa-check-circle"></i>
