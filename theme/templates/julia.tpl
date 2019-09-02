@@ -164,7 +164,7 @@
 {% if not indexPage %}
 
 						<ul class="badges">
-							<li><a target="_blank" href="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia/blob/master/{{nb_filename_with_path}}.ipynb" id="launchButton"><img src="/_static/img/jupyter-notebook-run-006400.svg" id="notebook_run_badge"></a></li>
+							<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><img src="/_static/img/jupyter-notebook-run-006400.svg" id="notebook_run_badge"></a></li>
 							{% if download_nb == True %}
 								<li><a href="/{{nb_lang}}/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><img src="/_static/img/jupyter-notebook-download-blue.svg" id="notebook_download_badge"></a></li>
 							{% endif %}
