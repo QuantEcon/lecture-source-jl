@@ -93,7 +93,7 @@ if ( document.getElementById('launchButton') ) {
 	  duration: [200,200],
 	  arrow: true,
 	  arrowType: 'round',
-	  delay: [200, 200],
+	  delay: [500, 200],
 	  interactive: true
 	});
 }
@@ -110,7 +110,7 @@ if ( document.getElementById('cloneButton') ) {
 	  duration: [200,200],
 	  arrow: true,
 	  arrowType: 'round',
-	  delay: [200, 200],
+	  delay: [500, 200],
 	  interactive: true
 	});
 }
