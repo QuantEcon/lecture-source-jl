@@ -1030,9 +1030,6 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
 
     maximum(a) == maxval
 
-
-For the ``range(minval, maxval, length=numpoints)`` notation, until the release of Julia v1.1, you will need to have the ``using Compat`` in the header, as we do above
-
 Tuples and Named Tuples
 =========================
 
