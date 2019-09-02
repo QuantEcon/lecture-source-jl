@@ -231,7 +231,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using DataFrames, Parameters, Plots
 
 .. code-block:: julia

@@ -62,7 +62,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using KernelDensity, Distributions, Plots, QuantEcon, Random
 
 .. _statd_density_case:

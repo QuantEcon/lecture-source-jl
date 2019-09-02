@@ -41,7 +41,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat, QuantEcon
+    using LinearAlgebra, Statistics, QuantEcon
 
 Background
 ================

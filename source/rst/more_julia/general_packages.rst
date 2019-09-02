@@ -36,7 +36,7 @@ Setup
 .. code-block:: julia 
     :class: hide-output 
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics 
     using QuantEcon, QuadGK, FastGaussQuadrature, Distributions, Expectations
     using Interpolations, Plots, LaTeXStrings, ProgressMeter
 

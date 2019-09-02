@@ -139,7 +139,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
     gr(fmt = :png);
 

@@ -41,7 +41,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
 
 Competitive Equilibrium with Distorting Taxes
 ===================================================
@@ -407,7 +407,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 .. code-block:: julia
     :class: collapse
 
-    using QuantEcon, NLsolve, NLopt, Compat
+    using QuantEcon, NLsolve, NLopt
 
     import QuantEcon.simulate
 

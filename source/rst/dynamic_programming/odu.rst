@@ -173,7 +173,7 @@ With :math:`w_m = 2`, the densities :math:`f` and :math:`g` have the following s
 
 .. code-block:: julia
 
-  using LinearAlgebra, Statistics, Compat
+  using LinearAlgebra, Statistics
   using Distributions, Plots, QuantEcon, Interpolations, Parameters
 
   gr(fmt=:png);

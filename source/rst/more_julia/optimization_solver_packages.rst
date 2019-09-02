@@ -22,7 +22,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using ForwardDiff, Flux, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve
     using LeastSquaresOptim, Flux.Tracker
     using Flux.Tracker: update!

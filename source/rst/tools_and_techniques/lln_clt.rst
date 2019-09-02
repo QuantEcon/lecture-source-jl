@@ -215,7 +215,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Plots, Distributions, Random, Statistics
     gr(fmt = :png, size = (900, 500))
 

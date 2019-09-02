@@ -650,7 +650,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Plots, Plots.PlotMeasures, QuantEcon
 
 .. code-block:: julia

@@ -379,7 +379,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
     using Optim: converged, maximum, maximizer, minimizer, iterations
     gr(fmt = :png);

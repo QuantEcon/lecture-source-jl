@@ -106,7 +106,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics 
     using Distributions, Parameters, Plots, QuantEcon
     import Distributions: loglikelihood
     gr(fmt = :png);
