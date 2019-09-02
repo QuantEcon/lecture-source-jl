@@ -18,8 +18,6 @@ In particular, we will examine the ``DataFrame`` object in detail (i.e., constru
 
 While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution
 
-Examples include ``GLM.jl`` and ``FixedEffectModels.jl``, which we discuss
-
 This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_, `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
 
 Setup
@@ -33,7 +31,7 @@ Setup
 
     using LinearAlgebra, Statistics, Compat
     using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
-    using DataVoyager, GLM, FixedEffectModels
+    using DataVoyager, GLM
 
 DataFrames
 ========================
@@ -238,7 +236,6 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
     df = DataFrame(x=x, y=y)
     ols = lm(@formula(y ~ x), df) # R-style notation
 
-
 .. To display the results in a useful tables for LaTeX and the REPL, use
 .. `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output
 .. similar to the Stata package `esttab` and the R package `stargazer`
@@ -263,26 +260,26 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
 ..     tabular(df)
 ..
 
-Fixed Effects
-----------------
+.. Fixed Effects
+.. ----------------
 
-While Julia may be overkill for estimating a simple linear regression,
-fixed-effects estimation with dummies for multiple variables are much more computationally intensive
+.. While Julia may be overkill for estimating a simple linear regression,
+.. fixed-effects estimation with dummies for multiple variables are much more computationally intensive
 
 
-For a 2-way fixed-effect, taking the example directly from the documentation using `cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
+.. For a 2-way fixed-effect, taking the example directly from the documentation using `cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
 
-.. code-block:: julia
+.. .. code-block:: julia
 
-    using FixedEffectModels
-    cigar = dataset("plm", "Cigar")
-    cigar.StateCategorical =  categorical(cigar.State)
-    cigar.YearCategorical =  categorical(cigar.Year)
-    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical,
-                                weights = Pop, vcov = cluster(StateCategorical)))
-    regtable(fixedeffectresults)
+..     using FixedEffectModels
+..     cigar = dataset("plm", "Cigar")
+..     cigar.StateCategorical =  categorical(cigar.State)
+..     cigar.YearCategorical =  categorical(cigar.Year)
+..     fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical,
+..                                 weights = Pop, vcov = cluster(StateCategorical)))
+..     regtable(fixedeffectresults)
 
-To explore the data use the interactive DataVoyager and VegaLite
+To explore data use the interactive DataVoyager and VegaLite
 
 .. code-block:: julia
 
