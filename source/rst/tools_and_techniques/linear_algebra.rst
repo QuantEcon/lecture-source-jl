@@ -91,7 +91,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat, Plots
+    using LinearAlgebra, Statistics, Plots
     gr(fmt=:png);
 
 .. code-block:: julia

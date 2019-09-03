@@ -61,7 +61,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Distributions, Plots, QuadGK, Polynomials, Interpolations
 
 Exploring Type Trees

@@ -43,7 +43,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
 
 Array Basics
 ================
@@ -1029,9 +1029,6 @@ To evenly space points where the maximum value is important, i.e., ``linspace`` 
     # or range(minval, stop=maxval, length=numpoints)
 
     maximum(a) == maxval
-
-
-For the ``range(minval, maxval, length=numpoints)`` notation, until the release of Julia v1.1, you will need to have the ``using Compat`` in the header, as we do above
 
 Tuples and Named Tuples
 =========================

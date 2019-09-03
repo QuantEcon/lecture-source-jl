@@ -106,7 +106,7 @@ After the installation and activation, ``using`` provides a way to say that a pa
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
 
 .. _import:
 

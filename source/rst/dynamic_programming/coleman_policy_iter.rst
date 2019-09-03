@@ -375,7 +375,7 @@ Setup
 .. code-block:: julia
     :class: hide-output 
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics 
     using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
     using Optim, Random
 

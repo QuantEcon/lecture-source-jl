@@ -203,7 +203,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Distributions, Expectations, NLsolve, Parameters, Plots
     using QuantEcon, Roots, Random
 

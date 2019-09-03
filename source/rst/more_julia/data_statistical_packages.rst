@@ -29,7 +29,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
     using DataVoyager, GLM
 

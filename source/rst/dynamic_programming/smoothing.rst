@@ -355,7 +355,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Parameters, Plots, QuantEcon, Random
     gr(fmt = :png);
 

@@ -58,7 +58,7 @@ Setup
 .. code-block:: julia
 
     using Polynomials, Plots, Random, Parameters
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
 
 A Control Problem
 ====================================

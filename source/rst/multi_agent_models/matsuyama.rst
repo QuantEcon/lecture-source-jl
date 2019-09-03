@@ -336,7 +336,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat 
+    using LinearAlgebra, Statistics 
     using Plots, Parameters
     gr(fmt = :png);
 

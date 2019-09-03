@@ -141,7 +141,7 @@ Setup
 
 .. code-block:: julia
 
-    using Parameters, Plots, LinearAlgebra, Statistics, Compat 
+    using Parameters, Plots, LinearAlgebra, Statistics 
     gr(fmt = :png);
 
 .. code-block:: julia

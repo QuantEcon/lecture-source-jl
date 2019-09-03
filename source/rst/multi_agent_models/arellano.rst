@@ -338,7 +338,7 @@ Setup
 .. code-block:: julia 
     :class: hide-output 
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Parameters, QuantEcon, DataFrames, Plots, Random 
 
 .. code-block:: julia

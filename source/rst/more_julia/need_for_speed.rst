@@ -58,7 +58,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
 
 Understanding Multiple Dispatch in Julia
 ===============================================

@@ -464,7 +464,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat, BenchmarkTools, Plots, QuantEcon
+    using LinearAlgebra, Statistics, BenchmarkTools, Plots, QuantEcon
     using SparseArrays
 
 .. code-block:: julia

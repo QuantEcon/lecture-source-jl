@@ -38,7 +38,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Distributions, Expectations, Parameters, NLsolve, Plots
 
 The Model
@@ -242,7 +242,7 @@ Let's implement this iterative process
 
 .. code-block:: julia
 
-    using Distributions, LinearAlgebra, Compat, Expectations, Parameters, NLsolve, Plots
+    using Distributions, LinearAlgebra, Expectations, Parameters, NLsolve, Plots
 
     function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                                 iter = 2_000)

@@ -164,7 +164,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using Distributions, Parameters, Printf, Random, Roots, Plots
 
 .. code-block:: julia

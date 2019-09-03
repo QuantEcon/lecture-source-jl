@@ -53,7 +53,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
     using QuantEcon, NLsolve, NLopt, Interpolations
 
 A Competitive Equilibrium with Distorting Taxes

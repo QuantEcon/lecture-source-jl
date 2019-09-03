@@ -59,7 +59,7 @@ Setup
 
 .. code-block:: julia
 
-    using LinearAlgebra, Statistics, Compat
+    using LinearAlgebra, Statistics
 
 Infinite Horizon Prediction and Filtering Problems
 =====================================================
