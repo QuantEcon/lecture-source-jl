@@ -73,7 +73,7 @@ There are a few different targets, notably:
 
 ### Options and Special Cases
 
-Specifying parallel execution (i.e., `make coverage -e parallel=True`) will use 4 cores instead of 1. This leads to a notable speedup in build times. 
+Specifying parallel execution (i.e., `make coverage parallel=8`) will use 8 cores instead of 1. This leads to a notable speedup in build times. (There are some [`zmq` errors](https://github.com/QuantEcon/sphinxcontrib-jupyter/issues/261) that sporadically pop up at very high core counts, i.e. above 8.)
 
 You can build only a few notebooks by `jupinx -w --files source/rst/<file>.rst`.
 
