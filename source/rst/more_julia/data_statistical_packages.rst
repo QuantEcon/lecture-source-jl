@@ -282,7 +282,8 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
 To explore data use the interactive DataVoyager and VegaLite
 
 .. code-block:: julia
-
+    
+    cigar = dataset("plm", "Cigar")
     # cigar |> Voyager()
 
     cigar |> @vlplot(
