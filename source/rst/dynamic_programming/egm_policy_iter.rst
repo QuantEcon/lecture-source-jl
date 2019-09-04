@@ -314,7 +314,7 @@ In fact it's easy to see that the difference is essentially zero:
 
     @testset "Discrepancy Test" begin
         # check that the error is the same as it was before
-        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1.3322676295501878e-15
+        @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1.3322676295501878e-13
         # test that the error is objectively very small
         @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-5
     end
