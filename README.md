@@ -11,53 +11,61 @@ See `LICENSE.md` for licensing and copyright information.
 ### Prerequisities
 
 * The latest `quantecon/jupinx` Docker image (see the **Containerization** section), or: 
+
 0. Start within your home directory, using [WSL](https://github.com/ubcecon/cluster_tools/blob/master/WSL.md#install-wsl-from-ubuntu-and-conda) if on Windows. 
-1. Ensure key dependencies are installed
+
+1. Go to your home directory and make sure key dependencies are installed
 ```bash
-sudo apt install make
+cd
+sudo apt install make python-pip
 sudo apt-get update
-sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
+sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
 ```
 
 2. Install Conda
 ```bash
-wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
-bash Anaconda3-2019.07-Linux-x86_64.sh
+wget -qO- https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh | bash
 ```
 3. Install Julia
 ```bash
-wget https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz
-tar -xzvf julia-1.2.0-linux-x86_64.tar.gz
+wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
 ```
 
-4. Install Jupinx
+4. Assuming you installed anaconda in your home directory then,
+- Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
+- Add something like the following:
+
+```bash
+export PATH=~/anaconda3/bin:~/julia-1.2.0/bin:$PATH
+```
+Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
+
+Then, from your terminal, run `source .bashrc` to load the changes in the current WSL terminal.
+
+5. Install Jupinx
 ```bash
 pip install jupinx
 ```
 
-5. Assuming you installed anaconda in your home directory (for `USERNAME`) then,
-- Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
-- Add something like the following:
-```bash
-export PATH=/home/USERNAME/anaconda3/bin:/home/USERNAME/julia-1.1.0/bin:$PATH
-```
-- Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
+6. Clone the repo to your preferred location (use the former if you have `ssh` set up for your WSL, otherwise use the latter)
 
-6. If you are using WSL, then it can be useful to add a symlink.  To do this from your home directory, with your Windows username as `WINDOWSUSERNAME`, do something like the following
 ```bash
-ln -s /mnt/c/Users/WINDOWSUSERNAME/Documents/GitHub Documents
+git clone git@github.com:QuantEcon/lecture-source-jl.git
+git clone https://github.com/QuantEcon/lecture-source-jl
 ```
-Restart ubuntu or WSL
 
 It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
 
 1. (Optional) Delete your `~/.julia` folder to start fresh.
 
 2. `cd` to the `source/rst` folder in this repo. In a Julia REPL (i.e. `julia` in terminal if your `.bashrc` was edited above), run
+
 ```julia
-] add InstantiateFromURL IJulia; precompile`. 
+] add InstantiateFromURL IJulia; precompile
 ```
-3. Then (verifying you are in the `/lecture-source-jl/source/rst` diirectory),
+
+3. Then (verifying you are in the `/lecture-source-jl/source/rst` diirectory), still inside the Julia REPL, run
+
 ```julia
 ] activate .; instantiate; precompile
 ```
