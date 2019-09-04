@@ -42,8 +42,9 @@ Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 
 Then, from your terminal, run `source .bashrc` to load the changes in the current WSL terminal.
 
-5. Install Jupinx
+5. Install Jupinx and upgrade conda
 ```bash
+conda upgrade conda
 pip install jupinx
 ```
 
