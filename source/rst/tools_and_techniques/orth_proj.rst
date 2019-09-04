@@ -527,7 +527,7 @@ Define the matrices
         x_{nK}
     \end{array}
     \right)
-    = \text{ $n$-th obs on all regressors}
+    = \text{n-th obs on all regressors}
 
 and
 
