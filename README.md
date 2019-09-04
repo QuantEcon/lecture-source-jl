@@ -46,6 +46,7 @@ Then, from your terminal, run `source .bashrc` to load the changes in the curren
 ```bash
 conda upgrade conda
 pip install jupinx
+pip install sphinxcontrib.bibtex
 ```
 
 6. Clone the repo to your preferred location (use the former if you have `ssh` set up for your WSL, otherwise use the latter)
