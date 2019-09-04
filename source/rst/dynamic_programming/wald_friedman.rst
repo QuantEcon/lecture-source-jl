@@ -518,8 +518,8 @@ We can simulate an agent facing a problem and the outcome with the following fun
         α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
         @test α ≈ 0.57428237
         @test β ≈ 0.352510338
-        @test mean(outcomes) ≈ 0.58
-        @test mean(costs) ≈ 1.12
+        @test mean(outcomes) ≈ 0.43
+        @test mean(costs) ≈ 1.42
         @test mean(trials) ≈ 1.4
         choices = first.(choice.((clamp(β - eps(), 0, 1),
                                   clamp(β + eps(), 0, 1),
@@ -546,7 +546,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
         α, β, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
         @test α ≈ 0.53551172
         @test β ≈ 0.41244737
-        @test mean(outcomes) ≈ 0.57
+        @test mean(outcomes) ≈ 0.45
         @test mean(costs) ≈ 1.348
         @test mean(trials) ≈ 1.22
         choices = first.(choice.((clamp(β - eps(), 0, 1),
