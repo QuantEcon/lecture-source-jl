@@ -547,7 +547,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
         @test α ≈ 0.53551172
         @test β ≈ 0.41244737
         @test mean(outcomes) ≈ 0.45
-        @test mean(costs) ≈ 1.348
+        @test mean(costs) ≈ 1.588
         @test mean(trials) ≈ 1.22
         choices = first.(choice.((clamp(β - eps(), 0, 1),
                                   clamp(β + eps(), 0, 1),
