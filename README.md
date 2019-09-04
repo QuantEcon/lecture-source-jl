@@ -15,8 +15,10 @@ See `LICENSE.md` for licensing and copyright information.
 1. Ensure key dependencies are installed
 ```bash
 sudo apt install make
+sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
 ```
+
 2. Install Conda
 ```bash
 wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
