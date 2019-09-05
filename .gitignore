@@ -6,3 +6,4 @@ dask-worker-space/
 **/.ipynb_checkpoints/
 **/*.ipynb
 **/.projects
+.vscode
