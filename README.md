@@ -109,6 +109,8 @@ To open the WSL in VS Code
 - Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 - Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
 
+See [advanced setup](#advanced-setup) for info on how to accelerate your builds with [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl). 
+
 ### Options and Special Cases
 
 Specifying parallel execution (i.e., `make coverage parallel=8`) will use 8 cores instead of 1. This leads to a notable speedup in build times. (There are some [`zmq` errors](https://github.com/QuantEcon/sphinxcontrib-jupyter/issues/261) that sporadically pop up at very high core counts, i.e. above 8.)
@@ -134,4 +136,11 @@ The advantage of a containerized setup is that you can use a siloed, "pre-baked"
 4. Grab a coffee. The Julia side executes in serial, so it takes about an hour (modulo your processor speed.)
 
 5. After it's done, in a terminal run `docker stop quantecon-docker` and `docker rm quantecon-docker`. This will garbage-collect the container, and free the name `quantecon-docker` for your next run. If you're having trouble, run `docker rm -f quantecon-docker` to force removal. 
+
+## Advanced Setup
+
+For an AOT-precompiled build, run `util/packagecompile.jl`. 
+
+**This will have side-effects for your Julia system** (i.e., it will "bake in" versions of Plots, DataFrames, CSV, and StatsPlots.) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
+
 
