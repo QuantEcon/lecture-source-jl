@@ -47,6 +47,7 @@ Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 Then, from your terminal, run `source .bashrc` to load the changes in the current WSL terminal.
 
 5. Install Jupinx and deps
+
 ```bash
 conda upgrade conda
 pip install jupinx
@@ -54,11 +55,6 @@ pip install sphinxcontrib.bibtex
 conda install dask distributed
 ```
 
-### (Optional, for Advanced Users) 
-
-5a. To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), run `util/packagecompile.jl`.
-
-**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
 
 6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
 
@@ -70,13 +66,21 @@ It's recommended that you install and precompile the packages used by the lectur
 
 1. (Optional) Delete your `~/.julia` folder to start fresh.
 
-2. `cd` to the `source/rst` folder in this repo. In a Julia REPL (i.e. `julia` in terminal if your `.bashrc` was edited above), run
+2. In a Julia REPL (i.e. `julia` in terminal if your `.bashrc` was edited above), run
 
 ```julia
 ] add InstantiateFromURL IJulia; precompile
 ```
 
-3. Then (verifying you are in the `/lecture-source-jl/source/rst` diirectory), still inside the Julia REPL, run
+#### (Optional, for Advanced Users) 
+
+To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), cd to `util` in the repo and run `util/packagecompile.jl`.
+
+**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
+
+3. Close Julia and start a new Julia REPL. 
+
+Then (after you `cd` to the `source/rst` directory in the `lecture-source-jl` repo), still inside the Julia REPL, run
 
 ```julia
 ] activate .; instantiate; precompile
