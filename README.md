@@ -12,7 +12,7 @@ See `LICENSE.md` for licensing and copyright information.
 
 * The latest `quantecon/jupinx` Docker image (see the **Containerization** section), or: 
 
-0. Start within your home directory, using [WSL](https://github.com/ubcecon/cluster_tools/blob/master/WSL.md#install-wsl-from-ubuntu-and-conda) if on Windows. 
+0. Start within your home directory, using [WSL](https://github.com/ubcecon/cluster_tools/blob/master/WSL.md#install-wsl-from-ubuntu-and-conda) if on Windows. If you're running from the shell, make sure you `run as administrator`.
 
 1. Go to your home directory and make sure key dependencies are installed
 ```bash
