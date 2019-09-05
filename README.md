@@ -17,7 +17,6 @@ See `LICENSE.md` for licensing and copyright information.
 1. Go to your home directory and make sure key dependencies are installed
 ```bash
 cd
-sudo apt install make python-pip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
 ```
