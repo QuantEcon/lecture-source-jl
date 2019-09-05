@@ -139,7 +139,7 @@ The advantage of a containerized setup is that you can use a siloed, "pre-baked"
 
 ## Advanced Setup
 
-For an AOT-precompiled build, run `util/packagecompile.jl`. 
+For an AOT-precompiled build, run `util/packagecompile.jl`. Before running, you may need to `sudo apt install gcc` if you don't have one on your path.
 
 **This will have side-effects for your Julia system** (i.e., it will "bake in" versions of Plots, DataFrames, CSV, and StatsPlots.) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
 
