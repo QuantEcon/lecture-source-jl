@@ -556,7 +556,7 @@ This includes private repos if you're on a student developer pack or an academic
 To change this, go to "settings" under your GitHub profile
 
 .. figure:: /_static/figures/git-settings.png
-    :scale: 100%
+    :scale: 50%
 
 Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked
 
