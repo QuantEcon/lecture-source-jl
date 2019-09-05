@@ -55,14 +55,6 @@ conda install dask distributed
 
 6. Clone the repo to your preferred location.
 
-On Windows WSL, clone with Github Desktop and the "Clone" button to install in your Windows
-environment.  Consider adding a symlink in your home directory, with your Windows username as `WINDOWSUSERNAME`, execute
-```bash
-ln -s /mnt/c/Users/WINDOWSUSERNAME/Documents Documents
-```
-
-Alternatively, to clone into the linux environment directly
-
 ```bash
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
