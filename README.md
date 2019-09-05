@@ -59,6 +59,12 @@ conda install dask distributed
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
 
+7. Set your username and email for git
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+```
+
 It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
 
 1. (Optional) Delete your `~/.julia` folder to start fresh.
@@ -85,6 +91,14 @@ There are a few different targets, notably:
 * `make coverage`, which will do steps (1) and (2) above (**with otherwise hidden unit tests**), and then generate a report about which notebooks fail. 
 
 * `make preview`, which will do steps (1), (2), and (3) above and then fire up a local HTTP server. 
+
+* `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
+
+### Editing with WSL and VS Code
+
+In VSCode
+- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (i.e. `~/lecture-source-jl`)
+- Choose "TERMINAL" to open a WSL terminal, and run any of the above commands
 
 ### Options and Special Cases
 
