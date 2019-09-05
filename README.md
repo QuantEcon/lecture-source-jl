@@ -35,12 +35,6 @@ Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running c
 wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
 ```
 
-### (Optional, for Advanced Users) 
-
-3a. To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), run `util/packagecompile.jl`.
-
-**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
-
 4. Assuming you installed anaconda in your home directory then,
 - Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
 - Add something like the following:
@@ -59,6 +53,12 @@ pip install jupinx
 pip install sphinxcontrib.bibtex
 conda install dask distributed
 ```
+
+### (Optional, for Advanced Users) 
+
+5a. To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), run `util/packagecompile.jl`.
+
+**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
 
 6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
 
