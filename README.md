@@ -53,17 +53,12 @@ pip install sphinxcontrib.bibtex
 conda install dask distributed
 ```
 
-6. Clone the repo to your preferred location.
+6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
 
 ```bash
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
 
-7. Set your username and email for git
-```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-```
 
 It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
 
@@ -95,10 +90,24 @@ There are a few different targets, notably:
 * `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
 
 ### Editing with WSL and VS Code
+See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
 
-In VSCode
-- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (i.e. `~/lecture-source-jl`)
-- Choose "TERMINAL" to open a WSL terminal, and run any of the above commands
+In a windows terminal run
+```
+ git config --global credential.helper wincred
+```
+In a WSL terminal,
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
+(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
+
+To open the WSL in VS Code
+- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
+- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
+- Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
 
 ### Options and Special Cases
 
