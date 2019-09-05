@@ -553,7 +553,7 @@ Here's an implementation:
         T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7)
         # using vectors since fixedpoint doesn't support scalar
         ψ_star = fixedpoint(T_ψ, [ψ_iv]).zero[1]
-        return (1 - β) * (c + β * ψ_star) # (2)
+        return (1 - β) * ψ_star # (2)
     end
     compute_reservation_wage_ψ(c, β)
 
@@ -567,10 +567,20 @@ Another option is to solve for the root of the  :math:`T_{\psi}(\psi) - \psi` eq
                                          tol = 1e-5)
         root_ψ(ψ) = c + β * E*max.((w ./ (1 - β)), ψ) - ψ # (7)
         ψ_star = find_zero(root_ψ, ψ_iv)
-        return (1 - β) * (c + β * ψ_star) # (2)
+        return (1 - β) * ψ_star # (2)
     end
     compute_reservation_wage_ψ2(c, β)
 
+.. code-block:: julia
+    :class: test
+
+    @testset begin
+        mcmp = mcm()
+        @test compute_reservation_wage(mcmp) ≈ 47.316499766546215
+        @test compute_reservation_wage_ψ(mcmp.c, mcmp.β) ≈ 47.31649976654623
+        @test compute_reservation_wage_ψ2(mcmp.c, mcmp.β) ≈ 47.31649976654623
+    end
+    
 Exercises
 =========
 
