@@ -715,7 +715,7 @@ The ``] dev`` command will also add the target to the package manager, so that w
 * Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
 
     .. figure:: /_static/figures/testing-repo-settings.png
-        :scale: 100%
+        :scale: 75%
 
     Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is
 
