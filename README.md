@@ -34,9 +34,9 @@ Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running c
 wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
 ```
 
-### (Optional, for Advanced UserS) 
+### (Optional, for Advanced Users) 
 
-3a. For an AOT-precompiled build, run `util/packagecompile.jl`.
+3a. To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), run `util/packagecompile.jl`.
 
 **This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
 
@@ -113,8 +113,6 @@ To open the WSL in VS Code
 - Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
 - Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 - Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
-
-See [advanced setup](#advanced-setup) for info on how to accelerate your builds with [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl). 
 
 ### Options and Special Cases
 
