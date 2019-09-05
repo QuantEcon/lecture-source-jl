@@ -17,7 +17,7 @@ See `LICENSE.md` for licensing and copyright information.
 1. Go to your home directory and make sure key dependencies are installed
 ```bash
 cd
-sudo apt install make 
+sudo apt install make gcc
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
 ```
@@ -33,6 +33,12 @@ Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running c
 ```bash
 wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
 ```
+
+### (Optional, for Advanced UserS) 
+
+3a. For an AOT-precompiled build, run `util/packagecompile.jl`.
+
+**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
 
 4. Assuming you installed anaconda in your home directory then,
 - Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
@@ -58,7 +64,6 @@ conda install dask distributed
 ```bash
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
-
 
 It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
 
@@ -136,11 +141,3 @@ The advantage of a containerized setup is that you can use a siloed, "pre-baked"
 4. Grab a coffee. The Julia side executes in serial, so it takes about an hour (modulo your processor speed.)
 
 5. After it's done, in a terminal run `docker stop quantecon-docker` and `docker rm quantecon-docker`. This will garbage-collect the container, and free the name `quantecon-docker` for your next run. If you're having trouble, run `docker rm -f quantecon-docker` to force removal. 
-
-## Advanced Setup
-
-For an AOT-precompiled build, run `util/packagecompile.jl`. Before running, you may need to `sudo apt install gcc` if you don't have one on your path.
-
-**This will have side-effects for your Julia system** (i.e., it will "bake in" versions of Plots, DataFrames, CSV, and StatsPlots.) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
-
-
