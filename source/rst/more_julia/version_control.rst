@@ -125,7 +125,7 @@ Creating a Repository
 In general, we will always want to repos for new projects using the following dropdown
 
 .. figure:: /_static/figures/git-makerepo.png
-    :scale: 100%
+    :scale: 75%
 
 We can then configure repository options as such
 
@@ -162,7 +162,7 @@ For example, let's say that we've amended the ``README.md`` (using our editor of
 Returning to GitHub Desktop, we should see something like
 
 .. figure:: /_static/figures/git-desktop-commit.png
-    :scale: 100%
+    :scale: 50%
 
 To select individual files for commit, we can use the check boxes to the left of each file
 
@@ -372,12 +372,12 @@ You'll see a new repo with the same name but different URL in your GitHub Deskto
 Commit some changes by selecting the files and writing a commit message
 
 .. figure:: /_static/figures/git-fork-changes.png
-    :scale: 100%
+    :scale: 25%
 
 And push by using the dropdown
 
 .. figure:: /_static/figures/git-dropdown.png
-    :scale: 100%
+    :scale: 75%
 
 Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo
 
