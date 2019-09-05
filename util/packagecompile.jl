@@ -6,5 +6,5 @@ pkg"add Images DualNumbers Unitful Compat LaTeXStrings UnicodePlots DataValues I
 
 # new sysimg 
 using PackageCompiler
-syso, sysold = PackageCompiler.compile_incremental(:Plots, :DataFrames, :CSV, :StatsPlots, install = true)
+syso, sysold = PackageCompiler.compile_incremental(:Plots, install = true)
 cp(syso, sysold, force = true)
