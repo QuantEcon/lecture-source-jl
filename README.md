@@ -24,8 +24,11 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
 
 2. Install Conda
 ```bash
-wget -qO- https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh | bash
+wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
+bash Anaconda3-2019.07-Linux-x86_64.sh
 ```
+Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running conda init?"
+
 3. Install Julia
 ```bash
 wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
@@ -50,10 +53,17 @@ pip install sphinxcontrib.bibtex
 conda install dask distributed
 ```
 
-6. Clone the repo to your preferred location (use the former if you have `ssh` set up for your WSL, otherwise use the latter)
+6. Clone the repo to your preferred location.
+
+On Windows WSL, clone with Github Desktop and the "Clone" button to install in your Windows
+environment.  Consider adding a symlink in your home directory, with your Windows username as `WINDOWSUSERNAME`, execute
+```bash
+ln -s /mnt/c/Users/WINDOWSUSERNAME/Documents Documents
+```
+
+Alternatively, to clone into the linux environment directly
 
 ```bash
-git clone git@github.com:QuantEcon/lecture-source-jl.git
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
 
