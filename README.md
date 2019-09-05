@@ -74,7 +74,11 @@ It's recommended that you install and precompile the packages used by the lectur
 
 #### (Optional, for Advanced Users) 
 
-To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), cd to `util` in the repo and run `util/packagecompile.jl`.
+To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), cd to `util` in the repo and run 
+
+```bash 
+julia packagecompile.jl
+```
 
 **This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
 
