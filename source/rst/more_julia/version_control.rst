@@ -508,7 +508,7 @@ As above, you can clone by grabbing the repo URL (say, GitHub's `site-policy rep
 This won't be connected to your GitHub Desktop, so you'd need to use it manually (``File => Add Local Repository``) or drag-and-drop from the file explorer onto the GitHub Desktop
 
 .. figure:: /_static/figures/git-add-local.png
-    :scale: 100%
+    :scale: 50%
 
 From here, you can get the latest files on the server by ``cd``-ing into the directory and running ``git pull``
 
