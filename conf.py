@@ -462,3 +462,5 @@ jupyter_dependencies = {
     'time_series_models': [],
     'tools_and_techniques': []
 }
+
+jupyter_download_nb_execute=True
