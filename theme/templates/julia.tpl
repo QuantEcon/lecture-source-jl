@@ -2,19 +2,12 @@
 
 {% set nb_title = nb.metadata.get('title', '') %}
 {% set nb_filename = nb.metadata.get('filename', '') %}
-{% set nb_kernel = nb.metadata.kernelspec.get('display_name', '') %}
-{% set nb_language = nb.metadata.kernelspec.get('language', '') %}
 {% set nb_filename_with_path = nb.metadata.get('filename_with_path','') %}
 {% set indexPage = nb_filename.startswith('index') %}
 {% set download_nb = nb.metadata.get('download_nb','') %}
 {% set download_nb_path = nb.metadata.get('download_nb_path','') %}
 {% if nb_filename.endswith('.rst') %}
 {% set nb_filename = nb_filename[:-4] %}
-{% endif %}
-{% if nb_language == 'python3' %}
-{% set nb_lang = 'py' %}
-{% elif nb_language == 'julia' %}
-{% set nb_lang = 'jl' %}
 {% endif %}
 
 {%- block header %}
@@ -35,7 +28,7 @@
 		<meta name="twitter:image" content="https://lectures.quantecon.org/_static/img/qeco-logo.png">
 		<meta property="og:title" content="{{nb_title}}" />
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://lectures.quantecon.org/{{nb_lang}}/{{nb_filename_with_path}}.html" />
+		<meta property="og:url" content="https://lectures.quantecon.org/jl/{{nb_filename_with_path}}.html" />
 		<meta property="og:image" content="https://lectures.quantecon.org/_static/img/qeco-logo.png" />
 		<meta property="og:description" content="This website presents a series of lectures on quantitative economic modeling, designed and written by Thomas J. Sargent and John Stachurski." />
 		<meta property="og:site_name" content="Quantitative Economics" />
@@ -136,7 +129,7 @@
 
 		        	<div class="header-search"><gcse:searchbox-only></gcse:searchbox-only></div>
 
-		        	<p id="combined_percentage" class="combined-coverage"><a href="/{{nb_lang}}/status.html"></a></p>
+		        	<p id="combined_percentage" class="combined-coverage"><a href="/jl/status.html"></a></p>
 
 				</div>
 
@@ -149,7 +142,7 @@
 					<ul>
 						<li><a href="https://quantecon.org/">Org</a> •</li>
 						<li><a href="https://lectures.quantecon.org">Lectures</a> &raquo;</li>
-						<li><a href="https://lectures.quantecon.org/{{nb_lang}}/">{{nb_kernel}} </a> &raquo;</li>
+						<li><a href="https://lectures.quantecon.org/jl/">Julia </a> &raquo;</li>
 				      	<li>{{nb_title}}</li>
 					</ul>
 				</div>
@@ -166,9 +159,9 @@
 						<ul class="badges">
 							<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><img src="/_static/img/jupyter-notebook-run-006400.svg" id="notebook_run_badge"></a></li>
 							{% if download_nb == True %}
-								<li><a href="/{{nb_lang}}/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><img src="/_static/img/jupyter-notebook-download-blue.svg" id="notebook_download_badge"></a></li>
+								<li><a href="/jl/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><img src="/_static/img/jupyter-notebook-download-blue.svg" id="notebook_download_badge"></a></li>
 							{% endif %}
-							<li><a href="/{{nb_lang}}/status.html"><img src="https://img.shields.io/badge/Execution%20test-not%20available-lightgrey.svg" id="executability_status_badge"></a></li>
+							<li><a href="/jl/status.html"><img src="https://img.shields.io/badge/Execution%20test-not%20available-lightgrey.svg" id="executability_status_badge"></a></li>
 							<li class="ml-a"><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><img src="/_static/img/github-icon.svg"></a></li>
 						</ul>
 
@@ -623,9 +616,9 @@ var element = $('#{{ div_id }}');
         <div class="page-tools">
 	        <ul>
 		        <li class="top"><a href="#top" title="Back to top"><span class="icon icon-chevron-up"></span></a></li>
-		        <li><a href="http://twitter.com/intent/tweet?url=https%3A%2F%2Flectures.quantecon.org%2F{{nb_lang}}%2F{{nb_filename_with_path}}.html&via=QuantEcon&text=Covariance Stationary Processes" title="Share on Twitter" target="_blank"><span class="icon icon-twitter"></span></a></li>
-		        <li><a href="https://www.linkedin.com/shareArticle?mini=true&url=https://lectures.quentecon.org%2F{{nb_lang}}%2F{{nb_filename_with_path}}.html&title=Covariance Stationary Processes&summary=This%20website%20presents%20a%20series%20of%20lectures%20on%20quantitative%20economic%20modeling,%20designed%20and%20written%20by%20Thomas%20J.%20Sargent%20and%20John%20Stachurski.&source=QuantEcon" title="Share on LinkedIn" target="_blank"><span class="icon icon-linkedin"></span></a></li>
-		        <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//lectures.quantecon.org%2F{{nb_lang}}%2F{{nb_filename_with_path}}.html" title="Share on Facebook" target="_blank"><span class="icon icon-facebook"></span></a></li>
+		        <li><a href="http://twitter.com/intent/tweet?url=https%3A%2F%2Flectures.quantecon.org%2Fjl%2F{{nb_filename_with_path}}.html&via=QuantEcon&text=Covariance Stationary Processes" title="Share on Twitter" target="_blank"><span class="icon icon-twitter"></span></a></li>
+		        <li><a href="https://www.linkedin.com/shareArticle?mini=true&url=https://lectures.quentecon.org%2Fjl%2F{{nb_filename_with_path}}.html&title=Covariance Stationary Processes&summary=This%20website%20presents%20a%20series%20of%20lectures%20on%20quantitative%20economic%20modeling,%20designed%20and%20written%20by%20Thomas%20J.%20Sargent%20and%20John%20Stachurski.&source=QuantEcon" title="Share on LinkedIn" target="_blank"><span class="icon icon-linkedin"></span></a></li>
+		        <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//lectures.quantecon.org%2Fjl%2F{{nb_filename_with_path}}.html" title="Share on Facebook" target="_blank"><span class="icon icon-facebook"></span></a></li>
 		        <li><span class="title">Share page</span></li>
 	        </ul>
         </div>
