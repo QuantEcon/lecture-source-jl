@@ -245,8 +245,7 @@ similar to the Stata package `esttab` and the R package `stargazer`
    using RegressionTables
    regtable(ols)
    # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
-..
-..
+
 .. To print a full dataframe, and other functions, use the `LatexPrint <https://github.com/scheinerman/LatexPrint.jl#the-tabular-function>`_ package
 ..
 .. .. code-block:: julia
