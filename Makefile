@@ -9,6 +9,7 @@ SOURCEDIR     = source/rst
 BUILDDIR      = _build
 BUILDWEBSITE  = _build/website
 BUILDCOVERAGE = _build/coverage
+BUILDPDF      = _build/pdf
 FILES         = 
 
 # Put it first so that "make" without argument is like "make help".
@@ -51,6 +52,14 @@ ifneq ($(strip $(parallel)),)
 
 else
 	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDWEBSITE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_site=1 -D jupyter_generate_html=1 -D jupyter_download_nb=1 -D jupyter_execute_notebooks=1 -D jupyter_target_html=1 -D jupyter_download_nb_image_urlpath="https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/" -D jupyter_images_markdown=0 -D jupyter_html_template="julia.tpl" -D jupyter_download_nb_urlpath="https://lectures.quantecon.org/" -D jupyter_coverage_dir=$(BUILDCOVERAGE)
+endif
+
+pdf:
+ifneq ($(strip $(parallel)),)
+	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDPDF)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1 -D jupyter_number_workers=$(parallel)
+
+else
+	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDPDF)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1
 endif
 
 notebooks:
