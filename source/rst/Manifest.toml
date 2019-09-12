@@ -354,6 +354,11 @@ git-tree-sha1 = "e1a479d3c972f20c9a70563eec740bbfc786f515"
 uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
 version = "0.3.0"
 
+[[FastClosures]]
+git-tree-sha1 = "b451807e68d0056fab1d094eab27e3b5fd424f1b"
+uuid = "9aa1b823-49e4-5ca5-8b0f-3971ec8bab6a"
+version = "0.3.1"
+
 [[FastGaussQuadrature]]
 deps = ["Compat", "LinearAlgebra", "SpecialFunctions"]
 git-tree-sha1 = "769ac4057ed875f433372e9a571a2cb86347d1be"
@@ -578,6 +583,12 @@ git-tree-sha1 = "c1048817fe5711f699abc8fabd47b1ac6ba4db04"
 uuid = "5ab0869b-81aa-558d-bb23-cbf5423bbe9b"
 version = "0.5.1"
 
+[[Krylov]]
+deps = ["LinearAlgebra", "LinearOperators", "Printf", "Random", "SparseArrays", "Test"]
+git-tree-sha1 = "df669d62794bdc55d57c4cc7c462ab737def89ad"
+uuid = "ba0b0d4f-ebba-5204-a429-3ac8c609bfb7"
+version = "0.3.0"
+
 [[LaTeXStrings]]
 deps = ["Compat"]
 git-tree-sha1 = "7ab9b8788cfab2bdde22adf9004bda7ad9954b6c"
@@ -623,6 +634,12 @@ deps = ["LinearAlgebra", "SparseArrays"]
 git-tree-sha1 = "b32e88a3a99685a38780f5b31fc1e0af28f01477"
 uuid = "7a12625a-238d-50fd-b39a-03d52299707e"
 version = "2.5.1"
+
+[[LinearOperators]]
+deps = ["FastClosures", "LinearAlgebra", "Printf", "SparseArrays", "Test"]
+git-tree-sha1 = "316d05c6b0df402efc110a3cfb0c0a365171fb51"
+uuid = "5c8ed15e-5a4c-59e4-a42b-c7e8811fb125"
+version = "0.5.4"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
