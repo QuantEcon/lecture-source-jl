@@ -318,6 +318,12 @@ git-tree-sha1 = "aed48d722e528bc634bd36a7d0e090fa2952a3c0"
 uuid = "8f5d6c58-4d21-5cfd-889c-e3ad7ee6a615"
 version = "0.9.4"
 
+[[FFMPEG]]
+deps = ["BinaryProvider", "Libdl"]
+git-tree-sha1 = "1dd2128ff10894081f30931b355dc892d1352de9"
+uuid = "c87230d0-a227-11e9-1b43-d7ebe4e7570a"
+version = "0.2.2"
+
 [[FFTW]]
 deps = ["AbstractFFTs", "BinaryProvider", "Conda", "Libdl", "LinearAlgebra", "Reexport", "Test"]
 git-tree-sha1 = "e1a479d3c972f20c9a70563eec740bbfc786f515"
@@ -768,10 +774,10 @@ uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 version = "0.5.8"
 
 [[Plots]]
-deps = ["Base64", "Contour", "Dates", "FixedPointNumbers", "GR", "GeometryTypes", "JSON", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "Reexport", "Requires", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs"]
-git-tree-sha1 = "a9c011a7176a9010dda4853373e8d89a83f9d69d"
+deps = ["Base64", "Contour", "Dates", "FFMPEG", "FixedPointNumbers", "GR", "GeometryTypes", "JSON", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "Reexport", "Requires", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs"]
+git-tree-sha1 = "59bcea95a16912abb229209c9f6e9e218df44b7c"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "0.25.3"
+version = "0.26.3"
 
 [[Polynomials]]
 deps = ["LinearAlgebra", "SparseArrays", "Test"]
@@ -897,10 +903,9 @@ uuid = "d71aba96-b539-5138-91ee-935c3ee1374c"
 version = "0.4.1"
 
 [[RecipesBase]]
-deps = ["Random", "Test"]
-git-tree-sha1 = "0b3cb370ee4dc00f47f1193101600949f3dcf884"
+git-tree-sha1 = "7bdce29bc9b2f5660a6e5e64d64d91ec941f6aa2"
 uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-version = "0.6.0"
+version = "0.7.0"
 
 [[RecursiveArrayTools]]
 deps = ["ArrayInterface", "RecipesBase", "Requires", "StaticArrays", "Statistics", "Test"]
@@ -1038,10 +1043,10 @@ uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
 version = "0.6.3"
 
 [[StatsPlots]]
-deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "KernelDensity", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "Tables", "Widgets"]
-git-tree-sha1 = "5c4a479eedbaf338be5a4352bac9b06efc182396"
+deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "Interpolations", "KernelDensity", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "Tables", "Widgets"]
+git-tree-sha1 = "9f3f096a310f25debaca9dbe6b4e0df7bb428fd0"
 uuid = "f3b207a7-027a-5e70-b257-86293d7955fd"
-version = "0.11.0"
+version = "0.12.0"
 
 [[StringEncodings]]
 deps = ["BinaryProvider", "Libdl", "Test"]
@@ -1095,9 +1100,9 @@ version = "0.6.0"
 
 [[TimeZones]]
 deps = ["Dates", "EzXML", "Mocking", "Printf", "Serialization", "Unicode"]
-git-tree-sha1 = "0271dc890dd1447da1568510937bd5b3a6b51b58"
+git-tree-sha1 = "2769a7ceffe237e651ed960a331a19258c8cf208"
 uuid = "f269a46b-ccf7-5d73-abea-4c690281aa53"
-version = "0.9.2"
+version = "0.10.0"
 
 [[TimerOutputs]]
 deps = ["Crayons", "Printf", "Test", "Unicode"]
@@ -1154,10 +1159,10 @@ uuid = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
 version = "0.6.1"
 
 [[Widgets]]
-deps = ["Colors", "Dates", "Observables", "OrderedCollections", "Test"]
-git-tree-sha1 = "c53befc70c6b91eaa2a9888c2f6ac2d92720a81b"
+deps = ["Colors", "Dates", "Observables", "OrderedCollections"]
+git-tree-sha1 = "fc0feda91b3fef7fe6948ee09bb628f882b49ca4"
 uuid = "cc8bc4a8-27d6-5769-a93b-9d913e69aa62"
-version = "0.6.1"
+version = "0.6.2"
 
 [[WoodburyMatrices]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Test"]
