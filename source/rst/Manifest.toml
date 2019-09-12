@@ -330,6 +330,12 @@ git-tree-sha1 = "cacb3d95479f58fdc844001b4a6e1b2b1c69d200"
 uuid = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
 version = "1.1.0"
 
+[[ExponentialUtilities]]
+deps = ["LinearAlgebra", "Printf", "SparseArrays"]
+git-tree-sha1 = "85e1ce16aa9b98793df704e17e7a0ceadefe404f"
+uuid = "d4d017d3-3776-5f7e-afef-a10c40355c18"
+version = "1.5.1"
+
 [[EzXML]]
 deps = ["BinaryProvider", "Libdl", "Printf"]
 git-tree-sha1 = "aed48d722e528bc634bd36a7d0e090fa2952a3c0"
@@ -611,6 +617,12 @@ version = "7.0.1"
 [[LinearAlgebra]]
 deps = ["Libdl"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[[LinearMaps]]
+deps = ["LinearAlgebra", "SparseArrays"]
+git-tree-sha1 = "b32e88a3a99685a38780f5b31fc1e0af28f01477"
+uuid = "7a12625a-238d-50fd-b39a-03d52299707e"
+version = "2.5.1"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
