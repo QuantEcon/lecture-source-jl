@@ -662,16 +662,16 @@ In the code below, we use the `LSS <https://github.com/QuantEcon/QuantEcon.jl/bl
         # first fanchart
         plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
         plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
-        plot!(xvals, fill_between=(c_perc_95m, c_perc_95p), alpha=0.25, color=:blue, label="")
-        plot!(xvals, fill_between=(c_perc_90m, c_perc_90p), alpha=0.25, color=:red, label="")
+        plot!(xvals, fillrange=[c_perc_95m, c_perc_95p], alpha=0.25, color=:blue, label="")
+        plot!(xvals, fillrange=[c_perc_90m, c_perc_90p], alpha=0.25, color=:red, label="")
         plot!(plt_1, title="Consumption/Debt over time",
               ylim=(cmean-15, cmean+15), ylabel="consumption")
 
         # second fanchart
         plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
         plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
-        plot!(xvals, fill_between=(d_perc_95m, d_perc_95p), alpha=0.25, color=:blue,label="")
-        plot!(xvals, fill_between=(d_perc_90m, d_perc_90p), alpha=0.25, color=:red,label="")
+        plot!(xvals, fillrange=[d_perc_95m, d_perc_95p], alpha=0.25, color=:blue,label="")
+        plot!(xvals, fillrange=[d_perc_90m, d_perc_90p], alpha=0.25, color=:red,label="")
         plot!(plt_2, ylabel="debt", xlabel="t")
 
         plot(plt_1, plt_2, layout=(2,1), size=(800,600))

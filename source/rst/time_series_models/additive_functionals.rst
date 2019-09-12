@@ -590,7 +590,7 @@ Setup
         plot!(plots[2], trange, mpathᵀ, alpha = 0.45, color = :magenta, label = "")
         ub = mbounds[2, :]
         lb = mbounds[1, :]
-        plot!(plots[2], ub, fill_between = (lb, ub), alpha = 0.25, color = :magenta, label = "")
+        plot!(plots[2], ub, fillrange = [lb, ub], alpha = 0.25, color = :magenta, label = "")
         plot!(plots[2], seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
         plot!(plots[2], title = "Martingale Components for Many Paths")
 
@@ -599,7 +599,7 @@ Setup
         plot!(plots[3], Matrix(spath'), alpha = 0.25, color = :green, label = "")
         ub = sbounds[2, :]
         lb = sbounds[1, :]
-        plot!(plots[3], ub, fill_between = (lb, ub), alpha = 0.25, color = :green, label = "")
+        plot!(plots[3], ub, fillrange = [lb, ub], alpha = 0.25, color = :green, label = "")
         plot!(plots[3], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
         plot!(plots[3], title = "Stationary Components for Many Paths")
 
@@ -624,7 +624,7 @@ Setup
         # plot martingale component
         ub = mbounds[2, :]
         lb = mbounds[1, :]
-        plot!(plt, lb, fill_between = (lb, ub), alpha = 0.25, color = :magenta, label = "")
+        plot!(plt, lb, fillrange = [lb, ub], alpha = 0.25, color = :magenta, label = "")
         plot!(plt, seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
         plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")
 

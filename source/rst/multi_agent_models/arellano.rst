@@ -729,7 +729,7 @@ Plot a time series of major variables simulated from the model
         plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel = "time", label = "", lw = 2)
         for j in 1:length(def_start)
             plot!(plots[i], [def_start[j], def_end[j]], fill(maximum(y_vals[i]), 2),
-                  fill_between = extrema(y_vals[i]), fcolor = :grey, falpha = 0.3, label = "")
+                  fillrange = [extrema(y_vals[i])...], fcolor = :grey, falpha = 0.3, label = "")
         end
     end
 

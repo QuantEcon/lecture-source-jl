@@ -599,8 +599,8 @@ time is much shorter than that of the value function approach in
   w̄ = compute_fixed_point(f_ex1, ϕ_init)
 
   plot(sp.π_grid, w̄, linewidth = 2, color=:black,
-       fill_between = 0, fillalpha = 0.15, fillcolor = :blue)
-  plot!(sp.π_grid, 2 * ones(length(w̄)), linewidth = 0, fill_between = w̄,
+       fillrange = 0, fillalpha = 0.15, fillcolor = :blue)
+  plot!(sp.π_grid, 2 * ones(length(w̄)), linewidth = 0, fillrange = w̄,
         fillalpha = 0.12, fillcolor = :green, legend = :none)
   plot!(ylims = (0, 2), annotations = [(0.42, 1.2, "reject"),
                                        (0.7, 1.8, "accept")])

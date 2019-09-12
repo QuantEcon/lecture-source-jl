@@ -706,7 +706,7 @@ Here is some code that tackles these tasks
     for (it, dens_t) in enumerate(dens_to_plot)
         x, pdf = dens_t
         plot!(plots[it], title = "Density for time (time_to_plot[it])")
-        plot!(plots[it], pdf, fill_between = ([0], pdf), label = "")
+        plot!(plots[it], pdf, fillrange = [[0], pdf], label = "")
     end
     plot(plots)
 
