@@ -45,7 +45,7 @@
 
 
 .. image:: /_static/banner.png
-    :scale: 30%
+    :width: 30%
     :align: center
 
 .. only:: latex

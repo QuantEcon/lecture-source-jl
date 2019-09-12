@@ -293,7 +293,7 @@ The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_e
 
 
 .. figure:: /_static/figures/career_solutions_ex3_jl.png
-   :scale: 100%
+   :width: 100%
 
 
 Interpretation:
@@ -327,7 +327,7 @@ when the worker follows the optimal policy
 In particular, modulo randomness, reproduce the following figure (where the horizontal axis represents time)
 
 .. figure:: /_static/figures/career_solutions_ex1_jl.png
-   :scale: 100%
+   :width: 100%
 
 Hint: To generate the draws from the distributions :math:`F` and :math:`G`, use the type `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_
 

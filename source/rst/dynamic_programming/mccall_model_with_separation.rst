@@ -368,7 +368,7 @@ In the figure below, we use the default parameters in the `McCallModel` tuple, a
 `c` (which takes the values given on the horizontal axis)
 
 .. figure:: /_static/figures/mccall_resw_c.png
-    :scale: 100%
+    :width: 100%
 
 As expected, higher unemployment compensation causes the worker to hold out for higher wages
 
@@ -384,7 +384,7 @@ The next figure plots the reservation wage associated with different values of
 :math:`\beta`
 
 .. figure:: /_static/figures/mccall_resw_beta.png
-    :scale: 100%
+    :width: 100%
 
 Again, the results are intuitive: More patient workers will hold out for higher wages
 
@@ -398,7 +398,7 @@ Higher :math:`\alpha` translates to a greater chance that a worker will face ter
 
 
 .. figure:: /_static/figures/mccall_resw_alpha.png
-    :scale: 100%
+    :width: 100%
 
 Once more, the results are in line with our intuition
 

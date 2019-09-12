@@ -201,7 +201,7 @@ The next figure shows dynamics of this process when :math:`\phi_0 = 1.1, \phi_1=
 
 .. figure::
     /_static/figures/solution_lss_ex1.png
-    :scale: 80%
+    :width: 80%
 
 Later you'll be asked to recreate this figure
 
@@ -262,7 +262,7 @@ The next figure shows dynamics of this process when
 
 .. figure::
     /_static/figures/solution_lss_ex2.png
-    :scale: 80%
+    :width: 80%
 
 Vector Autoregressions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -677,7 +677,7 @@ Let's now try with 500,000 observations, showing only the histogram (without rot
 
 .. figure::
     /_static/figures/tsh_hg.png
-    :scale: 100%
+    :width: 100%
 
 The black line is the population density of :math:`y_T` calculated from :eq:`lss_mgs_y`
 
@@ -718,7 +718,7 @@ and the sample size is relatively small (:math:`I=20`)
 
 .. figure::
     /_static/figures/ensemble_mean.png
-    :scale: 70%
+    :width: 70%
 
 The ensemble mean for :math:`x_t` is
 
@@ -831,7 +831,7 @@ This picture shows cross-sectional distributions for :math:`y` at times
 
 .. figure::
     /_static/figures/paths_and_stationarity.png
-    :scale: 100%
+    :width: 100%
 
 Note how the time series "settle down" in the sense that the distributions at
 :math:`T'` and :math:`T''` are relatively similar to each other --- but unlike
@@ -882,7 +882,7 @@ Let's see what happens to the preceding figure if we start :math:`x_0` at the st
 
 .. figure::
     /_static/figures/covariance_stationary.png
-    :scale: 100%
+    :width: 100%
 
 Now the  differences in the observed distributions at :math:`T, T'` and :math:`T''` come entirely from random fluctuations due to the finite sample size
 

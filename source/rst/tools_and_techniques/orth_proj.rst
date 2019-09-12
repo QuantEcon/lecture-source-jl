@@ -63,17 +63,17 @@ The **law of cosines** states that :math:`\langle x, z \rangle = \| x \| \| z \|
 When :math:`\langle x,  z\rangle = 0`, then :math:`\cos(\theta) = 0` and  :math:`x` and :math:`z` are said to be **orthogonal** and we write :math:`x \perp z`
 
 .. figure:: /_static/figures/orth_proj_def1.png
-    :scale: 50%
+    :width: 50%
 
 For a linear subspace  :math:`S \subset \mathbb{R}^n`, we call :math:`x \in \mathbb{R}^n` **orthogonal to** :math:`S` if :math:`x \perp z` for all :math:`z \in S`, and write :math:`x \perp S`
 
 .. figure:: /_static/figures/orth_proj_def2.png
-    :scale: 50%
+    :width: 50%
 
 The **orthogonal complement** of linear subspace :math:`S \subset \mathbb{R}^n` is the set :math:`S^{\perp} := \{x \in \mathbb{R}^n \,:\, x \perp S\}`
 
 .. figure:: /_static/figures/orth_proj_def3.png
-    :scale: 50%
+    :width: 50%
 
 :math:`S^\perp` is  a linear subspace of :math:`\mathbb{R}^n`
 
@@ -141,7 +141,7 @@ The vector :math:`\hat y` is called the **orthogonal projection** of :math:`y` o
 The next figure provides some intuition
 
 .. figure:: /_static/figures/orth_proj_thm1.png
-    :scale: 50%
+    :width: 50%
 
 Proof of sufficiency
 --------------------
@@ -184,7 +184,7 @@ In what follows we denote this operator by a matrix :math:`P`
 The operator :math:`P` is called the **orthogonal projection mapping onto** :math:`S`
 
 .. figure:: /_static/figures/orth_proj_thm2.png
-    :scale: 50%
+    :width: 50%
 
 It is immediate from the OPT that for any :math:`y \in \mathbb{R}^n`
 
@@ -235,7 +235,7 @@ This amounts to another version of the OPT:
 The next figure illustrates
 
 .. figure:: /_static/figures/orth_proj_thm3.png
-    :scale: 50%
+    :width: 50%
 
 Orthonormal Basis
 ====================

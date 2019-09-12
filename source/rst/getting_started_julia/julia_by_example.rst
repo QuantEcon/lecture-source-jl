@@ -74,7 +74,7 @@ process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :mat
 .. Commenting out figure, at least while broken.
 .. In other words, we want to generate figures that look something like this:
 .. .. figure:: /_static/figures/test_program_1.png
-..    :scale: 100%
+..    :width: 100%
 
 
 

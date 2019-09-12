@@ -513,7 +513,7 @@ Exercise 1
 The first exercise is to replicate the following figure, which compares TI and VFI as solution methods
 
 .. figure:: /_static/figures/vfi_vs_pfi.png
-   :scale: 100%
+   :width: 100%
 
 The figure shows consumption policies computed by iteration of :math:`K` and :math:`T` respectively
 
@@ -564,7 +564,7 @@ Next let's consider how the interest rate affects consumption
 Reproduce the following figure, which shows (approximately) optimal consumption policies for different interest rates
 
 .. figure:: /_static/figures/ifp_policies.png
-   :scale: 100%
+   :width: 100%
 
 * Other than `r`, all parameters are at their default values
 * `r` steps through `range(0, 0.04, length = 4)`
@@ -637,7 +637,7 @@ Ergodicity is valid here, so stationary probabilities can be calculated by avera
 * Hence to approximate the stationary distribution we can simulate a long time series for assets and histogram, as in the following figure
 
 .. figure:: /_static/figures/ifp_histogram.png
-   :scale: 100%
+   :width: 100%
 
 Your task is to replicate the figure
 
@@ -666,7 +666,7 @@ rate and borrowing constraint
 The next figure plots aggregate capital against the interest rate for `b in (1, 3)`
 
 .. figure:: /_static/figures/ifp_agg_savings.png
-   :scale: 100%
+   :width: 100%
 
 As is traditional, the price (interest rate) is on the vertical axis
 

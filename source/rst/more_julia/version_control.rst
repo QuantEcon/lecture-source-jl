@@ -125,12 +125,12 @@ Creating a Repository
 In general, we will always want to repos for new projects using the following dropdown
 
 .. figure:: /_static/figures/git-makerepo.png
-    :scale: 75%
+    :width: 75%
 
 We can then configure repository options as such
 
 .. figure:: /_static/figures/git-makerepo-full.png
-    :scale: 100%
+    :width: 100%
 
 In this case, we're making a public repo ``github.com/quantecon_user/example_repository``, which will come with a ``README.md``, is licensed under the MIT License, and will ignore Julia compilation byproducts
 
@@ -144,7 +144,7 @@ Cloning a Repository
 The next step is to get this to our local machine
 
 .. figure:: /_static/figures/git-clone.png
-    :scale: 100%
+    :width: 100%
 
 This dropdown gives us a few options
 
@@ -162,14 +162,14 @@ For example, let's say that we've amended the ``README.md`` (using our editor of
 Returning to GitHub Desktop, we should see something like
 
 .. figure:: /_static/figures/git-desktop-commit.png
-    :scale: 50%
+    :width: 50%
 
 To select individual files for commit, we can use the check boxes to the left of each file
 
 Let's say you select only the README to commit. Going to the history tab should show you our change
 
 .. figure:: /_static/figures/git-desktop-commit2.png
-    :scale: 100%
+    :width: 100%
 
 The Julia file is unchanged
 
@@ -199,7 +199,7 @@ Sometimes, however, we want to not only inspect what happened before, but revers
 * If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, shown below
 
 .. figure:: /_static/figures/git-revert-commit.png
-    :scale: 100%
+    :width: 100%
 
 Working across Machines
 --------------------------------------
@@ -213,7 +213,7 @@ Pushing can be done as above
 To pull, simply click pull under the "repository" dropdown at the top of the screen
 
 .. figure:: /_static/figures/git-pull.png
-    :scale: 100%
+    :width: 100%
 
 Collaborative Work
 ==================================
@@ -226,7 +226,7 @@ First, let's add a collaborator to the ``quanteconuser/example_repository`` lect
 We can do this by clicking "settings => collaborators," as follows
 
 .. figure:: /_static/figures/git-collab.png
-    :scale: 100%
+    :width: 100%
 
 Project Management
 --------------------------------
@@ -238,7 +238,7 @@ The main one is an *issue*, which we can create from the issues tab
 You should see something like this
 
 .. figure:: /_static/figures/git-issue.png
-    :scale: 100%
+    :width: 100%
 
 Let's unpack the different components
 
@@ -253,7 +253,7 @@ For an example of an issue, see `here <https://github.com/quanteconuser/example_
 You can see open issues at a glance from the general issues tab
 
 .. figure:: /_static/figures/git-issue-tab.png
-    :scale: 100%
+    :width: 100%
 
 The checkboxes are common in GitHub to manage project tasks
 
@@ -266,7 +266,7 @@ There are a few different ways to review people's code in GitHub
 * You can also review individual line items or commits by opening commits in the difference view as `above <https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/>`_
 
 .. figure:: /_static/figures/git-review.png
-    :scale: 100%
+    :width: 100%
 
 .. _merge_conflict:
 
@@ -284,7 +284,7 @@ A common use case is when we try to push changes to the server, but someone else
 GitHub will give us the following window
 
 .. figure:: /_static/figures/git-merge-conflict.png
-    :scale: 100%
+    :width: 100%
 
 * The warning symbol next to the file indicates the existence of a merge conflict
 * The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes)
@@ -292,14 +292,14 @@ GitHub will give us the following window
 To fix the conflict, we can go into a text editor (such as Atom)
 
 .. figure:: /_static/figures/atom-merge-conflict.png
-    :scale: 100%
+    :width: 100%
 
 Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file
 
 Returning to GitHub Desktop gives us a pre-formed commit to accept
 
 .. figure:: /_static/figures/git-merge-commit.png
-    :scale: 100%
+    :width: 100%
 
 Clicking "commit to master" will let us push and pull from the server as normal
 
@@ -332,7 +332,7 @@ GitHub's website provides an online editor for quick and dirty changes, such as 
 To use it, open a file in GitHub and click the small pencil to the upper right
 
 .. figure:: /_static/figures/git-quick-pr.png
-    :scale: 100%
+    :width: 100%
 
 Here, we're trying to add the QuantEcon link to the Julia project's ``README`` file
 
@@ -350,7 +350,7 @@ A common problem is when we don't have write access (i.e. we can't directly modi
 In that case, click the "Fork" button that lives in the top-right of every repo's main page
 
 .. figure:: /_static/figures/git-fork-button.png
-    :scale: 100%
+    :width: 100%
 
 This will copy the repo into your own GitHub account
 
@@ -362,39 +362,39 @@ Clone this fork to our desktop and work with it in exactly the same way as we wo
 That is, click the "clone" button on our fork
 
 .. figure:: /_static/figures/git-clone-fork.png
-    :scale: 100%
+    :width: 100%
 
 You'll see a new repo with the same name but different URL in your GitHub Desktop repo list, along with a special icon to indicate that it's a fork
 
 .. figure:: /_static/figures/git-repo-list.png
-    :scale: 100%
+    :width: 100%
 
 Commit some changes by selecting the files and writing a commit message
 
 .. figure:: /_static/figures/git-fork-changes.png
-    :scale: 25%
+    :width: 25%
 
 And push by using the dropdown
 
 .. figure:: /_static/figures/git-dropdown.png
-    :scale: 75%
+    :width: 75%
 
 Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo
 
 .. figure:: /_static/figures/git-edit-fork.png
-    :scale: 100%
+    :width: 100%
 
 We should make confirm that these changes are on the server (which we can get to by going to the `fork <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
 
 .. figure:: /_static/figures/git-fork-history.png
-    :scale: 100%
+    :width: 100%
 
 Next, go to the pull requests menu and click "New Pull Request"
 
 You'll see something like this
 
 .. figure:: /_static/figures/git-create-pr.png
-    :scale: 100%
+    :width: 100%
 
 This gives us a quick overview of the commits we want to merge in, as well as the overall differences
 
@@ -403,7 +403,7 @@ Hit create and then click through the following form
 This opens a page like this on the main repo
 
 .. figure:: /_static/figures/git-create-pr-2.png
-    :scale: 100%
+    :width: 100%
 
 The key pieces are
 
@@ -418,12 +418,12 @@ To edit a PR, simply push changes to the fork you cloned to your desktop
 For example, let's say we commit a new change to the README *after* we create the PR
 
 .. figure:: /_static/figures/git-pr-modification.png
-    :scale: 100%
+    :width: 100%
 
 After pushing to the server, the change is reflected on the PR `page <https://github.com/quanteconuser/example_repository/pull/3>`_
 
 .. figure:: /_static/figures/git-pr-expost.png
-    :scale: 100%
+    :width: 100%
 
 That is, creating a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged
 
@@ -439,7 +439,7 @@ Branches in git represent parallel development streams (i.e., sequences of commi
 First, load the repo in GitHub Desktop and use the branch dropdown
 
 .. figure:: /_static/figures/git-pr-branch.png
-    :scale: 100%
+    :width: 100%
 
 Click "New Branch" and choose an instructive name (make sure there are no spaces or special characters)
 
@@ -448,19 +448,19 @@ This will "check out" a new branch with the same history as the old one (but new
 We can see the active branch in the top dropdown
 
 .. figure:: /_static/figures/git-branch.png
-    :scale: 100%
+    :width: 100%
 
 For example, let's say we add some stuff to the Julia code file and commit it
 
 .. figure:: /_static/figures/git-pr-edits.png
-    :scale: 100%
+    :width: 100%
 
 To put this branch (with changes) on the server, we simply need to click "Publish Branch"
 
 Navigating to the `repo page <https://github.com/quanteconuser/example_repository>`_, we will see a suggestion about a new branch
 
 .. figure:: /_static/figures/git-new-branch.png
-    :scale: 100%
+    :width: 100%
 
 At which point the process of creating a PR is identical to the previous case
 
@@ -508,7 +508,7 @@ As above, you can clone by grabbing the repo URL (say, GitHub's `site-policy rep
 This won't be connected to your GitHub Desktop, so you'd need to use it manually (``File => Add Local Repository``) or drag-and-drop from the file explorer onto the GitHub Desktop
 
 .. figure:: /_static/figures/git-add-local.png
-    :scale: 50%
+    :width: 50%
 
 From here, you can get the latest files on the server by ``cd``-ing into the directory and running ``git pull``
 

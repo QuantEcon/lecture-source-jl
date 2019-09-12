@@ -51,14 +51,14 @@ Codecov is a service that tells you how comprehensive your tests are (i.e., how 
 To sign up, visit the `Codecov website <http://codecov.io/>`_, and click "sign up"
 
 .. figure:: /_static/figures/codecov-1.png
-    :scale: 100%
+    :width: 100%
 
 Next, click "add a repository" and *enable private scope* (this allows Codecov to service your private projects)
 
 The result should be
 
 .. figure:: /_static/figures/codecov-2.png
-    :scale: 100%
+    :width: 100%
 
 This is all we need for now
 
@@ -107,7 +107,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 If we navigate to the package directory, we should see something like the following
 
 .. figure:: /_static/figures/testing-dir.png
-    :scale: 100%
+    :width: 100%
 
 As a reminder, the location of your ``.julia`` folder can be found by running ``DEPOT_PATH[1]`` in a REPL 
 
@@ -123,7 +123,7 @@ The next step is to add this project to Git version control
 We'll want the following settings
 
 .. figure:: /_static/figures/testing-git1.png
-    :scale: 100%
+    :width: 100%
 
 In particular
 
@@ -140,7 +140,7 @@ Then,
 If you navigate to your git repo (ours is `here <https://github.com/quanteconuser/ExamplePackage.jl/>`__), you should see something like
 
 .. figure:: /_static/figures/testing-git2.png
-    :scale: 100%
+    :width: 100%
 
 **Note:** Be sure that you don't separately clone the repo you just added to another location (i.e., to your desktop)
 
@@ -296,7 +296,7 @@ We can track changes in the TOML, as before
 Here's the ``Manifest.toml``
 
 .. figure:: /_static/figures/testing-atom-manifest.png
-    :scale: 100%
+    :width: 100%
 
 We can also run other operations, like ``] up``, ``] precompile``, etc.
 
@@ -378,7 +378,7 @@ Let's create a new output directory in our project, and run ``jupyter lab`` from
 Create a new notebook ``output.ipynb``
 
 .. figure:: /_static/figures/testing-output.png
-    :scale: 100%
+    :width: 100%
 
 From here, we can use our package's functions as we would functions from other packages
 
@@ -387,7 +387,7 @@ This lets us produce neat output documents, without pasting the whole codebase
 We can also run package operations inside the notebook
 
 .. figure:: /_static/figures/testing-notebook.png
-    :scale: 100%
+    :width: 100%
 
 The change will be reflected in the ``Project.toml`` file
 
@@ -556,7 +556,7 @@ This includes private repos if you're on a student developer pack or an academic
 To change this, go to "settings" under your GitHub profile
 
 .. figure:: /_static/figures/git-settings.png
-    :scale: 50%
+    :width: 50%
 
 Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked
 
@@ -603,7 +603,7 @@ As above, builds are triggered whenever we push changes or open a pull request
 For example, if we push our changes to the server and then click the Travis badge (the one which says "build") on the README, we should see something like
 
 .. figure:: /_static/figures/travis-progress.png
-    :scale: 100%
+    :width: 100%
 
 Note that you may need to wait a bit and/or refresh your browser
 
@@ -612,7 +612,7 @@ This gives us an overview of all the builds running for that commit
 To inspect a build more closely (say, if it fails), we can click on it and expand the log options
 
 .. figure:: /_static/figures/travis-log.png
-    :scale: 100%
+    :width: 100%
 
 Note that the build times here aren't informative, because we can't generally control the hardware to which our job is allocated
 
@@ -621,7 +621,7 @@ We can also cancel specific jobs, either from their specific pages or by clickin
 Lastly, we can trigger builds manually (without a new commit or PR) from the Travis overview
 
 .. figure:: /_static/figures/travis-trigger.png
-    :scale: 100%
+    :width: 100%
 
 To commit *without* triggering a build, simply add "[ci skip]" somewhere inside the commit message
 
@@ -655,7 +655,7 @@ Navigate to the repo settings page (i.e., ``https://codecov.io/gh/quanteconuser/
 Next, go to your Travis settings and add an environment variable as below
 
 .. figure:: /_static/figures/travis-settings.png
-    :scale: 100%
+    :width: 100%
 
 Interpreting Results
 ------------------------
@@ -669,7 +669,7 @@ This shows us that our tests cover 50\% of our functions in ``src//``
 **Note:** Codecov may take a few minutes to run for the first time
 
 .. figure:: /_static/figures/codecov.png
-    :scale: 100%
+    :width: 100%
 
 This shows us precisely which methods (and parts of methods) are untested
 
@@ -710,12 +710,12 @@ The ``] dev`` command will also add the target to the package manager, so that w
 * The next step is to fork the original (external) package from its website (i.e., ``https://github.com/quantecon/Expectations.jl``) to your account (``https://github.com/quanteconuser/Expectations.jl`` in our case)
 
     .. figure:: /_static/figures/testing-fork.png
-        :scale: 100%
+        :width: 100%
 
 * Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL
 
     .. figure:: /_static/figures/testing-repo-settings.png
-        :scale: 75%
+        :width: 75%
 
     Here, we'd change the highlighted text to read ``quanteconuser``, or whatever our GitHub ID is
 
@@ -724,7 +724,7 @@ The ``] dev`` command will also add the target to the package manager, so that w
 **Note:** As before, we're editing the files directly in ``~/.julia/dev``, as opposed to cloning the repo again.
 
 .. figure:: /_static/figures/testing-commit.png
-    :scale: 100%
+    :width: 100%
 
 Here, for example, we're revising the README
 
@@ -733,14 +733,14 @@ Here, for example, we're revising the README
 To confirm this, we can check the history on our account `here <https://github.com/quanteconuser/Expectations.jl/commits/master>`__; for more on working with git repositories, see the :doc:`version control <../more_julia/version_control>` lecture
 
 .. figure:: /_static/figures/testing-expectations.png
-    :scale: 100%
+    :width: 100%
 
 The green check mark indicates that Travis tests passed for this commit
 
 * Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve
 
 .. figure:: /_static/figures/testing-pr2.png
-    :scale: 100%
+    :width: 100%
 
 For more on PRs, see the relevant section of the :doc:`version control <../more_julia/version_control>` lecture
 
@@ -774,7 +774,7 @@ Next, drag that folder to GitHub Desktop as before
 Then, in order to work with the package locally, all we need to do is open the ``~/.julia/dev/Expectations`` in a text editor (like Atom)
 
 .. figure:: /_static/figures/testing-atom-package.png
-    :scale: 100%
+    :width: 100%
 
 From here, we can edit this package just like we created it ourselves and use GitHub Desktop to track versions of our package files (say, after ``] up``, or editing source code, ``] add Package``, etc.)
 

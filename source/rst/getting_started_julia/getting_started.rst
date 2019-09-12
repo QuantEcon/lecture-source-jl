@@ -56,7 +56,7 @@ If you want to install these tools locally on your machine
 You should now be looking at something like this
 
 .. figure:: /_static/figures/julia_term_1.png
-   :scale: 100%
+   :width: 100%
 
 This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more :ref:`later <repl_main>`
 
@@ -113,7 +113,7 @@ After installing the Git Desktop application, click `this link <x-github-client:
 It should open a window in the GitHub desktop app like this
 
 .. figure:: /_static/figures/git-desktop-intro.png
-   :scale: 100%
+   :width: 100%
 
 Choose a path you like and clone the repo
 

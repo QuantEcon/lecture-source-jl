@@ -618,7 +618,7 @@ where the notation :math:`V` and :math:`U` is as defined in the :doc:`McCall sea
 The wage offer distribution will be a discretized version of the lognormal distribution :math:`LN(\log(20),1)`, as shown in the next figure
 
 .. figure:: /_static/figures/lake_distribution_wages.png
-    :scale: 80%
+    :width: 80%
 
 We take a period to be a month
 

@@ -553,7 +553,7 @@ Dark colors indicate synchronization, while light colors indicate failure to syn
 .. _matsrep:
 
 .. figure:: /_static/figures/matsuyama_14.png
-    :scale: 60%
+    :width: 60%
 
 As you can see, larger values of :math:`\rho` translate to more synchronization
 

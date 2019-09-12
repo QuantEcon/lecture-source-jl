@@ -246,7 +246,7 @@ Finally, if :math:`p` is in the middle of the interval :math:`[0, 1]`, then we h
 This reasoning suggests a decision rule such as the one shown in the figure
 
 .. figure:: /_static/figures/wald_dec_rule.png
-    :scale: 50%
+    :width: 50%
 
 As we'll see, this is indeed the correct form of the decision rule
 

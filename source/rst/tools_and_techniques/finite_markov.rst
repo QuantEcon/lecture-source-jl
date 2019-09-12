@@ -192,7 +192,7 @@ In general, large values on the main diagonal indicate persistence in the proces
 This Markov process can also be represented as a directed graph, with edges labeled by transition probabilities
 
 .. figure:: /_static/figures/hamilton_graph.png
-   :scale: 80%
+   :width: 80%
 
 Here "ng" is normal growth, "mr" is mild recession, etc.
 
@@ -553,7 +553,7 @@ For example, consider the following transition probabilities for wealth of a fic
 households
 
 .. figure:: /_static/figures/mc_irreducibility1.png
-    :scale: 100%
+    :width: 100%
 
 We can translate this into a stochastic matrix, putting zeros where
 there's no edge between nodes
@@ -590,7 +590,7 @@ We can also test this using `QuantEcon.jl <http://quantecon.org/julia_index.html
 Here's a more pessimistic scenario, where the poor are poor forever
 
 .. figure:: /_static/figures/mc_irreducibility2.png
-    :scale: 100%
+    :width: 100%
 
 This stochastic matrix is not irreducible, since, for example, `rich` is not accessible from `poor`
 
@@ -629,7 +629,7 @@ Loosely speaking, a Markov chain is called periodic if it cycles in a predictibl
 Here's a trivial example with three states
 
 .. figure:: /_static/figures/mc_aperiodicity1.png
-    :scale: 100%
+    :width: 100%
 
 The chain cycles with period 3:
 
@@ -660,7 +660,7 @@ A stochastic matrix is called **aperiodic** if the period of every state is 1, a
 For example, the stochastic matrix associated with the transition probabilities below is periodic because, for example, state :math:`a` has period 2
 
 .. figure:: /_static/figures/mc_aperiodicity2.png
-    :scale: 100%
+    :width: 100%
 
 We can confirm that the stochastic matrix is periodic as follows
 
@@ -1101,7 +1101,7 @@ is known as `PageRank <https://en.wikipedia.org/wiki/PageRank>`_
 To illustrate the idea, consider the following diagram
 
 .. figure:: /_static/figures/web_graph.png
-   :scale: 60%
+   :width: 60%
 
 Imagine that this is a miniature version of the WWW, with
 

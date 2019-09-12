@@ -637,7 +637,7 @@ can easily simulate it, compute its stationary distribution and so on
 Here's the same information in a bar graph
 
 .. figure:: /_static/figures/finite_dp_simple_og.png
-   :scale: 80%
+   :width: 80%
 
 What happens if the agent is more patient?
 
