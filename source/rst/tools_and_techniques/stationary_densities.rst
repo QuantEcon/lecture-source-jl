@@ -1098,7 +1098,7 @@ series for one boxplot all at once.
 
     plots = []
     for i in 1:J
-        push!(plots, boxplot(x_labels[i], data[i], title = titles[i]))
+        push!(plots, boxplot(vec(x_labels[i]), vec(data[i]), title = titles[i]))
     end
     plot(plots..., layout = (J, 1), legend = :none, size = (800, 2000))
 
