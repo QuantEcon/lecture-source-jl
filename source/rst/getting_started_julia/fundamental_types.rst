@@ -1510,6 +1510,14 @@ into matrices and vectors, and directly use the equations for
 * Plot a histogram of these estimates for each variable
 
 
+Exercise 4
+--------------
+
+Redo Exercise 1 using the ``fixedpoint`` function from ``NLsolve`` :doc:`this lecture <julia_by_example>`
+
+Compare the number of iterations of the NLsolve's Anderson Acceleration to the handcoded iteration used in Exercise 1
+
+
 Solutions
 ==================
 
