@@ -18,7 +18,7 @@ We'll discuss a few of them here, such as
 
 * The Julia REPL, which has specialized modes for package management, shell commands, and help
 
-* A virtualized Docker setup which provides a painless pre-configured environment on your machine
+.. * A virtualized Docker setup which provides a painless pre-configured environment on your machine
 
 Note that we assume you've already completed the :doc:`getting started <../getting_started_julia/getting_started>` and :doc:`interacting with Julia <../getting_started_julia/julia_environment>` lectures
 
@@ -267,7 +267,7 @@ Other Features
 
 * The run symbol in the left sidebar (or ``Ctrl+Shift+Enter``) will run the whole file
 
-See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an exploration of features, and  the `FAQ <http://docs.junolab.org/latest/man/faq.html>`_ for more advanced steps (e.g. using with ``Docker``)
+See `basic usage <http://docs.junolab.org/latest/man/basic_usage.html>`_ for an exploration of features, and  the `FAQ <http://docs.junolab.org/latest/man/faq.html>`_ for more advanced steps 
 
 .. Docker Integration
 .. ----------------------
@@ -377,137 +377,131 @@ With this knowledge, we can explain the operation of the setup block
 .. literalinclude:: /_static/includes/deps_generic.jl
      :class: hide-output
 
-What this ``activate_github`` function does is
+What this ``github_project`` function does is activate (and if necessary, download, instantiate and precompile) a particular Julia environment
 
-#. Download the TOML from that repo to a directory called ``.projects``
+.. _docker_main:
 
-#. ``] activate`` that environment, and
+.. Docker
+.. ===========
 
-#. ``] instantiate`` and ``] precompile``, if necessary
+.. Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
 
-_docker_main:
+.. The advantage of a Docker-based workflow is that it's perfectly reproducible, and that setup (of Julia versions and dependencies, etc.) is handled upstream by the image maintainer
 
-Docker
-===========
+.. Here, we'll walk through the setup and installation steps, along with the main features of the ``quantecon/base`` Docker image
 
-Docker is a tool that lets you run preconfigured, lightweight environments as applications on your computer or in a computational cloud
+.. Setup
+.. -----------
 
-The advantage of a Docker-based workflow is that it's perfectly reproducible, and that setup (of Julia versions and dependencies, etc.) is handled upstream by the image maintainer
+.. * First, create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
 
-Here, we'll walk through the setup and installation steps, along with the main features of the ``quantecon/base`` Docker image
+.. * Next, download and install Docker for
 
-Setup
------------
+..     * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
+..     * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
 
-* First, create an account for `Docker Hub <https://hub.docker.com/>`_ and create a docker id
+.. **Note:** For Windows
 
-* Next, download and install Docker for
+..     * Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (**not Home or Mobile**)
 
-    * `Mac <https://store.docker.com/editions/community/docker-ce-desktop-mac>`_
-    * `Windows <https://store.docker.com/editions/community/docker-ce-desktop-windows>`_ - **do not** choose to use Windows containers
+..     * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
 
-**Note:** For Windows
+.. * Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run
 
-    * Hyper-V support should be enabled. For Windows 10 users, this means you must use a Pro, Enterprise, or Education version (**not Home or Mobile**)
+..     .. code-block:: none
 
-    * If you don't meet these requirements, the `Docker Toolbox for Windows <https://docs.docker.com/toolbox/toolbox_install_windows/>`_ may help
+..         docker pull hello-world
+..         docker run hello-world
 
-* Next, to verify that there are no obvious errors in the installation, open a terminal (macOS/Linux) or Powershell (Windows) and run
+.. You should see something like
 
-    .. code-block:: none
+.. .. figure:: /_static/figures/docker-hello-world.png
+..     :width: 100%
 
-        docker pull hello-world
-        docker run hello-world
+.. * Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
 
-You should see something like
+..     .. code-block:: none
 
-.. figure:: /_static/figures/docker-hello-world.png
-    :width: 100%
+..         docker pull quantecon/base
 
-* Then, download the QuantEcon Docker image by running the following in your terminal (this may take some time depending on your internet connection)
+.. * Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages
 
-    .. code-block:: none
+..     .. code-block:: none
 
-        docker pull quantecon/base
+..         docker volume rm quantecon
+..         docker volume create quantecon
 
-* Next, create a "data volume," or a hidden directory where Docker will persist any changes to your Julia packages
+.. The first line will delete any existing volume we had with that name
 
-    .. code-block:: none
+.. Usage
+.. ---------------------
 
-        docker volume rm quantecon
-        docker volume create quantecon
+.. The basic command is (Linux, OS/X)
 
-The first line will delete any existing volume we had with that name
+.. .. code-block:: none
 
-Usage
----------------------
+..     docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base
 
-The basic command is (Linux, OS/X)
+.. Or on Powershell on Windows
 
-.. code-block:: none
+.. .. code-block:: none
 
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v "$(pwd)":/home/jovyan/local quantecon/base
+..     docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
 
-Or on Powershell on Windows
+.. * The ``rm`` instructs Docker to delete the container on exit,
 
-.. code-block:: none
+.. * The ``PWD`` statement will mount the local directory (i.e., where the terminal is) to the Docker for exchanging files
 
-    docker run --rm -p 8888:8888 -v quantecon:/home/jovyan/.julia -v ${PWD}:/home/jovyan/local quantecon/base
+.. * The ``p`` flag is for browser access
 
-* The ``rm`` instructs Docker to delete the container on exit,
+.. * The ``quantecon:/home/jovyan/.julia`` mount is for persisting changes we make to the Julia user depot
 
-* The ``PWD`` statement will mount the local directory (i.e., where the terminal is) to the Docker for exchanging files
+.. You will see something like
 
-* The ``p`` flag is for browser access
+.. .. figure:: /_static/figures/docker-basic-command.png
+..     :width: 100%
 
-* The ``quantecon:/home/jovyan/.julia`` mount is for persisting changes we make to the Julia user depot
+.. In the output, you should see some text near that bottom that looks like
 
-You will see something like
+.. .. code-block:: none
 
-.. figure:: /_static/figures/docker-basic-command.png
-    :width: 100%
+..     127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b
 
-In the output, you should see some text near that bottom that looks like
+.. Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
 
-.. code-block:: none
+.. In a browser, go to a URL like the following
 
-    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b
+.. .. code-block:: none
 
-Copy the text after ``?token=`` (e.g. ``7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b``)
+..         http://127.0.0.1:8888/lab
 
-In a browser, go to a URL like the following
+.. To see something like
 
-.. code-block:: none
+.. .. figure:: /_static/figures/docker-jupyter-lab.png
+..     :width: 100%
 
-        http://127.0.0.1:8888/lab
+.. **Note**:
 
-To see something like
+.. * ``Ctrl+C`` is also the keyboard shortcut you use to kill the container, so be sure to copy using the mouse
+.. * When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
 
-.. figure:: /_static/figures/docker-jupyter-lab.png
-    :width: 100%
+.. Paste the text into ``Password or token:`` and choose ``Log in`` to get the full window
 
-**Note**:
+.. .. figure:: /_static/figures/docker-jlab-full.png
+..     :width: 100%
 
-* ``Ctrl+C`` is also the keyboard shortcut you use to kill the container, so be sure to copy using the mouse
-* When you call this command, Docker may require you to give it permissions to access the drive and the network.  If you do not see the output within 20 or so seconds, then look for confirmation windows which may be hidden behind the terminal/etc.
+.. We can see that some packages are already pre-installed for our use
 
-Paste the text into ``Password or token:`` and choose ``Log in`` to get the full window
+.. .. figure:: /_static/figures/docker-packages-preinstalled.png
+..     :width: 100%
 
-.. figure:: /_static/figures/docker-jlab-full.png
-    :width: 100%
+.. Maintenance and Troubleshooting
+.. ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We can see that some packages are already pre-installed for our use
+.. A few reminders
 
-.. figure:: /_static/figures/docker-packages-preinstalled.png
-    :width: 100%
-
-Maintenance and Troubleshooting
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-A few reminders
-
-* If you forget your token number, you may need to stop and restart the container
-* To stop the container, use ``Ctrl-C`` or type ``docker stop $(docker ps -aq)`` in a different terminal
-* To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
-* To clean unnecessary Docker assets from your system, run ``docker system prune``
-* If you can't log in, make sure you don't have an existing jupyter notebook occupying port 8888. To check, run ``jupyter notebook list`` and (if need be) ``jupyter notebook stop 8888``. If you have difficulties, see `this git issue <https://github.com/jupyter/notebook/issues/2844>`_
+.. * If you forget your token number, you may need to stop and restart the container
+.. * To stop the container, use ``Ctrl-C`` or type ``docker stop $(docker ps -aq)`` in a different terminal
+.. * To reset your Docker volume completely, redo the ``docker volume rm quantecon`` and ``docker volume create quantecon`` steps
+.. * To clean unnecessary Docker assets from your system, run ``docker system prune``
+.. * If you can't log in, make sure you don't have an existing jupyter notebook occupying port 8888. To check, run ``jupyter notebook list`` and (if need be) ``jupyter notebook stop 8888``. If you have difficulties, see `this git issue <https://github.com/jupyter/notebook/issues/2844>`_
