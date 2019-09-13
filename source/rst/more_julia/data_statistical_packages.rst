@@ -47,7 +47,7 @@ This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) o
 
 There are a few different ways to create a DataFrame
 
-onstructing and Accessing a DataFrame
+Constructing and Accessing a DataFrame
 -----------------------------------
 
 The first is to set up columns and construct a dataframe by assigning names
@@ -94,17 +94,19 @@ Named tuples can also be used to construct a ``DataFrame``, and have it properly
     df2 = DataFrame([nt])
     push!(df2, (t=2, col1 = 4.0))
 
-In order to modify a column, access the mutating version by the symbol `df[!, :col]`
+In order to modify a column, access the mutating version by the symbol ``df[!, :col]``
 
 .. code-block:: julia
 
     df[!, :price]
 
-Which allows modifications, as other mutating `!` functions in julia
+Which allows modifications, like other mutating ``!`` functions in julia
 
 .. code-block:: julia
 
     df[!, :price] *= 2.0  # double prices
+
+As discussed in the next section, note that the :ref:`fundamental types <missing>`, is propagated, i.e. ``missing * 2 === missing``
 
 Working with Missing
 -----------------------
