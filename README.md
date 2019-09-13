@@ -89,8 +89,6 @@ cd ../source/rst
 
 **This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia with step 3. to get back to the old sysimg. 
 
-**Note:** You may see a lot of warnings during this step. They can be safely ignored.
-
 Finally, go to the `source/rst` to continue
 ```bash
 cd ../source/rst
@@ -105,6 +103,9 @@ In the REPL, run
 ] activate .; instantiate; precompile
 ```
 This will take a long time to run.  You can safely ignore build errors for `Electron`
+ 
+**You may see a lot of warnings** during this step if you chose to use PackageCompiler acceleration above. They can be safely ignored.
+ 
  
 ### Building
 
