@@ -138,6 +138,7 @@ To open the WSL in VS Code
 - Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
 - Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 - Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
+- Consider adding the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for viewing the html from `_build/website/jupyter_html` files
 
 ### Options and Special Cases
 
