@@ -542,7 +542,7 @@ The ``while`` loop, like the ``for`` loop should only be used directly in Jupyte
 
 Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values
 
-The other new function is the ``println`` with the string interpolation, which splices the value of an expression or variable prefixed by ``$`` into a string
+The other new function is the ``println`` with the string interpolation, which splices the value of an expression or variable prefixed by \$ into a string
 
 An alternative approach is to use a ``for`` loop, and check for convergence in each iteration
 
