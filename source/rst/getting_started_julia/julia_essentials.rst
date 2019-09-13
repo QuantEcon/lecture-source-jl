@@ -379,7 +379,7 @@ They can be accessed via ``keys(d)`` and ``values(d)`` respectively
 
 
 **Note** Unlike in Python and some other dynamic languages, dictionaries
-are sometimes referred to as "the devil's datastructure"
+are rarely the right approach (ie. often referred to as "the devil's datastructure")
 
 The flexibility (i.e. can store anything and use anything as a key) frequently
 comes at the cost of performance if misused
@@ -1339,12 +1339,11 @@ Exercise 7
 
 Redo Exercise 5 except 
 
-1. Pass in a range instead of the ``a, b,`` and ``n``.  Create a range such as ``nodes = -1.0:0.5:1.0``
-2. Instead of the ``while`` used in the solution, find a better way to efficiently bracket the `x` in the nodes
+1. Pass in a range instead of the ``a, b,`` and ``n``.  Test with a range such as ``nodes = -1.0:0.5:1.0``
+2. Instead of the ``while`` used in the solution to Exercise 5, find a better way to efficiently bracket the ``x`` in the nodes
 
 Hints: 
-* Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should
-  be called as ``function linapprox(f, nodes, x)``
+* Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should be called as ``function linapprox(f, nodes, x)``
 * ``step(nodes), length(nodes), nodes[1]``, and ``nodes[end]`` may be useful
 * Type ``?÷`` into jupyter to explore quotients from Euclidean division for more efficient bracketing
 
