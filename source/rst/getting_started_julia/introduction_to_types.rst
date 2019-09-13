@@ -445,7 +445,7 @@ be unnecessarily constraining what is allowed
     b = 3
     c = [1.0, 2.0, 3.0]
     foo = Foo(a, b, c)
-    f(foo)   # call with the foo, no problem
+    @show f(foo)   # call with the foo, no problem
 
     # some other typed for the values
     a = 2   # not a floating point but `f()` would work
@@ -455,6 +455,7 @@ be unnecessarily constraining what is allowed
 
     # works with `NotTyped` version, but low performance
     foo_nt = FooNotTyped(a, b, c)
+    @show f(foo_nt);
 
 Declaring Parametric Types (Advanced)
 ----------------------------------------
@@ -476,6 +477,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
     b = 3
     c = [1.0, 2.0, 3.0]'    # transpose is not a `Vector` but `f()` would work
     foo = Foo3(a, b, c)
+    @show typeof(foo)
     f(foo)
 
 Of course, this is probably too flexible, and the ``f`` function might not work on an arbitrary set of ``a, b, c``
@@ -490,6 +492,8 @@ You could constrain the types based on the abstract parent type using the ``<:``
         c::T3  # should check dimensions as well
     end
     foo = Foo4(a, b, c)  # no problem, and high performance
+    @show typeof(foo)
+    f(foo)
 
 This ensures that
 
