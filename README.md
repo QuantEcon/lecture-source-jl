@@ -74,17 +74,30 @@ It's recommended that you install and precompile the packages used by the lectur
 
 #### (Optional, for Advanced Users) 
 
-To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), cd to `util` in the repo and run 
-
+To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl)
+```bash
+cd lecture-source-jl/util
+```
+Then
 ```bash 
 julia packagecompile.jl
 ```
+Finally, go to the `source/rst` to continue
+```bash
+cd ../source/rst
+```
 
-**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
+**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia with step 3. to get back to the old sysimg. 
 
-3. Close Julia and start a new Julia REPL. 
+Finally, go to the `source/rst` to continue
+```bash
+cd ../source/rst
+```
 
-Then (after you `cd` to the `source/rst` directory in the `lecture-source-jl` repo), still inside the Julia REPL, run
+3. Start a new REPL
+
+(If you didn't run the package compilation step, then `cd lecture-source-jl/source/rst`)
+In the REPL, run
 
 ```julia
 ] activate .; instantiate; precompile
