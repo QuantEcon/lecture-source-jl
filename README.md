@@ -18,7 +18,7 @@ See `LICENSE.md` for licensing and copyright information.
 ```bash
 cd
 sudo apt update
-sudo apt install make gcc
+sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
 ```
