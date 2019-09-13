@@ -47,7 +47,7 @@ This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) o
 
 There are a few different ways to create a DataFrame
 
-Constructing a DataFrame
+onstructing and Accessing a DataFrame
 -----------------------------------
 
 The first is to set up columns and construct a dataframe by assigning names
@@ -61,11 +61,7 @@ The first is to set up columns and construct a dataframe by assigning names
     last_price = [4.2, 11.3, 12.1, missing]
     df = DataFrame(commod = commodities, price = last_price)
 
-Columns of the ``DataFrame`` can be accessed by name using a symbol ``df[!, :col]`` or a struct-style ``df.col``, as below
-
-.. code-block:: julia
-
-    df[!, :price]
+Columns of the ``DataFrame`` can be accessed by name using ``df.col``, as below
 
 .. code-block:: julia
 
@@ -97,6 +93,18 @@ Named tuples can also be used to construct a ``DataFrame``, and have it properly
     nt = (t = 1, col1 = 3.0)
     df2 = DataFrame([nt])
     push!(df2, (t=2, col1 = 4.0))
+
+In order to modify a column, access the mutating version by the symbol `df[!, :col]`
+
+.. code-block:: julia
+
+    df[!, :price]
+
+Which allows modifications, as other mutating `!` functions in julia
+
+.. code-block:: julia
+
+    df[!, :price] *= 2.0  # double prices
 
 Working with Missing
 -----------------------
