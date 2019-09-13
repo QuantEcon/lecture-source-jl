@@ -1332,6 +1332,22 @@ Hints:
 
 * ``parse(Int, "100")`` converts the string ``"100"`` into an integer
 
+.. _pyess_ex7:
+
+Exercise 7
+------------
+
+Redo Exercise 5 except 
+
+1. Pass in a range instead of the ``a, b,`` and ``n``.  Create a range such as ``nodes = -1.0:0.5:1.0``
+2. Instead of the ``while`` used in the solution, find a better way to efficiently bracket the `x` in the nodes
+
+Hints: 
+* Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should
+  be called as ``function linapprox(f, nodes, x)``
+* ``step(nodes), length(nodes), nodes[1]``, and ``nodes[end]`` may be useful
+* Type ``?÷`` into jupyter to explore quotients from Euclidean division for more efficient bracketing
+
 
 Solutions
 ==========
