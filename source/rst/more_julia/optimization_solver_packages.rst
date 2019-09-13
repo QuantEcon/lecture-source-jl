@@ -78,7 +78,7 @@ To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
 .. math::
     \begin{array}{l|l}
     \text{Operations to compute value} &
-    \text{Operations to compute $\frac{\partial f(x_1,x_2)}{\partial x_1}$}
+    \text{Operations to compute} \frac{\partial f(x_1,x_2)}{\partial x_1}
     \\
     \hline
     w_1 = x_1 &
