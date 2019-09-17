@@ -16,5 +16,5 @@ If we are making changes to the HTML that are only cosmetic, then no need to dep
 
 7. Push your changes to github and dockerhub.
 
-8. Run `make lectures-julia-live` in the AWS admin repo when you're ready to go live. Run `reset-servers.sh` in the vse-jupyterhub repo on the syzygy when you're ready to make the switch. Also run `sudo docker system prune` to nuke old (now untagged images.)
+8. Run `make lectures-julia-live` in the AWS admin repo when you're ready to go live. Run `reset-servers.sh` in the vse-jupyterhub repo on the syzygy when you're ready to let people use it again. Also run `sudo docker system prune` to nuke old (now untagged images.)
 
