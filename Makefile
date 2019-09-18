@@ -9,6 +9,7 @@ SOURCEDIR     = source/rst
 BUILDDIR      = _build
 BUILDWEBSITE  = _build/website
 BUILDCOVERAGE = _build/coverage
+BUILDPDF      = _build/pdf
 FILES         = 
 
 # Put it first so that "make" without argument is like "make help".
@@ -38,6 +39,9 @@ clean-coverage:
 clean-website:
 	rm -rf $(BUILDWEBSITE)
 
+clean-pdf:
+	rm -rf $(BUILDPDF)
+
 coverage:
 ifneq ($(strip $(parallel)),)
 	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDCOVERAGE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_coverage=1 -D jupyter_execute_notebooks=1 -D jupyter_drop_tests=0 -D jupyter_ignore_skip_test=0 -D jupyter_template_coverage_file_path="error_report_template.html" -D jupyter_number_workers=$(parallel)
@@ -51,6 +55,14 @@ ifneq ($(strip $(parallel)),)
 
 else
 	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDWEBSITE)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_make_site=1 -D jupyter_generate_html=1 -D jupyter_download_nb=1 -D jupyter_execute_notebooks=1 -D jupyter_target_html=1 -D jupyter_download_nb_image_urlpath="https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/" -D jupyter_images_markdown=0 -D jupyter_html_template="julia.tpl" -D jupyter_download_nb_urlpath="https://lectures.quantecon.org/" -D jupyter_coverage_dir=$(BUILDCOVERAGE)
+endif
+
+pdf:
+ifneq ($(strip $(parallel)),)
+	@$(SPHINXBUILD) -M jupyterpdf "$(SOURCEDIR)" "$(BUILDPDF)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_latex_template="theme/templates/latex.tpl" -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1 -D jupyter_target_pdf=1 -D jupyter_number_workers=$(parallel)
+
+else
+	@$(SPHINXBUILD) -M jupyterpdf "$(SOURCEDIR)" "$(BUILDPDF)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_latex_template="theme/templates/latex.tpl" -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1 -D jupyter_target_pdf=1
 endif
 
 notebooks:
