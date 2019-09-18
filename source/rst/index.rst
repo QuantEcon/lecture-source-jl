@@ -35,6 +35,7 @@
     :maxdepth: 2
     :titlesonly:
 
+    about
     getting_started_julia/index
     more_julia/index
     tools_and_techniques/index
