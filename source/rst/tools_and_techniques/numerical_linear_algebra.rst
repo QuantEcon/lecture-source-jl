@@ -266,6 +266,8 @@ This system is especially easy to solve using `back-substitution <https://en.wik
 
 A ``LowerTriangular`` has similar properties and can be solved with forward-substitution.  For these matrices, no further matrix factorization is needed.
 
+The computational order of back-substitution and forward-substitution is :math:`O(N^2)` for dense matrices.
+
 A Warning on Matrix Multiplication
 -----------------------------------
 
@@ -297,7 +299,7 @@ But the multiplication is fully dense (e.g. think of a cholesky multiplied by it
 
     L * U
 
-On the other hand, a tridiagonal times a diagonal is still a tridiagonal
+On the other hand, a tridiagonal times a diagonal is still a tridiagonal and :math:`O(N^2)`
 
 .. code-block:: julia
 
@@ -317,6 +319,10 @@ LU Decomposition
 
 For a general dense matrix without any other structure (i.e. not known to be symmetric, tridiagonal, etc.) the standard approach is to
 factor the matrix iin order to exploit the speed of backward and forward substitution to complete the solution.
+
+The computational order of LU decomposition for a dense matrix is :math:`O(N^3)` - the same as Gaussian elimination, but it tends
+to have a better constant term than others (e.g. half the number of operations of the QR).  For structured matrices
+or sparse ones, that order drops.
 
 The :math:`LU` decompositions finds a lower triangular :math:`L` and upper triangular :math:`U` such that :math:`L U = A`.
 
@@ -366,8 +372,10 @@ problem into two sub-problems.
 
 .. math::
 
-    L y = b
-    U x = y
+    \begin{aligned}
+    L y &= b\\
+    U x &= y
+    \end{aligned}
 
 To demonstrate this, we can solve it by first using
 
@@ -389,7 +397,8 @@ The LU decomposition also has specialized algorithms for structured matrices, su
     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
     factorize(A) |> typeof
 
-This factorization is the key to the performance of the ``A \ b``
+This factorization is the key to the performance of the ``A \ b`` in this case.  For Tridiagonal matrices, the
+LU decomposition is :math:`O(N^2)`.
 
 Finally, just as a dense matrix without any structure will tend to use a LU decomposition to solve systems,
 so will a sparse matrix
@@ -403,6 +412,8 @@ so will a sparse matrix
 
     benchmark_solve(A, b)
     benchmark_solve(A_sparse, b);
+
+With sparsity, the computational order is related to the number of non-zeros rather than the size of the matrix itself.
 
 Cholesky Decomposition
 -----------------------
@@ -435,17 +446,18 @@ Benchmarking,
 .. code-block:: julia
 
     b = rand(N)
+    cholesky(A) \ b  # use the factorization to solve
+
     benchmark_solve(A, b)
     benchmark_solve(A_dense, b)
     @btime cholesky($A, check=false) \ $b;
 
-Calculating the QR Decomposition
-==================================
+QR Decomposition
+================
 
 :ref:`Previously <qr_decomposition>` , we learned about applications of the QR application to solving the linear least squares.
 
-While in principle, the solution to least-squares is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes very dense and inverse are
- rarely a good idea.  
+While in principle, the solution to least-squares is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes very dense and inverse are rarely a good idea.  
 
 The QR decomposition is a decomposition :math:`A = Q R` where :math:`Q` is an orthogonal matrix (i.e. :math:`Q'Q = Q Q' = I`) and :math:`R` is
 a upper triangular matrix.
@@ -488,7 +500,32 @@ In some cases, if an LU is not available for a particular matrix structure, the 
 can also be used to solve systems of equations (i.e. not just LLS).  This tends to be about 2x slower than the LU,
 but is of the same computational order.
 
-To see this,
+Deriving the approach, where we can now use inverse since the system is square and we assumed :math:`A` was non-singular
+
+.. math::
+
+    \begin{aligned}
+    A x &= b\\
+    Q R x &= b\\
+    Q^{-1} Q R x &= Q^{-1} b\\
+    R x &= Q' b
+    \end{aligned}
+
+Where the last step uses that :math:`Q^{-1} = Q'` for orthogonal matrix.
+
+Given the decomposition, the solution for dense matrices is of computational
+order :math:`O(N^2)`.  To see this, look at the order of each operation.
+
+- Since :math:`R` is upper-triangular matrix, it can be solved quickly through back substitution with computational order :math:`O(N^2)`
+- A transpose operation is of order :math:`O(N^2)`
+- A matrix-vector product is also :math:`O(N^2)`
+
+In all cases, the order would drop depending on the sparsity pattern of the
+matrix (and corresponding decomposition).  A key benefit of a QR decomposition is that it tends to
+maintain sparsity.
+
+Without implementing the full process, you can form a QR
+factorization with ``qr`` and then use it to solve a system
 
 .. code-block:: julia
 
@@ -500,3 +537,41 @@ To see this,
 
 Banded Matrices
 ===============
+
+A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and the also the first super-diagonal (i.e. above the main diagonal).
+
+This is a special case of a more general type called a banded matrix, where the number of sub and super-diagonals are more general.  The 
+total width of sub- and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
+
+A :math:`N \times N` banded matrix with bandwidth :math:`P` has about :math:`N P` nonzeros in its sparsity pattern.
+
+These can be created directly as a dense matrix with ``diagm``
+
+.. code-block:: julia
+
+    diagm(1 => [1,2,3], -1 => [4,5])
+
+Or as a sparse matrix,
+
+.. code-block:: julia
+
+    spdiagm(1 => [1,2,3], -1 => [4,5])
+
+Creating a simple banded matrix, using `BandedMatrices.jl <https://github.com/JuliaMatrices/BandedMatrices.jl>`_ 
+
+.. code-block:: julia
+
+    using BandedMatrices
+    BandedMatrix(-1=> 1:5, 2=>1:3)     # creates a 5 x 5 banded matrix version of diagm(-1=> 1:5, 2=>1:3)
+
+There is also a convenience function for generating random banded matrices
+
+.. code-block:: julia
+
+    brand(7, 7, 3, 1)  # 3 subdiagonals, 1 subdiagonal
+
+And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the :math:`O(N P_L P_U)` for upper and lower bandwidths :math:`P`
+
+.. code-block:: julia
+
+    A \ rand(7)
