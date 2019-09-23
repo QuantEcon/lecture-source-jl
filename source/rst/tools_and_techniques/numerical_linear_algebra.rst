@@ -21,7 +21,7 @@ discuss how it can be exploited to radically increase the performance of solving
 
 We build on :doc:`linear algebra <linear_algebra>` and :doc:`orthogonal projections <orth_proj>`.
 
-The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems.  In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach with iterative algorithms, and generalized the matrices as linear operators.
+The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems.  In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach with iterative algorithms, and generalized the matrices as linear operators.y
 
 The list of specialized packages for these tasks is enormous and growing, but some of the important organizations to
 look at are `JuliaMatrices <https://github.com/JuliaMatrices>`_ , `JuliaSparse <https://github.com/JuliaSparse>`_, and `JuliaMath <https://github.com/JuliaMath>`_
@@ -465,8 +465,11 @@ For Julia, the ``\`` operator will solve this problem whenever the given ``A`` i
 
     N = 10
     M = 3
+    x_true = rand(3)
 
-    x = A \ b;
+    A = rand(N,M) .+ randn(N)
+    b = rand(N)
+    x = A \ b
 
 To manually use the QR decomposition: **Note** the real code would be more subtle
 
