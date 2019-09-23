@@ -1303,25 +1303,24 @@ To evaluate the function
 .. math::
    :nowrap:
 
-   \begin{align}
+   \begin{aligned}
    v(x) &=  -(Ax+ B u)'P(Ax+Bu) - u'Q u \\
    &= -(x'A' + u'B')P(Ax+Bu) - u'Q u \\
    &= - x'A'PAx - u'B'PAx - x'A'PBu - u'B'PBu - u'Qu \\
    &= - x'A'PAx - 2u'B'PAx - u'(Q + B'PB) u
-   \end{align}
+   \end{aligned}
 
-For simplicity, denote by :math:`S := (Q + B'PB)^{-1} B'PA`, then $ u =
--Sx$.
+For simplicity, denote by :math:`S := (Q + B'PB)^{-1} B'PA`, then :math:`u = -Sx`.
 
 Regarding the second term :math:`- 2u'B'PAx`,
 
 .. math::
    :nowrap:
 
-   \begin{align}
+   \begin{aligned}
    - 2u'B'PAx &= -2 x'S'B'PAx  \\
    & = 2 x'A'PB( Q + B'PB)^{-1} B'PAx
-   \end{align}
+   \end{aligned}
 
 Notice that the term :math:`(Q + B'PB)^{-1}` is symmetric as both P and Q
 are symmetric.
@@ -1331,10 +1330,10 @@ Regarding the third term :math:`- u'(Q + B'PB) u`,
 .. math::
    :nowrap:
 
-   \begin{align}
+   \begin{aligned}
    - u'(Q + B'PB) u &= - x'S' (Q + B'PB)Sx \\
    &= -x'A'PB(Q + B'PB)^{-1}B'PAx
-   \end{align}
+   \end{aligned}
 
 Hence, the summation of second and third terms is
 :math:`x'A'PB(Q + B'PB)^{-1}B'PAx`.
@@ -1344,11 +1343,11 @@ This implies that
 .. math::
    :nowrap:
 
-   \begin{align}
+   \begin{aligned}
     v(x) &= - x'A'PAx - 2u'B'PAx - u'(Q + B'PB) u\\
     &= - x'A'PAx + x'A'PB(Q + B'PB)^{-1}B'PAx \\
     &= -x'[A'PA - A'PB(Q + B'PB)^{-1}B'PA] x
-   \end{align}
+   \end{aligned}
 
 Therefore, the solution to the optimization problem
 :math:`v(x) = -x' \tilde{P}x` follows the above result by denoting
