@@ -3,9 +3,9 @@
 .. include:: /_static/includes/header.raw
 
 
-*****************************************
-Numerical Methods for Linear Algebra
-*****************************************
+*******************************************
+Direct Numerical Methods for Linear Algebra
+*******************************************
 
 .. contents:: :depth: 2
 
@@ -17,10 +17,11 @@ Overview
 ============
 
 In particular, we will examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
-discuss how it can be exploited to radically increase the performance of solving the problems.  We build on :doc:`linear algebra <linear_algebra>` and :doc:`orthogonal projections <orth_proj>`.
+discuss how it can be exploited to radically increase the performance of solving the problems.  
 
-In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we take this even
-further, and look at methods for large problems where matrices are generalized as linear operators that don't require literal storage as a matrix.
+We build on :doc:`linear algebra <linear_algebra>` and :doc:`orthogonal projections <orth_proj>`.
+
+The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems.  In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach with iterative algorithms, and generalized the matrices as linear operators.
 
 The list of specialized packages for these tasks is enormous and growing, but some of the important organizations to
 look at are `JuliaMatrices <https://github.com/JuliaMatrices>`_ , `JuliaSparse <https://github.com/JuliaSparse>`_, and `JuliaMath <https://github.com/JuliaMath>`_
@@ -423,13 +424,13 @@ As always, symmetry allows specialized algorithms.
     factorize(A) |> typeof
 
 Here, the :math:`A` decomposition is `Bunch-Kaufman <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#LinearAlgebra.bunchkaufman>`_ rather than a 
-Cholesky, because Julia doesn't know the matrix is positive definite.  We can manually factorize with a cholesky instead
+Cholesky, because Julia doesn't know the matrix is positive definite.  We can manually factorize with a cholesky,
 
 .. code-block:: julia
 
     cholesky(A) |> typeof
 
-Benchmarking the alternatives
+Benchmarking,
 
 .. code-block:: julia
 
@@ -441,4 +442,58 @@ Benchmarking the alternatives
 Calculating the QR Decomposition
 ==================================
 
-:ref:`Previously <qr_decomposition>` , we learned about applications of the QR
+:ref:`Previously <qr_decomposition>` , we learned about applications of the QR application to solving the linear least squares.
+
+While in principle, the solution to least-squares is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes very dense and inverse are
+ rarely a good idea.  
+
+The QR decomposition is a decomposition :math:`A = Q R` where :math:`Q` is an orthogonal matrix (i.e. :math:`Q'Q = Q Q' = I`) and :math:`R` is
+a upper triangular matrix.
+
+Given the  :ref:`previous derivation <qr_decomposition>` we showed that the, given the decomposition, we can write the least squares problem as
+the solution to
+
+.. math::
+
+    R x = Q' b
+
+Where, as discussed above, the upper-triangular structure of :math:`R` can be solved easily with back substitution.
+
+For Julia, the ``\`` operator will solve this problem whenever the given ``A`` is rectangular
+
+.. code-block:: julia
+
+    N = 10
+    M = 3
+
+    x = A \ b;
+
+To manually use the QR decomposition: **Note** the real code would be more subtle
+
+.. code-block:: julia
+
+    Af = qr(A)
+    Q = Af.Q
+    R = [Af.R; zeros(N - M, M)] # Stack with zeros
+    @show Q * R ≈ A
+    x = R \ Q'*b  # the QR way
+
+This stacks the ``R`` with zeros to multiple, but the more specialized algorithm would not multiply directly
+in that way.
+
+In some cases, if an LU is not available for a particular matrix structure, the QR factorization
+can also be used to solve systems of equations (i.e. not just LLS).  This tends to be about 2x slower than the LU,
+but is of the same computational order.
+
+To see this,
+
+.. code-block:: julia
+
+    N = 5
+    A = rand(N,N)
+    b = rand(N)
+    @show A \ b
+    @show qr(A) \ b;   
+
+Banded Matrices
+===============
