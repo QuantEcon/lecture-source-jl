@@ -1,67 +1,67 @@
-.. computational-economics documentation master file
+.. _index:
 
-.. only:: html
-
-    ****
-    Home
-    ****
-
-.. only:: latex
-
-    Quantitative Economics
-    ======================
-
-.. COMMENT: Link for Python Specific Badge <p id="jl_percentage"><a href="/status.html"></a></p>
-
-.. raw:: html
-
-    <p id="numfocus_badge"><a href="https://www.numfocus.org/"><img src="/_static/img/powered-by-NumFOCUS-orange.svg" alt="Powered by NumFOCUS logo"></a></p>
-
-.. only:: html
-
-    Table of Contents
-    *****************
-
-.. raw:: html
-
-    <ul class="index-tabs">
-        <li class="active"><a href="/jl/">All</a></li>
-        <li><a href="/jl/index_undergrad.html">Undergraduate course</a></li>
-        <li><a href="/jl/index_postgrad.html">Graduate course</a></li>
-    </ul>
-
-
-.. toctree::
-    :maxdepth: 2
-    :titlesonly:
-
-    about
-    getting_started_julia/index
-    more_julia/index
-    tools_and_techniques/index
-    dynamic_programming/index
-    multi_agent_models/index
-    time_series_models/index
-    dynamic_programming_squared/index
-    zreferences
-
+**********************************
+Quantitative Economics with Julia
+**********************************
 
 .. toctree::
     :hidden:
 
-    index_undergrad
-    index_postgrad
+    index_toc
 
-|
 
-.. image:: /_static/banner.png
-    :width: 30%
-    :align: center
+.. raw:: html
 
-.. only:: latex
+    <div><style type="text/css">h1,.breadcrumbs{display:none;}</style></div>
+    <h1 class="sr-only" style="display:block;">Quantitative Economics with Python</h1>
+    <div class="home-blurb">
+        <div class="desc">
+            <p>This website presents a series of lectures on quantitative economic modeling, designed and written by <a href="http://jesseperla.com/" target="_blank">Jesse Perla</a>, <a href="http://www.tomsargent.com" target="_blank">Thomas J. Sargent</a> and <a href="http://johnstachurski.net" target="_blank">John Stachurski</a>.</p>
+            <p>This website provides a hands on instruction manual, with all code written in modern, open source programming languages.</p>
+            <p>This is one of a <a href="https://lectures.quantecon.org/">series of lectures</a> by <a href="#">QuantEcon</a>.</p>
+        </div>
+        <ul class="sponsor">
+            <li><a href="http://www.sloan.org/" title="Alfred P. Sloan Foundation"><img src="/_static/sloan_logo.png" alt="Sponsored by the Alfred P. Sloan Foundation"></a></li>
+            <li><a href="https://quantecon.org/"><img src="/_static/img/qe-logo.png" width="150"></a></li>
+        </ul>
+    </div>
+    <div class="home-versions">
+        <h2 class="sr-only">Get Started</h2>
+        <ul>
+            <li>
+                <a href="/index_toc.html">
+                    <i class="fas fa-globe"></i>
+                    <h3>Web Version</h3>
+                    <p>The recommended way to read the lectures</p>
+                </a>
+            </li>
+            <li>
+                <a href="/_downloads/pdf/quantitative_economics_with_julia.pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3>PDF Version</h3>
+                    <p>A print-ready version for viewing offline</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="home-alternatives">
+        <h3>Other ways to access the lectures</h3>
+        <ul>
+            <li>
+                <a href="https://github.com/QuantEcon/quantecon-notebooks-julia">
+                    <i class="fas fa-file-download"></i>
+                    <h3>Notebooks</h3>
+                    <p>Get the full set of Jupyter notebooks</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/QuantEcon/lecture-source-jl">
+                    <i class="fab fa-github"></i>
+                    <h3>GitHub Repository</h3>
+                    <p>Edit the source files or report an issue</p>
+                </a>
+            </li>
+        </ul>
+    </div>
 
-    Acknowledgements:  These lectures have benefitted greatly from comments and
-    suggestion from our colleagues, students and friends.  Special thanks go to
-    Anmol Bhandari, Long Bui, Jeong-Hun Choi, Chase Coleman, David Evans, Shunsuke Hori,
-    Chenghan Hou, Doc-Jin Jang, Spencer Lyon, Qingyin Ma, Akira Matsushita,
-    Matthew McKay, Tomohito Okabe, Alex Olssen, Nathan Palmer and Yixiao Zhou.
+

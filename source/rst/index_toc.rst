@@ -1,3 +1,4 @@
+.. _toc:
 
 .. raw:: html
 
@@ -5,33 +6,46 @@
 
 .. only:: html
 
-    Table of Contents (Graduate course)
-    ***********************************
+    Table of Contents
+    *****************
 
 .. raw:: html
 
     <ul class="index-tabs">
-        <li><a href="/index_toc.html">All</a></li>
+        <li class="active"><a href="/index_toc.html">All</a></li>
         <li><a href="/index_undergrad.html">Undergraduate course</a></li>
-        <li class="active"><a href="/index_postgrad.html">Graduate course</a></li>
+        <li><a href="/index_postgrad.html">Graduate course</a></li>
     </ul>
+
 
 .. toctree::
     :maxdepth: 2
     :titlesonly:
 
-
     about_lectures
     getting_started_julia/index
     more_julia/index
-    tools_and_techniques/index_grad
-    dynamic_programming/index_grad
-    multi_agent_models/index_grad
-    time_series_models/index_grad
+    tools_and_techniques/index
+    dynamic_programming/index
+    multi_agent_models/index
+    time_series_models/index
+    dynamic_programming_squared/index
     zreferences
 
 
-.. image:: http://assets.quantecon.org/img/banner.png
+.. toctree::
+    :hidden:
+
+    index_undergrad
+    index_postgrad
+    404
+    search
+    status
+    troubleshooting
+
+|
+
+.. image:: /_static/banner.png
     :width: 30%
     :align: center
 
