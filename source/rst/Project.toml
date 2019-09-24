@@ -3,9 +3,11 @@ authors = ["arnavs <me@arnavsood.com>"]
 version = "0.3.0"
 
 [deps]
+ApproxFun = "28f2ccd6-bb30-5033-b560-165f7b14dc2f"
 BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 BlackBoxOptim = "a134a8b2-14d6-55f6-9291-3336d3ab0209"
+BlockBandedMatrices = "ffab5731-97b5-5995-9138-79e8c1846df0"
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
