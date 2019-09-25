@@ -18,18 +18,18 @@ Job Search IV: Modeling Career Choice
 Overview
 ============
 
-Next we study a computational problem concerning career and job choices
+Next we study a computational problem concerning career and job choices.
 
-The model is originally due to Derek Neal :cite:`Neal1999`
+The model is originally due to Derek Neal :cite:`Neal1999`.
 
-This exposition draws on the presentation in :cite:`Ljungqvist2012`, section 6.5
+This exposition draws on the presentation in :cite:`Ljungqvist2012`, section 6.5.
 
 Model features
 ----------------
 
-* Career and job within career both chosen to maximize expected discounted wage flow
+* Career and job within career both chosen to maximize expected discounted wage flow.
 
-* Infinite horizon dynamic programming with two state variables
+* Infinite horizon dynamic programming with two state variables.
 
 
 Setup
@@ -74,9 +74,9 @@ past values, with
 * :math:`\epsilon_t \sim G`
 
 Notice that the worker does not have the option to retain a job but redraw
-a career --- starting a new career always requires starting a new job
+a career --- starting a new career always requires starting a new job.
 
-A young worker aims to maximize the expected sum of discounted wages
+A young worker aims to maximize the expected sum of discounted wages.
 
 .. math::
     :label: exw
@@ -84,11 +84,11 @@ A young worker aims to maximize the expected sum of discounted wages
     \mathbb{E} \sum_{t=0}^{\infty} \beta^t w_t
 
 
-subject to the choice restrictions specified above
+subject to the choice restrictions specified above.
 
 Let :math:`V(\theta, \epsilon)` denote the value function, which is the
 maximum of :eq:`exw` over all feasible (career, job) policies, given the
-initial state :math:`(\theta, \epsilon)`
+initial state :math:`(\theta, \epsilon)`.
 
 The value function obeys
 
@@ -109,7 +109,7 @@ where
     \end{aligned}
 
 
-Evidently :math:`I`, :math:`II` and :math:`III` correspond to "stay put", "new job" and "new life", respectively
+Evidently :math:`I`, :math:`II` and :math:`III` correspond to "stay put", "new job" and "new life", respectively.
 
 Parameterization
 ------------------
@@ -122,7 +122,7 @@ As in :cite:`Ljungqvist2012`, section 6.5, we will focus on a discrete version o
 * :math:`\beta = 0.95`
 
 The distributions :math:`F` and :math:`G` are discrete distributions
-generating draws from the grid points ``linspace(0, B, N)``
+generating draws from the grid points ``linspace(0, B, N)``.
 
 A very useful family of discrete distributions is the Beta-binomial family,
 with probability mass function
@@ -145,7 +145,7 @@ Nice properties:
 * very flexible class of distributions, including uniform, symmetric unimodal, etc.
 * only three parameters
 
-Here's a figure showing the effect of different shape parameters when :math:`n=50`
+Here's a figure showing the effect of different shape parameters when :math:`n=50`.
 
 
 .. _beta-binom:
@@ -264,14 +264,14 @@ The code defines
     * implements the Bellman operator :math:`T`
 
 In this model, :math:`T` is defined by :math:`Tv(\theta, \epsilon) = \max\{I, II, III\}`, where
-:math:`I`, :math:`II` and :math:`III` are as given in :eq:`eyes`, replacing :math:`V` with :math:`v`
+:math:`I`, :math:`II` and :math:`III` are as given in :eq:`eyes`, replacing :math:`V` with :math:`v`.
 
-The default probability distributions in ``CareerWorkerProblem`` correspond to discrete uniform distributions (see :ref:`the Beta-binomial figure <beta-binom>`)
+The default probability distributions in ``CareerWorkerProblem`` correspond to discrete uniform distributions (see :ref:`the Beta-binomial figure <beta-binom>`).
 
 In fact all our default settings correspond to the version studied in :cite:`Ljungqvist2012`, section 6.5.
 
 Hence we can reproduce figures 6.5.1 and 6.5.2 shown there, which exhibit the
-value function and optimal policy respectively
+value function and optimal policy respectively.
 
 Here's the value function
 
@@ -286,7 +286,7 @@ Here's the value function
   plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
        seriescolor=:plasma, gridalpha = 1)
 
-The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code)
+The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_ex3>` for code).
 
 
 .. _career_opt_pol:
@@ -298,19 +298,19 @@ The optimal policy can be represented as follows (see :ref:`Exercise 3 <career_e
 
 Interpretation:
 
-* If both job and career are poor or mediocre, the worker will experiment with new job and new career
+* If both job and career are poor or mediocre, the worker will experiment with new job and new career.
 
-* If career is sufficiently good, the worker will hold it and experiment with new jobs until a sufficiently good one is found
+* If career is sufficiently good, the worker will hold it and experiment with new jobs until a sufficiently good one is found.
 
-* If both job and career are good, the worker will stay put
+* If both job and career are good, the worker will stay put.
 
 
-Notice that the worker will always hold on to a sufficiently good career, but not necessarily hold on to even the best paying job
+Notice that the worker will always hold on to a sufficiently good career, but not necessarily hold on to even the best paying job.
 
 The reason is that high lifetime wages require both variables to be large, and
-the worker cannot change careers without changing jobs
+the worker cannot change careers without changing jobs.
 
-* Sometimes a good job must be sacrificed in order to change to a better career
+* Sometimes a good job must be sacrificed in order to change to a better career.
 
 Exercises
 =============
@@ -322,14 +322,14 @@ Exercise 1
 
 Using the default parameterization in the ``CareerWorkerProblem``,
 generate and plot typical sample paths for :math:`\theta` and :math:`\epsilon`
-when the worker follows the optimal policy
+when the worker follows the optimal policy.
 
 In particular, modulo randomness, reproduce the following figure (where the horizontal axis represents time)
 
 .. figure:: /_static/figures/career_solutions_ex1_jl.png
    :width: 100%
 
-Hint: To generate the draws from the distributions :math:`F` and :math:`G`, use the type `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_
+Hint: To generate the draws from the distributions :math:`F` and :math:`G`, use the type `DiscreteRV <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl>`_.
 
 
 .. _career_ex2:
@@ -338,7 +338,7 @@ Exercise 2
 ----------------
 
 Let's now consider how long it takes for the worker to settle down to a
-permanent job, given a starting point of :math:`(\theta, \epsilon) = (0, 0)`
+permanent job, given a starting point of :math:`(\theta, \epsilon) = (0, 0)`.
 
 In other words, we want to study the distribution of the random variable
 
@@ -348,7 +348,7 @@ In other words, we want to study the distribution of the random variable
 
 
 Evidently, the worker's job becomes permanent if and only if :math:`(\theta_t, \epsilon_t)` enters the
-"stay put" region of :math:`(\theta, \epsilon)` space
+"stay put" region of :math:`(\theta, \epsilon)` space.
 
 Letting :math:`S` denote this region, :math:`T^*` can be expressed as the
 first passage time to :math:`S` under the optimal policy:
@@ -358,9 +358,9 @@ first passage time to :math:`S` under the optimal policy:
     T^* := \inf\{t \geq 0 \,|\, (\theta_t, \epsilon_t) \in S\}
 
 
-Collect 25,000 draws of this random variable and compute the median (which should be about 7)
+Collect 25,000 draws of this random variable and compute the median (which should be about 7).
 
-Repeat the exercise with :math:`\beta=0.99` and interpret the change
+Repeat the exercise with :math:`\beta=0.99` and interpret the change.
 
 
 .. _career_ex3:
@@ -368,7 +368,7 @@ Repeat the exercise with :math:`\beta=0.99` and interpret the change
 Exercise 3
 ----------------
 
-As best you can, reproduce :ref:`the figure showing the optimal policy <career_opt_pol>`
+As best you can, reproduce :ref:`the figure showing the optimal policy <career_opt_pol>`.
 
 Hint: The ``get_greedy()`` method returns a representation of the optimal
 policy where values 1, 2 and 3 correspond to "stay put", "new job" and "new life" respectively. Use this and the plots functions (e.g., ``contour, contour!``) to produce the different shadings.
@@ -475,9 +475,9 @@ The median for the original parameterization can be computed as follows
   end
 
 
-To compute the median with :math:`\beta=0.99` instead of the default value :math:`\beta=0.95`, replace ``wp=CareerWorkerProblem()`` with ``wp=CareerWorkerProblem(β=0.99)``
+To compute the median with :math:`\beta=0.99` instead of the default value :math:`\beta=0.95`, replace ``wp=CareerWorkerProblem()`` with ``wp=CareerWorkerProblem(β=0.99)``.
 
-The medians are subject to randomness, but should be about 7 and 14 respectively. Not surprisingly, more patient workers will wait longer to settle down to their final job
+The medians are subject to randomness, but should be about 7 and 14 respectively. Not surprisingly, more patient workers will wait longer to settle down to their final job.
 
 .. code-block:: julia
 
@@ -541,4 +541,4 @@ Now, we need only swap out for the new parameters
 You will see that the region for which the worker
 will stay put has grown because the distribution for :math:`\epsilon`
 has become more concentrated around the mean, making high-paying jobs
-less realistic
+less realistic.
