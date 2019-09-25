@@ -21,7 +21,7 @@ Job Search I: The McCall Search Model
 Overview
 ============
 
-The McCall search model :cite:`McCall1970` helped transform economists' way of thinking about labor markets
+The McCall search model :cite:`McCall1970` helped transform economists' way of thinking about labor markets.
 
 To clarify vague notions such as "involuntary" unemployment, McCall modeled the decision problem of unemployed agents directly, in terms of factors such as
 
@@ -31,11 +31,11 @@ To clarify vague notions such as "involuntary" unemployment, McCall modeled the 
 
 *  unemployment compensation
 
-To solve the decision problem he used dynamic programming
+To solve the decision problem he used dynamic programming.
 
-Here we set up McCall's model and adopt the same solution method
+Here we set up McCall's model and adopt the same solution method.
 
-As we'll see, McCall's model is not only interesting in its own right but also an excellent vehicle for learning dynamic programming
+As we'll see, McCall's model is not only interesting in its own right but also an excellent vehicle for learning dynamic programming.
 
 The McCall Model
 =================
@@ -43,26 +43,26 @@ The McCall Model
 .. index::
     single: Models; McCall
 
-An unemployed worker receives in each period a job offer at wage :math:`W_t`
+An unemployed worker receives in each period a job offer at wage :math:`W_t`.
 
 At time :math:`t`, our worker has two choices:
 
-#. Accept the offer and work permanently at constant wage :math:`W_t`
+#. Accept the offer and work permanently at constant wage :math:`W_t`.
 
-#. Reject the offer, receive unemployment compensation :math:`c`, and reconsider next period
+#. Reject the offer, receive unemployment compensation :math:`c`, and reconsider next period.
 
-The wage sequence :math:`\{W_t\}` is assumed to be iid with probability mass function :math:`p_1, \ldots, p_n`
+The wage sequence :math:`\{W_t\}` is assumed to be iid with probability mass function :math:`p_1, \ldots, p_n`.
 
-Here :math:`p_i` is the probability of observing wage offer :math:`W_t = w_i` in the set :math:`w_1, \ldots, w_n`
+Here :math:`p_i` is the probability of observing wage offer :math:`W_t = w_i` in the set :math:`w_1, \ldots, w_n`.
 
-The worker is infinitely lived and aims to maximize the expected discounted sum of earnings
+The worker is infinitely lived and aims to maximize the expected discounted sum of earnings.
 
 .. math::
     \mathbb{E} \sum_{t=0}^{\infty} \beta^t Y_t
 
-The constant :math:`\beta` lies in :math:`(0, 1)` and is called a **discount factor**
+The constant :math:`\beta` lies in :math:`(0, 1)` and is called a **discount factor**.
 
-The smaller is :math:`\beta`, the more the worker discounts future utility relative to current utility
+The smaller is :math:`\beta`, the more the worker discounts future utility relative to current utility.
 
 The variable  :math:`Y_t` is income, equal to
 
@@ -75,11 +75,11 @@ A Trade Off
 
 The worker faces a trade-off:
 
-* Waiting too long for a good offer is costly, since the future is discounted
+* Waiting too long for a good offer is costly, since the future is discounted.
 
-* Accepting too early is costly, since better offers might arrive in the future
+* Accepting too early is costly, since better offers might arrive in the future.
 
-To decide optimally in the face of this trade off, we use dynamic programming
+To decide optimally in the face of this trade off, we use dynamic programming.
 
 Dynamic programming can be thought of as a two step procedure that
 
@@ -87,7 +87,7 @@ Dynamic programming can be thought of as a two step procedure that
 
 #. then deduces optimal actions given those values
 
-We'll go through these steps in turn
+We'll go through these steps in turn.
 
 The Value Function
 ---------------------
@@ -98,15 +98,15 @@ In order to optimally trade off current and future rewards, we need to think abo
 
 #. the different states that those choices will lead to next period (in this case, either employment or unemployment)
 
-To weigh these two aspects of the decision problem, we need to assign *values* to states
+To weigh these two aspects of the decision problem, we need to assign *values* to states.
 
-To this end, let :math:`V(w)` be the total lifetime *value* accruing to an unemployed worker who enters the current period unemployed but with wage offer :math:`w` in hand
+To this end, let :math:`V(w)` be the total lifetime *value* accruing to an unemployed worker who enters the current period unemployed but with wage offer :math:`w` in hand.
 
-More precisely, :math:`V(w)` denotes the value of the objective function :eq:`objective` when an agent in this situation makes *optimal* decisions now and at all future points in time
+More precisely, :math:`V(w)` denotes the value of the objective function :eq:`objective` when an agent in this situation makes *optimal* decisions now and at all future points in time.
 
 Of course :math:`V(w)` is not trivial to calculate because we don't yet know what decisions are optimal and what aren't!
 
-But think of :math:`V` as a function that assigns to each possible wage :math:`w` the maximal lifetime value that can be obtained with that offer in hand
+But think of :math:`V` as a function that assigns to each possible wage :math:`w` the maximal lifetime value that can be obtained with that offer in hand.
 
 A crucial observation is that this function :math:`V` must satisfy the recursion
 
@@ -118,10 +118,10 @@ A crucial observation is that this function :math:`V` must satisfy the recursion
             \frac{w}{1 - \beta}, \, c + \beta \sum_{i=1}^n V(w_i) p_i
         \right\}
 
-for every possible :math:`w_i`  in :math:`w_1, \ldots, w_n`
+for every possible :math:`w_i`  in :math:`w_1, \ldots, w_n`.
 
 This important equation is a version of the **Bellman equation**, which is
-ubiquitous in economic dynamics and other fields involving planning over time
+ubiquitous in economic dynamics and other fields involving planning over time.
 
 The intuition behind it is as follows:
 
@@ -132,30 +132,30 @@ The intuition behind it is as follows:
 
 * the second term inside the max operation is the **continuation value**, which is the lifetime payoff from rejecting the current offer and then behaving optimally in all subsequent periods
 
-If we optimize and pick the best of these two options, we obtain maximal lifetime value from today, given current offer :math:`w`
+If we optimize and pick the best of these two options, we obtain maximal lifetime value from today, given current offer :math:`w`.
 
-But this is precisely :math:`V(w)`, which is the l.h.s. of :eq:`odu_pv`
+But this is precisely :math:`V(w)`, which is the l.h.s. of :eq:`odu_pv`.
 
 The Optimal Policy
 -------------------
 
 Suppose for now that we are able to solve :eq:`odu_pv` for the unknown
-function :math:`V`
+function :math:`V`.
 
 Once we have this function in hand we can behave optimally (i.e., make the
-right choice between accept and reject)
+right choice between accept and reject).
 
-All we have to do is select the maximal choice on the r.h.s. of :eq:`odu_pv`
+All we have to do is select the maximal choice on the r.h.s. of :eq:`odu_pv`.
 
 The optimal action is best thought of as a **policy**, which is, in general, a map from
-states to actions
+states to actions.
 
-In our case, the state is the current wage offer :math:`w`
+In our case, the state is the current wage offer :math:`w`.
 
 Given *any* :math:`w`, we can read off the corresponding best choice (accept or
-reject) by picking the max on the r.h.s. of :eq:`odu_pv`
+reject) by picking the max on the r.h.s. of :eq:`odu_pv`.
 
-Thus, we have a map from :math:`\mathbb{R}` to :math:`\{0, 1\}`, with 1 meaning accept and zero meaning reject
+Thus, we have a map from :math:`\mathbb{R}` to :math:`\{0, 1\}`, with 1 meaning accept and zero meaning reject.
 
 We can write the policy as follows
 
@@ -165,7 +165,7 @@ We can write the policy as follows
             \frac{w}{1 - \beta} \geq c + \beta \sum_{i=1}^n V(w_i) p_i
         \right\}
 
-Here :math:`\mathbf{1}\{ P \} = 1` if statement :math:`P` is true and equals zero otherwise
+Here :math:`\mathbf{1}\{ P \} = 1` if statement :math:`P` is true and equals zero otherwise.
 
 We can also write this as
 
@@ -179,19 +179,19 @@ where
 
     \bar w := (1 - \beta) \left\{ c + \beta \sum_{i=1}^n V(w_i) p_i \right\}
 
-Here :math:`\bar w` is a constant depending on :math:`\beta, c` and the wage distribution, called the *reservation wage*
+Here :math:`\bar w` is a constant depending on :math:`\beta, c` and the wage distribution, called the *reservation wage*.
 
-The agent should accept if and only if the current wage offer exceeds the reservation wage
+The agent should accept if and only if the current wage offer exceeds the reservation wage.
 
-Clearly, we can compute this reservation wage if we can compute the value function
+Clearly, we can compute this reservation wage if we can compute the value function.
 
 Computing the Optimal Policy: Take 1
 ======================================
 
 To put the above ideas into action, we need to compute the value function at
-points :math:`w_1, \ldots, w_n`
+points :math:`w_1, \ldots, w_n`.
 
-In doing so, we can identify these values with the vector :math:`v = (v_i)` where :math:`v_i := V(w_i)`
+In doing so, we can identify these values with the vector :math:`v = (v_i)` where :math:`v_i := V(w_i)`.
 
 In view of :eq:`odu_pv`, this vector satisfies the nonlinear system of equations
 
@@ -206,14 +206,14 @@ In view of :eq:`odu_pv`, this vector satisfies the nonlinear system of equations
     \text{for } i = 1, \ldots, n
 
 It turns out that there is exactly one vector :math:`v := (v_i)_{i=1}^n` in
-:math:`\mathbb R^n` that satisfies this equation
+:math:`\mathbb R^n` that satisfies this equation.
 
 The Algorithm
 -------------
 
 To compute this vector, we proceed as follows:
 
-Step 1: pick an arbitrary initial guess :math:`v \in \mathbb R^n`
+Step 1: pick an arbitrary initial guess :math:`v \in \mathbb R^n`.
 
 Step 2: compute a new vector :math:`v' \in \mathbb R^n` via
 
@@ -227,14 +227,14 @@ Step 2: compute a new vector :math:`v' \in \mathbb R^n` via
     \quad
     \text{for } i = 1, \ldots, n
 
-Step 3: calculate a measure of the deviation between :math:`v` and :math:`v'`, such as :math:`\max_i |v_i - v_i'|`
+Step 3: calculate a measure of the deviation between :math:`v` and :math:`v'`, such as :math:`\max_i |v_i - v_i'|`.
 
-Step 4: if the deviation is larger than some fixed tolerance, set :math:`v = v'` and go to step 2, else continue
+Step 4: if the deviation is larger than some fixed tolerance, set :math:`v = v'` and go to step 2, else continue.
 
-Step 5: return :math:`v`
+Step 5: return :math:`v`.
 
 This algorithm returns an arbitrarily good approximation to the true solution
-to :eq:`odu_pv2`, which represents the value function
+to :eq:`odu_pv2`, which represents the value function.
 
 (Arbitrarily good means here that the approximation converges to the true
 solution as the tolerance goes to zero)
@@ -261,18 +261,18 @@ itself via
 the r.h.s. at each :math:`i`)
 
 One can show that the conditions of the Banach contraction mapping theorem are
-satisfied by :math:`T` as a self-mapping on :math:`\mathbb{R}^n`
+satisfied by :math:`T` as a self-mapping on :math:`\mathbb{R}^n`.
 
-One implication is that :math:`T` has a unique fixed point in :math:`\mathbb R^n`
+One implication is that :math:`T` has a unique fixed point in :math:`\mathbb R^n`.
 
 Moreover, it's immediate from the definition of :math:`T` that this fixed
-point is precisely the value function
+point is precisely the value function.
 
 The iterative algorithm presented above corresponds to iterating with
-:math:`T` from some initial guess :math:`v`
+:math:`T` from some initial guess :math:`v`.
 
 The Banach contraction mapping theorem tells us that this iterative process
-generates a sequence that converges to the fixed point
+generates a sequence that converges to the fixed point.
 
 Implementation
 ----------------
@@ -328,9 +328,9 @@ We can explore taking expectations over this distribution
 
 
 To implement our algorithm, let's have a look at the sequence of approximate value functions that
-this fixed point algorithm generates
+this fixed point algorithm generates.
 
-Default parameter values are embedded in the function
+Default parameter values are embedded in the function.
 
 Our initial guess :math:`v` is the value of accepting at every given wage
 
@@ -383,20 +383,20 @@ between successive iterates is below `tol`
         return (1 - β) * (c + β * E*v) # (2)
     end
 
-In the above, we use ``v = copy(v_iv)`` rather than just ``v_iv = v``
+In the above, we use ``v = copy(v_iv)`` rather than just ``v_iv = v``.
 
 To understand why, first recall that ``v_iv`` is a function argument -- either defaulting to the given value, or passed into the function
 
-  * If we had gone ``v = v_iv`` instead, then it would have simply created a new name ``v`` which binds to whatever is located at ``v_iv``
-  * Since we later use ``v .= v_next`` later in the algorithm, the values in it would be modified
-  * Hence, we would be modifying the ``v_iv`` vector we were passed in, which may not be what the caller of the function wanted
-  * The big issue this creates are "side-effects" where you can call a function and strange things can happen outside of the function that you didn't expect
-  * If you intended for the modification to potentially occur, then the Julia style guide says that we should call the function ``compute_reservation_wage_direct!`` to make the possible side-effects clear
+  * If we had gone ``v = v_iv`` instead, then it would have simply created a new name ``v`` which binds to whatever is located at ``v_iv``.
+  * Since we later use ``v .= v_next`` later in the algorithm, the values in it would be modified.
+  * Hence, we would be modifying the ``v_iv`` vector we were passed in, which may not be what the caller of the function wanted.
+  * The big issue this creates are "side-effects" where you can call a function and strange things can happen outside of the function that you didn't expect.
+  * If you intended for the modification to potentially occur, then the Julia style guide says that we should call the function ``compute_reservation_wage_direct!`` to make the possible side-effects clear.
 
 
-As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone
+As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone.
 
-In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the :math:`T` operator
+In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the :math:`T` operator.
 
 .. code-block:: julia
 
@@ -430,10 +430,10 @@ Comparative Statics
 -------------------
 
 Now we know how to compute the reservation wage, let's see how it varies with
-parameters
+parameters.
 
 In particular, let's look at what happens when we change :math:`\beta` and
-:math:`c`
+:math:`c`.
 
 .. code:: julia
 
@@ -468,19 +468,19 @@ In particular, let's look at what happens when we change :math:`\beta` and
             fill = true)
 
 As expected, the reservation wage increases both with patience and with
-unemployment compensation
+unemployment compensation.
 
 Computing the Optimal Policy: Take 2
 ======================================
 
 The approach to dynamic programming just described is very standard and
-broadly applicable
+broadly applicable.
 
 For this particular problem, there's also an easier way, which circumvents the
-need to compute the value function
+need to compute the value function.
 
 Let :math:`\psi` denote the value of not accepting a job in this period but
-then behaving optimally in all subsequent periods
+then behaving optimally in all subsequent periods.
 
 That is,
 
@@ -491,7 +491,7 @@ That is,
     = c + \beta
         \sum_{i=1}^n V(w_i) p_i
 
-where :math:`V` is the value function
+where :math:`V` is the value function.
 
 By the Bellman equation, we then have
 
@@ -512,15 +512,15 @@ Substituting this last equation into :eq:`j1` gives
             \frac{w_i}{1 - \beta}, \psi
         \right\}  p_i
 
-Which we could also write as :math:`\psi = T_{\psi}(\psi)` for the appropriate operator
+Which we could also write as :math:`\psi = T_{\psi}(\psi)` for the appropriate operator.
 
-This is a nonlinear equation that we can solve for :math:`\psi`
+This is a nonlinear equation that we can solve for :math:`\psi`.
 
-One solution method for this kind of nonlinear equation is iterative
+One solution method for this kind of nonlinear equation is iterative.
 
 That is,
 
-Step 1: pick an initial guess :math:`\psi`
+Step 1: pick an initial guess :math:`\psi`.
 
 Step 2: compute the update :math:`\psi'` via
 
@@ -534,15 +534,15 @@ Step 2: compute the update :math:`\psi'` via
             \frac{w_i}{1 - \beta}, \psi
         \right\}  p_i
 
-Step 3: calculate the deviation :math:`|\psi - \psi'|`
+Step 3: calculate the deviation :math:`|\psi - \psi'|`.
 
-Step 4: if the deviation is larger than some fixed tolerance, set :math:`\psi = \psi'` and go to step 2, else continue
+Step 4: if the deviation is larger than some fixed tolerance, set :math:`\psi = \psi'` and go to step 2, else continue.
 
-Step 5: return :math:`\psi`
+Step 5: return :math:`\psi`.
 
-Once again, one can use the Banach contraction mapping theorem to show that this process always converges
+Once again, one can use the Banach contraction mapping theorem to show that this process always converges.
 
-The big difference here, however, is that we're iterating on a single number, rather than an :math:`n`-vector
+The big difference here, however, is that we're iterating on a single number, rather than an :math:`n`-vector.
 
 Here's an implementation:
 
@@ -557,7 +557,7 @@ Here's an implementation:
     end
     compute_reservation_wage_ψ(c, β)
 
-You can use this code to solve the exercise below
+You can use this code to solve the exercise below.
 
 Another option is to solve for the root of the  :math:`T_{\psi}(\psi) - \psi` equation
 
@@ -593,11 +593,11 @@ Compute the average duration of unemployment when :math:`\beta=0.99` and
     ``c_vals = range(10, 40, length = 25)``
 
 That is, start the agent off as unemployed, computed their reservation wage
-given the parameters, and then simulate to see how long it takes to accept
+given the parameters, and then simulate to see how long it takes to accept.
 
-Repeat a large number of times and take the average
+Repeat a large number of times and take the average.
 
-Plot mean unemployment duration as a function of :math:`c` in ``c_vals``
+Plot mean unemployment duration as a function of :math:`c` in ``c_vals``.
 
 Solutions
 ==========
