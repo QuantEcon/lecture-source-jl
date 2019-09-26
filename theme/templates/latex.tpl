@@ -27,14 +27,20 @@
 \else\Gin@nat@width\fi}
 \makeatother
 \let\Oldincludegraphics\includegraphics
-% Set max figure width to be 80% of text width, for now hardcoded.
-\renewcommand{\includegraphics}[1]{\begin{center}\Oldincludegraphics[width=.8\maxwidth]{#1}\end{center}}
+
+% propose delete%
 % Ensure that by default, figures have no caption (until we provide a
 % proper Figure object with a Caption API and a way to capture that
 % in the conversion process - todo).
-\usepackage{caption}
-\DeclareCaptionLabelFormat{nolabel}{}
-\captionsetup{labelformat=nolabel}
+% \usepackage{caption}
+% \DeclareCaptionLabelFormat{empty}{}
+%\captionsetup{format=empty,aboveskip=0pt,belowskip=0pt}
+% end - propose delete%
+
+% float figure settings%
+\usepackage{float}
+\floatplacement{figure}{H}  % used to force figures for placement in text
+
 
 \usepackage{adjustbox} % Used to constrain images to a maximum size
 \usepackage{xcolor} % Allow colors to be defined
@@ -75,6 +81,11 @@
 \DeclareMathOperator{\col}{col}
 \setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
 \setlength{\parindent}{0pt}
+
+% renew commands %
+% Set max figure width to be 80% of text width, for now hardcoded.
+\renewcommand{\includegraphics}[1]{\begin{center}\Oldincludegraphics[width=.8\maxwidth]{#1}\end{center}}
+\renewcommand \caption [2][]{} % removes captions from all figures
 ((* endblock packages *))
 
 % Colors for the hyperref package
