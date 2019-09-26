@@ -19,37 +19,37 @@ Overview
 .. index::
     single: Bellman Equation
 
-This lecture modifies a Bellman equation to express a decision maker's doubts about  transition dynamics
+This lecture modifies a Bellman equation to express a decision maker's doubts about  transition dynamics.
 
-His specification doubts make the decision maker want a *robust* decision rule
+His specification doubts make the decision maker want a *robust* decision rule.
 
-*Robust* means insensitive to misspecification of transition dynamics
+*Robust* means insensitive to misspecification of transition dynamics.
 
-The decision maker has a single *approximating model*
+The decision maker has a single *approximating model*.
 
-He calls it *approximating* to acknowledge that he doesn't completely trust it
+He calls it *approximating* to acknowledge that he doesn't completely trust it.
 
-He fears that outcomes will actually be determined by another model that he cannot describe explicitly
+He fears that outcomes will actually be determined by another model that he cannot describe explicitly.
 
-All that he knows is that the actual data-generating model is in some (uncountable) set of models that surrounds his approximating model
+All that he knows is that the actual data-generating model is in some (uncountable) set of models that surrounds his approximating model.
 
-He quantifies the discrepancy between his approximating model and the genuine data-generating model by using a quantity called *entropy*
+He quantifies the discrepancy between his approximating model and the genuine data-generating model by using a quantity called *entropy*.
 
 (We'll explain what entropy means below)
 
-He wants a decision rule that will work well enough no matter which of those other models actually governs outcomes
+He wants a decision rule that will work well enough no matter which of those other models actually governs outcomes.
 
-This is what it means for his decision rule to be "robust to misspecification of an approximating model"
+This is what it means for his decision rule to be "robust to misspecification of an approximating model".
 
-This may  sound like too much to ask for, but :math:`\ldots`
+This may  sound like too much to ask for, but :math:`\ldots`.
 
-:math:`\ldots`  a *secret weapon* is available to design robust decision rules
+:math:`\ldots`  a *secret weapon* is available to design robust decision rules.
 
-The secret weapon is max-min control theory
+The secret weapon is max-min control theory.
 
-A value-maximizing decision maker enlists the aid of an (imaginary) value-minimizing model chooser to construct *bounds* on the value attained by a given decision rule under different models of the transition dynamics
+A value-maximizing decision maker enlists the aid of an (imaginary) value-minimizing model chooser to construct *bounds* on the value attained by a given decision rule under different models of the transition dynamics.
 
-The original decision maker uses those bounds to construct a decision rule with an assured performance level, no matter which model actually governs outcomes
+The original decision maker uses those bounds to construct a decision rule with an assured performance level, no matter which model actually governs outcomes.
 
 .. note::
 
@@ -61,74 +61,74 @@ The original decision maker uses those bounds to construct a decision rule with 
 Sets of Models Imply Sets Of Values
 ----------------------------------------
 
-Our "robust" decision maker wants to know how well a given rule will work when he does not *know* a single transition law  :math:`\ldots`
+Our "robust" decision maker wants to know how well a given rule will work when he does not *know* a single transition law  :math:`\ldots`.
 
-:math:`\ldots` he wants to know  *sets* of values that will be attained by a given decision rule :math:`F` under a *set* of transition laws
+:math:`\ldots` he wants to know  *sets* of values that will be attained by a given decision rule :math:`F` under a *set* of transition laws.
 
-Ultimately, he wants to design a decision rule :math:`F` that shapes these *sets* of values in ways that he prefers
+Ultimately, he wants to design a decision rule :math:`F` that shapes these *sets* of values in ways that he prefers.
 
 With this in mind, consider the following graph, which relates to a particular decision problem to be explained below
 
 .. figure:: /_static/figures/kg0.png
    :width: 70%
 
-The figure shows a *value-entropy correspondence* for a particular decision rule :math:`F`
+The figure shows a *value-entropy correspondence* for a particular decision rule :math:`F`.
 
-The shaded set is the graph of the correspondence, which maps entropy to a set of values associated with a set of models that surround the decision maker's approximating model
+The shaded set is the graph of the correspondence, which maps entropy to a set of values associated with a set of models that surround the decision maker's approximating model.
 
 Here
 
-* *Value* refers to a sum of discounted rewards obtained by applying the decision rule :math:`F` when the state starts at some fixed initial state :math:`x_0`
+* *Value* refers to a sum of discounted rewards obtained by applying the decision rule :math:`F` when the state starts at some fixed initial state :math:`x_0`.
 
-* *Entropy* is a nonnegative number that measures the size of a set of models surrounding the decision maker's approximating model
+* *Entropy* is a nonnegative number that measures the size of a set of models surrounding the decision maker's approximating model.
 
-    * Entropy is zero when the set includes only the approximating model, indicating that the decision maker completely trusts the approximating model
+    * Entropy is zero when the set includes only the approximating model, indicating that the decision maker completely trusts the approximating model.
 
-    * Entropy is bigger, and the set of surrounding models is bigger, the less the decision maker trusts the approximating model
+    * Entropy is bigger, and the set of surrounding models is bigger, the less the decision maker trusts the approximating model.
 
-The shaded region indicates that for **all** models having entropy less than or equal to the number on the horizontal axis, the value obtained will be somewhere within the indicated set of values
+The shaded region indicates that for **all** models having entropy less than or equal to the number on the horizontal axis, the value obtained will be somewhere within the indicated set of values.
 
-Now let's compare sets of values associated with two different decision rules, :math:`F_r` and :math:`F_b`
+Now let's compare sets of values associated with two different decision rules, :math:`F_r` and :math:`F_b`.
 
 In the next figure,
 
-* The red set shows the value-entropy correspondence for decision rule :math:`F_r`
+* The red set shows the value-entropy correspondence for decision rule :math:`F_r`.
 
-* The blue set shows the value-entropy correspondence for decision rule :math:`F_b`
+* The blue set shows the value-entropy correspondence for decision rule :math:`F_b`.
 
 
 .. figure:: /_static/figures/kg.png
    :width: 70%
 
 
-The blue correspondence is skinnier than the red correspondence
+The blue correspondence is skinnier than the red correspondence.
 
-This conveys the sense in which the decision rule :math:`F_b` is *more robust* than the decision rule :math:`F_r`
+This conveys the sense in which the decision rule :math:`F_b` is *more robust* than the decision rule :math:`F_r`.
 
-* *more robust* means that the set of values is less sensitive to *increasing misspecification* as measured by entropy
+* *more robust* means that the set of values is less sensitive to *increasing misspecification* as measured by entropy.
 
-Notice that the less robust rule :math:`F_r` promises higher values for small misspecifications (small entropy)
+Notice that the less robust rule :math:`F_r` promises higher values for small misspecifications (small entropy).
 
 (But it is more fragile in the sense that it is more sensitive to perturbations of the approximating model)
 
-Below we'll explain in detail how to construct these sets of values for a given :math:`F`, but for now :math:`\ldots`
+Below we'll explain in detail how to construct these sets of values for a given :math:`F`, but for now :math:`\ldots`.
 
 Here is a hint about the  *secret weapons* we'll use to construct these sets
 
-    *  We'll use some min problems to construct the lower bounds
+    *  We'll use some min problems to construct the lower bounds.
 
-    *  We'll use some max problems to construct the upper bounds
+    *  We'll use some max problems to construct the upper bounds.
 
-We will also describe how to choose :math:`F` to shape the sets of values
+We will also describe how to choose :math:`F` to shape the sets of values.
 
-This will involve crafting a *skinnier* set at the cost of  a lower *level* (at least for low values of entropy)
+This will involve crafting a *skinnier* set at the cost of  a lower *level* (at least for low values of entropy).
 
 
 Inspiring Video
 ------------------------
 
 
-If you want to understand more about why one serious quantitative researcher is interested in this approach, we recommend `Lars Peter Hansen's Nobel lecture <http://www.nobelprize.org/mediaplayer/index.php?id=1994>`_
+If you want to understand more about why one serious quantitative researcher is interested in this approach, we recommend `Lars Peter Hansen's Nobel lecture <http://www.nobelprize.org/mediaplayer/index.php?id=1994>`_.
 
 .. .. raw:: html <iframe src="http://www.youtube.com/embed/WzxZGvrpFu4" style="border: 0; height: 510px; width: 640px"> </iframe>
 
@@ -156,9 +156,9 @@ Setup
 The Model
 ================
 
-For simplicity, we present ideas in the context of a class of problems with linear transition laws and quadratic objective functions
+For simplicity, we present ideas in the context of a class of problems with linear transition laws and quadratic objective functions.
 
-To fit in with :doc:`our earlier lecture on LQ control <../dynamic_programming/lqcontrol>`, we will treat loss minimization rather than value maximization
+To fit in with :doc:`our earlier lecture on LQ control <../dynamic_programming/lqcontrol>`, we will treat loss minimization rather than value maximization.
 
 To begin, recall the :ref:`infinite horizon LQ problem <lq_ih>`, where an agent chooses a sequence of controls :math:`\{u_t\}` to minimize
 
@@ -193,17 +193,17 @@ As before,
 
 Here :math:`x_t` is the state, :math:`u_t` is the control,  and :math:`w_t` is a shock vector.
 
-For now we take :math:`\{ w_t \} := \{ w_t \}_{t=1}^{\infty}` to be deterministic --- a single fixed sequence
+For now we take :math:`\{ w_t \} := \{ w_t \}_{t=1}^{\infty}` to be deterministic --- a single fixed sequence.
 
-We also allow for *model uncertainty* on the part of the agent solving this optimization problem
+We also allow for *model uncertainty* on the part of the agent solving this optimization problem.
 
-In particular, the agent takes :math:`w_t = 0` for all :math:`t \geq 0` as a benchmark model, but admits the possibility that this model might be wrong
+In particular, the agent takes :math:`w_t = 0` for all :math:`t \geq 0` as a benchmark model, but admits the possibility that this model might be wrong.
 
-As a consequence, she also considers a set of alternative models expressed in terms of  sequences :math:`\{ w_t \}` that are "close" to the zero sequence
+As a consequence, she also considers a set of alternative models expressed in terms of  sequences :math:`\{ w_t \}` that are "close" to the zero sequence.
 
-She seeks a policy that will do well enough for a set of alternative models whose members are pinned down by  sequences :math:`\{ w_t \}`
+She seeks a policy that will do well enough for a set of alternative models whose members are pinned down by  sequences :math:`\{ w_t \}`.
 
-Soon we'll quantify the quality of a model specification in terms of the maximal size of the expression :math:`\sum_{t=0}^{\infty} \beta^{t+1}w_{t+1}' w_{t+1}`
+Soon we'll quantify the quality of a model specification in terms of the maximal size of the expression :math:`\sum_{t=0}^{\infty} \beta^{t+1}w_{t+1}' w_{t+1}`.
 
 
 
@@ -224,11 +224,11 @@ If our agent takes :math:`\{ w_t \}` as a given deterministic sequence, then, dr
 
 (Here :math:`J` depends on :math:`t` because the sequence :math:`\{w_t\}` is not recursive)
 
-Our tool for studying robustness is to construct a rule that works well even if an adverse sequence :math:`\{ w_t \}` occurs
+Our tool for studying robustness is to construct a rule that works well even if an adverse sequence :math:`\{ w_t \}` occurs.
 
-In our framework, "adverse" means "loss increasing"
+In our framework, "adverse" means "loss increasing".
 
-As we'll see, this will eventually lead us to construct the Bellman equation
+As we'll see, this will eventually lead us to construct the Bellman equation.
 
 .. math::
     :label: rb_wcb0
@@ -236,15 +236,15 @@ As we'll see, this will eventually lead us to construct the Bellman equation
     J (x) = \min_u \max_w \{ x' R x + u' Q u + \beta \,[J (Ax + B u + C w) - \theta w'w] \}
 
 
-Notice that we've added the penalty term :math:`- \theta w'w`
+Notice that we've added the penalty term :math:`- \theta w'w`.
 
-Since :math:`w'w = \| w \|^2`, this term becomes influential when :math:`w` moves away from the origin
+Since :math:`w'w = \| w \|^2`, this term becomes influential when :math:`w` moves away from the origin.
 
-The penalty parameter :math:`\theta` controls how much we penalize the maximizing agent for "harming" the minimizing agent
+The penalty parameter :math:`\theta` controls how much we penalize the maximizing agent for "harming" the minimizing agent.
 
-By raising :math:`\theta` more and more, we more and more limit the ability of maximizing agent to distort outcomes relative to the approximating model
+By raising :math:`\theta` more and more, we more and more limit the ability of maximizing agent to distort outcomes relative to the approximating model.
 
-So bigger :math:`\theta` is implicitly associated with smaller distortion sequences :math:`\{w_t \}`
+So bigger :math:`\theta` is implicitly associated with smaller distortion sequences :math:`\{w_t \}`.
 
 
 Analyzing the Bellman equation
@@ -252,11 +252,11 @@ Analyzing the Bellman equation
 
 So what does :math:`J` in :eq:`rb_wcb0` look like?
 
-As with the :doc:`ordinary LQ control model <../dynamic_programming/lqcontrol>`, :math:`J` takes the form :math:`J(x) = x' P x` for some symmetric positive definite matrix :math:`P`
+As with the :doc:`ordinary LQ control model <../dynamic_programming/lqcontrol>`, :math:`J` takes the form :math:`J(x) = x' P x` for some symmetric positive definite matrix :math:`P`.
 
-One of our main tasks will be to analyze and compute the matrix :math:`P`
+One of our main tasks will be to analyze and compute the matrix :math:`P`.
 
-Related tasks will be to study associated feedback rules for :math:`u_t` and :math:`w_{t+1}`
+Related tasks will be to study associated feedback rules for :math:`u_t` and :math:`w_{t+1}`.
 
 First, using :ref:`matrix calculus <la_mcalc>`, you will be able to verify that
 
@@ -291,7 +291,7 @@ and :math:`I` is a :math:`j \times j` identity matrix.  Substituting this expres
        (Ax + Bu)' \mathcal D(P) (Ax + Bu)    \}
 
 
-Using similar mathematics, the solution to this minimization problem is :math:`u  = - F x` where :math:`F := (Q + \beta B' \mathcal D (P) B)^{-1} \beta B' \mathcal D(P) A`
+Using similar mathematics, the solution to this minimization problem is :math:`u  = - F x` where :math:`F := (Q + \beta B' \mathcal D (P) B)^{-1} \beta B' \mathcal D(P) A`.
 
 Substituting this minimizer back into :eq:`rb_owb` and working through the algebra gives
 :math:`x' P x = x' \mathcal B ( \mathcal D( P )) x` for all :math:`x`, or, equivalently,
@@ -310,10 +310,10 @@ where :math:`\mathcal D` is the operator defined in :eq:`rb_d` and
 
 
 The operator :math:`\mathcal B` is the standard (i.e., non-robust) LQ Bellman operator, and :math:`P = \mathcal B(P)` is the standard matrix Riccati equation coming from the
-Bellman equation --- see :ref:`this discussion <lq_ih>`
+Bellman equation --- see :ref:`this discussion <lq_ih>`.
 
 Under some regularity conditions (see :cite:`HansenSargent2008`), the operator :math:`\mathcal B \circ \mathcal D`
-has a unique positive definite fixed point, which we denote below by :math:`\hat P`
+has a unique positive definite fixed point, which we denote below by :math:`\hat P`.
 
 A robust policy, indexed by :math:`\theta`, is :math:`u  = - \hat F x` where
 
@@ -333,34 +333,34 @@ We also define
     := (\theta I - C' \hat PC)^{-1} C'  \hat P (A - B \hat F)
 
 
-The interpretation of :math:`\hat K` is that :math:`w_{t+1} = \hat K x_t` on the worst-case path of :math:`\{x_t \}`, in the sense that this vector is the maximizer of :eq:`rb_mp0` evaluated at the fixed rule :math:`u  = - \hat F x`
+The interpretation of :math:`\hat K` is that :math:`w_{t+1} = \hat K x_t` on the worst-case path of :math:`\{x_t \}`, in the sense that this vector is the maximizer of :eq:`rb_mp0` evaluated at the fixed rule :math:`u  = - \hat F x`.
 
 Note that :math:`\hat P, \hat F, \hat K` are all determined by the
-primitives and :math:`\theta`
+primitives and :math:`\theta`.
 
 Note also that if :math:`\theta` is very large, then :math:`\mathcal D` is
-approximately equal to the identity mapping
+approximately equal to the identity mapping.
 
-Hence, when :math:`\theta` is large,  :math:`\hat P` and :math:`\hat F` are approximately equal to their standard LQ values
+Hence, when :math:`\theta` is large,  :math:`\hat P` and :math:`\hat F` are approximately equal to their standard LQ values.
 
-Furthermore, when :math:`\theta` is large, :math:`\hat K` is approximately equal to zero
+Furthermore, when :math:`\theta` is large, :math:`\hat K` is approximately equal to zero.
 
-Conversely, smaller :math:`\theta` is associated with greater fear of model misspecification, and greater concern for robustness
+Conversely, smaller :math:`\theta` is associated with greater fear of model misspecification, and greater concern for robustness.
 
 
 
 Robustness as Outcome of a Two-Person Zero-Sum Game
 ====================================================
 
-What we have done above can be interpreted in terms of  a two-person zero-sum game in which :math:`\hat F, \hat K` are Nash equilibrium objects
+What we have done above can be interpreted in terms of  a two-person zero-sum game in which :math:`\hat F, \hat K` are Nash equilibrium objects.
 
-Agent 1 is our original agent, who seeks to minimize loss in the LQ program while admitting the possibility of misspecification
+Agent 1 is our original agent, who seeks to minimize loss in the LQ program while admitting the possibility of misspecification.
 
-Agent 2 is an imaginary malevolent player
+Agent 2 is an imaginary malevolent player.
 
-Agent 2's malevolence helps the original agent to compute bounds on his value function across a set of models
+Agent 2's malevolence helps the original agent to compute bounds on his value function across a set of models.
 
-We begin with agent 2's problem
+We begin with agent 2's problem.
 
 .. _rb_a2:
 
@@ -375,7 +375,7 @@ Agent 2
 #. responds by choosing a shock sequence :math:`\{ w_t \}` from a set of paths sufficiently close to the benchmark sequence :math:`\{0, 0, 0, \ldots\}`
 
 A natural way to say "sufficiently close to the zero sequence" is to restrict the
-summed inner product :math:`\sum_{t=1}^{\infty} w_t' w_t` to be small
+summed inner product :math:`\sum_{t=1}^{\infty} w_t' w_t` to be small.
 
 However, to obtain a time-invariant recursive formulation, it turns out to be convenient to
 restrict a  discounted inner product
@@ -388,7 +388,7 @@ restrict a  discounted inner product
 
 Now let :math:`F` be a fixed policy, and let :math:`J_F(x_0, \mathbf w)` be the
 present-value cost of that policy given sequence :math:`\mathbf w := \{w_t\}`
-and initial condition :math:`x_0 \in \mathbb R^n`
+and initial condition :math:`x_0 \in \mathbb R^n`.
 
 Substituting :math:`-F x_t` for :math:`u_t` in :eq:`rob_sih`, this value can be written as
 
@@ -408,9 +408,9 @@ where
     x_{t+1} = (A - B F) x_t + C w_{t+1}
 
 
-and the initial condition :math:`x_0` is as specified in the left side of :eq:`rob_fpv`
+and the initial condition :math:`x_0` is as specified in the left side of :eq:`rob_fpv`.
 
-Agent 2 chooses :math:`{\mathbf w}` to maximize agent 1's loss :math:`J_F(x_0, \mathbf w)` subject to :eq:`rb_dec`
+Agent 2 chooses :math:`{\mathbf w}` to maximize agent 1's loss :math:`J_F(x_0, \mathbf w)` subject to :eq:`rb_dec`.
 
 Using a Lagrangian formulation, we can express this problem as
 
@@ -423,7 +423,7 @@ Using a Lagrangian formulation, we can express this problem as
       \right\}
 
 
-where :math:`\{x_t\}` satisfied  :eq:`rob_lomf` and :math:`\theta` is a Lagrange multiplier on constraint :eq:`rb_dec`
+where :math:`\{x_t\}` satisfied  :eq:`rob_lomf` and :math:`\theta` is a Lagrange multiplier on constraint :eq:`rb_dec`.
 
 For the moment, let's take :math:`\theta` as fixed, allowing us to drop the constant :math:`\beta \theta \eta` term in the objective function, and hence write the problem as
 
@@ -448,13 +448,13 @@ or, equivalently,
     \right\}
 
 
-subject to :eq:`rob_lomf`
+subject to :eq:`rob_lomf`.
 
-What's striking about this optimization problem is that it is once again an LQ discounted dynamic programming problem, with :math:`\mathbf w = \{ w_t \}` as the sequence of controls
+What's striking about this optimization problem is that it is once again an LQ discounted dynamic programming problem, with :math:`\mathbf w = \{ w_t \}` as the sequence of controls.
 
-The expression for the optimal policy can be found by applying the usual LQ formula (:ref:`see here <lq_ih>`)
+The expression for the optimal policy can be found by applying the usual LQ formula (:ref:`see here <lq_ih>`).
 
-We denote it by :math:`K(F, \theta)`, with the interpretation :math:`w_{t+1} = K(F, \theta) x_t`
+We denote it by :math:`K(F, \theta)`, with the interpretation :math:`w_{t+1} = K(F, \theta) x_t`.
 
 The remaining step for agent 2's problem is to set :math:`\theta` to enforce the constraint :eq:`rb_dec`, which can be done by choosing :math:`\theta = \theta_{\eta}` such that
 
@@ -464,7 +464,7 @@ The remaining step for agent 2's problem is to set :math:`\theta` to enforce the
     \beta \sum_{t=0}^{\infty} \beta^t x_t' K(F, \theta_\eta)' K(F, \theta_\eta) x_t = \eta
 
 
-Here :math:`x_t` is given by :eq:`rob_lomf` --- which in this case becomes :math:`x_{t+1} = (A - B F + CK(F, \theta)) x_t`
+Here :math:`x_t` is given by :eq:`rob_lomf` --- which in this case becomes :math:`x_{t+1} = (A - B F + CK(F, \theta)) x_t`.
 
 .. _rb_a1:
 
@@ -504,11 +504,11 @@ where
     {\rm ent} := \beta \sum_{t=0}^\infty \beta^t w_{t+1}' w_{t+1}
 
 
-The left side of inequality :eq:`rob_bound` is a straight line with slope :math:`-\theta`
+The left side of inequality :eq:`rob_bound` is a straight line with slope :math:`-\theta`.
 
-Technically, it is  a "separating hyperplane"
+Technically, it is  a "separating hyperplane".
 
-At a particular value of entropy, the line is tangent to the lower bound of values  as a function of entropy
+At a particular value of entropy, the line is tangent to the lower bound of values  as a function of entropy.
 
 In particular, the lower bound on the left side of :eq:`rob_bound` is attained when
 
@@ -521,23 +521,23 @@ In particular, the lower bound on the left side of :eq:`rob_bound` is attained w
 
 To construct the *lower bound* on the set of values associated with all perturbations :math:`{\mathbf w}` satisfying the entropy constraint :eq:`rb_dec` at a  given entropy level, we proceed as follows:
 
-    *  For a given :math:`\theta`, solve the minimization problem :eq:`rb_a2o`
+    *  For a given :math:`\theta`, solve the minimization problem :eq:`rb_a2o`.
 
-    *  Compute the minimizer :math:`R_\theta(x_0, F)` and the associated entropy using :eq:`rb_pdt22`
+    *  Compute the minimizer :math:`R_\theta(x_0, F)` and the associated entropy using :eq:`rb_pdt22`.
 
-    *  Compute the lower bound on the value function :math:`R_\theta(x_0, F) - \theta \ {\rm  ent}` and plot it against :math:`{\rm ent}`
+    *  Compute the lower bound on the value function :math:`R_\theta(x_0, F) - \theta \ {\rm  ent}` and plot it against :math:`{\rm ent}`.
 
-    *  Repeat the preceding three steps  for a range of values of :math:`\theta` to trace out the lower bound
+    *  Repeat the preceding three steps  for a range of values of :math:`\theta` to trace out the lower bound.
 
 .. note::
-    This procedure  sweeps  out a set of separating hyperplanes indexed by different values for  the Lagrange multiplier :math:`\theta`
+    This procedure  sweeps  out a set of separating hyperplanes indexed by different values for  the Lagrange multiplier :math:`\theta`.
 
 The Upper Bound
 ^^^^^^^^^^^^^^^^^^^
 
-To construct an *upper bound* we use a very similar procedure
+To construct an *upper bound* we use a very similar procedure.
 
-We simply replace the *minimization* problem :eq:`rb_a2o` with the *maximization* problem
+We simply replace the *minimization* problem :eq:`rb_a2o` with the *maximization* problem.
 
 
 .. math::
@@ -576,7 +576,7 @@ where
     {\rm ent} \equiv \beta \sum_{t=0}^\infty \beta^t w_{t+1}' w_{t+1}
 
 
-The left side of inequality :eq:`robboundmax` is a straight line with slope :math:`\tilde \theta`
+The left side of inequality :eq:`robboundmax` is a straight line with slope :math:`\tilde \theta`.
 
 The upper bound on the left side of :eq:`robboundmax` is attained when
 
@@ -587,22 +587,22 @@ The upper bound on the left side of :eq:`robboundmax` is attained when
     {\rm ent} =  \beta \sum_{t=0}^{\infty} \beta^t x_t' K(F, \tilde \theta)' K(F, \tilde \theta) x_t
 
 
-To construct the *upper bound* on the set of values associated all perturbations :math:`{\mathbf w}` with a given entropy we proceed much as we did for the lower bound
+To construct the *upper bound* on the set of values associated all perturbations :math:`{\mathbf w}` with a given entropy we proceed much as we did for the lower bound.
 
-    *  For a given :math:`\tilde \theta`, solve the maximization problem :eq:`rba2omax`
+    *  For a given :math:`\tilde \theta`, solve the maximization problem :eq:`rba2omax`.
 
-    *  Compute the maximizer :math:`V_{\tilde \theta}(x_0, F)` and the associated entropy using :eq:`rbpdt223`
+    *  Compute the maximizer :math:`V_{\tilde \theta}(x_0, F)` and the associated entropy using :eq:`rbpdt223`.
 
-    *  Compute the upper bound on the value function :math:`V_{\tilde \theta}(x_0, F) + \tilde \theta \ {\rm ent}` and plot it against :math:`{\rm ent}`
+    *  Compute the upper bound on the value function :math:`V_{\tilde \theta}(x_0, F) + \tilde \theta \ {\rm ent}` and plot it against :math:`{\rm ent}`.
 
-    *  Repeat the preceding three steps  for a range of values of :math:`\tilde \theta` to trace out the upper bound
+    *  Repeat the preceding three steps  for a range of values of :math:`\tilde \theta` to trace out the upper bound.
 
 
 Reshaping the set of values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Now in the interest of *reshaping* these sets of values by choosing :math:`F`, we turn to agent 1's problem
+Now in the interest of *reshaping* these sets of values by choosing :math:`F`, we turn to agent 1's problem.
 
 Agent 1's Problem
 --------------------
@@ -619,7 +619,7 @@ Now we turn to agent 1, who solves
         \right\}
 
 
-where  :math:`\{ w_{t+1} \}`  satisfies :math:`w_{t+1} = K x_t`
+where  :math:`\{ w_{t+1} \}`  satisfies :math:`w_{t+1} = K x_t`.
 
 In other words, agent 1 minimizes
 
@@ -641,7 +641,7 @@ subject to
 
 
 Once again, the expression for the optimal policy can be found :ref:`here <lq_ih>` --- we denote
-it by :math:`\tilde F`
+it by :math:`\tilde F`.
 
 
 
@@ -652,7 +652,7 @@ Nash Equilibrium
 -----------------
 
 Clearly the :math:`\tilde F` we have obtained depends on :math:`K`, which, in agent 2's problem,
-depended on an initial policy :math:`F`
+depended on an initial policy :math:`F`.
 
 Holding all other parameters fixed, we can represent this relationship as a mapping :math:`\Phi`, where
 
@@ -669,7 +669,7 @@ The map :math:`F \mapsto \Phi (K(F, \theta))` corresponds to a situation in whic
 
 #. agent 1 best responds to agent 2 by choosing :math:`\tilde F = \Phi (K(F, \theta))`
 
-As you may have already guessed, the robust policy :math:`\hat F` defined in :eq:`rb_oc_ih` is a fixed point of the mapping :math:`\Phi`
+As you may have already guessed, the robust policy :math:`\hat F` defined in :eq:`rb_oc_ih` is a fixed point of the mapping :math:`\Phi`.
 
 In particular, for any given :math:`\theta`,
 
@@ -677,7 +677,7 @@ In particular, for any given :math:`\theta`,
 
 #. :math:`\Phi(\hat K) = \hat F`
 
-A sketch of the proof is given in :ref:`the appendix <rb_appendix>`
+A sketch of the proof is given in :ref:`the appendix <rb_appendix>`.
 
 
 
@@ -685,18 +685,18 @@ A sketch of the proof is given in :ref:`the appendix <rb_appendix>`
 The Stochastic Case
 ====================
 
-Now we turn to the stochastic case, where the sequence :math:`\{w_t\}` is treated as an iid sequence of random vectors
+Now we turn to the stochastic case, where the sequence :math:`\{w_t\}` is treated as an iid sequence of random vectors.
 
-In this setting, we suppose that our agent is uncertain about the *conditional probability distribution* of :math:`w_{t+1}`
+In this setting, we suppose that our agent is uncertain about the *conditional probability distribution* of :math:`w_{t+1}`.
 
-The agent takes the standard normal distribution :math:`N(0, I)` as the baseline conditional distribution, while admitting the possibility that other "nearby" distributions prevail
+The agent takes the standard normal distribution :math:`N(0, I)` as the baseline conditional distribution, while admitting the possibility that other "nearby" distributions prevail.
 
-These alternative conditional distributions of :math:`w_{t+1}` might depend nonlinearly on the history  :math:`x_s, s \leq t`
+These alternative conditional distributions of :math:`w_{t+1}` might depend nonlinearly on the history  :math:`x_s, s \leq t`.
 
 To implement this idea, we need a notion of what it means for one distribution
-to be near another one
+to be near another one.
 
-Here we adopt a very useful measure of closeness for distributions known as the *relative entropy*, or `Kullback-Leibler divergence <https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence>`_
+Here we adopt a very useful measure of closeness for distributions known as the *relative entropy*, or `Kullback-Leibler divergence <https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence>`_.
 
 For densities :math:`p, q`, the Kullback-Leibler divergence of :math:`q` from :math:`p` is defined as
 
@@ -721,11 +721,11 @@ Using this notation, we replace :eq:`rb_wcb0` with the stochastic analogue
     \right\}
 
 
-Here :math:`\mathcal P` represents the set of all densities on :math:`\mathbb R^n` and :math:`\phi` is the benchmark distribution :math:`N(0, I)`
+Here :math:`\mathcal P` represents the set of all densities on :math:`\mathbb R^n` and :math:`\phi` is the benchmark distribution :math:`N(0, I)`.
 
-The distribution :math:`\phi` is chosen as the least desirable conditional distribution in terms of next period outcomes, while taking into account the penalty term :math:`\theta D_{KL}(\psi, \phi)`
+The distribution :math:`\phi` is chosen as the least desirable conditional distribution in terms of next period outcomes, while taking into account the penalty term :math:`\theta D_{KL}(\psi, \phi)`.
 
-This penalty term plays a role analogous to the one played by the deterministic penalty :math:`\theta w'w` in :eq:`rb_wcb0`, since it discourages large deviations from the benchmark
+This penalty term plays a role analogous to the one played by the deterministic penalty :math:`\theta w'w` in :eq:`rb_wcb0`, since it discourages large deviations from the benchmark.
 
 
 
@@ -733,11 +733,11 @@ Solving the Model
 --------------------
 
 The maximization problem in :eq:`rb_wcb1` appears highly nontrivial --- after all,
-we are maximizing over an infinite dimensional space consisting of the entire set of densities
+we are maximizing over an infinite dimensional space consisting of the entire set of densities.
 
-However, it turns out that the solution is  tractable, and in fact also falls within the class of normal distributions
+However, it turns out that the solution is  tractable, and in fact also falls within the class of normal distributions.
 
-First, we note that :math:`J` has the form :math:`J(x) = x' P x + d` for some positive definite matrix :math:`P` and constant real number :math:`d`
+First, we note that :math:`J` has the form :math:`J(x) = x' P x + d` for some positive definite matrix :math:`P` and constant real number :math:`d`.
 
 Moreover, it turns out that if :math:`(I - \theta^{-1} C' P C)^{-1}` is nonsingular, then
 
@@ -796,7 +796,7 @@ Since constant terms do not affect minimizers, the solution is the same as
 
 
 To solve this Bellman equation, we take :math:`\hat P` to be the positive definite fixed point of
-:math:`\mathcal B \circ \mathcal D`
+:math:`\mathcal B \circ \mathcal D`.
 
 In addition, we take :math:`\hat d` as the real number solving :math:`d = \beta \, [d + \kappa(\theta, P)]`, which is
 
@@ -807,7 +807,7 @@ In addition, we take :math:`\hat d` as the real number solving :math:`d = \beta 
 
 
 The robust policy in this stochastic case is the minimizer in
-:eq:`rb_wcb2`, which is once again :math:`u  = - \hat F x` for :math:`\hat F` given by :eq:`rb_oc_ih`
+:eq:`rb_wcb2`, which is once again :math:`u  = - \hat F x` for :math:`\hat F` given by :eq:`rb_oc_ih`.
 
 Substituting the robust policy into :eq:`rb_md` we obtain the worst case shock
 distribution:
@@ -818,9 +818,9 @@ distribution:
     N( \hat K x_t, (I - \theta^{-1} C' \hat PC)^{-1} )
 
 
-where :math:`\hat K` is given by :eq:`rb_kd`
+where :math:`\hat K` is given by :eq:`rb_kd`.
 
-Note that the mean of the worst-case shock distribution is equal to the same  worst-case :math:`w_{t+1}` as in the earlier deterministic setting
+Note that the mean of the worst-case shock distribution is equal to the same  worst-case :math:`w_{t+1}` as in the earlier deterministic setting.
 
 
 .. _rb_coq:
@@ -828,14 +828,14 @@ Note that the mean of the worst-case shock distribution is equal to the same  wo
 Computing Other Quantities
 ------------------------------
 
-Before turning to implementation, we briefly outline how to compute several other quantities of interest
+Before turning to implementation, we briefly outline how to compute several other quantities of interest.
 
 
 Worst-Case Value of a Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 One thing we will be interested in doing is holding a policy fixed and
-computing the discounted loss associated with that policy
+computing the discounted loss associated with that policy.
 
 So let :math:`F` be a given policy and let :math:`J_F(x)` be
 the associated loss, which, by analogy with :eq:`rb_wcb1`, satisfies
@@ -887,15 +887,15 @@ and
 If you skip ahead to :ref:`the appendix <rb_appendix>`, you will be able to
 verify that :math:`-P_F` is the solution to the Bellman equation in
 agent 2's problem :ref:`discussed above <rb_a2>`  --- we use this in our
-computations
+computations.
 
 
 Implementation
 ================
 
-The `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package provides a type called ``RBLQ`` for implementation of robust LQ optimal control
+The `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package provides a type called ``RBLQ`` for implementation of robust LQ optimal control.
 
-The code can be found `on GitHub <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/robustlq.jl>`__
+The code can be found `on GitHub <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/robustlq.jl>`__.
 
 Here is a brief description of the methods of the type
 
@@ -922,7 +922,7 @@ Here is a brief description of the methods of the type
 Application
 ==============
 
-Let us consider a monopolist similar to :ref:`this one <lqc_mwac>`, but now facing model uncertainty
+Let us consider a monopolist similar to :ref:`this one <lqc_mwac>`, but now facing model uncertainty.
 
 The inverse demand function is :math:`p_t = a_0 - a_1 y_t + d_t`
 
@@ -934,7 +934,7 @@ where
     \quad \{w_t\} \stackrel{\textrm{iid}}{\sim} N(0,1)
 
 
-and all parameters are strictly positive
+and all parameters are strictly positive.
 
 The period return function for the monopolist is
 
@@ -943,7 +943,7 @@ The period return function for the monopolist is
     r_t =  p_t y_t - \gamma \frac{(y_{t+1} - y_t)^2}{2} - c y_t
 
 
-Its objective is to maximize expected discounted profits, or, equivalently, to minimize :math:`\mathbb E \sum_{t=0}^\infty \beta^t (- r_t)`
+Its objective is to maximize expected discounted profits, or, equivalently, to minimize :math:`\mathbb E \sum_{t=0}^\infty \beta^t (- r_t)`.
 
 To form a linear regulator problem, we take the state and control to be
 
@@ -998,7 +998,7 @@ For the transition matrices we set
       \end{bmatrix}
 
 
-Our aim is to compute the value-entropy correspondences :ref:`shown above <rb_vec>`
+Our aim is to compute the value-entropy correspondences :ref:`shown above <rb_vec>`.
 
 The parameters are
 
@@ -1008,14 +1008,14 @@ The parameters are
 
 
 The standard normal distribution for :math:`w_t` is understood as the
-agent's baseline, with uncertainty parameterized by :math:`\theta`
+agent's baseline, with uncertainty parameterized by :math:`\theta`.
 
-We compute value-entropy correspondences for two policies
+We compute value-entropy correspondences for two policies.
 
 #. The no concern for robustness policy :math:`F_0`, which is the ordinary LQ
-   loss minimizer
+   loss minimizer.
 
-#. A "moderate" concern for robustness policy :math:`F_b`, with :math:`\theta = 0.02`
+#. A "moderate" concern for robustness policy :math:`F_b`, with :math:`\theta = 0.02`.
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
@@ -1153,9 +1153,9 @@ Appendix
 
 We sketch the proof only of the first claim in :ref:`this section <rb_eq>`,
 which is that, for any given :math:`\theta`, :math:`K(\hat F, \theta) = \hat K`,
-where :math:`\hat K` is as given in :eq:`rb_kd`
+where :math:`\hat K` is as given in :eq:`rb_kd`.
 
-This is the content of the next lemma
+This is the content of the next lemma.
 
 **Lemma.** If :math:`\hat P` is the fixed point of the map :math:`\mathcal B \circ \mathcal D` and :math:`\hat F` is the robust policy as given in :eq:`rb_oc_ih`, then
 
@@ -1184,7 +1184,7 @@ This is the content of the next lemma
     C' \tilde P (A - B \hat F) x_t
 
 
-Suppose for a moment that :math:`- \hat P` solves the Bellman equation :eq:`rb_a2be`
+Suppose for a moment that :math:`- \hat P` solves the Bellman equation :eq:`rb_a2be`.
 
 In this case the policy becomes
 
@@ -1193,7 +1193,7 @@ In this case the policy becomes
     w_{t+1} = (\theta I - C' \hat P C)^{-1} C' \hat P (A - B \hat F) x_t
 
 
-which is exactly the claim in :eq:`rb_kft`
+which is exactly the claim in :eq:`rb_kft`.
 
 Hence it remains only to show that :math:`- \hat P` solves :eq:`rb_a2be`,
 or, in other words,
@@ -1218,6 +1218,6 @@ side more simply as
 
 
 Although it involves a substantial amount of algebra, it can be shown that the
-latter is just :math:`\hat P`
+latter is just :math:`\hat P`.
 
 (Hint: Use the fact that :math:`\hat P = \mathcal B( \mathcal D( \hat P))`)
