@@ -18,7 +18,7 @@ See `LICENSE.md` for licensing and copyright information.
 ```bash
 cd
 sudo apt update
-sudo apt install make gcc
+sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
 ```
@@ -74,22 +74,38 @@ It's recommended that you install and precompile the packages used by the lectur
 
 #### (Optional, for Advanced Users) 
 
-To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl), cd to `util` in the repo and run 
-
+To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl)
+```bash
+cd lecture-source-jl/util
+```
+Then
 ```bash 
 julia packagecompile.jl
 ```
+Finally, go to the `source/rst` to continue
+```bash
+cd ../source/rst
+```
 
-**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia to get back to the old sysimg. 
+**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia with step 3. to get back to the old sysimg. 
 
-3. Close Julia and start a new Julia REPL. 
+Finally, go to the `source/rst` to continue
+```bash
+cd ../source/rst
+```
 
-Then (after you `cd` to the `source/rst` directory in the `lecture-source-jl` repo), still inside the Julia REPL, run
+3. Start a new REPL
+
+(If you didn't run the package compilation step, then `cd lecture-source-jl/source/rst`)
+In the REPL, run
 
 ```julia
 ] activate .; instantiate; precompile
 ```
 This will take a long time to run.  You can safely ignore build errors for `Electron`
+ 
+**You may see a lot of warnings** during this step if you chose to use PackageCompiler acceleration above. They can be safely ignored.
+ 
  
 ### Building
 
@@ -122,6 +138,7 @@ To open the WSL in VS Code
 - Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
 - Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 - Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
+- Consider adding the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for viewing the html from `_build/website/jupyter_html` files
 
 ### Options and Special Cases
 

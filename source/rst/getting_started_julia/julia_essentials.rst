@@ -378,7 +378,16 @@ The keys are mapped to **values** (in this case ``"Frodo"`` and ``33``)
 They can be accessed via ``keys(d)`` and ``values(d)`` respectively
 
 
-There's a neat interface to this in Julia, which takes us to our next topic
+**Note** Unlike in Python and some other dynamic languages, dictionaries
+are rarely the right approach (ie. often referred to as "the devil's datastructure")
+
+The flexibility (i.e. can store anything and use anything as a key) frequently
+comes at the cost of performance if misused
+
+It is usually better to have collections of parameters and results in a named
+tuple, which both provide the compiler with more opportunties to optimize the
+performance, and also makes the code more safe
+
 
 
 .. _iterating_version_1:
@@ -501,7 +510,7 @@ Comprehensions
 ------------------
 (`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_)
 
-Comprehensions are an elegant tool for creating new arrays or dictionaries from iterables
+Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. from iterables
 
 Here are some examples
 
@@ -530,11 +539,16 @@ Here are some examples
     [ i + j + k for i in 1:3, j in 4:6, k in 7:9 ]
 
 
-The same kind of expression works for dictionaries
+Comprehensions can also create arrays of tuples or named tuples
 
 .. code-block:: julia
 
-    Dict(string(i) => i for i in 1:3)
+    [ (i, j) for i in 1:2, j in animals]
+
+.. code-block:: julia
+
+    [ (num = i, animal = j) for i in 1:2, j in animals]
+
 
 
 Comparisons and Logical Operators
@@ -890,7 +904,7 @@ For/while loops and global variables in Jupyter vs. the REPL:
 * In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
 
 For more information on using globals outside of Jupyter,
-(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to change in interactive modes in Julia 1.1
+(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to become consistent in a future version
 
 Functions
 ---------------
@@ -1317,6 +1331,21 @@ Hints:
 * If ``f`` is a file type then ``eachline(f)`` provides an iterable that steps you through the lines in the file
 
 * ``parse(Int, "100")`` converts the string ``"100"`` into an integer
+
+.. _pyess_ex7:
+
+Exercise 7
+------------
+
+Redo Exercise 5 except 
+
+1. Pass in a range instead of the ``a, b,`` and ``n``.  Test with a range such as ``nodes = -1.0:0.5:1.0``
+2. Instead of the ``while`` used in the solution to Exercise 5, find a better way to efficiently bracket the ``x`` in the nodes
+
+Hints: 
+* Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should be called as ``function linapprox(f, nodes, x)``
+* ``step(nodes), length(nodes), nodes[1]``, and ``nodes[end]`` may be useful
+* Type ``?÷`` into jupyter to explore quotients from Euclidean division for more efficient bracketing
 
 
 Solutions

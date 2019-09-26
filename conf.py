@@ -438,6 +438,9 @@ jupyter_generate_html = False
 # html template specific to your website needs
 jupyter_html_template = None
 
+# latex template specific to your website needs
+jupyter_latex_template = ""
+
 #make website
 jupyter_make_site = False
 
@@ -470,4 +473,4 @@ jupyter_pdf_logo = "_static/img/qe-menubar-logo.png"
 
 jupyter_bib_file = "_static/quant-econ"
 
-jupyter_pdf_author = "Thomas J. Sargent and John Stachurski"
+jupyter_pdf_author = "Jesse Perla, Thomas J. Sargent and John Stachurski"

@@ -1,6 +1,6 @@
 name = "quantecon-notebooks-julia"
 authors = ["arnavs <me@arnavsood.com>"]
-version = "0.1.0"
+version = "0.3.0"
 
 [deps]
 BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
