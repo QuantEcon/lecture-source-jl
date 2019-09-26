@@ -367,9 +367,9 @@ version = "0.1.0"
 
 [[DoubleFloats]]
 deps = ["GenericSVD", "GenericSchur", "LinearAlgebra", "Polynomials", "Quadmath", "Random", "Requires"]
-git-tree-sha1 = "bf3094f0d9f80e2804399613480a7d89cc3f05e8"
+git-tree-sha1 = "86c04127c22739e8a3b47e6c71faa49b381c2178"
 uuid = "497a8b3b-efae-58df-a0af-a86822472b78"
-version = "0.9.9"
+version = "0.9.10"
 
 [[DualNumbers]]
 deps = ["Calculus", "LinearAlgebra", "NaNMath", "SpecialFunctions", "Test"]
@@ -512,9 +512,9 @@ version = "0.8.3"
 
 [[Formatting]]
 deps = ["Printf"]
-git-tree-sha1 = "aef8983c0f77c84ae77ced1bb3ecf5ab7d687700"
+git-tree-sha1 = "a0c901c29c0e7c763342751c0a94211d56c0de5c"
 uuid = "59287772-0a20-5a39-b81b-1366585eb4c0"
-version = "0.4.0"
+version = "0.4.1"
 
 [[ForwardDiff]]
 deps = ["CommonSubexpressions", "DiffResults", "DiffRules", "InteractiveUtils", "LinearAlgebra", "NaNMath", "Random", "SparseArrays", "SpecialFunctions", "StaticArrays", "Test"]
@@ -1019,10 +1019,10 @@ uuid = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 version = "2.1.0"
 
 [[Quadmath]]
-deps = ["Random", "Requires"]
-git-tree-sha1 = "0d177ab3217bd6347d01bdf56e5da0571222d7f3"
+deps = ["Printf", "Random", "Requires"]
+git-tree-sha1 = "99293530380620c20a1d187e6bdc03a88b858bbf"
 uuid = "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
-version = "0.5.0"
+version = "0.5.1"
 
 [[QuantEcon]]
 deps = ["DSP", "DataStructures", "Distributions", "FFTW", "LightGraphs", "LinearAlgebra", "Markdown", "NLopt", "Optim", "Pkg", "Primes", "Random", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "Test"]
