@@ -213,6 +213,14 @@ To do this
 
 See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have further issues
 
+If you upgrade Atom and it breaks Juno, run the following in a terminal. 
+
+.. code-block:: none 
+
+    apm uninstall ink julia-client
+    apm install ink julia-client
+
+
 Standard Layout
 ------------------
 
