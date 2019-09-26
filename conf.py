@@ -474,3 +474,7 @@ jupyter_pdf_logo = "_static/img/qe-menubar-logo.png"
 jupyter_bib_file = "_static/quant-econ"
 
 jupyter_pdf_author = "Jesse Perla, Thomas J. Sargent and John Stachurski"
+
+jupyter_pdf_urlpath = "https://lectures.quantecon.org/jl/"
+
+jupyter_pdf_excludepatterns = ["404", "index", "references"]
