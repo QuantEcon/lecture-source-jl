@@ -73,6 +73,8 @@
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
 \newcommand{\argmin}{\operatornamewithlimits{argmin}}
 \DeclareMathOperator{\col}{col}
+\setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
+\setlength{\parindent}{0pt}
 ((* endblock packages *))
 
 % Colors for the hyperref package
