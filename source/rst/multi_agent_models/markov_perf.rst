@@ -708,7 +708,7 @@ The first figure shows the dynamics of inventories for each firm when the parame
     e1 = e2 = [10, 10, 3]
 
 .. figure:: /_static/figures/judd_fig2.png
-    :width: 70
+    :width: 70%
 
 Inventories trend to a common steady state
 
@@ -718,7 +718,7 @@ This is indeed the case, as the next figure shows
 
 
 .. figure:: /_static/figures/judd_fig1.png
-    :width: 70
+    :width: 70%
 
 Solutions
 ==========
