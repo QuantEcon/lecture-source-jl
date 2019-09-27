@@ -109,6 +109,10 @@ Hitting ``]`` brings you into package mode
 
 * ``] precompile`` will precompile everything possible
 
+* ``] build`` will execute build scripts for all packages
+
+* Running ``] preview`` before a command (i.e., ``] preview up``) will display the changes without executing
+
 You can get a full list of package mode commands by running
 
 .. code-block:: julia
