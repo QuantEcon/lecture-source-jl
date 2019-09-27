@@ -48,7 +48,7 @@ This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) o
 There are a few different ways to create a DataFrame
 
 Constructing and Accessing a DataFrame
------------------------------------
+--------------------------------------
 
 The first is to set up columns and construct a dataframe by assigning names
 
