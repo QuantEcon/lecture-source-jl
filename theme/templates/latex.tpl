@@ -253,10 +253,11 @@
 %    <cite data-cite="DevoretS2013">[DevoretS2013]</cite>
 % requires file references.bib in current directory (or the file set as "bib" in the latex_metadata)
 
-((*- if nb.metadata.get("latex_metadata", {}).get("bib_include", ""): -*))
+
 ((* block bibliography *))
+((*- if nb.metadata.get("latex_metadata", {}).get("bib_include", ""): -*))
 % Add a bibliography block to the postdoc
 \bibliographystyle{plain}
 \bibliography{((( nb.metadata.get("latex_metadata", {}).get("bib", "quant-econ") )))}
-((* endblock bibliography *))
 ((*- endif -*))
+((* endblock bibliography *))
