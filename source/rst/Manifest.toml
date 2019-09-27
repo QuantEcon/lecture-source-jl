@@ -483,9 +483,9 @@ version = "0.6.4"
 
 [[FixedEffectModels]]
 deps = ["CategoricalArrays", "Combinatorics", "DataFrames", "Distributions", "FillArrays", "FixedEffects", "LinearAlgebra", "Printf", "Random", "Reexport", "Statistics", "StatsBase", "StatsModels"]
-git-tree-sha1 = "c9ce7cdaec54783d403a43774acd9f58b3acdaf4"
+git-tree-sha1 = "281889f07f21faf2052c21f46b1515f61c15dd25"
 uuid = "9d5cd8c9-2029-5cab-9928-427838db53e3"
-version = "0.8.2"
+version = "0.8.5"
 
 [[FixedEffects]]
 deps = ["CUDAapi", "CategoricalArrays", "CuArrays", "Distributed", "FillArrays", "LinearAlgebra", "Reexport", "StatsBase"]
