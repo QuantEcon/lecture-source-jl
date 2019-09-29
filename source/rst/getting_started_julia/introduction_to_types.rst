@@ -886,7 +886,7 @@ Finally, we can make a high performance specialization for any ``AbstractVector`
 
 .. code-block:: julia
 
-    derivatives(f::AbstractVector, x::AbstractRange) = diff(f) / step(x)
+    slopes(f_x::AbstractVector, x::AbstractRange) = diff(f_x) / step(x)
 
 
 We can use auto-differentiation to compare the results
@@ -898,33 +898,41 @@ We can use auto-differentiation to compare the results
     # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
 
+    # compare slopes with AD for sin(x)
     q(x) = sin(x)
     x = 0.0:0.1:4.0
     q_x = q.(x)
-    D_q_x = derivatives(q_x, x)
+    q_slopes_x = slopes(q_x, x)
 
-    plot(x[1:end-1], D(q).(x[1:end-1]), label = "q' with AD")
-    plot!(x[1:end-1], D_q_x, label = "q'")
+    D_q_x = D(q).(x)  # broadcasts AD across vector
+
+    plot(x[1:end-1], D_q_x[1:end-1], label = "q' with AD")
+    plot!(x[1:end-1], q_slopes_x, label = "q slopes")
 
 Consider a variation where we pass a function instead of an ``AbstractArray``
 
 .. code-block:: julia
 
-    derivatives(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # broadcast function
+    slopes(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # broadcast function
 
     @show typeof(q) <: Function
-    d_q = derivatives(q, x)
-    @show d_q[1];
+    @show typeof(x) <: AbstractRange
+    q_slopes_x = slopes(q, x)  # use slopes(f::Function, x)
+    @show q_slopes_x[1];
 
 Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can no longer use a uniform step
+
+For this, we add in a version calculating slopes with forward first-differences
 
 .. code-block:: julia
 
     # broadcasts over the diff
-    derivatives(f::Function, x::AbstractArray) = diff(f.(x)) ./ diff(x)
+    slopes(f::Function, x::AbstractArray) = diff(f.(x)) ./ diff(x)
 
-    d_f = derivatives(f, x)
-    @show d_f[1];
+    x_array = Array(x)  # convert range to array
+    @show typeof(x_array) <: AbstractArray
+    q_slopes_x = slopes(q, x_array)
+    @show q_slopes_x[1];
 
 In the final example, we see that it is able to use specialized implementations over both the ``f`` and the ``x`` arguments
 
