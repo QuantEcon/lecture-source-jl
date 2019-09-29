@@ -23,7 +23,7 @@ In this lecture we discuss a family of dynamic programming problems with the fol
 
 #. Markov state transitions
 
-We call such problems discrete dynamic programs, or discrete DPs
+We call such problems discrete dynamic programs, or discrete DPs.
 
 Discrete DPs are the workhorses in much of modern quantitative economics, including
 
@@ -39,7 +39,7 @@ Discrete DPs are the workhorses in much of modern quantitative economics, includ
 
 * industrial organization, etc.
 
-When a given model is not inherently discrete, it is common to replace it with a discretized version in order to use discrete DP techniques
+When a given model is not inherently discrete, it is common to replace it with a discretized version in order to use discrete DP techniques.
 
 This lecture covers
 
@@ -59,7 +59,7 @@ We use dynamic programming many applied lectures, such as
 
 * The :doc:`optimal growth lecture <../dynamic_programming/optgrowth>`
 
-The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case
+The objective of this lecture is to provide a more systematic and theoretical treatment, including algorithms and implementation, while focusing on the discrete case.
 
 References
 ----------
@@ -104,12 +104,12 @@ where
 
 * :math:`r(s_t, a_t)` is interpreted as a current reward when the state is :math:`s_t` and the action chosen is :math:`a_t`
 
-Each pair :math:`(s_t, a_t)` pins down transition probabilities :math:`Q(s_t, a_t, s_{t+1})` for the next period state :math:`s_{t+1}`
+Each pair :math:`(s_t, a_t)` pins down transition probabilities :math:`Q(s_t, a_t, s_{t+1})` for the next period state :math:`s_{t+1}`.
 
-Thus, actions influence not only current rewards but also the future time path of the state
+Thus, actions influence not only current rewards but also the future time path of the state.
 
 The essence of dynamic programming problems is to trade off current rewards
-vs favorable positioning of the future state (modulo randomness)
+vs favorable positioning of the future state (modulo randomness).
 
 Examples:
 
@@ -122,26 +122,26 @@ Examples:
 Policies
 --------
 
-The most fruitful way to think about solutions to discrete DP problems is to compare *policies*
+The most fruitful way to think about solutions to discrete DP problems is to compare *policies*.
 
 In general, a policy is a randomized map from past actions and states to
-current action
+current action.
 
-In the setting formalized below, it suffices to consider so-called *stationary Markov policies*, which consider only the current state
+In the setting formalized below, it suffices to consider so-called *stationary Markov policies*, which consider only the current state.
 
 In particular, a stationary Markov policy is a map :math:`\sigma` from states to actions
 
 * :math:`a_t = \sigma(s_t)` indicates that :math:`a_t` is the action to be taken in state :math:`s_t`
 
-It is known that, for any arbitrary policy, there exists a stationary Markov policy that dominates it at least weakly
+It is known that, for any arbitrary policy, there exists a stationary Markov policy that dominates it at least weakly.
 
-* See section 5.5 of :cite:`puterman2005` for discussion and proofs
+* See section 5.5 of :cite:`puterman2005` for discussion and proofs.
 
-In what follows, stationary Markov policies are referred to simply as policies
+In what follows, stationary Markov policies are referred to simply as policies.
 
-The aim is to find an optimal policy, in the sense of one that maximizes :eq:`dp_objective`
+The aim is to find an optimal policy, in the sense of one that maximizes :eq:`dp_objective`.
 
-Let's now step through these ideas more carefully
+Let's now step through these ideas more carefully.
 
 Formal definition
 -----------------
@@ -162,13 +162,13 @@ Formally, a discrete dynamic program consists of the following components:
 
 #. A *discount factor* :math:`\beta \in [0, 1)`
 
-We also use the notation :math:`A := \bigcup_{s \in S} A(s) = \{0, \ldots, m-1\}` and call this set the *action space*
+We also use the notation :math:`A := \bigcup_{s \in S} A(s) = \{0, \ldots, m-1\}` and call this set the *action space*.
 
-A *policy* is a function :math:`\sigma\colon S \to A`
+A *policy* is a function :math:`\sigma\colon S \to A`.
 
-A policy is called *feasible* if it satisfies :math:`\sigma(s) \in A(s)` for all :math:`s \in S`
+A policy is called *feasible* if it satisfies :math:`\sigma(s) \in A(s)` for all :math:`s \in S`.
 
-Denote the set of all feasible policies by :math:`\Sigma`
+Denote the set of all feasible policies by :math:`\Sigma`.
 
 If a decision maker uses  a policy :math:`\sigma \in \Sigma`, then
 
@@ -182,9 +182,9 @@ For each :math:`\sigma \in \Sigma`, define
 
 * :math:`Q_{\sigma}` by :math:`Q_{\sigma}(s, s') := Q(s, \sigma(s), s')`
 
-Notice that :math:`Q_\sigma` is a :ref:`stochastic matrix <finite_dp_stoch_mat>` on :math:`S`
+Notice that :math:`Q_\sigma` is a :ref:`stochastic matrix <finite_dp_stoch_mat>` on :math:`S`.
 
-It gives transition probabilities of the *controlled chain* when we follow policy :math:`\sigma`
+It gives transition probabilities of the *controlled chain* when we follow policy :math:`\sigma`.
 
 If we think of :math:`r_\sigma` as a column vector, then so is :math:`Q_\sigma^t r_\sigma`, and the :math:`s`-th row of the latter has the interpretation
 
@@ -200,15 +200,15 @@ Comments
 
 * See :ref:`this discussion <finite_mc_expec>` on computing expectations of Markov chains for an explanation of the expression in :eq:`ddp_expec`
 
-Notice that we're not really distinguishing between functions from :math:`S` to :math:`\mathbb R` and vectors in :math:`\mathbb R^n`
+Notice that we're not really distinguishing between functions from :math:`S` to :math:`\mathbb R` and vectors in :math:`\mathbb R^n`.
 
-This is natural because they are in one to one correspondence
+This is natural because they are in one to one correspondence.
 
 Value and Optimality
 --------------------
 
 Let :math:`v_{\sigma}(s)` denote the discounted sum of expected reward flows from policy :math:`\sigma`
-when the initial state is :math:`s`
+when the initial state is :math:`s`.
 
 To calculate this quantity we pass the expectation through the sum in
 :eq:`dp_objective` and use :eq:`ddp_expec` to get
@@ -218,7 +218,7 @@ To calculate this quantity we pass the expectation through the sum in
     v_{\sigma}(s) = \sum_{t=0}^{\infty} \beta^t (Q_{\sigma}^t r_{\sigma})(s)
     \qquad (s \in S)
 
-This function is called the *policy value function* for the policy :math:`\sigma`
+This function is called the *policy value function* for the policy :math:`\sigma`.
 
 The *optimal value function*, or simply *value function*, is the function :math:`v^*\colon S \to \mathbb{R}` defined by
 
@@ -229,7 +229,7 @@ The *optimal value function*, or simply *value function*, is the function :math:
 
 (We can use max rather than sup here because the domain is a finite set)
 
-A policy :math:`\sigma \in \Sigma` is called *optimal* if :math:`v_{\sigma}(s) = v^*(s)` for all :math:`s \in S`
+A policy :math:`\sigma \in \Sigma` is called *optimal* if :math:`v_{\sigma}(s) = v^*(s)` for all :math:`s \in S`.
 
 Given any :math:`w \colon S \to \mathbb R`, a policy :math:`\sigma \in \Sigma` is called :math:`w`-greedy if
 
@@ -242,7 +242,7 @@ Given any :math:`w \colon S \to \mathbb R`, a policy :math:`\sigma \in \Sigma` i
     \right\}
     \qquad (s \in S)
 
-As discussed in detail below, optimal policies are precisely those that are :math:`v^*`-greedy
+As discussed in detail below, optimal policies are precisely those that are :math:`v^*`-greedy.
 
 Two Operators
 -------------
@@ -283,9 +283,9 @@ They are also contraction mappings with modulus :math:`\beta`
 
 * :math:`\lVert Tv - Tw \rVert \leq \beta \lVert v - w \rVert` and similarly for :math:`T_\sigma`, where :math:`\lVert \cdot\rVert` is the max norm
 
-For any policy :math:`\sigma`, its value :math:`v_{\sigma}` is the unique fixed point of :math:`T_{\sigma}`
+For any policy :math:`\sigma`, its value :math:`v_{\sigma}` is the unique fixed point of :math:`T_{\sigma}`.
 
-For proofs of these results and those in the next section, see, for example, `EDTC <http://johnstachurski.net/edtc.html>`_, chapter 10
+For proofs of these results and those in the next section, see, for example, `EDTC <http://johnstachurski.net/edtc.html>`_, chapter 10.
 
 The Bellman Equation and the Principle of Optimality
 ----------------------------------------------------
@@ -315,9 +315,9 @@ By the definition of greedy policies given above, this means that
 Solving Discrete DPs
 ====================
 
-Now that the theory has been set out, let's turn to solution methods
+Now that the theory has been set out, let's turn to solution methods.
 
-Code for solving discrete DPs is available in `ddp.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/ddp.jl>`_ from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ code library
+Code for solving discrete DPs is available in `ddp.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/ddp.jl>`_ from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ code library.
 
 It implements the three most important solution methods for discrete dynamic programs, namely
 
@@ -327,57 +327,57 @@ It implements the three most important solution methods for discrete dynamic pro
 
 -  modified policy function iteration
 
-Let's briefly review these algorithms and their implementation
+Let's briefly review these algorithms and their implementation.
 
 Value Function Iteration
 ------------------------
 
-Perhaps the most familiar method for solving all manner of dynamic programs is value function iteration
+Perhaps the most familiar method for solving all manner of dynamic programs is value function iteration.
 
-This algorithm uses the fact that the Bellman operator :math:`T` is a contraction mapping with fixed point :math:`v^*`
+This algorithm uses the fact that the Bellman operator :math:`T` is a contraction mapping with fixed point :math:`v^*`.
 
-Hence, iterative application of :math:`T` to any initial function :math:`v^0 \colon S \to \mathbb R` converges to :math:`v^*`
+Hence, iterative application of :math:`T` to any initial function :math:`v^0 \colon S \to \mathbb R` converges to :math:`v^*`.
 
-The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>`
+The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>`.
 
 Policy Function Iteration
 -------------------------
 
-This routine, also known as Howard's policy improvement algorithm, exploits more closely the particular structure of a discrete DP problem
+This routine, also known as Howard's policy improvement algorithm, exploits more closely the particular structure of a discrete DP problem.
 
 Each iteration consists of
 
-#. A policy evaluation step that computes the value :math:`v_{\sigma}` of a policy :math:`\sigma` by solving the linear equation :math:`v = T_{\sigma} v`
+#. A policy evaluation step that computes the value :math:`v_{\sigma}` of a policy :math:`\sigma` by solving the linear equation :math:`v = T_{\sigma} v`.
 
-#. A policy improvement step that computes a :math:`v_{\sigma}`-greedy policy
+#. A policy improvement step that computes a :math:`v_{\sigma}`-greedy policy.
 
-In the current setting policy iteration computes an exact optimal policy in finitely many iterations
+In the current setting policy iteration computes an exact optimal policy in finitely many iterations.
 
 * See theorem 10.2.6 of `EDTC <http://johnstachurski.net/edtc.html>`_ for a proof
 
-The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>`
+The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>`.
 
 Modified Policy Function Iteration
 ----------------------------------
 
-Modified policy iteration replaces the policy evaluation step in policy iteration with "partial policy evaluation"
+Modified policy iteration replaces the policy evaluation step in policy iteration with "partial policy evaluation".
 
-The latter computes an approximation to the value of a policy :math:`\sigma` by iterating :math:`T_{\sigma}` for a specified number of times
+The latter computes an approximation to the value of a policy :math:`\sigma` by iterating :math:`T_{\sigma}` for a specified number of times.
 
-This approach can be useful when the state space is very large and the linear system in the policy evaluation step of policy iteration is correspondingly difficult to solve
+This approach can be useful when the state space is very large and the linear system in the policy evaluation step of policy iteration is correspondingly difficult to solve.
 
-The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>`
+The details of the algorithm can be found in :ref:`the appendix <ddp_algorithms>`.
 
 .. _ddp_eg_gm:
 
 Example: A Growth Model
 =======================
 
-Let's consider a simple consumption-saving model
+Let's consider a simple consumption-saving model.
 
-A single household either consumes or stores its own output of a single consumption good
+A single household either consumes or stores its own output of a single consumption good.
 
-The household starts each period with current stock :math:`s`
+The household starts each period with current stock :math:`s`.
 
 Next, the household chooses a quantity :math:`a` to store and consumes :math:`c = s - a`
 
@@ -385,7 +385,7 @@ Next, the household chooses a quantity :math:`a` to store and consumes :math:`c 
 
 * Flow utility is :math:`u(c) = c^{\alpha}`
 
-Output is drawn from a discrete uniform distribution on :math:`\{0, \ldots, B\}`
+Output is drawn from a discrete uniform distribution on :math:`\{0, \ldots, B\}`.
 
 The next period stock is therefore
 
@@ -395,12 +395,12 @@ The next period stock is therefore
     \quad \text{where} \quad
     U \sim U[0, \ldots, B]
 
-The discount factor is :math:`\beta \in [0, 1)`
+The discount factor is :math:`\beta \in [0, 1)`.
 
 Discrete DP Representation
 --------------------------
 
-We want to represent this model in the format of a discrete dynamic program
+We want to represent this model in the format of a discrete dynamic program.
 
 To this end, we take
 
@@ -437,23 +437,23 @@ Defining a DiscreteDP Instance
 This information will be used to create an instance of `DiscreteDP` by passing
 the following information
 
-#.  An :math:`n \times m` reward array :math:`R`
+#. An :math:`n \times m` reward array :math:`R`
 
 #. An :math:`n \times m \times n` transition probability array :math:`Q`
 
 #. A discount factor :math:`\beta`
 
-For :math:`R` we set :math:`R[s, a] = u(s - a)` if :math:`a \leq s` and :math:`-\infty` otherwise
+For :math:`R` we set :math:`R[s, a] = u(s - a)` if :math:`a \leq s` and :math:`-\infty` otherwise.
 
-For :math:`Q` we follow the rule in :eq:`ddp_def_ogq`
+For :math:`Q` we follow the rule in :eq:`ddp_def_ogq`.
 
 Note:
 
-* The feasibility constraint is embedded into :math:`R` by setting :math:`R[s, a] = -\infty` for :math:`a \notin A(s)`
+* The feasibility constraint is embedded into :math:`R` by setting :math:`R[s, a] = -\infty` for :math:`a \notin A(s)`.
 
-* Probability distributions for :math:`(s, a)` with :math:`a \notin A(s)` can be arbitrary
+* Probability distributions for :math:`(s, a)` with :math:`a \notin A(s)` can be arbitrary.
 
-The following code sets up these objects for us
+The following code sets up these objects for us.
 
 Setup
 -----
@@ -549,7 +549,7 @@ In case the preceding code was too concise, we can see a more verbose form
         return (Q = Q, R = R)
     end
 
-Instances of ``DiscreteDP`` are created using the signature ``DiscreteDP(R, Q, β)``
+Instances of ``DiscreteDP`` are created using the signature ``DiscreteDP(R, Q, β)``.
 
 Let's create an instance using the objects stored in ``g``
 
@@ -595,9 +595,9 @@ The most important attributes are ``v``, the value function, and ``σ``, the opt
         @test results.sigma .- 1 == [0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 5, 5, 5, 5]
     end
 
-Here 1 is subtracted from `results.sigma` because we added 1 to each state and action to create valid indices
+Here 1 is subtracted from `results.sigma` because we added 1 to each state and action to create valid indices.
 
-Since we've used policy iteration, these results will be exact unless we hit the iteration bound ``max_iter``
+Since we've used policy iteration, these results will be exact unless we hit the iteration bound ``max_iter``.
 
 Let's make sure this didn't happen
 
@@ -612,11 +612,11 @@ Let's make sure this didn't happen
         @test results.num_iter ≤ 3 # Make sure we didn't take more cycles, compared to v0.6
     end
 
-In this case we converged in only 3 iterations
+In this case we converged in only 3 iterations.
 
-Another interesting object is ``results.mc``, which is the controlled chain defined by :math:`Q_{\sigma^*}`, where :math:`\sigma^*` is the optimal policy
+Another interesting object is ``results.mc``, which is the controlled chain defined by :math:`Q_{\sigma^*}`, where :math:`\sigma^*` is the optimal policy.
 
-In other words, it gives the dynamics of the state when the agent follows the optimal policy
+In other words, it gives the dynamics of the state when the agent follows the optimal policy.
 
 Since this object is an instance of `MarkovChain` from  `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ (see :doc:`this lecture <../tools_and_techniques/finite_markov>` for more discussion), we
 can easily simulate it, compute its stationary distribution and so on
@@ -663,14 +663,14 @@ What happens if the agent is more patient?
 
     bar(std_2, label = "stationary dist")
 
-We can see the rightward shift in probability mass
+We can see the rightward shift in probability mass.
 
 State-Action Pair Formulation
 -----------------------------
 
-The ``DiscreteDP`` type in fact provides a second interface to setting up an instance
+The ``DiscreteDP`` type in fact provides a second interface to setting up an instance.
 
-One of the advantages of this alternative set up is that it permits use of a sparse matrix for ``Q``
+One of the advantages of this alternative set up is that it permits use of a sparse matrix for ``Q``.
 
 (An example of using sparse matrices is given in the exercises below)
 
@@ -727,9 +727,9 @@ Exercises
 =========
 
 In the stochastic optimal growth lecture :doc:`dynamic programming lecture <../dynamic_programming/optgrowth>`, we solve a
-:ref:`benchmark model <benchmark_growth_mod>` that has an analytical solution to check we could replicate it numerically
+:ref:`benchmark model <benchmark_growth_mod>` that has an analytical solution to check we could replicate it numerically.
 
-The exercise is to replicate this solution using ``DiscreteDP``
+The exercise is to replicate this solution using ``DiscreteDP``.
 
 Solutions
 =========
@@ -1122,7 +1122,7 @@ condition :math:`k_0 = 0.1`.
 Appendix: Algorithms
 ====================
 
-This appendix covers the details of the solution algorithms implemented for ``DiscreteDP``
+This appendix covers the details of the solution algorithms implemented for ``DiscreteDP``.
 
 We will make use of the following notions of approximate optimality:
 
@@ -1136,14 +1136,14 @@ Value Iteration
 The ``DiscreteDP`` value iteration method implements value function iteration as
 follows
 
-1. Choose any :math:`v^0 \in \mathbb{R}^n`, and specify :math:`\varepsilon > 0`; set :math:`i = 0`
+1. Choose any :math:`v^0 \in \mathbb{R}^n`, and specify :math:`\varepsilon > 0`; set :math:`i = 0`.
 
-2. Compute :math:`v^{i+1} = T v^i`
+2. Compute :math:`v^{i+1} = T v^i`.
 
 3. If :math:`\lVert v^{i+1} - v^i\rVert <  [(1 - \beta) / (2\beta)] \varepsilon`,
-   then go to step 4; otherwise, set :math:`i = i + 1` and go to step 2
+   then go to step 4; otherwise, set :math:`i = i + 1` and go to step 2.
 
-4. Compute a :math:`v^{i+1}`-greedy policy :math:`\sigma`, and return :math:`v^{i+1}` and :math:`\sigma`
+4. Compute a :math:`v^{i+1}`-greedy policy :math:`\sigma`, and return :math:`v^{i+1}` and :math:`\sigma`.
 
 Given :math:`\varepsilon > 0`, the value iteration algorithm
 
@@ -1159,45 +1159,45 @@ Policy Iteration
 
 The ``DiscreteDP`` policy iteration method runs as follows
 
-1. Choose any :math:`v^0 \in \mathbb{R}^n` and compute a :math:`v^0`-greedy policy :math:`\sigma^0`; set :math:`i = 0`
+1. Choose any :math:`v^0 \in \mathbb{R}^n` and compute a :math:`v^0`-greedy policy :math:`\sigma^0`; set :math:`i = 0`.
 
 2. Compute the value :math:`v_{\sigma^i}` by solving
-   the equation :math:`v = T_{\sigma^i} v`
+   the equation :math:`v = T_{\sigma^i} v`.
 
 3. Compute a :math:`v_{\sigma^i}`-greedy policy
    :math:`\sigma^{i+1}`; let :math:`\sigma^{i+1} = \sigma^i` if
-   possible
+   possible.
 
 4. If :math:`\sigma^{i+1} = \sigma^i`, then return :math:`v_{\sigma^i}`
    and :math:`\sigma^{i+1}`; otherwise, set :math:`i = i + 1` and go to
-   step 2
+   step 2.
 
 The policy iteration algorithm terminates in a finite number of
-iterations
+iterations.
 
-It returns an optimal value function and an optimal policy function (unless ``iter_max`` is reached)
+It returns an optimal value function and an optimal policy function (unless ``iter_max`` is reached).
 
 Modified Policy Iteration
 -------------------------
 
 The ``DiscreteDP`` modified policy iteration method runs as follows:
 
-1. Choose any :math:`v^0 \in \mathbb{R}^n`, and specify :math:`\varepsilon > 0` and :math:`k \geq 0`; set :math:`i = 0`
+1. Choose any :math:`v^0 \in \mathbb{R}^n`, and specify :math:`\varepsilon > 0` and :math:`k \geq 0`; set :math:`i = 0`.
 
-2. Compute a :math:`v^i`-greedy policy :math:`\sigma^{i+1}`; let :math:`\sigma^{i+1} = \sigma^i` if possible (for :math:`i \geq 1`)
+2. Compute a :math:`v^i`-greedy policy :math:`\sigma^{i+1}`; let :math:`\sigma^{i+1} = \sigma^i` if possible (for :math:`i \geq 1`).
 
-3. Compute :math:`u = T v^i` (:math:`= T_{\sigma^{i+1}} v^i`). If :math:`\mathrm{span}(u - v^i) < [(1 - \beta) / \beta] \varepsilon`, then go to step 5; otherwise go to step 4
+3. Compute :math:`u = T v^i` (:math:`= T_{\sigma^{i+1}} v^i`). If :math:`\mathrm{span}(u - v^i) < [(1 - \beta) / \beta] \varepsilon`, then go to step 5; otherwise go to step 4.
 
    * Span is defined by :math:`\mathrm{span}(z) = \max(z) - \min(z)`
 
-4. Compute :math:`v^{i+1} = (T_{\sigma^{i+1}})^k u` (:math:`= (T_{\sigma^{i+1}})^{k+1} v^i`); set :math:`i = i + 1` and go to step 2
+4. Compute :math:`v^{i+1} = (T_{\sigma^{i+1}})^k u` (:math:`= (T_{\sigma^{i+1}})^{k+1} v^i`); set :math:`i = i + 1` and go to step 2.
 
-5. Return :math:`v = u + [\beta / (1 - \beta)] [(\min(u - v^i) + \max(u - v^i)) / 2] \mathbf{1}` and :math:`\sigma_{i+1}`
+5. Return :math:`v = u + [\beta / (1 - \beta)] [(\min(u - v^i) + \max(u - v^i)) / 2] \mathbf{1}` and :math:`\sigma_{i+1}`.
 
 Given :math:`\varepsilon > 0`, provided that :math:`v^0` is such that
 :math:`T v^0 \geq v^0`, the modified policy iteration algorithm
-terminates in a finite number of iterations
+terminates in a finite number of iterations.
 
 It returns an :math:`\varepsilon/2`-approximation of the optimal value function and an :math:`\varepsilon`-optimal policy function (unless ``iter_max`` is reached).
 
-See also the documentation for ``DiscreteDP``
+See also the documentation for ``DiscreteDP``.

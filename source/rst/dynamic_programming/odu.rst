@@ -14,7 +14,7 @@ Overview
 ============
 
 
-In this lecture we consider an extension of the :doc:`previously studied <../dynamic_programming/mccall_model>` job search model of McCall :cite:`McCall1970`
+In this lecture we consider an extension of the :doc:`previously studied <../dynamic_programming/mccall_model>` job search model of McCall :cite:`McCall1970`.
 
 In the McCall model, an unemployed worker decides when to accept a permanent position at a specified wage, given
 
@@ -26,17 +26,17 @@ In the McCall model, an unemployed worker decides when to accept a permanent pos
 
 
 
-In the version considered below, the wage distribution is unknown and must be learned
+In the version considered below, the wage distribution is unknown and must be learned.
 
-* The following is based on the presentation in :cite:`Ljungqvist2012`, section 6.6
+* The following is based on the presentation in :cite:`Ljungqvist2012`, section 6.6.
 
 
 Model features
 ----------------
 
-* Infinite horizon dynamic programming with two states and one binary control
+* Infinite horizon dynamic programming with two states and one binary control.
 
-* Bayesian updating to learn the unknown distribution
+* Bayesian updating to learn the unknown distribution.
 
 Setup
 ------------------
@@ -50,7 +50,7 @@ Model
 .. index::
     single: Models; McCall
 
-Let's first review the basic McCall model :cite:`McCall1970` and then add the variation we want to consider
+Let's first review the basic McCall model :cite:`McCall1970` and then add the variation we want to consider.
 
 
 
@@ -61,7 +61,7 @@ The Basic McCall Model
     single: McCall Model
 
 Recall that, :doc:`in the baseline model <../dynamic_programming/mccall_model>`, an unemployed worker is presented in each period with a
-permanent job offer at wage :math:`W_t`
+permanent job offer at wage :math:`W_t`.
 
 At time :math:`t`, our worker either
 
@@ -69,7 +69,7 @@ At time :math:`t`, our worker either
 
 #. rejects the offer, receives unemployment compensation :math:`c` and reconsiders next period
 
-The wage sequence :math:`\{W_t\}` is iid and generated from known density :math:`h`
+The wage sequence :math:`\{W_t\}` is iid and generated from known density :math:`h`.
 
 The worker aims to maximize the expected discounted sum of earnings :math:`\mathbb{E} \sum_{t=0}^{\infty} \beta^t y_t`
 The function :math:`V` satisfies the recursion
@@ -84,13 +84,13 @@ The function :math:`V` satisfies the recursion
 
 
 The optimal policy has the form :math:`\mathbf{1}\{w \geq \bar w\}`, where
-:math:`\bar w` is a constant depending called the *reservation wage*
+:math:`\bar w` is a constant depending called the *reservation wage*.
 
 
 Offer Distribution Unknown
 ----------------------------
 
-Now let's extend the model by considering the variation presented in :cite:`Ljungqvist2012`, section 6.6
+Now let's extend the model by considering the variation presented in :cite:`Ljungqvist2012`, section 6.6.
 
 The model is as above, apart from the fact that
 
@@ -98,12 +98,12 @@ The model is as above, apart from the fact that
 
 * the worker learns about :math:`h` by starting with a prior and updating based on wage offers that he/she observes
 
-The worker knows there are two possible distributions :math:`F` and :math:`G` --- with densities :math:`f` and :math:`g`
+The worker knows there are two possible distributions :math:`F` and :math:`G` --- with densities :math:`f` and :math:`g`.
 
 At the start of time, "nature" selects :math:`h` to be either :math:`f` or
-:math:`g` --- the wage distribution from which the entire sequence :math:`\{W_t\}` will be drawn
+:math:`g` --- the wage distribution from which the entire sequence :math:`\{W_t\}` will be drawn.
 
-This choice is not observed by the worker, who puts prior probability :math:`\pi_0` on :math:`f` being chosen
+This choice is not observed by the worker, who puts prior probability :math:`\pi_0` on :math:`f` being chosen.
 
 Update rule: worker's time :math:`t` estimate of the distribution is :math:`\pi_t f + (1 - \pi_t) g`, where :math:`\pi_t` updates via
 
@@ -125,7 +125,7 @@ This last expression follows from Bayes' rule, which tells us that
     \mathbb{P}\{W = w\} = \sum_{\psi \in \{f, g\}} \mathbb{P}\{W = w \,|\, h = \psi\} \mathbb{P}\{h = \psi\}
 
 
-The fact that :eq:`odu_pi_rec` is recursive allows us to progress to a recursive solution method
+The fact that :eq:`odu_pi_rec` is recursive allows us to progress to a recursive solution method.
 
 
 Letting
@@ -151,7 +151,7 @@ follows
     \pi' = q(w', \pi)
 
 
-Notice that the current guess :math:`\pi` is a state variable, since it affects the worker's perception of probabilities for future rewards
+Notice that the current guess :math:`\pi` is a state variable, since it affects the worker's perception of probabilities for future rewards.
 
 Parameterization
 ------------------
@@ -198,30 +198,30 @@ Looking Forward
 
 What kind of optimal policy might result from :eq:`odu_mvf` and the parameterization specified above?
 
-Intuitively, if we accept at :math:`w_a` and :math:`w_a \leq w_b`, then --- all other things being given --- we should also accept at :math:`w_b`
+Intuitively, if we accept at :math:`w_a` and :math:`w_a \leq w_b`, then --- all other things being given --- we should also accept at :math:`w_b`.
 
-This suggests a policy of accepting whenever :math:`w` exceeds some threshold value :math:`\bar w`
+This suggests a policy of accepting whenever :math:`w` exceeds some threshold value :math:`\bar w`.
 
 But :math:`\bar w` should depend on :math:`\pi` --- in fact it should be decreasing in :math:`\pi` because
 
 * :math:`f` is a less attractive offer distribution than :math:`g`
 * larger :math:`\pi` means more weight on :math:`f` and less on :math:`g`
 
-Thus larger :math:`\pi` depresses the worker's assessment of her future prospects, and relatively low current offers become more attractive
+Thus larger :math:`\pi` depresses the worker's assessment of her future prospects, and relatively low current offers become more attractive.
 
 **Summary:**  We conjecture that the optimal policy is of the form
 :math:`\mathbb 1\{w \geq \bar w(\pi) \}` for some decreasing function
-:math:`\bar w`
+:math:`\bar w`.
 
 
 Take 1: Solution by VFI
 ==================================
 
-Let's set about solving the model and see how our results match with our intuition
+Let's set about solving the model and see how our results match with our intuition.
 
-We begin by solving via value function iteration (VFI), which is natural but ultimately turns out to be second best
+We begin by solving via value function iteration (VFI), which is natural but ultimately turns out to be second best.
 
-The code is as follows
+The code is as follows.
 
 .. _odu_vfi_code:
 
@@ -328,16 +328,16 @@ The code is as follows
   end
 
 
-The type ``SearchProblem`` is used to store parameters and methods needed to compute optimal actions
+The type ``SearchProblem`` is used to store parameters and methods needed to compute optimal actions.
 
 The Bellman operator is implemented as the method ``T()``, while ``get_greedy()``
-computes an approximate optimal policy from a guess ``v`` of the value function
+computes an approximate optimal policy from a guess ``v`` of the value function.
 
-We will omit a detailed discussion of the code because there is a more efficient solution method
+We will omit a detailed discussion of the code because there is a more efficient solution method.
 
-These ideas are implemented in the ``.res_wage_operator()`` method
+These ideas are implemented in the ``.res_wage_operator()`` method.
 
-Before explaining it let's look at solutions computed from value function iteration
+Before explaining it let's look at solutions computed from value function iteration.
 
 Here's the value function:
 
@@ -393,38 +393,38 @@ The optimal policy:
   plot_policy_function()
 
 
-The code takes several minutes to run
+The code takes several minutes to run.
 
-The results fit well with our intuition from section :ref:`looking forward <looking_forward>`
+The results fit well with our intuition from section :ref:`looking forward <looking_forward>`.
 
-* The black line in the figure above corresponds to the function :math:`\bar w(\pi)` introduced there
+* The black line in the figure above corresponds to the function :math:`\bar w(\pi)` introduced there.
 
-* It is decreasing as expected
+* It is decreasing as expected.
 
 
 Take 2: A More Efficient Method
 ==================================
 
-Our implementation of VFI can be optimized to some degree
+Our implementation of VFI can be optimized to some degree.
 
-But instead of pursuing that, let's consider another method to solve for the optimal policy
+But instead of pursuing that, let's consider another method to solve for the optimal policy.
 
 We will use iteration with an operator that has the same contraction rate as the Bellman operator, but
 
 * one dimensional rather than two dimensional
 * no maximization step
 
-As a consequence, the algorithm is orders of magnitude faster than VFI
+As a consequence, the algorithm is orders of magnitude faster than VFI.
 
 This section illustrates the point that when it comes to programming, a bit of
-mathematical analysis goes a long way
+mathematical analysis goes a long way.
 
 
 Another Functional Equation
 -----------------------------
 
 To begin, note that when :math:`w = \bar w(\pi)`, the worker is indifferent
-between accepting and rejecting
+between accepting and rejecting.
 
 Hence the two choices on the right-hand side of :eq:`odu_mvf` have equal value:
 
@@ -468,17 +468,17 @@ Multiplying by :math:`1 - \beta`, substituting in :math:`\pi' = q(w', \pi)` and 
     \beta \int \max \left\{ w', \bar w \circ q(w', \pi) \right\} \, h_{\pi}(w') \, dw'
 
 
-Equation :eq:`odu_mvf4` can be understood as a functional equation, where :math:`\bar w` is the unknown function
+Equation :eq:`odu_mvf4` can be understood as a functional equation, where :math:`\bar w` is the unknown function.
 
-* Let's call it the *reservation wage functional equation* (RWFE)
-* The solution :math:`\bar w` to the RWFE is the object that we wish to compute
+* Let's call it the *reservation wage functional equation* (RWFE).
+* The solution :math:`\bar w` to the RWFE is the object that we wish to compute.
 
 
 Solving the RWFE
 --------------------------------
 
 To solve the RWFE, we will first show that its solution is the
-fixed point of a `contraction mapping <https://en.wikipedia.org/wiki/Contraction_mapping>`_
+fixed point of a `contraction mapping <https://en.wikipedia.org/wiki/Contraction_mapping>`_.
 
 To this end, let
 
@@ -496,9 +496,9 @@ Consider the operator :math:`Q` mapping :math:`\psi \in b[0,1]` into :math:`Q\ps
     \beta \int \max \left\{ w', \psi \circ q(w', \pi) \right\} \, h_{\pi}(w') \, dw'
 
 
-Comparing :eq:`odu_mvf4` and :eq:`odu_dq`, we see that the set of fixed points of :math:`Q` exactly coincides with the set of solutions to the RWFE
+Comparing :eq:`odu_mvf4` and :eq:`odu_dq`, we see that the set of fixed points of :math:`Q` exactly coincides with the set of solutions to the RWFE.
 
-* If :math:`Q \bar w = \bar w` then :math:`\bar w` solves :eq:`odu_mvf4` and vice versa
+* If :math:`Q \bar w = \bar w` then :math:`\bar w` solves :eq:`odu_mvf4` and vice versa.
 
 Moreover, for any :math:`\psi, \phi \in b[0,1]`, basic algebra and the
 triangle inequality for integrals tells us that
@@ -545,21 +545,21 @@ Taking the supremum over :math:`\pi` now gives us
 
 
 In other words, :math:`Q` is a contraction of modulus :math:`\beta` on the
-complete metric space :math:`(b[0,1], \| \cdot \|)`
+complete metric space :math:`(b[0,1], \| \cdot \|)`.
 
 Hence
 
-* A unique solution :math:`\bar w` to the RWFE exists in :math:`b[0,1]`
-* :math:`Q^k \psi \to \bar w` uniformly as :math:`k \to \infty`, for any :math:`\psi \in b[0,1]`
+* A unique solution :math:`\bar w` to the RWFE exists in :math:`b[0,1]`.
+* :math:`Q^k \psi \to \bar w` uniformly as :math:`k \to \infty`, for any :math:`\psi \in b[0,1]`.
 
 Implementation
 ^^^^^^^^^^^^^^^^^
 
-These ideas are implemented in the ``.res_wage_operator()`` method from ``odu.jl`` as shown above
+These ideas are implemented in the ``.res_wage_operator()`` method from ``odu.jl`` as shown above.
 
-The method corresponds to action of the operator :math:`Q`
+The method corresponds to action of the operator :math:`Q`.
 
-The following exercise asks you to exploit these facts to compute an approximation to :math:`\bar w`
+The following exercise asks you to exploit these facts to compute an approximation to :math:`\bar w`.
 
 
 Exercises
@@ -570,12 +570,12 @@ Exercises
 Exercise 1
 ------------
 
-Use the default parameters and the ``.res_wage_operator()`` method to compute an optimal policy
+Use the default parameters and the ``.res_wage_operator()`` method to compute an optimal policy.
 
-Your result should coincide closely with the figure for the optimal policy :ref:`shown above<odu_pol_vfi>`
+Your result should coincide closely with the figure for the optimal policy :ref:`shown above<odu_pol_vfi>`.
 
 Try experimenting with different parameters, and confirm that the change in
-the optimal policy coincides with your intuition
+the optimal policy coincides with your intuition.
 
 
 Solutions
@@ -588,7 +588,7 @@ Exercise 1
 This code solves the "Offer Distribution Unknown" model by iterating on
 a guess of the reservation wage function. You should find that the run
 time is much shorter than that of the value function approach in
-``examples/odu_vfi_plots.jl``
+``examples/odu_vfi_plots.jl``.
 
 .. code-block:: julia
 
@@ -608,12 +608,12 @@ time is much shorter than that of the value function approach in
 
 The next piece of code is not one of the exercises from QuantEcon -- it's
 just a fun simulation to see what the effect of a change in the
-underlying distribution on the unemployment rate is
+underlying distribution on the unemployment rate is.
 
 At a point in the simulation, the distribution becomes significantly
 worse. It takes a while for agents to learn this, and in the meantime
 they are too optimistic, and turn down too many jobs. As a result, the
-unemployment rate spikes
+unemployment rate spikes.
 
 The code takes a few minutes to run.
 

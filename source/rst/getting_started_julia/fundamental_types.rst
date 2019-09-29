@@ -1517,6 +1517,8 @@ Redo Exercise 1 using the ``fixedpoint`` function from ``NLsolve`` :doc:`this le
 
 Compare the number of iterations of the NLsolve's Anderson Acceleration to the handcoded iteration used in Exercise 1
 
+Hint: Convert the matrix to a vector to use ``fixedpoint``. e.g. ``A = [1 2; 3 4]`` then ``x = reshape(A, 4)`` turns it into a vector.  To reverse, ``reshape(x, 2, 2)``.
+
 
 Solutions
 ==================

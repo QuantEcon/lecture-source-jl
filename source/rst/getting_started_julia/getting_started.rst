@@ -51,7 +51,7 @@ If you want to install these tools locally on your machine
 
     #. Navigating to Julia through your menus or desktop icons (Windows, Mac), or
 
-    #. Opening a terminal and typing ``julia`` (Linux)
+    #. Opening a terminal and typing ``julia`` (Linux; to set this up on Mac, see end of section)
 
 You should now be looking at something like this
 
@@ -72,6 +72,10 @@ This adds packages for
 * The  ``IJulia`` kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.)
 
 * The ``InstantiateFromURL`` which is a tool written by the QE team to manage package dependencies for the lectures
+
+Note: To set up the Julia terminal command on Mac, open a terminal and run ``go to a terminal and run ``sudo ln -s <where_julia_app_is>/Contents/Resources/julia/bin/julia /usr/local/bin/julia``.
+
+The full command might look like ``sudo ln -s /Applications/Julia-1.2.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
 
 .. _jupyter_installation:
 

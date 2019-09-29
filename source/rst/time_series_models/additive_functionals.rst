@@ -24,7 +24,7 @@ For example, output, prices, and dividends are typically nonstationary, due to i
 
 Which kinds of models are useful for studying such time series?
 
-Hansen and Scheinkman :cite:`Hans_Scheink_2009` analyze two classes of time series models that accommodate growth
+Hansen and Scheinkman :cite:`hans-scheink2009` analyze two classes of time series models that accommodate growth
 
 They are:
 
@@ -36,13 +36,13 @@ These two classes of processes are closely connected
 
 For example, if a process :math:`\{y_t\}` is an additive functional and :math:`\phi_t = \exp(y_t)`, then :math:`\{\phi_t\}` is a multiplicative functional
 
-Hansen and Sargent :cite:`Hans_Sarg_book_2016` (chs. 5 and 6) describe discrete time versions of additive and multiplicative functionals
+Hansen and Sargent :cite:`hans-sarg-book2016` (chs. 5 and 6) describe discrete time versions of additive and multiplicative functionals
 
 In this lecture we discuss the former (i.e., additive functionals)
 
 In the :doc:`next lecture <../time_series_models/multiplicative_functionals>` we discuss multiplicative functionals
 
-We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent :cite:`Hans_Sarg_book_2016`
+We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent :cite:`hans-sarg-book2016`
 
 A Particular Additive Functional
 ================================
@@ -196,7 +196,7 @@ Simulation
 
 When simulating we embed our variables into a bigger system
 
-This system also constructs the components of the decompositions of :math:`y_t` and of :math:`\exp(y_t)` proposed by Hansen and Scheinkman :cite:`Hans_Scheink_2009`
+This system also constructs the components of the decompositions of :math:`y_t` and of :math:`\exp(y_t)` proposed by Hansen and Scheinkman :cite:`hans-scheink2009`
 
 All of these objects are computed using the code below
 
@@ -688,7 +688,7 @@ Notice the irregular but persistent growth in :math:`y_t`
 Decomposition
 -------------
 
-Hansen and Sargent :cite:`Hans_Sarg_book_2016` describe how to construct a decomposition of
+Hansen and Sargent :cite:`hans-sarg-book2016` describe how to construct a decomposition of
 an additive functional into four parts:
 
 -  a constant inherited from initial values :math:`x_0` and :math:`y_0`
@@ -710,7 +710,7 @@ functionals defined by :eq:`old1_additive_functionals` and :eq:`old2_additive_fu
       g & := D' (I - A)^{-1}
     \end{aligned}
 
-Then the Hansen-Scheinkman :cite:`Hans_Scheink_2009` decomposition is
+Then the Hansen-Scheinkman :cite:`hans-scheink2009` decomposition is
 
 .. math::
 
@@ -908,7 +908,7 @@ arithmetic growth
 A peculiar large sample property
 --------------------------------
 
-Hansen and Sargent :cite:`Hans_Sarg_book_2016` (ch. 6) note that the martingale component
+Hansen and Sargent :cite:`hans-sarg-book2016` (ch. 6) note that the martingale component
 :math:`\widetilde M_t` of the multiplicative decomposition has a peculiar property
 
 *  While :math:`E_0 \widetilde M_t = 1` for all :math:`t \geq 0`,

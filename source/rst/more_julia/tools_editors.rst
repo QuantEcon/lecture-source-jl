@@ -109,6 +109,10 @@ Hitting ``]`` brings you into package mode
 
 * ``] precompile`` will precompile everything possible
 
+* ``] build`` will execute build scripts for all packages
+
+* Running ``] preview`` before a command (i.e., ``] preview up``) will display the changes without executing
+
 You can get a full list of package mode commands by running
 
 .. code-block:: julia
@@ -212,6 +216,14 @@ To do this
     * e.g. ``C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe`` on Windows as ``/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia`` on OSX
 
 See the `setup instructions for Juno <http://docs.junolab.org/latest/man/installation.html>`_  if you have further issues
+
+If you upgrade Atom and it breaks Juno, run the following in a terminal. 
+
+.. code-block:: none 
+
+    apm uninstall ink julia-client
+    apm install ink julia-client
+
 
 Standard Layout
 ------------------

@@ -13,7 +13,7 @@
 Overview
 ============
 
-In this lecture we're going to study a simple optimal growth model with one agent
+In this lecture we're going to study a simple optimal growth model with one agent.
 
 The model is a version of the standard one sector infinite horizon growth model studied in
 
@@ -25,14 +25,14 @@ The model is a version of the standard one sector infinite horizon growth model 
 
 * :cite:`Sundaram1996`, chapter 12
 
-The technique we use to solve the model is dynamic programming
+The technique we use to solve the model is dynamic programming.
 
 Our treatment of dynamic programming follows on from earlier
 treatments in our lectures on :doc:`shortest paths <../dynamic_programming/short_path>` and
-:doc:`job search <../dynamic_programming/mccall_model>`
+:doc:`job search <../dynamic_programming/mccall_model>`.
 
 We'll discuss some of the technical details of dynamic programming as we
-go along
+go along.
 
 The Model
 ==========================
@@ -40,15 +40,15 @@ The Model
 .. index::
     single: Optimal Growth; Model
 
-Consider an agent who owns an amount :math:`y_t \in \mathbb R_+ := [0, \infty)` of a consumption good at time :math:`t`
+Consider an agent who owns an amount :math:`y_t \in \mathbb R_+ := [0, \infty)` of a consumption good at time :math:`t`.
 
-This output can either be consumed or invested
+This output can either be consumed or invested.
 
-When the good is invested it is transformed one-for-one into capital
+When the good is invested it is transformed one-for-one into capital.
 
-The resulting capital stock, denoted here by :math:`k_{t+1}`, will then be used for production
+The resulting capital stock, denoted here by :math:`k_{t+1}`, will then be used for production.
 
-Production is stochastic, in that it also depends on a shock :math:`\xi_{t+1}` realized at the end of the current period
+Production is stochastic, in that it also depends on a shock :math:`\xi_{t+1}` realized at the end of the current period.
 
 Next period output is
 
@@ -56,7 +56,7 @@ Next period output is
 
     y_{t+1} := f(k_{t+1}) \xi_{t+1}
 
-where :math:`f \colon \mathbb{R}_+ \to \mathbb{R}_+` is called the production function
+where :math:`f \colon \mathbb{R}_+ \to \mathbb{R}_+` is called the production function.
 
 The resource constraint is
 
@@ -65,26 +65,26 @@ The resource constraint is
 
     k_{t+1} + c_t \leq y_t
 
-and all variables are required to be nonnegative
+and all variables are required to be nonnegative.
 
 Assumptions and Comments
 ---------------------------
 
 In what follows,
 
-* The sequence :math:`\{\xi_t\}` is assumed to be IID
+* The sequence :math:`\{\xi_t\}` is assumed to be IID.
 
-* The common distribution of each :math:`\xi_t` will be denoted :math:`\phi`
+* The common distribution of each :math:`\xi_t` will be denoted :math:`\phi`.
 
-* The production function :math:`f` is assumed to be increasing and continuous
+* The production function :math:`f` is assumed to be increasing and continuous.
 
-* Depreciation of capital is not made explicit but can be incorporated into the production function
+* Depreciation of capital is not made explicit but can be incorporated into the production function.
 
-While many other treatments of the stochastic growth model use :math:`k_t` as the state variable, we will use :math:`y_t`
+While many other treatments of the stochastic growth model use :math:`k_t` as the state variable, we will use :math:`y_t`.
 
-This will allow us to treat a stochastic model while maintaining only one state variable
+This will allow us to treat a stochastic model while maintaining only one state variable.
 
-We consider alternative states and timing specifications in some of our other lectures
+We consider alternative states and timing specifications in some of our other lectures.
 
 Optimization
 --------------
@@ -112,7 +112,7 @@ where
 
 * :math:`\beta \in (0, 1)` is a discount factor
 
-In :eq:`og_conse` we are assuming that the resource constraint :eq:`outcsdp0` holds with equality --- which is reasonable because :math:`u` is strictly increasing and no output will be wasted at the optimum
+In :eq:`og_conse` we are assuming that the resource constraint :eq:`outcsdp0` holds with equality --- which is reasonable because :math:`u` is strictly increasing and no output will be wasted at the optimum.
 
 In summary, the agent's aim is to select a path :math:`c_0, c_1, c_2, \ldots` for consumption that is
 
@@ -127,9 +127,9 @@ In summary, the agent's aim is to select a path :math:`c_0, c_1, c_2, \ldots` fo
 
 In the present context
 
-* :math:`y_t` is called the *state* variable --- it summarizes the "state of the world" at the start of each period
+* :math:`y_t` is called the *state* variable --- it summarizes the "state of the world" at the start of each period.
 
-* :math:`c_t` is called the *control* variable --- a value chosen by the agent each period after observing the state
+* :math:`c_t` is called the *control* variable --- a value chosen by the agent each period after observing the state.
 
 The Policy Function Approach
 --------------------------------
@@ -137,20 +137,20 @@ The Policy Function Approach
 .. index::
     single: Optimal Growth; Policy Function Approach
 
-One way to think about solving this problem is to look for the best **policy function**
+One way to think about solving this problem is to look for the best **policy function**.
 
-A policy function is a map from past and present observables into current action
+A policy function is a map from past and present observables into current action.
 
-We'll be particularly interested in **Markov policies**, which are maps from the current state :math:`y_t` into a current action :math:`c_t`
+We'll be particularly interested in **Markov policies**, which are maps from the current state :math:`y_t` into a current action :math:`c_t`.
 
-For dynamic programming problems such as this one (in fact for any `Markov decision process <https://en.wikipedia.org/wiki/Markov_decision_process>`__), the optimal policy is always a Markov policy
+For dynamic programming problems such as this one (in fact for any `Markov decision process <https://en.wikipedia.org/wiki/Markov_decision_process>`__), the optimal policy is always a Markov policy.
 
 In other words, the current state :math:`y_t` provides a sufficient statistic
-for the history in terms of making an optimal decision today
+for the history in terms of making an optimal decision today.
 
-This is quite intuitive but if you wish you can find proofs in texts such as :cite:`StokeyLucas1989` (section 4.1)
+This is quite intuitive but if you wish you can find proofs in texts such as :cite:`StokeyLucas1989` (section 4.1).
 
-Hereafter we focus on finding the best Markov policy
+Hereafter we focus on finding the best Markov policy.
 
 In our context, a Markov policy is a function :math:`\sigma \colon
 \mathbb R_+ \to \mathbb R_+`, with the understanding that states are mapped to actions via
@@ -168,9 +168,9 @@ In what follows, we will call :math:`\sigma` a *feasible consumption policy* if 
     \quad \text{for all} \quad
     y \in \mathbb R_+
 
-In other words, a feasible consumption policy is a Markov policy that respects the resource constraint
+In other words, a feasible consumption policy is a Markov policy that respects the resource constraint.
 
-The set of all feasible consumption policies will be denoted by :math:`\Sigma`
+The set of all feasible consumption policies will be denoted by :math:`\Sigma`.
 
 Each :math:`\sigma \in \Sigma` determines a :doc:`continuous state Markov process <../tools_and_techniques/stationary_densities>` :math:`\{y_t\}` for output via
 
@@ -180,7 +180,7 @@ Each :math:`\sigma \in \Sigma` determines a :doc:`continuous state Markov proces
     y_{t+1} = f(y_t - \sigma(y_t)) \xi_{t+1},
     \quad y_0 \text{ given}
 
-This is the time path for output when we choose and stick with the policy :math:`\sigma`
+This is the time path for output when we choose and stick with the policy :math:`\sigma`.
 
 We insert this process into the objective function to get
 
@@ -197,11 +197,11 @@ We insert this process into the objective function to get
     \right]
 
 This is the total expected present value of following policy :math:`\sigma` forever,
-given initial income :math:`y_0`
+given initial income :math:`y_0`.
 
-The aim is to select a policy that makes this number as large as possible
+The aim is to select a policy that makes this number as large as possible.
 
-The next section covers these ideas more formally
+The next section covers these ideas more formally.
 
 Optimality
 ------------------------------------
@@ -213,10 +213,10 @@ The **policy value function** :math:`v_{\sigma}` associated with a given policy 
 
     v_{\sigma}(y) = \mathbb E \left[ \sum_{t = 0}^{\infty} \beta^t u(\sigma(y_t)) \right]
 
-when :math:`\{y_t\}` is given by :eq:`firstp0_og2` with :math:`y_0 = y`
+when :math:`\{y_t\}` is given by :eq:`firstp0_og2` with :math:`y_0 = y`.
 
 In other words, it is the lifetime value of following policy :math:`\sigma`
-starting at initial condition :math:`y`
+starting at initial condition :math:`y`.
 
 The **value function** is then defined as
 
@@ -225,14 +225,14 @@ The **value function** is then defined as
 
     v^*(y) := \sup_{\sigma \in \Sigma} \; v_{\sigma}(y)
 
-The value function gives the maximal value that can be obtained from state :math:`y`, after considering all feasible policies
+The value function gives the maximal value that can be obtained from state :math:`y`, after considering all feasible policies.
 
-A policy :math:`\sigma \in \Sigma` is called **optimal** if it attains the supremum in :eq:`vfcsdp0` for all :math:`y \in \mathbb R_+`
+A policy :math:`\sigma \in \Sigma` is called **optimal** if it attains the supremum in :eq:`vfcsdp0` for all :math:`y \in \mathbb R_+`.
 
 The Bellman Equation
 ----------------------
 
-With our assumptions on utility and production function, the value function as defined in :eq:`vfcsdp0` also satisfies a **Bellman equation**
+With our assumptions on utility and production function, the value function as defined in :eq:`vfcsdp0` also satisfies a **Bellman equation**.
 
 For this problem, the Bellman equation takes the form
 
@@ -245,7 +245,7 @@ For this problem, the Bellman equation takes the form
         \right\}
     \qquad (y \in \mathbb R_+)
 
-This is a *functional equation in* :math:`w`
+This is a *functional equation in* :math:`w`.
 
 The term :math:`\int w(f(y - c) z) \phi(dz)` can be understood as the expected next period value when
 
@@ -255,11 +255,11 @@ The term :math:`\int w(f(y - c) z) \phi(dz)` can be understood as the expected n
 
 * consumption is set to :math:`c`
 
-As shown in `EDTC <http://johnstachurski.net/edtc.html>`_, theorem 10.1.11 and a range of other texts
+As shown in `EDTC <http://johnstachurski.net/edtc.html>`_, theorem 10.1.11 and a range of other texts.
 
     *The value function* :math:`v^*` *satisfies the Bellman equation*
 
-In other words, :eq:`fpb30` holds when :math:`w=v^*`
+In other words, :eq:`fpb30` holds when :math:`w=v^*`.
 
 The intuition is that maximal value from a given state can be obtained by optimally trading off
 
@@ -267,16 +267,16 @@ The intuition is that maximal value from a given state can be obtained by optima
 
 * expected discounted future value of the state resulting from that action
 
-The Bellman equation is important because it gives us more information about the value function
+The Bellman equation is important because it gives us more information about the value function.
 
-It also suggests a way of computing the value function, which we discuss below
+It also suggests a way of computing the value function, which we discuss below.
 
 Greedy policies
 -----------------
 
-The primary importance of the value function is that we can use it to compute optimal policies
+The primary importance of the value function is that we can use it to compute optimal policies.
 
-The details are as follows
+The details are as follows.
 
 Given a continuous function :math:`w` on :math:`\mathbb R_+`, we say that :math:`\sigma \in \Sigma` is :math:`w`-**greedy** if :math:`\sigma(y)` is a solution to
 
@@ -288,32 +288,32 @@ Given a continuous function :math:`w` on :math:`\mathbb R_+`, we say that :math:
         u(c) + \beta \int w(f(y - c) z) \phi(dz)
         \right\}
 
-for every :math:`y \in \mathbb R_+`
+for every :math:`y \in \mathbb R_+`.
 
 In other words, :math:`\sigma \in \Sigma` is :math:`w`-greedy if it optimally
 trades off current and future rewards when :math:`w` is taken to be the value
-function
+function.
 
 In our setting, we have the following key result
 
     *A feasible consumption  policy is optimal if and only if it is* :math:`v^*`-*greedy*
 
 The intuition is similar to the intuition for the Bellman equation, which was
-provided after :eq:`fpb30`
+provided after :eq:`fpb30`.
 
-See, for example, theorem 10.1.11 of `EDTC <http://johnstachurski.net/edtc.html>`__
+See, for example, theorem 10.1.11 of `EDTC <http://johnstachurski.net/edtc.html>`__.
 
-Hence, once we have a good approximation to :math:`v^*`, we can compute the (approximately) optimal policy by computing the corresponding greedy policy
+Hence, once we have a good approximation to :math:`v^*`, we can compute the (approximately) optimal policy by computing the corresponding greedy policy.
 
 The advantage is that we are now solving a much lower dimensional optimization
-problem
+problem.
 
 The Bellman Operator
 ------------------------
 
 How, then, should we compute the value function?
 
-One way is to use the so-called **Bellman operator**
+One way is to use the so-called **Bellman operator**.
 
 (An operator is a map that sends functions into functions)
 
@@ -329,9 +329,9 @@ The Bellman operator is denoted by :math:`T` and defined by
     \qquad (y \in \mathbb R_+)
 
 In other words, :math:`T` sends the function :math:`w` into the new function
-:math:`Tw` defined :eq:`fcbell20_optgrowth`
+:math:`Tw` defined :eq:`fcbell20_optgrowth`.
 
-By construction, the set of solutions to the Bellman equation :eq:`fpb30` *exactly coincides with* the set of fixed points of :math:`T`
+By construction, the set of solutions to the Bellman equation :eq:`fpb30` *exactly coincides with* the set of fixed points of :math:`T`.
 
 For example, if :math:`Tw = w`, then, for any :math:`y \geq 0`,
 
@@ -344,9 +344,9 @@ For example, if :math:`Tw = w`, then, for any :math:`y \geq 0`,
         u(c) + \beta \int v^*(f(y - c) z) \phi(dz)
     \right\}
 
-which says precisely that :math:`w` is a solution to the Bellman equation
+which says precisely that :math:`w` is a solution to the Bellman equation.
 
-It follows that :math:`v^*` is a fixed point of :math:`T`
+It follows that :math:`v^*` is a fixed point of :math:`T`.
 
 Review of Theoretical Results
 ---------------------------------
@@ -360,25 +360,25 @@ One can also show that :math:`T` is a contraction mapping on the set of continuo
 
     \rho(g, h) = \sup_{y \geq 0} |g(y) - h(y)|
 
-See  `EDTC <http://johnstachurski.net/edtc.html>`__, lemma 10.1.18
+See  `EDTC <http://johnstachurski.net/edtc.html>`__, lemma 10.1.18.
 
-Hence it has exactly one fixed point in this set, which we know is equal to the value function
+Hence it has exactly one fixed point in this set, which we know is equal to the value function.
 
 It follows that
 
-* The value function :math:`v^*` is bounded and continuous
+* The value function :math:`v^*` is bounded and continuous.
 
-* Starting from any bounded and continuous :math:`w`, the sequence :math:`w, Tw, T^2 w, \ldots` generated by iteratively applying :math:`T` converges uniformly to :math:`v^*`
+* Starting from any bounded and continuous :math:`w`, the sequence :math:`w, Tw, T^2 w, \ldots` generated by iteratively applying :math:`T` converges uniformly to :math:`v^*`.
 
-This iterative method is called **value function iteration**
+This iterative method is called **value function iteration**.
 
-We also know that a feasible policy is optimal if and only if it is :math:`v^*`-greedy
+We also know that a feasible policy is optimal if and only if it is :math:`v^*`-greedy.
 
-It's not too hard to show that a :math:`v^*`-greedy policy exists (see  `EDTC <http://johnstachurski.net/edtc.html>`__, theorem 10.1.11 if you get stuck)
+It's not too hard to show that a :math:`v^*`-greedy policy exists (see  `EDTC <http://johnstachurski.net/edtc.html>`__, theorem 10.1.11 if you get stuck).
 
-Hence at least one optimal policy exists
+Hence at least one optimal policy exists.
 
-Our problem now is how to compute it
+Our problem now is how to compute it.
 
 :index:`Unbounded Utility`
 --------------------------
@@ -386,18 +386,18 @@ Our problem now is how to compute it
 .. index::
     single: Dynamic Programming; Unbounded Utility
 
-The results stated above assume that the utility function is bounded
+The results stated above assume that the utility function is bounded.
 
-In practice economists often work with unbounded utility functions --- and so will we
+In practice economists often work with unbounded utility functions --- and so will we.
 
-In the unbounded setting, various optimality theories exist
+In the unbounded setting, various optimality theories exist.
 
-Unfortunately, they tend to be case specific, as opposed to valid for a large range of applications
+Unfortunately, they tend to be case specific, as opposed to valid for a large range of applications.
 
 Nevertheless, their main conclusions are usually in line with those stated for
-the bounded case just above (as long as we drop the word "bounded")
+the bounded case just above (as long as we drop the word "bounded").
 
-Consult,  for example, section 12.2 of `EDTC <http://johnstachurski.net/edtc.html>`_, :cite:`Kamihigashi2012` or :cite:`MV2010`
+Consult,  for example, section 12.2 of `EDTC <http://johnstachurski.net/edtc.html>`_, :cite:`Kamihigashi2012` or :cite:`MV2010`.
 
 Computation
 =============
@@ -405,7 +405,7 @@ Computation
 .. index::
     single: Dynamic Programming; Computation
 
-Let's now look at computing the value function and the optimal policy
+Let's now look at computing the value function and the optimal policy.
 
 Fitted Value Iteration
 -------------------------
@@ -413,59 +413,59 @@ Fitted Value Iteration
 .. index::
     single: Dynamic Programming; Value Function Iteration
 
-The first step is to compute the value function by value function iteration
+The first step is to compute the value function by value function iteration.
 
 In theory, the algorithm is as follows
 
-#. Begin with a function :math:`w` --- an initial condition
+#. Begin with a function :math:`w` --- an initial condition.
 
-#. Solving :eq:`fcbell20_optgrowth`, obtain the function :math:`T w`
+#. Solving :eq:`fcbell20_optgrowth`, obtain the function :math:`T w`.
 
-#. Unless some stopping condition is satisfied, set :math:`w = Tw` and go to step 2
+#. Unless some stopping condition is satisfied, set :math:`w = Tw` and go to step 2.
 
-This generates the sequence :math:`w, Tw, T^2 w, \ldots`
+This generates the sequence :math:`w, Tw, T^2 w, \ldots`.
 
-However, there is a problem we must confront before we implement this procedure: The iterates can neither be calculated exactly nor stored on a computer
+However, there is a problem we must confront before we implement this procedure: The iterates can neither be calculated exactly nor stored on a computer.
 
-To see the issue, consider :eq:`fcbell20_optgrowth`
+To see the issue, consider :eq:`fcbell20_optgrowth`.
 
 Even if :math:`w` is a known function, unless :math:`Tw` can be shown to have
 some special structure, the only way to store it is to record the
-value :math:`Tw(y)` for every :math:`y \in \mathbb R_+`
+value :math:`Tw(y)` for every :math:`y \in \mathbb R_+`.
 
-Clearly this is impossible
+Clearly this is impossible.
 
-What we will do instead is use **fitted value function iteration**
+What we will do instead is use **fitted value function iteration**.
 
-The procedure is to record the value of the function :math:`Tw` at only finitely many "grid" points :math:`y_1 < y_2 < \cdots < y_I` and reconstruct it from this information when required
+The procedure is to record the value of the function :math:`Tw` at only finitely many "grid" points :math:`y_1 < y_2 < \cdots < y_I` and reconstruct it from this information when required.
 
 More precisely, the algorithm will be
 
 .. _fvi_alg:
 
-#. Begin with an array of values :math:`\{ w_1, \ldots, w_I \}` representing the values of some initial function :math:`w` on the grid points :math:`\{ y_1, \ldots, y_I \}`
+#. Begin with an array of values :math:`\{ w_1, \ldots, w_I \}` representing the values of some initial function :math:`w` on the grid points :math:`\{ y_1, \ldots, y_I \}`.
 
-#. Build a function :math:`\hat w` on the state space :math:`\mathbb R_+` by interpolation or approximation, based on these data points
+#. Build a function :math:`\hat w` on the state space :math:`\mathbb R_+` by interpolation or approximation, based on these data points.
 
-#.  Obtain and record the value :math:`T \hat w(y_i)` on each grid point :math:`y_i` by repeatedly solving :eq:`fcbell20_optgrowth`
+#.  Obtain and record the value :math:`T \hat w(y_i)` on each grid point :math:`y_i` by repeatedly solving :eq:`fcbell20_optgrowth`.
 
-#. Unless some stopping condition is satisfied, set :math:`\{ w_1, \ldots, w_I \} = \{ T \hat w(y_1), \ldots, T \hat w(y_I) \}` and go to step 2
+#. Unless some stopping condition is satisfied, set :math:`\{ w_1, \ldots, w_I \} = \{ T \hat w(y_1), \ldots, T \hat w(y_I) \}` and go to step 2.
 
 How should we go about step 2?
 
-This is a problem of function approximation, and there are many ways to approach it
+This is a problem of function approximation, and there are many ways to approach it.
 
-What's important here is that the function approximation scheme must not only produce a good approximation to :math:`Tw`, but also combine well with the broader iteration algorithm described above
+What's important here is that the function approximation scheme must not only produce a good approximation to :math:`Tw`, but also combine well with the broader iteration algorithm described above.
 
 .. only:: html
 
-    One good choice from both respects is continuous piecewise linear interpolation (see :download:`this paper <../_static/pdfs/3ndp.pdf>` for further discussion)
+    One good choice from both respects is continuous piecewise linear interpolation (see :download:`this paper <../_static/pdfs/3ndp.pdf>` for further discussion).
 
 .. only:: latex
 
-    One good choice from both respects is continuous piecewise linear interpolation (see `this paper <https://lectures.quantecon.org/_downloads/3ndp.pdf>`__ for further discussion)
+    One good choice from both respects is continuous piecewise linear interpolation (see `this paper <https://lectures.quantecon.org/_downloads/3ndp.pdf>`__ for further discussion).
 
-The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`
+The next figure illustrates piecewise linear interpolation of an arbitrary function on grid points :math:`0, 0.2, 0.4, 0.6, 0.8, 1`.
 
 Setup
 ------------------
@@ -505,7 +505,7 @@ Setup
           label = "")
     plot!(plt, legend = :top)
 
-Another advantage of piecewise linear interpolation is that it preserves useful shape properties such as monotonicity and concavity / convexity
+Another advantage of piecewise linear interpolation is that it preserves useful shape properties such as monotonicity and concavity / convexity.
 
 The Bellman Operator
 -----------------------
@@ -536,9 +536,9 @@ Notice that the expectation in :eq:`fcbell20_optgrowth` is computed via Monte Ca
 
     \int w(f(y - c) z) \phi(dz) \approx \frac{1}{n} \sum_{i=1}^n w(f(y - c) \xi_i)
 
-where :math:`\{\xi_i\}_{i=1}^n` are IID draws from :math:`\phi`
+where :math:`\{\xi_i\}_{i=1}^n` are IID draws from :math:`\phi`.
 
-Monte Carlo is not always the most efficient way to compute integrals numerically but it does have some theoretical advantages in the present setting
+Monte Carlo is not always the most efficient way to compute integrals numerically but it does have some theoretical advantages in the present setting.
 
 (For example, it preserves the contraction mapping property of the Bellman operator --- see, e.g., :cite:`pal2013`)
 
@@ -619,9 +619,9 @@ Let's code this up now so we can test against it below
 A First Test
 --------------
 
-To test our code, we want to see if we can replicate the analytical solution numerically, using fitted value function iteration
+To test our code, we want to see if we can replicate the analytical solution numerically, using fitted value function iteration.
 
-We need a grid and some shock draws for Monte Carlo integration
+We need a grid and some shock draws for Monte Carlo integration.
 
 .. code-block:: julia
     :class: hide-output
@@ -643,13 +643,13 @@ We need a grid and some shock draws for Monte Carlo integration
         @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
     end
 
-Now let's do some tests
+Now let's do some tests.
 
-As one preliminary test, let's see what happens when we apply our Bellman operator to the exact solution :math:`v^*`
+As one preliminary test, let's see what happens when we apply our Bellman operator to the exact solution :math:`v^*`.
 
-In theory, the resulting function should again be :math:`v^*`
+In theory, the resulting function should again be :math:`v^*`.
 
-In practice we expect some small numerical error
+In practice we expect some small numerical error.
 
 .. code-block:: julia
 
@@ -668,10 +668,10 @@ In practice we expect some small numerical error
         @test length(w) == 200
     end
 
-The two functions are essentially indistinguishable, so we are off to a good start
+The two functions are essentially indistinguishable, so we are off to a good start.
 
 Now let's have a look at iterating with the Bellman operator, starting off
-from an arbitrary initial condition
+from an arbitrary initial condition.
 
 The initial condition we'll start with is :math:`w(y) = 5 \ln (y)`
 
@@ -706,9 +706,9 @@ The figure shows
 
 #. the true value function :math:`v^*` drawn in black
 
-The sequence of iterates converges towards :math:`v^*`
+The sequence of iterates converges towards :math:`v^*`.
 
-We are clearly getting closer
+We are clearly getting closer.
 
 We can write a function that computes the exact fixed point
 
@@ -740,7 +740,7 @@ We can check our result by plotting it against the true value
         @test v_star_approx[4] ≈ -31.85032776321786
     end
 
-The figure shows that we are pretty much on the money
+The figure shows that we are pretty much on the money.
 
 The Policy Function
 -----------------------
@@ -749,10 +749,10 @@ The Policy Function
     single: Optimal Growth; Policy Function
 
 To compute an approximate optimal policy, we take the approximate value
-function we just calculated and then compute the corresponding greedy policy
+function we just calculated and then compute the corresponding greedy policy.
 
 The next figure compares the result to the exact solution, which, as mentioned
-above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
+above, is :math:`\sigma(y) = (1 - \alpha \beta) y`.
 
 .. code-block:: julia
 
@@ -772,7 +772,7 @@ above, is :math:`\sigma(y) = (1 - \alpha \beta) y`
     end
 
 The figure shows that we've done a good job in this instance of approximating
-the true policy
+the true policy.
 
 Exercises
 =============
@@ -780,18 +780,18 @@ Exercises
 Exercise 1
 ------------
 
-Once an optimal consumption policy :math:`\sigma` is given, income follows :eq:`firstp0_og2`
+Once an optimal consumption policy :math:`\sigma` is given, income follows :eq:`firstp0_og2`.
 
-The next figure shows a simulation of 100 elements of this sequence for three different discount factors (and hence three different policies)
+The next figure shows a simulation of 100 elements of this sequence for three different discount factors (and hence three different policies).
 
 .. figure:: /_static/figures/solution_og_ex2.png
    :width: 100%
 
-In each sequence, the initial condition is :math:`y_0 = 0.1`
+In each sequence, the initial condition is :math:`y_0 = 0.1`.
 
-The discount factors are ``discount_factors = (0.8, 0.9, 0.98)``
+The discount factors are ``discount_factors = (0.8, 0.9, 0.98)``.
 
-We have also dialed down the shocks a bit
+We have also dialed down the shocks a bit.
 
 .. code-block:: julia
     :class: test
@@ -811,11 +811,11 @@ We have also dialed down the shocks a bit
         @test shocks[25] ≈ 0.8050318706532391
     end
 
-Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture
+Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture.
 
-Notice that more patient agents typically have higher wealth
+Notice that more patient agents typically have higher wealth.
 
-Replicate the figure modulo randomness
+Replicate the figure modulo randomness.
 
 Solutions
 ==========
