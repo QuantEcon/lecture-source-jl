@@ -8,6 +8,8 @@
 The Aiyagari Model
 ******************
 
+.. contents:: :depth: 2
+
 Overview
 ========
 
