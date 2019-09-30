@@ -772,7 +772,7 @@ The quadrature rule can be implemented easily as
     f(x) = x^2
     dot(f.(x), ω)
     
-However, in this case the creation of the ``ω` temporary is inefficient as there are no reasons to allocate an entire vector just
+However, in this case the creation of the ``ω`` temporary is inefficient as there are no reasons to allocate an entire vector just
 to iterate through it with the ``dot``.  Instead, create an iterable by following the `interface definition for Iteration <https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-iteration-1>`_, and
 implement the modified ``trap_weights`` and integration.
 
