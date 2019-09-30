@@ -340,9 +340,11 @@ The optimal decision rule is then
 .. math::
     :label: new8
 
+    \begin{aligned}
     \textrm { accept } x=x_0 \textrm{ if } p \geq \alpha \\
     \textrm { accept } x=x_1 \textrm{ if } p \leq \beta \\
     \textrm { draw another }  z \textrm{ if }  \beta \leq p \leq \alpha
+    \end{aligned}
 
 Our aim is to compute the value function :math:`J`, and from it the associated cutoffs :math:`\alpha`
 and :math:`\beta`

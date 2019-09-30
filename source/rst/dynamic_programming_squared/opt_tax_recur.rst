@@ -615,7 +615,7 @@ Specification with CRRA Utility
 ----------------------------------------
 
 In our calculations below and in a :doc:`subsequent lecture <../dynamic_programming_squared/amss>` based on an extension of the Lucas-Stokey model
-by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`, we shall modify the one-period utility function assumed above.
+by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`amss2002`, we shall modify the one-period utility function assumed above.
 
 (We adopted the preceding utility specification because it was the one used in  the original :cite:`LucasStokey1983` paper)
 
@@ -686,10 +686,10 @@ In equation :eq:`opt_tax_eqn_10`, it is understood that
 .. math::
     :nowrap:
 
-    \begin{gather*}
+    \begin{aligned}
     \tau_0 = 1 - \frac{u_{l,0}}{u_{c,0}} \\
-    R_0 =  \beta  \sum_{s=1}^S \Pi(s | s_0) \frac{u_c(s)}{u_{c,0}} \\
-    \end{gather*}
+    R_0 =  \beta  \sum_{s=1}^S \Pi(s | s_0) \frac{u_c(s)}{u_{c,0}}
+    \end{aligned}
 
 Sequence Implementation
 ----------------------------------------
@@ -1898,7 +1898,7 @@ Further Comments
 ======================
 
 A :doc:`related lecture <../dynamic_programming_squared/amss>` describes an extension of the Lucas-Stokey model
-by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`AMSS_2002`
+by  Aiyagari, Marcet, Sargent, and Seppälä (2002) :cite:`amss2002`
 
 In th AMSS economy, only a risk-free bond is traded
 

@@ -659,7 +659,7 @@ The following result uses the preceding algorithm to produce a useful decomposit
 
 Proof sketch: Let
 
-* :math:`x_j := \col_j (X)`
+* :math:`x_j := \mathop{\mathrm{col}}_j (X)`
 
 * :math:`\{u_1, \ldots, u_k\}` be orthonormal with same span as :math:`\{x_1, \ldots, x_k\}` (to be constructed using Gram--Schmidt)
 

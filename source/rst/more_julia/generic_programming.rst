@@ -42,7 +42,7 @@ Understanding them will help you
 Generic Programming is an Attitude
 -----------------------------------------------
 
-From *Mathematics to Generic Programming* :cite:`stepanov_mathematics_2014`
+From *Mathematics to Generic Programming* :cite:`stepanov-mathematics2014`
 
     Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency... Generic programming is more of an *attitude* toward programming than a particular set of tools.
 

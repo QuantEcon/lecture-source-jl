@@ -115,11 +115,11 @@ This calculation is simply the chain rule for the total derivative
 An AD library using dual numbers concurrently calculates the function and its derivatives, repeating the chain rule until it hits a set of intrinsic rules such as
 
 .. math::
-		\begin{align*}
+		\begin{aligned}
 		x + y \to \left(x,x'\right) + \left(y,y'\right) &= \left(x + y,\underbrace{x' + y'}_{\partial(x + y) = \partial x + \partial y}\right)\\
 		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y}\right)\\
 		\exp(x) \to \exp(\left(x, x'\right)) &= \left(\exp(x),\underbrace{x'\exp(x)}_{\partial(\exp(x)) = \exp(x)\partial x} \right)
-		\end{align*}
+		\end{aligned}
 
 ForwardDiff.jl
 -----------------
