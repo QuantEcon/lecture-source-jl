@@ -4,7 +4,7 @@
 
 
 *******************************************
-Direct Numerical Methods for Linear Algebra
+Numerical Linear Algebra and Factorizations
 *******************************************
 
 .. contents:: :depth: 2
@@ -575,3 +575,124 @@ And, of course, specialized algorithms will be used to exploit the structure whe
 .. code-block:: julia
 
     A \ rand(7)
+
+    
+Continuous Time Markov Chains
+=============================
+
+In the previous lecture on :doc:`discrete time Markov Chains  <mc>`, we saw that the transition probability
+between state :math:`x` and state :math:`y` was summarized by the matrix :math:`P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}`.
+
+As a brief introduction to continuous time processes, consider same state-space as in the discrete
+case: :math:`S` a finite set with :math:`n` elements :math:`\{x_1, \ldots, x_n\}`.
+
+A **Markov chain** :math:`\{X_t\}` on :math:`S` is a sequence of random variables on :math:`S` that have the **Markov property**
+
+In continuous time, the `Markov Property <https://en.wikipedia.org/wiki/Markov_property>`_ is more complicated, but intuitively is
+the same as the discrete time case.  That is, knowing the current state is enough to know probabilities for future states.
+
+Heuristically, consider a time period :math:`t` and a small step forward :math:`\Delta`.  Then the probability to transition from state :math:`i` to
+state :math:`j` is
+
+.. math::
+
+    \mathbb P \{ X(t + \Delta) = j  \,|\, X(t) \} = \begin{cases} q_{ij} \Delta + o(\Delta) & i \neq j\\
+                                                                  1 + q_{ii} \Delta + o(\Delta) & i = j \end{cases}
+
+where :math:`q_{ij}` are parameters governing the transition process, and :math:`o(\Delta)` is `little-o notation <https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation>`_,.  That is, :math:`\lim_{\Delta\to 0} o(\Delta)/\Delta = 0`.
+
+Just as in the discrete case, we can summarize these parameters by a :math:`N \times N` matrix, :math:`Q \in R^{N\times N}`.
+
+The :math:`Q` matrix is called the intensity matrix, or the infinitesimal generator of the Markov Chain.  For example,
+
+.. math::
+
+    Q = \begin{bmatrix} -0.1 & 0.1  & 0 & 0 & 0 & 0\\
+                        0.1  &-0.2  & 0.1 &  0 & 0 & 0\\
+                        0 & 0.1 & -0.2 & 0.1 & 0 & 0\\
+                        0 & 0 & 0.1 & -0.2 & 0.1 & 0\\
+                        0 & 0 & 0 & 0.1 & -0.2 & 0.1\\
+                        0 & 0 & 0 & 0 & 0.1 & -0.1\\
+        \end{bmatrix}
+
+In that example, transitions only occur between adjacent states with the same intensity (except for a ``bouncing'' back of the bottom and top states)
+
+This also demonstrates that the elements of the intensity matrix are not probabilities.  Unlike the discrete case, where every row must sum to one, the rows of :math:`Q` sum to zero, where the diagonal is the only negative values.  that is
+
+- :math:`q_{ij} \geq 0` for :math:`i \neq j`
+- :math:`q_{ii} \leq 0`
+- :math:`\sum_{j} q_{ij} = 0`
+
+Implementing this :math:`Q` in code
+
+.. code-block:: julia
+
+    using LinearAlgebra
+    α = 0.1
+    N = 6
+    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+
+Here we use a Tridiagonal to exploit the structure of the problem.
+
+Consider a simple payoff vector :math:`p` associated with each state, and a discount rate :math:`ρ`.  Then we can solve for
+the expected present discounted value in a similar way to the discrete time case.
+
+.. math::
+
+    \rho v = p + Q v 
+
+or rearranging slightly, solving the linear system
+
+.. math::
+
+    (\rho I - Q) v = p
+
+For our example, exploiting the tr
+
+.. code-block:: julia
+
+    p = range(0.0, 10.0, length=N)
+    ρ = 0.05
+
+    A = ρ * I - Q
+
+Note that this :math:`A` matrix is maintaining the tridiagonal structure of the problem, which leads to an efficient solution to the
+linear problem.
+
+.. code-block:: julia
+
+    v = A \ p
+
+
+The :math:`Q` is also used to calculate the evolution of the Markov chain, in direct analogy to the :math:`ψ_{t+k} = ψ_t P^k` evolution with transition matrix :math:`P` of the discrete case.
+
+In the continuous case, this becomes the system of linear differential equations
+
+.. math::
+
+    \dot{ψ}(t) = Q(t)^T ψ(t) 
+
+given the initial condition :math:`ψ(0)` and where the :math:`Q(t)` intensity matrix is allows to vary with time.  In the simplest case of a constant :math:`Q` matrix, this is a simple constant-coefficient system of Linear ODEs with coefficients :math:`Q^T`
+
+If a stationary equilibria exists, note that :math:`\dot{ψ}(t) = 0`, and the stationary solution :math:`ψ^{*}` would need to fulfill
+
+
+.. math::
+
+    0 = Q^T ψ^{*}
+
+
+Notice that this is of the form :math:`0 ψ^{*} = Q^T ψ^{*}` and hence is equivalent to finding the eigevector associated with the :math:`\lambda = 0` eigenvalue
+
+With our example, we can calculate all of the eigenvalues and eigenvectors
+
+.. code-block:: julia
+
+    λ, vecs = eigen(Array(Q'))
+
+Indeed, there is a :math:`\lambda = 0` eigenvalue, which is associated with the last column in the eigenvector.  To turn that into a probability
+we need to normalize it.
+
+.. code-block:: julia
+
+    vecs[:,N] ./ sum(vecs[:,N])
