@@ -1010,6 +1010,9 @@ where ``p::Poly`` ensures that this version of the function will be used anytime
 Compare the results of this function to the built-in ``roots(p)`` function
 
 
+
+.. _intro_types_ex_5:
+
 Exercise 5 (Advanced)
 -----------------------
 
