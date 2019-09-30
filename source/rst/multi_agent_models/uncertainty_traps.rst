@@ -8,6 +8,8 @@ Uncertainty Traps
 
 .. highlight:: julia
 
+.. contents:: :depth: 2
+
 Overview
 ========
 
