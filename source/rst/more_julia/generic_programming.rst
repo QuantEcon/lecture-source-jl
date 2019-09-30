@@ -738,6 +738,65 @@ The main way to implement this in a generic language is with a design approach c
 * See the `original discussion <https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633>`_ and an `example of a package to facilitate the pattern <https://github.com/mauro3/SimpleTraits.jl>`_
 * A complete description of the traits pattern as the natural evolution of Multiple Dispatch is given in this `blog post <https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html>`_
 
+Exercises
+============
+
+Exercise 1a
+---------------
+
+In a previous exercise, we discussed the :ref:`trapezoidal rule <intro_types_ex_5>` for numerical integration.
+
+To summarize, the vector 
+
+.. math::
+
+    \int_\underline{x}^\bar{x} f(x) \, dx \approx \omega \cdot \vec{f}
+
+where :math:`\vec{f} \equiv \begin{bmatrix} f(x_0) & f(x_1) & \ldots & f(x_M) \end{bmatrix}\in R^N` and, for a uniform grid spacing
+of :math:`\Delta`,
+
+.. math::
+
+    \omega \equiv \Delta \begin{bmatrix} \frac{1}{2} & 1 & \ldots & 1 & \frac{1}{2}\end{bmatrix} \in R^N
+
+The quadrature rule can be implemented easily as
+
+.. code-block:: julia
+
+    using LinearAlgebra
+    function trap_weights(x)
+        return step(x) * [0.5; ones(length(x) - 2); 0.5]
+    end
+    x = range(0.0, 1.0, length = 100)
+    ω = trap_weights(x)
+    f(x) = x^2
+    dot(f.(x), ω)
+    
+However, in this case the creation of the ``ω` temporary is inefficient as there are no reasons to allocate an entire vector just
+to iterate through it with the ``dot``.  Instead, create an iterable by following the `interface definition for Iteration <https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-iteration-1>`_, and
+implement the modified ``trap_weights`` and integration.
+
+Hint:  create a type such as
+
+.. code-block:: julia
+
+    struct UniformTrapezoidal
+        count::Int
+        Δ::Float64
+    end
+
+and then implement the function ``Base.iterate(S::UniformTrapezoidal, state=1)``.
+
+Exercise 1b (Advanced)
+-----------------------
+
+Make the ``UniformTrapezoidal`` type operate as an array with `interface definition for AbstractArray <https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-array-1>`_.  WIth this, you should be able it go ``ω[2]`` or ``length(ω)`` to access the quadrature weights.
+
+
+Exercise 2 (Advanced)
+-----------------------
+
+Implement the same features as Exercise 1a and 1b, but for the non-uniform trapezoidal rule.
 
 .. Functions
 .. ------------
