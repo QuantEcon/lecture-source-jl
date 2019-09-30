@@ -19,7 +19,7 @@ Overview
 In particular, we will examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
 discuss how it can be exploited to radically increase the performance of solving the problems.  
 
-We build on :doc:`linear algebra <linear_algebra>` and :doc:`orthogonal projections <orth_proj>`.
+We build on :doc:`linear algebra <linear_algebra>`, :doc:`orthogonal projections <orth_proj>`, and :doc:`finite Markov Chains <finite_markov>`.
 
 The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems.  In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach with iterative algorithms, and generalized the matrices as linear operators.y
 
