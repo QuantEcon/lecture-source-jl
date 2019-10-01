@@ -1,33 +1,19 @@
-.. computational-economics documentation master file
-
-.. only:: html
-
-    ****
-    Home
-    ****
-
-.. only:: latex
-
-    Quantitative Economics
-    ======================
-
-.. COMMENT: Link for Python Specific Badge <p id="jl_percentage"><a href="/status.html"></a></p>
 
 .. raw:: html
 
-    <p id="numfocus_badge"><a href="https://www.numfocus.org/"><img src="/_static/img/powered-by-NumFOCUS-orange.svg" alt="Powered by NumFOCUS logo"></a></p>
+    <p id="numfocus_badge" style="float:right;margin:0 0 0 2rem;"><a href="https://www.numfocus.org/"><img src="/_static/img/powered-by-NumFOCUS-orange.svg" alt="Powered by NumFOCUS logo"></a></p>
 
 .. only:: html
 
-    Table of Contents (Julia)
-    *************************************************************
+    Table of Contents (Undergraduate course)
+    ****************************************
 
 .. raw:: html
 
     <ul class="index-tabs">
-        <li><a href="/jl/">All</a></li>
-        <li class="active"><a href="/jl/index_undergrad.html">Undergraduate course</a></li>
-        <li><a href="/jl/index_postgrad.html">Graduate course</a></li>
+        <li><a href="/index_toc.html">All</a></li>
+        <li class="active"><a href="/index_undergrad.html">Undergraduate course</a></li>
+        <li><a href="/index_postgrad.html">Graduate course</a></li>
     </ul>
 
 .. toctree::
@@ -35,6 +21,7 @@
     :titlesonly:
 
 
+    about_lectures
     getting_started_julia/index
     more_julia/index
     tools_and_techniques/index_undergrad
@@ -45,7 +32,7 @@
 
 |
 
-.. image:: /_static/banner.png
+.. image:: http://assets.quantecon.org/img/banner.png
     :width: 30%
     :align: center
 

@@ -366,10 +366,10 @@ uuid = "5b8099bc-c8ec-5219-889f-1d9e522a28bf"
 version = "0.1.0"
 
 [[DoubleFloats]]
-deps = ["GenericSVD", "GenericSchur", "LinearAlgebra", "Polynomials", "Quadmath", "Random", "Requires"]
-git-tree-sha1 = "86c04127c22739e8a3b47e6c71faa49b381c2178"
+deps = ["GenericSVD", "GenericSchur", "LinearAlgebra", "Polynomials", "Printf", "Quadmath", "Random", "Requires"]
+git-tree-sha1 = "16ff9dc8d84feb67faeaba42c21ad261578bcbbf"
 uuid = "497a8b3b-efae-58df-a0af-a86822472b78"
-version = "0.9.10"
+version = "0.9.11"
 
 [[DualNumbers]]
 deps = ["Calculus", "LinearAlgebra", "NaNMath", "SpecialFunctions", "Test"]
@@ -552,9 +552,9 @@ version = "0.2.2"
 
 [[GenericSchur]]
 deps = ["LinearAlgebra", "Printf"]
-git-tree-sha1 = "25992e6d023b72860348553f976599184c85d914"
+git-tree-sha1 = "2f9297b94eaf14170d2694a9f3f313f293e0df23"
 uuid = "c145ed77-6b09-5dd9-b285-bf645a82121e"
-version = "0.2.3"
+version = "0.3.0"
 
 [[GeometryTypes]]
 deps = ["ColorTypes", "FixedPointNumbers", "IterTools", "LinearAlgebra", "StaticArrays"]
@@ -1020,9 +1020,9 @@ version = "2.1.0"
 
 [[Quadmath]]
 deps = ["Printf", "Random", "Requires"]
-git-tree-sha1 = "99293530380620c20a1d187e6bdc03a88b858bbf"
+git-tree-sha1 = "7a11344be0bd27a98ce3038573c4df518f051a8f"
 uuid = "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
-version = "0.5.1"
+version = "0.5.2"
 
 [[QuantEcon]]
 deps = ["DSP", "DataStructures", "Distributions", "FFTW", "LightGraphs", "LinearAlgebra", "Markdown", "NLopt", "Optim", "Pkg", "Primes", "Random", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "Test"]
@@ -1157,9 +1157,9 @@ version = "0.3.1"
 
 [[SimpleTraits]]
 deps = ["InteractiveUtils", "MacroTools"]
-git-tree-sha1 = "05bbf4484b975782e5e54bb0750f21f7f2f66171"
+git-tree-sha1 = "2bdf3b6300a9d66fe29ee8bb51ba100c4df9ecbc"
 uuid = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
-version = "0.9.0"
+version = "0.9.1"
 
 [[Snappy]]
 deps = ["BinaryProvider", "Libdl", "Random", "Test"]
@@ -1290,9 +1290,9 @@ version = "0.6.0"
 
 [[TimeZones]]
 deps = ["Dates", "EzXML", "Mocking", "Printf", "Serialization", "Unicode"]
-git-tree-sha1 = "2769a7ceffe237e651ed960a331a19258c8cf208"
+git-tree-sha1 = "4d2d681e1dd715fdaa47d31a7208cead357bb357"
 uuid = "f269a46b-ccf7-5d73-abea-4c690281aa53"
-version = "0.10.0"
+version = "0.10.2"
 
 [[TimerOutputs]]
 deps = ["Crayons", "Printf", "Test", "Unicode"]

@@ -1010,6 +1010,9 @@ where ``p::Poly`` ensures that this version of the function will be used anytime
 Compare the results of this function to the built-in ``roots(p)`` function
 
 
+
+.. _intro_types_ex_5:
+
 Exercise 5 (Advanced)
 -----------------------
 
@@ -1017,9 +1020,9 @@ The `trapezoidal rule <https://en.wikipedia.org/wiki/Trapezoidal_rule>`_  approx
 
 .. math::
 
-    \int_\underline{x}^\bar{x} f(x) \, dx \approx \sum_{n=1}^N \frac{f(x_{n-1}) + f(x_n)}{2} \Delta x_n
+    \int_{\underline{x}}^{\bar{x}} f(x) \, dx \approx \sum_{n=1}^N \frac{f(x_{n-1}) + f(x_n)}{2} \Delta x_n
 
-where :math:`x_0 = \underline{x},\, x_N = \bar{x}`, and :math:`\Delta x_n \equiv x_{n-1} - x_n`
+where :math:`x_0 = {\underline{x}},\, x_N = \bar{x}`, and :math:`\Delta x_n \equiv x_{n-1} - x_n`
 
 Given an ``x`` and a function ``f``, implement a few variations of the trapezoidal rule using multiple dispatch
 
@@ -1053,7 +1056,7 @@ Use auto-differentiation to calculate the following derivative for the example f
 
 .. math::
 
-    \frac{d}{d \bar{x}}\int_\underline{x}^\bar{x} f(x) \, dx
+    \frac{d}{d {\bar{x}}}\int_{\underline{x}}^{\bar{x}} f(x) \, dx
 
 Hint: See the following code for the general pattern, and be careful to
 follow the :ref:`rules for generic programming <generic_tips_tricks>`
