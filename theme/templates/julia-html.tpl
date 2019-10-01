@@ -157,7 +157,7 @@
 								<li><a href="/_downloads/pdf/{{nb_filename_with_path}}.pdf"><i class="fas fa-file-download"></i> Download PDF</a></li>
 								<li><a href="/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><i class="fas fa-file-download"></i> Download Notebook</a></li>
 {% endif %}
-								<li><a target="_blank" href="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia/blob/master/{{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
+								<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
 								<li><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><i class="fas fa-file-code"></i> View Source</a></li>
 							</ul>
 							<ul>
