@@ -52,3 +52,8 @@ Iterative Methods for Eigensystems
 
 Frequently you don't need every eigenvalue or eigenvector, and a matrix
 may be sufficiently massive that it would be infeasible to use a direct method.
+
+..code-block:: julia
+
+    using KrylovKit
+    KrylovKit.eigsolve(QA, 1, :LR)

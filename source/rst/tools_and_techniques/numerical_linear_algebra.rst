@@ -535,50 +535,10 @@ factorization with ``qr`` and then use it to solve a system
     @show A \ b
     @show qr(A) \ b;   
 
-Banded Matrices
-===============
-
-A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and the also the first super-diagonal (i.e. above the main diagonal).
-
-This is a special case of a more general type called a banded matrix, where the number of sub and super-diagonals are more general.  The 
-total width of sub- and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
-
-A :math:`N \times N` banded matrix with bandwidth :math:`P` has about :math:`N P` nonzeros in its sparsity pattern.
-
-These can be created directly as a dense matrix with ``diagm``
-
-.. code-block:: julia
-
-    diagm(1 => [1,2,3], -1 => [4,5])
-
-Or as a sparse matrix,
-
-.. code-block:: julia
-
-    spdiagm(1 => [1,2,3], -1 => [4,5])
-
-Creating a simple banded matrix, using `BandedMatrices.jl <https://github.com/JuliaMatrices/BandedMatrices.jl>`_ 
-
-.. code-block:: julia
-
-    using BandedMatrices
-    BandedMatrix(-1=> 1:5, 2=>1:3)     # creates a 5 x 5 banded matrix version of diagm(-1=> 1:5, 2=>1:3)
-
-There is also a convenience function for generating random banded matrices
-
-.. code-block:: julia
-
-    brand(7, 7, 3, 1)  # 3 subdiagonals, 1 subdiagonal
-
-And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the :math:`O(N P_L P_U)` for upper and lower bandwidths :math:`P`
-
-.. code-block:: julia
-
-    A \ rand(7)
 
     
-Continuous Time Markov Chains
-=============================
+Continuous Time Markov Chains (CTMC)
+====================================    
 
 In the previous lecture on :doc:`discrete time Markov Chains  <mc>`, we saw that the transition probability
 between state :math:`x` and state :math:`y` was summarized by the matrix :math:`P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}`.
@@ -696,3 +656,195 @@ we need to normalize it.
 .. code-block:: julia
 
     vecs[:,N] ./ sum(vecs[:,N])
+
+Multiple Dimensions
+--------------------
+
+A frequent case in discretized models is dealing with Markov chains with multiple "spatial" dimensions (e.g. wealth and income).
+
+After discretizing a process to create a Markov chain, you can always take the cartesian product of the set of states in order to
+enumerate as a single finite state.
+
+To see this, consider
+
+.. code-block:: julia
+
+    using SparseArrays
+    function markov_chain_product(Q, A)
+        M = size(Q, 1)
+        N = size(A, 1)
+        Q = sparse(Q)
+        Qs = blockdiag(fill(Q, N)...)  # create diagonal blocks of every operator
+        As = kron(A, I(M))
+        return As + Qs
+    end
+
+    α = 0.1
+    N = 4
+    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+    A = [-0.1 0.1
+        0.2 -0.2]
+    M = size(A,1)
+    L = markov_chain_product(Q, A)
+
+To calculate a simple dynamic pricing problem, consider if the payoff of being in state :math:`(i,j)` is :math:`r_{ij} = i + 2j`
+
+.. code-block:: julia
+
+    r = [i + 2.0j for i in 1:N, j in 1:M]
+    r = vec(r)  # vectorize it since stacked in same order
+
+Solving the equation :math:`\rho v = r + L v`
+
+.. code-block:: julia
+
+    ρ = 0.05
+    v = (ρ * I - L) \ r
+    reshape(v, N, M)
+
+
+To find the stationary distribution, we find the eigenvalue and choose the eigenvector associated with :math:`\lambda=0` .
+
+.. code-block:: julia
+
+    L_eig = eigen(Matrix(L'))
+    @assert norm(L_eig.values[end]) < 1E-10
+
+    ϕ = L_eig.vectors[:,end]
+    ϕ = ϕ / sum(ϕ)
+
+
+We can reshape this to be two dimensional if it is helpful for visualization
+
+.. code-block:: julia
+
+    reshape(ϕ, N, size(A,1))
+
+Irreducibility
+--------------
+
+As with the discrete time Markov chains, a key question is whether CTMCs are reducible, i.e. states communicate.  The problem
+is isomorphic to determining if the directed graph of the Markov chain is `strongly connected <https://en.wikipedia.org/wiki/Strongly_connected_component>`_.
+
+.. code-block:: julia
+
+    using LinearAlgebra, LightGraphs
+    α = 0.1
+    N = 6
+    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+    Q_graph = DiGraph(Q)
+    @show is_strongly_connected(Q_graph);  # i.e. can follow directional edges to get to every state
+
+Or as an example of a reducible Markov chain, 
+
+.. code-block:: julia
+
+    Q = [-0.2 0.2 0
+        0.2 -0.2 0
+        0.2 0.6 -0.2]
+    Q_graph = DiGraph(Q)
+    @show is_strongly_connected(Q_graph); 
+
+Banded Matrices
+===============
+
+A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and the also the first super-diagonal (i.e. above the main diagonal).
+
+This is a special case of a more general type called a banded matrix, where the number of sub and super-diagonals are more general.  The 
+total width of sub- and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
+
+A :math:`N \times N` banded matrix with bandwidth :math:`P` has about :math:`N P` nonzeros in its sparsity pattern.
+
+These can be created directly as a dense matrix with ``diagm``
+
+.. code-block:: julia
+
+    diagm(1 => [1,2,3], -1 => [4,5])
+
+Or as a sparse matrix,
+
+.. code-block:: julia
+
+    spdiagm(1 => [1,2,3], -1 => [4,5])
+
+Creating a simple banded matrix, using `BandedMatrices.jl <https://github.com/JuliaMatrices/BandedMatrices.jl>`_ 
+
+.. code-block:: julia
+
+    using BandedMatrices
+    BandedMatrix(-1=> 1:5, 2=>1:3)     # creates a 5 x 5 banded matrix version of diagm(-1=> 1:5, 2=>1:3)
+
+There is also a convenience function for generating random banded matrices
+
+.. code-block:: julia
+
+    A = brand(7, 7, 3, 1)  # 3 subdiagonals, 1 subdiagonal
+
+And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the :math:`O(N P_L P_U)` for upper and lower bandwidths :math:`P`
+
+.. code-block:: julia
+
+    A \ rand(7)
+
+BlockBanded and BandedBlockBanded
+---------------------------------
+
+Taking the structured matrix concept further, we can consider examples of matrices in blocks, each of which are banded, and even
+a matrix where each block is banded, and the blocks themselves are banded.
+
+This final type is common in the discretization of multiple dimensions with continuous time processes.  For example, with the
+example from above of 2 dimensions.
+
+
+.. code-block:: julia
+
+    using BandedMatrices, BlockBandedMatrices, LazyArrays, SparseArrays
+    function markov_chain_product_banded(Q_chains, A)
+        M = size(Q_chains[1], 1)
+        N = size(A, 1)
+        Q_bands = bandwidths(Q_chains[1])
+
+        Qs = blockdiag(sparse.(Q_chains)...)  # create diagonal blocks of every operator
+        Qs = BandedBlockBandedMatrix(Qs, (M*ones(Int64, N), M*ones(Int64, N)), (0,0), Q_bands)
+
+        # construct a kronecker product of A times I_M
+        As = BandedBlockBandedMatrix(Kron(A, Eye(M)))
+        return Qs + As
+    end
+
+    α1 = 0.05
+    α2 = 0.15
+    α3 = 0.1
+    N = 5
+    symmetric_tridiagonal_chain(α, N) = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+    Q1 = symmetric_tridiagonal_chain(α1, N)
+    Q2 = symmetric_tridiagonal_chain(α2, N)
+    Q3 = symmetric_tridiagonal_chain(α3, N)
+    A = Tridiagonal([0.1, 0.1], [-0.2, -0.3, -0.2], [0.2, 0.2])
+    M = size(A,1)
+
+    L = markov_chain_product_banded((Q1, Q2, Q3), A)
+
+As before, define a payoff function
+
+.. code-block:: julia
+
+    r = vec([i + 2.0j for i in 1:N, j in 1:M])
+
+Solving the equation :math:`\rho v = r + L v`
+
+.. code-block:: julia
+
+    ρ = 0.05
+    v = (ρ * I - L) \ r
+    reshape(v, N, M)
+
+Or to find the stationary solution, 
+
+.. code-block:: julia
+
+    using Arpack
+    L = sparse(L')
+    λ, ϕ = eigs(L, nev=1, which=:SM)
+    ϕ = real(ϕ) ./ sum(real(ϕ))
+    reshape(ϕ, N, M)
