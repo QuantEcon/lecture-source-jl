@@ -675,17 +675,24 @@ To see this, consider
         N = size(A, 1)
         Q = sparse(Q)
         Qs = blockdiag(fill(Q, N)...)  # create diagonal blocks of every operator
-        As = kron(A, I(M))
+        As = kron(A, sparse(I(M)))
         return As + Qs
     end
 
     α = 0.1
     N = 4
     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
-    A = [-0.1 0.1
-        0.2 -0.2]
+    A = sparse([-0.1 0.1
+        0.2 -0.2])
     M = size(A,1)
     L = markov_chain_product(Q, A)
+
+To see the sparsity pattern,
+
+.. code-block:: julia
+
+    using Plots
+    spy(L, markersize = 10)
 
 To calculate a simple dynamic pricing problem, consider if the payoff of being in state :math:`(i,j)` is :math:`r_{ij} = i + 2j`
 
