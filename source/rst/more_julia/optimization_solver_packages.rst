@@ -495,7 +495,7 @@ Alternatively, if ``f(x)`` is written generically, you can use auto-differentiat
     "$(results.iterations) iterations and $(results.f_calls) function calls")
 
 
-Providing a function which operates inplace (i.e. modifies an argument) may help performance for large systems of equations (and hurt it for small ones)
+Providing a function which operates inplace (i.e., modifies an argument) may help performance for large systems of equations (and hurt it for small ones)
 
 .. code-block:: julia
 
