@@ -33,7 +33,7 @@ In terms of the differences,
 
 * Python is a general purpose language featuring a huge user community in the sciences and an outstanding scientific and general ecosystem.
 
-* Julia is a more focused langugae primarily used in technical and scientific computing, with an outstanding ecosystem for cutting-edge methods and algorithms.
+* Julia is a more focused language primarily used in technical and scientific computing, with an outstanding ecosystem for cutting-edge methods and algorithms.
 
 Both are modern, open source, high productivity languages with all the key features needed for 
 high performance computing.
