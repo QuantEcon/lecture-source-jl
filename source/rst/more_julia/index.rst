@@ -6,7 +6,7 @@
 Packages and Software Engineering in Julia
 **************************************************************
 
-This part of the course provides a more details on the Julia programming language, its ecosystem, and core software engineering tools
+This part of the course provides more details on the Julia programming language, its ecosystem, and core software engineering tools
 
 
 .. only:: html

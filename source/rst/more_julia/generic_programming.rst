@@ -752,7 +752,7 @@ To summarize, the vector
 
     \int_\underline{x}^\bar{x} f(x) \, dx \approx \omega \cdot \vec{f}
 
-where :math:`\vec{f} \equiv \begin{bmatrix} f(x_0) & f(x_1) & \ldots & f(x_M) \end{bmatrix}\in R^N` and, for a uniform grid spacing
+where :math:`\vec{f} \equiv \begin{bmatrix} f(x_1) & \ldots & f(x_N) \end{bmatrix}\in R^N` and, for a uniform grid spacing
 of :math:`\Delta`,
 
 .. math::
@@ -790,13 +790,13 @@ and then implement the function ``Base.iterate(S::UniformTrapezoidal, state=1)``
 Exercise 1b (Advanced)
 -----------------------
 
-Make the ``UniformTrapezoidal`` type operate as an array with `interface definition for AbstractArray <https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-array-1>`_.  WIth this, you should be able it go ``ω[2]`` or ``length(ω)`` to access the quadrature weights.
+Make the ``UniformTrapezoidal`` type operate as an array with `interface definition for AbstractArray <https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-array-1>`_.  With this, you should be able it go ``ω[2]`` or ``length(ω)`` to access the quadrature weights.
 
 
 Exercise 2 (Advanced)
 -----------------------
 
-Implement the same features as Exercise 1a and 1b, but for the non-uniform trapezoidal rule.
+Implement the same features as Exercise 1a and 1b, but for the  `non-uniform trapezoidal rule <https://en.wikipedia.org/wiki/Trapezoidal_rule#Non-uniform_grid>`_
 
 .. Functions
 .. ------------

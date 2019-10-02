@@ -38,7 +38,7 @@
 		<meta property="og:site_name" content="Quantitative Economics with Julia" />
 
 		<link rel="stylesheet" href="/_static/css/julia.css?v=1.0">
-		<link rel="stylesheet" href="https://assets.quantecon.org/css/qemb.css">
+		<link rel="stylesheet" href="https://assets.quantecon.org/css/menubar-20190925.css">
 		<link rel="icon" href="/_static/img/favicon.ico" type="image/x-icon" />
 
 		<link href="https://fonts.googleapis.com/css?family=Droid+Serif|Source+Sans+Pro:400,700" rel="stylesheet">
@@ -57,30 +57,31 @@
 
 			<ul class="qemb-nav">
 			  <li class="qemb-dropdown"><a>Lectures</a>
-				<ul>
-				  <li><a href="https://lectures.quantecon.org/" title="Lectures"><span>Lectures in Quantitative Economics</span></a></li>
-				  <li><a href="https://datascience.quantecon.org/" title="DataScience"><span>QuantEcon DataScience</span></a></li>
-				  <li><a href="http://cheatsheets.quantecon.org/" title="Cheatsheets"><span>Cheatsheets</span></a></li>
-				</ul>
+			    <ul>
+                  <li><a href="https://python.quantecon.org/" title="Quantitative Economics with Python"><span>Quantitative Economics with Python</span></a></li>
+                  <li><a href="https://julia.quantecon.org/" title="Quantitative Economics with Julia"><span>Quantitative Economics with Julia</span></a></li>
+			      <li><a href="https://datascience.quantecon.org/" title="DataScience"><span>QuantEcon DataScience</span></a></li>
+			      <li><a href="http://cheatsheets.quantecon.org/" title="Cheatsheets"><span>Cheatsheets</span></a></li>
+			    </ul>
 			  </li>
 			  <li class="qemb-dropdown"><a>Code</a>
-				<ul>
-				  <li><a href="https://quantecon.org/quantecon-py" title="QuantEcon.py"><span>QuantEcon.py</span></a></li>
-				  <li><a href="https://quantecon.org/quantecon-jl" title="QuantEcon.jl"><span>QuantEcon.jl</span></a></li>
-				  <li><a href="https://jupinx.quantecon.org/">Jupinx</a></li>
+			    <ul>
+			      <li><a href="https://quantecon.org/quantecon-py" title="QuantEcon.py"><span>QuantEcon.py</span></a></li>
+			      <li><a href="https://quantecon.org/quantecon-jl" title="QuantEcon.jl"><span>QuantEcon.jl</span></a></li>
+			      <li><a href="https://jupinx.quantecon.org/">Jupinx</a></li>
 			  </ul>
 			  </li>
 			  <li class="qemb-dropdown"><a>Notebooks</a>
-				<ul>
-				  <li><a href="https://quantecon.org/notebooks" title="QuantEcon Notebook Library"><span>NB Library</span></a></li>
-				  <li><a href="http://notes.quantecon.org/" title="QE Notes"><span>QE Notes</span></a></li>
-				</ul>
+			    <ul>
+			      <li><a href="https://quantecon.org/notebooks" title="QuantEcon Notebook Library"><span>NB Library</span></a></li>
+			      <li><a href="http://notes.quantecon.org/" title="QE Notes"><span>QE Notes</span></a></li>
+			    </ul>
 			  </li>
 			  <li class="qemb-dropdown"><a>Community</a>
-				<ul>
-				  <li><a href="http://blog.quantecon.org/" title="Blog"><span>Blog</span></a></li>
-				  <li><a href="http://discourse.quantecon.org/" title="Forum"><span>Forum</span></a></li>
-				</ul>
+			    <ul>
+			      <li><a href="http://blog.quantecon.org/" title="Blog"><span>Blog</span></a></li>
+			      <li><a href="http://discourse.quantecon.org/" title="Forum"><span>Forum</span></a></li>
+			    </ul>
 			  </li>
 			  <li><a href="http://store.quantecon.org/" title="Store"><span class="show-for-sr">Store</span></a></li>
 			  <li><a href="https://github.com/QuantEcon/" title="Repository"><span class="show-for-sr">Repository</span></a></li>
@@ -157,7 +158,7 @@
 								<li><a href="/_downloads/pdf/{{nb_filename_with_path}}.pdf"><i class="fas fa-file-download"></i> Download PDF</a></li>
 								<li><a href="/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><i class="fas fa-file-download"></i> Download Notebook</a></li>
 {% endif %}
-								<li><a target="_blank" href="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia/blob/master/{{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
+								<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
 								<li><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><i class="fas fa-file-code"></i> View Source</a></li>
 							</ul>
 							<ul>
