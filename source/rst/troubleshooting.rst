@@ -16,37 +16,20 @@ to run this lecture set locally on your machine.
 Fixing Your Local Environment
 ==============================
 
-The basic assumption of the lectures is that code should execute on any
-machine that has the latest version of Anaconda Python installed.
+To set up a standard desktop environment, you can run the instructions in our `local setup lecture <https://julia.quantecon.org/getting_started_julia/getting_started.html#Desktop-Installation-of-Julia-and-Jupyter>`__. 
 
-You have installed Anaconda, haven't you, following the instructions in :doc:`this lecture <getting_started>`? 
+If you already have, make sure to try deleting your ``.julia`` directory (the "user depot," where packages are stored) and re-running the lectures (after running ``] add InstantiateFromURL``!). 
 
-Assuming that you have, the most common source of problems for our readers is that their Anaconda distribution is not up to date.
+You can find this directory by running ``DEPOT_PATH[1]`` in a Julia REPL. 
 
-`Here's a useful article <https://www.anaconda.com/keeping-anaconda-date/>`__
-on how to update Anaconda.
+Resetting a JupyterHub Lecture Set 
+===================================
 
-Another option is to simply remove Anaconda and reinstall.
+The lectures are delivered to JupyterHubs (like the `QuantEcon Syzygy server <https://quantecon.syzygy.ca>`__) using ``nbgitpuller``. 
 
-You also need to keep the external code libraries, such as `QuantEcon.py
-<https://quantecon.org/quantecon-py>`__ up to date.
+To reset a single notebook, simply delete it and click the relevant link again. 
 
-For this task you can either
-
-* use `pip install --upgrade quantecon` on the command line, or
-
-* execute `!pip install --upgrade quantecon` within a Jupyter notebook.
-
-If your local environment is still not working you can do two things.
-
-First, you can use a remote machine instead, by clicking on the `Launch Notebook` icon available for each lecture
-
-.. image:: _static/lecture_specific/troubleshooting/launch.png
-
-Second, you can report an issue, so we can try to fix your local set up.
-
-We like getting feedback on the lectures so please don't hesitate to get in
-touch.
+To reset your whole lecture set, run ``rm -rf quantecon-notebooks-julia`` in the Terminal (after ``cd``-ing to where they're downloaded, which is usually the root) and click any lecture's link again. 
 
 Reporting an Issue
 ===================
