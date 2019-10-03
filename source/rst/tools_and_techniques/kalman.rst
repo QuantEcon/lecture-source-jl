@@ -49,7 +49,7 @@ let's pretend that we are rocket scientists
 A missile has been launched from country Y and our mission is to track it
 
 Let :math:`x  \in \mathbb{R}^2` denote the current location of the missile---a
-pair indicating latitude-longitute coordinates on a map
+pair indicating latitude-longitude coordinates on a map
 
 At the present moment in time, the precise location :math:`x` is unknown, but
 we do have some beliefs about :math:`x`
