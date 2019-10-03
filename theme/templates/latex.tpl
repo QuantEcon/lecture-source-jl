@@ -75,6 +75,7 @@
 \usepackage[document]{ragged2e}    
 \usepackage{fontspec, unicode-math}    
 \usepackage{xunicode}   
+\usepackage[Latin,greek,english]{babel}
 \setmonofont{LiberationMono}
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
 \newcommand{\argmin}{\operatornamewithlimits{argmin}}
@@ -173,10 +174,10 @@
 
 ((* block maketitle *))
 
+\title{((( nb.metadata.get("latex_metadata", {}).get("title", "") | escape_latex )))}
+
 ((*- if nb.metadata.get("latex_metadata", {}).get("author", ""): -*))
 \author{((( nb.metadata["latex_metadata"]["author"] )))}
-((*- else -*))
-\author{Al Pacino}
 ((*- endif *))
 
 ((*- if nb.metadata.get("latex_metadata", {}).get("affiliation", ""): -*))
