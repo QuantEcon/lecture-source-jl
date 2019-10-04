@@ -549,7 +549,14 @@ case: :math:`S` a finite set with :math:`n` elements :math:`\{x_1, \ldots, x_n\}
 A **Markov chain** :math:`\{X_t\}` on :math:`S` is a sequence of random variables on :math:`S` that have the **Markov property**
 
 In continuous time, the `Markov Property <https://en.wikipedia.org/wiki/Markov_property>`_ is more complicated, but intuitively is
-the same as the discrete time case.  That is, knowing the current state is enough to know probabilities for future states.
+the same as the discrete time case.
+
+That is, knowing the current state is enough to know probabilities for future states.  Or, for realizations :math:`x(\tau)\in S, \tau \leq t`,
+
+.. math::
+
+    \mathbb P \{ X(t+s) = y  \,|\, X(t) = x, X(\tau) = x(\tau) \text{ for } 0 \leq \tau \leq t  \} = \mathbb P \{ X(t+s) = y  \,|\, X(t) = x\}
+
 
 Heuristically, consider a time period :math:`t` and a small step forward :math:`\Delta`.  Then the probability to transition from state :math:`i` to
 state :math:`j` is
@@ -577,13 +584,13 @@ The :math:`Q` matrix is called the intensity matrix, or the infinitesimal genera
 
 In that example, transitions only occur between adjacent states with the same intensity (except for a ``bouncing'' back of the bottom and top states)
 
-This also demonstrates that the elements of the intensity matrix are not probabilities.  Unlike the discrete case, where every row must sum to one, the rows of :math:`Q` sum to zero, where the diagonal is the only negative values.  that is
+This also demonstrates that the elements of the intensity matrix are not probabilities.  Unlike the discrete case, where every row must sum to one, the rows of :math:`Q` sum to zero, where the diagonal contains the negative value of jumping out of the current state.  That is
 
 - :math:`q_{ij} \geq 0` for :math:`i \neq j`
 - :math:`q_{ii} \leq 0`
 - :math:`\sum_{j} q_{ij} = 0`
 
-Implementing this :math:`Q` in code
+Implementing :math:`Q` using its tridiagonal structure
 
 .. code-block:: julia
 
