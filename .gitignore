@@ -1,6 +1,7 @@
 _build/
 _build_website/
 _build_coverage/
+_build_pdf/
 dask-worker-space/
 .DS_Store
 **/.ipynb_checkpoints/
