@@ -8,6 +8,11 @@ Packages, Testing, and Continuous Integration
 
 .. contents:: :depth: 2
 
+.. epigraph::
+
+    A complex system that works is invariably found to have evolved from a simple system that worked. The inverse proposition also appears to be true: A complex system designed from scratch never works and cannot be made to work. You have to start over, beginning with a working simple system -- `Gall's Law <https://en.wikipedia.org/wiki/John_Gall_(author)#Gall%27s_law>`_
+
+
 Co-authored with Arnav Sood
 
 This lecture discusses structuring a project as a Julia module, and testing it with tools from GitHub
