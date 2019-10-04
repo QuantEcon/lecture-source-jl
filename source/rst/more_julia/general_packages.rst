@@ -181,7 +181,7 @@ We begin by creating some data points, using a sine function
     scatter!(x, y, label = "sampled data", markersize = 4)
 
 
-To implement linear and cubic spline interpolation
+To implement linear and cubic `spline <https://en.wikipedia.org/wiki/Spline_(mathematics)>`_ interpolation
 
 
 .. code-block:: julia
