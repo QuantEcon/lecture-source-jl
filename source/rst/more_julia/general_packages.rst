@@ -158,7 +158,7 @@ In economics we often wish to interpolate discrete data (i.e., build continuous 
 
 The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
 
-There are a variety of options, but we will only demonstrate the convenience notation
+There are a variety of options, but we will only demonstrate the convenient notations
 
 Univariate with a Regular Grid
 --------------------------------
