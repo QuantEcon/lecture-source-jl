@@ -986,7 +986,7 @@ Start with a simple symmetric tridiagonal matrix
 
     N = 100
     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2)])
-    A_adjoint = A'
+    A_adjoint = A';
 
 1. Pick some large ``T`` and start with :math:`\phi_0 = \begin{bmatrix} 1 & 0 & \ldots & 0\end{bmatrix}`
 2. Write code to calculate :math:`\phi_t` to some ``T`` by iterating the map for each ``t``, i.e.

@@ -96,6 +96,88 @@ There are a variety of other non-allocating versions of functions.  For example,
 
     transpose!(B, A)  # non-allocating version of B = transpose(A)
 
+Ill-conditioned Matrices
+========================
+
+An important consideration in linear algebra, and iterative methods in general is the `condition number <https://en.wikipedia.org/wiki/Condition_number>`_.
+
+Intuitively, the rates of convergence depend on the properties of the spectrum - or alternatively how close to collinear.
+
+Hilbert matrix
+
+Use ``cond``.  The reaosn to use the ``cond`` rather than the determinant is that it is scaleless whereas if you multiple a matrix by 1E-10, it scales the determinannt.
+
+
+
+
+Iterative Methods for Eigensystems
+====================================
+
+When you use ``eigen`` on a matrix, it calculates the full spectral decomposition, providing all of the eigenvalues and eigenvectors.
+
+While sometimes this is necessary, a spectral decomposition of a dense, unstructred matrix is one of the costliest :math:`O(N^3)` operations (i.e., it has
+one of the largest constants).  For large matrices it is often infeasible. 
+
+Luckily, you frequently only need a few or even a single eigenvector/eigenvalue, which enables a different set of algorithms.
+
+For example, in the case of a discrete time markov chain, to find the stationary distribution we are looking for the
+eigenvector associated with the eigenvalue of 1.  As usual, a little linear algebra goes a long way.
+
+From the `Perron-Frobenius theorem <https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem#Stochastic_matrices>`_, the largest eigenvalue of an irreducible stochastic matrix is 1 - the same eigenvalue we are looking for.
+
+Iterative methods for solving eigensystems allow targeting the smallest magnitude, largest magnitude, and many others.  The easiest library
+to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.  
+
+.. code-block:: julia
+
+    using Arpack, LinearAlgebra
+    N = 1000
+    A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+    A_adjoint = A'
+
+    λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  # Find 1 of the largest magnitude eigenvalue
+    ϕ = real(ϕ) ./ sum(real(ϕ))
+    λ
+
+Indeed, the ``λ`` is equal to ``1``.   Hint: if you get errors, increase ``maxiter``.
+
+Similarly, for a continuous time Markov Chain, to find the stationary distribution we are looking for the eigenvector associated with ``λ = 0`, which
+must be the smallest absolute magnitude.
+
+With our multi-dimensional CTMC in the previous section
+
+.. code-block:: julia
+
+   using SparseArrays
+    function markov_chain_product(Q, A)
+        M = size(Q, 1)
+        N = size(A, 1)
+        Q = sparse(Q)
+        Qs = blockdiag(fill(Q, N)...)  # create diagonal blocks of every operator
+        As = kron(A, sparse(I(M)))
+        return As + Qs
+    end
+
+    α = 0.1
+    N = 4
+    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+    A = sparse([-0.1 0.1
+        0.2 -0.2])
+    M = size(A,1)
+    L = markov_chain_product(Q, A)
+    L_adjoint = L';
+
+In this case, Arpack.jl does not do well with the singular matrix of a CTMC.  We can use another package
+for similar methods called `KrylovKit.jl <https://jutho.github.io/KrylovKit.jl/latest/man/eig/>`_
+
+    using KrylovKit
+   using KrylovKit
+    λ, ϕ = KrylovKit.eigsolve(L_adjoint, 1, :SR)  # smallest absolute value
+    reshape(real(ϕ[end]), N, size(A,1))
+    ϕ = real(ϕ) ./ sum(real(ϕ))
+    ϕ = reshape(ϕ, N, size(A,1))
+    λ
+
 .. Iterative Algorithms for Linear Systems
 .. =======================================
 
@@ -114,16 +196,3 @@ There are a variety of other non-allocating versions of functions.  For example,
 .. The methods in the previous section (e.g. factorization and the related guassian elimination) are called direct methods,
 .. and work with matrices that are in-memory, while this section will generalize to linear operators that may or may not be
 .. in memory.
-
-.. Iterative Methods for Eigensystems
-.. ====================================
-
-.. Arpack.  Hint: set the maxiter.
-
-.. Frequently you don't need every eigenvalue or eigenvector, and a matrix
-.. may be sufficiently massive that it would be infeasible to use a direct method.
-
-.. ..code-block:: julia
-
-..     using KrylovKit
-..     KrylovKit.eigsolve(L, 1, :LR)
