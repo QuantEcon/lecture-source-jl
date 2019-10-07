@@ -45,6 +45,9 @@ To see this, a convenient tool is the benchmarking
 .. code-block:: julia
 
     using BenchmarkTools
+    A = rand(10,10)
+    B = rand(10,10)
+    C = similar(A)
     function f!(C, A, B)
         D = A*B
         C .= D .+ 1
@@ -135,7 +138,7 @@ Lets look at the condition number of a few matrices using the ``cond`` function 
     A = I(2)
     cond(A)
 
-Here we see an example of the best-conditioned matrix, the identity matrix with its completely orthogonal basis, is 1.
+Here we see an example of the best-conditioned matrix, the identity matrix with its completely orthonormal basis, is 1.
 
 On the other hand, notice that
 
@@ -284,19 +287,11 @@ then the error will become non-trivial quickly - even without taking the inverse
 At the heart of the issue is that the monomial basis leads to a `Vandermonde_matrix <https://en.wikipedia.org/wiki/Vandermonde_matrix>`_ which
 is especially ill-conditioned.  
 
-We can also understand a separte type of errors called `Runge's Phenomena <https://en.wikipedia.org/wiki/Runge%27s_phenomenon>`_.    It is an important
+We can also understand a separate type of errors called `Runge's Phenomena <https://en.wikipedia.org/wiki/Runge%27s_phenomenon>`_.    It is an important
 issue in approximation theory, albeit not one driven by numerical error themselves.  
 
-It turns out that using a uniform grid of points is close to the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomena is can be seen with the interpolation of the seamingly innocuous Runge's function, :math:`g(x) = \frac{1}{1 + 25 x^2}`.
+It turns out that using a uniform grid of points is close to the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomena is can be seen with the interpolation of the seemingly innocuous Runge's function, :math:`g(x) = \frac{1}{1 + 25 x^2}`.
 
-.. code-block:: julia
-
-    using Plots
-    N_display = 100
-    g(x) = 1/(1 + 25x^2)
-    x_display = range(-1, 1, length = N_display)
-    y_display = g.(x)
-    plot(x, y_display, w = 3)
 
 Let us interpolate this function using the monomial basis above to find the :math:`c_i` such that
 
@@ -313,7 +308,7 @@ approximation has large errors at the corners.
     N_display = 100
     g(x) = 1/(1 + 25x^2)
     x_display = range(-1, 1, length = N_display)
-    y_display = g.(x)
+    y_display = g.(x_display)
 
     # interpolation 
     N = 5
@@ -336,7 +331,7 @@ of grid points and order of the polynomial will lead to better approximations
     N = 9
     x = range(-1.0, 1.0, length = N+1)
     y = g.(x)
-    A_9 = [x_i^n for x_i in x, n in 0:N] 
+    A_9 = [x_i^n for x_i in x, n in 0:N]
     c_9 = A_9 \ y
 
     # use the coefficients to evaluate on x_display grid
@@ -350,7 +345,7 @@ Instead, we see that while the approximation is better near ``x=0``, the oscilla
 Using an Orthogonal Polynomial Basis
 ------------------------------------ 
 
-We can minimize the numerical issues of an ill-conditioned matrix by choosing a different basis for the polymomials.
+We can minimize the numerical issues of an ill-conditioned matrix by choosing a different basis for the polynomials.
 
 For example, with `Chebyshev polymomials <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_, which form an orthonormal basis, we can form precise high-order approximations, with very little numerical error 
 
@@ -375,95 +370,159 @@ To summarize the analysis,
 
 However, sometimes you can't avoid ill-conditioned matrices. This is especially common with discretization of PDEs and with linear-least squares.
 
-Iterative Algorithms for Linear Systems
-=======================================
+.. Iterative Algorithms for Linear Systems
+.. =======================================
 
-As before, consider solving the equation 
+.. As before, consider solving the equation 
 
-.. math::
+.. .. math::
 
-    A x = b
+..     A x = b
 
-where we will maintain a solution that, if :math:`A` is square, there is a unique solution.  However, we will now
-focus on cases where :math:`A` is both massive, sparse (e.g. potentially billions of equations), and sometimes ill-conditioned.  
+.. where we will maintain a solution that, if :math:`A` is square, there is a unique solution.  However, we will now
+.. focus on cases where :math:`A` is both massive, sparse (e.g. potentially billions of equations), and sometimes ill-conditioned.  
 
-While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
-of PDEs, and when working with big or network data.
+.. While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
+.. of PDEs, and when working with big or network data.
 
-The methods in the previous lectures (e.g. factorization and the related Gaussian elimination) are called direct methods, and able 
-- theory - to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
-system without any structure takes :math:`O(N^3)` operations, while a sparse system depends on the number of non-zeros.
+.. The methods in the previous lectures (e.g. factorization and the related Gaussian elimination) are called direct methods, and able 
+.. - in theory - to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
+.. system without any structure takes :math:`O(N^3)` operations, while a sparse system depends on the number of non-zeros.
 
-Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
-each iteration uses a much lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
-solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly.  So, rather than always thinking of linear operators as being matrices, we will consider linear operators that may or may not fit in memory (leading to "matrix-free methods").
+.. Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
+.. each iteration uses a much lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
+.. solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly; and (3) find solutions
+.. in progress prior to the completion of all algorithm steps.
 
-Iterative Methods for Eigensystems
-====================================
+.. So, rather than always thinking of linear operators as being matrices, we will consider linear operators that may or may not fit in memory (leading to "matrix-free methods"), but implement a left-multiply ``*`` operator for vectors.
 
-When you use ``eigen`` on a matrix, it calculates the full spectral decomposition, providing all of the eigenvalues and eigenvectors.
+.. Iterative methods are of two types:  first are 
 
-While sometimes this is necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest :math:`O(N^3)` operations (i.e., it has
-one of the largest constants).  For large matrices it is often infeasible. 
+.. Jacobi Iteration
+.. ----------------
 
-Luckily, you frequently only need a few or even a single eigenvector/eigenvalue, which enables a different set of algorithms.
+.. .. code-block:: julia
 
-For example, in the case of a discrete time markov chain, to find the stationary distribution we are looking for the
-eigenvector associated with the eigenvalue of 1.  As usual, a little linear algebra goes a long way.
+..     N = 10
+..     f(x) = exp(x)
+..     x = range(0.0, 10.0, length = N+1)
+..     y = f.(x)  # generate some data to interpolate
 
-From the `Perron-Frobenius theorem <https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem#Stochastic_matrices>`_, the largest eigenvalue of an irreducible stochastic matrix is 1 - the same eigenvalue we are looking for.
+..     A = [x_i^n for x_i in x, n in 0:N]
+..     c = A \ y
+..     @show norm(A * c - f.(x), Inf)
+..     using IterativeSolvers
+..     c = zeros(N+1)
+..     gauss_seidel!(c, A, y)
+..     @show norm(A * c - f.(x), Inf)
 
-Iterative methods for solving eigensystems allow targeting the smallest magnitude, largest magnitude, and many others.  The easiest library
-to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.  
+.. ------
 
-.. code-block:: julia
+.. GMRES
+.. ------
 
-    using Arpack, LinearAlgebra
-    N = 1000
-    A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
-    A_adjoint = A'
+.. There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
 
-    λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  # Find 1 of the largest magnitude eigenvalue
-    ϕ = real(ϕ) ./ sum(real(ϕ))
-    λ
+.. On the other hand, if you do not have any structure to your sparse matrix, then GMRES is a good approach.
 
-Indeed, the ``λ`` is equal to ``1``.   Hint: if you get errors, increase ``maxiter``.
+.. To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis
 
-Similarly, for a continuous time Markov Chain, to find the stationary distribution we are looking for the eigenvector associated with ``λ = 0`, which
-must be the smallest absolute magnitude.
+.. .. code-block:: julia
 
-With our multi-dimensional CTMC in the previous section
+..     using IterativeSolvers
+    
+..     N = 10
+..     f(x) = exp(x)
+..     x = range(0.0, 10.0, length = N+1)
+..     y = f.(x)  # generate some data to interpolate
+..     A = [x_i^n for x_i in x, n in 0:N]
+ 
+..     using IterativeSolvers
+..     c = zeros(N+1)  # initial guess required for iterative solutions
+..     results = gmres!(c, A, y)
+..     println("cond(A) = $(cond(A)), converged in $(length(results)) iteration with norm error $(norm(A*c - y, Inf))")
 
-.. code-block:: julia
+.. In this case, both the error and the number of iterations are reasonable.  However, as ``N`` increases
+.. the method fails.
 
-   using SparseArrays
-    function markov_chain_product(Q, A)
-        M = size(Q, 1)
-        N = size(A, 1)
-        Q = sparse(Q)
-        Qs = blockdiag(fill(Q, N)...)  # create diagonal blocks of every operator
-        As = kron(A, sparse(I(M)))
-        return As + Qs
-    end
+.. .. code-block:: julia
 
-    α = 0.1
-    N = 4
-    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
-    A = sparse([-0.1 0.1
-        0.2 -0.2])
-    M = size(A,1)
-    L = markov_chain_product(Q, A)
-    L_adjoint = L';
+..     N = 30
+..     f(x) = exp(x)
+..     x = range(0.0, 10.0, length = N+1)
+..     y = f.(x)  # generate some data to interpolate
+..     A = [x_i^n for x_i in x, n in 0:N]
+ 
+..     c = zeros(N+1)  # initial guess required for iterative solutions
+..     results = gmres!(c, A, y)
+..     println("cond(A) = $(cond(A)), converged in $(length(results)) iterations with norm error $(norm(A*c - y, Inf))")
 
-In this case, Arpack.jl does not do well with the singular matrix of a CTMC.  We can use another package
-for similar methods called `KrylovKit.jl <https://jutho.github.io/KrylovKit.jl/latest/man/eig/>`_
+.. Iterative Methods for Eigensystems
+.. ====================================
 
-.. code-block:: julia
+.. When you use ``eigen`` on a matrix, it calculates the full spectral decomposition, providing all of the eigenvalues and eigenvectors.
 
-    using KrylovKit
-    λ, ϕ = KrylovKit.eigsolve(L_adjoint, 1, :SR)  # smallest absolute value
-    reshape(real(ϕ[end]), N, size(A,1))
-    ϕ = real(ϕ) ./ sum(real(ϕ))
-    ϕ = reshape(ϕ, N, size(A,1))
-    λ
+.. While sometimes this is necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest :math:`O(N^3)` operations (i.e., it has
+.. one of the largest constants).  For large matrices it is often infeasible. 
+
+.. Luckily, you frequently only need a few or even a single eigenvector/eigenvalue, which enables a different set of algorithms.
+
+.. For example, in the case of a discrete time markov chain, to find the stationary distribution we are looking for the
+.. eigenvector associated with the eigenvalue of 1.  As usual, a little linear algebra goes a long way.
+
+.. From the `Perron-Frobenius theorem <https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem#Stochastic_matrices>`_, the largest eigenvalue of an irreducible stochastic matrix is 1 - the same eigenvalue we are looking for.
+
+.. Iterative methods for solving eigensystems allow targeting the smallest magnitude, largest magnitude, and many others.  The easiest library
+.. to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.  
+
+.. .. code-block:: julia
+
+..     using Arpack, LinearAlgebra
+..     N = 1000
+..     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+..     A_adjoint = A'
+
+..     λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  # Find 1 of the largest magnitude eigenvalue
+..     ϕ = real(ϕ) ./ sum(real(ϕ))
+..     λ
+
+.. Indeed, the ``λ`` is equal to ``1``.   Hint: if you get errors, increase ``maxiter``.
+
+.. Similarly, for a continuous time Markov Chain, to find the stationary distribution we are looking for the eigenvector associated with ``λ = 0`, which
+.. must be the smallest absolute magnitude.
+
+.. With our multi-dimensional CTMC in the previous section
+
+.. .. code-block:: julia
+
+..    using SparseArrays
+..     function markov_chain_product(Q, A)
+..         M = size(Q, 1)
+..         N = size(A, 1)
+..         Q = sparse(Q)
+..         Qs = blockdiag(fill(Q, N)...)  # create diagonal blocks of every operator
+..         As = kron(A, sparse(I(M)))
+..         return As + Qs
+..     end
+
+..     α = 0.1
+..     N = 4
+..     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+..     A = sparse([-0.1 0.1
+..         0.2 -0.2])
+..     M = size(A,1)
+..     L = markov_chain_product(Q, A)
+..     L_adjoint = L';
+
+.. In this case, Arpack.jl does not do well with the singular matrix of a CTMC.  We can use another package
+.. for similar methods called `KrylovKit.jl <https://jutho.github.io/KrylovKit.jl/latest/man/eig/>`_
+
+.. .. code-block:: julia
+
+..     using KrylovKit
+..     λ, ϕ = KrylovKit.eigsolve(L_adjoint, 1, :SR)  # smallest absolute value
+..     reshape(real(ϕ[end]), N, size(A,1))
+..     ϕ = real(ϕ) ./ sum(real(ϕ))
+..     ϕ = reshape(ϕ, N, size(A,1))
+..     λ
 
