@@ -4,7 +4,7 @@
 
 
 *****************************************
-Iterative Methods and Sparsity
+Conditioning and Iterative Methods
 *****************************************
 
 .. contents:: :depth: 2
@@ -14,7 +14,8 @@ Overview
 ============
 
 This lecture takes the structure of :doc:` numerical methods for linear algebra <numerical_linear_algebra>` and builds further
-
+towards working with large, sparse matrices.  In the process, we will examine foundational numerical analysis such as
+ill-conditioned matrices.
 
 Setup
 ------------------
@@ -26,7 +27,7 @@ Setup
     :class: hide-output
 
     using LinearAlgebra, Statistics, BenchmarkTools
-    seed!(42);  # seed random numbers for reproducibility
+    Random.seed!(42);  # seed random numbers for reproducibility
 
 Digression on Allocations and Inplace Operations
 ================================================
@@ -104,27 +105,30 @@ An important consideration in numerical linear algebra, and iterative methods in
 An ill-conditioned matrix is one where the basis of eigenvectors are close to, but not exactly, collinear.  While this poses no problem on pen and paper,
 or with infinite precision numerical methods, it is an important issue in practice for two reasons
 
-1. Ill-conditioned matrices introduce numerical errors roughly in proportion to the base-10 log of the condition number
-2. The convergence speed of many iterative methods is based on the spectral properties (e.g. the basis formed by the eigenvectors), and hence ill-conditioned systems can converge slowly
+1. Ill-conditioned matrices introduce numerical errors roughly in proportion to the base-10 log of the condition number.
+2. The convergence speed of many iterative methods is based on the spectral properties (e.g. the basis formed by the eigenvectors), and hence ill-conditioned systems can converge slowly.
 
-The solutions to this are to
+The solutions to these problems are to
 
-- be careful with operations which introduce error based on the condition number (e.g. matrix inversions when the condition number is extremely high)
+- be careful with operations which introduce error based on the condition number (e.g. matrix inversions when the condition number is high)
 - where possible, choose alternative representations which have less collinearity (e.g. an orthogonal polynomial basis rather than a monomial one)
 - for iterative methods, use a preconditioner, which changes the spectral properties to increase acceleration speed
+
+Condition Number
+----------------
 
 First, lets define the condition number and example it
 
 .. math::
 
-    \kappa(A) = \norm{A} \norm{A^{-1}}
+    \kappa(A) = \|A\| \|A^{-1}\|
 
 where you can use the Cauchy–Schwarz inequality to show that :math:`\kappa(A) \geq 1`.  You can choose any norm, but the 2-norm is a good default.
 
-First, a warning on calculations: calculating the condition number for a matrix can be an expensive operation (as would calculating a determinant
+First, a warning on calculations: calculating the condition number for a matrix can be an expensive operation (as would calculating a determinant)
 and should be thought of as roughly equivalent to doing an eigendecomposition.  So use it for detective work judiciously.  
 
-Lets look at the condition number of a few matrices using the ``cond`` function.
+Lets look at the condition number of a few matrices using the ``cond`` function (which allows a choice of the norm, but we stick with the 2-norm).
 
 .. code-block:: julia
 
@@ -143,13 +147,13 @@ On the other hand, notice that
     cond(A)
 
 Has a condition number of close to 100,000 - and hence (taking the base 10 log) you would expect to be introducing numerical errors of around 6 digits if you
-are not careful.  For example, note taht the inverse has both extremely large and extremely small number
+are not careful.  For example, note that the inverse has both extremely large and extremely small numbers
 
 .. code-block:: julia
 
     inv(A)
 
-Since we know that the determinant of close to collinear matrices is close to zero, this shows another symptom of poor conditioning
+Since we know that the determinant of nearly collinear matrices is close to zero, this shows another symptom of poor conditioning
 
 .. code-block:: julia
 
@@ -159,10 +163,11 @@ However, be careful since the determinant has a scale, while the condition numbe
 
 .. code-block:: julia
 
-    @show det(100000 * A)
-    @show cond(100000 * A);
+    @show det(1000 * A)
+    @show cond(1000 * A);
 
-In that case, the determinant of ``A`` is 1, while the condion number is unchanged.
+In that case, the determinant of ``A`` is 1, while the condition number is unchanged.  This example also provides some
+intuition that ill-conditioned matrices typically occur when a matrix has radically different scales (e.g. contains both ``1`` and ``1E-6``, or ``1000`` and ``1E-3``).  This can occur frequently with both function approximation and linear-least squares. 
 
 Why Monomial Basis are a Bad Idea
 ---------------------------------
@@ -279,35 +284,119 @@ then the error will become non-trivial quickly - even without taking the inverse
 At the heart of the issue is that the monomial basis leads to a `Vandermonde_matrix <https://en.wikipedia.org/wiki/Vandermonde_matrix>`_ which
 is especially ill-conditioned.  
 
-As an example, if we use a Chebyshev basis, which is an orthonormal basis, we can form extremely precise approximations, with
-very little numerical error.
+We can also understand a separte type of errors called `Runge's Phenomena <https://en.wikipedia.org/wiki/Runge%27s_phenomenon>`_.    It is an important
+issue in approximation theory, albeit not one driven by numerical error themselves.  
+
+It turns out that using a uniform grid of points is close to the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomena is can be seen with the interpolation of the seamingly innocuous Runge's function, :math:`g(x) = \frac{1}{1 + 25 x^2}`.
+
+.. code-block:: julia
+
+    using Plots
+    N_display = 100
+    g(x) = 1/(1 + 25x^2)
+    x_display = range(-1, 1, length = N_display)
+    y_display = g.(x)
+    plot(x, y_display, w = 3)
+
+Let us interpolate this function using the monomial basis above to find the :math:`c_i` such that
+
+.. math::
+
+    \frac{1}{(1 + 25 x^2} \approx \sum_{i=0}^N c_i x^i 
+
+Implementing, where we know that for ``N=5`` the numerical error from being ill-conditioning is manageable, we see the
+approximation has large errors at the corners. 
+
+.. code-block:: julia
+
+    using Plots
+    N_display = 100
+    g(x) = 1/(1 + 25x^2)
+    x_display = range(-1, 1, length = N_display)
+    y_display = g.(x)
+
+    # interpolation 
+    N = 5
+    x = range(-1.0, 1.0, length = N+1)
+    y = g.(x)
+    A_5 = [x_i^n for x_i in x, n in 0:N] 
+    c_5 = A_5 \ y
+
+    # use the coefficients to evaluate on x_display grid
+    B_5 = [x_i^n for x_i in x_display, n in 0:N]   # calculate monomials for display grid
+    y_5 = B_5 * c_5  # calculates for each in x_display_grid
+    plot(x_display, y_5, label = "N=5")
+    plot!(x_display, y_display, w = 3, label = "Runge's")
+
+This has the hallmark oscillations near the boundaries of Runge's Phenomena.  You might guess that increasing the number
+of grid points and order of the polynomial will lead to better approximations
+
+.. code-block:: julia
+
+    N = 9
+    x = range(-1.0, 1.0, length = N+1)
+    y = g.(x)
+    A_9 = [x_i^n for x_i in x, n in 0:N] 
+    c_9 = A_9 \ y
+
+    # use the coefficients to evaluate on x_display grid
+    B_9 = [x_i^n for x_i in x_display, n in 0:N]   # calculate monomials for display grid
+    y_9 = B_9 * c_9  # calculates for each in x_display_grid
+    plot(x_display, y_9, label = "N=9")
+    plot!(x_display, y_display, w = 3, label = "Runge's")
+
+Instead, we see that while the approximation is better near ``x=0``, the oscillations near the boundaries have become worse.
+
+Using an Orthogonal Polynomial Basis
+------------------------------------ 
+
+We can minimize the numerical issues of an ill-conditioned matrix by choosing a different basis for the polymomials.
+
+For example, with `Chebyshev polymomials <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_, which form an orthonormal basis, we can form precise high-order approximations, with very little numerical error 
 
 .. code-block:: julia
 
     using ApproxFun
     N = 10000
-    S = Chebyshev(0.0..10.0)
-    x = points(S, N)  # different grid points, but that could be modified
+    S = Chebyshev(0.0..10.0)  # form chebyshev basis
+    x = points(S, N)  # chooses better grid points, but that could be modified
     y = f.(x)
-    f_approx = Fun(S,ApproxFun.transform(S,y));
+    f_approx = Fun(S,ApproxFun.transform(S,y))  # transform fits the polynomial
     norm(f_approx.(x) - exp.(x), Inf)
 
-Besides the use of a different polynomial basis, we are approximating at different nodes (i.e. `the Chebyshev nodes <https://en.wikipedia.org/wiki/Chebyshev_nodes>`_).  This could be
-modified, but avoids a second source of numerical errors called `Runge's Phenomena <https://en.wikipedia.org/wiki/Runge%27s_phenomenon>`_.  It 
-turns out that using a uniform grid of points is about the worst possible choice of interpolation nodes, and should be avoided if possible.
+Besides the use of a different polynomial basis, we are approximating at different nodes (i.e. `Chebyshev nodes <https://en.wikipedia.org/wiki/Chebyshev_nodes>`_).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge's Phenomena.
 
-The lessons of this section are
+To summarize the analysis,
 
-1. If you are working with ill-conditioned matrices, be especially careful not to take inverses
-2. Check the condition number on systems you suspect might be ill-conditioned.
-3. Avoid a monomial polynomial basis.  Instead, orthogonal polynomials (e.g. Chebyshev or Lagrange) which are orthogonal under the inner product.
+1. Check the condition number on systems you suspect might be ill-conditioned (based on intuition of collinearity).
+2. If you are working with ill-conditioned matrices, be especially careful not to take inverse.
+3. Avoid a monomial polynomial basis.  Instead, orthogonal polynomials (e.g. Chebyshev or Lagrange) which are orthogonal under the inner product, or non-global basis such as cubic-splines.
 4. If possible, avoid using a uniform grid for interpolation and approximation and choose nodes appropriate for the basis.
 
-Iterative Methods for Solving Linear Equations
-==============================================
+However, sometimes you can't avoid ill-conditioned matrices. This is especially common with discretization of PDEs and with linear-least squares.
 
-Sometimes you can't avoid ill-conditioned matrices... Especially happens with PDEs and linear-least squares.
+Iterative Algorithms for Linear Systems
+=======================================
 
+As before, consider solving the equation 
+
+.. math::
+
+    A x = b
+
+where we will maintain a solution that, if :math:`A` is square, there is a unique solution.  However, we will now
+focus on cases where :math:`A` is both massive, sparse (e.g. potentially billions of equations), and sometimes ill-conditioned.  
+
+While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
+of PDEs, and when working with big or network data.
+
+The methods in the previous lectures (e.g. factorization and the related Gaussian elimination) are called direct methods, and able 
+- theory - to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
+system without any structure takes :math:`O(N^3)` operations, while a sparse system depends on the number of non-zeros.
+
+Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
+each iteration uses a much lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
+solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly.  So, rather than always thinking of linear operators as being matrices, we will consider linear operators that may or may not fit in memory (leading to "matrix-free methods").
 
 Iterative Methods for Eigensystems
 ====================================
@@ -369,29 +458,12 @@ With our multi-dimensional CTMC in the previous section
 In this case, Arpack.jl does not do well with the singular matrix of a CTMC.  We can use another package
 for similar methods called `KrylovKit.jl <https://jutho.github.io/KrylovKit.jl/latest/man/eig/>`_
 
+.. code-block:: julia
+
     using KrylovKit
-   using KrylovKit
     λ, ϕ = KrylovKit.eigsolve(L_adjoint, 1, :SR)  # smallest absolute value
     reshape(real(ϕ[end]), N, size(A,1))
     ϕ = real(ϕ) ./ sum(real(ϕ))
     ϕ = reshape(ϕ, N, size(A,1))
     λ
 
-.. Iterative Algorithms for Linear Systems
-.. =======================================
-
-.. As before, we consider solving the equation 
-
-.. .. math::
-
-..     A x = b
-
-.. where we will maintain a solution that, if :math:`A` is square, there is a unique solution.  However, we will now
-.. focus on cases where :math:`A` is both massive and sparse (e.g. potentially billions of equations).
-
-.. While this may seem excessive, it occurs frequently in practice due to the curse of dimensionality and discretizations
-.. of PDEs as well as when working with big or network data.
-
-.. The methods in the previous section (e.g. factorization and the related guassian elimination) are called direct methods,
-.. and work with matrices that are in-memory, while this section will generalize to linear operators that may or may not be
-.. in memory.

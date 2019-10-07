@@ -71,7 +71,7 @@ to
 
 .. math::
 
-    \min_x ||Ax -b||^2
+    \min_x \| Ax -b \|^2
 
 From theory, we know that :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
 
@@ -904,7 +904,7 @@ Concretely, the lessons in this section are
 
 You will rarely get to step 3 let alone step 5.
 
-However, there is also a corollary:  "don't pessimize prematurely". That is, don't make choices that lead to poor performance without any tradeoff in improved code clarity.  For example, writing your own algorithms when a high performance algorithm exists in a package or Julia itself.
+However, there is also a corollary:  "don't pessimize prematurely". That is, don't make choices that lead to poor performance without any tradeoff in improved code clarity.  For example, writing your own algorithms when a high performance algorithm exists in a package or Julia itself, or lazily making a matrix dense and carelessly dropping its structure.
 
 Implementation Difficulty
 -------------------------
@@ -921,9 +921,9 @@ On top of BLAS are `LAPACK <https://en.wikipedia.org/wiki/LAPACK>`_ operations, 
 
 The details of all of these are irrelevant, but if you are talking to people about performance, they will inevitably through out all of these concepts.  There are a few important lessons to keep in mind:
 
-- Leave writing kernels to the experts.  Even simple sounding algorithms can be very complicated to make high performance.
-- Your intuition about performance of code is probably going to be wrong.  If you use high quality libraries, you don't need to use your intuition.
-- Don't get distracted by the jargon or acronyms above if you are reading about performance.
+1. Leave writing kernels to the experts.  Even simple sounding algorithms can be very complicated to make high performance.
+2. Your intuition about performance of code is probably going to be wrong.  If you use high quality libraries, you don't need to use your intuition.
+3. Don't get distracted by the jargon or acronyms above if you are reading about performance.  But see point 1 if you try to implement it.
 
 Row and Column-Major Ordering
 -----------------------------
@@ -1013,6 +1013,6 @@ With the same setup as Exercise 2a, do an `eigen decomposition <https://en.wikip
 
     \phi_t = Q \Lambda^t Q^{-1} \phi_0
 
-Where matrix powers of diagonal matrices are simply the elementwise power of each element.
+Where matrix powers of diagonal matrices are simply the element-wise power of each element.
 
 Benchmark the speed of calculating the sequence of :math:`\phi_t` up to ``T = 2N`` using this method.  In principle, the factorization and easy calculation of the power should give you benefits.  Explain why it does or does not using computational order.
