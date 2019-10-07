@@ -26,7 +26,7 @@ Setup
 .. code-block:: julia
     :class: hide-output
 
-    using LinearAlgebra, Statistics, BenchmarkTools
+    using LinearAlgebra, Statistics, BenchmarkTools, Random
     Random.seed!(42);  # seed random numbers for reproducibility
 
 Digression on Allocations and Inplace Operations
