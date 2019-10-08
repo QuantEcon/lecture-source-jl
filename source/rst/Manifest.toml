@@ -199,6 +199,11 @@ git-tree-sha1 = "bd8bbd105ba583a42385bd6dc4a20dad8ab3dc11"
 uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
 version = "0.5.0"
 
+[[Cassette]]
+git-tree-sha1 = "da85d135b6048d3e78603e277cf9a4609f7e0673"
+uuid = "7057c7e9-c182-5462-911a-8362d720325c"
+version = "0.2.6"
+
 [[CategoricalArrays]]
 deps = ["Compat", "DataAPI", "Future", "JSON", "Missings", "Printf", "Reexport"]
 git-tree-sha1 = "13240cfcc884837fc1aa89b60d500a652bcc3f10"
@@ -1232,6 +1237,12 @@ deps = ["Adapt", "ArrayInterface", "BandedMatrices", "BlockBandedMatrices", "Dif
 git-tree-sha1 = "1b36284808f5971e73c43978e12842bedb31c293"
 uuid = "47a9eef4-7e08-11e9-0b38-333d64bd3804"
 version = "0.8.0"
+
+[[SparsityDetection]]
+deps = ["Cassette", "LinearAlgebra", "SparseArrays", "SpecialFunctions"]
+git-tree-sha1 = "e46475c444f5aa446170db6d6ccf611ae3a2b279"
+uuid = "684fba80-ace3-11e9-3d08-3bc7ed6f96df"
+version = "0.1.1"
 
 [[SpatialIndexing]]
 deps = ["Printf", "Random", "Test"]
