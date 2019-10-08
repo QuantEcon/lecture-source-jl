@@ -625,7 +625,7 @@ Implementing :math:`Q` using its tridiagonal structure
 
 Here we use a Tridiagonal to exploit the structure of the problem.
 
-Consider a simple payoff vector :math:`p` associated with each state, and a discount rate :math:`ρ`.  Then we can solve for
+Consider a simple payoff vector :math:`r` associated with each state, and a discount rate :math:`ρ`.  Then we can solve for
 the expected present discounted value in a similar way to the discrete time case.
 
 .. math::
@@ -636,7 +636,7 @@ or rearranging slightly, solving the linear system
 
 .. math::
 
-    (\rho I - Q) v = p
+    (\rho I - Q) v = r
 
 For our example, exploiting the tr
 
@@ -652,7 +652,7 @@ linear problem.
 
 .. code-block:: julia
 
-    v = A \ p
+    v = A \ r
 
 
 The :math:`Q` is also used to calculate the evolution of the Markov chain, in direct analogy to the :math:`ψ_{t+k} = ψ_t P^k` evolution with transition matrix :math:`P` of the discrete case.
@@ -889,8 +889,8 @@ Or to find the stationary solution,
 
 .. _implementation_numerics:
 
-Implementing Low Level Kernels
-====================================
+Implementation Details and Performance
+======================================
 
 Recall the famous quote from Knuth: "Premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%".  The most common example of premature optimization is trying to use your own mental model of a compiler while writing your code, overly worried about the efficiency of code and (usually incorrectly) second-guessing the compiler.
 
@@ -936,7 +936,78 @@ One option is to use the functions that let the compiler choose the most efficie
 
 Julia, Fortran, and Matlab all use column-major order while C/C++ and Python use row-major order.  This means that if you find an algorithm written for C/C++/Python you will sometimes need to make small changes if performance is an issue.
 
-    
+
+Digression on Allocations and Inplace Operations
+-------------------------------------------------
+
+While we have usually not considered optimizing code for performance (and focused on the choice of
+algorithms instead), when matrices and vectors become large we need to be more careful.
+
+The most important thing to avoid are excess allocations, which usually occur due to the use of
+temporary vectors and matrices when they are not necessary.  However, caution is suggested since
+excess allocations are never relevant for scalar values, and can sometimes create faster code for
+smaller matrices/vectors since it can lead to better `cache locality <https://en.wikipedia.org/wiki/Locality_of_reference>`_.
+
+To see this, a convenient tool is the benchmarking
+
+.. code-block:: julia
+
+    using BenchmarkTools
+    A = rand(10,10)
+    B = rand(10,10)
+    C = similar(A)
+    function f!(C, A, B)
+        D = A*B
+        C .= D .+ 1
+    end
+    @btime f!($C, $A, $B)
+
+The ``!`` on the ``f!`` is an informal way to say that the function is mutating, and the first arguments ``C``
+is by convention the modified values.
+
+There, notice that the ``D`` is a temporary variable which is created, and then modified afterwards.  However, notice that since
+``C`` is modified directly, there is no need to create the temporary matrix.
+
+This is an example of where an inplace version of the matrix multiplication can help avoid the allocation.
+
+.. code-block:: julia
+
+    function f2!(C, A, B)
+        mul!(C, A, B)  # in place multiplication
+        C .+= 1
+    end
+    A = rand(10,10)
+    B = rand(10,10)
+    C = similar(A)
+    @btime f!($C, $A, $B)
+    @btime f2!($C, $A, $B)
+
+Note in the output of the benchmarking, the ``f2!`` is non-allocating and is using the preallocated ``C`` variable directly.
+
+Another example of this is solutions to linear equations.
+
+.. code-block:: julia
+
+    A = rand(10,10)
+    y = rand(10)
+    z = A \ y  # creates temporary
+
+    A = factorize(A)  # inplace requires factorization
+    x = similar(y)
+    ldiv!(x, A, y)  # inplace left divide, using factorization
+
+However, if you benchmark carefully, you will see that this is sometimes slower.  Avoiding allocations is not always a good
+idea.
+
+There are a variety of other non-allocating versions of functions.  For example,
+
+.. code-block:: julia
+
+    A = rand(10,10)
+    B = similar(A)
+
+    transpose!(B, A)  # non-allocating version of B = transpose(A)
+
 Exercises
 ==============
 
@@ -1007,7 +1078,7 @@ Exercise 2b
 
 With the same setup as Exercise 2a, do an `eigen decomposition <https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix>`_ of ``A_transpose``.  That is, use ``eigen`` to do a factorization of the adjoint :math:`A' = Q \Lambda Q^{-1}` where :math:`Q` the matrix of eigenvectors and :math:`\Lambda` the diagonal matrix of eigenvalues.  Calculate :math:`Q^{-1}` as well.
 
- Use the factored matrix to calculate the sequence of :math:`\phi_t = (A')^t \phi_0` using the relationship
+Use the factored matrix to calculate the sequence of :math:`\phi_t = (A')^t \phi_0` using the relationship
 
 .. math::
 

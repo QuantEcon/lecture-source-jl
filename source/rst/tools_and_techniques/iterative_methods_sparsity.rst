@@ -29,77 +29,6 @@ Setup
     using LinearAlgebra, Statistics, BenchmarkTools, Random
     Random.seed!(42);  # seed random numbers for reproducibility
 
-Digression on Allocations and Inplace Operations
-================================================
-
-While we have usually not considered optimizing code for performance (and focused on the choice of
-algorithms instead), when matrices and vectors become large we need to be more careful.
-
-The most important thing to avoid are excess allocations, which usually occur due to the use of
-temporary vectors and matrices when they are not necessary.  However, caution is suggested since
-excess allocations are never relevant for scalar values, and can sometimes create faster code for
-smaller matrices/vectors.
-
-To see this, a convenient tool is the benchmarking
-
-.. code-block:: julia
-
-    using BenchmarkTools
-    A = rand(10,10)
-    B = rand(10,10)
-    C = similar(A)
-    function f!(C, A, B)
-        D = A*B
-        C .= D .+ 1
-    end
-    @btime f!($C, $A, $B)
-
-The ``!`` on the ``f!`` is an informal way to say that the function is mutating, and the first arguments ``C``
-is by convention the modified values.
-
-There, notice that the ``D`` is a temporary variable which is created, and then modified afterwards.  However, notice that since
-``C`` is modified directly, there is no need to create the temporary matrix.
-
-This is an example of where an inplace version of the matrix multiplication can help avoid the allocation.
-
-.. code-block:: julia
-
-    function f2!(C, A, B)
-        mul!(C, A, B)  # in place multiplication
-        C .+= 1
-    end
-    A = rand(10,10)
-    B = rand(10,10)
-    C = similar(A)
-    @btime f!($C, $A, $B)
-    @btime f2!($C, $A, $B)
-
-Note in the output of the benchmarking, the ``f2!`` is non-allocating and is using the preallocated ``C`` variable directly.
-
-Another example of this is solutions to linear equations.
-
-.. code-block:: julia
-
-    A = rand(10,10)
-    y = rand(10)
-    z = A \ y  # creates temporary
-
-    A = factorize(A)  # inplace requires factorization
-    x = similar(y)
-    ldiv!(x, A, y)  # inplace left divide, using factorization
-
-However, if you benchmark carefully, you will see that this is sometimes slower.  Avoiding allocations is not always a good
-idea.
-
-There are a variety of other non-allocating versions of functions.  For example,
-
-.. code-block:: julia
-
-    A = rand(10,10)
-    B = similar(A)
-
-    transpose!(B, A)  # non-allocating version of B = transpose(A)
-
 Ill-conditioned Matrices
 ========================
 
@@ -370,55 +299,149 @@ To summarize the analysis,
 
 However, sometimes you can't avoid ill-conditioned matrices. This is especially common with discretization of PDEs and with linear-least squares.
 
-.. Iterative Algorithms for Linear Systems
-.. =======================================
+Iterative Algorithms for Linear Systems
+=======================================
 
-.. As before, consider solving the equation 
+As before, consider solving the equation 
 
-.. .. math::
+.. math::
 
-..     A x = b
+    A x = b
 
-.. where we will maintain a solution that, if :math:`A` is square, there is a unique solution.  However, we will now
-.. focus on cases where :math:`A` is both massive, sparse (e.g. potentially billions of equations), and sometimes ill-conditioned.  
+where we will maintain a solution that, if :math:`A` is square, there is a unique solution.  However, we will now
+focus on cases where :math:`A` is both massive, sparse (e.g. potentially billions of equations), and sometimes ill-conditioned.  
 
-.. While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
-.. of PDEs, and when working with big or network data.
+While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
+of PDEs, and when working with big or network data.
 
-.. The methods in the previous lectures (e.g. factorization and the related Gaussian elimination) are called direct methods, and able 
-.. - in theory - to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
-.. system without any structure takes :math:`O(N^3)` operations, while a sparse system depends on the number of non-zeros.
+The methods in the previous lectures (e.g. factorization and the related Gaussian elimination) are called direct methods, and able 
+- in theory - to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
+system without any structure takes :math:`O(N^3)` operations, while a sparse system depends on the number of non-zeros.
 
-.. Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
-.. each iteration uses a much lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
-.. solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly; and (3) find solutions
-.. in progress prior to the completion of all algorithm steps.
+Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
+each iteration uses a much lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
+solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly; and (3) find solutions
+in progress prior to the completion of all algorithm steps.
 
-.. So, rather than always thinking of linear operators as being matrices, we will consider linear operators that may or may not fit in memory (leading to "matrix-free methods"), but implement a left-multiply ``*`` operator for vectors.
+So, rather than always thinking of linear operators as being matrices, we will consider linear operators that may or may not fit in memory (leading to "matrix-free methods"), but implement a left-multiply ``*`` operator for vectors.
 
-.. Iterative methods are of two types:  first are 
+There are two types of iterative methods we will consider:  first are stationary methods which iterate on a map, in a similar way to fixed point problems (and which sometimes have similar contraction mapping requirements) and the second are krylov methods which iteratively solve using a basis of the matrices.
 
-.. Jacobi Iteration
-.. ----------------
+For our main examples, lets solve the valuation of the continuous time markov chain from the previous section.  That is, given a payoff vector :math:`r`, a
+discount rate :math:`\rho`, and the infinitesimal generator of the markov chain :math:`Q`, solve the equation
 
-.. .. code-block:: julia
 
-..     N = 10
-..     f(x) = exp(x)
-..     x = range(0.0, 10.0, length = N+1)
-..     y = f.(x)  # generate some data to interpolate
+.. math::
 
-..     A = [x_i^n for x_i in x, n in 0:N]
-..     c = A \ y
-..     @show norm(A * c - f.(x), Inf)
-..     using IterativeSolvers
-..     c = zeros(N+1)
-..     gauss_seidel!(c, A, y)
-..     @show norm(A * c - f.(x), Inf)
+    \rho v = r + Q v 
 
-.. ------
+With the sizes and types of matrices here, iterative methods are inappropriate in practice, but it will help us understand
+the characteristics of convergence, and how they relate to matrix conditioning.
 
-.. GMRES
+Stationary Methods
+--------------------
+
+First, we will solve with a direct methods, which will give the solution to machine precision.  
+
+.. code:: julia
+
+    using LinearAlgebra, IterativeSolvers, Statistics
+    α = 0.1
+    N = 100
+    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+
+    r = range(0.0, 10.0, length=N)
+    ρ = 0.05
+
+    A = ρ * I - Q
+    v_direct = A \ r
+    mean(v_direct)
+
+Without proof, consider given the discount rate of :math:`\rho > 0` this problem could be setup as a contraction for solving the Bellman
+equation through methods like value function iteration.
+
+The condition we will examine here is called `**diagonal dominance** <https://en.wikipedia.org/wiki/Diagonally_dominant_matrix>`_.
+
+.. math::
+
+    |A_{ii}| \geq \sum_{j\neq i} |A_{ij}| \quad\text{for all } i = 1\ldots N
+
+That is, for every row, the diagonal is weakly greater in absolute value than the sum of all of the other elements in the row.  In cases
+where it is strictly greater, we say that the matrix is strictly diagonally dominant.
+
+With our example, given that :math:`Q` is the infinitesimal generator of a markov chain, we know that each row sums to 0, and hence
+it is weakly diagonally dominant.
+
+However, notice that when :math:`\rho > 0`,  :math:`A = ρ * I - Q` makes the matrix strictly diagonally dominant.
+
+Jacobi Iteration
+----------------
+
+For matrices that are **strictly diagonally dominant**, you can prove that a simple decomposition and iteration procedure
+will converge. 
+
+To solve a system :math:`A x = b`, split the matrix :math:`A` into its diagonal and off-diagonals.  That is,
+
+.. math:: 
+
+    A = D + R 
+
+where
+
+.. math::
+
+    D = \begin{bmatrix} A_{11} & 0 & \ldots & 0\\
+                        0    & A_{22} & \ldots & 0\\
+                        \vdots & \vdots & \vdots & \vdots\\
+                        0 & 0 &  \ldots & 0 A_{NN}
+
+and
+
+.. math::
+
+    D = \begin{bmatrix} 0 & A_{12}  & \ldots & A_{1N} \\
+                        A_{21}    & 0 & \ldots & A_{2N} \\
+                        \vdots & \vdots & \vdots & \vdots\\
+                        A_{N1}  & A_{N2}  &  \ldots & 0
+        \end{bmatrix}
+
+TEXTTBF:::: TODO!!!s
+
+Start with a :math:`v` guess, 
+
+.. code-block:: julia
+
+    using IterativeSolvers
+    v = zeros(N)
+    jacobi!(v, A, r, maxiter = 1000, log=true)
+    @show norm(v - v_direct, Inf)
+
+    using IterativeSolvers
+    v = zeros(N)
+    jacobi!(v, A, r, maxiter = 40)
+    @show norm(v - v_direct, Inf)
+
+    v = zeros(N)
+    gauss_seidel!(v, A, r, maxiter = 40)
+    @show norm(v - v_direct, Inf);
+
+    v = zeros(N)
+    sor!(v, A, r, 1.1, maxiter = 40)
+    @show norm(v - v_direct, Inf);
+
+    using LinearAlgebra, SparseArrays, IterativeSolvers
+    A = I + rand(100,100)  # the real example is assymetric...
+    b = rand(100)
+    x = similar(b)
+    #gmres!(x, A, b, Pl = Identity(), log=true, maxiter = 1000)
+    A_lu = lu(A)
+    gmres!(x, A, b, Pl = A_lu, log=true)  # do my own preconditioning
+
+    using IncompleteLU
+    P = ilu(sparse(A), τ = 0.1)
+    gmres!(x, A, b, Pl = P, log=true)
+
+..  
 .. ------
 
 .. There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
