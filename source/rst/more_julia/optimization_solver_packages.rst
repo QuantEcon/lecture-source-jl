@@ -671,3 +671,53 @@ Additional Notes
 ====================
 
 Watch `this video <https://www.youtube.com/watch?v=vAp6nUMrKYg&feature=youtu.be>`_ from one of Julia's creators on automatic differentiation
+
+Exercises
+============
+
+Exercise 1
+---------------
+
+Doing a simple implementation of forward-mode auto-differentiation is very easy in Julia since it is generic.  In this exercise, you
+will fill in a few of the operations required for a simple AD implementation.
+
+First, we need to provide a type to hold the dual.
+
+.. code-block:: julia
+
+    struct DualNumber{T} <: Real
+        val::T
+        ϵ::T
+    end
+
+
+Here we have made it a subtype of ``Real`` so that it can pass through functions expecting Reals.
+
+We can add on a variety of chain rule definitions by importing in the appropriate functions and adding DualNumber versions.  For example
+
+.. code-block:: julia
+
+    import Base: +, *, -, ^, exp
+    +(x::DualNumber, y::DualNumber) = DualNumber(x.val + y.val, x.ϵ + y.ϵ)  # dual addition
+    +(x::DualNumber, a::Number) = DualNumber(x.val + a, x.ϵ)  # i.e. scalar addition, not dual
+    +(a::Number, x::DualNumber) = DualNumber(x.val + a, x.ϵ)  # i.e. scalar addition, not dual
+
+
+With that, we can seed a dual number and find simple derivatives,
+
+.. code-block:: julia
+
+
+    f(x, y) = 3.0 + x + y
+
+    x = DualNumber(2.0, 1.0)  # x -> 2.0 + 1.0\epsilon
+    y = DualNumber(3.0, 0.0)  # i.e. y = 3.0, no derivative
+
+
+    # seeded calculates both teh function and the d/dx gradient!
+    f(x,y)
+
+For this assignment:
+
+1.  Add in AD rules for the other operations: ``*, -, ^, exp``.
+2.  Come up with some examples of univariate and multivariate functions combining those operations and use your AD implementation to find the derivatives.
