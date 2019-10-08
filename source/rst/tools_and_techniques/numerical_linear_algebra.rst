@@ -1008,6 +1008,38 @@ There are a variety of other non-allocating versions of functions.  For example,
 
     transpose!(B, A)  # non-allocating version of B = transpose(A)
 
+
+Finally, a common source of unnecessary allocations is when taking slices or portions of
+matrices.  For example, the following allocates a new matrix ``B`` and copies the values.
+
+.. code-block:: julia
+
+    A = rand(5,5)
+    B = A[2,:]  # extract a vector
+
+To see these are different matrices, note that
+
+.. code-block:: julia
+
+    A[2,1] = 100.0
+    @show A[2,1]
+    @show B[1];
+
+Instead of allocating a new matrix, you can take a ``view`` of a matrix, which provides and
+appropriate ``AbstractArray`` type that doesn't allocate new memory with the ``@view`` matrix.
+
+.. code-block:: julia
+
+    A = rand(5,5)
+    B = @view A[2,:]  #  does not copy the data
+
+    A[2,1] = 100.0
+    @show A[2,1]
+    @show B[1];    
+
+But, again, you will often find that doing ``@view`` leads to slower code.  Benchmark
+instead, and generally rely on it for large matrices and for contiguous chunks of memory (e.g. a column rather than a row).
+
 Exercises
 ==============
 

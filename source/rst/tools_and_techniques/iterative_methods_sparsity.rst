@@ -29,7 +29,7 @@ Setup
     using LinearAlgebra, Statistics, BenchmarkTools, Random
     Random.seed!(42);  # seed random numbers for reproducibility
 
-Ill-conditioned Matrices
+Ill-Conditioned Matrices
 ========================
 
 An important consideration in numerical linear algebra, and iterative methods in general is the `condition number <https://en.wikipedia.org/wiki/Condition_number#Matrices>`_.
