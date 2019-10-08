@@ -877,3 +877,8 @@ For the tests, you should have at the very minimum
 And anything else you can think of.  You should be able to run ``] test`` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI
 
 Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build
+
+Exercise 2
+------------
+
+Watch the youtube video `Developing Julia Packages <https://www.youtube.com/watch?v=QVmU29rCjaA>`_ from Chris Rackauckas.  The demonstration goes through many of the same concepts as this lecture, but with more background in test-driven development and providing more details for open-source projects.
