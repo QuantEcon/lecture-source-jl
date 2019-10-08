@@ -496,14 +496,16 @@ version = "0.6.4"
 [[FixedEffectModels]]
 deps = ["CategoricalArrays", "Combinatorics", "DataFrames", "Distributions", "FillArrays", "FixedEffects", "LinearAlgebra", "Printf", "Random", "Reexport", "Statistics", "StatsBase", "StatsModels"]
 git-tree-sha1 = "281889f07f21faf2052c21f46b1515f61c15dd25"
+pinned = true
 uuid = "9d5cd8c9-2029-5cab-9928-427838db53e3"
 version = "0.8.5"
 
 [[FixedEffects]]
 deps = ["CUDAapi", "CategoricalArrays", "CuArrays", "Distributed", "FillArrays", "LinearAlgebra", "Reexport", "StatsBase"]
-git-tree-sha1 = "6983c638db04a75224e83fea8fe31a02df76db2d"
+git-tree-sha1 = "38405cc06cbc8e38f47d0c9adca60260eb83c78c"
+pinned = true
 uuid = "c8885935-8500-56a7-9867-7708b20db0eb"
-version = "0.4.0"
+version = "0.3.0"
 
 [[FixedPointNumbers]]
 git-tree-sha1 = "d14a6fa5890ea3a7e5dcab6811114f132fec2b4b"
@@ -541,6 +543,7 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 [[GLM]]
 deps = ["Distributions", "LinearAlgebra", "Printf", "Random", "Reexport", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns", "StatsModels"]
 git-tree-sha1 = "4ddc58560691feed10fe930ff92b71bbe6eef1fd"
+pinned = true
 uuid = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
 version = "1.3.1"
 
@@ -1143,6 +1146,7 @@ version = "0.2.0"
 [[RegressionTables]]
 deps = ["Compat", "Distributions", "FixedEffectModels", "Formatting", "GLM", "Statistics", "StatsBase", "StatsModels"]
 git-tree-sha1 = "883c76d6eb7eeffd856a33c27fb9462dccafd304"
+pinned = true
 uuid = "d519eb52-b820-54da-95a6-98e1306fdade"
 version = "0.2.2"
 
