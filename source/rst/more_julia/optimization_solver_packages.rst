@@ -23,108 +23,167 @@ Setup
     :class: hide-output
 
     using LinearAlgebra, Statistics
-    using ForwardDiff, Flux, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve
-    using LeastSquaresOptim, Flux.Tracker
-    using Flux.Tracker: update!
+    using ForwardDiff, Zygote, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve, LeastSquaresOptim
     using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 
-Introduction to Automatic Differentiation
+Introduction to Differentiable Programming
 =============================================
 
-Automatic differentiation (AD, sometimes called algorithmic differentiation) is a crucial way to increase the performance of both estimation and solution methods
+Automatic differentiation (AD, sometimes called algorithmic differentiation) is a crucial way to increase the accuracy and performance of estimation and solution methods.
 
-There are essentially four ways to calculate the gradient or Jacobian on a computer
+The promise of differentiable programming (as the natural evolution of AD is sometimes called) is that we can move towards taking the derivatives of almost arbitrarily
+complicated computer programs, rather than simply thinking about the derivatives of mathematical functions.
 
-* Calculation by hand
+Stepping back, there are essentially three ways to calculate the gradient or Jacobian
 
-    * Where possible, you can calculate the derivative on "pen and paper" and potentially simplify the expression
-    * Sometimes, though not always, the most accurate and fastest option if there are algebraic simplifications
-    * The algebra is error prone for non-trivial setups
+*  Analytic derivatives / Symbolic differentiation
+
+    * You can sometimes calculate the derivative on "pen and paper" and potentially simplify the expression
+    * It is sometimes, though not always, the most accurate and fastest option if there are algebraic simplifications.
+    * In effect, repeated applications of the chain rule, product rule.
+    * Sometimes symbolic integration on the computer a good solution, if the package can handle your functions. Doing algebra by hand is tedious and error-prone, but
+      is sometimes invaluable.
 
 * Finite differences
 
-    * Evaluate the function at least :math:`N` times to get the gradient -- Jacobians are even worse
+    * Evaluate the function at least :math:`N+1` times to get the gradient -- Jacobians are even worse
     * Large :math:`\Delta` is numerically stable but inaccurate, too small of :math:`\Delta` is numerically unstable but more accurate
-    * Avoid if you can, and use packages (e.g. `DiffEqDiffTools.jl <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ ) to get a good choice of :math:`\Delta`
+    * Choosing the :math:`\Delta` is hard, so use packages such as `DiffEqDiffTools.jl <https://github.com/JuliaDiffEq/DiffEqDiffTools.jl>`_ 
+    * If a function is :math:`R^N \to R` for a large :math:`N`, this requires :math:`O(N)` function evaluations.
 
 .. math::
     \partial_{x_i}f(x_1,\ldots x_N) \approx \frac{f(x_1,\ldots x_i + \Delta,\ldots x_N) - f(x_1,\ldots x_i,\ldots x_N)}{\Delta}
 
-* Symbolic differentiation
-
-    * If you put in an expression for a function, some packages will do symbolic differentiation
-    * In effect, repeated applications of the chain rule, product rule, etc.
-    * Sometimes a good solution, if the package can handle your functions
 
 * Automatic Differentiation
 
-    * Essentially the same as symbolic differentiation, just occurring at a different time in the compilation process
-    * Equivalent to analytical derivatives since it uses the chain rule, etc.
+    * The same as analytic/symbolic differentiation, but where the **chain rule** is calculated **numerically** rather than symbolically.
+    * Just as with analytic derivatives, can establish rules for the derivatives of individual functions (e.g. :math:`d sin(x)` to :math:`cos(x) dx`) for intrinsic derivatives.
 
-We will explore AD packages in Julia rather than the alternatives
 
-Automatic Differentiation
----------------------------
+AD has two basic approaches, which are variations on the order of evaluating the chain rule: reverse and forward mode (although mixed mode is possible)
 
-To summarize here, first recall the chain rule (adapted from `Wikipedia <https://en.wikipedia.org/wiki/Chain_rule>`_)
+1. If a function is :math:`R^N \to R`, then **reverse-mode** AD can find the gradient in :math:`O(1)` sweep (where a "sweep" is :math:`O(1)` function evaluations)
+2. If a function is :math:`R \to R^N`, then **forward-mode** AD can find the jacobian in :math:`O(1)` sweeps
+
+We will explore two types of automatic differentiation in Julia (and discuss a few packages which implement them).  For both, remember the `chain rule <https://en.wikipedia.org/wiki/Chain_rule>`_
 
 .. math::
+
     \frac{dy}{dx} = \frac{dy}{dw} \cdot \frac{dw}{dx}
 
-Consider functions composed of calculations with fundamental operations with known analytical derivatives, such as :math:`f(x_1, x_2) = x_1 x_2 + \sin(x_1)`
+In essence, forward-mode starts the calculation from the left with :math:`\frac{dy}{dw}` first, which then calculates the product with :math:`\frac{dw}{dx}`.  On the other hand, reverse mode starts on the right hand side with :math:`\frac{dw}{dx}` and works backwards.
 
-To compute :math:`\frac{d f(x_1,x_2)}{d x_1}`
+We will use as an example a function with fundamental operations and known analytical derivatives 
+
+.. math::
+
+    f(x_1, x_2) = x_1 x_2 + \sin(x_1)
+
+But you could think of this as a function which contains a sequence of simple operations and temporaries, without any function composition
+
+.. code-block:: julia
+
+    function f(x_1, x_2)
+        w_1 = x_1
+        w_2 = x_2
+        w_3 = w_1 * w_2
+        w_4 = sin(w_1)
+        w_5 = w_3 + w_4
+        return w_5
+    end
+
+Here we will be able to identify all of the underlying functions (``*, sin, +``), and see if each has an 
+intrinsic derivative.  While these are obvious, with Julia we could come up with all sorts of differentiation rules for arbitrarily
+complicated combinations and compositions of intrinsic operations.  In fact, there is even `a package <https://github.com/JuliaDiff/ChainRules.jl>`_ for registering more.
+
+Forward-Mode Automatic Differentiation
+----------------------------------------
+
+In forward-mode AD, you first fix the variable you are interested in (called "seeding"), and then evaluate the chain rule in left-to-right order.
+
+For example, with our :math:`f(x_1, f_2)` example above, if we wanted to calculate the derivative with respect to :math:`x_1` then
+we can seed the setup accordingly.  :math:`\frac{\partial  w_1}{\partial  x_1} = 1` since we are taking the derivative of it, while :math:`\frac{\partial  w_1}{\partial  x_1} = 0`.
+
+Following through with these, redo all of the calculations for the derivative in parallel with the function itself.
 
 .. math::
     \begin{array}{l|l}
-    \text{Operations to compute value} &
-    \text{Operations to compute} \frac{\partial f(x_1,x_2)}{\partial x_1}
+    f(x_1, x_2) &
+    \frac{\partial f(x_1,x_2)}{\partial x_1}
     \\
     \hline
     w_1 = x_1 &
-    \frac{d w_1}{d x_1} = 1 \text{ (seed)}\\
+    \frac{\partial  w_1}{\partial  x_1} = 1 \text{ (seed)}\\
     w_2 = x_2 &
-    \frac{d  w_2}{d x_1} = 0 \text{ (seed)}
+    \frac{\partial   w_2}{\partial  x_1} = 0 \text{ (seed)}
     \\
     w_3 = w_1 \cdot w_2 &
-    \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{d  w_1}{d x_1} + w_1 \cdot \frac{d  w_2}{d x_1}
+    \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{\partial   w_1}{\partial  x_1} + w_1 \cdot \frac{\partial   w_2}{\partial  x_1}
     \\
     w_4 = \sin w_1 &
-    \frac{d  w_4}{d x_1} = \cos w_1 \cdot \frac{d  w_1}{d x_1}
+    \frac{\partial   w_4}{\partial x_1} = \cos w_1 \cdot \frac{\partial  w_1}{\partial x_1}
     \\
     w_5 = w_3 + w_4 &
-    \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{d  w_4}{d x_1}
+    \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{\partial  w_4}{\partial x_1}
     \end{array}
+
+Since these two could be done at the same time, we say there is "one pass" required for this calculation.
+
+Generalizing a little, if the function was vector-valued, then that single pass would get the entire row of the Jacobian in that single pass.  Hence for a :math:`R^N \to R^M` function, requires :math:`N` passes to get a dense Jacobian using forward-mode AD.
+
+How can you implement forward-mode AD?  It turns out to be fairly easy with a generic programming language to make a simple example (while the devil is in the details for
+a high-performance implementation).
 
 Using Dual Numbers
 --------------------
 
-One way to implement this (used in forward-mode AD) is to use `dual numbers <https://en.wikipedia.org/wiki/Dual_number>`_
+One way to implement forward-mode AD is to use `dual numbers <https://en.wikipedia.org/wiki/Dual_number>`_
 
-Take a number :math:`x` and augment it with an infinitesimal :math:`\epsilon` such that :math:`\epsilon^2 = 0`, i.e. :math:`x \to x + x' \epsilon`
+Instead of working with just a real number, e.g. :math:`x`, we will augment each with an infinitesimal :math:`\epsilon` and use :math:`x + \epsilon`.
 
-All math is then done with this (mathematical, rather than Julia) tuple :math:`(x, x')` where the :math:`x'` may be hidden from the user
+From Taylor's theorem,
 
-With this definition, we can write a general rule for differentiation of :math:`g(x,y)` as
+.. math:: 
+
+    f(x + \epsilon) = f(x) + f'(x)\epsilon + O(\epsilon^2)
+
+where we will assume that the infinitesimal is such that :math:`\epsilon^2 = 0`.
+
+With this definition, we can write a general rule for differentiation of :math:`g(x,y)` as the chain rule for the total derivative
 
 .. math::
-    g \big( \left(x,x'\right),\left(y,y'\right) \big) = \left(g(x,y),\partial_x g(x,y)x' + \partial_y g(x,y)y' \right)
 
-This calculation is simply the chain rule for the total derivative
+    g(x + \epsilon, y + \epsilon) = g(x, y) + (\partial_x g(x,y) + \partial_y g(x,y))\epsilon
 
-An AD library using dual numbers concurrently calculates the function and its derivatives, repeating the chain rule until it hits a set of intrinsic rules such as
+But, note that if we keep track of the constant in front of the :math:`\epsilon` terms (e.g. a :math:`x'` and :math:`y'`)
 
 .. math::
+
+    g(x + x'\epsilon, y + y'\epsilon) = g(x, y) + (\partial_x g(x,y)x' + \partial_y g(x,y)y')\epsilon
+
+This is simply the chain rule.  A few examples are 
+
+.. math::
+
 		\begin{aligned}
-		x + y \to \left(x,x'\right) + \left(y,y'\right) &= \left(x + y,\underbrace{x' + y'}_{\partial(x + y) = \partial x + \partial y}\right)\\
-		x y \to \left(x,x'\right) \times \left(y,y'\right) &= \left(x y,\underbrace{x'y + y'x}_{\partial(x y) = y \partial x + x \partial y}\right)\\
-		\exp(x) \to \exp(\left(x, x'\right)) &= \left(\exp(x),\underbrace{x'\exp(x)}_{\partial(\exp(x)) = \exp(x)\partial x} \right)
+		(x + x'\epsilon) + (y + y'\epsilon) &= (x + y) + (x' + y')\epsilon\\
+        (x + x'\epsilon)\times(y + y'\epsilon) &= (xy) + (x'y + y'x)\epsilon\\
+        \exp(x + x'\epsilon) &= \exp(x) + (x'\exp(x))\epsilon\\
 		\end{aligned}
+
+
+Using the generic programming in Julia, it is easy to define a new dual number type which can encapsulate the pair :math:`(x, x')` and provide a definitions for
+all of the basic operations for Dual numbers.  Each definition then has the chain-rule built into it.
+
+With this approach, the "seed" process is simple the creation of the :math:`\epsilon` for the underlying variable.  So if we have the function :math:`f(x_1, x_2)` and we wanted to find the derivative :math:`\partial_{x_1} g(3.9, 6.9)` then then we would seed them with the dual numbers :math:`x_1 \to (3.8, 1)` and :math:`x_2 \to (6.9, 0)`.
+
+If you then follow all of the same scalar operations above with a seeded dual number, it will calculate both the function value and the derivative in a single "sweep" and without modifying any of your (generic) code.
 
 ForwardDiff.jl
 -----------------
 
-We have already seen one of the AD packages in Julia
+Dual-numbers are at the heart of one of the AD packages we have already seen
 
 .. code-block:: julia
 
