@@ -135,8 +135,8 @@ Generalizing a little, if the function was vector-valued, then that single pass 
 How can you implement forward-mode AD?  It turns out to be fairly easy with a generic programming language to make a simple example (while the devil is in the details for
 a high-performance implementation).
 
-Using Dual Numbers
---------------------
+Forward-Mode with Dual Numbers
+------------------------------
 
 One way to implement forward-mode AD is to use `dual numbers <https://en.wikipedia.org/wiki/Dual_number>`_
 
@@ -218,73 +218,114 @@ We can even auto-differentiate complicated functions with embedded iterations
     dsqrt(2.0)
 
 
-Flux.jl
+.. Reverse-Mode Automatic Differentiation
+.. ----------------------------------------
+
+.. In forward-mode AD, you first fix the variable you are interested in (called "seeding"), and then evaluate the chain rule in left-to-right order.
+
+.. For example, with our :math:`f(x_1, f_2)` example above, if we wanted to calculate the derivative with respect to :math:`x_1` then
+.. we can seed the setup accordingly.  :math:`\frac{\partial  w_1}{\partial  x_1} = 1` since we are taking the derivative of it, while :math:`\frac{\partial  w_1}{\partial  x_1} = 0`.
+
+.. Following through with these, redo all of the calculations for the derivative in parallel with the function itself.
+
+.. .. math::
+..     \begin{array}{l|l}
+..     f(x_1, x_2) &
+..     \frac{\partial f(x_1,x_2)}{\partial x_1}
+..     \\
+..     \hline
+..     w_1 = x_1 &
+..     \frac{\partial  w_1}{\partial  x_1} = 1 \text{ (seed)}\\
+..     w_2 = x_2 &
+..     \frac{\partial   w_2}{\partial  x_1} = 0 \text{ (seed)}
+..     \\
+..     w_3 = w_1 \cdot w_2 &
+..     \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{\partial   w_1}{\partial  x_1} + w_1 \cdot \frac{\partial   w_2}{\partial  x_1}
+..     \\
+..     w_4 = \sin w_1 &
+..     \frac{\partial   w_4}{\partial x_1} = \cos w_1 \cdot \frac{\partial  w_1}{\partial x_1}
+..     \\
+..     w_5 = w_3 + w_4 &
+..     \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{\partial  w_4}{\partial x_1}
+..     \end{array}
+
+.. Since these two could be done at the same time, we say there is "one pass" required for this calculation.
+
+.. Generalizing a little, if the function was vector-valued, then that single pass would get the entire row of the Jacobian in that single pass.  Hence for a :math:`R^N \to R^M` function, requires :math:`N` passes to get a dense Jacobian using forward-mode AD.
+
+.. How can you implement forward-mode AD?  It turns out to be fairly easy with a generic programming language to make a simple example (while the devil is in the details for
+.. a high-performance implementation).
+
+Zygote.jl
 ---------
 
-Another is `Flux.jl <https://github.com/FluxML/Flux.jl>`_, a machine learning library in Julia
+Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and there are many variations on the best approach.
 
-AD is one of the main reasons that machine learning has become so powerful in
-recent years, and is an essential component of any machine learning package
+There are, consequently, many packages for it.  Many are connected to machine-learning packages, since the efficient gradients of :math:`R^N \to R` "loss" functions for steepest descent optimization algorithms is essential to machine learning in practice.
 
-.. code-block:: julia
-
-    using Flux
-    using Flux.Tracker
-    using Flux.Tracker: update!
-
-    f(x) = 3x^2 + 2x + 1
-
-    # df/dx = 6x + 2
-    df(x) = Tracker.gradient(f, x)[1]
-
-    df(2) # 14.0 (tracked)
+One recent package is `Zygote.jl <https://github.com/FluxML/Zygote.jl>`_, which is related to the Flux.jl machine learning framework.
 
 .. code-block:: julia
 
-    A = rand(2,2)
-    f(x) = A * x
-    x0 = [0.1, 2.0]
-    f(x0)
-    Flux.jacobian(f, x0)
+    using Zygote
 
-As before, we can differentiate complicated functions
+    h(x, y) = 3x^2 + 2x + 1 + y*x - y
+    gradient(h, 3.0, 5.0)
 
-.. code-block:: julia
+Here we see that Zygote has a single ``gradient'' function as the interface, and generates a gradient as a tuple
 
-    dsquareroot(x) = Tracker.gradient(squareroot, x)
-
-
-From the documentation, we can use a machine learning approach to a linear regression
+You could create this as an operator if you wanted to.
 
 .. code-block:: julia
 
-    W = rand(2, 5)
-    b = rand(2)
+    D(f) = x-> gradient(f, x)[1]  # returns first in tuple
 
-    predict(x) = W*x .+ b
+    D_sin = D(sin)
+    D_sin(4.0)
 
-    function loss(x, y)
-    ŷ = predict(x)
-    sum((y .- ŷ).^2)
+For univariate functions, by simply using the ``'`` after a function name
+
+.. code-block:: julia
+
+    using Statistics
+    p(x) = mean(x)
+    p'([2.0, 9.0, 5.0])
+
+
+And Zygote also supports combinations of vectors and scalars
+
+.. code-block:: julia
+
+    h(x,n) = (sum(x.^n))^(1/n)
+    gradient(h, [1.0, 4.0, 6.0], 2.0)  # gradient of the geometric sum
+
+The gradients can be very high dimensional.  For example, here is a simple nonlinear optimization problem
+with 1 million dimensions, solved in a few seconds.
+
+.. code-block:: julia
+
+    using Optim, LinearAlgebra
+    N = 1000000
+    y = rand(N)
+    λ = 0.01
+    obj(x) = sum((x .- y).^2) + λ*norm(x)
+
+    x_iv = rand(N)
+    function g!(G, x)
+        G .=  obj'(x)
     end
 
-    x, y = rand(5), rand(2) # Dummy data
-    loss(x, y) # ~ 3
+    results = optimize(obj, g!, x_iv, LBFGS()) # or ConjugateGradient()
+    println("minimum = $(results.minimum) with in "*
+    "$(results.iterations) iterations")
 
-.. code-block:: julia
+Caution: while Zygote is the most exciting reverse-mode AD implementation in Julia, it has many rough edges
 
-
-    W = param(W)
-    b = param(b)
-
-    gs = Tracker.gradient(() -> loss(x, y), Params([W, b]))
-
-    Δ = gs[W]
-
-    # Update the parameter and reset the gradient
-    update!(W, -0.1Δ)
-
-    loss(x, y) # ~ 2.5
+- It provides no features for getting Jacobians, so you would have to ask for each row of the jacobian separately.  That said, you
+  probably want to use  ``ForwardDiff.jl`` for Jacobians if the dimension of the output is similar to the dimension of the input.
+- If you use ``gradient(f, x)`` for some ``f``, then change the function ``f`` and redo ``gradient(f,x)``, it may not update
+- You cannot, in the current release, use mutating functions (e.g. modify a value in an array/etc.) although that feature is in progress
+- Compiling can be very slow for complicated functions.
 
 
 Optimization
