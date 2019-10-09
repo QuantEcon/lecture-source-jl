@@ -590,44 +590,43 @@ Finally, if we naively use another type (called `Algebraic Multigrid <https://en
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
     sol[end]
 
+Methods for General Matrices
+------
 
-.. ------
+There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
 
-.. There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
+On the other hand, if you do not have any structure to your sparse matrix, then GMRES is a good approach.
 
-.. On the other hand, if you do not have any structure to your sparse matrix, then GMRES is a good approach.
+To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis
 
-.. To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis
+.. code-block:: julia
 
-.. .. code-block:: julia
-
-..     using IterativeSolvers
+    using IterativeSolvers
     
-..     N = 10
-..     f(x) = exp(x)
-..     x = range(0.0, 10.0, length = N+1)
-..     y = f.(x)  # generate some data to interpolate
-..     A = [x_i^n for x_i in x, n in 0:N]
+    N = 10
+    f(x) = exp(x)
+    x = range(0.0, 10.0, length = N+1)
+    y = f.(x)  # generate some data to interpolate
+    A = sparse([x_i^n for x_i in x, n in 0:N])
  
-..     using IterativeSolvers
-..     c = zeros(N+1)  # initial guess required for iterative solutions
-..     results = gmres!(c, A, y)
-..     println("cond(A) = $(cond(A)), converged in $(length(results)) iteration with norm error $(norm(A*c - y, Inf))")
+    using IterativeSolvers
+    c = zeros(N+1)  # initial guess required for iterative solutions
+    results = gmres!(c, A, y, log=true, maxiter = 1000)
+    println("cond(A) = $(cond(Matrix(A))), converged in $(results[end]) iterations with norm error $(norm(A*c - y, Inf))")
 
-.. In this case, both the error and the number of iterations are reasonable.  However, as ``N`` increases
-.. the method fails.
+That method converged in about 10 iterations.  Now try it with an Incomplete LU preocnditioner, we see it converged after the first iteration.
 
-.. .. code-block:: julia
+.. code-block:: julia
 
-..     N = 30
-..     f(x) = exp(x)
-..     x = range(0.0, 10.0, length = N+1)
-..     y = f.(x)  # generate some data to interpolate
-..     A = [x_i^n for x_i in x, n in 0:N]
+    N = 30
+    f(x) = exp(x)
+    x = range(0.0, 10.0, length = N+1)
+    y = f.(x)  # generate some data to interpolate
+    A = [x_i^n for x_i in x, n in 0:N]
  
-..     c = zeros(N+1)  # initial guess required for iterative solutions
-..     results = gmres!(c, A, y)
-..     println("cond(A) = $(cond(A)), converged in $(length(results)) iterations with norm error $(norm(A*c - y, Inf))")
+    c = zeros(N+1)  # initial guess required for iterative solutions
+    results = gmres!(c, A, y)
+    println("cond(A) = $(cond(A)), converged in $(length(results)) iterations with norm error $(norm(A*c - y, Inf))")
 
 .. Iterative Methods for Eigensystems
 .. ====================================
