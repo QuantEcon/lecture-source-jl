@@ -315,7 +315,7 @@ While this may seem excessive, it occurs in practice due to the curse of dimensi
 of PDEs, and when working with big or network data.
 
 The methods in the previous lectures (e.g. factorization and the related Gaussian elimination) are called direct methods, and able 
-- in theory - to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
+in theory to converge to the exact solution in a finite number of steps while working with the matrix.  As we saw before, solving a dense linear
 system without any structure takes :math:`O(N^3)` operations, while a sparse system depends on the number of non-zeros.
 
 Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
@@ -557,13 +557,14 @@ The diagonal precondition is simply ``P = Diagonal(A)``.  We can see that this c
 .. code-block:: julia
     
     AP = A * inv(Diagonal(A))
-    @show cond(A)
-    @show(AP);
+    @show cond(Matrix(A))
+    @show cond(Matrix(AP));
 
 And, this consequently decreases the number of iterations
 
 .. code-block:: julia
 
+    using Preconditioners    
     x = zeros(N)
     P = DiagonalPreconditioner(A)
     sol = cg!(x, A, b, log=true, maxiter = 1000)
@@ -591,7 +592,7 @@ Finally, if we naively use another type (called `Algebraic Multigrid <https://en
     sol[end]
 
 Methods for General Matrices
-------
+-----------------------------
 
 There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
 
@@ -608,25 +609,26 @@ To experiment with these methods, we will use our ill-conditioned interpolation 
     x = range(0.0, 10.0, length = N+1)
     y = f.(x)  # generate some data to interpolate
     A = sparse([x_i^n for x_i in x, n in 0:N])
- 
-    using IterativeSolvers
     c = zeros(N+1)  # initial guess required for iterative solutions
     results = gmres!(c, A, y, log=true, maxiter = 1000)
     println("cond(A) = $(cond(Matrix(A))), converged in $(results[end]) iterations with norm error $(norm(A*c - y, Inf))")
 
-That method converged in about 10 iterations.  Now try it with an Incomplete LU preocnditioner, we see it converged after the first iteration.
+That method converged in about 10 iterations.  Now try it with an Incomplete LU preconditioner, we see it converged after the second  iteration.
 
 .. code-block:: julia
 
-    N = 30
+    N = 10
     f(x) = exp(x)
     x = range(0.0, 10.0, length = N+1)
     y = f.(x)  # generate some data to interpolate
     A = [x_i^n for x_i in x, n in 0:N]
- 
+    P = ilu(sparse(A), τ = 0.1)
     c = zeros(N+1)  # initial guess required for iterative solutions
-    results = gmres!(c, A, y)
+    results = gmres!(c, A, y, Pl = P,log=true, maxiter = 1000)
     println("cond(A) = $(cond(A)), converged in $(length(results)) iterations with norm error $(norm(A*c - y, Inf))")
+
+
+.. ADD LINEAR LEAST SQUARES WITH LSMR
 
 .. Iterative Methods for Eigensystems
 .. ====================================
