@@ -120,9 +120,9 @@ To solve for the coefficients, we notice that this is a simple system of equatio
 .. math::
 
     \begin{array}
-        y_0 = c_0 + c_1 x_0 + \ldots c_N x_0^N\\
-        \ldots\\
-        y_N = c_0 + c_1 x_N + \ldots c_N x_N^N
+        \,y_0 = c_0 + c_1 x_0 + \ldots c_N x_0^N\\
+        \,\ldots\\
+        \,y_N = c_0 + c_1 x_N + \ldots c_N x_N^N
     \end{array}
 
 Or, stacking as matrices and vectors :math:`c = \begin{bmatrix} c_0 & \ldots & c_N\end{bmatrix}, y = \begin{bmatrix} y_0 & \ldots & y_N\end{bmatrix}` and 
@@ -299,8 +299,8 @@ To summarize the analysis,
 
 However, sometimes you can't avoid ill-conditioned matrices. This is especially common with discretization of PDEs and with linear-least squares.
 
-Iterative Algorithms for Linear Systems
-=======================================
+Stationary Iterative Algorithms for Linear Systems
+==================================================
 
 As before, consider solving the equation 
 
@@ -394,54 +394,203 @@ where
                         0    & A_{22} & \ldots & 0\\
                         \vdots & \vdots & \vdots & \vdots\\
                         0 & 0 &  \ldots & 0 A_{NN}
+        \end{bmatrix}
 
 and
 
 .. math::
 
-    D = \begin{bmatrix} 0 & A_{12}  & \ldots & A_{1N} \\
+    R = \begin{bmatrix} 0 & A_{12}  & \ldots & A_{1N} \\
                         A_{21}    & 0 & \ldots & A_{2N} \\
                         \vdots & \vdots & \vdots & \vdots\\
                         A_{N1}  & A_{N2}  &  \ldots & 0
         \end{bmatrix}
 
-TEXTTBF:::: TODO!!!s
+Rearrange the :math:`(D + R)x = b` as
 
-Start with a :math:`v` guess, 
+.. math::
+
+    \begin{align}
+    D x &= b - R x\\
+    x &= D^{-1} (b - R x)
+    \end{align}
+
+Where, since :math:`D` is diagonal, its inverse is trivial to calculate.
+
+So solve, rake an iteration :math:`x^k`, starting from :math:`x^0` guess, and then make the system 
+
+.. math::
+
+    x^{k+1} = D^{-1}(b - R x^k)
+
+
+The ``IterativeSolvers.jl`` package implements this method.
+
+For our example, we start if a guess and solve for the value function.
 
 .. code-block:: julia
 
-    using IterativeSolvers
-    v = zeros(N)
-    jacobi!(v, A, r, maxiter = 1000, log=true)
-    @show norm(v - v_direct, Inf)
-
-    using IterativeSolvers
+    using IterativeSolvers, LinearAlgebra, SparseArrays
     v = zeros(N)
     jacobi!(v, A, r, maxiter = 40)
     @show norm(v - v_direct, Inf)
+
+With this, after 40 iterations you see the error is in the order of :math`1E-2`
+
+Other Stationary Methods
+------------------------
+
+In practice there are many better methods than Jacobi iteration, for example `Gauss-Siedel <https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method>`_. which
+splits the matrix :math:`A = L + U` into an lower triangular matrix :math:`L` and an upper triagular :math:`U` without the diagonal. 
+
+The iteration becomes
+
+.. math::
+
+    L x^{k+1} = b - U x^k 
+
+In that case, since the :math:`L` matrix is triangular, the system can be solved in :math:`O(N^2)` operations.
+
+.. code-block:: julia
 
     v = zeros(N)
     gauss_seidel!(v, A, r, maxiter = 40)
     @show norm(v - v_direct, Inf);
 
+The accuracy increases substantially, after 40 iterations you see the error is in the order of :math:`1E-5`
+
+For the case of successive-over relaxation, take a relaxation parameter :math:`\omega > 1` and decompose the matrix as :math:`A = L + D + U` where :math:`L, U` are strictly upper and lower diagonal matrices, and :math:`D` is a diagonal.
+
+Multiply the system by :math:`\omega` and rearrange to find
+
+.. math::
+
+    (D + \omega L) x^{k+1} = \omega b - \left(\omega U +(\omega - 1)D \right)x^k
+
+
+In that case, :math:`D + \omega L` is a triangular matrix.
+
+.. code-block:: julia
+
     v = zeros(N)
     sor!(v, A, r, 1.1, maxiter = 40)
     @show norm(v - v_direct, Inf);
 
-    using LinearAlgebra, SparseArrays, IterativeSolvers
-    A = I + rand(100,100)  # the real example is assymetric...
-    b = rand(100)
-    x = similar(b)
-    #gmres!(x, A, b, Pl = Identity(), log=true, maxiter = 1000)
-    A_lu = lu(A)
-    gmres!(x, A, b, Pl = A_lu, log=true)  # do my own preconditioning
+The accuracy is now :math:`1E-7`.  If you change the parameter to :math:`\omega = 1.2`, the accuracy further increases to :math:`1E-9`.
+
+This technique is a common one in numerical analysis:  sometimes adding a dampening or relaxation parameter by speeding up the process.  
+
+Preconditioning is available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_).
+
+
+Krylov Methods
+===============
+
+A more commonly used set of iterative methods are based on `Krylov subspaces <https://en.wikipedia.org/wiki/Krylov_subspace>`_ which involve iterating on the :math:`A` matrix and orthogonalizing to ensure the resulting iteration is not too collinear.
+
+The prototypical Krylov method is `Conjugate Gradient <https://en.wikipedia.org/wiki/Conjugate_gradient_method>`_, which requires the :math:`A` matrix to be
+symmetric and positive definite.
+
+Solving an example
+
+.. code-block:: julia
+
+    N = 100
+    A = sprand(100, 100, 0.1)   # 10 percent non-zeros
+    A = A * A'  # makes symmetric positive definite
+    @show isposdef(A)
+    b = rand(N)
+    x_direct = A \ b  # sparse direct solver more appropriate Here
+    cond(Matrix(A * A'))
+
+Notice that the condition numbers tend to be large for big, random matrices.
+
+Solving this system with the conjugate gradient method
+
+.. code-block:: julia
+
+    x = zeros(N)
+    sol = cg!(x, A, b, log=true, maxiter = 1000)
+    sol[end]
+
+.. .. code-block:: julia
+
+
+..     A = I + rand(100,100)  # the real example is assymetric...
+..     b = rand(100)
+..     x = similar(b)
+..     #gmres!(x, A, b, Pl = Identity(), log=true, maxiter = 1000)
+..     A_lu = lu(A)
+..     gmres!(x, A, b, Pl = A_lu, log=true)  # do my own preconditioning
+
+..     using IncompleteLU
+..     P = ilu(sparse(A), τ = 0.1)
+..     gmres!(x, A, b, Pl = P, log=true)
+
+Introduction to Preconditioning
+--------------------------------
+
+As discussed at the beginning of the lecture, the spectral properties of matrices determine the rate of convergence
+of iterative matrices.  In particular, ill-conditioned matrices converge slowly.
+
+Preconditioning solves this issue by adjusting the spectral properties of the matrix, at the cost of a some extra computational
+operations.
+
+To see an example of a right-preconditioner, consider a matrix :math:`P` which has a convenient and numerically stable inverse.  Then,
+
+.. math:: 
+
+    \begin{align}
+    A x &= b\\
+    A P^{-1} P x &= b\\
+    A P^{-1} y &= b\\
+    P x &= y 
+    \end{align}
+
+That is, form :math:`A P^{-1}`, solve for :math:`y`, and then solve :math:`P x = y`.
+
+There are all sorts of preconditioners specific to each problem, the key features are that they have convenient left-solves and
+lower the condition number of the matrix.  To see this in action, we can look at a simple preconditioner.
+
+The diagonal precondition is simply ``P = Diagonal(A)``.  We can see that this changes the condition number considerably
+
+.. code-block:: julia
+    
+    AP = A * inv(Diagonal(A))
+    @show cond(A)
+    @show(AP);
+
+And, this consequently decreases the number of iterations
+
+.. code-block:: julia
+
+    x = zeros(N)
+    P = DiagonalPreconditioner(A)
+    sol = cg!(x, A, b, log=true, maxiter = 1000)
+    sol[end]
+
+Another classic preconditioner is the Incomplete LU decomposition (i.e. it does a parameterized part of the decomposition)
+
+.. code-block:: julia
 
     using IncompleteLU
-    P = ilu(sparse(A), τ = 0.1)
-    gmres!(x, A, b, Pl = P, log=true)
+    x = zeros(N)
+    P = ilu(A, τ = 0.1)
+    sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
+    sol[end]    
 
-..  
+A good rule of thumb is that you should almost always be using a preconditioner with iterative methods, and you should experiment to find ones appropriate for your problem.
+
+Finally, if we naively use another type (called `Algebraic Multigrid <https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_MultiGrid_(AMG)>`_) gives us a further drop in the number of iterations.
+
+.. code-block:: julia
+
+    x = zeros(N)
+    P = AMGPreconditioner{RugeStuben}(A)
+    sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
+    sol[end]
+
+
 .. ------
 
 .. There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
