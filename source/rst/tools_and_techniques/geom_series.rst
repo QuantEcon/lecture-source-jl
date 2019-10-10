@@ -8,10 +8,7 @@
 Geometric Series for Elementary Economics
 *****************************************
 
-
 .. contents:: :depth: 2
-
-
 
 Overview
 ========
@@ -38,14 +35,18 @@ These and other applications prove the truth of the wise crack that
 
     "in economics, a little knowledge of geometric series goes a long way "
 
+Setup
+------------------
 
 Below we'll use the following imports:
+
+.. literalinclude:: /_static/includes/deps_generic.jl
+      :class: hide-output
 
 .. code-block:: julia
 
   using Plots
-  using SymPy
-
+  using Test
 
 Key Formulas
 ============
@@ -346,7 +347,6 @@ We let :math:`c_t` be consumption at time :math:`t` and :math:`i_t` be
 investment at time :math:`t`.
 
 We modify our consumption function to assume the form
-
 .. math:: c_t = b y_{t-1}
 
 so that :math:`b` is the marginal propensity to consume (now) out of
@@ -628,7 +628,7 @@ below
     # First approximation for our finite lease
 
     function finite_lease_pv_approx_f(T, g, r, x_0)
-        p = x_0 .* (T .+ 1) .+ x_0 .* r .* g .* (T .+ 1) ./ (r .- g)
+        p = x_0 .* (T .+ 1) .+ x_0 .* r * g .* (T .+ 1) ./ (r - g)
         return p
     end
 
@@ -656,7 +656,6 @@ First we study the quality of our approximations
     x_0 = 1
     T_max = 50
     T = 0:T_max
-    ## Possible to add latex/italics in pyplot
     plt = plot(xlim=(-2.5, 52.5),ylim= (-1.653, 56.713), title= "Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
 
     y_1 = finite_lease_pv(T, g, r, x_0)
@@ -667,6 +666,15 @@ First we study the quality of our approximations
     plot!(plt, T, y_2, label="T-period Lease First-order Approx.")
     plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
     plot!(plt, legend = :topleft)
+
+ .. code-block:: julia
+     :class: test
+
+     @testset begin
+        @test y_1[4] == 3.942123696037542
+        @test y_2[4] == 4.24
+        @test y_3[4] == 4
+     end
 
 Evidently our approximations perform well for small values of :math:`T`.
 
@@ -687,6 +695,15 @@ over different lease lengths :math:`T`.
     plot!(plt, T, y_2, linestyle = :dash, label="Infinite lease PV")
     plot!(plt, legend = :bottomright)
 
+.. code-block:: julia
+    :class: test
+
+    @testset begin
+       @test y_1[4] == 3.942123696037542
+       @test y_2[4] == 103.00000000000004
+    end
+
+
 The above graphs shows how as duration :math:`T \rightarrow +\infty`,
 the value of a lease of duration :math:`T` approaches the value of a
 perpetural lease.
@@ -698,7 +715,6 @@ Now we consider two different views of what happens as :math:`r` and
 
     # First view
     # Changing r and g
-    #### Might consider re-defining x_0 for self-containment
     plt = plot(xlim=(-0.5, 10.5),ylim= (-0.26, 16.7), title= "Value of lease of length T", xlabel = "T periods ahead", ylabel = "Present Value, p0")
     T_max = 10
     T=0:T_max
@@ -736,57 +752,56 @@ visualization!
 .. code-block:: julia
 
     # Second view
-    # plt = plot(xlim=(-0.04, 1.1),ylim= (-0.04, 1.1), zlim= (0,15), title= "Three Period Lease PV with Varying g and r", xlabel = "r", ylabel = "g", zlabel = "Present Value, p0")
     T = 3
     r = 0.01:0.005:0.985
     g = 0.011:0.005:0.986
-    ### using pyplot
-    # pyplot()
 
-    ### TO EDIT:
-    rr = transpose(reshape(repeat(r, 196),196,196))
+    rr = reshape(repeat(r, 196),196,196)'
     gg = repeat(g, 1,196)
     z = finite_lease_pv(T, gg, rr, x_0)
-    same = (rr .== gg)
-    z[same] .= NaN
-    plot(xlim=(-0.04, 1.1),ylim= (-0.04, 1.1), zlim= (0,15),rr,gg,z,st=:surface,c=:coolwarm, camera=(-30,30),
-    title= "Three Period Lease PV with varying g and r", xlabel = "r", ylabel = "g", zlabel = "Present Value, p0")
-
-
-We can use a little calculus to study how the present value :math:`p_0`
-of a lease varies with :math:`r` and :math:`g`.
-
-We will use a library called `SymPy <https://www.sympy.org/>`__.
-
-SymPy enables us to do symbolic math calculations including
-computing derivatives of algebraic equations.
-
-We will illustrate how it works by creating a symbolic expression that
-represents our present value formula for an infinite lease.
-
-After that, we'll use SymPy to compute derivatives
+    plot(r,g,z,st=:surface,c=:coolwarm,title= "Three Period Lease PV with varying g and r", xlabel = "r", ylabel = "g")
 
 .. code-block:: julia
+    :class: test
 
-    # Creates algebraic symbols that can be used in an algebraic expression
-    g, r, x0 = symbols("g, r, x0")
-    G = (1 + g)
-    R = (1 + r)
-    p0 = x0 / (1 - G * R ^ (-1))
-    print("Our formula is:")
-    p0
+    @testset begin
+        @test z[4] == 4.096057303642319
+    end
 
-.. code-block:: julia
-
-    print("dp0 / dg is:")
-    dp_dg = diff(p0, g)
-    dp_dg
-
-.. code-block:: julia
-
-    print("dp0 / dr is:")
-    dp_dr = diff(p0, r)
-    dp_dr
+.. We can use a little calculus to study how the present value :math:`p_0`
+.. of a lease varies with :math:`r` and :math:`g`.
+..
+.. We will use a library called `SymPy <https://www.sympy.org/>`__.
+..
+.. SymPy enables us to do symbolic math calculations including
+.. computing derivatives of algebraic equations.
+..
+.. We will illustrate how it works by creating a symbolic expression that
+.. represents our present value formula for an infinite lease.
+..
+.. After that, we'll use SymPy to compute derivatives
+..
+.. .. code-block:: julia
+..
+..     # Creates algebraic symbols that can be used in an algebraic expression
+..     g, r, x0 = symbols("g, r, x0")
+..     G = (1 + g)
+..     R = (1 + r)
+..     p0 = x0 / (1 - G * R ^ (-1))
+..     print("Our formula is:")
+..     p0
+..
+.. .. code-block:: julia
+..
+..     print("dp0 / dg is:")
+..     dp_dg = diff(p0, g)
+..     dp_dg
+..
+.. .. code-block:: julia
+..
+..     print("dp0 / dr is:")
+..     dp_dr = diff(p0, r)
+..     dp_dr
 
 We can see that for :math:`\frac{\partial p_0}{\partial r}<0` as long as
 :math:`r>g`, :math:`r>0` and :math:`g>0` and :math:`x_0` is positive,
@@ -831,6 +846,13 @@ of national income, and investment is fixed.
     hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline")
     plot!(plt, legend = :bottomright)
 
+.. code-block:: julia
+    :class: test
+
+    @testset begin
+        @test calculate_y(i_0, b, g_0, T, y_init)[4] == 1.4444444444444444
+    end
+
 In this model, income grows over time, until it gradually converges to
 the infinite geometric series sum of income.
 
@@ -846,20 +868,25 @@ i.e., the fraction of income that is consumed
     b_2 = 5/6
     b_3 = 0.9
 
-    plt = plot(xlim=(-6, 107),ylim= (0.5, 1.9), title= "Changing Consumption as a Fraction of Income", xlabel = "t", ylabel = "yt")
-    x = 0:(T+1)
+    plt = plot(title= "Changing Consumption as a Fraction of Income", xlabel = "t", ylabel = "yt")
+    x = 0:T
     for b in [b_0, b_1, b_2, b_3]
         y = calculate_y(i_0, b, g_0, T, y_init)
-        plot!(plt, x, y, label='$b=$'+f"{b:.2f}")
+        plot!(plt, x, y, label=string("b= ",round(b,digits=2)))
     end
     plot!(plt, legend = :bottomright)
+
 
 Increasing the marginal propensity to consumer :math:`b` increases the
 path of output over time
 
+.. below we need to set b=0.9 which does not happen in python
+.. since python changes value by reference in the for loop
+
 .. code-block:: julia
 
     x = 0:T
+    b = 0.9
     y_0 = calculate_y(i_0, b, g_0, T, y_init)
     l = @layout [a ; b]
 
@@ -868,16 +895,24 @@ path of output over time
     y_1 = calculate_y(i_1, b, g_0, T, y_init)
     plt_1 = plot(x,y_0, label = "i=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
     plot!(plt_1, x, y_1, label = "i=0.4")
-    plot!(plt_1, legend = :topleft)
+    plot!(plt_1, legend = :bottomright)
 
     # Changing government spending
     g_1 = 0.4
     y_1 = calculate_y(i_0, b, g_1, T, y_init)
     plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
     plot!(plt_2, x, y_1, label="g=0.4", linestyle=:dash)
-    plot!(plt_2, legend = :topleft)
+    plot!(plt_2, legend = :bottomright)
 
     plot(plt_1, plt_2, layout = l)
+
+.. code-block:: julia
+    :class: test
+
+    @testset begin
+        @test y_1[2] == 1.33
+        @test y_1[10] == 4.5592509193
+    end
 
 Notice here, whether government spending increases from 0.3 to 0.4 or
 investment increases from 0.3 to 0.4, the shifts in the graphs are
