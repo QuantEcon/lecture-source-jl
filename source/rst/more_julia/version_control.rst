@@ -384,7 +384,7 @@ Below, for example, we've committed and pushed some changes to the fork that we 
 .. figure:: /_static/figures/git-edit-fork.png
     :width: 100%
 
-We should make confirm that these changes are on the server (which we can get to by going to the `fork <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
+We should make sure that these changes are on the server (which we can get to by going to the `fork <https://github.com/ubcecon/example_repository>`_ and clicking "commits")
 
 .. figure:: /_static/figures/git-fork-history.png
     :width: 100%

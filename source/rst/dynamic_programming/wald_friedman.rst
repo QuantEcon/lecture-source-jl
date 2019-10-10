@@ -62,7 +62,7 @@ with it. The actual problem out of which sequential analysis grew will
 serve. The Navy has two alternative designs (say A and B) for a
 projectile. It wants to determine which is superior. To do so it
 undertakes a series of paired firings. On each round it assigns the
-value 1 or 0 to A accordingly as its performance is superior or inferio
+value 1 or 0 to A accordingly as its performance is superior or inferior
 to that of B and conversely 0 or 1 to B. The Navy asks the statistician
 how to conduct the test and how to analyze the results.
 

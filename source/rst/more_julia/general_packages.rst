@@ -158,7 +158,7 @@ In economics we often wish to interpolate discrete data (i.e., build continuous 
 
 The package we usually turn to for this purpose is `Interpolations.jl <https://github.com/JuliaMath/Interpolations.jl>`_
 
-There are a variety of options, but we will only demonstrate the convenience notation
+There are a variety of options, but we will only demonstrate the convenient notations
 
 Univariate with a Regular Grid
 --------------------------------
@@ -181,7 +181,7 @@ We begin by creating some data points, using a sine function
     scatter!(x, y, label = "sampled data", markersize = 4)
 
 
-To implement linear and cubic spline interpolation
+To implement linear and cubic `spline <https://en.wikipedia.org/wiki/Spline_(mathematics)>`_ interpolation
 
 
 .. code-block:: julia

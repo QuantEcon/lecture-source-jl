@@ -1,6 +1,7 @@
 {%- extends 'display_priority.tpl' -%}
 
 {% set nb_title = nb.metadata.get('title', '') %}
+{% set nb_date = nb.metadata.get('date', '') %}
 {% set nb_filename = nb.metadata.get('filename', '') %}
 {% set nb_filename_with_path = nb.metadata.get('filename_with_path','') %}
 {% set indexPage = nb_filename.startswith('index') %}
@@ -609,6 +610,8 @@ var element = $('#{{ div_id }}');
 			</script>
 
 		</div>
+
+		<div id="nb_date" style="display:none;">{{nb_date}}</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="https://unpkg.com/popper.js@1"></script>

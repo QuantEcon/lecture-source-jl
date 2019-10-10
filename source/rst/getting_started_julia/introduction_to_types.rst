@@ -697,6 +697,7 @@ This is just one of many decisions and patterns to ensure that your code is cons
 The best resource is to carefully read other peoples code, but a few sources to review are
 
 * `Julia Style Guide <https://docs.julialang.org/en/v1/manual/style-guide/>`_
+* `Invenia Blue Style Guide <https://github.com/invenia/BlueStyle>`_
 * `Julia Praxis Naming Guides <https://github.com/JuliaPraxis/Naming/tree/master/guides>`_
 * `QuantEcon Style Guide <https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md>`_ used in these lectures
 

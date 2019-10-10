@@ -17,9 +17,9 @@ Quantitative Economics with Julia
     <div class="home-intro">
         <div class="home-detail">
             <div class="home-blurb">
-                <p>This website presents a set of lectures on quantitative economic modeling, designed and written by <a href="http://jesseperla.com/" target="_blank">Jesse Perla</a>, <a href="http://www.tomsargent.com" target="_blank">Thomas J. Sargent</a> and <a href="http://johnstachurski.net" target="_blank">John Stachurski</a>.</p>
-                <p>The language instruction is <a href="https://julialang.org/">Julia</a>.</p>
+                <p>This website presents a set of lectures on quantitative economic modeling, designed and written by <a href="http://jesseperla.com/" target="_blank">Jesse Perla</a>, <a href="http://www.tomsargent.com" target="_blank">Thomas J. Sargent</a> and <a href="http://johnstachurski.net" target="_blank">John Stachurski</a>. The language instruction is <a href="https://julialang.org/">Julia</a>.</p>
                 <p>This is one of a <a href="https://lectures.quantecon.org/">series of lectures</a> by <a href="#">QuantEcon</a>.</p>
+                <p>Last compiled: <strong><span id="compiled_date"></span></strong> <small>(<a href="https://github.com/QuantEcon/lecture-source-jl/commits/">view commits</a>)</small></p>
             </div>
             <div class="web-version">
                 <a href="/index_toc.html">
