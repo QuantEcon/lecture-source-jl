@@ -289,9 +289,9 @@ with 1 million dimensions, solved in a few seconds.
 
 Caution: while Zygote is the most exciting reverse-mode AD implementation in Julia, it has many rough edges.
 
+- If you write a function, take its gradient, and then modify the function, you need to call ``Zygote.refresh()`` or else the gradient will be out of sync.  This may not apply for Julia 1.3+.
 - It provides no features for getting Jacobians, so you would have to ask for each row of the Jacobian separately.  That said, you
   probably want to use  ``ForwardDiff.jl`` for Jacobians if the dimension of the output is similar to the dimension of the input.
-- If you use ``gradient(f, x)`` for some ``f``, then change the function ``f`` and rerun ``gradient(f, x)``, it may not update
 - You cannot, in the current release, use mutating functions (e.g. modify a value in an array/etc.) although that feature is in progress
 - Compiling can be very slow for complicated functions.
 
