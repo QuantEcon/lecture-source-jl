@@ -29,18 +29,17 @@ Setup
 Introduction to Differentiable Programming
 =============================================
 
-Automatic differentiation (AD, sometimes called algorithmic differentiation) is a crucial way to increase the accuracy and performance of estimation and solution methods.
+The promise of differentiable programming is that we can move towards taking the derivatives of almost arbitrarily
+complicated computer programs, rather than simply thinking about the derivatives of mathematical functions.  Differentiable
+programming is the natural evolution of automatic differentiation (AD, sometimes called algorithmic differentiation).
 
-The promise of differentiable programming (as the natural evolution of AD is sometimes called) is that we can move towards taking the derivatives of almost arbitrarily
-complicated computer programs, rather than simply thinking about the derivatives of mathematical functions.
-
-Stepping back, there are essentially three ways to calculate the gradient or Jacobian
+Stepping back, there are three ways to calculate the gradient or Jacobian
 
 *  Analytic derivatives / Symbolic differentiation
 
-    * You can sometimes calculate the derivative on "pen and paper" and potentially simplify the expression
+    * You can sometimes calculate the derivative on pen-and-paper, and potentially simplify the expression
+    * In effect, repeated applications of the chain rule, product rule, etc.
     * It is sometimes, though not always, the most accurate and fastest option if there are algebraic simplifications.
-    * In effect, repeated applications of the chain rule, product rule.
     * Sometimes symbolic integration on the computer a good solution, if the package can handle your functions. Doing algebra by hand is tedious and error-prone, but
       is sometimes invaluable.
 
@@ -58,7 +57,7 @@ Stepping back, there are essentially three ways to calculate the gradient or Jac
 * Automatic Differentiation
 
     * The same as analytic/symbolic differentiation, but where the **chain rule** is calculated **numerically** rather than symbolically.
-    * Just as with analytic derivatives, can establish rules for the derivatives of individual functions (e.g. :math:`d sin(x)` to :math:`cos(x) dx`) for intrinsic derivatives.
+    * Just as with analytic derivatives, can establish rules for the derivatives of individual functions (e.g. :math:`d\left(sin(x)\right)` to :math:`cos(x) dx`) for intrinsic derivatives.
 
 
 AD has two basic approaches, which are variations on the order of evaluating the chain rule: reverse and forward mode (although mixed mode is possible)
@@ -72,15 +71,15 @@ We will explore two types of automatic differentiation in Julia (and discuss a f
 
     \frac{dy}{dx} = \frac{dy}{dw} \cdot \frac{dw}{dx}
 
-In essence, forward-mode starts the calculation from the left with :math:`\frac{dy}{dw}` first, which then calculates the product with :math:`\frac{dw}{dx}`.  On the other hand, reverse mode starts on the right hand side with :math:`\frac{dw}{dx}` and works backwards.
+Forward-mode starts the calculation from the left with :math:`\frac{dy}{dw}` first, which then calculates the product with :math:`\frac{dw}{dx}`.  On the other hand, reverse mode starts on the right hand side with :math:`\frac{dw}{dx}` and works backwards.
 
-We will use as an example a function with fundamental operations and known analytical derivatives 
+Take an example a function with fundamental operations and known analytical derivatives 
 
 .. math::
 
     f(x_1, x_2) = x_1 x_2 + \sin(x_1)
 
-But you could think of this as a function which contains a sequence of simple operations and temporaries, without any function composition
+And rewrite this as a function which contains a sequence of simple operations and temporaries
 
 .. code-block:: julia
 
@@ -93,7 +92,7 @@ But you could think of this as a function which contains a sequence of simple op
         return w_5
     end
 
-Here we will be able to identify all of the underlying functions (``*, sin, +``), and see if each has an 
+Here we can identify all of the underlying functions (``*, sin, +``), and see if each has an 
 intrinsic derivative.  While these are obvious, with Julia we could come up with all sorts of differentiation rules for arbitrarily
 complicated combinations and compositions of intrinsic operations.  In fact, there is even `a package <https://github.com/JuliaDiff/ChainRules.jl>`_ for registering more.
 
@@ -138,7 +137,7 @@ a high-performance implementation).
 Forward-Mode with Dual Numbers
 ------------------------------
 
-One way to implement forward-mode AD is to use `dual numbers <https://en.wikipedia.org/wiki/Dual_number>`_
+One way to implement forward-mode AD is to use `dual numbers <https://en.wikipedia.org/wiki/Dual_number>`_.
 
 Instead of working with just a real number, e.g. :math:`x`, we will augment each with an infinitesimal :math:`\epsilon` and use :math:`x + \epsilon`.
 
@@ -148,7 +147,7 @@ From Taylor's theorem,
 
     f(x + \epsilon) = f(x) + f'(x)\epsilon + O(\epsilon^2)
 
-where we will assume that the infinitesimal is such that :math:`\epsilon^2 = 0`.
+where we will define the infinitesimal such that :math:`\epsilon^2 = 0`.
 
 With this definition, we can write a general rule for differentiation of :math:`g(x,y)` as the chain rule for the total derivative
 
@@ -162,7 +161,7 @@ But, note that if we keep track of the constant in front of the :math:`\epsilon`
 
     g(x + x'\epsilon, y + y'\epsilon) = g(x, y) + (\partial_x g(x,y)x' + \partial_y g(x,y)y')\epsilon
 
-This is simply the chain rule.  A few examples are 
+This is simply the chain rule.  A few more examples
 
 .. math::
 
@@ -174,9 +173,11 @@ This is simply the chain rule.  A few examples are
 
 
 Using the generic programming in Julia, it is easy to define a new dual number type which can encapsulate the pair :math:`(x, x')` and provide a definitions for
-all of the basic operations for Dual numbers.  Each definition then has the chain-rule built into it.
+all of the basic operations.  Each definition then has the chain-rule built into it.
 
-With this approach, the "seed" process is simple the creation of the :math:`\epsilon` for the underlying variable.  So if we have the function :math:`f(x_1, x_2)` and we wanted to find the derivative :math:`\partial_{x_1} g(3.9, 6.9)` then then we would seed them with the dual numbers :math:`x_1 \to (3.8, 1)` and :math:`x_2 \to (6.9, 0)`.
+With this approach, the "seed" process is simple the creation of the :math:`\epsilon` for the underlying variable.
+
+So if we have the function :math:`f(x_1, x_2)` and we wanted to find the derivative :math:`\partial_{x_1} f(3.8, 6.9)` then then we would seed them with the dual numbers :math:`x_1 \to (3.8, 1)` and :math:`x_2 \to (6.9, 0)`.
 
 If you then follow all of the same scalar operations above with a seeded dual number, it will calculate both the function value and the derivative in a single "sweep" and without modifying any of your (generic) code.
 
@@ -195,7 +196,7 @@ Dual-numbers are at the heart of one of the AD packages we have already seen
     #Or, can use complicated functions of many variables
     f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
     g = (x) -> ForwardDiff.gradient(f, x); # g() is now the gradient
-    @show g(rand(20)); # gradient at a random point
+    g(rand(5)) # gradient at a random point
     # ForwardDiff.hessian(f,x') # or the hessian
 
 We can even auto-differentiate complicated functions with embedded iterations
@@ -217,53 +218,14 @@ We can even auto-differentiate complicated functions with embedded iterations
     dsqrt(x) = ForwardDiff.derivative(squareroot, x)
     dsqrt(2.0)
 
-
-.. Reverse-Mode Automatic Differentiation
-.. ----------------------------------------
-
-.. In forward-mode AD, you first fix the variable you are interested in (called "seeding"), and then evaluate the chain rule in left-to-right order.
-
-.. For example, with our :math:`f(x_1, f_2)` example above, if we wanted to calculate the derivative with respect to :math:`x_1` then
-.. we can seed the setup accordingly.  :math:`\frac{\partial  w_1}{\partial  x_1} = 1` since we are taking the derivative of it, while :math:`\frac{\partial  w_1}{\partial  x_1} = 0`.
-
-.. Following through with these, redo all of the calculations for the derivative in parallel with the function itself.
-
-.. .. math::
-..     \begin{array}{l|l}
-..     f(x_1, x_2) &
-..     \frac{\partial f(x_1,x_2)}{\partial x_1}
-..     \\
-..     \hline
-..     w_1 = x_1 &
-..     \frac{\partial  w_1}{\partial  x_1} = 1 \text{ (seed)}\\
-..     w_2 = x_2 &
-..     \frac{\partial   w_2}{\partial  x_1} = 0 \text{ (seed)}
-..     \\
-..     w_3 = w_1 \cdot w_2 &
-..     \frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{\partial   w_1}{\partial  x_1} + w_1 \cdot \frac{\partial   w_2}{\partial  x_1}
-..     \\
-..     w_4 = \sin w_1 &
-..     \frac{\partial   w_4}{\partial x_1} = \cos w_1 \cdot \frac{\partial  w_1}{\partial x_1}
-..     \\
-..     w_5 = w_3 + w_4 &
-..     \frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{\partial  w_4}{\partial x_1}
-..     \end{array}
-
-.. Since these two could be done at the same time, we say there is "one pass" required for this calculation.
-
-.. Generalizing a little, if the function was vector-valued, then that single pass would get the entire row of the Jacobian in that single pass.  Hence for a :math:`R^N \to R^M` function, requires :math:`N` passes to get a dense Jacobian using forward-mode AD.
-
-.. How can you implement forward-mode AD?  It turns out to be fairly easy with a generic programming language to make a simple example (while the devil is in the details for
-.. a high-performance implementation).
-
 Zygote.jl
 ---------
 
 Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and there are many variations on the best approach.
 
-There are, consequently, many packages for it.  Many are connected to machine-learning packages, since the efficient gradients of :math:`R^N \to R` "loss" functions for steepest descent optimization algorithms is essential to machine learning in practice.
+Many reverse-mode packages are connected to machine-learning packages, since the efficient gradients of :math:`R^N \to R` loss functions are necessary for the gradient descent optimization algorithms used in machine learning.
 
-One recent package is `Zygote.jl <https://github.com/FluxML/Zygote.jl>`_, which is related to the Flux.jl machine learning framework.
+One recent package is `Zygote.jl <https://github.com/FluxML/Zygote.jl>`_, which is used in the Flux.jl framework.
 
 .. code-block:: julia
 
@@ -272,9 +234,9 @@ One recent package is `Zygote.jl <https://github.com/FluxML/Zygote.jl>`_, which 
     h(x, y) = 3x^2 + 2x + 1 + y*x - y
     gradient(h, 3.0, 5.0)
 
-Here we see that Zygote has a single ``gradient'' function as the interface, and generates a gradient as a tuple
+Here we see that Zygote has a `gradient` function as the interface, which returns a tuple.
 
-You could create this as an operator if you wanted to.
+You could create this as an operator if you wanted to.,
 
 .. code-block:: julia
 
@@ -283,23 +245,29 @@ You could create this as an operator if you wanted to.
     D_sin = D(sin)
     D_sin(4.0)
 
-For univariate functions, by simply using the ``'`` after a function name
+For functions of one (Julia) variable, we can find the by simply using the ``'`` after a function name
 
 .. code-block:: julia
 
     using Statistics
-    p(x) = mean(x)
-    p'([2.0, 9.0, 5.0])
+    p(x) = mean(abs, x)
+    p'([1.0, 3.0, -2.0])
+
+Or, using the complicated iterative function we defined for the `squareroot`,
+
+.. code-block:: julia
+
+    squareroot'(2.0)
 
 
-And Zygote also supports combinations of vectors and scalars
+You can Zygote supports combinations of vectors and scalars as the function parameters.
 
 .. code-block:: julia
 
     h(x,n) = (sum(x.^n))^(1/n)
-    gradient(h, [1.0, 4.0, 6.0], 2.0)  # gradient of the geometric sum
+    gradient(h, [1.0, 4.0, 6.0], 2.0)
 
-The gradients can be very high dimensional.  For example, here is a simple nonlinear optimization problem
+The gradients can be very high dimensional.  For example, to do a simple nonlinear optimization problem
 with 1 million dimensions, solved in a few seconds.
 
 .. code-block:: julia
@@ -319,11 +287,11 @@ with 1 million dimensions, solved in a few seconds.
     println("minimum = $(results.minimum) with in "*
     "$(results.iterations) iterations")
 
-Caution: while Zygote is the most exciting reverse-mode AD implementation in Julia, it has many rough edges
+Caution: while Zygote is the most exciting reverse-mode AD implementation in Julia, it has many rough edges.
 
-- It provides no features for getting Jacobians, so you would have to ask for each row of the jacobian separately.  That said, you
+- It provides no features for getting Jacobians, so you would have to ask for each row of the Jacobian separately.  That said, you
   probably want to use  ``ForwardDiff.jl`` for Jacobians if the dimension of the output is similar to the dimension of the input.
-- If you use ``gradient(f, x)`` for some ``f``, then change the function ``f`` and redo ``gradient(f,x)``, it may not update
+- If you use ``gradient(f, x)`` for some ``f``, then change the function ``f`` and rerun ``gradient(f, x)``, it may not update
 - You cannot, in the current release, use mutating functions (e.g. modify a value in an array/etc.) although that feature is in progress
 - Compiling can be very slow for complicated functions.
 
