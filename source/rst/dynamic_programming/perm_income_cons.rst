@@ -43,7 +43,7 @@ In this lecture, we'll
 
 * represent the model as a linear state space system as in :doc:`this lecture <../tools_and_techniques/linear_models>`
 
-* apply `QuantEcon <http://quantecon.org/julia_index.html>`__'s `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__ type to characterize statistical features of the consumer's optimal consumption and borrowing plans
+* apply `QuantEcon <http://quantecon.org/quantecon-jl>`__'s `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__ type to characterize statistical features of the consumer's optimal consumption and borrowing plans
 
 We'll then use these characterizations to construct a simple model of cross-section wealth and
 consumption dynamics in the spirit of Truman Bewley :cite:`Bewley86`.
@@ -208,7 +208,7 @@ The LQ Approach
 
 Here we solve the same model using :doc:`LQ methods <../dynamic_programming/lqcontrol>` based on dynamic programming.
 
-After confirming that answers produced by the two methods agree, we apply `QuantEcon <http://quantecon.org/julia_index.html>`__'s `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__
+After confirming that answers produced by the two methods agree, we apply `QuantEcon <http://quantecon.org/quantecon-jl>`__'s `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`__
 type to illustrate features of the model.
 
 Why solve a model in two distinct ways?

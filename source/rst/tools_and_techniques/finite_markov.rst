@@ -25,7 +25,7 @@ You will find them in many of the workhorse models of economics and finance
 
 In this lecture we review some of the theory of Markov chains
 
-We will also introduce some of the high quality routines for working with Markov chains available in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__
+We will also introduce some of the high quality routines for working with Markov chains available in `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__
 
 Prerequisite knowledge is basic probability and linear algebra
 
@@ -206,11 +206,11 @@ One natural way to answer questions about Markov chains is to simulate them
 
 (To approximate the probability of event :math:`E`, we can simulate many times and count the fraction of times that :math:`E` occurs)
 
-Nice functionality for simulating Markov chains exists in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__
+Nice functionality for simulating Markov chains exists in `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__
 
 * Efficient, bundled with lots of other useful routines for handling Markov chains
 
-However, it's also a good exercise to roll our own routines --- let's do that first and then come back to the methods in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__
+However, it's also a good exercise to roll our own routines --- let's do that first and then come back to the methods in `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__
 
 In these exercises we'll take the state space to be :math:`S = 1,\ldots, n`
 
@@ -310,7 +310,7 @@ If you run the following code you should get roughly that answer
 Using QuantEcon's Routines
 ----------------------------
 
-As discussed above, `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ has routines for handling Markov chains, including simulation
+As discussed above, `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__ has routines for handling Markov chains, including simulation
 
 Here's an illustration using the same `P` as the preceding example
 
@@ -572,7 +572,7 @@ there's no edge between nodes
 It's clear from the graph that this stochastic matrix is irreducible: we can
 reach any state from any other state eventually
 
-We can also test this using `QuantEcon.jl <http://quantecon.org/julia_index.html>`__'s MarkovChain class
+We can also test this using `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__'s MarkovChain class
 
 .. code-block:: julia
 
@@ -803,7 +803,7 @@ But the zero vector solves this equation
 
 Hence we need to impose the restriction that the solution must be a probability distribution
 
-A suitable algorithm is implemented in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ --- the next code block illustrates
+A suitable algorithm is implemented in `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__ --- the next code block illustrates
 
 .. code-block:: julia
 
@@ -1195,7 +1195,7 @@ The variance of the stationary probability distribution of :math:`\{ y_t \}` is
 
 Tauchen's method :cite:`Tauchen1986` is the most common method for approximating this continuous state process with a finite state Markov chain
 
-A routine for this already exists in `QuantEcon.jl <http://quantecon.org/julia_index.html>`__ but let's write our own version as an exercise
+A routine for this already exists in `QuantEcon.jl <http://quantecon.org/quantecon-jl>`__ but let's write our own version as an exercise
 
 As a first step we choose
 
@@ -1235,7 +1235,7 @@ The exercise is to write a function ``approx_markov(rho, sigma_u, m = 3, n = 7)`
 :math:`\{x_0, \ldots, x_{n-1}\} \subset \mathbb R` and :math:`n \times n` matrix
 :math:`P` as described above
 
-* Even better, write a function that returns an instance of `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__ `MarkovChain` type
+* Even better, write a function that returns an instance of `QuantEcon.jl's <http://quantecon.org/quantecon-jl>`__ `MarkovChain` type
 
 Solutions
 ===========

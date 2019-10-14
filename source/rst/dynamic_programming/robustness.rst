@@ -893,7 +893,7 @@ computations.
 Implementation
 ================
 
-The `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package provides a type called ``RBLQ`` for implementation of robust LQ optimal control.
+The `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ package provides a type called ``RBLQ`` for implementation of robust LQ optimal control.
 
 The code can be found `on GitHub <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/robustlq.jl>`__.
 

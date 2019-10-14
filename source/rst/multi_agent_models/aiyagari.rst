@@ -182,7 +182,7 @@ Code
 
 Let's look at how we might compute such an equilibrium in practice
 
-To solve the household's dynamic programming problem we'll use the `DiscreteDP <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/ddp.jl>`_ type from `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
+To solve the household's dynamic programming problem we'll use the `DiscreteDP <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/ddp.jl>`_ type from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_
 
 Our first task is the least exciting one: write code that maps parameters for a household problem into the ``R`` and ``Q`` matrices needed to generate an instance of ``DiscreteDP``
 

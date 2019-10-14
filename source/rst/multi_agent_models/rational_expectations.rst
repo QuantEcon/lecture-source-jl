@@ -588,7 +588,7 @@ Let the firm's belief function :math:`H` be as given in :eq:`ree_hlom2`
 Formulate the firm's problem as a discounted optimal linear regulator problem, being careful to describe all of the objects needed
 
 
-Use the type ``LQ`` from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package to solve the firm's problem for the following parameter values:
+Use the type ``LQ`` from the `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ package to solve the firm's problem for the following parameter values:
 
 .. math::
 
