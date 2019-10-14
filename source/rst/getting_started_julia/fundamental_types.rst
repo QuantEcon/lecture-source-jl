@@ -1425,7 +1425,7 @@ To test your solution, observe that the limit :math:`S` is a solution to the mat
 
 This kind of equation is known as a **discrete time Lyapunov equation**
 
-The `QuantEcon package <http://quantecon.org/julia_index.html>`_
+The `QuantEcon package <http://quantecon.org/quantecon-jl>`_
 provides a function called ``solve_discrete_lyapunov`` that implements a fast
 "doubling" algorithm to solve this equation
 

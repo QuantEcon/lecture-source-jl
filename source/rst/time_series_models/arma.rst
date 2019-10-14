@@ -727,7 +727,7 @@ Most code for working with covariance stationary models deals with ARMA models
 
 Julia code for studying ARMA models can be found in the ``DSP.jl`` package
 
-Since this code doesn't quite cover our needs --- particularly vis-a-vis spectral analysis --- we've put together the module `arma.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/arma.jl>`_, which is part of `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package
+Since this code doesn't quite cover our needs --- particularly vis-a-vis spectral analysis --- we've put together the module `arma.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/arma.jl>`_, which is part of `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ package
 
 The module provides functions for mapping ARMA(:math:`p,q`) models into their
 

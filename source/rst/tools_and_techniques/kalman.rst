@@ -452,7 +452,7 @@ The `QuantEcon.jl`_ package is able to implement the Kalman filter by using meth
 
     * the moments :math:`(\hat x_t, \Sigma_t)` of the current prior
 
-* The type ``Kalman`` from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package has a number of methods, some that we will wait to use until we study more advanced applications in subsequent lectures
+* The type ``Kalman`` from the `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ package has a number of methods, some that we will wait to use until we study more advanced applications in subsequent lectures
 
 * Methods pertinent for this lecture  are:
 

@@ -1324,7 +1324,7 @@ Code
 =======
 
 Our preceding simulations and calculations are based on code in
-the file `lss.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ package
+the file `lss.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from the `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ package
 
 
 

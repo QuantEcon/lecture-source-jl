@@ -476,7 +476,7 @@ Convergence rate
 
 How long does it take for time series sample averages to converge to cross sectional averages?
 
-We can use `QuantEcon.jl's <http://quantecon.org/julia_index.html>`__
+We can use `QuantEcon.jl's <http://quantecon.org/quantecon-jl>`__
 `MarkovChain` type to investigate this
 
 Let's plot the path of the sample averages over 5,000 periods

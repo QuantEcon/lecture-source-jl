@@ -155,7 +155,7 @@ This can be written as
 
 which is a standard linear state space system
 
-To study it, we could map it into an instance of `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
+To study it, we could map it into an instance of `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_
 
 We will in fact use a different set of code for simulation, for reasons described below
 
@@ -734,7 +734,7 @@ It is convenient for us to introduce the following notation:
 
 We want to characterize and simulate components :math:`\tau_t, m_t, s_t` of the decomposition.
 
-A convenient way to do this is to construct an appropriate instance of a :doc:`linear state space system <../tools_and_techniques/linear_models>` by using `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
+A convenient way to do this is to construct an appropriate instance of a :doc:`linear state space system <../tools_and_techniques/linear_models>` by using `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_
 
 This will allow us to use the routines in `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ to study dynamics
 
