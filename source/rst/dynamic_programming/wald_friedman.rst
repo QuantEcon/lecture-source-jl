@@ -8,23 +8,23 @@
 :index:`A Problem that Stumped Milton Friedman`
 ***********************************************
 
-(and that Abraham Wald solved by inventing sequential analysis)
+(and that Abraham Wald solved by inventing sequential analysis).
 
 .. index::
     single: Models; Sequential analysis
 
 .. contents:: :depth: 2
 
-Co-authored with Chase Coleman
+Co-authored with Chase Coleman.
 
 Overview
 =========
 
-This lecture describes a statistical decision problem encountered  by Milton Friedman and W. Allen Wallis during World War II when they were analysts at the U.S. Government's  Statistical Research Group at Columbia University
+This lecture describes a statistical decision problem encountered  by Milton Friedman and W. Allen Wallis during World War II when they were analysts at the U.S. Government's  Statistical Research Group at Columbia University.
 
-This problem led Abraham Wald :cite:`Wald47` to formulate **sequential analysis**, an approach to statistical decision problems intimately related to dynamic programming
+This problem led Abraham Wald :cite:`Wald47` to formulate **sequential analysis**, an approach to statistical decision problems intimately related to dynamic programming.
 
-In this lecture, we apply dynamic programming algorithms to Friedman and Wallis and Wald's problem
+In this lecture, we apply dynamic programming algorithms to Friedman and Wallis and Wald's problem.
 
 Key ideas in play will be:
 
@@ -52,9 +52,9 @@ Origin of the problem
 On pages 137-139 of his 1998 book *Two Lucky People* with Rose Friedman :cite:`Friedman98`,
 Milton Friedman described a problem presented to him and Allen Wallis
 during World War II, when they worked at the US Government's
-Statistical Research Group at Columbia University
+Statistical Research Group at Columbia University.
 
-Let's listen to Milton Friedman tell us what happened
+Let's listen to Milton Friedman tell us what happened.
 
 "In order to understand the story, it is necessary to have an idea of a
 simple statistical problem, and of the standard procedure for dealing
@@ -80,26 +80,26 @@ officer like Schyler were on the premises, he would see after the first
 few thousand or even few hundred [rounds] that the experiment need not
 be completed either because the new method is obviously inferior or
 because it is obviously superior beyond what was hoped for
-:math:`\ldots` ''
+:math:`\ldots` ''.
 
 Friedman and Wallis struggled with the problem but, after realizing that
-they were not able to solve it,  described the problem to  Abraham Wald
+they were not able to solve it,  described the problem to  Abraham Wald.
 
-That started Wald on the path that led him  to *Sequential Analysis* :cite:`Wald47`
+That started Wald on the path that led him  to *Sequential Analysis* :cite:`Wald47`.
 
-We'll formulate the problem using dynamic programming
+We'll formulate the problem using dynamic programming.
 
 A dynamic programming approach
 ================================
 
 The following presentation of the problem closely follows Dmitri
-Berskekas's treatment in **Dynamic Programming and Stochastic Control** :cite:`Bertekas75`
+Berskekas's treatment in **Dynamic Programming and Stochastic Control** :cite:`Bertekas75`.
 
-A decision maker observes iid draws of a random variable :math:`z`
+A decision maker observes iid draws of a random variable :math:`z`.
 
-He (or she) wants to know which of two probability distributions :math:`f_0` or :math:`f_1` governs :math:`z`
+He (or she) wants to know which of two probability distributions :math:`f_0` or :math:`f_1` governs :math:`z`.
 
-After a number of draws, also to be determined, he makes a decision as to which of the distributions is generating the draws he observers
+After a number of draws, also to be determined, he makes a decision as to which of the distributions is generating the draws he observers.
 
 To help formalize the problem, let :math:`x \in \{x_0, x_1\}` be a hidden state that indexes the two distributions:
 
@@ -137,9 +137,9 @@ After observing :math:`z_k, z_{k-1}, \ldots, z_0`, the decision maker believes t
 
     f(v) = p_k f_0(v) + (1-p_k) f_1 (v)
 
-This is a mixture of distributions :math:`f_0` and :math:`f_1`, with the weight on :math:`f_0` being the posterior probability that :math:`x = x_0` [#f1]_
+This is a mixture of distributions :math:`f_0` and :math:`f_1`, with the weight on :math:`f_0` being the posterior probability that :math:`x = x_0` [#f1]_.
 
-To help illustrate this kind of distribution, let's inspect some mixtures of beta distributions
+To help illustrate this kind of distribution, let's inspect some mixtures of beta distributions.
 
 The density of a beta probability distribution with parameters :math:`a` and :math:`b` is
 
@@ -149,11 +149,11 @@ The density of a beta probability distribution with parameters :math:`a` and :ma
     \quad \text{where} \quad
     \Gamma(t) := \int_{0}^{\infty} x^{t-1} e^{-x} dx
 
-We'll discretize this distribution to make it more straightforward to work with
+We'll discretize this distribution to make it more straightforward to work with.
 
-The next figure shows two discretized beta distributions in the top panel
+The next figure shows two discretized beta distributions in the top panel.
 
-The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`
+The bottom panel presents mixtures of these distributions, with various mixing probabilities :math:`p_k`.
 
 Setup
 ------------------
@@ -193,24 +193,24 @@ Losses and costs
 After observing :math:`z_k, z_{k-1}, \ldots, z_0`, the decision maker
 chooses among three distinct actions:
 
--  He decides that :math:`x = x_0` and draws no more :math:`z`'s
+-  He decides that :math:`x = x_0` and draws no more :math:`z`'s.
 
--  He decides that :math:`x = x_1` and draws no more :math:`z`'s
+-  He decides that :math:`x = x_1` and draws no more :math:`z`'s.
 
 -  He postpones deciding now and instead chooses to draw a
-   :math:`z_{k+1}`
+   :math:`z_{k+1}`.
 
 Associated with these three actions, the decision maker can suffer three
 kinds of losses:
 
 -  A loss :math:`L_0` if he decides :math:`x = x_0` when actually
-   :math:`x=x_1`
+   :math:`x=x_1`.
 
 -  A loss :math:`L_1` if he decides :math:`x = x_1` when actually
-   :math:`x=x_0`
+   :math:`x=x_0`.
 
 -  A cost :math:`c` if he postpones deciding and chooses instead to draw
-   another :math:`z`
+   another :math:`z`.
 
 Digression on type I and type II errors
 ----------------------------------------
@@ -225,41 +225,41 @@ then :math:`L_1` and :math:`L_0` are losses associated with two types of statist
 So when we treat :math:`x=x_0` as the null hypothesis
 
 -  We can think of :math:`L_1` as the loss associated with a type I
-   error
+   error.
 
 -  We can think of :math:`L_0` as the loss associated with a type II
-   error
+   error.
 
 Intuition
 -------------------
 
-Let's try to guess what an optimal decision rule might look like before we go further
+Let's try to guess what an optimal decision rule might look like before we go further.
 
-Suppose at some given point in time that :math:`p` is close to 1
+Suppose at some given point in time that :math:`p` is close to 1.
 
-Then our prior beliefs and the evidence so far point strongly to :math:`x = x_0`
+Then our prior beliefs and the evidence so far point strongly to :math:`x = x_0`.
 
-If, on the other hand, :math:`p` is close to 0, then :math:`x = x_1` is strongly favored
+If, on the other hand, :math:`p` is close to 0, then :math:`x = x_1` is strongly favored.
 
-Finally, if :math:`p` is in the middle of the interval :math:`[0, 1]`, then we have little information in either direction
+Finally, if :math:`p` is in the middle of the interval :math:`[0, 1]`, then we have little information in either direction.
 
 This reasoning suggests a decision rule such as the one shown in the figure
 
 .. figure:: /_static/figures/wald_dec_rule.png
     :width: 50%
 
-As we'll see, this is indeed the correct form of the decision rule
+As we'll see, this is indeed the correct form of the decision rule.
 
 The key problem is to determine the threshold values :math:`\alpha, \beta`,
-which will depend on the parameters listed above
+which will depend on the parameters listed above.
 
 You might like to pause at this point and try to predict the impact of a
-parameter such as :math:`c` or :math:`L_0` on :math:`\alpha` or :math:`\beta`
+parameter such as :math:`c` or :math:`L_0` on :math:`\alpha` or :math:`\beta`.
 
 A Bellman equation
 -------------------
 
-Let :math:`J(p)` be the total loss for a decision maker with current belief :math:`p` who chooses optimally
+Let :math:`J(p)` be the total loss for a decision maker with current belief :math:`p` who chooses optimally.
 
 With some thought, you will agree that :math:`J` should satisfy the Bellman equation
 
@@ -309,17 +309,17 @@ Then we can represent the  Bellman equation as
     J(p) =
     \min \left\{ (1-p) L_0, \; p L_1, \; c + A(p) \right\}
 
-where :math:`p \in [0,1]`
+where :math:`p \in [0,1]`.
 
 Here
 
 -  :math:`(1-p) L_0` is the expected loss associated with accepting
-   :math:`x_0` (i.e., the cost of making a type II error)
+   :math:`x_0` (i.e., the cost of making a type II error).
 
 -  :math:`p L_1` is the expected loss associated with accepting
-   :math:`x_1` (i.e., the cost of making a type I error)
+   :math:`x_1` (i.e., the cost of making a type I error).
 
--  :math:`c + A(p)` is the expected cost associated with drawing one more :math:`z`
+-  :math:`c + A(p)` is the expected cost associated with drawing one more :math:`z`.
 
 The optimal decision rule is characterized by two numbers :math:`\alpha, \beta \in (0,1) \times (0,1)` that satisfy
 
@@ -347,12 +347,12 @@ The optimal decision rule is then
     \end{aligned}
 
 Our aim is to compute the value function :math:`J`, and from it the associated cutoffs :math:`\alpha`
-and :math:`\beta`
+and :math:`\beta`.
 
 One sensible approach is to write the three components of :math:`J`
-that appear on the right side of the Bellman equation as separate functions
+that appear on the right side of the Bellman equation as separate functions.
 
-Later, doing this will help us obey **the don't repeat yourself (DRY)** golden rule of coding
+Later, doing this will help us obey **the don't repeat yourself (DRY)** golden rule of coding.
 
 Implementation
 ==================
@@ -360,29 +360,29 @@ Implementation
 Let's code this problem up and solve it.
 
 We implement the cost functions for each choice considered in the
-Bellman equation :eq:`new3`
+Bellman equation :eq:`new3`.
 
 First, consider the cost associated to accepting either distribution and
-compare the minimum of the two to the expected benefit of drawing again
+compare the minimum of the two to the expected benefit of drawing again.
 
 Drawing again will only be worthwhile if the expected marginal benefit of
-learning from an additional draw is greater than the explicit cost
+learning from an additional draw is greater than the explicit cost.
 
 For every belief :math:`p`, we can compute the difference between accepting a
-distribution and choosing to draw again
+distribution and choosing to draw again.
 
-The solution :math:`\alpha`, :math:`\beta` occurs at indifference points
+The solution :math:`\alpha`, :math:`\beta` occurs at indifference points.
 
 Define the cost function be the minimum of the pairwise differences in cost among
-the choices
+the choices.
 
-Then we can find the indifference points when the cost function is zero
+Then we can find the indifference points when the cost function is zero.
 
 We can use any roots finding algorithm to solve for the solutions in the
-interval [0, 1]
+interval [0, 1].
 
 Lastly, verify which indifference points correspond to the definition of a permanent
-transition between the accept and reject space for each choice
+transition between the accept and reject space for each choice.
 
 Here's the code
 
@@ -565,9 +565,9 @@ We can simulate an agent facing a problem and the outcome with the following fun
 Comparative statics
 ----------------------
 
-Now let's consider the following exercise
+Now let's consider the following exercise.
 
-We double the cost of drawing an additional observation
+We double the cost of drawing an additional observation.
 
 Before you look, think about what will happen:
 
@@ -596,12 +596,12 @@ Comparison with Neyman-Pearson formulation
 For several reasons, it is useful to describe the theory underlying the test
 that Navy Captain G. S. Schuyler had been told to use and that led him
 to approach Milton Friedman and Allan Wallis to convey his conjecture
-that superior practical procedures existed
+that superior practical procedures existed.
 
 Evidently, the Navy had told Captail Schuyler to use what it knew to be a
-state-of-the-art Neyman-Pearson test
+state-of-the-art Neyman-Pearson test.
 
-We'll rely on Abraham Wald's :cite:`Wald47` elegant summary of Neyman-Pearson theory
+We'll rely on Abraham Wald's :cite:`Wald47` elegant summary of Neyman-Pearson theory.
 
 For our purposes, watch for there features of the setup:
 
@@ -614,19 +614,19 @@ For our purposes, watch for there features of the setup:
 Recall that in the sequential analytic formulation above, that
 
 -  The sample size :math:`n` is not fixed but rather an object to be
-   chosen; technically :math:`n` is a random variable
+   chosen; technically :math:`n` is a random variable.
 
 -  The parameters :math:`\beta` and :math:`\alpha` characterize cut-off
-   rules used to determine :math:`n` as a random variable
+   rules used to determine :math:`n` as a random variable.
 
 -  Laws of large numbers make no appearances in the sequential
-   construction
+   construction.
 
 In chapter 1 of **Sequential Analysis** :cite:`Wald47` Abraham Wald summarizes the
-Neyman-Pearson approach to hypothesis testing
+Neyman-Pearson approach to hypothesis testing.
 
 Wald frames the problem as making a decision about a probability
-distribution that is partially known
+distribution that is partially known.
 
 (You have to assume that *something* is already known in order to state a well posed problem.
 Usually, *something* means *a lot*.)
@@ -634,8 +634,8 @@ Usually, *something* means *a lot*.)
 By limiting  what is unknown, Wald uses the following simple structure
 to illustrate the main ideas.
 
--  a decision maker wants to decide which of two distributions
-   :math:`f_0`, :math:`f_1` govern an i.i.d. random variable :math:`z`
+-  A decision maker wants to decide which of two distributions
+   :math:`f_0`, :math:`f_1` govern an i.i.d. random variable :math:`z`.
 
 -  The null hypothesis :math:`H_0` is the statement that :math:`f_0`
    governs the data.
