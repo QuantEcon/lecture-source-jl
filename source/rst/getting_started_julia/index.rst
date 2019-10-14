@@ -6,7 +6,7 @@
 Getting Started with Julia
 *********************************
 
-This first part of the course provides a relatively fast-paced introduction to enough of the Julia programming language to understand the lectures
+This first part of the course provides a relatively fast-paced introduction to enough of the Julia programming language to understand the lectures.
 
 
 .. only:: html

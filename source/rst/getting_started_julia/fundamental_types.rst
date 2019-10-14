@@ -19,7 +19,7 @@ Arrays, Tuples, Ranges, and Other Fundamental Types
 Overview
 ============================
 
-In Julia, arrays and tuples are the most important data type for working with numerical data
+In Julia, arrays and tuples are the most important data type for working with numerical data.
 
 In this lecture we give more details on
 
@@ -50,9 +50,9 @@ Array Basics
 
 (`See multi-dimensional arrays documentation <https://docs.julialang.org/en/v1/manual/arrays/>`_)
 
-Since it is one of the most important types, we will start with arrays
+Since it is one of the most important types, we will start with arrays.
 
-Later, we will see how arrays (and all other types in Julia) are handled in a generic and extensible way
+Later, we will see how arrays (and all other types in Julia) are handled in a generic and extensible way.
 
 Shape and Dimension
 ----------------------
@@ -70,14 +70,14 @@ We've already seen some Julia arrays in action
     a = [1.0, 2.0, 3.0]
 
 
-The output tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively
+The output tells us that the arrays are of types ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively.
 
-Here ``Int64`` and ``Float64`` are types for the elements inferred by the compiler
+Here ``Int64`` and ``Float64`` are types for the elements inferred by the compiler.
 
-We'll talk more about types later
+We'll talk more about types later.
 
 The ``1`` in ``Array{Int64,1}`` and ``Array{Any,1}`` indicates that the array is
-one dimensional (i.e., a ``Vector``)
+one dimensional (i.e., a ``Vector``).
 
 This is the default for many Julia functions that create arrays
 
@@ -85,7 +85,7 @@ This is the default for many Julia functions that create arrays
 
     typeof(randn(100))
 
-In Julia, one dimensional vectors are best interpreted as column vectors, which we will see when we take transposes
+In Julia, one dimensional vectors are best interpreted as column vectors, which we will see when we take transposes.
 
 We can check the dimensions of ``a`` using ``size()`` and ``ndims()``
 functions
@@ -100,7 +100,7 @@ functions
     size(a)
 
 
-The syntax ``(3,)`` displays a tuple containing one element -- the size along the one dimension that exists
+The syntax ``(3,)`` displays a tuple containing one element -- the size along the one dimension that exists.
 
 Array vs Vector vs Matrix
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -114,7 +114,7 @@ respectively
     Array{Int64, 2} == Matrix{Int64}
 
 
-Vector construction with ``,`` is then interpreted as a column vector
+Vector construction with ``,`` is then interpreted as a column vector.
 
 To see this, we can create a column vector and row vector more directly
 
@@ -134,15 +134,15 @@ As we've seen, in Julia we have both
 
 Why do we need both?
 
-On one hand, dimension matters for matrix algebra
+On one hand, dimension matters for matrix algebra.
 
-* Multiplying by a row vector is different to multiplying by a column vector
+* Multiplying by a row vector is different to multiplying by a column vector.
 
-On the other, we use arrays in many settings that don't involve matrix algebra
+On the other, we use arrays in many settings that don't involve matrix algebra.
 
-In such cases, we don't care about the distinction between row and column vectors
+In such cases, we don't care about the distinction between row and column vectors.
 
-This is why many Julia functions return flat arrays by default
+This is why many Julia functions return flat arrays by default.
 
 
 .. _creating_arrays:
@@ -179,7 +179,7 @@ Finally, you can create an empty array using the ``Array()`` constructor
     x = Array{Float64}(undef, 2, 2)
 
 
-The printed values you see here are just garbage values
+The printed values you see here are just garbage values.
 
 (the existing contents of the allocated memory slots being interpreted as 64 bit floats)
 
@@ -200,11 +200,11 @@ Or fill with a boolean type
 Creating Arrays from Existing Arrays
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own
+For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own.
 
-The reasons for this, discussed in more detail in :doc:`this lecture <../more_julia/generic_programming>`, are to ensure both clarity and generality
+The reasons for this, discussed in more detail in :doc:`this lecture <../more_julia/generic_programming>`, are to ensure both clarity and generality.
 
-One place this can be inconvenient is when we need to create an array based on an existing array
+One place this can be inconvenient is when we need to create an array based on an existing array.
 
 First, note that assignment in Julia binds a name to a value, but does not make a copy of that type
 
@@ -215,7 +215,7 @@ First, note that assignment in Julia binds a name to a value, but does not make 
     y[1] = 2
     x
 
-In the above, ``y = x`` simply creates a new named binding called ``y`` which refers to whatever ``x`` currently binds to
+In the above, ``y = x`` simply creates a new named binding called ``y`` which refers to whatever ``x`` currently binds to.
 
 To copy the data, you need to be more explicit
 
@@ -275,7 +275,7 @@ In two dimensions we can proceed as follows
     a = [10 20; 30 40]  # 2 x 2
 
 
-You might then assume that ``a = [10; 20; 30; 40]`` creates a two dimensional column vector but this isn't the case
+You might then assume that ``a = [10; 20; 30; 40]`` creates a two dimensional column vector but this isn't the case.
 
 .. code-block:: julia
 
@@ -350,9 +350,9 @@ Booleans can be used to extract elements
     a[b]
 
 
-This is useful for conditional extraction, as we'll see below
+This is useful for conditional extraction, as we'll see below.
 
-An aside: some or all elements of an array can be set equal to one number using slice notation
+An aside: some or all elements of an array can be set equal to one number using slice notation.
 
 
 .. code-block:: julia
@@ -372,7 +372,7 @@ An aside: some or all elements of an array can be set equal to one number using 
 Views and Slices
 -----------------------------
 
-Using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type
+Using the ``:`` notation provides a slice of an array, copying the sub-array to a new array with a similar type.
 
 .. code-block:: julia
 
@@ -394,18 +394,18 @@ A **view** on the other hand does not copy the value
     @show a
     @show b;
 
-Note that the only difference is the ``@views`` macro, which will replace any slices with views in the expression
+Note that the only difference is the ``@views`` macro, which will replace any slices with views in the expression.
 
-An alternative is to call the ``view`` function directly -- though it is generally discouraged since it is a step away from the math
+An alternative is to call the ``view`` function directly -- though it is generally discouraged since it is a step away from the math.
 
 .. code-block:: julia
 
     @views b = a[:, 2]
     view(a, :, 2) == b
 
-As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else
+As with most programming in Julia, it is best to avoid prematurely assuming that ``@views`` will have a significant impact on performance, and stress code clarity above all else.
 
-Another important lesson about ``@views`` is that they **are not** normal, dense arrays
+Another important lesson about ``@views`` is that they **are not** normal, dense arrays.
 
 .. code-block:: julia
 
@@ -416,7 +416,7 @@ Another important lesson about ``@views`` is that they **are not** normal, dense
     @views b = a[:, 2]
     @show typeof(b);
 
-The type of ``b`` is a good example of how types are not as they may seem
+The type of ``b`` is a good example of how types are not as they may seem.
 
 Similarly
 
@@ -440,7 +440,7 @@ To copy into a dense array
 Special Matrices
 -----------------
 
-As we saw with ``transpose``, sometimes types that look like matrices are not stored as a dense array
+As we saw with ``transpose``, sometimes types that look like matrices are not stored as a dense array.
 
 As an example, consider creating a diagonal matrix
 
@@ -449,9 +449,9 @@ As an example, consider creating a diagonal matrix
     d = [1.0, 2.0]
     a = Diagonal(d)
 
-As you can see, the type is ``2×2 Diagonal{Float64,Array{Float64,1}}``, which is not a 2-dimensional array
+As you can see, the type is ``2×2 Diagonal{Float64,Array{Float64,1}}``, which is not a 2-dimensional array.
 
-The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations
+The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations.
 
 In every important sense, matrix types such as ``Diagonal`` are just as much a "matrix" as the dense matrices we have using (see the :doc:`introduction to types lecture <../getting_started_julia/introduction_to_types>` for more)
 
@@ -481,19 +481,19 @@ While the implementation of ``I`` is a little abstract to go into at this point,
 
     typeof(I)
 
-This is a ``UniformScaling`` type rather than an identity matrix, making it much more powerful and general
+This is a ``UniformScaling`` type rather than an identity matrix, making it much more powerful and general.
 
 Assignment and Passing Arrays
 ------------------------------
 
-As discussed above, in Julia, the left hand side of an assignment is a "binding" or a label to a value
+As discussed above, in Julia, the left hand side of an assignment is a "binding" or a label to a value.
 
 .. code-block:: julia
 
     x = [1 2 3]
     y = x  # name `y` binds to whatever value `x` bound to
 
-The consequence of this, is that you can re-bind that name
+The consequence of this, is that you can re-bind that name.
 
 .. code-block:: julia
 
@@ -503,9 +503,9 @@ The consequence of this, is that you can re-bind that name
     y = z        # only changes name binding, not value!
     @show (x, y, z);
 
-What this means is that if ``a`` is an array and we set ``b = a`` then ``a`` and ``b`` point to exactly the same data
+What this means is that if ``a`` is an array and we set ``b = a`` then ``a`` and ``b`` point to exactly the same data.
 
-In the above, suppose you had meant to change the value of ``x`` to the values of ``y``, you need to assign the values rather than the name
+In the above, suppose you had meant to change the value of ``x`` to the values of ``y``, you need to assign the values rather than the name.
 
 .. code-block:: julia
 
@@ -515,9 +515,9 @@ In the above, suppose you had meant to change the value of ``x`` to the values o
     y .= z      # now dispatches the assignment of each element
     @show (x, y, z);
 
-Alternatively, you could have used ``y[:] = z``
+Alternatively, you could have used ``y[:] = z``.
 
-This applies to in-place functions as well
+This applies to in-place functions as well.
 
 First, define a simple function for a linear map
 
@@ -530,7 +530,7 @@ First, define a simple function for a linear map
     val = [1, 2]
     f(val)
 
-In general, these "out-of-place" functions are preferred to "in-place" functions, which modify the arguments
+In general, these "out-of-place" functions are preferred to "in-place" functions, which modify the arguments.
 
 .. code-block:: julia
 
@@ -548,7 +548,7 @@ In general, these "out-of-place" functions are preferred to "in-place" functions
     f!(y, val)
     y
 
-This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with ``!`` (e.g. ``push!``)
+This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with ``!`` (e.g. ``push!``).
 
 We can also see a common mistake, where instead of modifying the arguments, the name binding is swapped
 
@@ -567,7 +567,7 @@ We can also see a common mistake, where instead of modifying the arguments, the 
     f!(y, val)
     y
 
-The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking
+The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking.
 
 In-place and Immutable Types
 ------------------------------
@@ -712,13 +712,13 @@ To solve the linear system :math:`A X = B` for :math:`X` use ``A \ B``
     inv(A) * B
 
 
-Although the last two operations give the same result, the first one is numerically more stable and should be preferred in most cases
+Although the last two operations give the same result, the first one is numerically more stable and should be preferred in most cases.
 
-Multiplying two **one** dimensional vectors gives an error -- which is reasonable since the meaning is ambiguous
+Multiplying two **one** dimensional vectors gives an error -- which is reasonable since the meaning is ambiguous.
 
-More precisely, the error is that there isn't an implementation of ``*`` for two one dimensional vectors
+More precisely, the error is that there isn't an implementation of ``*`` for two one dimensional vectors.
 
-The output explains this, and lists some other methods of ``*`` which Julia thinks are close to what we want
+The output explains this, and lists some other methods of ``*`` which Julia thinks are close to what we want.
 
 .. code-block:: julia
     :class: skip-test
@@ -759,9 +759,9 @@ Elementwise Operations
 Algebraic Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Suppose that we wish to multiply every element of matrix ``A`` with the corresponding element of matrix ``B``
+Suppose that we wish to multiply every element of matrix ``A`` with the corresponding element of matrix ``B``.
 
-In that case we need to replace ``*`` (matrix multiplication) with ``.*`` (elementwise multiplication)
+In that case we need to replace ``*`` (matrix multiplication) with ``.*`` (elementwise multiplication).
 
 For example, compare
 
@@ -787,7 +787,7 @@ This is a general principle: ``.x`` means apply operator ``x`` elementwise
 
     A.^2  # square every element
 
-However in practice some operations are mathematically valid without broadcasting, and hence the ``.`` can be omitted
+However in practice some operations are mathematically valid without broadcasting, and hence the ``.`` can be omitted.
 
 .. code-block:: julia
 
@@ -806,7 +806,7 @@ Scalar multiplication is similar
     2 * A  # same as 2 .* A
 
 
-In fact you can omit the ``*`` altogether and just write ``2A``
+In fact you can omit the ``*`` altogether and just write ``2A``.
 
 Unlike MATLAB and other languages, scalar addition requires the ``.+`` in order to correctly broadcast
 
@@ -893,10 +893,10 @@ The primary function for changing the dimensions of an array is ``reshape()``
     b
 
 
-Notice that this function returns a view on the existing array
+Notice that this function returns a view on the existing array.
 
 This means that changing the data in the new array will modify the data in the
-old one
+old one.
 
 .. code-block:: julia
 
@@ -925,7 +925,7 @@ To collapse an array along one dimension you can use ``dropdims()``
     dropdims(a, dims = 1)
 
 
-The return value is an array with the specified dimension "flattened"
+The return value is an array with the specified dimension "flattened".
 
 Broadcasting Functions
 --------------------------
@@ -953,7 +953,7 @@ Note that we can get the same result as with a comprehension or more explicit lo
 
 .. ACTUALLY, kind of the opposite, as in most languages.  "for" loops typically fastest when done correctly.  In Julia loops are typically fast and hence the need for vectorized functions is less intense than for some other high level languages
 
-Nonetheless the syntax is convenient
+Nonetheless the syntax is convenient.
 
 Linear Algebra
 -------------------
@@ -992,7 +992,7 @@ Julia provides some a great deal of additional functionality related to linear o
 Ranges
 ==================
 
-As with many other types, a ``Range`` can act as a vector
+As with many other types, a ``Range`` can act as a vector.
 
 .. code-block:: julia
 
@@ -1002,13 +1002,13 @@ As with many other types, a ``Range`` can act as a vector
     b = Diagonal([1.0, 2.0, 3.0])
     b * a .- [1.0; 2.0; 3.0]
 
-Ranges can also be created with floating point numbers using the same notation
+Ranges can also be created with floating point numbers using the same notation.
 
 .. code-block:: julia
 
     a = 0.0:0.1:1.0  # 0.0, 0.1, 0.2, ... 1.0
 
-But care should be taken if the terminal node is not a multiple of the set sizes
+But care should be taken if the terminal node is not a multiple of the set sizes.
 
 .. code-block:: julia
 
@@ -1035,7 +1035,7 @@ Tuples and Named Tuples
 
 (`See tuples <https://docs.julialang.org/en/v1/manual/functions/#Tuples-1>`_ and `named tuples documentation <https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1>`_)
 
-We were introduced to tuples earlier, which provide high-performance immutable sets of distinct types
+We were introduced to tuples earlier, which provide high-performance immutable sets of distinct types.
 
 .. code-block:: julia
 
@@ -1045,7 +1045,7 @@ We were introduced to tuples earlier, which provide high-performance immutable s
     # t[1] = 3.0    # would fail as tuples are immutable
     println("a = $a and b = $b")
 
-As well as **named tuples**, which extend tuples with names for each argument
+As well as **named tuples**, which extend tuples with names for each argument.
 
 .. code-block:: julia
 
@@ -1102,19 +1102,19 @@ In order to manage default values, use the ``@with_kw`` macro
     @show paramgen(α = 0.2)
     @show paramgen(α = 0.2, β = 0.5);
 
-An alternative approach, defining a new type using ``struct`` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code
+An alternative approach, defining a new type using ``struct`` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code.
 
-For that, and other reasons of generality, we will use named tuples for collections of parameters where possible
+For that, and other reasons of generality, we will use named tuples for collections of parameters where possible.
 
 Nothing, Missing, and Unions
 ==============================
 
-Sometimes a variable, return type from a function, or value in an array needs to represent the absence of a value rather than a particular value
+Sometimes a variable, return type from a function, or value in an array needs to represent the absence of a value rather than a particular value.
 
 There are two distinct use cases for this
 
 #. ``nothing`` ("software engineers null"): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.
-#. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available
+#. ``missing`` ("data scientists null"): used when a value would make conceptual sense, but it isn't available.
 
 .. _error_handling:
 
@@ -1151,9 +1151,9 @@ An example of a reasonable use of ``nothing`` is if you need to have a variable 
     @show f(1.0)
     @show f(-1.0);
 
-While in general you want to keep a variable name bound to a single type in Julia, this is a notable exception
+While in general you want to keep a variable name bound to a single type in Julia, this is a notable exception.
 
-Similarly, if needed, you can return a ``nothing`` from a function to indicate that it did not calculate as expected
+Similarly, if needed, you can return a ``nothing`` from a function to indicate that it did not calculate as expected.
 
 .. code-block:: julia
 
@@ -1188,11 +1188,11 @@ which gives a compact if/then/else structure
 
     f(1.0)
 
-We will sometimes use this form when it makes the code more clear (and it will occasionally make the code higher performance)
+We will sometimes use this form when it makes the code more clear (and it will occasionally make the code higher performance).
 
-Regardless of how ``f(x)`` is written,  the return type is an example of a union, where the result could be one of an explicit set of types
+Regardless of how ``f(x)`` is written,  the return type is an example of a union, where the result could be one of an explicit set of types.
 
-In this particular case, the compiler would deduce that the type would be a ``Union{Nothing,Float64}`` -- that is, it returns either a floating point or a ``nothing``
+In this particular case, the compiler would deduce that the type would be a ``Union{Nothing,Float64}`` -- that is, it returns either a floating point or a ``nothing``.
 
 You will see this type directly if you use an array containing both types
 
@@ -1200,7 +1200,7 @@ You will see this type directly if you use an array containing both types
 
     x = [1.0, nothing]
 
-When considering error handling, whether you want a function to return ``nothing`` or simply fail depends on whether the code calling ``f(x)`` is carefully checking the results
+When considering error handling, whether you want a function to return ``nothing`` or simply fail depends on whether the code calling ``f(x)`` is carefully checking the results.
 
 For example, if you were calling on an array of parameters where a priori you were not sure which ones will succeed, then
 
@@ -1211,7 +1211,7 @@ For example, if you were calling on an array of parameters where a priori you we
 
     # presumably check `y`
 
-On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate
+On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate.
 
 .. code-block:: julia
 
@@ -1239,7 +1239,7 @@ Finally, ``nothing`` is a good way to indicate an optional parameter in a functi
     f(1.0, z=3.0)
 
 An alternative to ``nothing``, which can be useful and sometimes higher performance,
-is to use ``NaN`` to signal that a value is invalid returning from a function
+is to use ``NaN`` to signal that a value is invalid returning from a function.
 
 .. code-block:: julia
 
@@ -1258,9 +1258,9 @@ is to use ``NaN`` to signal that a value is invalid returning from a function
     @show f(-1.0) == NaN  # note, this fails!
     @show isnan(f(-1.0))  # check with this
 
-Note that in this case, the return type is ``Float64`` regardless of the input for ``Float64`` input
+Note that in this case, the return type is ``Float64`` regardless of the input for ``Float64`` input.
 
-Keep in mind, though, that this only works if the return type of a function is ``Float64``
+Keep in mind, though, that this only works if the return type of a function is ``Float64``.
 
 
 Exceptions
@@ -1268,13 +1268,13 @@ Exceptions
 
 (See `exceptions documentation <https://docs.julialang.org/en/v1/manual/control-flow/index.html#Exception-Handling-1>`_)
 
-While returning a ``nothing`` can be a good way to deal with functions which may or may not return values, a more robust error handling method is to use exceptions
+While returning a ``nothing`` can be a good way to deal with functions which may or may not return values, a more robust error handling method is to use exceptions.
 
-Unless you are writing a package, you will rarely want to define and throw your own exceptions, but will need to deal with them from other libraries
+Unless you are writing a package, you will rarely want to define and throw your own exceptions, but will need to deal with them from other libraries.
 
-The key distinction for when to use an exceptions vs. return a ``nothing`` is whether an error is unexpected rather than a normal path of execution
+The key distinction for when to use an exceptions vs. return a ``nothing`` is whether an error is unexpected rather than a normal path of execution.
 
-An example of an exception is a ``DomainError``, which signifies that a value passed to a function is invalid
+An example of an exception is a ``DomainError``, which signifies that a value passed to a function is invalid.
 
 .. code-block:: julia
 
@@ -1285,7 +1285,7 @@ An example of an exception is a ``DomainError``, which signifies that a value pa
     try sqrt(-1.0); catch err; err end  # catches the exception and prints it
 
 
-Another example you will see is when the compiler cannot convert between types
+Another example you will see is when the compiler cannot convert between types.
 
 .. code-block:: julia
 
@@ -1295,9 +1295,9 @@ Another example you will see is when the compiler cannot convert between types
     # to see the error
     try convert(Int64, 3.12); catch err; err end  # catches the exception and prints it.
 
-If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error
+If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error.
 
-Occasionally you will want to catch these errors and try to recover, as we did above in the ``try`` block
+Occasionally you will want to catch these errors and try to recover, as we did above in the ``try`` block.
 
 .. code-block:: julia
 
@@ -1319,7 +1319,7 @@ Missing
 
 (see `"missing" documentation <https://docs.julialang.org/en/v1/manual/missing/>`_)
 
-The value ``missing`` of type ``Missing`` is used to represent missing value in a statistical sense
+The value ``missing`` of type ``Missing`` is used to represent missing value in a statistical sense.
 
 For example, if you loaded data from a panel, and gaps existed
 
@@ -1339,7 +1339,7 @@ A key feature of ``missing`` is that it propagates through other function calls 
     @show f(missing);      # even user-defined functions
     @show mean(x);
 
-The purpose of this is to ensure that failures do not silently fail and provide meaningless numerical results
+The purpose of this is to ensure that failures do not silently fail and provide meaningless numerical results.
 
 This even applies for the comparison of values, which
 
@@ -1351,9 +1351,9 @@ This even applies for the comparison of values, which
     @show x === missing  # an exception
     @show ismissing(x);
 
-Where ``ismissing`` is the canonical way to test the value
+Where ``ismissing`` is the canonical way to test the value.
 
-In the case where you would like to calculate a value without the missing values, you can use ``skipmissing``
+In the case where you would like to calculate a value without the missing values, you can use ``skipmissing``.
 
 .. code-block:: julia
 
@@ -1363,7 +1363,7 @@ In the case where you would like to calculate a value without the missing values
     @show mean(skipmissing(x))
     @show coalesce.(x, 0.0);  # replace missing with 0.0;
 
-As ``missing`` is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``
+As ``missing`` is similar to R's ``NA`` type, we will see more of ``missing`` when we cover ``DataFrames``.
 
 Exercises
 =============
@@ -1375,10 +1375,10 @@ Exercise 1
 ----------------
 
 This exercise uses matrix operations that arise in certain problems,
-including when dealing with linear stochastic difference equations
+including when dealing with linear stochastic difference equations.
 
 If you aren't familiar with all the terminology don't be concerned -- you can
-skim read the background discussion and focus purely on the matrix exercise
+skim read the background discussion and focus purely on the matrix exercise.
 
 With that said, consider the stochastic difference equation
 
@@ -1398,7 +1398,7 @@ Here
 
 * :math:`W_t` is :math:`k \times 1` and :math:`\{W_t\}` is iid with zero mean and variance-covariance matrix equal to the identity matrix
 
-Let :math:`S_t` denote the :math:`n \times n` variance-covariance matrix of :math:`X_t`
+Let :math:`S_t` denote the :math:`n \times n` variance-covariance matrix of :math:`X_t`.
 
 Using the rules for computing variances in matrix expressions, it can be shown from :eq:`ja_sde` that :math:`\{S_t\}` obeys
 
@@ -1408,11 +1408,11 @@ Using the rules for computing variances in matrix expressions, it can be shown f
     S_{t+1} = A S_t A' + \Sigma \Sigma'
 
 
-It can be shown that, provided all eigenvalues of :math:`A` lie within the unit circle, the sequence :math:`\{S_t\}` converges to a unique limit :math:`S`
+It can be shown that, provided all eigenvalues of :math:`A` lie within the unit circle, the sequence :math:`\{S_t\}` converges to a unique limit :math:`S`.
 
-This is the **unconditional variance** or **asymptotic variance** of the stochastic difference equation
+This is the **unconditional variance** or **asymptotic variance** of the stochastic difference equation.
 
-As an exercise, try writing a simple function that solves for the limit :math:`S` by iterating on :eq:`ja_sde_v` given :math:`A` and :math:`\Sigma`
+As an exercise, try writing a simple function that solves for the limit :math:`S` by iterating on :eq:`ja_sde_v` given :math:`A` and :math:`\Sigma`.
 
 To test your solution, observe that the limit :math:`S` is a solution to the matrix equation
 
@@ -1423,11 +1423,11 @@ To test your solution, observe that the limit :math:`S` is a solution to the mat
     \quad \text{where} \quad Q := \Sigma \Sigma'
 
 
-This kind of equation is known as a **discrete time Lyapunov equation**
+This kind of equation is known as a **discrete time Lyapunov equation**.
 
 The `QuantEcon package <http://quantecon.org/quantecon-jl>`_
 provides a function called ``solve_discrete_lyapunov`` that implements a fast
-"doubling" algorithm to solve this equation
+"doubling" algorithm to solve this equation.
 
 Test your iterative method against ``solve_discrete_lyapunov`` using matrices
 
@@ -1462,7 +1462,7 @@ where
 Given these parameters
 
 * Simulate a single :math:`y_t` series for each :math:`\theta \in \Theta`
-  for :math:`T = 150`.  Feel free to experiment with different :math:`T`
+  for :math:`T = 150`.  Feel free to experiment with different :math:`T`.
 * Overlay plots of the rolling mean of the process for each :math:`\theta \in \Theta`,
   i.e. for each :math:`1 \leq \tau \leq T` plot
 
@@ -1472,16 +1472,16 @@ Given these parameters
 
 * Simulate :math:`N=200` paths of the stochastic process above to the :math:`T`,
   for each :math:`\theta \in \Theta`, where we refer to an element of a particular
-  simulation as :math:`y^n_t`
+  simulation as :math:`y^n_t`.
 * Overlay plots a histogram of the stationary distribution of the final
   :math:`y^n_T` for each :math:`\theta \in \Theta`.  Hint: pass ``alpha``
   to a plot to make it transparent (e.g. ``histogram(vals, alpha = 0.5)``) or
-  use ``stephist(vals)`` to show just the step function for the histogram
+  use ``stephist(vals)`` to show just the step function for the histogram.
 * Numerically find the mean and variance of this as an ensemble average, i.e.
   :math:`\sum_{n=1}^N\frac{y^n_T}{N}` and
-  :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`
+  :math:`\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2`.
 
-Later, we will interpret some of these in :doc:`this lecture <../tools_and_techniques/lln_clt>`
+Later, we will interpret some of these in :doc:`this lecture <../tools_and_techniques/lln_clt>`.
 
 Exercise 3
 --------------
@@ -1492,30 +1492,30 @@ Let the data generating process for a variable be
 
     y = a x_1 + b x_1^2 + c x_2 + d + \sigma w
 
-where :math:`y, x_1, x_2` are scalar observables, :math:`a,b,c,d` are parameters to estimate, and :math:`w` are iid normal with mean 0 and variance 1
+where :math:`y, x_1, x_2` are scalar observables, :math:`a,b,c,d` are parameters to estimate, and :math:`w` are iid normal with mean 0 and variance 1.
 
 First, let's simulate data we can use to estimate the parameters
 
-* Draw :math:`N=50` values for :math:`x_1, x_2` from iid normal distributions
+* Draw :math:`N=50` values for :math:`x_1, x_2` from iid normal distributions.
 
 Then, simulate with different :math:`w`
-* Draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1`
-* Repeat that so you have ``M = 20`` different simulations of the ``y`` for the ``N`` values
+* Draw a :math:`w` vector for the ``N`` values and then ``y`` from this simulated data if the parameters were :math:`a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1`.
+* Repeat that so you have ``M = 20`` different simulations of the ``y`` for the ``N`` values.
 
 Finally, calculate order least squares manually (i.e., put the observables
 into matrices and vectors, and directly use the equations for
-`OLS <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_ rather than a package)
+`OLS <https://en.wikipedia.org/wiki/Ordinary_least_squares>`_ rather than a package).
 
-* For each of the ``M=20`` simulations, calculate the OLS estimates for :math:`a, b, c, d, \sigma`
-* Plot a histogram of these estimates for each variable
+* For each of the ``M=20`` simulations, calculate the OLS estimates for :math:`a, b, c, d, \sigma`.
+* Plot a histogram of these estimates for each variable.
 
 
 Exercise 4
 --------------
 
-Redo Exercise 1 using the ``fixedpoint`` function from ``NLsolve`` :doc:`this lecture <julia_by_example>`
+Redo Exercise 1 using the ``fixedpoint`` function from ``NLsolve`` :doc:`this lecture <julia_by_example>`.
 
-Compare the number of iterations of the NLsolve's Anderson Acceleration to the handcoded iteration used in Exercise 1
+Compare the number of iterations of the NLsolve's Anderson Acceleration to the handcoded iteration used in Exercise 1.
 
 Hint: Convert the matrix to a vector to use ``fixedpoint``. e.g. ``A = [1 2; 3 4]`` then ``x = reshape(A, 4)`` turns it into a vector.  To reverse, ``reshape(x, 2, 2)``.
 
@@ -1557,7 +1557,7 @@ Here's the iterative approach
          0.4 0.6]
 
 
-Note that all eigenvalues of :math:`A` lie inside the unit disc
+Note that all eigenvalues of :math:`A` lie inside the unit disc.
 
 
 .. code-block:: julia
@@ -1572,7 +1572,7 @@ Let's compute the asymptotic variance
     our_solution = compute_asymptotic_var(A, Σ)
 
 
-Now let's do the same thing using QuantEcon's ``solve_discrete_lyapunov()`` function and check we get the same result
+Now let's do the same thing using QuantEcon's ``solve_discrete_lyapunov()`` function and check we get the same result.
 
 .. code-block:: julia
     :class: hide-output
