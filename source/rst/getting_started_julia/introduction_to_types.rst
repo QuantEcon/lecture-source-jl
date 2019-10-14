@@ -11,7 +11,7 @@ Introduction to Types and Generic Programming
 Overview
 ============================
 
-In Julia, arrays and tuples are the most important data type for working with numerical data
+In Julia, arrays and tuples are the most important data type for working with numerical data.
 
 In this lecture we give more details on
 
@@ -50,7 +50,7 @@ As we have seen in the previous lectures, in Julia all values have a type, which
     @show typeof(1.0);
 
 The hard-coded values ``1`` and ``1.0`` are called literals in a programming
-language, and the compiler deduces their types (``Int64`` and ``Float64`` respectively in the example above)
+language, and the compiler deduces their types (``Int64`` and ``Float64`` respectively in the example above).
 
 You can also query the type of a value
 
@@ -59,12 +59,12 @@ You can also query the type of a value
     x = 1
     typeof(x)
 
-The name ``x`` binds to the value ``1``, created as a literal
+The name ``x`` binds to the value ``1``, created as a literal.
 
 Parametric Types
 --------------------------------
 
-(See `parametric types documentation <https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1>`_)
+(See `parametric types documentation <https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1>`_).
 
 The next two types use curly bracket notation to express the fact that they are *parametric*
 
@@ -73,22 +73,22 @@ The next two types use curly bracket notation to express the fact that they are 
     @show typeof(1.0 + 1im)
     @show typeof(ones(2, 2));
 
-We will learn more details about :doc:`generic programming <../more_julia/generic_programming>` later, but the key is to interpret the curly brackets as swappable parameters for a given type
+We will learn more details about :doc:`generic programming <../more_julia/generic_programming>` later, but the key is to interpret the curly brackets as swappable parameters for a given type.
 
 For example, ``Array{Float64, 2}`` can be read as
 
-#. ``Array`` is a parametric type representing a dense array, where the first parameter is the type stored, and the second is the number of dimensions
-#. ``Float64`` is a concrete type declaring that the data stored will be a particular size of floating point
-#. ``2`` is the number of dimensions of that array
+#. ``Array`` is a parametric type representing a dense array, where the first parameter is the type stored, and the second is the number of dimensions.
+#. ``Float64`` is a concrete type declaring that the data stored will be a particular size of floating point.
+#. ``2`` is the number of dimensions of that array.
 
-A concrete type is one where values can be created by the compiler (equivalently, one which can be the result of ``typeof(x)`` for some object ``x``)
+A concrete type is one where values can be created by the compiler (equivalently, one which can be the result of ``typeof(x)`` for some object ``x``).
 
-Values of a **parametric type** cannot be concretely constructed unless all of the parameters are given (themselves with concrete types)
+Values of a **parametric type** cannot be concretely constructed unless all of the parameters are given (themselves with concrete types).
 
 In the case of ``Complex{Float64}``
 
-#. ``Complex`` is an abstract complex number type
-#. ``Float64`` is a concrete type declaring what the type of the real and imaginary parts of the value should store
+#. ``Complex`` is an abstract complex number type.
+#. ``Float64`` is a concrete type declaring what the type of the real and imaginary parts of the value should store.
 
 Another type to consider is the ``Tuple`` and ``NamedTuple``
 
@@ -97,7 +97,7 @@ Another type to consider is the ``Tuple`` and ``NamedTuple``
     x = (1, 2.0, "test")
     @show typeof(x)
 
-In this case, ``Tuple`` is the parametric type, and the three parameters are a list of the types of each value
+In this case, ``Tuple`` is the parametric type, and the three parameters are a list of the types of each value.
 
 For a named tuple
 
@@ -106,9 +106,9 @@ For a named tuple
     x = (a = 1, b = 2.0, c = "test")
     @show typeof(x)
 
-The parametric ``NamedTuple`` type contains two parameters: first a list of names for each field of the tuple, and second the underlying ``Tuple`` type to store the values
+The parametric ``NamedTuple`` type contains two parameters: first a list of names for each field of the tuple, and second the underlying ``Tuple`` type to store the values.
 
-Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Symbol`` -- a special kind of string used by the compiler
+Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Symbol`` -- a special kind of string used by the compiler.
 
 .. code-block:: julia
 
@@ -120,19 +120,19 @@ Anytime a value is prefixed by a colon, as in the ``:a`` above, the type is ``Sy
 Variables, Types, and Values
 --------------------------------
 
-Since variables and functions are lower case by convention, this can be used to easily identify types when reading code and output
+Since variables and functions are lower case by convention, this can be used to easily identify types when reading code and output.
 
 After assigning a variable name to a value, we can query the type of the
-value via the name
+value via the name.
 
 .. code-block:: julia
 
     x = 42
     @show typeof(x);
 
-Thus, ``x`` is just a symbol bound to a value of type ``Int64``
+Thus, ``x`` is just a symbol bound to a value of type ``Int64``.
 
-We can *rebind* the symbol ``x`` to any other value, of the same type or otherwise
+We can *rebind* the symbol ``x`` to any other value, of the same type or otherwise.
 
 .. code-block:: julia
 
@@ -149,34 +149,34 @@ Now ``x`` "points to" another value, of type ``Float64``
 
 However, beyond a few notable exceptions (e.g. ``nothing`` used for :ref:`error handling <error_handling>`),
 changing types is usually a symptom of poorly organized code, and makes
-:ref:`type inference <type_inference>` more difficult for the compiler
+:ref:`type inference <type_inference>` more difficult for the compiler.
 
 The Type Hierarchy
 =====================
 
-Let's discuss how types are organized
+Let's discuss how types are organized.
 
 Abstract vs Concrete Types
 ---------------------------
 (See `abstract types documentation  <https://docs.julialang.org/en/v1/manual/types/#Abstract-Types-1>`_)
 
-Up to this point, most of the types we have worked with (e.g., ``Float64, Int64``) are examples of **concrete types**
+Up to this point, most of the types we have worked with (e.g., ``Float64, Int64``) are examples of **concrete types**.
 
-Concrete types are types that we can *instantiate* -- i.e., pair with data in memory
+Concrete types are types that we can *instantiate* -- i.e., pair with data in memory.
 
-We will now examine **abstract types** that cannot be instantiated (e.g., ``Real``, ``AbstractFloat``)
+We will now examine **abstract types** that cannot be instantiated (e.g., ``Real``, ``AbstractFloat``).
 
 For example, while you will never have a ``Real`` number directly in memory, the abstract types
-help us organize and work with related concrete types
+help us organize and work with related concrete types.
 
 Subtypes and Supertypes
 -------------------------
 
 How exactly do abstract types organize or relate different concrete types?
 
-In the Julia language specification, the types form a hierarchy
+In the Julia language specification, the types form a hierarchy.
 
-You can check if a type is a subtype of another with the ``<:`` operator
+You can check if a type is a subtype of another with the ``<:`` operator.
 
 .. code-block:: julia
 
@@ -185,7 +185,7 @@ You can check if a type is a subtype of another with the ``<:`` operator
     @show Complex{Float64} <: Real
     @show Array <: Real;
 
-In the above, both ``Float64`` and ``Int64`` are **subtypes** of ``Real``, whereas the ``Complex`` numbers are not
+In the above, both ``Float64`` and ``Int64`` are **subtypes** of ``Real``, whereas the ``Complex`` numbers are not.
 
 They are, however, all subtypes of ``Number``
 
@@ -197,7 +197,7 @@ They are, however, all subtypes of ``Number``
     @show Complex{Float64} <: Number;
 
 
-``Number`` in turn is a subtype of ``Any``, which is a parent of all types
+``Number`` in turn is a subtype of ``Any``, which is a parent of all types.
 
 
 .. code-block:: julia
@@ -205,13 +205,13 @@ They are, however, all subtypes of ``Number``
     Number <: Any
 
 
-In particular, the type tree is organized with ``Any`` at the top and the concrete types at the bottom
+In particular, the type tree is organized with ``Any`` at the top and the concrete types at the bottom.
 
-We never actually see *instances* of abstract types (i.e., ``typeof(x)`` never returns an abstract type)
+We never actually see *instances* of abstract types (i.e., ``typeof(x)`` never returns an abstract type).
 
-The point of abstract types is to categorize the concrete types, as well as other abstract types that sit below them in the hierarchy
+The point of abstract types is to categorize the concrete types, as well as other abstract types that sit below them in the hierarchy.
 
-There are some further functions to help you explore the type hierarchy, such as ``show_supertypes`` which walks up the tree of types to ``Any`` for a given type
+There are some further functions to help you explore the type hierarchy, such as ``show_supertypes`` which walks up the tree of types to ``Any`` for a given type.
 
 .. code-block:: julia
 
@@ -235,7 +235,7 @@ Deducing and Declaring Types
 =============================
 
 We will discuss this in detail in :doc:`generic programming <../more_julia/generic_programming>`,
-but much of Julia's performance gains and generality of notation comes from its type system
+but much of Julia's performance gains and generality of notation comes from its type system.
 
 For example
 
@@ -247,9 +247,9 @@ For example
     @show typeof(x1)
     @show typeof(x2)
 
-These return ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively, which the compiler is able to infer from the right hand side of the expressions
+These return ``Array{Int64,1}`` and ``Array{Float64,1}`` respectively, which the compiler is able to infer from the right hand side of the expressions.
 
-Given the information on the type, the compiler can work through the sequence of expressions to infer other types
+Given the information on the type, the compiler can work through the sequence of expressions to infer other types.
 
 .. code-block:: julia
 
@@ -264,7 +264,7 @@ Good Practices for Functions and Variable Types
 -------------------------------------------------
 
 In order to keep many of the benefits of Julia, you will sometimes want to ensure
-the compiler can always deduce a single type from any function or expression
+the compiler can always deduce a single type from any function or expression.
 
 An example of bad practice is to use an array to hold unrelated types
 
@@ -272,13 +272,13 @@ An example of bad practice is to use an array to hold unrelated types
 
     x = [1.0, "test", 1]  # typically poor style
 
-The type of this array is ``Array{Any,1}``, where ``Any`` means the compiler has determined that any valid Julia type can be added to the array
+The type of this array is ``Array{Any,1}``, where ``Any`` means the compiler has determined that any valid Julia type can be added to the array.
 
-While occasionally useful, this is to be avoided whenever possible in performance sensitive code
+While occasionally useful, this is to be avoided whenever possible in performance sensitive code.
 
-The other place this can come up is in the declaration of functions
+The other place this can come up is in the declaration of functions.
 
-As an example, consider a function which returns different types depending on the arguments
+As an example, consider a function which returns different types depending on the arguments.
 
 .. code-block:: julia
 
@@ -293,13 +293,13 @@ As an example, consider a function which returns different types depending on th
     @show f(1)
     @show f(-1);
 
-The issue here is relatively subtle:  ``1.0`` is a floating point, while ``0`` is an integer
+The issue here is relatively subtle:  ``1.0`` is a floating point, while ``0`` is an integer.
 
-Consequently, given the type of ``x``, the compiler cannot in general determine what type the function will return
+Consequently, given the type of ``x``, the compiler cannot in general determine what type the function will return.
 
-This issue, called **type stability**, is at the heart of most Julia performance considerations
+This issue, called **type stability**, is at the heart of most Julia performance considerations.
 
-Luckily, trying to ensure that functions return the same types is also generally consistent with simple, clear code
+Luckily, trying to ensure that functions return the same types is also generally consistent with simple, clear code.
 
 
 Manually Declaring Function and Variable Types
@@ -307,11 +307,11 @@ Manually Declaring Function and Variable Types
 
 (See `type declarations documentation <https://docs.julialang.org/en/v1/manual/types/#Type-Declarations-1>`_)
 
-You will notice that in the lecture notes we have never directly declared any types
+You will notice that in the lecture notes we have never directly declared any types.
 
-This is intentional both for exposition and as a best practice for using packages (as opposed to writing new packages, where declaring these types is very important)
+This is intentional both for exposition and as a best practice for using packages (as opposed to writing new packages, where declaring these types is very important).
 
-It is also in contrast to some of the sample code you will see in other Julia sources, which you will need to be able to read
+It is also in contrast to some of the sample code you will see in other Julia sources, which you will need to be able to read.
 
 To give an example of the declaration of types, the following are equivalent
 
@@ -336,9 +336,9 @@ To give an example of the declaration of types, the following are equivalent
 
 While declaring the types may be verbose, would it ever generate faster code?
 
-The answer is almost never
+The answer is almost never.
 
-Furthermore, it can lead to confusion and inefficiencies since many things that behave like vectors and matrices are not ``Matrix{Float64}`` and ``Vector{Float64}``
+Furthermore, it can lead to confusion and inefficiencies since many things that behave like vectors and matrices are not ``Matrix{Float64}`` and ``Vector{Float64}``.
 
 Here, the first line works and the second line fails
 
@@ -355,10 +355,10 @@ Creating New Types
 
 (See `type declarations documentation <https://docs.julialang.org/en/v1/manual/types/#Type-Declarations-1>`_)
 
-Up until now, we have used ``NamedTuple`` to collect sets of parameters for our models and examples
+Up until now, we have used ``NamedTuple`` to collect sets of parameters for our models and examples.
 
 These are useful for maintaining values for model parameters,
-but you will eventually need to be able to use code that creates its own types
+but you will eventually need to be able to use code that creates its own types.
 
 Syntax for Creating Concrete Types
 -------------------------------------
@@ -367,9 +367,9 @@ Syntax for Creating Concrete Types
 
 While other sorts of types exist, we almost always use the ``struct`` keyword, which is for creation of composite data types
 
-* "Composite" refers to the fact that the data types in question can be used as collection of named fields
+* "Composite" refers to the fact that the data types in question can be used as collection of named fields.
 
-* The ``struct`` terminology is used in a number of programming languages to refer to composite data types
+* The ``struct`` terminology is used in a number of programming languages to refer to composite data types.
 
 
 Let's start with a trivial example where the ``struct`` we build has fields named ``a, b, c``, are not typed
@@ -392,7 +392,7 @@ And another where the types of the fields are chosen
         c::Vector{Float64}
     end
 
-In either case, the compiler generates a function to create new values of the data type, called a "constructor"
+In either case, the compiler generates a function to create new values of the data type, called a "constructor".
 
 It has the same name as the data type but uses function call notion
 
@@ -408,10 +408,10 @@ It has the same name as the data type but uses function call notion
 
     # foo.a = 2.0     # fails since it is immutable
 
-You will notice two differences above for the creation of a ``struct`` compared to our use of ``NamedTuple``
+You will notice two differences above for the creation of a ``struct`` compared to our use of ``NamedTuple``.
 
-* Types are declared for the fields, rather than inferred by the compiler
-* The construction of a new instance has no named parameters to prevent accidental misuse if the wrong order is chosen
+* Types are declared for the fields, rather than inferred by the compiler.
+* The construction of a new instance has no named parameters to prevent accidental misuse if the wrong order is chosen.
 
 
 Issues with Type Declarations
@@ -419,11 +419,11 @@ Issues with Type Declarations
 
 Was it necessary to manually declare the types ``a::Float64`` in the above struct?
 
-The answer, in practice, is usually yes
+The answer, in practice, is usually yes.
 
-Without a declaration of the type, the compiler is unable to generate efficient code, and the use of a ``struct`` declared without types could drop performance by orders of magnitude
+Without a declaration of the type, the compiler is unable to generate efficient code, and the use of a ``struct`` declared without types could drop performance by orders of magnitude.
 
-Moreover, it is very easy to use the wrong type, or unnecessarily constrain the types
+Moreover, it is very easy to use the wrong type, or unnecessarily constrain the types.
 
 The first example, which is usually just as low-performance as no declaration of types at all, is to accidentally declare it with an abstract type
 
@@ -462,7 +462,7 @@ Declaring Parametric Types (Advanced)
 
 (See `type parametric types documentation <https://docs.julialang.org/en/v1/manual/types/#Parametric-Types-1>`_)
 
-Motivated by the above, we can create a type which can adapt to holding fields of different types
+Motivated by the above, we can create a type which can adapt to holding fields of different types.
 
 .. code-block:: julia
 
@@ -480,7 +480,7 @@ Motivated by the above, we can create a type which can adapt to holding fields o
     @show typeof(foo)
     f(foo)
 
-Of course, this is probably too flexible, and the ``f`` function might not work on an arbitrary set of ``a, b, c``
+Of course, this is probably too flexible, and the ``f`` function might not work on an arbitrary set of ``a, b, c``.
 
 You could constrain the types based on the abstract parent type using the ``<:`` operator
 
@@ -500,14 +500,14 @@ This ensures that
 * ``a`` and ``b`` are a subtype of ``Real``, and ``+`` in the definition of ``f`` works
 * ``c`` is a one dimensional abstract array of ``Real`` values
 
-The code works, and is equivalent in performance to a ``NamedTuple``, but is more verbose and error prone
+The code works, and is equivalent in performance to a ``NamedTuple``, but is more verbose and error prone.
 
 Keyword Argument Constructors (Advanced)
 -------------------------------------------
 
-There is no way to avoid learning parametric types to achieve high performance code
+There is no way to avoid learning parametric types to achieve high performance code.
 
-However, the other issue where constructor arguments are error-prone, can be remedied with the ``Parameters.jl`` library
+However, the other issue where constructor arguments are error-prone, can be remedied with the ``Parameters.jl`` library.
 
 .. code-block:: julia
 
@@ -537,9 +537,9 @@ However, the other issue where constructor arguments are error-prone, can be rem
 Tips and Tricks for Writing Generic Functions
 ------------------------------------------------
 
-As discussed in the previous sections, there is major advantage to never declaring a type unless it is absolutely necessary
+As discussed in the previous sections, there is major advantage to never declaring a type unless it is absolutely necessary.
 
-The main place where it is necessary is designing code around :ref:`multiple dispatch <intro_multiple_dispatch>`
+The main place where it is necessary is designing code around :ref:`multiple dispatch <intro_multiple_dispatch>`.
 
 If you are careful to write code that doesn't unnecessarily assume types,
 you will both achieve higher performance and allow seamless use of a
@@ -549,11 +549,11 @@ number of powerful libraries such as
 `GPUs <https://github.com/JuliaGPU/CuArrays.jl>`_,
 `interval arithmetic and root finding <https://github.com/JuliaIntervals/IntervalRootFinding.jl>`_,
 `arbitrary precision numbers <https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/index.html#Arbitrary-Precision-Arithmetic-1>`_,
-and many more packages -- including ones that have not even been written yet
+and many more packages -- including ones that have not even been written yet.
 
 A few simple programming patterns ensure that this is possible
 
-* Do not declare types when declaring variables or functions unless necessary
+* Do not declare types when declaring variables or functions unless necessary.
 
     .. code-block:: julia
 
@@ -676,63 +676,63 @@ This last example is a subtle, because of something called `type promotion <http
 
 These patterns are relatively straightforward, but generic programming can be thought of
 as a Leontief production function:  if *any* of the functions you write or call are not
-precise enough, then it may break the chain
+precise enough, then it may break the chain.
 
-This is all the more reason to exploit carefully designed packages rather than "do-it-yourself"
+This is all the more reason to exploit carefully designed packages rather than "do-it-yourself".
 
 A Digression on Style and Naming
 ------------------------------------
 
 The previous section helps to establish some of the reasoning behind the style
-choices in these lectures: "be aware of types, but avoid declaring them"
+choices in these lectures: "be aware of types, but avoid declaring them".
 
 The purpose of this is threefold:
 
-* Provide easy to read code with minimal "syntactic noise" and a clear correspondence to the math
-* Ensure that code is sufficiently generic to exploit other packages and types
-* Avoid common mistakes and unnecessary performance degradations
+* Provide easy to read code with minimal "syntactic noise" and a clear correspondence to the math.
+* Ensure that code is sufficiently generic to exploit other packages and types.
+* Avoid common mistakes and unnecessary performance degradations.
 
-This is just one of many decisions and patterns to ensure that your code is consistent and clear
+This is just one of many decisions and patterns to ensure that your code is consistent and clear.
 
 The best resource is to carefully read other peoples code, but a few sources to review are
 
-* `Julia Style Guide <https://docs.julialang.org/en/v1/manual/style-guide/>`_
-* `Invenia Blue Style Guide <https://github.com/invenia/BlueStyle>`_
-* `Julia Praxis Naming Guides <https://github.com/JuliaPraxis/Naming/tree/master/guides>`_
-* `QuantEcon Style Guide <https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md>`_ used in these lectures
+* `Julia Style Guide <https://docs.julialang.org/en/v1/manual/style-guide/>`_.
+* `Invenia Blue Style Guide <https://github.com/invenia/BlueStyle>`_.
+* `Julia Praxis Naming Guides <https://github.com/JuliaPraxis/Naming/tree/master/guides>`_.
+* `QuantEcon Style Guide <https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md>`_ used in these lectures.
 
 Now why would we emphasize naming and style as a crucial part of the lectures?
 
 Because it is an essential tool for creating research that is
-**reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_\(computer_science\)>`_
+**reproducible** and `**correct** <https://en.wikipedia.org/wiki/Correctness_\(computer_science\)>`_.
 
 Some helpful ways to think about this are
 
 * **Clearly written code is easier to review for errors**: The first-order
-  concern of any code is that it correctly implements the whiteboard math
+  concern of any code is that it correctly implements the whiteboard math.
 * **Code is read many more times than it is written**: Saving a few keystrokes
   in typing a variable name is never worth it, nor is a divergence from the
-  mathematical notation where a single symbol for a variable name would map better to the model
+  mathematical notation where a single symbol for a variable name would map better to the model.
 * **Write code to be read in the future, not today**: If you are not sure
   anyone else will read the code, then write it for an ignorant future version
-  of yourself who may have forgotten everything, and is likely to misuse the code
+  of yourself who may have forgotten everything, and is likely to misuse the code.
 * **Maintain the correspondence between the whiteboard math and the code**:
   For example, if you change notation in your model, then immediately update
-  all variables in the code to reflect it
+  all variables in the code to reflect it.
 
 
 Commenting Code
 ^^^^^^^^^^^^^^^^^^^
 
-One common mistake people make when trying to apply these goals is to add in a large number of comments
+One common mistake people make when trying to apply these goals is to add in a large number of comments.
 
-Over the years, developers have found that excess comments in code (and *especially* big comment headers used before every function declaration) can make code *harder* to read
+Over the years, developers have found that excess comments in code (and *especially* big comment headers used before every function declaration) can make code *harder* to read.
 
-The issue is one of syntactic noise: if most of the comments are redundant given clear variable and function names, then the comments make it more difficult to mentally parse and read the code
+The issue is one of syntactic noise: if most of the comments are redundant given clear variable and function names, then the comments make it more difficult to mentally parse and read the code.
 
-If you examine Julia code in packages and the core language, you will see a great amount of care taken in function and variable names, and comments are only added where helpful
+If you examine Julia code in packages and the core language, you will see a great amount of care taken in function and variable names, and comments are only added where helpful.
 
-For creating packages that you intend others to use, instead of a comment header, you should use `docstrings <https://docs.julialang.org/en/v1/manual/documentation/index.html#Syntax-Guide-1>`_
+For creating packages that you intend others to use, instead of a comment header, you should use `docstrings <https://docs.julialang.org/en/v1/manual/documentation/index.html#Syntax-Guide-1>`_.
 
 
 
@@ -741,9 +741,9 @@ For creating packages that you intend others to use, instead of a comment header
 Introduction to Multiple Dispatch
 ===================================
 
-One of the defining features of Julia is **multiple dispatch**, whereby the same function name can do different things depending on the underlying types
+One of the defining features of Julia is **multiple dispatch**, whereby the same function name can do different things depending on the underlying types.
 
-Without realizing it, in nearly every function call within packages or the standard library you have used this feature
+Without realizing it, in nearly every function call within packages or the standard library you have used this feature.
 
 To see this in action, consider the absolute value function ``abs``
 
@@ -753,11 +753,11 @@ To see this in action, consider the absolute value function ``abs``
     @show abs(-1.0)  # `Float64`
     @show abs(0.0 - 1.0im);  # `Complex{Float64}`
 
-In all of these cases, the ``abs`` function has specialized code depending on the type passed in
+In all of these cases, the ``abs`` function has specialized code depending on the type passed in.
 
-To do this, a function specifies different **methods** which operate on a particular set of types
+To do this, a function specifies different **methods** which operate on a particular set of types.
 
-Unlike most cases we have seen before, this requires a type annotation
+Unlike most cases we have seen before, this requires a type annotation.
 
 To rewrite the ``abs`` function
 
@@ -789,17 +789,17 @@ Note that in the above, ``x`` works for any type of ``Real``, including ``Int64`
     @show ourabs(x);
 
 You will also note that we used an abstract type, ``Real``, and an incomplete
-parametric type, ``Complex``, when defining the above functions
+parametric type, ``Complex``, when defining the above functions.
 
 Unlike the creation of ``struct`` fields, there is no penalty in using abstract
-types when you define function parameters, as they are used purely to determine which version of a function to use
+types when you define function parameters, as they are used purely to determine which version of a function to use.
 
 Multiple Dispatch in Algorithms (Advanced)
 ----------------------------------------------
 
-If you want an algorithm to have specialized versions when given different input types, you need to declare the types for the function inputs
+If you want an algorithm to have specialized versions when given different input types, you need to declare the types for the function inputs.
 
-As an example where this could come up, assume that we have some grid ``x`` of values, the results of a function ``f`` applied at those values, and want to calculate an approximate derivative using forward differences
+As an example where this could come up, assume that we have some grid ``x`` of values, the results of a function ``f`` applied at those values, and want to calculate an approximate derivative using forward differences.
 
 In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the forward-difference approximation of the derivative is
 
@@ -807,10 +807,10 @@ In that case, given :math:`x_n, x_{n+1}, f(x_n)` and :math:`f(x_{n+1})`, the for
 
     f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 
-To implement this calculation for a vector of inputs, we notice that there is a specialized implementation if the grid is uniform
+To implement this calculation for a vector of inputs, we notice that there is a specialized implementation if the grid is uniform.
 
 The uniform grid can be implemented using an ``AbstractRange``, which we can analyze with
-``typeof``, ``supertype`` and ``show_supertypes``
+``typeof``, ``supertype`` and ``show_supertypes``.
 
 .. code-block:: julia
 
@@ -821,7 +821,7 @@ The uniform grid can be implemented using an ``AbstractRange``, which we can ana
     @show typeof(x_2)
     @show supertype(typeof(x))
 
-To see the entire tree about a particular type, use ``show_supertypes``
+To see the entire tree about a particular type, use ``show_supertypes``.
 
 .. code-block:: julia
 
@@ -831,7 +831,7 @@ To see the entire tree about a particular type, use ``show_supertypes``
 
     show_supertypes(typeof(x_2))
 
-The types of the range objects can be very complicated, but are both subtypes of ``AbstractRange``
+The types of the range objects can be very complicated, but are both subtypes of ``AbstractRange``.
 
 .. code-block:: julia
 
@@ -839,7 +839,7 @@ The types of the range objects can be very complicated, but are both subtypes of
     @show typeof(x_2) <: AbstractRange;
 
 
-While you may not know the exact concrete type, any ``AbstractRange`` has an informal set of operations that are available
+While you may not know the exact concrete type, any ``AbstractRange`` has an informal set of operations that are available.
 
 .. code-block:: julia
 
@@ -848,7 +848,7 @@ While you may not know the exact concrete type, any ``AbstractRange`` has an inf
     @show length(x)
     @show step(x);
 
-Similarly, there are a number of operations available for any ``AbstractVector``, such as ``length``
+Similarly, there are a number of operations available for any ``AbstractVector``, such as ``length``.
 
 .. code-block:: julia
 
@@ -864,9 +864,9 @@ Similarly, there are a number of operations available for any ``AbstractVector``
 
     show_supertypes(typeof(f_x))
 
-There are also many functions that can use any ``AbstractArray``, such as ``diff``
+There are also many functions that can use any ``AbstractArray``, such as ``diff``.
 
-.. Would be nice to have this embedded, but no way to get the output trimmed
+.. Would be nice to have this embedded, but no way to get the output trimmed.
 
 .. code-block:: julia
     :class: no-execute
@@ -881,16 +881,16 @@ There are also many functions that can use any ``AbstractArray``, such as ``diff
     diff(A::AbstractMatrix; dims::Integer)
 
 
-Hence, we can call this function for anything of type ``AbstractVector``
+Hence, we can call this function for anything of type ``AbstractVector``.
 
-Finally, we can make a high performance specialization for any ``AbstractVector`` and ``AbstractRange``
+Finally, we can make a high performance specialization for any ``AbstractVector`` and ``AbstractRange``.
 
 .. code-block:: julia
 
     slopes(f_x::AbstractVector, x::AbstractRange) = diff(f_x) / step(x)
 
 
-We can use auto-differentiation to compare the results
+We can use auto-differentiation to compare the results.
 
 .. code-block:: julia
 
@@ -921,7 +921,7 @@ Consider a variation where we pass a function instead of an ``AbstractArray``
     q_slopes_x = slopes(q, x)  # use slopes(f::Function, x)
     @show q_slopes_x[1];
 
-Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can no longer use a uniform step
+Finally, if ``x`` was an ``AbstractArray`` and not an ``AbstractRange`` we can no longer use a uniform step.
 
 For this, we add in a version calculating slopes with forward first-differences
 
@@ -935,9 +935,9 @@ For this, we add in a version calculating slopes with forward first-differences
     q_slopes_x = slopes(q, x_array)
     @show q_slopes_x[1];
 
-In the final example, we see that it is able to use specialized implementations over both the ``f`` and the ``x`` arguments
+In the final example, we see that it is able to use specialized implementations over both the ``f`` and the ``x`` arguments.
 
-This is the "multiple" in multiple dispatch
+This is the "multiple" in multiple dispatch.
 
 Exercises
 =============
@@ -945,11 +945,11 @@ Exercises
 Exercise 1
 -----------------
 
-Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArrays.jl>`_
+Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArrays.jl>`_.
 
-* Describe two abstract types and the hierarchy of three different concrete types
+* Describe two abstract types and the hierarchy of three different concrete types.
 * Benchmark the calculation of some simple linear algebra with a static array
-  compared to the following for a dense array for ``N = 3`` and ``N = 15``
+  compared to the following for a dense array for ``N = 3`` and ``N = 15``.
 
 .. code-block:: julia
 
@@ -964,7 +964,7 @@ Explore the package `StaticArrays.jl <https://github.com/JuliaArrays/StaticArray
 
 Exercise 2
 -------------
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from :doc:`the Kalman lecture <../tools_and_techniques/kalman>`
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from :doc:`the Kalman lecture <../tools_and_techniques/kalman>`.
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
@@ -983,7 +983,7 @@ How many times faster are static arrays in this example?
 Exercise 3
 ---------------
 
-The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a package for simple univariate Polynomials
+The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a package for simple univariate Polynomials.
 
 .. code-block:: julia
 
@@ -997,18 +997,18 @@ The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a pa
     @show roots(p);   # find roots such that p(x) = 0
 
 
-Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`
+Plot both ``p(x)`` and ``p′(x)`` for :math:`x \in [-2, 2]`.
 
 Exercise 4
 --------------
 
 Use your solution to Exercise 8(a/b) in :doc:`Introductory Examples <../getting_started_julia/julia_by_example>` to
-create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function
+create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function.
 
 The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``,
-where ``p::Poly`` ensures that this version of the function will be used anytime a polynomial is passed (i.e. dispatch)
+where ``p::Poly`` ensures that this version of the function will be used anytime a polynomial is passed (i.e. dispatch).
 
-Compare the results of this function to the built-in ``roots(p)`` function
+Compare the results of this function to the built-in ``roots(p)`` function.
 
 
 
@@ -1023,7 +1023,7 @@ The `trapezoidal rule <https://en.wikipedia.org/wiki/Trapezoidal_rule>`_  approx
 
     \int_{\underline{x}}^{\bar{x}} f(x) \, dx \approx \sum_{n=1}^N \frac{f(x_{n-1}) + f(x_n)}{2} \Delta x_n
 
-where :math:`x_0 = {\underline{x}},\, x_N = \bar{x}`, and :math:`\Delta x_n \equiv x_{n-1} - x_n`
+where :math:`x_0 = {\underline{x}},\, x_N = \bar{x}`, and :math:`\Delta x_n \equiv x_{n-1} - x_n`.
 
 Given an ``x`` and a function ``f``, implement a few variations of the trapezoidal rule using multiple dispatch
 
@@ -1034,9 +1034,9 @@ Given an ``x`` and a function ``f``, implement a few variations of the trapezoid
   * For this, build a uniform grid with ``N`` points on ``[x̲, x̄]`` -- call the ``f`` function at those grid points and use the existing ``trapezoidal(f, x)`` from the implementation
 
 With these:
-1. Test each variation of the function with :math:`f(x) = x^2` with :math:`\underline{x}=0,\, \bar{x} = 1`
-2. From the analytical solution of the function, plot the error of ``trapezoidal(f, x̲, x̄, N)`` relative to the analytical solution for a grid of different ``N`` values
-3. Consider trying different functions for :math:`f(x)` and compare the solutions for various ``N``
+1. Test each variation of the function with :math:`f(x) = x^2` with :math:`\underline{x}=0,\, \bar{x} = 1`.
+2. From the analytical solution of the function, plot the error of ``trapezoidal(f, x̲, x̄, N)`` relative to the analytical solution for a grid of different ``N`` values.
+3. Consider trying different functions for :math:`f(x)` and compare the solutions for various ``N``.
 
 When trying different functions, instead of integrating by hand consider using a high-accuracy
 library for numerical integration such as `QuadGK.jl <https://juliamath.github.io/QuadGK.jl/latest/>`_
@@ -1051,7 +1051,7 @@ library for numerical integration such as `QuadGK.jl <https://juliamath.github.i
 Exercise 6 (Advanced)
 -----------------------
 
-Take a variation of your code in Exercise 5
+Take a variation of your code in Exercise 5.
 
 Use auto-differentiation to calculate the following derivative for the example functions
 
@@ -1060,7 +1060,7 @@ Use auto-differentiation to calculate the following derivative for the example f
     \frac{d}{d {\bar{x}}}\int_{\underline{x}}^{\bar{x}} f(x) \, dx
 
 Hint: See the following code for the general pattern, and be careful to
-follow the :ref:`rules for generic programming <generic_tips_tricks>`
+follow the :ref:`rules for generic programming <generic_tips_tricks>`.
 
 .. code-block:: julia
 
