@@ -322,16 +322,16 @@ The preceding calculations indicate that in the complete markets version
 of our model, we obtain the following striking results:
 
 *  The consumer chooses to make consumption perfectly constant across
-   time and Markov states
+   time and Markov states.
 
 We computed the constant level of consumption :math:`\bar c` and indicated how that level depends on the underlying specifications of preferences, Arrow securities prices,  the stochastic process of exogenous nonfinancial income, and the initial debt level :math:`b_0`
 
 *  The consumer's debt neither accumulates, nor decumulates, nor drifts.
    Instead the debt level each period is an exact function of the Markov
    state, so in the two-state Markov case, it switches between two
-   values
+   values.
 
-*  We have verified guess :eq:`eq_guess`
+*  We have verified guess :eq:`eq_guess`.
 
 We computed how one of those debt levels depends entirely on initial debt -- it equals it -- and how the other value depends on virtually all  remaining parameters of the model.
 

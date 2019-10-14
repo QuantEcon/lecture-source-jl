@@ -8,14 +8,14 @@
 :index:`A Problem that Stumped Milton Friedman`
 ***********************************************
 
-(and that Abraham Wald solved by inventing sequential analysis).
+(and that Abraham Wald solved by inventing sequential analysis)
 
 .. index::
     single: Models; Sequential analysis
 
 .. contents:: :depth: 2
 
-Co-authored with Chase Coleman.
+Co-authored with Chase Coleman
 
 Overview
 =========
