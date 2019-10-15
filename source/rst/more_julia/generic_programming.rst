@@ -750,7 +750,7 @@ To summarize, the vector
 
 .. math::
 
-    \int_\underline{x}^\bar{x} f(x) \, dx \approx \omega \cdot \vec{f}
+    \int_{\underline{x}}^{\bar{x}} f(x) \, dx \approx \omega \cdot \vec{f}
 
 where :math:`\vec{f} \equiv \begin{bmatrix} f(x_1) & \ldots & f(x_N) \end{bmatrix}\in R^N` and, for a uniform grid spacing
 of :math:`\Delta`,
