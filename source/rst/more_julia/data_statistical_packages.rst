@@ -12,13 +12,13 @@ Data and Statistics Packages
 Overview
 ============
 
-This lecture explores some of the key packages for working with data and doing statistics in Julia
+This lecture explores some of the key packages for working with data and doing statistics in Julia.
 
-In particular, we will examine the ``DataFrame`` object in detail (i.e., construction, manipulation, querying, visualization, and nuances like missing data)
+In particular, we will examine the ``DataFrame`` object in detail (i.e., construction, manipulation, querying, visualization, and nuances like missing data).
 
-While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution
+While Julia is not an ideal language for pure cookie-cutter statistical analysis, it has many useful packages to provide those tools as part of a more general solution.
 
-This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_, `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_
+This list is not exhaustive, and others can be found in organizations such as `JuliaStats <https://github.com/JuliaStats>`_, `JuliaData <https://github.com/JuliaData/>`_, and  `QueryVerse <https://github.com/queryverse>`_.
 
 Setup
 ------------------
@@ -36,16 +36,16 @@ Setup
 DataFrames
 ========================
 
-A useful package for working with data is `DataFrames.jl <https://github.com/JuliaStats/DataFrames.jl>`_
+A useful package for working with data is `DataFrames.jl <https://github.com/JuliaStats/DataFrames.jl>`_.
 
-The most important data type provided is a ``DataFrame``, a two dimensional array for storing heterogeneous data
+The most important data type provided is a ``DataFrame``, a two dimensional array for storing heterogeneous data.
 
 Although data can be heterogeneous within a ``DataFrame``, the contents of the columns must be homogeneous
-(of the same type)
+(of the same type).
 
-This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) or, more loosely, a spreadsheet in Excel
+This is analogous to a ``data.frame`` in R, a ``DataFrame`` in Pandas (Python) or, more loosely, a spreadsheet in Excel.
 
-There are a few different ways to create a DataFrame
+There are a few different ways to create a DataFrame.
 
 Constructing and Accessing a DataFrame
 --------------------------------------
@@ -67,26 +67,26 @@ Columns of the ``DataFrame`` can be accessed by name using ``df.col``, as below
 
     df.price
 
-Note that the type of this array has values ``Union{Missing, Float64}`` since it was created with a ``missing`` value
+Note that the type of this array has values ``Union{Missing, Float64}`` since it was created with a ``missing`` value.
 
 .. code-block:: julia
 
     df.commod
 
-The ``DataFrames.jl`` package provides a number of methods for acting on ``DataFrame``'s, such as ``describe``
+The ``DataFrames.jl`` package provides a number of methods for acting on ``DataFrame``'s, such as ``describe``.
 
 .. code-block:: julia
 
     DataFrames.describe(df)
 
-While often data will be generated all at once, or read from a file, you can add to a ``DataFrame`` by providing the key parameters
+While often data will be generated all at once, or read from a file, you can add to a ``DataFrame`` by providing the key parameters.
 
 .. code-block:: julia
 
     nt = (commod = "nickel", price= 5.1)
     push!(df, nt)
 
-Named tuples can also be used to construct a ``DataFrame``, and have it properly deduce all types
+Named tuples can also be used to construct a ``DataFrame``, and have it properly deduce all types.
 
 .. code-block:: julia
 
@@ -94,27 +94,27 @@ Named tuples can also be used to construct a ``DataFrame``, and have it properly
     df2 = DataFrame([nt])
     push!(df2, (t=2, col1 = 4.0))
 
-In order to modify a column, access the mutating version by the symbol ``df[!, :col]``
+In order to modify a column, access the mutating version by the symbol ``df[!, :col]``.
 
 .. code-block:: julia
 
     df[!, :price]
 
-Which allows modifications, like other mutating ``!`` functions in julia
+Which allows modifications, like other mutating ``!`` functions in julia.
 
 .. code-block:: julia
 
     df[!, :price] *= 2.0  # double prices
 
-As discussed in the next section, note that the :ref:`fundamental types <missing>`, is propagated, i.e. ``missing * 2 === missing``
+As discussed in the next section, note that the :ref:`fundamental types <missing>`, is propagated, i.e. ``missing * 2 === missing``.
 
 Working with Missing
 -----------------------
 
-As we discussed in :ref:`fundamental types <missing>`, the semantics of ``missing`` are that mathematical operations will not silently ignore it
+As we discussed in :ref:`fundamental types <missing>`, the semantics of ``missing`` are that mathematical operations will not silently ignore it.
 
 In order to allow ``missing`` in a column, you can create/load the ``DataFrame``
-from a source with ``missing``'s, or call ``allowmissing!`` on a column
+from a source with ``missing``'s, or call ``allowmissing!`` on a column.
 
 .. code-block:: julia
 
@@ -122,7 +122,7 @@ from a source with ``missing``'s, or call ``allowmissing!`` on a column
     push!(df2, (t=3, col1 = missing))
     push!(df2, (t=4, col1 = 5.1))
 
-We can see the propagation of ``missing`` to caller functions, as well as a way to efficiently calculate with non-missing data
+We can see the propagation of ``missing`` to caller functions, as well as a way to efficiently calculate with non-missing data.
 
 .. code-block:: julia
 
@@ -138,7 +138,7 @@ And to replace the ``missing``
 Manipulating and Transforming DataFrames
 ------------------------------------------
 
-One way to do an additional calculation with a ``DataFrame`` is to tuse the ``@transform`` macro from ``DataFramesMeta.jl``
+One way to do an additional calculation with a ``DataFrame`` is to tuse the ``@transform`` macro from ``DataFramesMeta.jl``.
 
 .. code-block:: julia
 
@@ -167,11 +167,11 @@ For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/
 Visualization, Querying, and Plots
 -------------------------------------
 
-The ``DataFrame`` (and similar types that fulfill a standard generic interface) can fit into a variety of packages
+The ``DataFrame`` (and similar types that fulfill a standard generic interface) can fit into a variety of packages.
 
-One set of them is the `QueryVerse <https://github.com/queryverse>`_
+One set of them is the `QueryVerse <https://github.com/queryverse>`_.
 
-**Note:** The QueryVerse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax ``|>``
+**Note:** The QueryVerse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax ``|>``.
 
 .. code-block:: julia
 
@@ -196,7 +196,7 @@ To give an example directly from the source of the LINQ inspired `Query.jl <http
         @collect DataFrame
     end
 
-While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <https://github.com/queryverse/VegaLite.jl>`_
+While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <https://github.com/queryverse/VegaLite.jl>`_.
 
 .. code-block:: julia
 
@@ -210,7 +210,7 @@ While it is possible to just use the ``Plots.jl`` library, there may be better o
         color=:Species
     )
 
-Another useful tool for exploring tabular data is `DataVoyager.jl <https://github.com/queryverse/DataVoyager.jl>`_
+Another useful tool for exploring tabular data is `DataVoyager.jl <https://github.com/queryverse/DataVoyager.jl>`_.
 
 .. code-block:: julia
     :class: no-execute
@@ -218,14 +218,14 @@ Another useful tool for exploring tabular data is `DataVoyager.jl <https://githu
     using DataVoyager
     iris |> Voyager()
 
-The ``Voyager()`` function creates a separate window for analysis
+The ``Voyager()`` function creates a separate window for analysis.
 
 Statistics and Econometrics
 =============================
 
-While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing number of packages aimed at statistics and econometrics
+While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing number of packages aimed at statistics and econometrics.
 
-Many of the packages live in the `JuliaStats organization <https://github.com/JuliaStats/>`_
+Many of the packages live in the `JuliaStats organization <https://github.com/JuliaStats/>`_.
 
 A few to point out
 
@@ -235,7 +235,7 @@ A few to point out
 General Linear Models
 ------------------------------
 
-To run linear regressions and similar statistics, use the `GLM <http://juliastats.github.io/GLM.jl/latest/>`_ package
+To run linear regressions and similar statistics, use the `GLM <http://juliastats.github.io/GLM.jl/latest/>`_ package.
 
 .. code-block:: julia
 
@@ -248,7 +248,7 @@ To run linear regressions and similar statistics, use the `GLM <http://juliastat
 
 To display the results in a useful tables for LaTeX and the REPL, use
 `RegressionTables <https://github.com/jmboehm/RegressionTables.jl/>`_ for output
-similar to the Stata package `esttab` and the R package `stargazer`
+similar to the Stata package `esttab` and the R package `stargazer`.
 
 .. code-block:: julia
 
@@ -256,7 +256,7 @@ similar to the Stata package `esttab` and the R package `stargazer`
    regtable(ols)
    # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
 
-.. To print a full dataframe, and other functions, use the `LatexPrint <https://github.com/scheinerman/LatexPrint.jl#the-tabular-function>`_ package
+.. To print a full dataframe, and other functions, use the `LatexPrint <https://github.com/scheinerman/LatexPrint.jl#the-tabular-function>`_ package.
 ..
 .. .. code-block:: julia
 ..
@@ -273,7 +273,7 @@ Fixed Effects
 ----------------
 
 While Julia may be overkill for estimating a simple linear regression,
-fixed-effects estimation with dummies for multiple variables are much more computationally intensive
+fixed-effects estimation with dummies for multiple variables are much more computationally intensive.
 
 
 For a 2-way fixed-effect, taking the example directly from the documentation using `cigarette consumption data <https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst>`_
@@ -288,7 +288,7 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
                                 weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
 
-To explore data use the interactive DataVoyager and VegaLite
+To explore data use the interactive DataVoyager and VegaLite.
 
 .. code-block:: julia
     

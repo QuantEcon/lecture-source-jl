@@ -12,7 +12,7 @@ The Need for Speed
 Overview
 ============================
 
-Computer scientists often classify programming languages according to the following two categories
+Computer scientists often classify programming languages according to the following two categories.
 
 *High level languages* aim to maximize productivity by
 
@@ -35,20 +35,20 @@ Traditionally we understand this as a trade off
 * optimized for humans or optimized for machines
 
 One of the great strengths of Julia is that it pushes out the curve, achieving
-both high productivity and high performance with relatively little fuss
+both high productivity and high performance with relatively little fuss.
 
 The word "relatively" is important here, however...
 
-In simple programs, excellent performance is often trivial to achieve
+In simple programs, excellent performance is often trivial to achieve.
 
-For longer, more sophisticated programs, you need to be aware of potential stumbling blocks
+For longer, more sophisticated programs, you need to be aware of potential stumbling blocks.
 
-This lecture covers the key points
+This lecture covers the key points.
 
 Requirements
 -------------
 
-You should read our :doc:`earlier lecture <../more_julia/generic_programming>` on types, methods and multiple dispatch before this one
+You should read our :doc:`earlier lecture <../more_julia/generic_programming>` on types, methods and multiple dispatch before this one.
 
 Setup
 ------------------
@@ -63,24 +63,24 @@ Setup
 Understanding Multiple Dispatch in Julia
 ===============================================
 
-This section provides more background on how methods, functions, and types are connected
+This section provides more background on how methods, functions, and types are connected.
 
 Methods and Functions
 ----------------------
 
-The precise data type is important, for reasons of both efficiency and mathematical correctness
+The precise data type is important, for reasons of both efficiency and mathematical correctness.
 
-For example consider `1 + 1` vs. `1.0 + 1.0` or `[1 0] + [0 1]`
+For example consider `1 + 1` vs. `1.0 + 1.0` or `[1 0] + [0 1]`.
 
-On a CPU, integer and floating point addition are different things, using a different set of instructions
+On a CPU, integer and floating point addition are different things, using a different set of instructions.
 
-Julia handles this problem by storing multiple, specialized versions of functions like addition, one for each data type or set of data types
+Julia handles this problem by storing multiple, specialized versions of functions like addition, one for each data type or set of data types.
 
-These individual specialized versions are called **methods**
+These individual specialized versions are called **methods**.
 
-When an operation like addition is requested, the Julia compiler inspects the type of data to be acted on and hands it out to the appropriate method
+When an operation like addition is requested, the Julia compiler inspects the type of data to be acted on and hands it out to the appropriate method.
 
-This process is called **multiple dispatch**
+This process is called **multiple dispatch**.
 
 Like all "infix" operators, `1 + 1` has the alternative syntax `+(1, 1)`
 
@@ -88,7 +88,7 @@ Like all "infix" operators, `1 + 1` has the alternative syntax `+(1, 1)`
 
     +(1, 1)
 
-This operator `+` is itself a function with multiple methods
+This operator `+` is itself a function with multiple methods.
 
 We can investigate them using the `@which` macro, which shows the method to which a given call is dispatched
 
@@ -98,7 +98,7 @@ We can investigate them using the `@which` macro, which shows the method to whic
     @which +(x, y)
 
 We see that the operation is sent to the ``+`` method that specializes in adding
-floating point numbers
+floating point numbers.
 
 Here's the integer case
 
@@ -108,7 +108,7 @@ Here's the integer case
     @which +(x, y)
 
 This output says that the call has been dispatched to the `+` method
-responsible for handling integer values
+responsible for handling integer values.
 
 (We'll learn more about the details of this syntax below)
 
@@ -119,14 +119,14 @@ Here's another example, with complex numbers
     x, y = 1.0 + 1.0im, 1.0 + 1.0im
     @which +(x, y)
 
-Again, the call has been dispatched to a `+` method specifically designed for handling the given data type
+Again, the call has been dispatched to a `+` method specifically designed for handling the given data type.
 
 ..
 ..  Example 3
 ..  ^^^^^^^^^^^^^^
 ..
 ..
-.. The function ``isfinite()`` has multiple methods too
+.. The function ``isfinite()`` has multiple methods too.
 ..
 .. .. code-block:: julia
 ..
@@ -138,7 +138,7 @@ Again, the call has been dispatched to a `+` method specifically designed for ha
 ..     @which isfinite(1.0) # Call isfinite on a float
 ..
 ..
-.. Here ``AbstractFloat`` is another abstract data type, this time encompassing all floats
+.. Here ``AbstractFloat`` is another abstract data type, this time encompassing all floats.
 ..
 .. We can list all the methods of ``isfinite`` as follows
 ..
@@ -147,17 +147,17 @@ Again, the call has been dispatched to a `+` method specifically designed for ha
 ..     methods(isfinite)
 ..
 ..
-.. We'll discuss some of the more complicated data types you see here later on
+.. We'll discuss some of the more complicated data types you see here later on.
 ..
 
 Adding Methods
 ^^^^^^^^^^^^^^^^^^
 
-It's straightforward to add methods to existing functions
+It's straightforward to add methods to existing functions.
 
-For example, we can't at present add an integer and a string in Julia (i.e. ``100 + "100"`` is not valid syntax)
+For example, we can't at present add an integer and a string in Julia (i.e. ``100 + "100"`` is not valid syntax).
 
-This is sensible behavior, but if you want to change it there's nothing to stop you
+This is sensible behavior, but if you want to change it there's nothing to stop you.
 
 .. code-block:: julia
 
@@ -168,39 +168,39 @@ This is sensible behavior, but if you want to change it there's nothing to stop 
     @show +(100, "100")
     @show 100 + "100";  # equivalent
 
-.. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory
+.. If we write a function that can handle either floating point or integer arguments and then call it with floating point arguments, a specialized method for applying our function to floats will be constructed and stored in memory.
 ..
-.. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their floating point versions
+.. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their floating point versions.
 ..
 .. If we next call it with integer arguments, the process will be repeated but now
-.. specialized to integers
+.. specialized to integers.
 ..
-.. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their integer versions
+.. * Inside the method, operations such as addition, multiplication, etc. will be specialized to their integer versions.
 ..
 ..
-.. Subsequent calls will be routed automatically to the most appropriate method
+.. Subsequent calls will be routed automatically to the most appropriate method.
 
 .. Comments on Efficiency
 .. ------------------------
 ..
 ..
-.. We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`
+.. We'll see how this enables Julia to easily generate highly efficient machine code in :doc:`later on <need_for_speed>`.
 
 Understanding the Compilation Process
 ---------------------------------------
 
-We can now be a little bit clearer about what happens when you call a function on given types
+We can now be a little bit clearer about what happens when you call a function on given types.
 
 Suppose we execute the function call ``f(a, b)`` where ``a`` and ``b``
-are of concrete types ``S`` and ``T`` respectively
+are of concrete types ``S`` and ``T`` respectively.
 
-The Julia interpreter first queries the types of ``a`` and ``b`` to obtain the tuple ``(S, T)``
+The Julia interpreter first queries the types of ``a`` and ``b`` to obtain the tuple ``(S, T)``.
 
-It then parses the list of methods belonging to ``f``, searching for a match
+It then parses the list of methods belonging to ``f``, searching for a match.
 
-If it finds a method matching ``(S, T)`` it calls that method
+If it finds a method matching ``(S, T)`` it calls that method.
 
-If not, it looks to see whether the pair ``(S, T)`` matches any method defined for *immediate parent types*
+If not, it looks to see whether the pair ``(S, T)`` matches any method defined for *immediate parent types*.
 
 For example, if ``S`` is ``Float64`` and ``T`` is ``ComplexF32`` then the
 immediate parents are ``AbstractFloat`` and ``Number`` respectively
@@ -213,13 +213,13 @@ immediate parents are ``AbstractFloat`` and ``Number`` respectively
 
     supertype(ComplexF32)
 
-Hence the interpreter looks next for a method of the form ``f(x::AbstractFloat, y::Number)``
+Hence the interpreter looks next for a method of the form ``f(x::AbstractFloat, y::Number)``.
 
-If the interpreter can't find a match in immediate parents (supertypes) it proceeds up the tree, looking at the parents of the last type it checked at each iteration
+If the interpreter can't find a match in immediate parents (supertypes) it proceeds up the tree, looking at the parents of the last type it checked at each iteration.
 
-* If it eventually finds a matching method, it invokes that method
+* If it eventually finds a matching method, it invokes that method.
 
-* If not, we get an error
+* If not, we get an error.
 
 This is the process that leads to the following error (since we only added the ``+`` for adding ``Integer`` and ``String`` above)
 
@@ -229,7 +229,7 @@ This is the process that leads to the following error (since we only added the `
     @show (typeof(100.0) <: Integer) == false
     100.0 + "100"
 
-Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the *most specific method* available
+Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the *most specific method* available.
 
 For example, if you have methods for function ``f`` that handle
 
@@ -237,13 +237,13 @@ For example, if you have methods for function ``f`` that handle
 
 #.  ``(Number, Number)`` pairs
 
-and you call ``f`` with ``f(0.5, 1)`` then the first method will be invoked
+and you call ``f`` with ``f(0.5, 1)`` then the first method will be invoked.
 
 This makes sense because (hopefully) the first method is optimized for
-exactly this kind of data
+exactly this kind of data.
 
 The second method is probably more of a "catch all" method that handles other
-data in a less optimal way
+data in a less optimal way.
 
 Here's another simple example, involving a user-defined function
 
@@ -276,18 +276,18 @@ above
 
     q("foo")
 
-Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``q(3)`` proceeds up the tree to ``Integer`` and invokes ``q(x::Integer)``
+Since ``typeof(3) <: Int64 <: Integer <: Number``, the call ``q(3)`` proceeds up the tree to ``Integer`` and invokes ``q(x::Integer)``.
 
-On the other hand, ``3.0`` is a ``Float64``, which is not a subtype of  ``Integer``
+On the other hand, ``3.0`` is a ``Float64``, which is not a subtype of  ``Integer``.
 
-Hence the call ``q(3.0)`` continues up to ``q(x::Number)``
+Hence the call ``q(3.0)`` continues up to ``q(x::Number)``.
 
-Finally, ``q("foo")`` is handled by the function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``
+Finally, ``q("foo")`` is handled by the function operating on ``Any``, since ``String`` is not a subtype of ``Number`` or ``Integer``.
 
 Analyzing Function Return Types
 -------------------------------------------
 
-For the most part, time spent "optimizing" Julia code to run faster is about ensuring the compiler can correctly deduce types for all functions
+For the most part, time spent "optimizing" Julia code to run faster is about ensuring the compiler can correctly deduce types for all functions.
 
 The macro ``@code_warntype`` gives us a hint
 
@@ -297,10 +297,10 @@ The macro ``@code_warntype`` gives us a hint
     f(x) = 2x
     @code_warntype f(x)
 
-The ``@code_warntype`` macro compiles ``f(x)`` using the type of ``x`` as an example -- i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value
+The ``@code_warntype`` macro compiles ``f(x)`` using the type of ``x`` as an example -- i.e., the ``[1, 2, 3]`` is used as a prototype for analyzing the compilation, rather than simply calculating the value.
 
 Here, the ``Body::Array{Int64,1}`` tells us the type of the return value of the
-function, when called with types like ``[1, 2, 3]``, is always a vector of integers
+function, when called with types like ``[1, 2, 3]``, is always a vector of integers.
 
 In contrast, consider a function potentially returning ``nothing``, as in :doc:`this lecture <../getting_started_julia/fundamental_types>`
 
@@ -309,27 +309,27 @@ In contrast, consider a function potentially returning ``nothing``, as in :doc:`
     f(x) = x > 0.0 ? x : nothing
     @code_warntype f(1)
 
-This states that the compiler determines the return type when called with an integer (like ``1``) could be one of two different types, ``Body::Union{Nothing, Int64}``
+This states that the compiler determines the return type when called with an integer (like ``1``) could be one of two different types, ``Body::Union{Nothing, Int64}``.
 
-A final example is a variation on the above, which returns the maximum of ``x`` and ``0``
+A final example is a variation on the above, which returns the maximum of ``x`` and ``0``.
 
 .. code-block:: julia
 
     f(x) = x > 0.0 ? x : 0.0
     @code_warntype f(1)
 
-Which shows that, when called with an integer, the type could be that integer or the floating point ``0.0``
+Which shows that, when called with an integer, the type could be that integer or the floating point ``0.0``.
 
-On the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point
+On the other hand, if we use change the function to return ``0`` if `x <= 0`, it is type-unstable with  floating point.
 
 .. code-block:: julia
 
     f(x) = x > 0.0 ? x : 0
     @code_warntype f(1.0)
 
-The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x``
+The solution is to use the ``zero(x)`` function which returns the additive identity element of type ``x``.
 
-On the other hand, if we change the function to return ``0`` if ``x <= 0``, it is type-unstable with  floating point
+On the other hand, if we change the function to return ``0`` if ``x <= 0``, it is type-unstable with  floating point.
 
 .. code-block:: julia
 
@@ -350,19 +350,19 @@ Let's think about how quickly code runs, taking as given
 * algorithm (i.e., set of instructions to be executed)
 
 
-We'll start by discussing the kinds of instructions that machines understand
+We'll start by discussing the kinds of instructions that machines understand.
 
 
 Machine Code
 -------------
 
-All instructions for computers end up as *machine code*
+All instructions for computers end up as *machine code*.
 
-Writing fast code --- expressing a given algorithm so that it runs quickly --- boils down to producing efficient machine code
+Writing fast code --- expressing a given algorithm so that it runs quickly --- boils down to producing efficient machine code.
 
-You can do this yourself, by hand, if you want to
+You can do this yourself, by hand, if you want to.
 
-Typically this is done by writing `assembly <https://en.wikipedia.org/wiki/Assembly_language>`__, which is a symbolic representation of machine code
+Typically this is done by writing `assembly <https://en.wikipedia.org/wiki/Assembly_language>`__, which is a symbolic representation of machine code.
 
 Here's some assembly code implementing a function that takes arguments :math:`a, b` and returns :math:`2a + 8b`
 
@@ -378,12 +378,12 @@ Here's some assembly code implementing a function that takes arguments :math:`a,
 	retq
 	nopl	(%rax)
 
-Note that this code is specific to one particular piece of hardware that we use --- different machines require different machine code
+Note that this code is specific to one particular piece of hardware that we use --- different machines require different machine code.
 
-If you ever feel tempted to start rewriting your economic model in assembly, please restrain yourself
+If you ever feel tempted to start rewriting your economic model in assembly, please restrain yourself.
 
 It's far more sensible to give these instructions in a language like Julia,
-where they can be easily written and understood
+where they can be easily written and understood.
 
 .. code-block:: julia
 
@@ -411,9 +411,9 @@ or even C
         return y;
     }
 
-In any of these languages we end up with code that is much easier for humans to write, read, share and debug
+In any of these languages we end up with code that is much easier for humans to write, read, share and debug.
 
-We leave it up to the machine itself to turn our code into machine code
+We leave it up to the machine itself to turn our code into machine code.
 
 How exactly does this happen?
 
@@ -423,19 +423,19 @@ Generating Machine Code
 
 
 The process for turning high level code into machine code differs across
-languages
+languages.
 
-Let's look at some of the options and how they differ from one another
+Let's look at some of the options and how they differ from one another.
 
 
 AOT Compiled Languages
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Traditional compiled languages like Fortran, C and C++ are a reasonable option for writing fast code
+Traditional compiled languages like Fortran, C and C++ are a reasonable option for writing fast code.
 
-Indeed, the standard benchmark for performance is still well-written C or Fortran
+Indeed, the standard benchmark for performance is still well-written C or Fortran.
 
-These languages compile down to efficient machine code because users are forced to provide a lot of detail on data types and how the code will execute
+These languages compile down to efficient machine code because users are forced to provide a lot of detail on data types and how the code will execute.
 
 The compiler therefore has ample information for building the corresponding machine code ahead of time (AOT) in a way that
 
@@ -443,17 +443,17 @@ The compiler therefore has ample information for building the corresponding mach
 
 * implements efficient operations as required for the task in hand
 
-At the same time, the syntax and semantics of C and Fortran are verbose and unwieldy when compared to something like Julia
+At the same time, the syntax and semantics of C and Fortran are verbose and unwieldy when compared to something like Julia.
 
-Moreover, these low level languages lack the interactivity that's so crucial for scientific work
+Moreover, these low level languages lack the interactivity that's so crucial for scientific work.
 
 
 Interpreted Languages
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Interpreted languages like Python generate machine code "on the fly", during program execution
+Interpreted languages like Python generate machine code "on the fly", during program execution.
 
-This allows them to be flexible and interactive
+This allows them to be flexible and interactive.
 
 Moreover, programmers can leave many tedious details to the runtime environment, such as
 
@@ -462,34 +462,34 @@ Moreover, programmers can leave many tedious details to the runtime environment,
 * memory allocation/deallocation, etc.
 
 But all this convenience and flexibility comes at a cost: it's hard to turn
-instructions written in these languages into efficient machine code
+instructions written in these languages into efficient machine code.
 
 For example, consider what happens when Python adds a long list of numbers
-together
+together.
 
-Typically the runtime environment has to check the type of these objects one by one before it figures out how to add them
+Typically the runtime environment has to check the type of these objects one by one before it figures out how to add them.
 
-This involves substantial overheads
+This involves substantial overheads.
 
-There are also significant overheads associated with accessing the data values themselves, which might not be stored contiguously in memory
+There are also significant overheads associated with accessing the data values themselves, which might not be stored contiguously in memory.
 
-The resulting machine code is often complex and slow
+The resulting machine code is often complex and slow.
 
 
 Just-in-time compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Just-in-time (JIT) compilation is an alternative approach that marries some of
-the advantages of AOT compilation and interpreted languages
+the advantages of AOT compilation and interpreted languages.
 
-The basic idea is that functions for specific tasks are compiled as requested
+The basic idea is that functions for specific tasks are compiled as requested.
 
 As long as the compiler has enough information about what the function does,
-it can in principle generate efficient machine code
+it can in principle generate efficient machine code.
 
-In some instances, all the information is supplied by the programmer
+In some instances, all the information is supplied by the programmer.
 
-In other cases, the compiler will attempt to infer missing information on the fly based on usage
+In other cases, the compiler will attempt to infer missing information on the fly based on usage.
 
 Through this approach, computing environments built around JIT compilers aim to
 
@@ -501,11 +501,11 @@ Through this approach, computing environments built around JIT compilers aim to
 JIT Compilation in Julia
 ==========================
 
-JIT compilation is the approach used by Julia
+JIT compilation is the approach used by Julia.
 
-In an ideal setting, all information necessary to generate efficient native machine code is supplied or inferred
+In an ideal setting, all information necessary to generate efficient native machine code is supplied or inferred.
 
-In such a setting, Julia will be on par with machine code from low level languages
+In such a setting, Julia will be on par with machine code from low level languages.
 
 An Example
 --------------
@@ -519,16 +519,16 @@ Consider the function
         return 7y
     end
 
-Suppose we call ``f`` with integer arguments (e.g., ``z = f(1, 2)``)
+Suppose we call ``f`` with integer arguments (e.g., ``z = f(1, 2)``).
 
-The JIT compiler now knows the types of ``a`` and ``b``
+The JIT compiler now knows the types of ``a`` and ``b``.
 
 Moreover, it can infer types for other variables inside the function
 
 * e.g., ``y`` will also be an integer
 
 It then compiles a specialized version of the function to handle integers and
-stores it in memory
+stores it in memory.
 
 We can view the corresponding machine code using the `@code_native` macro
 
@@ -537,30 +537,30 @@ We can view the corresponding machine code using the `@code_native` macro
     @code_native f(1, 2)
 
 
-If we now call ``f`` again, but this time with floating point arguments, the JIT compiler will once more infer types for the other variables inside the function
+If we now call ``f`` again, but this time with floating point arguments, the JIT compiler will once more infer types for the other variables inside the function.
 
 * e.g., ``y`` will also be a float
 
-It then compiles a new version to handle this type of argument
+It then compiles a new version to handle this type of argument.
 
 .. code-block:: julia
 
     @code_native f(1.0, 2.0)
 
 
-Subsequent calls using either floats or integers are now routed to the appropriate compiled code
+Subsequent calls using either floats or integers are now routed to the appropriate compiled code.
 
 
 Potential Problems
 ---------------------
 
-In some senses, what we saw above was a best case scenario
+In some senses, what we saw above was a best case scenario.
 
-Sometimes the JIT compiler produces messy, slow machine code
+Sometimes the JIT compiler produces messy, slow machine code.
 
-This happens when type inference fails or the compiler has insufficient information to optimize effectively
+This happens when type inference fails or the compiler has insufficient information to optimize effectively.
 
-The next section looks at situations where these problems arise and how to get around them
+The next section looks at situations where these problems arise and how to get around them.
 
 
 Fast and Slow Julia Code
@@ -574,29 +574,29 @@ To summarize what we've learned so far, Julia provides a platform for generating
 
 #. Multiple dispatch to facilitate specialization and optimization of compiled code for different data types
 
-But the process is not flawless, and hiccups can occur
+But the process is not flawless, and hiccups can occur.
 
 The purpose of this section is to highlight potential issues and show you how
-to circumvent them
+to circumvent them.
 
 
 BenchmarkTools
 ------------------
 
-The main Julia package for benchmarking is `BenchmarkTools.jl <https://www.github.com/JuliaCI/BenchmarkTools.jl>`_
+The main Julia package for benchmarking is `BenchmarkTools.jl <https://www.github.com/JuliaCI/BenchmarkTools.jl>`_.
 
-Below, we'll use the ``@btime`` macro it exports to evaluate the performance of Julia code
+Below, we'll use the ``@btime`` macro it exports to evaluate the performance of Julia code.
 
-As mentioned in an :doc:`earlier lecture <../more_julia/testing>`, we can also save benchmark results to a file and guard against performance regressions in code
+As mentioned in an :doc:`earlier lecture <../more_julia/testing>`, we can also save benchmark results to a file and guard against performance regressions in code.
 
-For more, see the package docs
+For more, see the package docs.
 
 Global Variables
 -----------------
 
-Global variables are names assigned to values outside of any function or type definition
+Global variables are names assigned to values outside of any function or type definition.
 
-The are convenient and novice programmers typically use them with abandon
+The are convenient and novice programmers typically use them with abandon.
 
 But global variables are also dangerous, especially in medium to large size programs, since
 
@@ -604,14 +604,14 @@ But global variables are also dangerous, especially in medium to large size prog
 
 * they can be changed by any function
 
-This makes it much harder to be certain about what some  small part of a given piece of code actually commands
+This makes it much harder to be certain about what some  small part of a given piece of code actually commands.
 
-Here's a `useful discussion on the topic <http://wiki.c2.com/?GlobalVariablesAreBad>`__
+Here's a `useful discussion on the topic <http://wiki.c2.com/?GlobalVariablesAreBad>`__.
 
-When it comes to JIT compilation, global variables create further problems
+When it comes to JIT compilation, global variables create further problems.
 
 The reason is that the compiler can never be sure of the type of the global
-variable, or even that the type will stay constant while a given function runs
+variable, or even that the type will stay constant while a given function runs.
 
 To illustrate, consider this code, where ``b`` is global
 
@@ -625,7 +625,7 @@ To illustrate, consider this code, where ``b`` is global
         end
     end
 
-The code executes relatively slowly and uses a huge amount of memory
+The code executes relatively slowly and uses a huge amount of memory.
 
 .. code-block:: julia
 
@@ -634,7 +634,7 @@ The code executes relatively slowly and uses a huge amount of memory
     @btime g(1.0)
 
 
-If you look at the corresponding machine code you will see that it's a mess
+If you look at the corresponding machine code you will see that it's a mess.
 
 .. code-block:: julia
 
@@ -657,11 +657,11 @@ then execution speed improves dramatically
 
     @btime g(1.0, 1.0)
 
-Note that the second run was dramatically faster than the first
+Note that the second run was dramatically faster than the first.
 
-That's because the first call included the time for JIT compilaiton
+That's because the first call included the time for JIT compilaiton.
 
-Notice also how small the memory footprint of the execution is
+Notice also how small the memory footprint of the execution is.
 
 Also, the machine code is simple and clean
 
@@ -671,7 +671,7 @@ Also, the machine code is simple and clean
 
 
 Now the compiler is certain of types throughout execution of the function and
-hence can optimize accordingly
+hence can optimize accordingly.
 
 
 The ``const`` keyword
@@ -691,18 +691,18 @@ prepend it with ``const``
     end
 
 
-Now the compiler can again generate efficient machine code
+Now the compiler can again generate efficient machine code.
 
-We'll leave you to experiment with it
+We'll leave you to experiment with it.
 
 
 Composite Types with Abstract Field Types
 --------------------------------------------
 
 Another scenario that trips up the JIT compiler is when composite types have
-fields with abstract types
+fields with abstract types.
 
-We met this issue :ref:`earlier <spec_field_types>`, when we discussed AR(1) models
+We met this issue :ref:`earlier <spec_field_types>`, when we discussed AR(1) models.
 
 Let's experiment, using, respectively,
 
@@ -712,7 +712,7 @@ Let's experiment, using, respectively,
 
 * parametric typing
 
-As we'll see, the last of options these gives us the best performance, while still maintaining significant flexibility
+As we'll see, the last of options these gives us the best performance, while still maintaining significant flexibility.
 
 Here's the untyped case
 
@@ -753,7 +753,7 @@ In the last case, concrete type information for the fields is embedded in the ob
 
     typeof(fc)
 
-This is significant because such information is detected by the compiler
+This is significant because such information is detected by the compiler.
 
 Timing
 ^^^^^^^^^
@@ -776,7 +776,7 @@ Let's try timing our code, starting with the generic case:
 
     @btime f($fg)
 
-The timing is not very impressive
+The timing is not very impressive.
 
 Here's the nasty looking machine code
 
@@ -792,9 +792,9 @@ The abstract case is similar
     @btime f($fa)
 
 
-Note the large memory footprint
+Note the large memory footprint.
 
-The machine code is also long and complex, although we omit details
+The machine code is also long and complex, although we omit details.
 
 Finally, let's look at the parametrically typed version
 
@@ -803,7 +803,7 @@ Finally, let's look at the parametrically typed version
     @btime f($fc)
 
 
-Some of this time is JIT compilation, and one more execution gets us down to
+Some of this time is JIT compilation, and one more execution gets us down to.
 
 
 Here's the corresponding machine code
@@ -819,7 +819,7 @@ Much nicer...
 Abstract Containers
 ----------------------
 
-Another way we can run into trouble is with abstract container types
+Another way we can run into trouble is with abstract container types.
 
 Consider the following function, which essentially does the same job as Julia's ``sum()`` function but acts only on floating point data
 
@@ -849,13 +849,13 @@ Calls to this function run very quickly
     @btime sum_float_array($x)
 
 
-When Julia compiles this function, it knows that the data passed in as ``x`` will be an array of 64 bit floats
+When Julia compiles this function, it knows that the data passed in as ``x`` will be an array of 64 bit floats.
 
-Hence it's known to the compiler that the relevant method for ``+`` is always addition of floating point numbers
+Hence it's known to the compiler that the relevant method for ``+`` is always addition of floating point numbers.
 
-Moreover, the data can be arranged into continuous 64 bit blocks of memory to simplify memory access
+Moreover, the data can be arranged into continuous 64 bit blocks of memory to simplify memory access.
 
-Finally, data types are stable --- for example, the local variable ``sum`` starts off as a float and remains a float throughout
+Finally, data types are stable --- for example, the local variable ``sum`` starts off as a float and remains a float throughout.
 
 
 Type Inferences
@@ -874,7 +874,7 @@ Here's the same function minus the type annotation in the function signature
     end
 
 When we run it with the same array of floating point numbers it executes at a
-similar speed as the function with type information
+similar speed as the function with type information.
 
 .. code-block:: julia
 
@@ -883,15 +883,15 @@ similar speed as the function with type information
 
 The reason is that when ``sum_array()`` is first called on a vector of a given
 data type, a newly compiled version of the function is produced to handle that
-type
+type.
 
-In this case, since we're calling the function on a vector of floats, we get a compiled version of the function with essentially the same internal representation as ``sum_float_array()``
+In this case, since we're calling the function on a vector of floats, we get a compiled version of the function with essentially the same internal representation as ``sum_float_array()``.
 
 An Abstract Container
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Things get tougher for the interpreter when the data type within the array is imprecise
+Things get tougher for the interpreter when the data type within the array is imprecise.
 
 For example, the following snippet creates an array where the element type is ``Any``
 
@@ -904,7 +904,7 @@ For example, the following snippet creates an array where the element type is ``
     eltype(x)
 
 
-Now summation is much slower and memory management is less efficient
+Now summation is much slower and memory management is less efficient.
 
 .. code-block:: julia
 
@@ -915,27 +915,27 @@ Further Comments
 ===================
 
 
-Here are some final comments on performance
+Here are some final comments on performance.
 
 
 Explicit Typing
 ----------------
 
 Writing fast Julia code amounts to writing Julia from which the compiler can
-generate efficient machine code
+generate efficient machine code.
 
-For this, Julia needs to know about the type of data it's processing as early as possible
+For this, Julia needs to know about the type of data it's processing as early as possible.
 
-We could hard code the type of all variables and function arguments but this comes at a cost
+We could hard code the type of all variables and function arguments but this comes at a cost.
 
-Our code becomes more cumbersome and less generic
+Our code becomes more cumbersome and less generic.
 
-We are starting to loose the advantages that drew us to Julia in the first place
+We are starting to loose the advantages that drew us to Julia in the first place.
 
-Moreover, explicitly typing everything is not necessary for optimal performance
+Moreover, explicitly typing everything is not necessary for optimal performance.
 
 The Julia compiler is smart and can often infer types perfectly well, without
-any performance cost
+any performance cost.
 
 What we really want to do is
 
@@ -946,20 +946,20 @@ What we really want to do is
 Summary and Tips
 -----------------------
 
-Use functions to segregate operations into logically distinct blocks
+Use functions to segregate operations into logically distinct blocks.
 
-Data types will be determined at function boundaries
+Data types will be determined at function boundaries.
 
-If types are not supplied then they will be inferred
+If types are not supplied then they will be inferred.
 
-If types are stable and can be inferred effectively your functions will run fast
+If types are stable and can be inferred effectively your functions will run fast.
 
 
 Further Reading
 -----------------------
 
 
-A good next stop for further reading is the `relevant part <https://docs.julialang.org/en/v1/manual/performance-tips/>`_ of the Julia documentation
+A good next stop for further reading is the `relevant part <https://docs.julialang.org/en/v1/manual/performance-tips/>`_ of the Julia documentation.
 
 
 .. http://www.informit.com/articles/article.aspx?p=1215438&seqNum=2
