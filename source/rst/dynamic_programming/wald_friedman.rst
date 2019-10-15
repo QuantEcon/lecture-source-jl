@@ -80,7 +80,7 @@ officer like Schyler were on the premises, he would see after the first
 few thousand or even few hundred [rounds] that the experiment need not
 be completed either because the new method is obviously inferior or
 because it is obviously superior beyond what was hoped for
-:math:`\ldots` ''.
+:math:`\ldots` ''
 
 Friedman and Wallis struggled with the problem but, after realizing that
 they were not able to solve it,  described the problem to  Abraham Wald.
