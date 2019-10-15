@@ -12,13 +12,13 @@ Overview
 ==================
 
 
-We're now ready to start learning the Julia language itself
+We're now ready to start learning the Julia language itself.
 
 
 Level
 -------
 
-Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, Fortran, C or similar
+Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, Fortran, C or similar.
 
 In particular, we assume you have some familiarity with fundamental programming concepts such as
 
@@ -33,43 +33,43 @@ In particular, we assume you have some familiarity with fundamental programming 
 Approach
 -------------
 
-In this lecture we will write and then pick apart small Julia programs
+In this lecture we will write and then pick apart small Julia programs.
 
-At this stage the objective is to introduce you to basic syntax and data structures
+At this stage the objective is to introduce you to basic syntax and data structures.
 
-Deeper concepts---how things work---will be covered in later lectures
+Deeper concepts---how things work---will be covered in later lectures.
 
 Since we are looking for simplicity the examples are a little contrived
 
 .. add as a  note::?
 
-In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is **poor coding style** in Julia, but then move towards more **elegant code** which is tightly connected to the mathematics
+In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is **poor coding style** in Julia, but then move towards more **elegant code** which is tightly connected to the mathematics.
 
 
 Set Up
 --------
 
-We assume that you've worked your way through :doc:`our getting started lecture <../getting_started_julia/getting_started>` already
+We assume that you've worked your way through :doc:`our getting started lecture <../getting_started_julia/getting_started>` already.
 
 In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon
-notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :doc:`here <../getting_started_julia/getting_started>`
+notes is to type ``] add InstantiateFromURL`` and then work in a Jupyter notebook, as described :doc:`here <../getting_started_julia/getting_started>`.
 
 
 Other References
 --------------------
 
-The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/v1/>`_
+The definitive reference is `Julia's own documentation <https://docs.julialang.org/en/v1/>`_.
 
-The manual is thoughtfully written but is also quite dense (and somewhat evangelical)
+The manual is thoughtfully written but is also quite dense (and somewhat evangelical).
 
-The presentation in this and our remaining lectures is more of a tutorial style based around examples
+The presentation in this and our remaining lectures is more of a tutorial style based around examples.
 
 
 Example: Plotting a White Noise Process
 ================================================
 
 To begin, let's suppose that we want to simulate and plot the white noise
-process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal
+process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :math:`\epsilon_t` is independent standard normal.
 
 .. Commenting out figure, at least while broken.
 .. In other words, we want to generate figures that look something like this:
@@ -81,7 +81,7 @@ process :math:`\epsilon_0, \epsilon_1, \ldots, \epsilon_T`, where each draw :mat
 Introduction to Packages
 --------------------------
 
-The first step is to activate a project environment, which is encapsulated by ``Project.toml`` and ``Manifest.toml`` files
+The first step is to activate a project environment, which is encapsulated by ``Project.toml`` and ``Manifest.toml`` files.
 
 There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
 
@@ -92,17 +92,17 @@ There are three ways to install packages and versions (where the first two metho
 .. literalinclude:: /_static/includes/deps_generic.jl
      :class: hide-output
 
-If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages
+If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages.
 
-This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_
+This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_.
 
-We will discuss it more in :ref:`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code
+We will discuss it more in :ref:`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code.
 
-This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction
+This ensures that an environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction.
 
-The careful selection of package versions is crucial for reproducibility, as otherwise your code can be broken by changes to packages out of your control
+The careful selection of package versions is crucial for reproducibility, as otherwise your code can be broken by changes to packages out of your control.
 
-After the installation and activation, ``using`` provides a way to say that a particular code or notebook will use the package
+After the installation and activation, ``using`` provides a way to say that a particular code or notebook will use the package.
 
 .. code-block:: julia
 
@@ -113,7 +113,7 @@ After the installation and activation, ``using`` provides a way to say that a pa
 Using Functions from a Package
 --------------------------------
 
-Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution with mean 0 and variance 1 if given no parameters
+Some functions are built into the base Julia, such as ``randn``, which returns a single draw from a normal distibution with mean 0 and variance 1 if given no parameters.
 
 .. code-block:: julia
 
@@ -132,26 +132,26 @@ Other functions require importing all of the names from an external library
     plot(1:n, ϵ)
 
 
-Let's break this down and see how it works
+Let's break this down and see how it works.
 
-The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available
+The effect of the statement ``using Plots`` is to make all the names exported by the ``Plots`` module available.
 
-Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files
+Because we used ``Pkg.activate`` previously, it will use whatever version of ``Plots.jl`` that was specified in the ``Project.toml`` and ``Manifest.toml`` files.
 
-The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries, but require an explicit using
+The other packages ``LinearAlgebra`` and ``Statistics`` are base Julia libraries, but require an explicit using.
 
-The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings
+The arguments to ``plot`` are the numbers ``1,2, ..., n`` for the x-axis, a vector ``ϵ`` for the y-axis, and (optional) settings.
 
-The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution with mean 0 and variance 1
+The function ``randn(n)`` returns a column vector ``n`` random draws from a normal distribution with mean 0 and variance 1.
 
 Arrays
 --------
 
 
 As a language intended for mathematical and scientific computing, Julia has
-strong support for using unicode characters
+strong support for using unicode characters.
 
-In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>``
+In the above case, the ``ϵ`` and many other symbols can be typed in most Julia editor by providing the LaTeX and ``<TAB>``, i.e. ``\epsilon<TAB>``.
 
 The return type is one of the most fundamental Julia data types: an array
 
@@ -164,11 +164,11 @@ The return type is one of the most fundamental Julia data types: an array
 
     ϵ[1:5]
 
-The information from ``typeof()`` tells us that ``ϵ`` is an array of 64 bit floating point values, of dimension 1
+The information from ``typeof()`` tells us that ``ϵ`` is an array of 64 bit floating point values, of dimension 1.
 
-In Julia, one-dimensional arrays are interpreted as column vectors for purposes of linear algebra
+In Julia, one-dimensional arrays are interpreted as column vectors for purposes of linear algebra.
 
-The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ``
+The ``ϵ[1:5]`` returns an array of the first 5 elements of ``ϵ``.
 
 Notice from the above that
 
@@ -176,7 +176,7 @@ Notice from the above that
 
 * array elements are referenced using square brackets (unlike MATLAB and Fortran)
 
-To get **help and examples** in Jupyter or other julia editor, use the ``?`` before a function name or syntax
+To get **help and examples** in Jupyter or other julia editor, use the ``?`` before a function name or syntax.
 
 .. code-block:: julia
     :class: no-execute
@@ -204,11 +204,11 @@ For Loops
 
 Although there's no need in terms of what we wanted to achieve with our
 program, for the sake of learning syntax let's rewrite our program to use a
-``for`` loop for generating the data
+``for`` loop for generating the data.
 
 .. note::
 
-    In Julia v0.7 and up, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions
+    In Julia v0.7 and up, the rules for variables accessed in ``for`` and ``while`` loops can be sensitive to how they are used (and variables can sometimes require a ``global`` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) ``for`` and ``while`` loops outside of Jupyter notebooks.  This issue does not apply when used within functions.
 
 Starting with the most direct version, and pretending we are in a world where ``randn`` can only return a single value
 
@@ -222,19 +222,19 @@ Starting with the most direct version, and pretending we are in a world where ``
         end
 
 
-Here we first declared ``ϵ`` to be a vector of ``n`` numbers, initialized by the floating point ``0.0``
+Here we first declared ``ϵ`` to be a vector of ``n`` numbers, initialized by the floating point ``0.0``.
 
-The ``for`` loop then populates this array by successive calls to ``randn()``
+The ``for`` loop then populates this array by successive calls to ``randn()``.
 
-Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``
+Like all code blocks in Julia, the end of the ``for`` loop code block (which is just one line here) is indicated by the keyword ``end``.
 
-The word ``in`` from the ``for`` loop can be replaced by either ``∈`` or ``=``
+The word ``in`` from the ``for`` loop can be replaced by either ``∈`` or ``=``.
 
-The index variable is looped over for all integers from ``1:n`` -- but this does not actually create a vector of those indices
+The index variable is looped over for all integers from ``1:n`` -- but this does not actually create a vector of those indices.
 
-Instead, it creates an **iterator** that is looped over -- in this case the **range** of integers from ``1`` to ``n``
+Instead, it creates an **iterator** that is looped over -- in this case the **range** of integers from ``1`` to ``n``.
 
-While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear
+While this example successfully fills in ``ϵ`` with the correct values, it is very indirect as the connection between the index ``i`` and the ``ϵ`` vector is unclear.
 
 To fix this, use ``eachindex``
 
@@ -247,9 +247,9 @@ To fix this, use ``eachindex``
             ϵ[i] = randn()
         end
 
-Here, ``eachindex(ϵ)`` returns an iterator of indices which can be used to access ``ϵ``
+Here, ``eachindex(ϵ)`` returns an iterator of indices which can be used to access ``ϵ``.
 
-While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code
+While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code.
 
 In Julia you can also loop directly over arrays themselves, like so
 
@@ -262,7 +262,7 @@ In Julia you can also loop directly over arrays themselves, like so
         end
         ϵ_mean = ϵ_sum / m
 
-where ``ϵ[1:m]`` returns the elements of the vector at indices ``1`` to ``m``
+where ``ϵ[1:m]`` returns the elements of the vector at indices ``1`` to ``m``.
 
 Of course, in Julia there are built in functions to perform this calculation which we can compare against
 
@@ -271,16 +271,16 @@ Of course, in Julia there are built in functions to perform this calculation whi
         ϵ_mean ≈ mean(ϵ[1:m])
         ϵ_mean ≈ sum(ϵ[1:m]) / m
 
-In these examples, note the use of ``≈`` to test equality, rather than ``==``, which is appropriate for integers and other types
+In these examples, note the use of ``≈`` to test equality, rather than ``==``, which is appropriate for integers and other types.
 
-Approximately equal, typed with ``\approx<TAB>``, is the appropriate way to compare any floating point numbers due to the standard issues of `floating point math <https://floating-point-gui.de/>`_
+Approximately equal, typed with ``\approx<TAB>``, is the appropriate way to compare any floating point numbers due to the standard issues of `floating point math <https://floating-point-gui.de/>`_.
 
 .. _user_defined_functions:
 
 User-Defined Functions
 ----------------------------
 
-For the sake of the exercise, let's go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function
+For the sake of the exercise, let's go back to the ``for`` loop but restructure our program so that generation of random variables takes place within a user-defined function.
 
 To make things more interesting, instead of directly plotting the draws from the distribution, let's plot the squares of these draws
 
@@ -306,7 +306,7 @@ Here
 
 * ``return`` is a keyword indicating the return value, as is often unnecessary
 
-Let us make this example slightly better by "remembering" that ``randn`` can return a vectors
+Let us make this example slightly better by "remembering" that ``randn`` can return a vectors.
 
 .. code-block:: julia
 
@@ -322,13 +322,13 @@ Let us make this example slightly better by "remembering" that ``randn`` can ret
     end
     data = generatedata(5)
 
-While better, the looping over the ``i`` index to square the results is difficult to read
+While better, the looping over the ``i`` index to square the results is difficult to read.
 
-Instead of looping, we can **broadcast** the ``^2`` square function over a vector using a ``.``
+Instead of looping, we can **broadcast** the ``^2`` square function over a vector using a ``.``.
 
-To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity
+To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the ``for`` is **not** for performance reasons, but rather because of code clarity.
 
-Loops of this sort are at least as efficient as vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear
+Loops of this sort are at least as efficient as vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear.
 
 .. code-block:: julia
 
@@ -339,7 +339,7 @@ Loops of this sort are at least as efficient as vectorized approach in compiled 
      end
     data = generatedata(5)
 
-We can even drop the ``function`` if we define it on a single line
+We can even drop the ``function`` if we define it on a single line.
 
 .. code-block:: julia
 
@@ -347,7 +347,7 @@ We can even drop the ``function`` if we define it on a single line
     generatedata(n) = randn(n).^2
     data = generatedata(5)
 
-Finally, we can broadcast any function, where squaring is only a special case
+Finally, we can broadcast any function, where squaring is only a special case.
 
 .. code-block:: julia
 
@@ -356,7 +356,7 @@ Finally, we can broadcast any function, where squaring is only a special case
     generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
     data = generatedata(5)
 
-As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply to a function
+As a final -- abstract -- approach, we can make the ``generatedata`` function able to generically apply to a function.
 
 .. code-block:: julia
 
@@ -365,11 +365,11 @@ As a final -- abstract -- approach, we can make the ``generatedata`` function ab
     f(x) = x^2 # simple square function
     data = generatedata(5, f) # applies f
 
-Whether this example is better or worse than the previous version depends on how it is used
+Whether this example is better or worse than the previous version depends on how it is used.
 
-High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or more confusing, but Julia enables you to use these techniques **with no performance overhead**
+High degrees of abstraction and generality, e.g. passing in a function ``f`` in this case, can make code either clearer or more confusing, but Julia enables you to use these techniques **with no performance overhead**.
 
-For this particular case, the clearest and most general solution is probably the simplest
+For this particular case, the clearest and most general solution is probably the simplest.
 
 .. code-block:: julia
 
@@ -381,21 +381,21 @@ For this particular case, the clearest and most general solution is probably the
     plot(f.(x), label="x^2")
     plot!(x, label="x") # layer on the same plot
 
-While broadcasting above superficially looks like vectorizing functions in MATLAB, or Python ufuncs, it is much richer and built on core foundations of the language
+While broadcasting above superficially looks like vectorizing functions in MATLAB, or Python ufuncs, it is much richer and built on core foundations of the language.
 
-The other additional function ``plot!`` adds a graph to the existing plot
+The other additional function ``plot!`` adds a graph to the existing plot.
 
-This follows a general convention in Julia, where a function that modifies the arguments or a global state has a ``!`` at the end of its name
+This follows a general convention in Julia, where a function that modifies the arguments or a global state has a ``!`` at the end of its name.
 
 
 A Slightly More Useful Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Let's make a slightly more useful function
+Let's make a slightly more useful function.
 
-This function will be passed in a choice of probability distribution and respond by plotting a histogram of observations
+This function will be passed in a choice of probability distribution and respond by plotting a histogram of observations.
 
-In doing so we'll make use of the ``Distributions`` package, which we assume was instantiated above with the project
+In doing so we'll make use of the ``Distributions`` package, which we assume was instantiated above with the project.
 
 
 Here's the code
@@ -413,12 +413,12 @@ Here's the code
     plothistogram(lp, 500)
 
 
-Let's have a casual discussion of how all this works while leaving technical details for later in the lectures
+Let's have a casual discussion of how all this works while leaving technical details for later in the lectures.
 
 First, ``lp = Laplace()`` creates an instance of a data type defined
-in the ``Distributions`` module that represents the Laplace distribution
+in the ``Distributions`` module that represents the Laplace distribution.
 
-The name ``lp`` is bound to this value
+The name ``lp`` is bound to this value.
 
 When we make the function call ``plothistogram(lp, 500)`` the code in the body
 of the function ``plothistogram`` is run with
@@ -430,43 +430,43 @@ of the function ``plothistogram`` is run with
 A Mystery
 ^^^^^^^^^^^
 
-Now consider the function call ``rand(distribution, n)``
+Now consider the function call ``rand(distribution, n)``.
 
-This looks like something of a mystery
+This looks like something of a mystery.
 
-The function ``rand()`` is defined in the base library such that ``rand(n)`` returns ``n`` uniform random variables on :math:`[0, 1)`
+The function ``rand()`` is defined in the base library such that ``rand(n)`` returns ``n`` uniform random variables on :math:`[0, 1)`.
 
 .. code-block:: julia
 
     rand(3)
 
-On the other hand, ``distribution`` points to a data type representing the Laplace distribution that has been defined in a third party package
+On the other hand, ``distribution`` points to a data type representing the Laplace distribution that has been defined in a third party package.
 
 So how can it be that ``rand()`` is able to take this kind of value as an
 argument and return the output that we want?
 
-The answer in a nutshell is **multiple dispatch**, which Julia uses to implement **generic programming**
+The answer in a nutshell is **multiple dispatch**, which Julia uses to implement **generic programming**.
 
 This refers to the idea that functions in Julia can have different behavior
-depending on the particular arguments that they're passed
+depending on the particular arguments that they're passed.
 
-Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value
+Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value.
 
-The compiler knows which function definition to apply to in a given setting by looking at the types of the values the function is called on
+The compiler knows which function definition to apply to in a given setting by looking at the types of the values the function is called on.
 
-In Julia these alternative versions of a function are called **methods**
+In Julia these alternative versions of a function are called **methods**.
 
 Example: Variations on Fixed Points
 ================================================
 
-Take a mapping :math:`f : X \to X` for some set :math:`X`
+Take a mapping :math:`f : X \to X` for some set :math:`X`.
 
 
-If there exists an :math:`x^* \in X` such that :math:`f(x^*) = x^*`, then :math:`x^*`: is called a "fixed point" of :math:`f`
+If there exists an :math:`x^* \in X` such that :math:`f(x^*) = x^*`, then :math:`x^*`: is called a "fixed point" of :math:`f`.
 
-For our second example, we will start with a simple example of determining fixed points of a function
+For our second example, we will start with a simple example of determining fixed points of a function.
 
-The goal is to start with code in a MATLAB style, and move towards a more **Julian** style with high mathematical clarity
+The goal is to start with code in a MATLAB style, and move towards a more **Julian** style with high mathematical clarity.
 
 Fixed Point Maps
 ----------------------------
@@ -477,7 +477,7 @@ Consider the simple equation, where the scalars :math:`p,\beta` are given, and  
 
     v = p + \beta v
 
-Of course, in this simple example, with parameter restrictions this can be solved as :math:`v = p/(1 - \beta)`
+Of course, in this simple example, with parameter restrictions this can be solved as :math:`v = p/(1 - \beta)`.
 
 Rearrange the equation in terms of a map :math:`f(x) : \mathbb R \to \mathbb R`
 
@@ -493,7 +493,7 @@ where
     f(v) := p + \beta v
 
 
-Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem
+Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem.
 
 While Loops
 ---------------------
@@ -511,9 +511,9 @@ For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\b
 
     v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^{n-1} \beta^i + \beta^n v_0
 
-To implement the iteration in :eq:`fixed_point_naive`, we start by solving this problem with a ``while`` loop
+To implement the iteration in :eq:`fixed_point_naive`, we start by solving this problem with a ``while`` loop.
 
-The syntax for the while loop contains no surprises, and looks nearly identical to a MATLAB implementation
+The syntax for the while loop contains no surprises, and looks nearly identical to a MATLAB implementation.
 
 .. code-block:: julia
 
@@ -538,13 +538,13 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
     end
     println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
 
-The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or the inside of a function
+The ``while`` loop, like the ``for`` loop should only be used directly in Jupyter or the inside of a function.
 
-Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values
+Here, we have used the ``norm`` function (from the ``LinearAlgebra`` base library) to compare the values.
 
-The other new function is the ``println`` with the string interpolation, which splices the value of an expression or variable prefixed by \$ into a string
+The other new function is the ``println`` with the string interpolation, which splices the value of an expression or variable prefixed by \$ into a string.
 
-An alternative approach is to use a ``for`` loop, and check for convergence in each iteration
+An alternative approach is to use a ``for`` loop, and check for convergence in each iteration.
 
 .. code-block:: julia
 
@@ -564,12 +564,12 @@ An alternative approach is to use a ``for`` loop, and check for convergence in e
     end
     println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
 
-The new feature there is ``break`` , which leaves a ``for`` or ``while`` loop
+The new feature there is ``break`` , which leaves a ``for`` or ``while`` loop.
 
 Using a Function
 ---------------------
 
-The first problem with this setup is that it depends on being sequentially run -- which can be easily remedied with a function
+The first problem with this setup is that it depends on being sequentially run -- which can be easily remedied with a function.
 
 .. code-block:: julia
 
@@ -601,14 +601,14 @@ The first problem with this setup is that it depends on being sequentially run -
     println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
-While better, there could still be improvements
+While better, there could still be improvements.
 
 Passing a Function
 --------------------
 
-The chief issue is that the algorithm (finding a fixed point) is reusable and generic, while the function we calculate ``p + β * v`` is specific to our problem
+The chief issue is that the algorithm (finding a fixed point) is reusable and generic, while the function we calculate ``p + β * v`` is specific to our problem.
 
-A key feature of languages like Julia, is the ability to efficiently handle functions passed to other functions
+A key feature of languages like Julia, is the ability to efficiently handle functions passed to other functions.
 
 .. code-block:: julia
 
@@ -640,7 +640,7 @@ A key feature of languages like Julia, is the ability to efficiently handle func
     println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
 
 
-Much closer, but there are still hidden bugs if the user orders the settings or returns types wrong
+Much closer, but there are still hidden bugs if the user orders the settings or returns types wrong.
 
 Named Arguments and Return Values
 -----------------------------------
@@ -673,13 +673,13 @@ To enable this, Julia has two features:  named function parameters, and named tu
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
             " iterations")
 
-In this example, all function parameters after the ``;`` in the list, must be called by name
+In this example, all function parameters after the ``;`` in the list, must be called by name.
 
-Furthermore, a default value may be enabled -- so the named parameter ``iv`` is required while ``tolerance`` and ``maxiter`` have default values
+Furthermore, a default value may be enabled -- so the named parameter ``iv`` is required while ``tolerance`` and ``maxiter`` have default values.
 
-The return type of the function also has named fields, ``value, normdiff,`` and ``iter`` -- all accessed intuitively using ``.``
+The return type of the function also has named fields, ``value, normdiff,`` and ``iter`` -- all accessed intuitively using ``.``.
 
-To show the flexibilty of this code, we can use it to find a fixed point of the non-linear logistic equation, :math:`x = f(x)` where :math:`f(x) := r x (1-x)`
+To show the flexibilty of this code, we can use it to find a fixed point of the non-linear logistic equation, :math:`x = f(x)` where :math:`f(x) := r x (1-x)`.
 
 .. code-block:: julia
 
@@ -693,7 +693,7 @@ To show the flexibilty of this code, we can use it to find a fixed point of the 
 Using a Package
 ----------------------------
 
-But best of all is to avoid writing code altogether
+But best of all is to avoid writing code altogether.
 
 
 .. code-block:: julia
@@ -709,11 +709,11 @@ But best of all is to avoid writing code altogether
             "$(sol.iterations) iterations")
 
 
-The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed point iteration scheme above
+The ``fixedpoint`` function from the ``NLsolve.jl`` library implements the simple fixed point iteration scheme above.
 
-Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]``
+Since the ``NLsolve`` library only accepts vector based inputs, we needed to make the ``f(v)`` function broadcast on the ``+`` sign, and pass in the initial condition as a vector of length 1 with ``[0.8]``.
 
-While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements
+While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements.
 
 
 .. code-block:: julia
@@ -726,24 +726,24 @@ While a key benefit of using a package is that the code is clearer, and the impl
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
-Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm
+Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm.
 
-Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the ``f`` function
+Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the ``f`` function.
 
-But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point
+But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in :eq:`fixed_point_naive`, we were able to exploit new algorithms for finding a fixed point.
 
-The only other change in this function is the move from directly defining ``f(v)`` and using an **anonymous** function
+The only other change in this function is the move from directly defining ``f(v)`` and using an **anonymous** function.
 
-Similar to anonymous functions in MATLAB, and lambda functions in Python, Julia enables the creation of small functions without any names
+Similar to anonymous functions in MATLAB, and lambda functions in Python, Julia enables the creation of small functions without any names.
 
-The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(x)``
+The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(x)``.
 
 Composing Packages
 ----------------------------
 
-A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source
+A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source.
 
-As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type (recall that computers approximate real numbers to the nearest binary  of a given precision; the *machine epsilon* is the smallest nonzero magnitude)
+As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type (recall that computers approximate real numbers to the nearest binary  of a given precision; the *machine epsilon* is the smallest nonzero magnitude).
 
 In Julia, this number can be calculated as
 
@@ -752,9 +752,9 @@ In Julia, this number can be calculated as
     eps()
 
 
-For many cases, this is sufficient precision -- but consider that in iterative algorithms applied millions of times, those small differences can add up
+For many cases, this is sufficient precision -- but consider that in iterative algorithms applied millions of times, those small differences can add up.
 
-The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value
+The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, ``BigFloat``, for the initial value.
 
 .. code-block:: julia
 
@@ -768,15 +768,15 @@ The only change we will need to our model in order to use a different floating p
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
-Here, the literal ``BigFloat(0.8)`` takes the number ``0.8`` and changes it to an arbitrary precision number
+Here, the literal ``BigFloat(0.8)`` takes the number ``0.8`` and changes it to an arbitrary precision number.
 
-The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations, and the solution has a finite-precision solution with those parameters
+The result is that the residual is now **exactly** ``0.0`` since it is able to use arbitrary precision in the calculations, and the solution has a finite-precision solution with those parameters.
 
 
 Multivariate Fixed Point Maps
 ------------------------------
 
-The above example can be extended to multivariate maps without any modifications to the fixed point iteration code
+The above example can be extended to multivariate maps without any modifications to the fixed point iteration code.
 
 Using our own, homegrown iteration and simply passing in a bivariate map:
 
@@ -791,7 +791,7 @@ Using our own, homegrown iteration and simply passing in a bivariate map:
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
     "iterations")
 
-This also works without any modifications with the ``fixedpoint`` library function
+This also works without any modifications with the ``fixedpoint`` library function.
 
 .. code-block:: julia
 
@@ -806,7 +806,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
-Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices
+Finally, to demonstrate the importance of composing different libraries, use a ``StaticArrays.jl`` type, which provides an efficient implementation for small arrays and matrices.
 
 .. code-block:: julia
 
@@ -820,14 +820,14 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
-The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector
+The ``@SVector`` in front of the ``[1.0, 2.0, 0.1]`` is a macro for turning a vector literal into a static vector.
 
-All macros in Julia are prefixed by ``@`` in the name, and manipulate the code prior to compilation
+All macros in Julia are prefixed by ``@`` in the name, and manipulate the code prior to compilation.
 
-We will see a variety of macros, and discuss the "metaprogramming" behind them in a later lecture
+We will see a variety of macros, and discuss the "metaprogramming" behind them in a later lecture.
 
 
-.. Composing Packages : Later, add in a auto-differentiation example when working with NLsolve forwarddiff or capstan
+.. Composing Packages : Later, add in a auto-differentiation example when working with NLsolve forwarddiff or capstan.
 
 
 Exercises
@@ -839,11 +839,11 @@ Exercise 1
 -----------------
 
 Recall that :math:`n!` is read as ":math:`n` factorial" and defined as
-:math:`n! = n \times (n - 1) \times \cdots \times 2 \times 1`
+:math:`n! = n \times (n - 1) \times \cdots \times 2 \times 1`.
 
-In Julia you can compute this value with ``factorial(n)``
+In Julia you can compute this value with ``factorial(n)``.
 
-Write your own version of this function, called ``factorial2``, using a ``for`` loop
+Write your own version of this function, called ``factorial2``, using a ``for`` loop.
 
 
 .. _jbe_ex2:
@@ -858,9 +858,9 @@ The `binomial random variable <https://en.wikipedia.org/wiki/Binomial_distributi
 * each trial succeeds with probability :math:`p`
 
 Using only ``rand()`` from the set of Julia's built-in random number
-generators (not the ``Distributions`` package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`
+generators (not the ``Distributions`` package), write a function ``binomial_rv`` such that ``binomial_rv(n, p)`` generates one draw of :math:`Y`.
 
-Hint: If :math:`U` is uniform on :math:`(0, 1)` and :math:`p \in (0,1)`, then the expression ``U < p`` evaluates to ``true`` with probability :math:`p`
+Hint: If :math:`U` is uniform on :math:`(0, 1)` and :math:`p \in (0,1)`, then the expression ``U < p`` evaluates to ``true`` with probability :math:`p`.
 
 
 .. _jbe_ex3:
@@ -868,17 +868,17 @@ Hint: If :math:`U` is uniform on :math:`(0, 1)` and :math:`p \in (0,1)`, then th
 Exercise 3
 --------------
 
-Compute an approximation to :math:`\pi` using Monte Carlo
+Compute an approximation to :math:`\pi` using Monte Carlo.
 
-For random number generation use only ``rand()``
+For random number generation use only ``rand()``.
 
 Your hints are as follows:
 
-* If :math:`U` is a bivariate uniform random variable on the unit square :math:`(0, 1)^2`, then the probability that :math:`U` lies in a subset :math:`B` of :math:`(0,1)^2` is equal to the area of :math:`B`
+* If :math:`U` is a bivariate uniform random variable on the unit square :math:`(0, 1)^2`, then the probability that :math:`U` lies in a subset :math:`B` of :math:`(0,1)^2` is equal to the area of :math:`B`.
 
-* If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets larger, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`
+* If :math:`U_1,\ldots,U_n` are iid copies of :math:`U`, then, as :math:`n` gets larger, the fraction that falls in :math:`B` converges to the probability of landing in :math:`B`.
 
-* For a circle, area = π * :math:`radius^2`
+* For a circle, area = π * :math:`radius^2`.
 
 
 .. _jbe_ex4:
@@ -888,11 +888,11 @@ Exercise 4
 
 Write a program that prints one realization of the following random device:
 
-* Flip an unbiased coin 10 times
-* If 3 consecutive heads occur one or more times within this sequence, pay one dollar
-* If not, pay nothing
+* Flip an unbiased coin 10 times.
+* If 3 consecutive heads occur one or more times within this sequence, pay one dollar.
+* If not, pay nothing.
 
-Once again use only ``rand()`` as your random number generator
+Once again use only ``rand()`` as your random number generator.
 
 
 .. _jbe_ex5:
@@ -910,9 +910,9 @@ Simulate and plot the correlated time series
     \quad \text{and} \quad t = 0,\ldots,n
 
 
-The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
+The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal.
 
-Set :math:`n = 200` and :math:`\alpha = 0.9`
+Set :math:`n = 200` and :math:`\alpha = 0.9`.
 
 
 .. _jbe_ex6:
@@ -920,7 +920,7 @@ Set :math:`n = 200` and :math:`\alpha = 0.9`
 Exercise 6
 ----------------------------------
 
-Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8` and :math:`\alpha = 0.98`
+Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, :math:`\alpha = 0.8` and :math:`\alpha = 0.98`.
 
 (The figure will illustrate how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)
 
@@ -928,7 +928,7 @@ Plot three simulated time series, one for each of the cases :math:`\alpha = 0`, 
 
 Exercise 7
 ----------------------------------
-This exercise is more challenging
+This exercise is more challenging.
 
 Take a random walk, starting from :math:`x_0 = 1`
 
@@ -939,9 +939,9 @@ Take a random walk, starting from :math:`x_0 = 1`
     x_0 = 1
     \quad \text{and} \quad t = 0,\ldots,t_{\max}
 
-* Furthermore, assume that the :math:`x_{t_{\max}} = 0`  (i.e. at :math:`t_{\max}`, the value drops to zero, regardless of its current state)
-* The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal
-* For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`
+* Furthermore, assume that the :math:`x_{t_{\max}} = 0`  (i.e. at :math:`t_{\max}`, the value drops to zero, regardless of its current state).
+* The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal.
+* For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`.
 
 Start with :math:`\sigma = 0.2, \alpha = 1.0`
 
@@ -953,11 +953,11 @@ Start with :math:`\sigma = 0.2, \alpha = 1.0`
 Exercise 8(a)
 ---------------
 
-This exercise is more challenging
+This exercise is more challenging.
 
-The root of a univariate function :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`
+The root of a univariate function :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`.
 
-One solution method to find local roots of smooth functions is called Newton's method
+One solution method to find local roots of smooth functions is called Newton's method.
 
 Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
 
@@ -967,14 +967,14 @@ Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-de
 
 until :math:`| x^{n+1} - x^n|` is below a tolerance
 
-#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept arguments ``f, f_prime, x_0, tolerance, maxiter``
+#.  Use a variation of the ``fixedpointmap`` code to implement Newton's method, where the function would accept arguments ``f, f_prime, x_0, tolerance, maxiter``.
 
-#.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative
+#.  Test it with :math:`f(x) = (x-1)^3` and another function of your choice where you can analytically find the derivative.
 
 Exercise 8(b)
 ---------------
 
-For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation
+For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where ``f_prime`` is calculated with auto-differentiation.
 
 .. code-block:: julia
 
@@ -989,9 +989,9 @@ For those impatient to use more advanced features of Julia, implement a version 
 
     f(0.1), f_prime(0.1)
 
-#. Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative
+#. Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative.
 
-#. Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``
+#. Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``.
 
 
 Solutions
@@ -1041,21 +1041,21 @@ Exercise 2
 Exercise 3
 ----------
 
-Consider a circle with diameter 1 embedded in a unit square
+Consider a circle with diameter 1 embedded in a unit square.
 
-Let :math:`A` be its area and let :math:`r = 1/2` be its radius
+Let :math:`A` be its area and let :math:`r = 1/2` be its radius.
 
 If we know :math:`\pi` then we can compute :math:`A` via
-:math:`A = \pi r^2`
+:math:`A = \pi r^2`.
 
 But the point here is to compute :math:`\pi`, which we can do by
-:math:`\pi = A / r^2`
+:math:`\pi = A / r^2`.
 
 Summary: If we can estimate the area of the unit circle, then dividing
-by :math:`r^2 = (1/2)^2 = 1/4` gives an estimate of :math:`\pi`
+by :math:`r^2 = (1/2)^2 = 1/4` gives an estimate of :math:`\pi`.
 
 We estimate the area by sampling bivariate uniforms and looking at the
-fraction that fall into the unit circle
+fraction that fall into the unit circle.
 
 .. code-block:: julia
 

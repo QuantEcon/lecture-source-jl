@@ -9,7 +9,7 @@ Julia Essentials
 .. contents:: :depth: 2
 
 Having covered a few examples, let's now turn to a more systematic exposition
-of the essential features of the language
+of the essential features of the language.
 
 Overview
 ============
@@ -43,13 +43,13 @@ Like most languages, Julia language defines and provides functions for operating
 * strings
 * arrays, etc...
 
-Let's learn a bit more about them
+Let's learn a bit more about them.
 
 Primitive Data Types
 -------------------------
 
 A particularly simple data type is a Boolean value, which can be either ``true`` or
-``false``
+``false``.
 
 
 .. code-block:: julia
@@ -67,7 +67,7 @@ A particularly simple data type is a Boolean value, which can be either ``true``
     y = 1 > 2  # now y = false
 
 
-.. Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``
+.. Under addition, ``true`` is converted to ``1`` and ``false`` is converted to ``0``.
 ..
 .. .. code-block:: julia
 ..
@@ -80,7 +80,7 @@ A particularly simple data type is a Boolean value, which can be either ``true``
 
 
 The two most common data types used to represent numbers are integers and
-floats
+floats.
 
 (Computers distinguish between floats and integers because arithmetic is
 handled in a different way)
@@ -95,16 +95,16 @@ handled in a different way)
     typeof(1)
 
 
-If you're running a 32 bit system you'll still see ``Float64``, but you will see ``Int32`` instead of ``Int64`` (see `the section on Integer types <https://docs.julialang.org/en/v1.1/manual/integers-and-floating-point-numbers/#Integers-1>`_ from the Julia manual)
+If you're running a 32 bit system you'll still see ``Float64``, but you will see ``Int32`` instead of ``Int64`` (see `the section on Integer types <https://docs.julialang.org/en/v1.1/manual/integers-and-floating-point-numbers/#Integers-1>`_ from the Julia manual).
 
-Arithmetic operations are fairly standard
+Arithmetic operations are fairly standard.
 
 
 .. code-block:: julia
 
     x = 2; y = 1.0;
 
-The ``;`` can be used to suppress output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary
+The ``;`` can be used to suppress output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary.
 
 
 .. code-block:: julia
@@ -122,7 +122,7 @@ The ``;`` can be used to suppress output from a line of code, or to combine two 
     y / x
 
 
-Although the ``*`` can be omitted for multiplication between a numeric literal and a variable
+Although the ``*`` can be omitted for multiplication between a numeric literal and a variable.
 
 
 .. code-block:: julia
@@ -130,18 +130,18 @@ Although the ``*`` can be omitted for multiplication between a numeric literal a
     2x - 3y
 
 
-A useful tool for displaying both expressions and code is to use the ``@show`` macro, which displays the text and the results
+A useful tool for displaying both expressions and code is to use the ``@show`` macro, which displays the text and the results.
 
 .. code-block:: julia
 
     @show 2x - 3y
     @show x + y;
 
-Here we have used ``;`` to suppress the output on the last line, which otherwise returns the results of ``x + y``
+Here we have used ``;`` to suppress the output on the last line, which otherwise returns the results of ``x + y``.
 
 
-.. I don't think this is useful quite yet, though perhaps later with broadcasting
-.. Also, you can use function (instead of infix) notation if you so desire
+.. I don't think this is useful quite yet, though perhaps later with broadcasting.
+.. Also, you can use function (instead of infix) notation if you so desire.
 ..
 .. .. code-block:: julia
 ..
@@ -153,7 +153,7 @@ Here we have used ``;`` to suppress the output on the last line, which otherwise
 ..     *(10, 20)
 
 
-Complex numbers are another primitive data type, with the imaginary part being specified by ``im``
+Complex numbers are another primitive data type, with the imaginary part being specified by ``im``.
 
 
 .. code-block:: julia
@@ -171,16 +171,16 @@ Complex numbers are another primitive data type, with the imaginary part being s
     x * y  # complex multiplication
 
 
-There are several more primitive data types that we'll introduce as necessary
+There are several more primitive data types that we'll introduce as necessary.
 
 
 Strings
 ----------
 
-A string is a data type for storing a sequence of characters
+A string is a data type for storing a sequence of characters.
 
 In Julia, strings are created using double quotation marks (single quotations are
-reserved for the character type)
+reserved for the character type).
 
 
 .. code-block:: julia
@@ -193,19 +193,19 @@ reserved for the character type)
     typeof(x)
 
 
-You've already seen examples of Julia's simple string formatting operations
+You've already seen examples of Julia's simple string formatting operations.
 
 .. code-block:: julia
 
     x = 10; y = 20
 
-The ``$`` inside of a string is used to interpolate a variable
+The ``$`` inside of a string is used to interpolate a variable.
 
 .. code-block:: julia
 
     "x = $x"
 
-With parentheses, you can splice the results of expressions into strings as well
+With parentheses, you can splice the results of expressions into strings as well.
 
 .. code-block:: julia
 
@@ -219,7 +219,7 @@ To concatenate strings use ``*``
     "foo" * "bar"
 
 
-Julia provides many functions for working with strings
+Julia provides many functions for working with strings.
 
 .. code-block:: julia
 
@@ -246,7 +246,7 @@ Julia provides many functions for working with strings
     strip(" foobar ")  # remove whitespace
 
 
-Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info)
+Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info).
 
 .. code-block:: julia
 
@@ -256,11 +256,11 @@ Julia can also find and replace using `regular expressions <https://en.wikipedia
 Containers
 --------------
 
-Julia has several basic types for storing collections of data
+Julia has several basic types for storing collections of data.
 
-We have already discussed arrays
+We have already discussed arrays.
 
-A related data type is a **tuple**, which is immutable and can contain different types
+A related data type is a **tuple**, which is immutable and can contain different types.
 
 .. code-block:: julia
 
@@ -273,11 +273,11 @@ A related data type is a **tuple**, which is immutable and can contain different
     typeof(x), typeof(y)
 
 
-An immutable value is one that cannot be altered once it resides in memory
+An immutable value is one that cannot be altered once it resides in memory.
 
-In particular, tuples do not support item assignment (i.e. ``x[1] = "test"`` would fail)
+In particular, tuples do not support item assignment (i.e. ``x[1] = "test"`` would fail).
 
-Tuples can be constructed with or without parentheses
+Tuples can be constructed with or without parentheses.
 
 
 .. code-block:: julia
@@ -292,7 +292,7 @@ Tuples can be constructed with or without parentheses
     f()
 
 
-Tuples can also be unpacked directly into variables
+Tuples can also be unpacked directly into variables.
 
 
 .. code-block:: julia
@@ -306,7 +306,7 @@ Tuples can also be unpacked directly into variables
     println("word = $word, val = $val")
 
 
-Tuples can be created with a hanging ``,`` -- this is useful to create a tuple with one element
+Tuples can be created with a hanging ``,`` -- this is useful to create a tuple with one element.
 
 .. code-block:: julia
 
@@ -318,7 +318,7 @@ Tuples can be created with a hanging ``,`` -- this is useful to create a tuple w
 Referencing Items
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The last element of a sequence type can be accessed with the keyword ``end``
+The last element of a sequence type can be accessed with the keyword ``end``.
 
 .. code-block:: julia
 
@@ -335,7 +335,7 @@ The last element of a sequence type can be accessed with the keyword ``end``
     x[end-1]
 
 
-To access multiple elements of an array or tuple, you can use slice notation
+To access multiple elements of an array or tuple, you can use slice notation.
 
 .. code-block:: julia
 
@@ -347,7 +347,7 @@ To access multiple elements of an array or tuple, you can use slice notation
     x[2:end]
 
 
-The same slice notation works on strings
+The same slice notation works on strings.
 
 .. code-block:: julia
 
@@ -357,9 +357,9 @@ The same slice notation works on strings
 Dictionaries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Another container type worth mentioning is dictionaries
+Another container type worth mentioning is dictionaries.
 
-Dictionaries are like arrays except that the items are named instead of numbered
+Dictionaries are like arrays except that the items are named instead of numbered.
 
 .. code-block:: julia
 
@@ -371,22 +371,22 @@ Dictionaries are like arrays except that the items are named instead of numbered
     d["age"]
 
 
-The strings ``name`` and ``age`` are called the **keys**
+The strings ``name`` and ``age`` are called the **keys**.
 
-The keys are mapped to **values** (in this case ``"Frodo"`` and ``33``)
+The keys are mapped to **values** (in this case ``"Frodo"`` and ``33``).
 
-They can be accessed via ``keys(d)`` and ``values(d)`` respectively
+They can be accessed via ``keys(d)`` and ``values(d)`` respectively.
 
 
 **Note** Unlike in Python and some other dynamic languages, dictionaries
-are rarely the right approach (ie. often referred to as "the devil's datastructure")
+are rarely the right approach (ie. often referred to as "the devil's datastructure").
 
 The flexibility (i.e. can store anything and use anything as a key) frequently
-comes at the cost of performance if misused
+comes at the cost of performance if misused.
 
 It is usually better to have collections of parameters and results in a named
 tuple, which both provide the compiler with more opportunties to optimize the
-performance, and also makes the code more safe
+performance, and also makes the code more safe.
 
 
 
@@ -396,16 +396,16 @@ Iterating
 ========================
 
 One of the most important tasks in computing is stepping through a
-sequence of data and performing a given action
+sequence of data and performing a given action.
 
-Julia provides neat and flexible tools for iteration as we now discuss
+Julia provides neat and flexible tools for iteration as we now discuss.
 
 Iterables
 ----------------
 
-An iterable is something you can put on the right hand side of ``for`` and loop over
+An iterable is something you can put on the right hand side of ``for`` and loop over.
 
-These include sequence data types like arrays
+These include sequence data types like arrays.
 
 .. code-block:: julia
 
@@ -415,7 +415,7 @@ These include sequence data types like arrays
     end
 
 
-They also include so-called **iterators**
+They also include so-called **iterators**.
 
 You've already come across these types of values
 
@@ -439,11 +439,11 @@ If you ask for the keys of dictionary you get an iterator
     keys(d)
 
 
-This makes sense, since the most common thing you want to do with keys is loop over them
+This makes sense, since the most common thing you want to do with keys is loop over them.
 
-The benefit of providing an iterator rather than an array, say, is that the former is more memory efficient
+The benefit of providing an iterator rather than an array, say, is that the former is more memory efficient.
 
-Should you need to transform an iterator into an array you can always use ``collect()``
+Should you need to transform an iterator into an array you can always use ``collect()``.
 
 
 .. code-block:: julia
@@ -455,7 +455,7 @@ Looping without Indices
 ------------------------
 
 You can loop over sequences without explicit indexing, which often leads to
-neater code
+neater code.
 
 For example compare
 
@@ -477,9 +477,9 @@ For example compare
     end
 
 
-Julia provides some functional-style helper functions (similar to Python and R) to facilitate looping without indices
+Julia provides some functional-style helper functions (similar to Python and R) to facilitate looping without indices.
 
-One is ``zip()``, which is used for stepping through pairs from two sequences
+One is ``zip()``, which is used for stepping through pairs from two sequences.
 
 For example, try running the following code
 
@@ -492,7 +492,7 @@ For example, try running the following code
     end
 
 
-If we happen to need the index as well as the value, one option is to use ``enumerate()``
+If we happen to need the index as well as the value, one option is to use ``enumerate()``.
 
 The following snippet will give you the idea
 
@@ -510,7 +510,7 @@ Comprehensions
 ------------------
 (`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_)
 
-Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. from iterables
+Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. from iterables.
 
 Here are some examples
 
@@ -557,7 +557,7 @@ Comparisons and Logical Operators
 Comparisons
 ---------------------------------
 
-As we saw earlier, when testing for equality we use ``==``
+As we saw earlier, when testing for equality we use ``==``.
 
 
 .. code-block:: julia
@@ -570,23 +570,23 @@ As we saw earlier, when testing for equality we use ``==``
     x == 2
 
 
-For "not equal" use ``!=`` or ``≠`` (``\ne<TAB>``)
+For "not equal" use ``!=`` or ``≠`` (``\ne<TAB>``).
 
 .. code-block:: julia
 
     x != 3
 
-Julia can also test approximate equality with ``≈`` (``\approx<TAB>``)
+Julia can also test approximate equality with ``≈`` (``\approx<TAB>``).
 
 
 .. code-block:: julia
 
     1 + 1E-8 ≈ 1
 
-Be careful when using this, however, as there are subtleties involving the scales of the quantities compared
+Be careful when using this, however, as there are subtleties involving the scales of the quantities compared.
 
 
-.. I think this is a a bad practive
+.. I think this is a a bad practive.
 .. We can chain inequalities:
 ..
 ..
@@ -600,7 +600,7 @@ Be careful when using this, however, as there are subtleties involving the scale
 ..     1 ≤ 2 ≤ 3
 
 
-.. In many languages you can use integers or other values when testing conditions but Julia more rigorously enforces booleans
+.. In many languages you can use integers or other values when testing conditions but Julia more rigorously enforces booleans.
 .. This looked a little odd when reading
 .. .. code-block:: julia
 ..     :class: no-execute
@@ -632,16 +632,16 @@ Here are the standard logical connectives (conjunction, disjunction)
 
 Remember
 
-* ``P && Q`` is ``true`` if both are ``true``, otherwise it's ``false``
+* ``P && Q`` is ``true`` if both are ``true``, otherwise it's ``false``.
 
-* ``P || Q`` is ``false`` if both are ``false``, otherwise it's ``true``
+* ``P || Q`` is ``false`` if both are ``false``, otherwise it's ``true``.
 
 
 User-Defined Functions
 ========================
 
 
-Let's talk a little more about user-defined functions
+Let's talk a little more about user-defined functions.
 
 
 User-defined functions are important for improving the clarity of your code by
@@ -653,18 +653,18 @@ User-defined functions are important for improving the clarity of your code by
 
 Julia functions are convenient:
 
-* Any number of functions can be defined in a given file
+* Any number of functions can be defined in a given file.
 
-* Any "value" can be passed to a function as an argument, including other functions
+* Any "value" can be passed to a function as an argument, including other functions.
 
-* Functions can be (and often are) defined inside other functions
+* Functions can be (and often are) defined inside other functions.
 
-* A function can return any kind of value, including functions
+* A function can return any kind of value, including functions.
 
-We'll see many examples of these structures in the following lectures
+We'll see many examples of these structures in the following lectures.
 
 
-For now let's just cover some of the different ways of defining functions
+For now let's just cover some of the different ways of defining functions.
 
 
 Return Statement
@@ -683,11 +683,11 @@ have identical behavior
         a * b
     end
 
-When no return statement is present, the last value obtained when executing the code block is returned
+When no return statement is present, the last value obtained when executing the code block is returned.
 
-Although some prefer the second option, we often favor the former on the basis that explicit is better than implicit
+Although some prefer the second option, we often favor the former on the basis that explicit is better than implicit.
 
-A function can have arbitrarily many ``return`` statements, with execution terminating when the first return is hit
+A function can have arbitrarily many ``return`` statements, with execution terminating when the first return is hit.
 
 You can see this in action when experimenting with the following function
 
@@ -706,10 +706,10 @@ You can see this in action when experimenting with the following function
 Other Syntax for Defining Functions
 --------------------------------------
 
-For short function definitions Julia offers some attractive simplified syntax
+For short function definitions Julia offers some attractive simplified syntax.
 
 First, when the function body is a simple expression, it can be defined
-without the ``function`` keyword or ``end``
+without the ``function`` keyword or ``end``.
 
 .. code-block:: julia
 
@@ -724,11 +724,11 @@ Let's check that it works
     f(1 / pi)
 
 
-Julia also allows you to define anonymous functions
+Julia also allows you to define anonymous functions.
 
-For example, to define ``f(x) = sin(1 / x)`` you can use ``x -> sin(1 / x)``
+For example, to define ``f(x) = sin(1 / x)`` you can use ``x -> sin(1 / x)``.
 
-The difference is that the second function has no name bound to it
+The difference is that the second function has no name bound to it.
 
 How can you use a function with no name?
 
@@ -750,7 +750,7 @@ Function arguments can be given default values
 
     f(x, a = 1) = exp(cos(a * x))
 
-If the argument is not supplied, the default value is substituted
+If the argument is not supplied, the default value is substituted.
 
 .. code-block:: julia
 
@@ -762,10 +762,10 @@ If the argument is not supplied, the default value is substituted
     f(pi, 2)
 
 
-Another option is to use **keyword** arguments
+Another option is to use **keyword** arguments.
 
 The difference between keyword and standard (positional) arguments is that
-they are parsed and bounded by name rather than the order in the function call
+they are parsed and bounded by name rather than the order in the function call.
 
 For example, in the call
 
@@ -787,9 +787,9 @@ A common scenario in computing is that
 
 * we wish to apply ``f`` to every element of an iterable ``x_vec`` to produce a new result ``y_vec``
 
-In Julia loops are fast and we can do this easily enough with a loop
+In Julia loops are fast and we can do this easily enough with a loop.
 
-For example, suppose that we want to apply ``sin`` to ``x_vec = [2.0, 4.0, 6.0, 8.0]``
+For example, suppose that we want to apply ``sin`` to ``x_vec = [2.0, 4.0, 6.0, 8.0]``.
 
 The following code will do the job
 
@@ -807,13 +807,13 @@ But this is a bit unwieldy so Julia offers the alternative syntax
 
     y_vec = sin.(x_vec)
 
-More generally, if ``f`` is any Julia function, then ``f.`` references the broadcasted version
+More generally, if ``f`` is any Julia function, then ``f.`` references the broadcasted version.
 
-Conveniently, this applies to user-defined functions as well
+Conveniently, this applies to user-defined functions as well.
 
-To illustrate, let's write a function ``chisq`` such that ``chisq(k)`` returns a chi-squared random variable with ``k`` degrees of freedom when ``k`` is an integer
+To illustrate, let's write a function ``chisq`` such that ``chisq(k)`` returns a chi-squared random variable with ``k`` degrees of freedom when ``k`` is an integer.
 
-In doing this we'll exploit the fact that, if we take ``k`` independent standard normals, square them all and sum, we get a chi-squared with ``k`` degrees of freedom
+In doing this we'll exploit the fact that, if we take ``k`` independent standard normals, square them all and sum, we get a chi-squared with ``k`` degrees of freedom.
 
 
 .. code-block:: julia
@@ -824,7 +824,7 @@ In doing this we'll exploit the fact that, if we take ``k`` independent standard
         return sum(z -> z^2, z)  # same as `sum(x^2 for x in z)`
     end
 
-The macro ``@assert`` will check that the next expression evaluates to ``true``, and will stop and display an error otherwise
+The macro ``@assert`` will check that the next expression evaluates to ``true``, and will stop and display an error otherwise.
 
 .. code-block:: julia
 
@@ -832,7 +832,7 @@ The macro ``@assert`` will check that the next expression evaluates to ``true``,
 
 
 Note that calls with integers less than 1 will trigger an assertion failure inside
-the function body
+the function body.
 
 .. code-block:: julia
     :class: skip-test
@@ -846,7 +846,7 @@ Let's try this out on an array of integers, adding the broadcast
 
     chisq.([2, 4, 6])
 
-The broadcasting notation is not simply vectorization, as it is able to "fuse" multiple broadcasts together to generate efficient code
+The broadcasting notation is not simply vectorization, as it is able to "fuse" multiple broadcasts together to generate efficient code.
 
 .. code-block:: julia
 
@@ -862,7 +862,7 @@ A convenience macro for adding broadcasting on every function call is ``@.``
     @. z = x + y - sin(x)
 
 
-Since the ``+, -, =`` operators are functions, behind the scenes this is broadcasting against both the ``x`` and ``y`` vectors
+Since the ``+, -, =`` operators are functions, behind the scenes this is broadcasting against both the ``x`` and ``y`` vectors.
 
 The compiler will fix anything which is a scalar, and otherwise iterate across every vector
 
@@ -874,11 +874,11 @@ The compiler will fix anything which is a scalar, and otherwise iterate across e
     @show f.(a, b) # across both
     @show f.(a, 2); # fix scalar for second
 
-The compiler is only able to detect "scalar" values in this way for a limited number of types (e.g. integers, floating points, etc) and some packages (e.g. Distributions)
+The compiler is only able to detect "scalar" values in this way for a limited number of types (e.g. integers, floating points, etc) and some packages (e.g. Distributions).
 
-For other types, you will need to wrap any scalars in ``Ref`` to fix them, or else it will try to broadcast the value
+For other types, you will need to wrap any scalars in ``Ref`` to fix them, or else it will try to broadcast the value.
 
-Another place that you may use a ``Ref`` is to fix a function parameter you do not want to broadcast over
+Another place that you may use a ``Ref`` is to fix a function parameter you do not want to broadcast over.
 
 .. code-block:: julia
 
@@ -890,32 +890,32 @@ Another place that you may use a ``Ref`` is to fix a function parameter you do n
 Scoping and Closures
 =====================
 
-Since global variables are usually a bad idea, we will concentrate on understanding the role of good local scoping practice
+Since global variables are usually a bad idea, we will concentrate on understanding the role of good local scoping practice.
 
-That said, while many of the variables in these Jupyter notebook are global, we have been careful to write the code so that the entire code could be copied inside of a function
+That said, while many of the variables in these Jupyter notebook are global, we have been careful to write the code so that the entire code could be copied inside of a function.
 
-When copied inside a function, variables become local and functions become closures
+When copied inside a function, variables become local and functions become closures.
 
-**Warning**
+**Warning**.
 
 For/while loops and global variables in Jupyter vs. the REPL:
-* In the current version of Julia, there is a distinction between the use of scope in an interactive Jupyter environment
-* The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts
-* In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply
+* In the current version of Julia, there is a distinction between the use of scope in an interactive Jupyter environment.
+* The description here of globals applies to Jupyter notebooks, and may also apply to the REPL and top-level scripts.
+* In general, you should be creating functions when working with `.jl` files, and the distinction generally won't apply.
 
 For more information on using globals outside of Jupyter,
-(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to become consistent in a future version
+(`see variable scoping documentation <https://docs.julialang.org/en/v1/manual/variables-and-scoping/>`_), though these rules are likely to become consistent in a future version.
 
 Functions
 ---------------
 
-The scope of a variable name determines where it is valid to refer to it, and how clashes between names can occur
+The scope of a variable name determines where it is valid to refer to it, and how clashes between names can occur.
 
-Think of the scope as a list of all of the name bindings of relevant variables
+Think of the scope as a list of all of the name bindings of relevant variables.
 
-Different scopes could contain the same name but be assigned to different things
+Different scopes could contain the same name but be assigned to different things.
 
-An obvious place to start is to notice that functions introduce their own local names
+An obvious place to start is to notice that functions introduce their own local names.
 
 .. code-block:: julia
 
@@ -939,7 +939,7 @@ This would be roughly equivalent to
     end
     g() # run the function
 
-This is also equivalent if the ``y`` was changed to ``x``, since it is a different scope
+This is also equivalent if the ``y`` was changed to ``x``, since it is a different scope.
 
 .. code-block:: julia
 
@@ -949,7 +949,7 @@ This is also equivalent if the ``y`` was changed to ``x``, since it is a differe
     x = 5   # a different `x` than the local variable name
     f(x)    # calling `f` with `x`
 
-The scoping also applies to named arguments in functions
+The scoping also applies to named arguments in functions.
 
 .. code-block:: julia
 
@@ -968,7 +968,7 @@ Due to scoping, you could write this as
     y = 2
     f(x; y = y) # left hand `y` is the local name of the argument in the function
 
-Similarly to named arguments, the local scope also works with named tuples
+Similarly to named arguments, the local scope also works with named tuples.
 
 .. code-block:: julia
 
@@ -982,7 +982,7 @@ Similarly to named arguments, the local scope also works with named tuples
     # create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
     (x = x, y = y)
 
-As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places
+As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using ``x`` and ``y`` in both places.
 
 In fact, it frequently leads to clear code closer to the math when you don't need to specify intermediaries.
 
@@ -1000,7 +1000,7 @@ Another example is with broadcasting
 Closures
 ---------------
 
-Frequently, you will want to have a function that calculates a value given some fixed parameters
+Frequently, you will want to have a function that calculates a value given some fixed parameters.
 
 .. code-block:: julia
 
@@ -1008,7 +1008,7 @@ Frequently, you will want to have a function that calculates a value given some 
 
     f(1, 0.2)
 
-While the above was convenient, there are other times when you want to simply fix a variable or refer to something already calculated
+While the above was convenient, there are other times when you want to simply fix a variable or refer to something already calculated.
 
 .. code-block:: julia
 
@@ -1016,10 +1016,10 @@ While the above was convenient, there are other times when you want to simply fi
     f(x) = a * x^2     # refers to the `a` in the outer scope
     f(1)               # univariate function
 
-When the function ``f`` is parsed in Julia, it will look to see if any of the variables are already defined in the current scope
+When the function ``f`` is parsed in Julia, it will look to see if any of the variables are already defined in the current scope.
 
 In this case, it finds the ``a`` since it was defined previously, whereas if the
-code defines ``a = 0.2`` **after** the ``f(x)`` definition, it would fail
+code defines ``a = 0.2`` **after** the ``f(x)`` definition, it would fail.
 
 This also works when embedded in other functions
 
@@ -1031,13 +1031,13 @@ This also works when embedded in other functions
     end
     g(0.2)
 
-Comparing the two:  the key here is not that ``a`` is a global variable, but rather that the ``f`` function is defined to capture a variable from an outer scope
+Comparing the two:  the key here is not that ``a`` is a global variable, but rather that the ``f`` function is defined to capture a variable from an outer scope.
 
-This is called a **closure**, and are used throughout the lectures
+This is called a **closure**, and are used throughout the lectures.
 
-It is generally bad practice to modify the captured variable in the function, but otherwise the code becomes very clear
+It is generally bad practice to modify the captured variable in the function, but otherwise the code becomes very clear.
 
-One place where this can be helpful is in a string of dependent calculations
+One place where this can be helpful is in a string of dependent calculations.
 
 For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b = g(a), c = h(a, b)` where :math:`f(x) = x^2, g(a) = 2 a, h(a, b) = a + b`
 
@@ -1055,9 +1055,9 @@ For example, if you wanted to calculate a ``(a, b, c)`` from :math:`a = f(x), b 
 Higher-Order Functions
 -------------------------
 
-One of the benefits of working with closures and functions is that you can return them from other functions
+One of the benefits of working with closures and functions is that you can return them from other functions.
 
-This leads to some natural programming patterns we have already been using, where we can use **functions of functions** and **functions returning functions** (or closures)
+This leads to some natural programming patterns we have already been using, where we can use **functions of functions** and **functions returning functions** (or closures).
 
 To see a simple example, consider functions that accept other functions (including closures)
 
@@ -1072,9 +1072,9 @@ To see a simple example, consider functions that accept other functions (includi
     g(x) = a * x
     @show twice(g, 2.0);   # using a closure
 
-This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic
+This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic.
 
-One example of using this in a library is `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_, where we can pass a function to the ``expectation`` function
+One example of using this in a library is `Expectations.jl <https://github.com/QuantEcon/Expectations.jl>`_, where we can pass a function to the ``expectation`` function.
 
 .. code-block:: julia
 
@@ -1085,7 +1085,7 @@ One example of using this in a library is `Expectations.jl <https://github.com/Q
     f(x) = x^2
     @show expectation(f, d);  # E(f(x))
 
-Another example is for a function that returns a closure itself
+Another example is for a function that returns a closure itself.
 
 .. code-block:: julia
 
@@ -1125,7 +1125,7 @@ You can create and define using ``function`` as well
 Loops
 ---------------
 
-The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about them the same way you would a function/closure
+The ``for`` and ``while`` loops also introduce a local scope, and you can roughly reason about them the same way you would a function/closure.
 
 In particular
 
@@ -1142,7 +1142,7 @@ In particular
         println(i)
     end
 
-On the other hand just as with closures, if a variable is already defined it will be available in the inner scope
+On the other hand just as with closures, if a variable is already defined it will be available in the inner scope.
 
 .. code-block:: julia
 
@@ -1171,9 +1171,9 @@ Similarly, for while loops
 A Quick Check for Scoping Design
 ---------------------------------------------
 
-While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout
+While we have argued against global variables as poor practice, you may have noticed that in Jupyter notebooks we have been using them throughout.
 
-Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of functions
+Here, global variables are used in an interactive editor because they are convenient, and not because they are essential to the design of functions.
 
 A simple test of the difference is to take a segment of code and wrap it in a function, for example
 
@@ -1189,7 +1189,7 @@ A simple test of the difference is to take a segment of code and wrap it in a fu
 
     println("z = $z")
 
-Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``x``, and the global variable ``z`` is modified in the ``for`` loop
+Here, the ``x`` and ``z`` are global variables, the function ``f`` refers to the global variable ``x``, and the global variable ``z`` is modified in the ``for`` loop.
 
 However, you can simply wrap the entire code in a function
 
@@ -1209,9 +1209,9 @@ However, you can simply wrap the entire code in a function
 
     wrapped()
 
-Now, there are no global variables
+Now, there are no global variables.
 
-While it is convenient to skip wrapping our code throughout, in general you will want to wrap any performance sensitive code in this way
+While it is convenient to skip wrapping our code throughout, in general you will want to wrap any performance sensitive code in this way.
 
 Exercises
 ============
@@ -1223,13 +1223,13 @@ Exercise 1
 ---------------
 
 Part 1: Given two numeric arrays or tuples ``x_vals`` and ``y_vals`` of equal length, compute
-their inner product using ``zip()``
+their inner product using ``zip()``.
 
-Part 2: Using a comprehension, count the number of even numbers between 0 and 99
+Part 2: Using a comprehension, count the number of even numbers between 0 and 99.
 
 * Hint: ``iseven`` returns ``true`` for even numbers and ``false`` for odds.
 
-Part 3: Using a comprehension, take ``pairs = ((2, 5), (4, 2), (9, 8), (12, 10))`` and count the number of pairs ``(a, b)`` such that both ``a`` and ``b`` are even
+Part 3: Using a comprehension, take ``pairs = ((2, 5), (4, 2), (9, 8), (12, 10))`` and count the number of pairs ``(a, b)`` such that both ``a`` and ``b`` are even.
 
 
 .. _pyess_ex2:
@@ -1247,7 +1247,7 @@ Consider the polynomial
     = \sum_{i=0}^n a_i x^i
 
 
-Using ``enumerate()`` in your loop, write a function ``p`` such that ``p(x, coeff)`` computes the value in :eq:`polynom0` given a point ``x`` and an array of coefficients ``coeff``
+Using ``enumerate()`` in your loop, write a function ``p`` such that ``p(x, coeff)`` computes the value in :eq:`polynom0` given a point ``x`` and an array of coefficients ``coeff``.
 
 
 .. _pyess_ex3:
@@ -1255,9 +1255,9 @@ Using ``enumerate()`` in your loop, write a function ``p`` such that ``p(x, coef
 Exercise 3
 --------------
 
-Write a function that takes a string as an argument and returns the number of capital letters in the string
+Write a function that takes a string as an argument and returns the number of capital letters in the string.
 
-Hint: ``uppercase("foo")`` returns ``"FOO"``
+Hint: ``uppercase("foo")`` returns ``"FOO"``.
 
 
 .. _pyess_ex4:
@@ -1267,9 +1267,9 @@ Exercise 4
 
 Write a function that takes two sequences ``seq_a`` and ``seq_b`` as arguments and
 returns ``true`` if every element in ``seq_a`` is also an element of ``seq_b``, else
-``false``
+``false``.
 
-* By "sequence" we mean an array, tuple or string
+* By "sequence" we mean an array, tuple or string.
 
 
 .. _pyess_ex5:
@@ -1277,34 +1277,34 @@ returns ``true`` if every element in ``seq_a`` is also an element of ``seq_b``, 
 Exercise 5
 ------------
 
-The Julia libraries include functions for interpolation and approximation
+The Julia libraries include functions for interpolation and approximation.
 
-Nevertheless, let's write our own function approximation routine as an exercise
+Nevertheless, let's write our own function approximation routine as an exercise.
 
 In particular, write a function ``linapprox`` that takes as arguments
 
-* A function ``f`` mapping some interval :math:`[a, b]` into :math:`\mathbb R`
+* A function ``f`` mapping some interval :math:`[a, b]` into :math:`\mathbb R`.
 
-* two scalars ``a`` and ``b`` providing the limits of this interval
+* two scalars ``a`` and ``b`` providing the limits of this interval.
 
-* An integer ``n`` determining the number of grid points
+* An integer ``n`` determining the number of grid points.
 
-* A number ``x`` satisfying ``a ≤ x ≤ b``
+* A number ``x`` satisfying ``a ≤ x ≤ b``.
 
-and returns the `piecewise linear interpolation <https://en.wikipedia.org/wiki/Linear_interpolation>`_ of ``f`` at ``x``, based on ``n`` evenly spaced grid points ``a = point[1] < point[2] < ... < point[n] = b``
+and returns the `piecewise linear interpolation <https://en.wikipedia.org/wiki/Linear_interpolation>`_ of ``f`` at ``x``, based on ``n`` evenly spaced grid points ``a = point[1] < point[2] < ... < point[n] = b``.
 
-Aim for clarity, not efficiency
+Aim for clarity, not efficiency.
 
-Hint: use the function ``range`` to linearly space numbers
+Hint: use the function ``range`` to linearly space numbers.
 
 Exercise 6
 ---------------------------------
 
-The following data lists US cities and their populations
+The following data lists US cities and their populations.
 
-Copy this text into a text file called ``us_cities.txt`` and save it in your present working directory
+Copy this text into a text file called ``us_cities.txt`` and save it in your present working directory.
 
-* That is, save it in the location Julia returns when you call ``pwd()``
+* That is, save it in the location Julia returns when you call ``pwd()``.
 
 This can also be achieved by running the following Julia code:
 
@@ -1324,13 +1324,13 @@ This can also be achieved by running the following Julia code:
     end
 
 
-Write a program to calculate total population across these cities
+Write a program to calculate total population across these cities.
 
 Hints:
 
-* If ``f`` is a file type then ``eachline(f)`` provides an iterable that steps you through the lines in the file
+* If ``f`` is a file type then ``eachline(f)`` provides an iterable that steps you through the lines in the file.
 
-* ``parse(Int, "100")`` converts the string ``"100"`` into an integer
+* ``parse(Int, "100")`` converts the string ``"100"`` into an integer.
 
 .. _pyess_ex7:
 
@@ -1339,13 +1339,13 @@ Exercise 7
 
 Redo Exercise 5 except 
 
-1. Pass in a range instead of the ``a, b,`` and ``n``.  Test with a range such as ``nodes = -1.0:0.5:1.0``
-2. Instead of the ``while`` used in the solution to Exercise 5, find a better way to efficiently bracket the ``x`` in the nodes
+1. Pass in a range instead of the ``a, b,`` and ``n``.  Test with a range such as ``nodes = -1.0:0.5:1.0``.
+2. Instead of the ``while`` used in the solution to Exercise 5, find a better way to efficiently bracket the ``x`` in the nodes.
 
 Hints: 
-* Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should be called as ``function linapprox(f, nodes, x)``
-* ``step(nodes), length(nodes), nodes[1]``, and ``nodes[end]`` may be useful
-* Type ``?÷`` into jupyter to explore quotients from Euclidean division for more efficient bracketing
+* Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should be called as ``function linapprox(f, nodes, x)``.
+* ``step(nodes), length(nodes), nodes[1]``, and ``nodes[end]`` may be useful.
+* Type ``?÷`` into jupyter to explore quotients from Euclidean division for more efficient bracketing.
 
 
 Solutions
