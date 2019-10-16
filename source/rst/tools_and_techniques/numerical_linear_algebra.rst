@@ -16,17 +16,17 @@ Numerical Linear Algebra and Factorizations
 Overview
 ============
 
-In particular, we will examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
-discuss how it can be exploited to radically increase the performance of solving the problems.  
+In this lecture, we examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
+discuss how it can be exploited to radically increase the performance of solving large problems.
 
-We build on :doc:`linear algebra <linear_algebra>`, :doc:`orthogonal projections <orth_proj>`, and :doc:`finite Markov Chains <finite_markov>`.
+We build on applications discussed in previous lectures: :doc:`linear algebra <linear_algebra>`, :doc:`orthogonal projections <orth_proj>`, and :doc:`Markov chains <finite_markov>`.
 
-The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems.  In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach with iterative algorithms, and generalized the matrices as linear operators.y
+The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems of equations.  In :doc:`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach, using iterative algorithms, where matrices can be thought up more generally as linear operators.
 
 The list of specialized packages for these tasks is enormous and growing, but some of the important organizations to
 look at are `JuliaMatrices <https://github.com/JuliaMatrices>`_ , `JuliaSparse <https://github.com/JuliaSparse>`_, and `JuliaMath <https://github.com/JuliaMath>`_
 
-**NOTE** This lecture explores techniques linear algebra, with an emphasis on large systems.  You may wish to review multiple-dispatch and generic programming in  :doc:`introduction to types <../getting_starting_julia/introduction_to_types>`, and consider further study on :doc:`generic programming <../more_julia/generic_programming>`.
+*NOTE*: You may wish to review multiple-dispatch and generic programming in  :doc:`introduction to types <../getting_starting_julia/introduction_to_types>`, and consider further study on :doc:`generic programming <../more_julia/generic_programming>`.
 
 Setup
 ------------------
@@ -43,68 +43,83 @@ Setup
 Applications
 ------------
 
-Some key questions to motivate the lecture.  Is the following a computationally expensive operation as the size of the matrix increases?
+We will consider variations on three classic problems
 
-- Multiplying two matrices?  It depends.  Multiplying 2 diagonals is trivial.
-- Solving a linear system of equations?  It depends.  If the matrix is the identity, the solution is the vector itself.
-- Finding the eigenvalues of a matrix?  It depends.  The eigenvalues of a triangular matrix are the diagonal.
+1.  Solving a linear system for a square :math:`A` where we will maintain throughout there is a unique solution.
 
-With that in mind, in this section lecture, we consider variations on three classic problems.
 
-First is the solution to
+    .. math::
 
-.. math::
+        A x = b
 
-    A x = b
+    On paper, since the `Invertible Matrix Theorem <https://en.wikipedia.org/wiki/Invertible_matrix#The_invertible_matrix_theorem>`_ tells us a unique solution is
+    equivalent to :math:`A` being invertible, we often write the solution as
 
-for a square :math:`A` where we will maintain throughout there is a unique solution.
 
-On paper, since the `Invertible Matrix Theorem <https://en.wikipedia.org/wiki/Invertible_matrix#The_invertible_matrix_theorem>`_ tells us a unique solution is
-equivalent to :math:`A` being invertible, we often write the solution as
+    .. math::
 
-.. math::
+        x = A^{-1} b
 
-    x = A^{-1} b
 
-Second, in the case of a rectangular matrix, :math:`A` we consider the `linear least-squares <https://en.wikipedia.org/wiki/Linear_least_squares>`_ solution
-to
+2.  In the case of a rectangular matrix, :math:`A` consider the `linear least-squares <https://en.wikipedia.org/wiki/Linear_least_squares>`_ solution to
 
-.. math::
+    .. math::
 
-    \min_x \| Ax -b \|^2
+        \min_x \| Ax -b \|^2
 
-From theory, we know that :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
+    From theory, we know that :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
 
-.. math::
 
-    x = (A'A)^{-1}A'b
+    .. math::
 
-And finally, consider the eigenvalue problem of finding :math:`x` and :math:`\lambda` such that
+        x = (A'A)^{-1}A'b
 
-.. math::
 
-    A x = \lambda x
+3.  Finally, consider the eigenvalue problem of finding :math:`x` and :math:`\lambda` such that
 
-For the eigenvalue problems.  Keep in mind that that you do not always require all of the :math:`\lambda`, and sometimes the largest (or smallest) would be enough.  For example, calculating the spectral radius only requires the maximum eigenvalue in absolute value.
+    .. math::
+
+        A x = \lambda x
+
+    For the eigenvalue problems.  Keep in mind that that you do not always require all of the :math:`\lambda`, and sometimes the largest (or smallest) would be enough.  For example, calculating the spectral radius only requires the maximum eigenvalue in absolute value.
 
 The theme of this lecture, and numerical linear algebra in general, comes down to three principles:
 
 #. **identify structure** (e.g. `symmetric, sparse, diagonal,etc. <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#Special-matrices-1>`_) of :math:`A` in order to use **specialized algorithms**
 #. **do not lose structure** by applying the wrong linear algebra operations at the wrong times (e.g. sparse matrix becoming dense)
-#. understand the **computational complexity** of each algorithm
+#. understand the **computational complexity** of each algorithm, given the structure
 
 Computational Complexity
 ------------------------
 
-As the goal of this section is to move towards numerical linear algebra of large systems, we need to understand how well algorithms scale with size.  This notion is called `computational complexity <https://en.wikipedia.org/wiki/Computational_complexity>`_.
+Ask yourself whether the following is a **computationally expensive** operation as the matrix **size increases**
+
+- Multiplying two matrices?
+
+    - *Answer*: It depends.  Multiplying 2 diagonal matrices is trivial.
+
+- Solving a linear system of equations?
+
+    - *Answer*: It depends.  If the matrix is the identity, the solution is the vector itself.
+
+- Finding the eigenvalues of a matrix?
+
+    - *Answer*: It depends.  The eigenvalues of a triangular matrix are the diagonal.
+
+As the goal of this section is to move towards numerical methods with large systems, we need to understand how well algorithms scale with the size of matrices/vectors/etc.  This is known as `computational complexity <https://en.wikipedia.org/wiki/Computational_complexity>`_.  As we saw in the answer to the questions above, the algorithm - and hence the computational complexity - changes based on matrix structure.
 
 While this notion of complexity can work at various levels such as the number of `significant digits <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Arithmetic_functions>`_ for basic mathematical operations, the amount of memory and storage required, or the amount of time) - but we will typically focus on the time-complexity.
 
-For time-complexity, the ``N`` is usually the dimensionality of the problem, although occasionally the key will be the number of non-zeros in the matrix or width of bands.  For our applications, time-complexity is best thought of as the number of floating point operations (e.g. add, multiply, etc.) required.
+For time-complexity, the size :math:`N` is usually the dimensionality of the problem, although occasionally the key will be the number of non-zeros in the matrix or width of bands.  For our applications, time-complexity is best thought of as the number of floating point operations (e.g. add, multiply, etc.) required.
+
+Notation
+~~~~~~~~
 
 Complexity of algorithms is typically written in `Big O <https://en.wikipedia.org/wiki/Big_O_notation>`_ notation which provides bounds on the scaling.
 
-Formally, we can write this as :math:`f(N) = O(g(N)) \text{ as} N \to \infty` wher the interpretation is that there exists some constants :math:`M, N_0` such that
+Formally, if the number of operations required for a problem size :math:`N` is :math:`f(N)`, we  can write this as :math:`f(N) = O(g(N))` for some :math:`g(N)` - typically a polynomial.
+
+The interpretation is that there exists some constants :math:`M, N_0` such that
 
 .. math::
 
@@ -116,25 +131,25 @@ eventually the number of floating point operations required decompose a matrix o
 Keep in mind that these are asymptotic results intended to understanding the scaling of the problem, and the constant can matter for a given
 fixed size.
 
-For example, the number of operations required for an `LU decomposition <https://en.wikipedia.org/wiki/LU_decomposition#Algorithms>`_ of a dense :math:`N \times N` matrix :math:`2/3 N^3`, ignoring the :math:`N^2` and lower terms.  However, sparse matrix algorithms instead scale with the number of non-zeros in the matrix instead.
+For example, the number of operations required for an `LU decomposition <https://en.wikipedia.org/wiki/LU_decomposition#Algorithms>`_ of a dense :math:`N \times N` matrix :math:`f(N) = \frac{2}{3} N^3`, ignoring the :math:`N^2` and lower terms.  Other methods of solving a linear system may have different constants of proportionality, even if they have the same scaling :math:`O(N^3)`.
 
 Rules of Computational Complexity
 ------------------------------------
 
-When combining algorithms, you will sometimes need to think through how `combining algorithms  <https://en.wikipedia.org/wiki/Big_O_notation#Properties>`_ changes complexity.  For example, if you do,
+When combining algorithms, you will sometimes need to think through how `combining algorithms  <https://en.wikipedia.org/wiki/Big_O_notation#Properties>`_ changes complexity.  For example, if you use
 
-#. an :math:`O(N^3)` operation :math:`P` times, then it simply changes the constant and remains :math:`O(N^3)`
-#. one :math:`O(N^3)` operation and another :math:`O(N^2)` one, then you take the max, which does not change the scale :math:`O(N^3)`
-#. a repetition of a :math:`O(N)` operation that itself uses an :math:`O(N)` one, you take the product, and the complexity becomes :math:`O(N^2)`
+#. an :math:`O(N^3)` operation :math:`P` times, then it simply changes the constant. The complexity remains :math:`O(N^3)`
+#. one :math:`O(N^3)` operation and another :math:`O(N^2)` one, then you take the max.  The complexity remains :math:`O(N^3)`
+#. a repetition of a :math:`O(N)` operation that itself uses an :math:`O(N)` one, you take the product.  The complexity becomes :math:`O(N^2)`
 
 
-With this, there is a word of caution: dense matrix-multiplication is an `expensive operation <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Matrix_algebra>`_ for unstructured matrices, and the basic version is :math:`O(N^3)`.
+With this, we have an important word of caution: dense matrix-multiplication is an `expensive operation <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Matrix_algebra>`_ for unstructured matrices, and the basic version is :math:`O(N^3)`.
 
 Of course, modern libraries use highly turned and `careful algorithms <https://en.wikipedia.org/wiki/Matrix_multiplication_algorithm>`_ to multiply matrices and exploit the computer architecture, memory cache, etc., but this simply lowers the constant of proportionality and they remain :math:`O(N^3)`.
 
-A consequence is that, since many algorithms require matrix-matrix multiplication, it means that it is usually not possible to go below that order without further matrix structure.
+A consequence is that, since many algorithms require matrix-matrix multiplication, it is often not possible to go below that order without further matrix structure.
 
-That is, changing the constant of proportionality for a given size can help, but in order to achieve higher scaling you need to identify matrix structure and ensure your operations do not lose it.
+That is, changing the constant of proportionality for a given size can help, but in order to achieve higher scaling you need to identify matrix structure (e.g. tridigonal, sparse, etc.) and ensure your operations do not lose it.
 
 
 Losing Structure
@@ -144,13 +159,13 @@ As a first example of a structured matrix, consider a `sparse arrays <https://do
 
 .. code-block:: julia
 
-    A = sprand(10, 10, 0.45)  # random 10x10, 45% filled with non-zeros
+    A = sprand(10, 10, 0.45)  # random sparse 10x10, 45 percent filled with non-zeros
 
     @show nnz(A)  # counts the number of non-zeros
-    invA = sparse(inv(Array(A)))  # Julia won't even invert sparse directly
+    invA = sparse(inv(Array(A)))  # Julia won't invert sparse so convert to dense with Array.
     @show nnz(invA);
 
-This increase from 45 to 100 percent dense demonstrates that significant sparsity can be lost when calculating an inverse.
+This increase from less than 50 to 100 percent dense demonstrates that significant sparsity can be lost when calculating an inverse.
 
 
 The results can be even more extreme.  Consider a tridiagonal matrix of size :math:`N \times N`
@@ -182,7 +197,7 @@ This also applies to the :math:`A' A` operation in the normal equations of LLS.
 While there is some variation based on the randoms chosen, we see that a 30 percent dense matrix becomes almost full dense
 after the product is taken.
 
-**Sparsity/Structure is not just for storage**:  While we have been emphasizing counting the non-zeros as a heuristic, the primary reason to maintain structure
+*Sparsity/Structure is not just for storage*:  While we have been emphasizing counting the non-zeros as a useful heuristic, the primary reason to maintain structure
 and sparsity is not for using less memory to store the matrices.
 
 Size can sometimes become important (e.g. a 1 million by 1 million tridiagonal matrix needs to store 3 million numbers (i.e, about 6MB of memory), where a dense one requires 1 trillion (i.e., about 1TB of memory).
@@ -210,7 +225,7 @@ Then, take away structure to see the impact on performance,
     A_sparse = sparse(A)
     A_dense = Array(A)
 
-    # benchmark solution to system A x = b and A * B
+    # benchmark solution to system A x = b
     benchmark_solve(A, b)
     benchmark_solve(A_sparse, b)
     benchmark_solve(A_dense, b);
@@ -218,57 +233,9 @@ Then, take away structure to see the impact on performance,
 This example shows what is at stake:  using a structured tridiagonal may be 10-20x faster than using a sparse matrix which is 100x faster then
 using a dense matrix.
 
-In fact, the difference becomes more extreme as the matrices grow.  Solving a tridiagonal system is an :math:`O(N)` while that of a dense matrix without any structure is :math:`O(N^3)`.  The complexity of a sparse solution is more complicated, but roughly scales by :math:`O(nnz(N))`, i.e. the number of nonzeros.
+In fact, the difference becomes more extreme as the matrices grow.  Solving a tridiagonal system is :math:`O(N)` while that of a dense matrix without any structure is :math:`O(N^3)`.  The complexity of a sparse solution is more complicated, and scales in part by the ``nnz(N)``, i.e. the number of nonzeros.
 
-
-Simple Examples
-===============
-
-
-Inverting Matrices
-------------------
-
-To begin, consider a simple linear system of a dense matrix
-
-.. code-block:: julia
-
-    N = 4
-    A = rand(N,N)
-    b = rand(N)
-
-On paper, we to solve for :math:`A x = b` by inverting the matrix,
-
-.. code-block:: julia
-
-    x = inv(A) * b
-
-As we will see, inverting matrices should be used for theory, not for code.  The classic advice that you should `never invert a matrix <https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix>`_ may be `slightly exaggerated <https://arxiv.org/abs/1201.6035>`_, but is generally good advice.  In fact, the methods used by libraries to invert matrices typically calculate the same factorizations used for computing a system of equations.
-
-To summarize the wisdom: solving a system by inverting a matrix is always a little slower, potentially less accurate, and will often lose crucial sparsity.
-
-
-Triangular Matrices and Back/Forward Substitution
---------------------------------------------------
-
-To begin, consider solving a system with an ``UpperTriangular`` matrix,
-
-.. code-block:: julia
-
-    b = [1.0, 2.0, 3.0]
-    U = UpperTriangular([1.0 2.0 3.0; 0.0 5.0 6.0; 0.0 0.0 9.0])
-
-This system is especially easy to solve using `back-substitution <https://en.wikipedia.org/wiki/Triangular_matrix#Forward_and_back_substitution>`_.  In particular, :math:`x_3 = b_3 / U_{33}, x_2 = (b_2 - x_3 U_{23})/U_{22}`, etc.
-
-.. code-block:: julia
-
-    U \ b
-
-
-A ``LowerTriangular`` has similar properties and can be solved with forward-substitution.  For these matrices, no further matrix factorization is needed.
-
-The computational order of back-substitution and forward-substitution is :math:`O(N^2)` for dense matrices.
-
-A Warning on Matrix Multiplication
+Matrix Multiplication
 -----------------------------------
 
 Why we write matrix multiplications in our algebra with abandon, in practice the operation scales very poorly without any matrix structure.
@@ -280,9 +247,7 @@ Sparse matrix multiplication, on the other hand, is :math:`O(N M_A M_B)` where :
 
 By the rules of computational order, that means any algorithm this means that any algorithm requiring a matrix multiplication of dense matrices requires at least :math:`O(N^3)` operation.
 
-The other important question is what is the structure of the resulting matrix. As always, we want to avoid losing 
-
-For example, multiplying an upper triangular by a lower triangular
+The other important question is what is the structure of the resulting matrix.  For example, multiplying an upper triangular by a lower triangular
 
 .. code-block:: julia
 
@@ -310,7 +275,91 @@ On the other hand, a tridiagonal times a diagonal is still a tridiagonal and :ma
 Factorizations
 ===============
 
-When you tell a numerical analyst you are solving a linear system directly, their first question is "which factorization?"
+When you tell a numerical analyst you are solving a linear system using direct methods, their first question is "which factorization?".
+
+Just as you can factorize a number (e.g. :math:`6 = 3 \times 2`) you can factorize a matrix as the product of other, more
+convenient matrices (e.g. :math:`A = L U` or :math:`A = Q R` where :math:`L, U, Q,` and :math:`R` have properties such as being triangular or `orthogonal <https://en.wikipedia.org/wiki/Orthogonal_matrix>`_ ).
+
+Inverting Matrices
+------------------
+
+What if we do not use a factorization?
+
+Take a simple linear system of a dense matrix,
+
+.. code-block:: julia
+
+    N = 4
+    A = rand(N,N)
+    b = rand(N)
+
+On paper, we to solve for :math:`A x = b` by inverting the matrix,
+
+.. code-block:: julia
+
+    x = inv(A) * b
+
+As we will see throughout, inverting matrices should be used for theory, not for code.  The classic advice that you should `never invert a matrix <https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix>`_ may be `slightly exaggerated <https://arxiv.org/abs/1201.6035>`_, but is generally good advice.  In fact, the methods used by libraries to invert matrices typically calculate the same factorizations used for computing a system of equations.
+
+Solving a system by inverting a matrix is always a little slower, potentially less accurate, and will often lose crucial sparsity.
+
+Even if you need to solve a system with the same matrix multiple times, you are better off factoring the matrix and using the solver rather than calculating an inverse.
+
+For example, 
+
+.. code-block:: julia
+
+    N = 100
+    A = rand(N,N)
+    M = 30
+    B = rand(N,M)
+    function solve_inverting(A, B)
+        A_inv = inv(A)
+        X = similar(B)
+        for i in 1:size(B,2)
+            X[:,i] = A_inv * B[:,i]
+        end
+        return X
+    end
+
+    function solve_factoring(A, B)
+        X = similar(B)
+        A = factorize(A)
+        for i in 1:size(B,2)
+            X[:,i] = A \ B[:,i]
+        end
+        return X
+    end
+
+
+    # even better, use built-in feature for multiple RHS
+    solve_multiple_rhs(A, B) = A \ B        
+
+    @btime solve_inverting($A, $B)
+    @btime solve_factoring($A, $B)
+    @btime solve_multiple_rhs($A, $B);
+
+Triangular Matrices and Back/Forward Substitution
+--------------------------------------------------
+
+Some matrices are already in a convenient form and require no further factoring.
+
+For example, consider solving a system with an ``UpperTriangular`` matrix,
+
+.. code-block:: julia
+
+    b = [1.0, 2.0, 3.0]
+    U = UpperTriangular([1.0 2.0 3.0; 0.0 5.0 6.0; 0.0 0.0 9.0])
+
+This system is especially easy to solve using `back-substitution <https://en.wikipedia.org/wiki/Triangular_matrix#Forward_and_back_substitution>`_.  In particular, :math:`x_3 = b_3 / U_{33}, x_2 = (b_2 - x_3 U_{23})/U_{22}`, etc.
+
+.. code-block:: julia
+
+    U \ b
+
+A ``LowerTriangular`` has similar properties and can be solved with forward-substitution.  The computational order of back-substitution and forward-substitution is :math:`O(N^2)` for dense matrices.
+
+No further factorizations of a matrix are required, and the triangular structure is often a target of factorizations in order to exploit those efficient :math:`O(N^2)` algorithms.
 
 .. _jl_decomposition:
 
@@ -377,7 +426,9 @@ problem into two sub-problems.
     U x &= y
     \end{aligned}
 
-To demonstrate this, we can solve it by first using
+As we saw above, this is the solution to two triangular systems, which can be efficiently done with back or forward substitution in :math:`O(N^2)` operations.
+
+To demonstrate this, first using
 
 .. code-block:: julia
 
@@ -400,8 +451,8 @@ The LU decomposition also has specialized algorithms for structured matrices, su
 This factorization is the key to the performance of the ``A \ b`` in this case.  For Tridiagonal matrices, the
 LU decomposition is :math:`O(N^2)`.
 
-Finally, just as a dense matrix without any structure will tend to use a LU decomposition to solve systems,
-so will a sparse matrix
+Finally, just as a dense matrix without any structure use an LU decomposition to solve a system,
+so will the sparse solvers
 
 .. code-block:: julia
 
@@ -418,10 +469,10 @@ With sparsity, the computational order is related to the number of non-zeros rat
 Cholesky Decomposition
 -----------------------
 
-For real, symmetric, positive definitive matrices, a Cholesky decomposition is a specialized version of the LU decomposition where :math:`L = U'`.
+For real, symmetric, `positive definitive <https://en.wikipedia.org/wiki/Definiteness_of_a_matrix>`_ matrices, a Cholesky decomposition is a specialized example of the LU decomposition where :math:`L = U'`.
 
 
-The Cholesky is directly useful on its own (e.g. :doc:`Classical Control with Linear Algebra<../time_series_models/classical_filtering>`) but it is also an efficient factorization to solve symmetric positive definite system.
+The Cholesky is directly useful on its own (e.g. :doc:`Classical Control with Linear Algebra <../time_series_models/classical_filtering>`) but it is also an efficient factorization to solve symmetric positive definite system.
 
 As always, symmetry allows specialized algorithms.
 
@@ -430,12 +481,12 @@ As always, symmetry allows specialized algorithms.
     N = 500
     B = rand(N,N)
     A_dense = B' * B  # an easy way to generate a symmetric positive definite matrix
-    A = Symmetric(A_dense)
+    A = Symmetric(A_dense)  # flags the matrix as symmetric
 
     factorize(A) |> typeof
 
 Here, the :math:`A` decomposition is `Bunch-Kaufman <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#LinearAlgebra.bunchkaufman>`_ rather than a 
-Cholesky, because Julia doesn't know the matrix is positive definite.  We can manually factorize with a cholesky,
+Cholesky, because Julia doesn't know the matrix is positive definite.  We can manually factorize with a Cholesky,
 
 .. code-block:: julia
 
@@ -455,7 +506,7 @@ Benchmarking,
 QR Decomposition
 ----------------
 
-:ref:`Previously <qr_decomposition>` , we learned about applications of the QR application to solving the linear least squares.
+:ref:`Previously <qr_decomposition>`, we learned about applications of the QR application to solving the linear least squares.
 
 While in principle, the solution to least-squares is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes very dense and inverse are rarely a good idea.  
 
