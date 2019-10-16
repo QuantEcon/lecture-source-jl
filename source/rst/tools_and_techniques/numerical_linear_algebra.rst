@@ -483,7 +483,7 @@ While in principle, the solution to least-squares
 
     \min_x \| Ax -b \|^2
     
- is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes dense and calculating the inverse is rarely a good idea.  
+is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes dense and calculating the inverse is rarely a good idea.  
 
 The QR decomposition is a decomposition :math:`A = Q R` where :math:`Q` is an orthogonal matrix (i.e. :math:`Q'Q = Q Q' = I`) and :math:`R` is
 a upper triangular matrix.
@@ -616,11 +616,17 @@ state :math:`j` is
     \mathbb P \{ X(t + \Delta) = j  \,|\, X(t) \} = \begin{cases} q_{ij} \Delta + o(\Delta) & i \neq j\\
                                                                   1 + q_{ii} \Delta + o(\Delta) & i = j \end{cases}
 
-where :math:`q_{ij}` are parameters governing the transition process, and :math:`o(\Delta)` is `little-o notation <https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation>`_,.  That is, :math:`\lim_{\Delta\to 0} o(\Delta)/\Delta = 0`.
+where :math:`q_{ij}` are parameters governing the transition process, and :math:`o(\Delta)` is `little-o notation <https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation>`_.  That is, :math:`\lim_{\Delta\to 0} o(\Delta)/\Delta = 0`.
 
 Just as in the discrete case, we can summarize these parameters by a :math:`N \times N` matrix, :math:`Q \in R^{N\times N}`.
 
-The :math:`Q` matrix is called the intensity matrix, or the infinitesimal generator of the Markov Chain.  For example,
+Recall that in the discrete case every element is weakly positive and every row must sum to one.   Instead, with a continuous time the rows of :math:`Q` sum to zero, where the diagonal contains the negative value of jumping out of the current state.  That is
+
+- :math:`q_{ij} \geq 0` for :math:`i \neq j`
+- :math:`q_{ii} \leq 0`
+- :math:`\sum_{j} q_{ij} = 0`
+
+The :math:`Q` matrix is called the intensity matrix, or the infinitesimal generator of the Markov chain.  For example,
 
 .. math::
 
@@ -632,15 +638,9 @@ The :math:`Q` matrix is called the intensity matrix, or the infinitesimal genera
                         0 & 0 & 0 & 0 & 0.1 & -0.1\\
         \end{bmatrix}
 
-In that example, transitions only occur between adjacent states with the same intensity (except for a ``bouncing'' back of the bottom and top states)
+In that example, transitions only occur between adjacent states with the same intensity (except for a ``bouncing'' back of the bottom and top states).
 
-This also demonstrates that the elements of the intensity matrix are not probabilities.  Unlike the discrete case, where every row must sum to one, the rows of :math:`Q` sum to zero, where the diagonal contains the negative value of jumping out of the current state.  That is
-
-- :math:`q_{ij} \geq 0` for :math:`i \neq j`
-- :math:`q_{ii} \leq 0`
-- :math:`\sum_{j} q_{ij} = 0`
-
-Implementing :math:`Q` using its tridiagonal structure
+Implementing the :math:`Q` using its tridiagonal structure
 
 .. code-block:: julia
 
@@ -649,14 +649,14 @@ Implementing :math:`Q` using its tridiagonal structure
     N = 6
     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
 
-Here we use a Tridiagonal to exploit the structure of the problem.
+Here we can use the ``Tridiagonal`` to exploit the structure of the problem.
 
 Consider a simple payoff vector :math:`r` associated with each state, and a discount rate :math:`ρ`.  Then we can solve for
 the expected present discounted value in a similar way to the discrete time case.
 
 .. math::
 
-    \rho v = p + Q v 
+    \rho v = r + Q v 
 
 or rearranging slightly, solving the linear system
 
@@ -680,7 +680,6 @@ linear problem.
 
     v = A \ r
 
-
 The :math:`Q` is also used to calculate the evolution of the Markov chain, in direct analogy to the :math:`ψ_{t+k} = ψ_t P^k` evolution with transition matrix :math:`P` of the discrete case.
 
 In the continuous case, this becomes the system of linear differential equations
@@ -691,8 +690,7 @@ In the continuous case, this becomes the system of linear differential equations
 
 given the initial condition :math:`ψ(0)` and where the :math:`Q(t)` intensity matrix is allows to vary with time.  In the simplest case of a constant :math:`Q` matrix, this is a simple constant-coefficient system of Linear ODEs with coefficients :math:`Q^T`
 
-If a stationary equilibria exists, note that :math:`\dot{ψ}(t) = 0`, and the stationary solution :math:`ψ^{*}` would need to fulfill
-
+If a stationary equilibria exists, note that :math:`\dot{ψ}(t) = 0`, and the stationary solution :math:`ψ^{*}` needs to fulfill
 
 .. math::
 
@@ -720,9 +718,9 @@ Multiple Dimensions
 A frequent case in discretized models is dealing with Markov chains with multiple "spatial" dimensions (e.g. wealth and income).
 
 After discretizing a process to create a Markov chain, you can always take the cartesian product of the set of states in order to
-enumerate as a single finite state.
+enumerate as a single state variable.
 
-To see this, consider
+To see this, consider states :math:`i` and :math:`j` governed by infinitesimal generators :math:`Q` and :math:`A`.
 
 .. code-block:: julia
 
@@ -745,7 +743,7 @@ To see this, consider
     L = markov_chain_product(Q, A)
     L |> Matrix  # display as a dense matrix
 
-To see the sparsity pattern,
+This provides the combined markov chain for the :math:`(i,j)` process.  To see the sparsity pattern,
 
 .. code-block:: julia
 
@@ -767,8 +765,10 @@ Solving the equation :math:`\rho v = r + L v`
     v = (ρ * I - L) \ r
     reshape(v, N, M)
 
+The ``reshape`` helps to rearrange it back to being two-dimensional.
 
-To find the stationary distribution, we find the eigenvalue and choose the eigenvector associated with :math:`\lambda=0` .
+
+To find the stationary distribution, we calculate the eigenvalue and choose the eigenvector associated with :math:`\lambda=0` .
 
 .. code-block:: julia
 
@@ -797,10 +797,15 @@ is isomorphic to determining if the directed graph of the Markov chain is `stron
     α = 0.1
     N = 6
     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+
+This graph visually shows 
+
+.. code-block:: julia
+
     Q_graph = DiGraph(Q)
     @show is_strongly_connected(Q_graph);  # i.e. can follow directional edges to get to every state
 
-Or as an example of a reducible Markov chain, 
+Alternatively, as an example of a reducible Markov chain where states :math:`1` and :math:`2` cannot jump to state :math:`3`.
 
 .. code-block:: julia
 
@@ -815,8 +820,8 @@ Banded Matrices
 
 A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and the also the first super-diagonal (i.e. above the main diagonal).
 
-This is a special case of a more general type called a banded matrix, where the number of sub and super-diagonals are more general.  The 
-total width of sub- and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
+This is a special case of a more general type called a banded matrix, where the number of sub and super-diagonals can be greater than 1.  The 
+total width of main, sub-, and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
 
 A :math:`N \times N` banded matrix with bandwidth :math:`P` has about :math:`N P` nonzeros in its sparsity pattern.
 
@@ -824,41 +829,45 @@ These can be created directly as a dense matrix with ``diagm``
 
 .. code-block:: julia
 
-    diagm(1 => [1,2,3], -1 => [4,5])
+    diagm(1 => [1,2,3], -1 => [4,5,6])
 
 Or as a sparse matrix,
 
 .. code-block:: julia
 
-    spdiagm(1 => [1,2,3], -1 => [4,5])
+    spdiagm(1 => [1,2,3], -1 => [4,5,6])
 
-Creating a simple banded matrix, using `BandedMatrices.jl <https://github.com/JuliaMatrices/BandedMatrices.jl>`_ 
+Or, directly using `BandedMatrices.jl <https://github.com/JuliaMatrices/BandedMatrices.jl>`_ 
 
 .. code-block:: julia
 
     using BandedMatrices
-    BandedMatrix(-1=> 1:5, 2=>1:3)     # creates a 5 x 5 banded matrix version of diagm(-1=> 1:5, 2=>1:3)
+    BandedMatrix(-1 => [1,2,3], -1 => [4,5,6])
 
 There is also a convenience function for generating random banded matrices
 
 .. code-block:: julia
 
-    A = brand(7, 7, 3, 1)  # 3 subdiagonals, 1 subdiagonal
+    A = brand(7, 7, 3, 1)  # 7x7 matrix, 3 subdiagonals, 1 subdiagonal
 
 And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the :math:`O(N P_L P_U)` for upper and lower bandwidths :math:`P`
 
 .. code-block:: julia
 
+    @show factorize(Symmetric(A)) |> typeof
     A \ rand(7)
+
+The algorithm a specialized LU decomposition for block-banded matrices.
+
 
 BlockBanded and BandedBlockBanded
 ---------------------------------
 
 Taking the structured matrix concept further, we can consider examples of matrices in blocks, each of which are banded, and even
-a matrix where each block is banded, and the blocks themselves are banded.
+a matrix where each block is banded, and the blocks themselves are aligned along bands.
 
-This final type is common in the discretization of multiple dimensions with continuous time processes.  For example, with the
-example from above of 2 dimensions.
+This final type is common in the discretization of multiple dimensions with continuous time processes.  For example, take the
+example from above with 2 dimensions where the markov chain in the 2nd dimension depends on the current state in the first dimension.
 
 
 .. code-block:: julia
@@ -888,7 +897,14 @@ example from above of 2 dimensions.
     A = Tridiagonal([0.1, 0.1], [-0.2, -0.3, -0.2], [0.2, 0.2])
     M = size(A,1)
 
-    L = markov_chain_product_banded((Q1, Q2, Q3), A)
+    L = markov_chain_product_banded((Q1, Q2, Q3), A);
+
+The sparsity pattern shows bands of bands
+
+.. code-block:: julia
+
+    using Plots
+    spy(sparse(L), markersize = 10)
 
 As before, define a payoff function
 
@@ -904,7 +920,7 @@ Solving the equation :math:`\rho v = r + L v`
     v = (ρ * I - L) \ r
     reshape(v, N, M)
 
-Or to find the stationary solution, 
+Or to find the stationary solution of the Markov chain
 
 .. code-block:: julia
 
@@ -919,7 +935,7 @@ Or to find the stationary solution,
 Implementation Details and Performance
 ======================================
 
-Recall the famous quote from Knuth: "Premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%".  The most common example of premature optimization is trying to use your own mental model of a compiler while writing your code, overly worried about the efficiency of code and (usually incorrectly) second-guessing the compiler.
+Recall the famous quote from Knuth: "Premature optimization is the root of all evil... Yet we should not pass up our opportunities in that critical 3%".  The most common example of premature optimization is trying to use your own mental model of a compiler while writing your code, worried about the efficiency of code and (usually incorrectly) second-guessing the compiler.
 
 Concretely, the lessons in this section are
 
