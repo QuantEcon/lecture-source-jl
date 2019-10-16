@@ -8,7 +8,7 @@ Julia Tools and Editors
 
 .. contents:: :depth: 2
 
-Co-authored with Arnav Sood.
+Co-authored with Arnav Sood
 
 While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.
 
