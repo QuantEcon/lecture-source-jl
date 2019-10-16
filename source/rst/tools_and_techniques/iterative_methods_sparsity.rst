@@ -29,6 +29,50 @@ Setup
     using LinearAlgebra, Statistics, BenchmarkTools, Random
     Random.seed!(42);  # seed random numbers for reproducibility
 
+
+Applications
+------------
+
+We will consider variations on three classic problems
+
+1.  Solving a linear system for a square :math:`A` where we will maintain throughout there is a unique solution.
+
+
+    .. math::
+
+        A x = b
+
+    On paper, since the `Invertible Matrix Theorem <https://en.wikipedia.org/wiki/Invertible_matrix#The_invertible_matrix_theorem>`_ tells us a unique solution is
+    equivalent to :math:`A` being invertible, we often write the solution as
+
+
+    .. math::
+
+        x = A^{-1} b
+
+
+2.  In the case of a rectangular matrix, :math:`A` consider the `linear least-squares <https://en.wikipedia.org/wiki/Linear_least_squares>`_ solution to
+
+    .. math::
+
+        \min_x \| Ax -b \|^2
+
+    From theory, we know that :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
+
+
+    .. math::
+
+        x = (A'A)^{-1}A'b
+
+
+3.  Finally, consider the eigenvalue problem of finding :math:`x` and :math:`\lambda` such that
+
+    .. math::
+
+        A x = \lambda x
+
+    For the eigenvalue problems.  Keep in mind that that you do not always require all of the :math:`\lambda`, and sometimes the largest (or smallest) would be enough.  For example, calculating the spectral radius only requires the maximum eigenvalue in absolute value.
+
 Ill-Conditioned Matrices
 ========================
 
@@ -529,6 +573,9 @@ Solving this system with the conjugate gradient method
 
 Introduction to Preconditioning
 --------------------------------
+
+As discussed, if you tell a numerical analyst you are using direct methods, their first question may be “which factorization?” - but if you tell them you
+are using an iterative method, they may ask "which preconditioner?".  
 
 As discussed at the beginning of the lecture, the spectral properties of matrices determine the rate of convergence
 of iterative matrices.  In particular, ill-conditioned matrices converge slowly.

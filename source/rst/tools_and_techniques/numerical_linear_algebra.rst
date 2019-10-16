@@ -28,6 +28,14 @@ look at are `JuliaMatrices <https://github.com/JuliaMatrices>`_ , `JuliaSparse <
 
 *NOTE*: You may wish to review multiple-dispatch and generic programming in  :doc:`introduction to types <../getting_starting_julia/introduction_to_types>`, and consider further study on :doc:`generic programming <../more_julia/generic_programming>`.
 
+The theme of this lecture, and numerical linear algebra in general, comes down to three principles:
+
+#. **identify structure** (e.g. `symmetric, sparse, diagonal,etc. <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#Special-matrices-1>`_) of matrices in order to use **specialized algorithms**
+#. **do not lose structure** by applying the wrong linear algebra operations at the wrong times (e.g. sparse matrix becoming dense)
+#. understand the **computational complexity** of each algorithm, given the structure
+
+
+
 Setup
 ------------------
 
@@ -40,54 +48,7 @@ Setup
     using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random
     Random.seed!(42);  # seed random numbers for reproducibility
 
-Applications
-------------
 
-We will consider variations on three classic problems
-
-1.  Solving a linear system for a square :math:`A` where we will maintain throughout there is a unique solution.
-
-
-    .. math::
-
-        A x = b
-
-    On paper, since the `Invertible Matrix Theorem <https://en.wikipedia.org/wiki/Invertible_matrix#The_invertible_matrix_theorem>`_ tells us a unique solution is
-    equivalent to :math:`A` being invertible, we often write the solution as
-
-
-    .. math::
-
-        x = A^{-1} b
-
-
-2.  In the case of a rectangular matrix, :math:`A` consider the `linear least-squares <https://en.wikipedia.org/wiki/Linear_least_squares>`_ solution to
-
-    .. math::
-
-        \min_x \| Ax -b \|^2
-
-    From theory, we know that :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
-
-
-    .. math::
-
-        x = (A'A)^{-1}A'b
-
-
-3.  Finally, consider the eigenvalue problem of finding :math:`x` and :math:`\lambda` such that
-
-    .. math::
-
-        A x = \lambda x
-
-    For the eigenvalue problems.  Keep in mind that that you do not always require all of the :math:`\lambda`, and sometimes the largest (or smallest) would be enough.  For example, calculating the spectral radius only requires the maximum eigenvalue in absolute value.
-
-The theme of this lecture, and numerical linear algebra in general, comes down to three principles:
-
-#. **identify structure** (e.g. `symmetric, sparse, diagonal,etc. <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#Special-matrices-1>`_) of :math:`A` in order to use **specialized algorithms**
-#. **do not lose structure** by applying the wrong linear algebra operations at the wrong times (e.g. sparse matrix becoming dense)
-#. understand the **computational complexity** of each algorithm, given the structure
 
 Computational Complexity
 ------------------------
@@ -108,7 +69,7 @@ Ask yourself whether the following is a **computationally expensive** operation 
 
 As the goal of this section is to move towards numerical methods with large systems, we need to understand how well algorithms scale with the size of matrices/vectors/etc.  This is known as `computational complexity <https://en.wikipedia.org/wiki/Computational_complexity>`_.  As we saw in the answer to the questions above, the algorithm - and hence the computational complexity - changes based on matrix structure.
 
-While this notion of complexity can work at various levels such as the number of `significant digits <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Arithmetic_functions>`_ for basic mathematical operations, the amount of memory and storage required, or the amount of time) - but we will typically focus on the time-complexity.
+While this notion of complexity can work at various levels such as the number of `significant digits <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Arithmetic_functions>`_ for basic mathematical operations, the amount of memory and storage required, or the amount of time - but we will typically focus on the time-complexity.
 
 For time-complexity, the size :math:`N` is usually the dimensionality of the problem, although occasionally the key will be the number of non-zeros in the matrix or width of bands.  For our applications, time-complexity is best thought of as the number of floating point operations (e.g. add, multiply, etc.) required.
 
@@ -119,7 +80,7 @@ Complexity of algorithms is typically written in `Big O <https://en.wikipedia.or
 
 Formally, if the number of operations required for a problem size :math:`N` is :math:`f(N)`, we  can write this as :math:`f(N) = O(g(N))` for some :math:`g(N)` - typically a polynomial.
 
-The interpretation is that there exists some constants :math:`M, N_0` such that
+The interpretation is that there exists some constants :math:`M` and :math:`N_0` such that
 
 .. math::
 
@@ -184,9 +145,9 @@ But consider the inverse
 
     inv(A)
 
-Now, the matrix is fully dense and scales :math:`N^2`
+Now, the matrix is fully dense and has :math:`N^2` nonzeros.
 
-This also applies to the :math:`A' A` operation in the normal equations of LLS.
+This also applies to the :math:`A' A` operation in the normal equations of linear-least squares.
 
 .. code-block:: julia
 
@@ -245,7 +206,7 @@ when using a proper package, but the order is still :math:`O(N^3)` in practice.
 
 Sparse matrix multiplication, on the other hand, is :math:`O(N M_A M_B)` where :math:`M_A` are the number of nonzeros per row of :math:`A` and :math:`B` are the number of non-zeros per column of :math:`B`.
 
-By the rules of computational order, that means any algorithm this means that any algorithm requiring a matrix multiplication of dense matrices requires at least :math:`O(N^3)` operation.
+By the rules of computational order, that means any algorithm requiring a matrix multiplication of dense matrices requires at least :math:`O(N^3)` operation.
 
 The other important question is what is the structure of the resulting matrix.  For example, multiplying an upper triangular by a lower triangular
 
@@ -264,7 +225,7 @@ But the multiplication is fully dense (e.g. think of a cholesky multiplied by it
 
     L * U
 
-On the other hand, a tridiagonal times a diagonal is still a tridiagonal and :math:`O(N^2)`
+On the other hand, a tridiagonal times a diagonal is still a tridiagonal - and can use specialized :math:`O(N)` algorithms.
 
 .. code-block:: julia
 
@@ -273,7 +234,7 @@ On the other hand, a tridiagonal times a diagonal is still a tridiagonal and :ma
  D * A
 
 Factorizations
-===============
+==============
 
 When you tell a numerical analyst you are solving a linear system using direct methods, their first question is "which factorization?".
 
@@ -283,7 +244,14 @@ convenient matrices (e.g. :math:`A = L U` or :math:`A = Q R` where :math:`L, U, 
 Inverting Matrices
 ------------------
 
-What if we do not use a factorization?
+On paper, since the `Invertible Matrix Theorem <https://en.wikipedia.org/wiki/Invertible_matrix#The_invertible_matrix_theorem>`_ tells us a unique solution is
+equivalent to :math:`A` being invertible, we often write the solution to :math:`A x = b` is
+
+.. math::
+
+    x = A^{-1} b
+
+What if we do not (directly) use a factorization?
 
 Take a simple linear system of a dense matrix,
 
@@ -304,8 +272,6 @@ As we will see throughout, inverting matrices should be used for theory, not for
 Solving a system by inverting a matrix is always a little slower, potentially less accurate, and will often lose crucial sparsity compared to using factorizations.  Moreover, the methods used by libraries to invert matrices typically calculate the same factorizations used for computing a system of equations.
 
 Even if you need to solve a system with the same matrix multiple times, you are better off factoring the matrix and using the solver rather than calculating an inverse.
-
-For example, 
 
 .. code-block:: julia
 
@@ -511,7 +477,13 @@ QR Decomposition
 
 :ref:`Previously <qr_decomposition>`, we learned about applications of the QR application to solving the linear least squares.
 
-While in principle, the solution to least-squares is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes very dense and inverse are rarely a good idea.  
+While in principle, the solution to least-squares
+
+.. math::
+
+    \min_x \| Ax -b \|^2
+    
+ is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes dense and calculating the inverse is rarely a good idea.  
 
 The QR decomposition is a decomposition :math:`A = Q R` where :math:`Q` is an orthogonal matrix (i.e. :math:`Q'Q = Q Q' = I`) and :math:`R` is
 a upper triangular matrix.
@@ -525,7 +497,7 @@ the solution to
 
 Where, as discussed above, the upper-triangular structure of :math:`R` can be solved easily with back substitution.
 
-For Julia, the ``\`` operator will solve this problem whenever the given ``A`` is rectangular
+The ``\`` operator will solve the linear-least squares problem whenever the given ``A`` is rectangular
 
 .. code-block:: julia
 
@@ -537,7 +509,7 @@ For Julia, the ``\`` operator will solve this problem whenever the given ``A`` i
     b = rand(N)
     x = A \ b
 
-To manually use the QR decomposition: **Note** the real code would be more subtle
+To manually use the QR decomposition in solving linear least squares:
 
 .. code-block:: julia
 
@@ -545,9 +517,9 @@ To manually use the QR decomposition: **Note** the real code would be more subtl
     Q = Af.Q
     R = [Af.R; zeros(N - M, M)] # Stack with zeros
     @show Q * R ≈ A
-    x = R \ Q'*b  # the QR way
+    x = R \ Q'*b  # simplified QR solution for least squares
 
-This stacks the ``R`` with zeros to multiple, but the more specialized algorithm would not multiply directly
+This stacks the ``R`` with zeros, but the more specialized algorithm would not multiply directly
 in that way.
 
 In some cases, if an LU is not available for a particular matrix structure, the QR factorization
@@ -565,7 +537,7 @@ Deriving the approach, where we can now use inverse since the system is square a
     R x &= Q' b
     \end{aligned}
 
-Where the last step uses that :math:`Q^{-1} = Q'` for orthogonal matrix.
+Where the last step uses that :math:`Q^{-1} = Q'` for an orthogonal matrix.
 
 Given the decomposition, the solution for dense matrices is of computational
 order :math:`O(N^2)`.  To see this, look at the order of each operation.
@@ -613,15 +585,15 @@ To see this in operation,
     Q = A_eig.vectors
     norm(Q * Λ * inv(Q) - A)
 
-Keep in mind that, in general, a real matrix may have complex eigenvalues and eigenvectors, so if you attempt to multiple to check ``Q * Λ * inv(Q) - A`` which may not be exactly real due to numerical inaccuracy.
+Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, so if you attempt  to check ``Q * Λ * inv(Q) - A`` it may not be a real due number due to numerical inaccuracy.
     
 Continuous Time Markov Chains (CTMC)
 ====================================    
 
-In the previous lecture on :doc:`discrete time Markov Chains  <mc>`, we saw that the transition probability
+In the previous lecture on :doc:`discrete time Markov chains  <mc>`, we saw that the transition probability
 between state :math:`x` and state :math:`y` was summarized by the matrix :math:`P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}`.
 
-As a brief introduction to continuous time processes, consider same state-space as in the discrete
+As a brief introduction to continuous time processes, consider the same state-space as in the discrete
 case: :math:`S` a finite set with :math:`n` elements :math:`\{x_1, \ldots, x_n\}`.
 
 A **Markov chain** :math:`\{X_t\}` on :math:`S` is a sequence of random variables on :math:`S` that have the **Markov property**
@@ -692,11 +664,11 @@ or rearranging slightly, solving the linear system
 
     (\rho I - Q) v = r
 
-For our example, exploiting the tr
+For our example, exploiting the tridiagonal structure,
 
 .. code-block:: julia
 
-    p = range(0.0, 10.0, length=N)
+    r = range(0.0, 10.0, length=N)
     ρ = 0.05
 
     A = ρ * I - Q
@@ -771,6 +743,7 @@ To see this, consider
         0.2 -0.2])
     M = size(A,1)
     L = markov_chain_product(Q, A)
+    L |> Matrix  # display as a dense matrix
 
 To see the sparsity pattern,
 
