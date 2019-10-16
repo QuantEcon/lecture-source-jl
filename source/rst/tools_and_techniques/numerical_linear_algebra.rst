@@ -299,9 +299,9 @@ On paper, we to solve for :math:`A x = b` by inverting the matrix,
 
     x = inv(A) * b
 
-As we will see throughout, inverting matrices should be used for theory, not for code.  The classic advice that you should `never invert a matrix <https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix>`_ may be `slightly exaggerated <https://arxiv.org/abs/1201.6035>`_, but is generally good advice.  In fact, the methods used by libraries to invert matrices typically calculate the same factorizations used for computing a system of equations.
+As we will see throughout, inverting matrices should be used for theory, not for code.  The classic advice that you should `never invert a matrix <https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix>`_ may be `slightly exaggerated <https://arxiv.org/abs/1201.6035>`_, but is generally good advice.  
 
-Solving a system by inverting a matrix is always a little slower, potentially less accurate, and will often lose crucial sparsity.
+Solving a system by inverting a matrix is always a little slower, potentially less accurate, and will often lose crucial sparsity compared to using factorizations.  Moreover, the methods used by libraries to invert matrices typically calculate the same factorizations used for computing a system of equations.
 
 Even if you need to solve a system with the same matrix multiple times, you are better off factoring the matrix and using the solver rather than calculating an inverse.
 
@@ -332,12 +332,12 @@ For example,
     end
 
 
-    # even better, use built-in feature for multiple RHS
-    solve_multiple_rhs(A, B) = A \ B        
 
     @btime solve_inverting($A, $B)
     @btime solve_factoring($A, $B)
-    @btime solve_multiple_rhs($A, $B);
+
+    # even better, use built-in feature for multiple RHS
+    @btime $A \ $B;
 
 Triangular Matrices and Back/Forward Substitution
 --------------------------------------------------
@@ -357,23 +357,22 @@ This system is especially easy to solve using `back-substitution <https://en.wik
 
     U \ b
 
-A ``LowerTriangular`` has similar properties and can be solved with forward-substitution.  The computational order of back-substitution and forward-substitution is :math:`O(N^2)` for dense matrices.
+A ``LowerTriangular`` has similar properties and can be solved with forward-substitution.
 
-No further factorizations of a matrix are required, and the triangular structure is often a target of factorizations in order to exploit those efficient :math:`O(N^2)` algorithms.
+The computational order of back-substitution and forward-substitution is :math:`O(N^2)` for dense matrices.  In fact, the triangular structure is often a target of factorizations in order to exploit those efficient :math:`O(N^2)` algorithms.
 
 .. _jl_decomposition:
 
 LU Decomposition
 -------------------
 
-For a general dense matrix without any other structure (i.e. not known to be symmetric, tridiagonal, etc.) the standard approach is to
-factor the matrix iin order to exploit the speed of backward and forward substitution to complete the solution.
+The :math:`LU` decompositions finds a lower triangular :math:`L` and upper triangular :math:`U` such that :math:`L U = A`.
 
-The computational order of LU decomposition for a dense matrix is :math:`O(N^3)` - the same as Gaussian elimination, but it tends
+For a general dense matrix without any other structure (i.e. not known to be symmetric, tridiagonal, etc.) this is the standard approach to solve a system and exploit the speed of backward and forward substitution using the factorization.
+
+The computational order of LU decomposition itself for a dense matrix is :math:`O(N^3)` - the same as Gaussian elimination, but it tends
 to have a better constant term than others (e.g. half the number of operations of the QR).  For structured matrices
 or sparse ones, that order drops.
-
-The :math:`LU` decompositions finds a lower triangular :math:`L` and upper triangular :math:`U` such that :math:`L U = A`.
 
 We can see which algorithm Julia will use for the ``\`` operator by looking at the ``factorize`` function for a given
 matrix.
@@ -390,6 +389,10 @@ In this case, it provides an :math:`L` and :math:`U` factorization (with `pivoti
 
 
 With the factorization complete, we can solve different ``b`` right hand sides
+
+.. code-block:: julia
+
+    Af \ b
 
 .. code-block:: julia
 
