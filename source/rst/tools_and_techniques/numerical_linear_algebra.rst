@@ -724,7 +724,6 @@ To see this, consider states :math:`i` and :math:`j` governed by infinitesimal g
 
 .. code-block:: julia
 
-    using SparseArrays
     function markov_chain_product(Q, A)
         M = size(Q, 1)
         N = size(A, 1)
@@ -793,7 +792,7 @@ is isomorphic to determining if the directed graph of the Markov chain is `stron
 
 .. code-block:: julia
 
-    using LinearAlgebra, LightGraphs
+    using ightGraphs
     α = 0.1
     N = 6
     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
@@ -872,7 +871,7 @@ example from above with 2 dimensions where the markov chain in the 2nd dimension
 
 .. code-block:: julia
 
-    using BandedMatrices, BlockBandedMatrices, LazyArrays, SparseArrays
+    using BandedMatrices, BlockBandedMatrices, LazyArrays
     function markov_chain_product_banded(Q_chains, A)
         M = size(Q_chains[1], 1)
         N = size(A, 1)
@@ -906,27 +905,24 @@ The sparsity pattern shows bands of bands
     using Plots
     spy(sparse(L), markersize = 10)
 
-As before, define a payoff function
+As before, define a payoff function and solve the equation :math:`\rho v = r + L v`
 
 .. code-block:: julia
 
     r = vec([i + 2.0j for i in 1:N, j in 1:M])
-
-Solving the equation :math:`\rho v = r + L v`
-
-.. code-block:: julia
-
     ρ = 0.05
     v = (ρ * I - L) \ r
     reshape(v, N, M)
 
-Or to find the stationary solution of the Markov chain
+Or to find the stationary solution of the Markov chain, find the eigenvector associated
+with the smallest magnitude eigenvalue (i.e. the :math:`\lambda = 0`)
 
 .. code-block:: julia
 
     using Arpack
     L = sparse(L')
-    λ, ϕ = eigs(L, nev=1, which=:SM)
+    λ, ϕ = eigs(L, nev=1, which=:SM)  # find smallest 1 eigenvector
+    assert(λ) < 1E-8  # ensure it is the right eigenvalue/vector
     ϕ = real(ϕ) ./ sum(real(ϕ))
     reshape(ϕ, N, M)
 
@@ -935,47 +931,48 @@ Or to find the stationary solution of the Markov chain
 Implementation Details and Performance
 ======================================
 
-Recall the famous quote from Knuth: "Premature optimization is the root of all evil... Yet we should not pass up our opportunities in that critical 3%".  The most common example of premature optimization is trying to use your own mental model of a compiler while writing your code, worried about the efficiency of code and (usually incorrectly) second-guessing the compiler.
+Recall the famous quote from Knuth: "97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%".  The most common example of premature optimization is trying to use your own mental model of a compiler while writing your code, worried about the efficiency of code and (usually incorrectly) second-guessing the compiler.
 
 Concretely, the lessons in this section are
 
 1. Don't worry about optimizing your code unless you need to.  Code clarity is your first-order concern.
 2. If you use other people's packages, they can worry about performance and you don't need to.
-3. If you absolutely need that "critical 3%" your intuition about performance is usually wrong on modern CPUs and GPUs, so let the compiler do its job..
-4. Benchmarking (e.g. ``@btime``) and `profiling <https://docs.julialang.org/en/v1/manual/profile/>`_ are the tools to figure out performance bottlenecks
+3. If you absolutely need that "critical 3%" your intuition about performance is usually wrong on modern CPUs and GPUs, so let the compiler do its job.
+4. Benchmarking (e.g. ``@btime``) and `profiling <https://docs.julialang.org/en/v1/manual/profile/>`_ are the tools to figure out performance bottlenecks.  If 99% of
+   of computing time is spent in 1 small function, then there is no point optimizing anything else.
 5. If you benchmark to show that a particular part of the code is an issue, and you can't find another library that does a better job, then you can worry about performance.
 
-You will rarely get to step 3 let alone step 5.
+You will rarely get to step 3, let alone step 5.
 
 However, there is also a corollary:  "don't pessimize prematurely". That is, don't make choices that lead to poor performance without any tradeoff in improved code clarity.  For example, writing your own algorithms when a high performance algorithm exists in a package or Julia itself, or lazily making a matrix dense and carelessly dropping its structure.
 
 Implementation Difficulty
 -------------------------
 
-Numerical analysis tend to refer to the lowest level of code for basic operations (e.g. a dot product, matrix-matrix product, convolutions) as ``kernels``.
+Numerical analysis sometimes to refer to the lowest level of code for basic operations (e.g. a dot product, matrix-matrix product, convolutions) as ``kernels``.
 
-That sort of code is difficult to write, and performance depends on the characteristics of the underlying hardware such as the `instruction set <https://en.wikipedia.org/wiki/Instruction_set_architecture>`_ available on the particular CPU, the size of the `CPU cache <https://en.wikipedia.org/wiki/CPU_cache>`_, the layout of arrays in memory, and a number of other things.
+That sort of code is difficult to write, and performance depends on the characteristics of the underlying hardware such as the `instruction set <https://en.wikipedia.org/wiki/Instruction_set_architecture>`_ available on the particular CPU, the size of the `CPU cache <https://en.wikipedia.org/wiki/CPU_cache>`_, and the layout of arrays in memory.
 
-Typically these operations are written in a `BLAS <https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms>`_ library, organized into level.  The levels roughly correspond to the order of the opertions:  BLAS Level 1 are :math:`O(N)` operations such as linear products, Level 2 are :math:`O(N^2)` operations such as matrix-vector products, and Level 3 are :math:`O(N^3)` such as matrix-matrix products.
+Typically these operations are written in a `BLAS <https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms>`_ library, organized into different levels.  The levels roughly correspond to the computational order of the operations:  BLAS Level 1 are :math:`O(N)` operations such as linear products, Level 2 are :math:`O(N^2)` operations such as matrix-vector products, and Level 3 are :math:`O(N^3)` such as general matrix-matrix products.
 
-An example of a BLAS library is the `Intel MKL <https://en.wikipedia.org/wiki/Math_Kernel_Library>`_ used in Matlab and Julia (if an additional package is installed. 
+An example of a BLAS library is `OpenBLAS <https://github.com/xianyi/OpenBLAS>`_ used by default in Julia, or  the `Intel MKL <https://en.wikipedia.org/wiki/Math_Kernel_Library>`_ used in Matlab (and Julia if the ``MKL.jl`` package is installed).
 
-On top of BLAS are `LAPACK <https://en.wikipedia.org/wiki/LAPACK>`_ operations, which are higher level kernels, such as Matrix factorizations and eigenvalue algorithms, and are often in the same libraries (e.g. MKL).  
+On top of BLAS are `LAPACK <https://en.wikipedia.org/wiki/LAPACK>`_ operations, which are higher level kernels, such as matrix factorizations and eigenvalue algorithms, and are often in the same libraries (e.g. MKL has both BLAS and LAPACK functionality).  
 
-The details of all of these are irrelevant, but if you are talking to people about performance, they will inevitably through out all of these concepts.  There are a few important lessons to keep in mind:
+The details of these packages are not especially relevant, but if you are talking about performance, people will inevitably start discussing these different packages and kernels.  There are a few important things to keep in mind:
 
 1. Leave writing kernels to the experts.  Even simple sounding algorithms can be very complicated to make high performance.
-2. Your intuition about performance of code is probably going to be wrong.  If you use high quality libraries, you don't need to use your intuition.
-3. Don't get distracted by the jargon or acronyms above if you are reading about performance.  But see point 1 if you try to implement it.
+2. Your intuition about performance of code is probably going to be wrong.  If you use high quality libraries rather than writing your own kernels, you don't need to use your intuition.
+3. Don't get distracted by the jargon or acronyms above if you are reading about performance.
 
 Row and Column-Major Ordering
 -----------------------------
 
-Finally, there is one practical issue which may influence your code.  Since memory in a CPU is linear, dense matrices need to be stored by either stacking columns (called `column-major order <https://en.wikipedia.org/wiki/Row-_and_column-major_order>`) or by columns (called row-major order).
+There is a practical performance issue which may influence your code.  Since memory in a CPU is linear, dense matrices need to be stored by either stacking columns (called `column-major order <https://en.wikipedia.org/wiki/Row-_and_column-major_order>`_) or rows.
 
-The reason this matters is that compilers can generate better performance if they work in contiguous chunks of memory rather than jumping around, and this becomes especially important with large matrices due to the interaction with the CPU cache.  Choosing the wrong order when there is no benefit in code clarity is a classic example of premature pessimization.  The performance difference can be orders of magnitude in some cases, and nothing in other cases.
+The reason this matters is that compilers can generate better performance if they work in contiguous chunks of memory, and this becomes especially important with large matrices due to the interaction with the CPU cache.  Choosing the wrong order when there is no benefit in code clarity is a an example of premature pessimization.  The performance difference can be orders of magnitude in some cases, and nothing in others.
 
-One option is to use the functions that let the compiler choose the most efficient way to traverse memory. If you need to choose the looping order yourself, then you might want to experiment with swapping whether you go through columns or rows first.  Other times, let Julia decide, i.e. ``enumerate`` and ``eachindex`` will choose the right approach
+One option is to use the functions that let the compiler choose the most efficient way to traverse memory. If you need to choose the looping order yourself, then you might want to experiment with swapping whether you go through columns or rows first.  Other times, let Julia decide, i.e. ``enumerate`` and ``eachindex`` will choose the right approach.
 
 Julia, Fortran, and Matlab all use column-major order while C/C++ and Python use row-major order.  This means that if you find an algorithm written for C/C++/Python you will sometimes need to make small changes if performance is an issue.
 
@@ -987,7 +984,10 @@ While we have usually not considered optimizing code for performance (and focuse
 algorithms instead), when matrices and vectors become large we need to be more careful.
 
 The most important thing to avoid are excess allocations, which usually occur due to the use of
-temporary vectors and matrices when they are not necessary.  However, caution is suggested since
+temporary vectors and matrices when they are not necessary.  Sometimes those extra temporary values
+can cause enormous degredations in performance.
+
+However, caution is suggested since
 excess allocations are never relevant for scalar values, and can sometimes create faster code for
 smaller matrices/vectors since it can lead to better `cache locality <https://en.wikipedia.org/wiki/Locality_of_reference>`_.
 
@@ -1005,11 +1005,11 @@ To see this, a convenient tool is the benchmarking
     end
     @btime f!($C, $A, $B)
 
-The ``!`` on the ``f!`` is an informal way to say that the function is mutating, and the first arguments ``C``
+The ``!`` on the ``f!`` is an informal way to say that the function is mutating, and the first arguments (``C`` here)
 is by convention the modified values.
 
-There, notice that the ``D`` is a temporary variable which is created, and then modified afterwards.  However, notice that since
-``C`` is modified directly, there is no need to create the temporary matrix.
+In the ``f!`` function, notice that the ``D`` is a temporary variable which is created, and then modified afterwards.  But, notice that since
+``C`` is modified directly, there is no need to create the temporary ``D`` matrix.
 
 This is an example of where an inplace version of the matrix multiplication can help avoid the allocation.
 
@@ -1025,9 +1025,10 @@ This is an example of where an inplace version of the matrix multiplication can 
     @btime f!($C, $A, $B)
     @btime f2!($C, $A, $B)
 
-Note in the output of the benchmarking, the ``f2!`` is non-allocating and is using the preallocated ``C`` variable directly.
+Note in the output of the benchmarking, the ``f2!`` is non-allocating and is using the pre-allocated ``C`` variable directly.
 
-Another example of this is solutions to linear equations.
+Another example of this is solutions to linear equations, where for large solutions you may pre-callocate and reuse the
+solution vector.
 
 .. code-block:: julia
 
@@ -1036,11 +1037,11 @@ Another example of this is solutions to linear equations.
     z = A \ y  # creates temporary
 
     A = factorize(A)  # inplace requires factorization
-    x = similar(y)
+    x = similar(y)  # pre-allocate
     ldiv!(x, A, y)  # inplace left divide, using factorization
 
 However, if you benchmark carefully, you will see that this is sometimes slower.  Avoiding allocations is not always a good
-idea.
+idea - and worrying about it prior to benchmarking is premature optimization.
 
 There are a variety of other non-allocating versions of functions.  For example,
 
@@ -1068,7 +1069,7 @@ To see these are different matrices, note that
     @show A[2,1]
     @show B[1];
 
-Instead of allocating a new matrix, you can take a ``view`` of a matrix, which provides and
+Instead of allocating a new matrix, you can take a ``view`` of a matrix, which provides an
 appropriate ``AbstractArray`` type that doesn't allocate new memory with the ``@view`` matrix.
 
 .. code-block:: julia
@@ -1089,7 +1090,7 @@ Exercises
 Exercise 1
 ------------
 
-This exercise is for a little practice on low-level routines, and to hopefully convince you to leave low-level code to the experts.
+This exercise is for a practice on writing low-level routines (i.e. "kernels"), and to hopefully convince you to leave low-level code to the experts.
 
 The formula for matrix multiplication is deceptively simple.  For example, with the product of square matrices :math:`C = A B` of size :math:`N \times N`, the :math:`i,j` element of :math:`C` is  
 
@@ -1103,7 +1104,7 @@ Alternatively, you can take a row :math:`A_{i,:}` and column :math:`B_{:, j}` an
 
     C_{ij} = A_{i,:} \cdot B_{:,j}
 
-Note that the inner product in a discrete space is simply a sum, and has the same complexity (i.e. :math:`O(N)` operations).
+Note that the inner product in a discrete space is simply a sum, and has the same complexity as the sum (i.e. :math:`O(N)` operations).
 
 For a dense matrix without any structure, this also makes it clear why the complexity is :math:`O(N^3)`: you need to evaluate it for :math:`N^2` elements in the matrix and do an :math:`O(N)` operation each time.
 
@@ -1113,7 +1114,7 @@ For this exercise, implement matrix multiplication yourself and compare performa
 #. Loop over each :math:`C_{ij}` by the row first (i.e. the ``i`` index) and use a ``for`` loop for the inner product
 #. Loop over each :math:`C_{ij}` by the column first (i.e. the ``j`` index) and use a ``for`` loop for the inner product
 #. Do the same but use the ``dot`` product instead of the sum.
-#. Choose your best implementation of these, and then for matrices of a few different sizes ``N=10``, ``N=1000``, etc. and compare the ratio of performance of your best implementation to the one built into Julia (actually, the BLAS library above).
+#. Choose your best implementation of these, and then for matrices of a few different sizes ``N=10``, ``N=1000``, etc. and compare the ratio of performance of your best implementation to the built in BLAS library.
 
 A few more hints:
 
@@ -1124,7 +1125,7 @@ A few more hints:
 Exercise 2a
 --------------
 
-Here we will calculate the evolution of a discrete time Markov Chain starting from :math:``phi_0``.
+Here we will calculate the evolution of the pdf of a discrete time Markov Chain, :math:`phi_t` given the initial condition :math:`phi_0`.
 
 Start with a simple symmetric tridiagonal matrix
 
@@ -1134,8 +1135,8 @@ Start with a simple symmetric tridiagonal matrix
     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2)])
     A_adjoint = A';
 
-1. Pick some large ``T`` and start with :math:`\phi_0 = \begin{bmatrix} 1 & 0 & \ldots & 0\end{bmatrix}`
-2. Write code to calculate :math:`\phi_t` to some ``T`` by iterating the map for each ``t``, i.e.
+1. Pick some large ``T`` and use the initial condition :math:`\phi_0 = \begin{bmatrix} 1 & 0 & \ldots & 0\end{bmatrix}`
+2. Write code to calculate :math:`\phi_t` to some :math:`T` by iterating the map for each :math:`t`, i.e.
 
 .. math::
 
@@ -1143,15 +1144,15 @@ Start with a simple symmetric tridiagonal matrix
 
 3. What is the computational order of that calculating  :math:`\phi_T` using this iteration approach :math:`T < N`?
 4. What is the computational order of :math:`(A')^T = (A \ldots A)` and then :math:`\phi_T = (A')^T \phi_0` for :math:`T < N`?
-5. Benchmark calculating :math:`\phi_T` with the iterative calculation above as well as the direct :math:`\phi_T = (A')^T \phi_0` to see which is faster.  You can take the matrix power with just ``A_adjoint^T``, uses specialized algorithms faster and more accurate than repeated matrix multiplication (but with the same computational order).
+5. Benchmark calculating :math:`\phi_T` with the iterative calculation above as well as the direct :math:`\phi_T = (A')^T \phi_0` to see which is faster.  You can take the matrix power with just ``A_adjoint^T``, which uses specialized algorithms faster and more accurate than repeated matrix multiplication (but with the same computational order).
 6. Check the same if :math:`T = 2 N`
 
-Note: The algorithm used in Julia to take matrix powers  depends on the matrix structure, as usual.  In the symmetric case, it can use an eigendecomposition, whereas with a general dense matrix it uses `squaring and scaling <https://doi.org/10.1137/090768539>`_.
+*Note:* The algorithm used in Julia to take matrix powers  depends on the matrix structure, as always.  In the symmetric case, it can use an eigendecomposition, whereas with a general dense matrix it uses `squaring and scaling <https://doi.org/10.1137/090768539>`_.
 
 Exercise 2b
 --------------
 
-With the same setup as Exercise 2a, do an `eigen decomposition <https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix>`_ of ``A_transpose``.  That is, use ``eigen`` to do a factorization of the adjoint :math:`A' = Q \Lambda Q^{-1}` where :math:`Q` the matrix of eigenvectors and :math:`\Lambda` the diagonal matrix of eigenvalues.  Calculate :math:`Q^{-1}` as well.
+With the same setup as Exercise 2a, do an `eigendecomposition <https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix>`_ of ``A_transpose``.  That is, use ``eigen`` to factorize the adjoint :math:`A' = Q \Lambda Q^{-1}` where :math:`Q` the matrix of eigenvectors and :math:`\Lambda` the diagonal matrix of eigenvalues.  Calculate :math:`Q^{-1}` from the results.
 
 Use the factored matrix to calculate the sequence of :math:`\phi_t = (A')^t \phi_0` using the relationship
 
@@ -1161,4 +1162,4 @@ Use the factored matrix to calculate the sequence of :math:`\phi_t = (A')^t \phi
 
 Where matrix powers of diagonal matrices are simply the element-wise power of each element.
 
-Benchmark the speed of calculating the sequence of :math:`\phi_t` up to ``T = 2N`` using this method.  In principle, the factorization and easy calculation of the power should give you benefits.  Explain why it does or does not using computational order.
+Benchmark the speed of calculating the sequence of :math:`\phi_t` up to ``T = 2N`` using this method.  In principle, the factorization and easy calculation of the power should give you benefits compared to simply iterating the map as we did in Exercise 2a.  Explain why it does or does not using computational order of each approach.
