@@ -18,13 +18,13 @@ Co-authored with Chase Coleman and Balint Szoke
 Overview
 ========
 
-Some time series are nonstationary
+Some time series are nonstationary.
 
-For example, output, prices, and dividends are typically nonstationary, due to irregular but persistent growth
+For example, output, prices, and dividends are typically nonstationary, due to irregular but persistent growth.
 
 Which kinds of models are useful for studying such time series?
 
-Hansen and Scheinkman :cite:`hans-scheink2009` analyze two classes of time series models that accommodate growth
+Hansen and Scheinkman :cite:`hans-scheink2009` analyze two classes of time series models that accommodate growth.
 
 They are:
 
@@ -32,24 +32,24 @@ They are:
 
 #.  **multiplicative functionals** that display random "geometric growth"
 
-These two classes of processes are closely connected
+These two classes of processes are closely connected.
 
-For example, if a process :math:`\{y_t\}` is an additive functional and :math:`\phi_t = \exp(y_t)`, then :math:`\{\phi_t\}` is a multiplicative functional
+For example, if a process :math:`\{y_t\}` is an additive functional and :math:`\phi_t = \exp(y_t)`, then :math:`\{\phi_t\}` is a multiplicative functional.
 
-Hansen and Sargent :cite:`hans-sarg-book2016` (chs. 5 and 6) describe discrete time versions of additive and multiplicative functionals
+Hansen and Sargent :cite:`hans-sarg-book2016` (chs. 5 and 6) describe discrete time versions of additive and multiplicative functionals.
 
-In this lecture we discuss the former (i.e., additive functionals)
+In this lecture we discuss the former (i.e., additive functionals).
 
-In the :doc:`next lecture <../time_series_models/multiplicative_functionals>` we discuss multiplicative functionals
+In the :doc:`next lecture <../time_series_models/multiplicative_functionals>` we discuss multiplicative functionals.
 
-We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent :cite:`hans-sarg-book2016`
+We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent :cite:`hans-sarg-book2016`.
 
 A Particular Additive Functional
 ================================
 
-This lecture focuses on a particular type of additive functional: a scalar process :math:`\{y_t\}_{t=0}^\infty` whose increments are driven by a Gaussian vector autoregression
+This lecture focuses on a particular type of additive functional: a scalar process :math:`\{y_t\}_{t=0}^\infty` whose increments are driven by a Gaussian vector autoregression.
 
-It is simple to construct, simulate, and analyze
+It is simple to construct, simulate, and analyze.
 
 This additive functional consists of two components, the first of which is a **first-order vector autoregression** (VAR)
 
@@ -87,15 +87,15 @@ In particular,
     y_{t+1} - y_{t} = \nu + D x_{t} + F z_{t+1}
 
 Here :math:`y_0 \sim {\cal N}(\mu_{y0}, \Sigma_{y0})` is a random
-initial condition
+initial condition.
 
 The nonstationary random process :math:`\{y_t\}_{t=0}^\infty` displays
-systematic but random *arithmetic growth*
+systematic but random *arithmetic growth*.
 
 A linear state space representation
 -----------------------------------
 
-One way to represent the overall dynamics is to use a :doc:`linear state space system <../tools_and_techniques/linear_models>`
+One way to represent the overall dynamics is to use a :doc:`linear state space system <../tools_and_techniques/linear_models>`.
 
 To do this, we set up state and observation vectors
 
@@ -153,16 +153,16 @@ This can be written as
       \hat{y}_{t} &= \hat{D} \hat{x}_t
     \end{aligned}
 
-which is a standard linear state space system
+which is a standard linear state space system.
 
-To study it, we could map it into an instance of `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_
+To study it, we could map it into an instance of `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_.
 
-We will in fact use a different set of code for simulation, for reasons described below
+We will in fact use a different set of code for simulation, for reasons described below.
 
 Dynamics
 ========
 
-Let's run some simulations to build intuition
+Let's run some simulations to build intuition.
 
 .. _addfunc_eg1:
 
@@ -181,24 +181,24 @@ Let the increment in :math:`\{y_t\}` obey
 
     y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
 
-with an initial condition for :math:`y_0`
+with an initial condition for :math:`y_0`.
 
 While :eq:`ftaf` is not a first order system like :eq:`old1_additive_functionals`, we know that it can be mapped  into a first order system
 
 * for an example of such a mapping, see :ref:`this example <lss_sode>`
 
-In fact this whole model can be mapped into the additive functional system definition in :eq:`old1_additive_functionals` -- :eq:`old2_additive_functionals`  by appropriate selection of the matrices :math:`A, B, D, F`
+In fact this whole model can be mapped into the additive functional system definition in :eq:`old1_additive_functionals` -- :eq:`old2_additive_functionals`  by appropriate selection of the matrices :math:`A, B, D, F`.
 
-You can try writing these matrices down now as an exercise --- the correct expressions will appear in the code below
+You can try writing these matrices down now as an exercise --- the correct expressions will appear in the code below.
 
 Simulation
 ----------
 
-When simulating we embed our variables into a bigger system
+When simulating we embed our variables into a bigger system.
 
-This system also constructs the components of the decompositions of :math:`y_t` and of :math:`\exp(y_t)` proposed by Hansen and Scheinkman :cite:`hans-scheink2009`
+This system also constructs the components of the decompositions of :math:`y_t` and of :math:`\exp(y_t)` proposed by Hansen and Scheinkman :cite:`hans-scheink2009`.
 
-All of these objects are computed using the code below
+All of these objects are computed using the code below.
 
 Setup
 -----
@@ -631,7 +631,7 @@ Setup
         return plt
     end
 
-For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a description of exactly how we compute them
+For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a description of exactly how we compute them.
 
 .. _addfunc_egcode:
 
@@ -683,7 +683,7 @@ For now, we just plot :math:`y_t` and :math:`x_t`, postponing until later a desc
         @test F ≈ 0.01 && T == 150 # a few constants.
     end
 
-Notice the irregular but persistent growth in :math:`y_t`
+Notice the irregular but persistent growth in :math:`y_t`.
 
 Decomposition
 -------------
@@ -722,7 +722,7 @@ Then the Hansen-Scheinkman :cite:`hans-scheink2009` decomposition is
          \overbrace{g x_0 + y_0}^{\text{initial conditions}}
     \end{aligned}
 
-At this stage you should pause and verify that :math:`y_{t+1} - y_t` satisfies :eq:`old2_additive_functionals`
+At this stage you should pause and verify that :math:`y_{t+1} - y_t` satisfies :eq:`old2_additive_functionals`.
 
 It is convenient for us to introduce the following notation:
 
@@ -734,9 +734,9 @@ It is convenient for us to introduce the following notation:
 
 We want to characterize and simulate components :math:`\tau_t, m_t, s_t` of the decomposition.
 
-A convenient way to do this is to construct an appropriate instance of a :doc:`linear state space system <../tools_and_techniques/linear_models>` by using `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_
+A convenient way to do this is to construct an appropriate instance of a :doc:`linear state space system <../tools_and_techniques/linear_models>` by using `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ from `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_.
 
-This will allow us to use the routines in `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ to study dynamics
+This will allow us to use the routines in `LSS <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl>`_ to study dynamics.
 
 To start, observe that, under the dynamics in :eq:`old1_additive_functionals` and :eq:`old2_additive_functionals` and with the
 definitions just given,
@@ -820,20 +820,20 @@ we can write this as the linear state space system
     \end{aligned}
 
 By picking out components of :math:`\tilde y_t`, we can track all variables of
-interest
+interest.
 
 Code
 ====
 
-The type `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ mentioned above does all that we want to study our additive functional
+The type `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ mentioned above does all that we want to study our additive functional.
 
-In fact `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ does more, as we shall explain below
+In fact `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ does more, as we shall explain below.
 
 (A hint that it does more is the name of the type -- here AMF stands for
 "additive and multiplicative functional" -- the code will do things for
 multiplicative functionals too)
 
-Let's use this code (embedded above) to explore the :ref:`example process described above <addfunc_eg1>`
+Let's use this code (embedded above) to explore the :ref:`example process described above <addfunc_eg1>`.
 
 If you run :ref:`the code that first simulated that example <addfunc_egcode>` again and then the method call
 you will generate (modulo randomness) the plot
@@ -843,9 +843,9 @@ you will generate (modulo randomness) the plot
     plt = plot_additive(amf, T)
     plt[1]
 
-When we plot multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plot population 95% probability coverage sets computed using the LSS type
+When we plot multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plot population 95% probability coverage sets computed using the LSS type.
 
-We have chosen to simulate many paths, all starting from the *same* nonrandom initial conditions :math:`x_0, y_0` (you can tell this from the shape of the 95% probability coverage shaded areas)
+We have chosen to simulate many paths, all starting from the *same* nonrandom initial conditions :math:`x_0, y_0` (you can tell this from the shape of the 95% probability coverage shaded areas).
 
 Notice tell-tale signs of these probability coverage shaded areas
 
@@ -858,9 +858,9 @@ Notice tell-tale signs of these probability coverage shaded areas
 An associated multiplicative functional
 ---------------------------------------
 
-Where :math:`\{y_t\}` is our additive functional, let :math:`M_t = \exp(y_t)`
+Where :math:`\{y_t\}` is our additive functional, let :math:`M_t = \exp(y_t)`.
 
-As mentioned above, the process :math:`\{M_t\}` is called a **multiplicative functional**
+As mentioned above, the process :math:`\{M_t\}` is called a **multiplicative functional**.
 
 Corresponding to the additive decomposition described above we have the multiplicative decomposition of the :math:`M_t`
 
@@ -889,9 +889,9 @@ and
 
     \tilde e(x) = \exp[g(x)] = \exp \bigl[ D' (I - A)^{-1} x \bigr]
 
-An instance of type `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ includes this associated multiplicative functional as an attribute
+An instance of type `AMF_LSS_VAR <https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl>`__ includes this associated multiplicative functional as an attribute.
 
-Let's plot this multiplicative functional for our example
+Let's plot this multiplicative functional for our example.
 
 If you run :ref:`the code that first simulated that example <addfunc_egcode>` again and then the method call
 
@@ -900,22 +900,22 @@ If you run :ref:`the code that first simulated that example <addfunc_egcode>` ag
     plt = plot_multiplicative(amf, T)
     plt[1]
 
-As before, when we plotted multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plotted population 95% confidence bands computed using the LSS type
+As before, when we plotted multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plotted population 95% confidence bands computed using the LSS type.
 
 Comparing this figure and the last also helps show how geometric growth differs from
-arithmetic growth
+arithmetic growth.
 
 A peculiar large sample property
 --------------------------------
 
 Hansen and Sargent :cite:`hans-sarg-book2016` (ch. 6) note that the martingale component
-:math:`\widetilde M_t` of the multiplicative decomposition has a peculiar property
+:math:`\widetilde M_t` of the multiplicative decomposition has a peculiar property.
 
 *  While :math:`E_0 \widetilde M_t = 1` for all :math:`t \geq 0`,
-   nevertheless :math:`\ldots`
+   nevertheless :math:`\ldots`.
 
 *  As :math:`t \rightarrow +\infty`, :math:`\widetilde M_t` converges to
-   zero almost surely
+   zero almost surely.
 
 The following simulation of many paths of :math:`\widetilde M_t` illustrates this property
 
