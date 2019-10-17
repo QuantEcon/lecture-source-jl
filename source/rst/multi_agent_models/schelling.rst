@@ -19,54 +19,54 @@ Schelling's Segregation Model
 Overview
 ========
 
-In 1969, Thomas C. Schelling developed a simple but striking model of racial segregation :cite:`Schelling1969`
+In 1969, Thomas C. Schelling developed a simple but striking model of racial segregation :cite:`Schelling1969`.
 
-His model studies the dynamics of racially mixed neighborhoods
+His model studies the dynamics of racially mixed neighborhoods.
 
-Like much of Schelling's work, the model shows how local interactions can lead to surprising aggregate structure
+Like much of Schelling's work, the model shows how local interactions can lead to surprising aggregate structure.
 
-In particular, it shows that relatively mild preference for neighbors of similar race can lead in aggregate to the collapse of mixed neighborhoods, and high levels of segregation
+In particular, it shows that relatively mild preference for neighbors of similar race can lead in aggregate to the collapse of mixed neighborhoods, and high levels of segregation.
 
-In recognition of this and other research, Schelling was awarded the 2005 Nobel Prize in Economic Sciences (joint with Robert Aumann)
+In recognition of this and other research, Schelling was awarded the 2005 Nobel Prize in Economic Sciences (joint with Robert Aumann).
 
-In this lecture we (in fact you) will build and run a version of Schelling's model
+In this lecture we (in fact you) will build and run a version of Schelling's model.
 
 The Model
 =========
 
-We will cover a variation of Schelling's model that is easy to program and captures the main idea
+We will cover a variation of Schelling's model that is easy to program and captures the main idea.
 
-Suppose we have two types of people: orange people and green people
+Suppose we have two types of people: orange people and green people.
 
-For the purpose of this lecture, we will assume there are 250 of each type
+For the purpose of this lecture, we will assume there are 250 of each type.
 
-These agents all live on a single unit square
+These agents all live on a single unit square.
 
-The location of an agent is just a point :math:`(x, y)`,  where :math:`0 < x, y < 1`
+The location of an agent is just a point :math:`(x, y)`,  where :math:`0 < x, y < 1`.
 
 Preferences
 -----------
 
-We will say that an agent is *happy* if half or more of her 10 nearest neighbors are of the same type
+We will say that an agent is *happy* if half or more of her 10 nearest neighbors are of the same type.
 
-Here 'nearest' is in terms of `Euclidean distance <https://en.wikipedia.org/wiki/Euclidean_distance>`_
+Here 'nearest' is in terms of `Euclidean distance <https://en.wikipedia.org/wiki/Euclidean_distance>`_.
 
-An agent who is not happy is called *unhappy*
+An agent who is not happy is called *unhappy*.
 
-An important point here is that agents are not averse to living in mixed areas
+An important point here is that agents are not averse to living in mixed areas.
 
-They are perfectly happy if half their neighbors are of the other color
+They are perfectly happy if half their neighbors are of the other color.
 
 Behavior
 --------
 
-Initially, agents are mixed together (integrated)
+Initially, agents are mixed together (integrated).
 
-In particular, the initial location of each agent is an independent draw from a bivariate uniform distribution on :math:`S = (0, 1)^2`
+In particular, the initial location of each agent is an independent draw from a bivariate uniform distribution on :math:`S = (0, 1)^2`.
 
-Now, cycling through the set of all agents, each agent is now given the chance to stay or move
+Now, cycling through the set of all agents, each agent is now given the chance to stay or move.
 
-We assume that each agent will stay put if they are happy and move if unhappy
+We assume that each agent will stay put if they are happy and move if unhappy.
 
 The algorithm for moving is as follows
 
@@ -76,14 +76,14 @@ The algorithm for moving is as follows
 
 #. Else, go to step 1
 
-In this way, we cycle continuously through the agents, moving as required
+In this way, we cycle continuously through the agents, moving as required.
 
-We continue to cycle until no one wishes to move
+We continue to cycle until no one wishes to move.
 
 Results
 =======
 
-Let's have a look at the results we got when we coded and ran this model
+Let's have a look at the results we got when we coded and ran this model.
 
 As discussed above, agents are initially mixed randomly together
 
@@ -98,13 +98,13 @@ But after several cycles they become segregated into distinct regions
 .. figure:: /_static/figures/schelling_fig4.png
 
 In this instance, the program terminated after 4 cycles through the set of
-agents, indicating that all agents had reached a state of happiness
+agents, indicating that all agents had reached a state of happiness.
 
-What is striking about the pictures is how rapidly racial integration breaks down
+What is striking about the pictures is how rapidly racial integration breaks down.
 
-This is despite the fact that people in the model don't actually mind living mixed with the other type
+This is despite the fact that people in the model don't actually mind living mixed with the other type.
 
-Even with these preferences, the outcome is a high degree of segregation
+Even with these preferences, the outcome is a high degree of segregation.
 
 Exercises
 =========
@@ -114,9 +114,9 @@ Exercises
 Exercise 1
 ----------
 
-Implement and run this simulation for yourself
+Implement and run this simulation for yourself.
 
-Use 250 agents of each type
+Use 250 agents of each type.
 
 Solutions
 =========
