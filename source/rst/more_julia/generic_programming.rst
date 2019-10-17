@@ -212,7 +212,7 @@ In that case, keep an open mind that this discussion of abstract concepts will h
 
 Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar.
 
-**Don't be fooled!**.
+**Don't be fooled!**
 
 The superficial similarity can lead to misuse: types are *not* classes with poor encapsulation, and methods are *not* the equivalent to member functions with the order of arguments swapped.
 
