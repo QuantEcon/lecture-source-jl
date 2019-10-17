@@ -7,7 +7,7 @@ Tools and Techniques
 ***************************************
 
 This section of the course contains foundational mathematical and statistical
-tools and techniques
+tools and techniques.
 
 .. only:: html
 
