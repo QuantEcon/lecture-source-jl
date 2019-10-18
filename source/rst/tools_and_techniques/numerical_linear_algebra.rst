@@ -792,7 +792,7 @@ is isomorphic to determining if the directed graph of the Markov chain is `stron
 
 .. code-block:: julia
 
-    using ightGraphs
+    using LightGraphs
     α = 0.1
     N = 6
     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
