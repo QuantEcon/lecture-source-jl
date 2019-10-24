@@ -33,9 +33,9 @@ Setup
 Applications
 ------------
 
-In this section, we will consider variations on three classic problems
+In this section, we will consider variations on classic problems
 
-1.  Solving a linear system for a square :math:`A` where we will maintain throughout there is a unique solution TO
+1.  Solving a linear system for a square :math:`A` where we will maintain throughout there is a unique solution to
 
 
     .. math::
@@ -43,7 +43,7 @@ In this section, we will consider variations on three classic problems
         A x = b
 
 
-2.  In the case of a rectangular matrix, :math:`A` consider the `linear least-squares <https://en.wikipedia.org/wiki/Linear_least_squares>`_ solution to
+2.  `Linear least-squares <https://en.wikipedia.org/wiki/Linear_least_squares>`_ solution, for a rectangular :math:`A`
 
     .. math::
 
@@ -57,13 +57,15 @@ In this section, we will consider variations on three classic problems
         x = (A'A)^{-1}A'b
 
 
-3.  Finally, consider the eigenvalue problem of finding :math:`x` and :math:`\lambda` such that
+3.  In the case of a square matrix, :math:`A` the  eigenvalue problem of finding :math:`x` and :math:`\lambda` such that
 
     .. math::
 
         A x = \lambda x
 
     For the eigenvalue problems.  Keep in mind that that you do not always require all of the :math:`\lambda`, and sometimes the largest (or smallest) would be enough.  For example, calculating the spectral radius only requires the maximum eigenvalue in absolute value.
+
+4.  
 
 Ill-Conditioned Matrices
 ========================
@@ -360,7 +362,7 @@ As before, consider solving the equation
     A x = b
 
 We will now
-focus on cases where :math:`A` is both massive, sparse (e.g. potentially millions of equations), and sometimes ill-conditioned - but where there is always unique solution.
+focus on cases where :math:`A` is both massive (e.g. potentially millions of equations), sparse, and sometimes ill-conditioned - but where there is always unique solution.
 
 While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
 of PDEs, and when working with big data.
@@ -368,16 +370,14 @@ of PDEs, and when working with big data.
 The methods in the previous lectures (e.g. factorization and approaches similar to Gaussian elimination) are called direct methods, and able 
 in theory to converge to the exact solution in a finite number of steps while directly working with the matrix in memory.
 
-Instead, iterative solutions start with a guess on a solution and iterate until until asymptoptic convergence.  The benefit will be that
-each iteration uses a much lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
+Instead, iterative solutions start with a guess on a solution and iterate until convergence.  The benefit will be that
+each iteration uses a lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
 solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly; and (3) find solutions
-in progress prior to the completion of all algorithm steps.  Of course, there is no free lunch and the computaitonal order of the iterations themselves would be comparable to the direct methods for a given level of tolerance (e.g. :math:`O(N^3)` operations are required to solve a dense unstructured system exactly).
-
-.. So, 
+in progress prior to the completion of all algorithm steps.  Of course, there is no free lunch and the computational order of the iterations themselves would be comparable to the direct methods for a given level of tolerance (e.g. :math:`O(N^3)` operations are required to solve a dense unstructured system exactly).
 
 There are two types of iterative methods we will consider:  first are stationary methods which iterate on a map in a similar way to fixed point problems, and the second are `Krylov <https://en.wikipedia.org/wiki/Krylov_subspace>`_ methods which iteratively solve using left-multiplications of the linear operator.
 
-For our main examples, lets solve the valuation of the continuous time markov chain from the previous section.  That is, given a payoff vector :math:`r`, a
+For our main examples, we will use the valuation of the continuous time markov chain from the previous section.  That is, given a payoff vector :math:`r`, a
 discount rate :math:`\rho`, and the infinitesimal generator of the markov chain :math:`Q`, solve the equation
 
 
@@ -443,7 +443,7 @@ where
     D = \begin{bmatrix} A_{11} & 0 & \ldots & 0\\
                         0    & A_{22} & \ldots & 0\\
                         \vdots & \vdots & \vdots & \vdots\\
-                        0 & 0 &  \ldots & 0 A_{NN}
+                        0 & 0 &  \ldots & A_{NN}
         \end{bmatrix}
 
 and
@@ -465,9 +465,9 @@ Rearrange the :math:`(D + R)x = b` as
     x &= D^{-1} (b - R x)
     \end{align}
 
-Where, since :math:`D` is diagonal, its inverse is trivial to calculate.
+Where, since :math:`D` is diagonal, its inverse is trivial to calculate with :math:`O(N)` complexity.
 
-To solve, take an iteration :math:`x^k`, starting from :math:`x^0` guess, and then form a new guess with
+To solve, take an iteration :math:`x^k`, starting from :math:`x^0`, and then form a new guess with
 
 .. math::
 
@@ -478,7 +478,7 @@ The complexity here is a :math:`O(N^2)` for the matrix-vector product, and an :m
 
 The package `IterativeSolvers.jl <https://github.com/JuliaMath/IterativeSolvers.jl>`_ package implements this method.
 
-For our example, we start if a guess and solve for the value function.
+For our example, we start if a guess and solve for the value function and iterate
 
 .. code-block:: julia
 
@@ -501,7 +501,7 @@ The iteration becomes
 
     L x^{k+1} = b - U x^k 
 
-In that case, since the :math:`L` matrix is triangular, the system can be solved in :math:`O(N^2)` operations.
+In that case, since the :math:`L` matrix is triangular, the system can be solved in :math:`O(N^2)` operations after :math:`b - U x^k ` is formed
 
 .. code-block:: julia
 
@@ -511,16 +511,16 @@ In that case, since the :math:`L` matrix is triangular, the system can be solved
 
 The accuracy increases substantially, after 40 iterations you see the error is in the order of ``1E-5``
 
-For the case of successive-over relaxation, take a relaxation parameter :math:`\omega > 1` and decompose the matrix as :math:`A = L + D + U` where :math:`L, U` are strictly upper and lower diagonal matrices, and :math:`D` is a diagonal.
+Another example is `Successive Over-relaxation (SOR) <https://en.wikipedia.org/wiki/Successive_over-relaxation`_, where we take a relaxation parameter :math:`\omega > 1` and decompose the matrix as :math:`A = L + D + U` where :math:`L, U` are strictly upper and lower diagonal matrices, and :math:`D` is a diagonal.
 
-Multiply the system by :math:`\omega` and rearrange to find
+Decompose the :math:`A` matrix, multiply the system by :math:`\omega`, and rearrange to find
 
 .. math::
 
     (D + \omega L) x^{k+1} = \omega b - \left(\omega U +(\omega - 1)D \right)x^k
 
 
-In that case, :math:`D + \omega L` is a triangular matrix.
+In that case, :math:`D + \omega L` is a triangular matrix, and hence the linear solve is of :math:`O(N^2)`.
 
 .. code-block:: julia
 
@@ -528,12 +528,11 @@ In that case, :math:`D + \omega L` is a triangular matrix.
     sor!(v, A, r, 1.1, maxiter = 40)
     @show norm(v - v_direct, Inf);
 
-The accuracy is now :math:`1E-7`.  If you change the parameter to :math:`\omega = 1.2`, the accuracy further increases to :math:`1E-9`.
+The accuracy is now ``1E-7``.  If you change the parameter to :math:`\omega = 1.2`, the accuracy further increases to ``1E-9``.
 
-This technique is a common one in numerical analysis:  sometimes adding a dampening or relaxation parameter by speeding up the process.  
+This technique is a common with iterative methods:  sometimes adding a dampening or relaxation parameter by counterintuitively speed up the convergence process.  
 
-Preconditioning is available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_).
-
+Note: stationary iterative methods are not always used directly, but are sometimes used as a "smoothing" step (e.g. running 5-10 times) prior to using other Krylov methods. 
 
 Krylov Methods
 ===============
@@ -645,6 +644,9 @@ Finally, if we naively use another type (called `Algebraic Multigrid <https://en
     P = AMGPreconditioner{RugeStuben}(A)
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
     sol[end]
+
+Note: 
+Preconditioning is available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_)
 
 Methods for General Matrices
 -----------------------------
