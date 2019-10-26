@@ -65,7 +65,7 @@ In this section, we will consider variations on classic problems
 
     For the eigenvalue problems.  Keep in mind that that you do not always require all of the :math:`\lambda`, and sometimes the largest (or smallest) would be enough.  For example, calculating the spectral radius only requires the maximum eigenvalue in absolute value.
 
-4.  
+
 
 Ill-Conditioned Matrices
 ========================
@@ -76,7 +76,7 @@ An ill-conditioned matrix is one where the basis of eigenvectors are close to, b
 or with infinite precision numerical methods, it is an important in practice for two reasons
 
 1. Ill-conditioned matrices introduce numerical errors roughly in proportion to the base-10 log of the condition number.
-2. The convergence speed of many iterative methods is based on the spectral properties (e.g. the basis formed by the eigenvectors), and hence ill-conditioned systems can converge slowly.
+2. The convergence speed of many iterative methods is based on the spectral properties of the matrices (e.g. the basis formed by the eigenvectors), and hence ill-conditioned systems can converge slowly.
 
 The solutions to these problems are to
 
@@ -116,7 +116,7 @@ On the other hand, notice that
          1.0 ϵ]
     cond(A)
 
-Has a condition number of close to 100,000 - and hence (taking the base 10 log) you would expect to be introducing numerical errors of around 6 digits if you
+Has a condition number of order ``10E6`` - and hence (taking the base 10 log) you would expect to be introducing numerical errors of around 6 digits if you
 are not careful.  For example, note that the inverse has both extremely large and extremely small negative numbers
 
 .. code-block:: julia
@@ -138,6 +138,72 @@ However, be careful since the determinant has a scale, while the condition numbe
 
 In that case, the determinant of ``A`` is 1, while the condition number is unchanged.  This example also provides some
 intuition that ill-conditioned matrices typically occur when a matrix has radically different scales (e.g. contains both ``1`` and ``1E-6``, or ``1000`` and ``1E-3``).  This can occur frequently with both function approximation and linear-least squares. 
+
+Condition Numbers and Matrix Operations
+----------------------------------------
+
+As we say above, multiplying a matrix by a constant does not change the condition number.  What about other operations?
+
+For this example, we see that the inverse has the same condition number (though this will not always be the case).
+
+.. code-block:: julia
+
+    @show cond(A)
+    @show cond(inv(A));
+
+The condition number of the product of two matrices can change radically and lead things to becoming
+even more ill-conditioned.
+
+
+This comes up frequently when calculating the product of a matrix and its transpose (e.g. forming the covariance matrix) in
+which case the :math:`cond(A A') = cond(A)^2`.  A classic example is the `Läuchli matrix <https://link.springer.com/article/10.1007%2FBF01386022>`_.
+
+.. code-block:: julia 
+
+    lauchli(N, ϵ) = [ones(N)'; ϵ * I(N)]'
+    ϵ = 1E-8
+    L = lauchli(3, ϵ) |> Matrix
+
+Note that the condition number increases substantially
+
+.. code-block:: julia
+
+    @show cond(L)
+    @show cond(L' * L);
+
+You can show that the analytic eigenvalues of this are :math:`\{3 + \epsilon^2, \epsilon^2, \epsilon^2\}` but the poor conditioning
+means it is difficult to distinguish these from :math:`0`.
+
+This comes up when conducting `Principle Component Analysis <https://en.wikipedia.org/wiki/Principal_component_analysis#Singular_value_decomposition>`_, which
+requires calculations of the eigenvalues of the covariance matrix
+
+.. code-block:: julia
+
+    sqrt.(eigen(L*L').values)
+
+Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.
+
+.. code-block:: julia
+
+    sqrt.([3 + ϵ^2, ϵ^2, ϵ^2])
+
+Alternatively, we could calculate these by taking the square of the singular values of :math:`L` itself, which is much more accurate
+and lets us clearly distinguish from zero
+
+.. code-block:: julia
+
+    svd(L).S
+
+Similarly, we are better off calculating least-squares directly rather than forming the normal equation (i.e. :math:`A' A x = A' b`) ourselves
+
+.. code-block:: julia
+
+    N = 3
+    A = lauchli(N, 1E-7)' |> Matrix
+    b = rand(N+1)
+    x_sol_1 = A \ b  # using a least-square solver
+    x_sol_2 = (A' * A) \ (A' * b)  # forming the normal equation ourselves
+    norm(x_sol_1 - x_sol_2)`
 
 Why Monomial Basis are a Bad Idea
 ---------------------------------
@@ -178,7 +244,7 @@ We can then calculate the interpolating coefficients as the solution to
 
     A c = y
 
-Lets see this in operation for the interpolation of the :math:`exp(x)` function
+Implementing this for the interpolation of the :math:`exp(x)` function
 
 .. code-block:: julia
 
@@ -197,7 +263,7 @@ since we are interpolating the function precisely at those nodes.
 In our example, the Inf-norm (i.e. maximum difference) of the interpolation errors at the nodes is around ``1E-10`` which
 is reasonable for many problems.
 
-But note that with :math:`N=5` the condition number is already into the tens of thousands.
+But note that with :math:`N=5` the condition number is already of order ``10E6``.
 
 .. code-block:: julia
 
@@ -218,7 +284,7 @@ interpolation?
     c = A_inv * y
     norm(A * c - f.(x), Inf)
 
-Here, we see that hoping to increase the precision between points by adding extra polynomial terms is backfiring.  By going to a modest 10th order polynomial we have
+Here, we see that hoping to increase the precision between points by adding extra polynomial terms is backfiring.  By going to a 10th order polynomial we have
 introduced an error of about ``1E-5``, even at the interpolation points themselves.
 
 This blows up quickly
@@ -256,22 +322,22 @@ then the error will become non-trivial eventually - even without taking the inve
 The heart of the issue is that the monomial basis leads to a `Vandermonde_matrix <https://en.wikipedia.org/wiki/Vandermonde_matrix>`_ which
 is especially ill-conditioned.  
 
-Runge's Phenomena
-~~~~~~~~~~~~~~~~~~
+Aside on Runge's Phenomena
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This also lest us look at a separate type of error due to `Runge's Phenomena <https://en.wikipedia.org/wiki/Runge%27s_phenomenon>`_.    It is an important
-issue in approximation theory, albeit not one driven by numerical errors or conditioning directly.  
+The monomial basis is also a good opportunity to look at a separate type of error due to `Runge's Phenomena <https://en.wikipedia.org/wiki/Runge%27s_phenomenon>`_.    It is an important
+issue in approximation theory, albeit not one driven by numerical approximation errors.
 
 It turns out that using a uniform grid of points is in general the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomena is can be seen with the interpolation of the seemingly innocuous Runge's function, :math:`g(x) = \frac{1}{1 + 25 x^2}`.
 
 
-First, lets calculate the interpolation with a monomial basis TO find the :math:`c_i` such that
+First, lets calculate the interpolation with a monomial basis to find the :math:`c_i` such that
 
 .. math::
 
-    \frac{1}{1 + 25 x^2} \approx \sum_{i=0}^N c_i x^i 
+    \frac{1}{1 + 25 x^2} \approx \sum_{i=0}^N c_i x^i,\, \text{ for } -1 \leq x \leq 1
 
-First, interpolation with :math:`N = 5` and avoid taking the inverse.  In that case, as long as we avoid taking an inverse the numerical errors from the ill-conditioned matrix are manageable.
+First, interpolation with :math:`N = 5` and avoid taking the inverse.  In that case, as long as we avoid taking an inverse, the numerical errors from the ill-conditioned matrix are manageable.
 
 .. code-block:: julia
 
@@ -324,14 +390,14 @@ Using an Orthogonal Polynomial Basis
 
 We can minimize the numerical issues of an ill-conditioned basis matrix by choosing a different basis for the polynomials.
 
-For example, `Chebyshev polymomials <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_ form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error 
+For example, `Chebyshev polynomials <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_ form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error 
 
 .. code-block:: julia
 
     using ApproxFun
     N = 10000
     S = Chebyshev(-1.0..1.0)  # form chebyshev basis
-    x = points(S, N)  # chooses better grid points, but that could be modified
+    x = points(S, N)  # chooses chebyshev nodes
     y = g.(x)
     g_approx = Fun(S,ApproxFun.transform(S,y))  # transform fits the polynomial
     @show norm(g_approx.(x) - g.(x), Inf)
@@ -343,10 +409,10 @@ Besides the use of a different polynomial basis, we are approximating at differe
 Lessons for Approximation and Interpolation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To summarize some
+To summarize
 
 1. Check the condition number on systems you suspect might be ill-conditioned (based on intuition of collinearity).
-2. If you are working with ill-conditioned matrices, be especially careful not to take inverse.
+2. If you are working with ill-conditioned matrices, be especially careful not to take inverse or multiply by the transpose
 3. Avoid a monomial polynomial basis.  Instead, use polynomials (e.g. Chebyshev or Lagrange) orthogonal under an appropriate inner product, or use a non-global basis such as cubic-splines.
 4. If possible, avoid using a uniform grid for interpolation and approximation and choose nodes appropriate for the basis.
 
@@ -636,7 +702,7 @@ Another classic preconditioner is the Incomplete LU decomposition (i.e. it does 
 
 A good rule of thumb is that you should almost always be using a preconditioner with iterative methods, and you should experiment to find ones appropriate for your problem.
 
-Finally, if we naively use another type (called `Algebraic Multigrid <https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_MultiGrid_(AMG)>`_) gives us a further drop in the number of iterations.
+Finally, naively trying another preconditioning approach (called `Algebraic Multigrid <https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_MultiGrid_(AMG)>`_) gives us a further drop in the number of iterations.
 
 .. code-block:: julia
 
@@ -645,8 +711,7 @@ Finally, if we naively use another type (called `Algebraic Multigrid <https://en
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
     sol[end]
 
-Note: 
-Preconditioning is available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_)
+*Note: *Preconditioning is also available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_)
 
 Methods for General Matrices
 -----------------------------
@@ -693,17 +758,6 @@ That method converged in about 10 iterations.  Now try it with an Incomplete LU 
 .. ADD LINEAR LEAST SQUARES WITH LSMR
 
 
-.. Lauchli example
-
-.. lauchli(N, ϵ) = [ones(N)'; ϵ * I(N)]
-.. N = 5;
-.. L = lauchli(N, 1E-6) |> Matrix
-.. @show cond(L)
-.. @show cond(L' * L)
-.. b = rand(N+1)
-.. x_sol_1 = L \ b
-.. x_sol_2 = (L' * L) \ (L' * b)
-.. norm(x_sol_1 - x_sol_2)
 
 .. Iterative Methods for Eigensystems
 .. ====================================
