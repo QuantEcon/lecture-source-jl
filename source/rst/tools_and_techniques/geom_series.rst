@@ -46,7 +46,11 @@ Below we'll use the following imports:
 .. code-block:: julia
 
   using Plots
-  using Test
+
+.. code-block:: julia 
+    :class: test 
+
+    using Test 
 
 Key Formulas
 ============
@@ -667,14 +671,14 @@ First we study the quality of our approximations
     plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
     plot!(plt, legend = :topleft)
 
- .. code-block:: julia
-     :class: test
+.. code-block:: julia
+    :class: test
 
-     @testset begin
-        @test y_1[4] == 3.942123696037542
-        @test y_2[4] == 4.24
-        @test y_3[4] == 4
-     end
+    @testset begin
+    @test y_1[4] == 3.942123696037542
+    @test y_2[4] == 4.24
+    @test y_3[4] == 4
+    end
 
 Evidently our approximations perform well for small values of :math:`T`.
 
