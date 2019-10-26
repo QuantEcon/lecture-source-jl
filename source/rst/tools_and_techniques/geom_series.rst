@@ -807,14 +807,12 @@ visualization!
 ..     dp_dr = diff(p0, r)
 ..     dp_dr
 
-We can see that for :math:`\frac{\partial p_0}{\partial r}<0` as long as
-:math:`r>g`, :math:`r>0` and :math:`g>0` and :math:`x_0` is positive,
-this equation will always be negative.
+..     We can see that for :math:`\frac{\partial p_0}{\partial r}<0` as long as
+..     :math:`r>g`, :math:`r>0` and :math:`g>0` and :math:`x_0` is positive,
+..     this equation will always be negative.
 
-Similarly, :math:`\frac{\partial p_0}{\partial g}>0` as long as :math:`r>g`, :math:`r>0` and :math:`g>0` and :math:`x_0` is positive, this equation
-will always be postive.
-
-
+..     Similarly, :math:`\frac{\partial p_0}{\partial g}>0` as long as :math:`r>g`, :math:`r>0` and :math:`g>0` and :math:`x_0` is positive, this equation
+..     will always be postive.
 
 Back to the Keynesian Multiplier
 ================================
