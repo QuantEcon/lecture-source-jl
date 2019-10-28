@@ -246,7 +246,7 @@ Julia provides many functions for working with strings.
     strip(" foobar ")  # remove whitespace
 
 
-Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info).
+Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/v1/manual/strings/#Regular-Expressions-1>`_ for more info).
 
 .. code-block:: julia
 
