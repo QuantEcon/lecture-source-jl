@@ -149,7 +149,7 @@ One way to do an additional calculation with a ``DataFrame`` is to tuse the ``@t
 Categorical Data
 ------------------
 
-For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/man/categorical.html#Categorical-Data-1>`_
+For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/man/categorical/>`_
 
 .. code-block:: julia
 
