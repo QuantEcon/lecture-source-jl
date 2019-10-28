@@ -1072,7 +1072,7 @@ Dynamics of the capital stock
 -----------------------------
 
 Finally, let us work on `Exercise
-2 <https://lectures.quantecon.org/jl/optgrowth.html#Exercise-1>`__, where we plot
+2 <https://julia.quantecon.org/dynamic_programming/optgrowth.html#Exercise-1>`__, where we plot
 the trajectories of the capital stock for three different discount
 factors, :math:`0.9`, :math:`0.94`, and :math:`0.98`, with initial
 condition :math:`k_0 = 0.1`.
