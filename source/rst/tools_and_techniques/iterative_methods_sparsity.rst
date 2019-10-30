@@ -49,7 +49,7 @@ In this section, we will consider variations on classic problems
 
         \min_x \| Ax -b \|^2
 
-    From theory, we know that :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
+    From theory, we know that if :math:`A` has linearly independent columns that the solution is the `normal equations <https://en.wikipedia.org/wiki/Linear_least_squares#Derivation_of_the_normal_equations>`_
 
 
     .. math::
@@ -70,7 +70,7 @@ In this section, we will consider variations on classic problems
 Ill-Conditioned Matrices
 ========================
 
-An important consideration in numerical linear algebra, and iterative methods in general is the `condition number <https://en.wikipedia.org/wiki/Condition_number#Matrices>`_.
+An important consideration in numerical linear algebra, and iterative methods in general, is the `condition number <https://en.wikipedia.org/wiki/Condition_number#Matrices>`_.
 
 An ill-conditioned matrix is one where the basis of eigenvectors are close to, but not exactly, collinear.  While this poses no problem on pen and paper,
 or with infinite precision numerical methods, it is an important in practice for two reasons
@@ -116,7 +116,7 @@ On the other hand, notice that
          1.0 ϵ]
     cond(A)
 
-Has a condition number of order ``10E6`` - and hence (taking the base 10 log) you would expect to be introducing numerical errors of around 6 digits if you
+has a condition number of order ``10E6`` - and hence (taking the base 10 log) you would expect to be introducing numerical errors of around 6 significant digits if you
 are not careful.  For example, note that the inverse has both extremely large and extremely small negative numbers
 
 .. code-block:: julia
@@ -142,7 +142,7 @@ intuition that ill-conditioned matrices typically occur when a matrix has radica
 Condition Numbers and Matrix Operations
 ----------------------------------------
 
-As we say above, multiplying a matrix by a constant does not change the condition number.  What about other operations?
+Multiplying a matrix by a constant does not change the condition number.  What about other operations?
 
 For this example, we see that the inverse has the same condition number (though this will not always be the case).
 
@@ -155,8 +155,7 @@ The condition number of the product of two matrices can change radically and lea
 even more ill-conditioned.
 
 
-This comes up frequently when calculating the product of a matrix and its transpose (e.g. forming the covariance matrix) in
-which case the :math:`cond(A A') = cond(A)^2`.  A classic example is the `Läuchli matrix <https://link.springer.com/article/10.1007%2FBF01386022>`_.
+This comes up frequently when calculating the product of a matrix and its transpose (e.g. forming the covariance matrix).  A classic example is the `Läuchli matrix <https://link.springer.com/article/10.1007%2FBF01386022>`_.
 
 .. code-block:: julia 
 
@@ -179,20 +178,20 @@ requires calculations of the eigenvalues of the covariance matrix
 
 .. code-block:: julia
 
-    sqrt.(eigen(L*L').values)
+    sqrt.(eigen(L*L').values) |> sort
 
 Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.
 
 .. code-block:: julia
 
-    sqrt.([3 + ϵ^2, ϵ^2, ϵ^2])
+    sqrt.([3 + ϵ^2, ϵ^2, ϵ^2]) |> sort
 
 Alternatively, we could calculate these by taking the square of the singular values of :math:`L` itself, which is much more accurate
 and lets us clearly distinguish from zero
 
 .. code-block:: julia
 
-    svd(L).S
+    svd(L).S  |> sort
 
 Similarly, we are better off calculating least-squares directly rather than forming the normal equation (i.e. :math:`A' A x = A' b`) ourselves
 
@@ -203,7 +202,7 @@ Similarly, we are better off calculating least-squares directly rather than form
     b = rand(N+1)
     x_sol_1 = A \ b  # using a least-square solver
     x_sol_2 = (A' * A) \ (A' * b)  # forming the normal equation ourselves
-    norm(x_sol_1 - x_sol_2)`
+    norm(x_sol_1 - x_sol_2)
 
 Why Monomial Basis are a Bad Idea
 ---------------------------------
@@ -260,10 +259,10 @@ Implementing this for the interpolation of the :math:`exp(x)` function
 
 The final step just checks the interpolation vs. the analytic function at the nodes.  Keep in mind that this should be very close to zero
 since we are interpolating the function precisely at those nodes.
-In our example, the Inf-norm (i.e. maximum difference) of the interpolation errors at the nodes is around ``1E-10`` which
+In our example, the Inf-norm (i.e. maximum difference) of the interpolation errors at the nodes is around ``1E-9`` which
 is reasonable for many problems.
 
-But note that with :math:`N=5` the condition number is already of order ``10E6``.
+But note that with :math:`N=5` the condition number is already of order ``1E6``.
 
 .. code-block:: julia
 
@@ -319,7 +318,7 @@ error drop dramatically if we solve it as a linear system
 But an error of ``1E-10`` at the interpolating nodes themselves can be an issue in many applications, and if you increase ``N``
 then the error will become non-trivial eventually - even without taking the inverse.
 
-The heart of the issue is that the monomial basis leads to a `Vandermonde_matrix <https://en.wikipedia.org/wiki/Vandermonde_matrix>`_ which
+The heart of the issue is that the monomial basis leads to a `Vandermonde matrix <https://en.wikipedia.org/wiki/Vandermonde_matrix>`_ which
 is especially ill-conditioned.  
 
 Aside on Runge's Phenomena
@@ -331,11 +330,12 @@ issue in approximation theory, albeit not one driven by numerical approximation 
 It turns out that using a uniform grid of points is in general the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomena is can be seen with the interpolation of the seemingly innocuous Runge's function, :math:`g(x) = \frac{1}{1 + 25 x^2}`.
 
 
-First, lets calculate the interpolation with a monomial basis to find the :math:`c_i` such that
+Lets calculate the interpolation with a monomial basis to find the :math:`c_i` such that
 
 .. math::
 
     \frac{1}{1 + 25 x^2} \approx \sum_{i=0}^N c_i x^i,\, \text{ for } -1 \leq x \leq 1
+
 
 First, interpolation with :math:`N = 5` and avoid taking the inverse.  In that case, as long as we avoid taking an inverse, the numerical errors from the ill-conditioned matrix are manageable.
 
@@ -364,7 +364,7 @@ Note, that while the function, :math:`g(x)` and the approximation with a 5th ord
 approximation has a great deal of error everywhere else.
 
 The oscillations near the boundaries are the hallmarks of Runge's Phenomena.  You might guess that increasing the number
-of grid points and order of the polynomial will lead to better approximations
+of grid points and order of the polynomial will lead to better approximations:
 
 .. code-block:: julia
 
@@ -437,13 +437,17 @@ The methods in the previous lectures (e.g. factorization and approaches similar 
 in theory to converge to the exact solution in a finite number of steps while directly working with the matrix in memory.
 
 Instead, iterative solutions start with a guess on a solution and iterate until convergence.  The benefit will be that
-each iteration uses a lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to both: (1)
-solve much larger systems, even if done less precisely and (2) define linear operators in terms of the matrix-vector products directly; and (3) find solutions
-in progress prior to the completion of all algorithm steps.  Of course, there is no free lunch and the computational order of the iterations themselves would be comparable to the direct methods for a given level of tolerance (e.g. :math:`O(N^3)` operations are required to solve a dense unstructured system exactly).
+each iteration uses a lower order operation (e.g. an :math:`O(N^2)` matrix-vector product) which will make it possible to
+
+#. solve much larger systems, even if done less precisely.
+#. define linear operators in terms of the matrix-vector products, rather than storing as a matrix.
+#. get approximate solutions in progress prior to the completion of all algorithm steps, unlike the direct methods which only provide a solution at the end.
+
+Of course, there is no free lunch and the computational order of the iterations themselves would be comparable to the direct methods for a given level of tolerance (e.g. :math:`O(N^3)` operations may be required to solve a dense unstructured system).
 
 There are two types of iterative methods we will consider:  first are stationary methods which iterate on a map in a similar way to fixed point problems, and the second are `Krylov <https://en.wikipedia.org/wiki/Krylov_subspace>`_ methods which iteratively solve using left-multiplications of the linear operator.
 
-For our main examples, we will use the valuation of the continuous time markov chain from the previous section.  That is, given a payoff vector :math:`r`, a
+For our main examples, we will use the valuation of the continuous time markov Chain from the :doc:`numerical methods for linear algebra <numerical_linear_algebra>` lecture.  That is, given a payoff vector :math:`r`, a
 discount rate :math:`\rho`, and the infinitesimal generator of the markov chain :math:`Q`, solve the equation
 
 
@@ -567,7 +571,7 @@ The iteration becomes
 
     L x^{k+1} = b - U x^k 
 
-In that case, since the :math:`L` matrix is triangular, the system can be solved in :math:`O(N^2)` operations after :math:`b - U x^k ` is formed
+In that case, since the :math:`L` matrix is triangular, the system can be solved in :math:`O(N^2)` operations after :math:`b - U x^k` is formed
 
 .. code-block:: julia
 
@@ -577,7 +581,7 @@ In that case, since the :math:`L` matrix is triangular, the system can be solved
 
 The accuracy increases substantially, after 40 iterations you see the error is in the order of ``1E-5``
 
-Another example is `Successive Over-relaxation (SOR) <https://en.wikipedia.org/wiki/Successive_over-relaxation`_, where we take a relaxation parameter :math:`\omega > 1` and decompose the matrix as :math:`A = L + D + U` where :math:`L, U` are strictly upper and lower diagonal matrices, and :math:`D` is a diagonal.
+Another example is `Successive Over-relaxation (SOR) <https://en.wikipedia.org/wiki/Successive_over-relaxation>`_, which takes a relaxation parameter :math:`\omega > 1` and decomposes the matrix as :math:`A = L + D + U` with :math:`L, U` are strictly upper and lower diagonal matrices, and :math:`D` is a diagonal.
 
 Decompose the :math:`A` matrix, multiply the system by :math:`\omega`, and rearrange to find
 
@@ -596,14 +600,14 @@ In that case, :math:`D + \omega L` is a triangular matrix, and hence the linear 
 
 The accuracy is now ``1E-7``.  If you change the parameter to :math:`\omega = 1.2`, the accuracy further increases to ``1E-9``.
 
-This technique is a common with iterative methods:  sometimes adding a dampening or relaxation parameter by counterintuitively speed up the convergence process.  
+This technique is a common with iterative methods:  frequently adding a dampening or relaxation parameter will counterintuitively speed up the convergence process.  
 
-Note: stationary iterative methods are not always used directly, but are sometimes used as a "smoothing" step (e.g. running 5-10 times) prior to using other Krylov methods. 
+**Note:** the stationary iterative methods are not always used directly, but are sometimes used as a "smoothing" step (e.g. running 5-10 times) prior to using other Krylov methods. 
 
 Krylov Methods
 ===============
 
-A more commonly used set of iterative methods are based on `Krylov subspaces <https://en.wikipedia.org/wiki/Krylov_subspace>`_ which involve iterating on the :math:`A` matrix and orthogonalizing to ensure the resulting iteration is not too collinear.
+A more commonly used set of iterative methods are based on `Krylov subspaces <https://en.wikipedia.org/wiki/Krylov_subspace>`_ which involve iterating the :math:`A^k x` matrix-vector product, and orthogonalizing to ensure the resulting iteration is not too collinear.
 
 The prototypical Krylov method is `Conjugate Gradient <https://en.wikipedia.org/wiki/Conjugate_gradient_method>`_, which requires the :math:`A` matrix to be
 symmetric and positive definite.
@@ -614,7 +618,7 @@ Solving an example
 
     N = 100
     A = sprand(100, 100, 0.1)   # 10 percent non-zeros
-    A = A * A'  # makes symmetric positive definite
+    A = A * A'  # easy way to generate a symmetric positive definite matrix
     @show isposdef(A)
     b = rand(N)
     x_direct = A \ b  # sparse direct solver more appropriate Here
@@ -647,11 +651,12 @@ Solving this system with the conjugate gradient method
 Introduction to Preconditioning
 --------------------------------
 
-As discussed, if you tell a numerical analyst you are using direct methods, their first question may be “which factorization?” - but if you tell them you
+If you tell a numerical analyst you are using direct methods, their first question may be “which factorization?” - but if you tell them you
 are using an iterative method, they may ask "which preconditioner?".  
 
 As discussed at the beginning of the lecture, the spectral properties of matrices determine the rate of convergence
-of iterative matrices.  In particular, ill-conditioned matrices converge slowly.
+of iterative matrices.  In particular, ill-conditioned matrices can converge slowly with iterative methods for the same
+reasons that naive value-function iteration will converge slowly if the discount rate is close to ``1``.
 
 Preconditioning solves this issue by adjusting the spectral properties of the matrix, at the cost of a some extra computational
 operations.
@@ -667,12 +672,12 @@ To see an example of a right-preconditioner, consider a matrix :math:`P` which h
     P x &= y 
     \end{align}
 
-That is, form :math:`A P^{-1}`, solve for :math:`y`, and then solve :math:`P x = y`.
+That is, solve :math:`(A P^{-1})y = b` for :math:`y`, and then solve :math:`P x = y` for :math:`x`.
 
-There are all sorts of preconditioners specific to each problem, the key features are that they have convenient left-solves and
-lower the condition number of the matrix.  To see this in action, we can look at a simple preconditioner.
+There are all sorts of preconditioners specific to each problem, the key features are that they have convenient (and lower order!) ways to solve the
+resulting system and lower the condition number of the matrix.  To see this in action, we can look at a simple preconditioner.
 
-The diagonal precondition is simply ``P = Diagonal(A)``.  We can see that this changes the condition number considerably
+The diagonal precondition is simply ``P = Diagonal(A)``.  Depending on the matrix, this can change the condition number a little or a lot.
 
 .. code-block:: julia
     
@@ -680,7 +685,7 @@ The diagonal precondition is simply ``P = Diagonal(A)``.  We can see that this c
     @show cond(Matrix(A))
     @show cond(Matrix(AP));
 
-And, this consequently decreases the number of iterations
+But it may or may not decrease the number of iterations
 
 .. code-block:: julia
 
@@ -690,7 +695,7 @@ And, this consequently decreases the number of iterations
     sol = cg!(x, A, b, log=true, maxiter = 1000)
     sol[end]
 
-Another classic preconditioner is the Incomplete LU decomposition (i.e. it does a parameterized part of the decomposition)
+Another classic preconditioner is the Incomplete LU decomposition
 
 .. code-block:: julia
 
@@ -699,6 +704,8 @@ Another classic preconditioner is the Incomplete LU decomposition (i.e. it does 
     P = ilu(A, τ = 0.1)
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
     sol[end]    
+ 
+ The ``τ`` parameter determines the degree of the LU decomposition to conduct, providing a tradeoff in preconditioner vs. solve speed.
 
 A good rule of thumb is that you should almost always be using a preconditioner with iterative methods, and you should experiment to find ones appropriate for your problem.
 
@@ -711,21 +718,22 @@ Finally, naively trying another preconditioning approach (called `Algebraic Mult
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
     sol[end]
 
-*Note: *Preconditioning is also available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_)
+*Note:* Preconditioning is also available for stationary, iterative methods (see `this example <https://en.wikipedia.org/wiki/Preconditioner#Preconditioned_iterative_methods>`_), but
+is frequently not implemented since they are not often used for the complete solution.
 
 Methods for General Matrices
 -----------------------------
 
-There are many algorithms which exploit matrix symmetry and positive-definitness (e.g. the conjugate gradient method) or simply symmetric/hermitian (e.g. MINRES).
+There are many algorithms which exploit matrix structure (e.g. the conjugate gradient method for positive definite, and  MINRES for matrices that are only symmetric/hermitian).
 
 On the other hand, if you do not have any structure to your sparse matrix, then GMRES is a good approach.
 
-To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis
+To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis.
 
 .. code-block:: julia
 
     using IterativeSolvers
-    
+
     N = 10
     f(x) = exp(x)
     x = range(0.0, 10.0, length = N+1)
@@ -733,9 +741,9 @@ To experiment with these methods, we will use our ill-conditioned interpolation 
     A = sparse([x_i^n for x_i in x, n in 0:N])
     c = zeros(N+1)  # initial guess required for iterative solutions
     results = gmres!(c, A, y, log=true, maxiter = 1000)
-    println("cond(A) = $(cond(Matrix(A))), converged in $(results[end]) iterations with norm error $(norm(A*c - y, Inf))")
+    println("cond(A) = $(cond(Matrix(A))), $(results[end]) Norm error $(norm(A*c - y, Inf))")
 
-That method converged in about 10 iterations.  Now try it with an Incomplete LU preconditioner, we see it converged after the second  iteration.
+That method converged in 11 iterations.  Now try it with an Incomplete LU preconditioner, we see it converges immediately.
 
 .. code-block:: julia
 
@@ -747,16 +755,132 @@ That method converged in about 10 iterations.  Now try it with an Incomplete LU 
     P = ilu(sparse(A), τ = 0.1)
     c = zeros(N+1)  # initial guess required for iterative solutions
     results = gmres!(c, A, y, Pl = P,log=true, maxiter = 1000)
-    println("cond(A) = $(cond(A)), converged in $(length(results)) iterations with norm error $(norm(A*c - y, Inf))")
+    println("$(results[end]) Norm error $(norm(A*c - y, Inf))")
+
+While other preconditioners (e.g. ``DiagonalPreconditioner``) may only save an iteration or two.  Keep in mind,
+however, to consider the cost of the preconditioning process in your problem.
 
 
+Matrix-Free Methods
+-------------------
 
-.. MATRIX FREE
+First, lets use a Krylov method to solve our simple valuation problem
 
-.. A major benefit of these methods is that rather they do not require storing and manipulating a matrix.  Instead, think of matrices more abstractly as linear operators that may or may not fit in memory, but simply implement a left-multiply ``*`` operator for vectors.  These are called "matrix-free methods".
+.. code-block:: julia
 
-.. ADD LINEAR LEAST SQUARES WITH LSMR
+    α = 0.1
+    N = 100
+    Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
 
+    r = range(0.0, 10.0, length=N)
+    ρ = 0.05
+
+    A = ρ * I - Q
+    v = zeros(N)
+    results = gmres!(v, A, r, log=true)
+    v_sol = results[1]
+    println("$(results[end])")
+
+While the ``A`` matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are build on matrix-vector products, i.e. :math:`A x` for iterations on the :math:`x`.
+
+This product can be implemented directly for a given :math:`x` vector, where we think of the :math:`A` as a linear operator rather than 
+
+.. math::
+
+    A x = \begin{bmatrix} (\rho + \alpha) x_1 - \alpha x_2\\
+                        - \alpha x_1 + (\rho + 2 \alpha) x_2 - \alpha x_3\\
+                        \vdots\\
+                        - \alpha x_{N-2} + (\rho + 2 \alpha) x_{N-1} - \alpha x_{N}\\
+                        - \alpha x_{N-1} + (\rho + \alpha) x_N
+        \end{bmatrix}
+
+
+This can be implemented as a function (either inplace or out-of-place) which takes in an ``x`` and modifies ``y`` such that :math:`y = A x`
+
+.. code-block:: julia
+
+    A_mul(x) = [ (ρ + α) * x[1] - α * x[2];
+                 [-α * x[i-1] + (ρ + 2*α) * x[i] - α * x[i+1] for i in 2:N-1];  # comprehension
+                 - α * x[end-1] + (ρ + α) * x[end]]
+
+    x = rand(N)
+    @show norm(A * x - A_mul(x))  # compare to matrix;
+
+The final line verifies that the ``A_mul` function provides the same result as the matrix multiplication with our original ``A``.
+
+In abstract mathematics, a finite-dimensional `linear operator <https://en.wikipedia.org/wiki/Linear_map>`_ is a mapping :math:`A : R^N \to R^N`
+fulfilling a number of criteria such as :math:`A (c_1 x_1 + c_2 x_2) = c_1 A x_1 + c_2 A x_2` for scalars :math:`c_i` and vectors :math:`x_i`.
+
+Moving from abstract mathematics to :doc:`generic programming <../more_julia/generic_programming>`, we can think of a linear operator
+as a map fulfilling a number of requirements (e.g. it has a left-multiply to apply the map ``*``, an in-place left-multiply ``mul!``, an associated ``size``, etc.).  A Julia matrix
+is just one possible implementation of the abstract concept of a linear operator.
+
+Convenience wrappers can provide some of the boilerplate which turn the ``A_mul`` function into something which behaves like a matrix.  One
+package is ``LinearMaps.jl <https://github.com/Jutho/LinearMaps.jl>`_ and another is `LinearOperators.jl <https://github.com/JuliaSmoothOptimizers/LinearOperators.jl>`_
+
+.. code-block:: julia
+
+    using LinearMaps
+    A_map = LinearMap(A_mul, N)  # map uses the A_mul function
+
+
+Now, with the ``A_map`` object, we can fulfill many of the operations we would expect from a matrix
+
+.. code-block:: julia
+
+    x = rand(N)
+    @show norm(A_map * x  - A * x)
+    y = similar(x)
+    mul!(y, A_map, x) # in-place multiplcation
+    @show norm(y - A * x)
+    @show size(A_map)
+    @show norm(Matrix(A_map) - A)
+    @show nnz(sparse(A_map));
+
+**Note:**  In the case of the ``sparse(A_map)`` and ``Matrix(A_map)``, the code is using the left multiplication operator with ``N`` standard basis vectors to construct
+the full matrix.  This should only be used for testing purposes.
+
+But notice that
+
+.. code-block:: julia
+
+    typeof(A_map) <: AbstractArray
+
+Since the linear operator does not have indexing operators.
+
+As long as algorithms with linear operators are written generically (e.g. using the matrix-vector ``*`` operator, etc.) and the types of functions are not
+unneccesarily constrained to be Matrices/Arrays when it isn't strictly necessary, then our type can work in places which would otherwise require a matrix.
+
+
+For example, the Krylov methods in ``IterativeSolvers.jl`` are written for generic left-multiplication
+
+.. code-block:: julia
+
+    results = gmres(A_map, r, log=true)  # Krylov method using the map
+    v_sol = results[1]
+    println("$(results[end])")
+
+
+These methods are typically not competitive with sparse, direct methods unless the problems become very large.  In that case,
+you will often want to work with pre-allocated vectors.  In that case, instead of the ``y = A * x`` operator being used for the matrix-vector product
+you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear operators all support in-place non-allocating versions for this purpose.
+
+.. code-block:: julia
+
+    function A_mul!(y, x)  # inplace version
+        y[1] = (ρ + α) * x[1] - α * x[2]
+        for i in 2:N-1
+            y[i] = -α * x[i-1] + (ρ + 2α) * x[i] -α * x[i+1]
+        end
+        y[end] = - α * x[end-1] + (ρ + α) * x[end]
+        return y
+    end
+    A_map_2 = LinearMap(A_mul!, N, ismutating = true)  # inplace version
+
+    v = zeros(N)
+    @show norm(A_map_2*v - A * v)  # can still call with * to allocate
+    results = gmres!(v, A_map_2, r, log=true)
+    println("$(results[end])")
 
 
 .. Iterative Methods for Eigensystems
