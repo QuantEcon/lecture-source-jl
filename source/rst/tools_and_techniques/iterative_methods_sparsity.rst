@@ -875,10 +875,60 @@ you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear oper
     A_map_2 = LinearMap(A_mul!, N, ismutating = true)  # ismutating == in-place
 
     v = zeros(N)
-    @show norm(A_map_2*v - A * v)  # can still call with * and have it allocate
+    @show norm(A_map_2 * v - A * v)  # can still call with * and have it allocate
     results = gmres!(v, A_map_2, r, log=true)  # in-place gmres
     println("$(results[end])")
 
+Iterative Methods for Linear-Least Squares
+==========================================
+
+In theory, the solution to the least-squares problem, :math:`\min_x \| Ax -b \|^2` is simply the solution to the normal equations :math:`(A'A) x  = A'b`.
+
+We saw, however, that in practice direct methods use a QR decomposition - in part because ill-conditioned :math:`A` become even worse when :math:`A' A` is formed.
+
+For large problems, we can also consider Krylov methods for solving the linear-least squares problem.  One formulation is the `LSMR <https://stanford.edu/group/SOL/software/lsmr/LSMR-SISC-2011.pdf>`_ algorithm
+which can solve the regularized 
+
+
+    .. math::
+
+        \min_x \| Ax -b \|^2 + \| \lambda x\|^2
+
+
+The purpose of the :math:`\lambda \geq 0` parameter is to dampen the iteration process and/or regularize the solution.  This isn't required, but can help convergence for ill-conditioned :math:`A` matrices.  With the
+dampening parameter, the normalized equations would become :math:`(A'A + \lambda^2 I) x  = A'b`.
+
+We can compare solving the least-squares problem with LSMR and direct methods
+
+.. code-block:: julia
+
+    M = 1000
+    N = 10000
+    σ = 0.1
+    β = rand(M)
+    # simulate data
+    X = sprand(N, M, 0.1)
+    y = X * β + σ * randn(N)
+    β_direct = X \ y
+    results = lsmr(X, y, log = true)
+    β_lsmr = results[1]
+    @show norm(β_direct - β_lsmr)
+    println("$(results[end])")
+
+
+Note that rather than forming this version of the normal equations, the LSMR algorithm uses the :math:`A x` and :math:`A' y` left and right vector products to implement an iterative
+solution.  Unlike the previous versions, a left-multiplies is insufficient since the least squares also deals with the transpose of the operators.  For this reason, to use
+matrix-free methods you need to define the ``A * x`` and ``transpose(A) * y`` functions separately.
+
+.. code-block:: julia
+
+    # Could implement two functions
+    X_func(u) = X * u 
+    X_T_func(v) = X' * v  # i.e. right-product.
+
+    X_map = LinearMap(X_func, X_T_func, N, M) 
+    results = IterativeSolvers.lsmr(X_map, y, log = true)
+    println("$(results[end])")
 
 .. Iterative Methods for Eigensystems
 .. ====================================
