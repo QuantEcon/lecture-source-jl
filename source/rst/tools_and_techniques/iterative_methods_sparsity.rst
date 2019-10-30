@@ -783,7 +783,7 @@ First, lets use a Krylov method to solve our simple valuation problem
 
 While the ``A`` matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are build on matrix-vector products, i.e. :math:`A x` for iterations on the :math:`x`.
 
-This product can be implemented directly for a given :math:`x` vector, where we think of the :math:`A` as a linear operator rather than 
+This product can be written directly for a given :math:`x`,
 
 .. math::
 
@@ -795,7 +795,7 @@ This product can be implemented directly for a given :math:`x` vector, where we 
         \end{bmatrix}
 
 
-This can be implemented as a function (either inplace or out-of-place) which takes in an ``x`` and modifies ``y`` such that :math:`y = A x`
+This can be implemented as a function (either in-place or out-of-place) which calculates :math:`y = A x`
 
 .. code-block:: julia
 
@@ -806,7 +806,7 @@ This can be implemented as a function (either inplace or out-of-place) which tak
     x = rand(N)
     @show norm(A * x - A_mul(x))  # compare to matrix;
 
-The final line verifies that the ``A_mul` function provides the same result as the matrix multiplication with our original ``A``.
+The final line verifies that the ``A_mul`` function provides the same result as the matrix multiplication with our original ``A`` for a random vector.
 
 In abstract mathematics, a finite-dimensional `linear operator <https://en.wikipedia.org/wiki/Linear_map>`_ is a mapping :math:`A : R^N \to R^N`
 fulfilling a number of criteria such as :math:`A (c_1 x_1 + c_2 x_2) = c_1 A x_1 + c_2 A x_2` for scalars :math:`c_i` and vectors :math:`x_i`.
@@ -816,7 +816,7 @@ as a map fulfilling a number of requirements (e.g. it has a left-multiply to app
 is just one possible implementation of the abstract concept of a linear operator.
 
 Convenience wrappers can provide some of the boilerplate which turn the ``A_mul`` function into something which behaves like a matrix.  One
-package is ``LinearMaps.jl <https://github.com/Jutho/LinearMaps.jl>`_ and another is `LinearOperators.jl <https://github.com/JuliaSmoothOptimizers/LinearOperators.jl>`_
+package is `LinearMaps.jl <https://github.com/Jutho/LinearMaps.jl>`_ and another is `LinearOperators.jl <https://github.com/JuliaSmoothOptimizers/LinearOperators.jl>`_
 
 .. code-block:: julia
 
@@ -840,29 +840,26 @@ Now, with the ``A_map`` object, we can fulfill many of the operations we would e
 **Note:**  In the case of the ``sparse(A_map)`` and ``Matrix(A_map)``, the code is using the left multiplication operator with ``N`` standard basis vectors to construct
 the full matrix.  This should only be used for testing purposes.
 
-But notice that
+But notice that, as the linear operator does not have indexing operations it should not be a an array or matrix.
 
 .. code-block:: julia
 
     typeof(A_map) <: AbstractArray
 
-Since the linear operator does not have indexing operators.
-
-As long as algorithms with linear operators are written generically (e.g. using the matrix-vector ``*`` operator, etc.) and the types of functions are not
-unneccesarily constrained to be Matrices/Arrays when it isn't strictly necessary, then our type can work in places which would otherwise require a matrix.
+As long as algorithms with linear operators are written generically (e.g. using the matrix-vector ``*`` or ``mul!`` functions, etc.) and the types of functions are not
+unnecessarily constrained to be ``Matrix`` or ``AbstractArray`` when it isn't strictly necessary, then our type can work in places which would otherwise require a matrix.
 
 
 For example, the Krylov methods in ``IterativeSolvers.jl`` are written for generic left-multiplication
 
 .. code-block:: julia
 
-    results = gmres(A_map, r, log=true)  # Krylov method using the map
-    v_sol = results[1]
+    results = gmres(A_map, r, log = true)  # Krylov method using the map
     println("$(results[end])")
 
 
 These methods are typically not competitive with sparse, direct methods unless the problems become very large.  In that case,
-you will often want to work with pre-allocated vectors.  In that case, instead of the ``y = A * x`` operator being used for the matrix-vector product
+you will often want to work with pre-allocated vectors.  Instead of using ``y = A * x`` for matrix-vector products
 you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear operators all support in-place non-allocating versions for this purpose.
 
 .. code-block:: julia
@@ -875,11 +872,11 @@ you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear oper
         y[end] = - α * x[end-1] + (ρ + α) * x[end]
         return y
     end
-    A_map_2 = LinearMap(A_mul!, N, ismutating = true)  # inplace version
+    A_map_2 = LinearMap(A_mul!, N, ismutating = true)  # ismutating == in-place
 
     v = zeros(N)
-    @show norm(A_map_2*v - A * v)  # can still call with * to allocate
-    results = gmres!(v, A_map_2, r, log=true)
+    @show norm(A_map_2*v - A * v)  # can still call with * and have it allocate
+    results = gmres!(v, A_map_2, r, log=true)  # in-place gmres
     println("$(results[end])")
 
 
