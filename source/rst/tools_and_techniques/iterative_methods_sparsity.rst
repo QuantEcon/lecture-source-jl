@@ -879,6 +879,20 @@ you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear oper
     results = gmres!(v, A_map_2, r, log=true)  # in-place gmres
     println("$(results[end])")
 
+
+Finally, just as you can compose matrices since they fulfill the requirements of linearity, you can do the same thing with
+the ``LinearMap`` wrappers.  For example, to implement :math:`B = 2 A_map + I` as a new linear map
+
+.. code-block:: julia
+
+
+    B = 2.0 * A_map  + I  # composite linear operator
+    B * rand(N)  # left-multiply still functions
+    typeof(B)
+
+The implementation of the left multiplication with the ``LinearCombination`` type simply goes through the composite types uses the rules for linearity.
+
+
 Iterative Methods for Linear-Least Squares
 ==========================================
 
