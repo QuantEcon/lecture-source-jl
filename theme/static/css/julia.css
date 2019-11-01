@@ -658,6 +658,18 @@ span.MathJax {font-size:0.92rem;}
 	}
 }
 
+@media only screen and (max-width: 950px) {
+	.lecture-options {
+		flex-direction: column;
+	}
+	.lecture-options li {
+		margin:0.2rem 0;
+	}
+	.lecture-options ul {
+		display: block;
+	}
+}
+
 @media only screen and (max-width: 768px) {
 	.header, .footer, .content, .home-alternatives {
 		padding-left: 2.5rem;
@@ -678,12 +690,6 @@ span.MathJax {font-size:0.92rem;}
 	.home-alternatives {
 		padding: 2rem 0;
 	}
-	.lecture-options {
-		flex-direction: column;
-	}
-	.lecture-options li {
-		margin:0.2rem 0;
-	}
 	.cell .output .prompt:before, .cell .input .prompt:before {
 		font-size: 14px;
 	}
@@ -695,9 +701,6 @@ span.MathJax {font-size:0.92rem;}
 		border-width:1px 1px 0 1px;
 		border-radius: 0;
 		padding:0.5rem 1rem;
-	}
-	.lecture-options ul {
-		display: block;
 	}
 	.status-table-container {
 		overflow-x: scroll;

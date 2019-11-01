@@ -161,7 +161,7 @@
 {% endif %}
 								<li><span class="toggle" id="cloneButton"><i class="fas fa-file-code"></i> View Source</span></li>
 								<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
-								<li><span class="toggle" id="settingsButton" title="Settings"><i class="fas fa-cog"></i></span></li>
+								<li><span class="toggle" id="settingsButton" title="Settings"><i class="fas fa-cog"></i> Settings</span></li>
 							</ul>
 							<ul>
 								<li><a href="/troubleshooting.html"><i class="fas fa-question-circle"></i> Troubleshooting</a></li>
