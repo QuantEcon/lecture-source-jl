@@ -1,4 +1,4 @@
-// julia.js v1.0
+// julia.js v1.1
 
 
 // Declare MathJax Macros for the Appropriate Macros
@@ -365,10 +365,10 @@ if ( document.getElementById('compiled_date') ) {
 
 
 // Notebook Launcher popup
-if ( document.getElementById('launchButton') ) {
+if ( document.getElementById('settingsButton') ) {
 	const template = document.getElementById('launchModal');
 	template.style.display = 'block';
-	tippy('#launchButton', {
+	tippy('#settingsButton', {
 	  content: template,
 	  theme: 'light-border',
 	  animation: 'shift-away',
@@ -376,8 +376,9 @@ if ( document.getElementById('launchButton') ) {
 	  duration: [200,200],
 	  arrow: true,
 	  arrowType: 'round',
-	  delay: [500, 200],
-	  interactive: true
+	  delay: [0, 200],
+	  interactive: true,
+	  trigger: "click"
 	});
 }
 
@@ -393,8 +394,9 @@ if ( document.getElementById('cloneButton') ) {
 	  duration: [200,200],
 	  arrow: true,
 	  arrowType: 'round',
-	  delay: [500, 200],
-	  interactive: true
+	  delay: [0, 200],
+	  interactive: true,
+	  trigger: "click"
 	});
 }
 

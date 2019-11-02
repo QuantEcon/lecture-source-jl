@@ -38,7 +38,7 @@
 		<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski." />
 		<meta property="og:site_name" content="Quantitative Economics with Julia" />
 
-		<link rel="stylesheet" href="/_static/css/julia.css?v=1.0">
+		<link rel="stylesheet" href="/_static/css/julia.css?v=1.1">
 		<link rel="stylesheet" href="https://assets.quantecon.org/css/menubar-20190925.css">
 		<link rel="icon" href="/_static/img/favicon.ico" type="image/x-icon" />
 
@@ -159,8 +159,9 @@
 								<li><a href="/_downloads/pdf/{{nb_filename_with_path}}.pdf"><i class="fas fa-file-download"></i> Download PDF</a></li>
 								<li><a href="/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><i class="fas fa-file-download"></i> Download Notebook</a></li>
 {% endif %}
+								<li><span class="toggle" id="cloneButton"><i class="fas fa-file-code"></i> View Source</span></li>
 								<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
-								<li><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><i class="fas fa-file-code"></i> View Source</a></li>
+								<li><span class="toggle" id="settingsButton" title="Settings"><i class="fas fa-cog"></i> Settings</span></li>
 							</ul>
 							<ul>
 								<li><a href="/troubleshooting.html"><i class="fas fa-question-circle"></i> Troubleshooting</a></li>
@@ -616,7 +617,7 @@ var element = $('#{{ div_id }}');
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="https://unpkg.com/popper.js@1"></script>
         <script src="https://unpkg.com/tippy.js@4"></script>
-		<script src="/_static/js/julia.js?v=1.0"></script>
+		<script src="/_static/js/julia.js?v=1.1"></script>
 
 		<script async src="https://cse.google.com/cse.js?cx=006559439261123061640:j0o7s27tvxo"></script>
 
