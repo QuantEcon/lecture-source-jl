@@ -840,21 +840,21 @@ Now, with the ``A_map`` object, we can fulfill many of the operations we would e
 **Note:**  In the case of the ``sparse(A_map)`` and ``Matrix(A_map)``, the code is using the left multiplication operator with ``N`` standard basis vectors to construct
 the full matrix.  This should only be used for testing purposes.
 
-But notice that, as the linear operator does not have indexing operations it should not be a an array or matrix.
+But notice that, as the linear operator does not have indexing operations it is not an array or matrix.
 
 .. code-block:: julia
 
     typeof(A_map) <: AbstractArray
 
-As long as algorithms with linear operators are written generically (e.g. using the matrix-vector ``*`` or ``mul!`` functions, etc.) and the types of functions are not
-unnecessarily constrained to be ``Matrix`` or ``AbstractArray`` when it isn't strictly necessary, then our type can work in places which would otherwise require a matrix.
+As long as algorithms using linear operators are written generically (e.g. using the matrix-vector ``*`` or ``mul!`` functions, etc.) and the types of functions are not
+unnecessarily constrained to be ``Matrix`` or ``AbstractArray`` when it isn't strictly necessary, then the ``A_map`` type can work in places which would otherwise require a matrix.
 
 
 For example, the Krylov methods in ``IterativeSolvers.jl`` are written for generic left-multiplication
 
 .. code-block:: julia
 
-    results = gmres(A_map, r, log = true)  # Krylov method using the map
+    results = gmres(A_map, r, log = true)  # Krylov method using the matrix-free type
     println("$(results[end])")
 
 
@@ -880,8 +880,10 @@ you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear oper
     println("$(results[end])")
 
 
-Finally, just as you can compose matrices since they fulfill the requirements of linearity, you can do the same thing with
-the ``LinearMap`` wrappers.  For example, to implement :math:`B = 2 A_map + I` as a new linear map
+Finally, keep in mind that the linear operators can compose, so that :math:`A (c_1 x) + B (c_2 x) + x  == (c_1 A + c_2 B + I) x` is well-defined for any linear operators - just as
+it would be for matrices :math:`A, B` and scalars :math:`c_1, c_2`.  
+
+For example, take :math:`2 A x + x = (2 A + I) x \equiv B x` as a new linear map,
 
 .. code-block:: julia
 
@@ -890,8 +892,25 @@ the ``LinearMap`` wrappers.  For example, to implement :math:`B = 2 A_map + I` a
     B * rand(N)  # left-multiply still functions
     typeof(B)
 
-The implementation of the left multiplication with the ``LinearCombination`` type simply goes through the composite types uses the rules for linearity.
 
+The wrappers, such as ``LinearMap`` wrappers make this composition possible by keeping of the composition
+graph of the expression (i.e. ``LinearCombination``), and implementing the left-multiply recursively using the rules of linearity.
+
+Another example is to solve the :math:`\rho v = r + Q v` equation for :math:`v` with composition of matrix-free methods for :math:`L`
+rather than as creating the full :math:`A = \rho - Q` operator, which we implemented as ``A_mul``
+
+.. code-block:: julia
+
+    Q_mul(x) = [ -α * x[1] +     α * x[2];
+                [α * x[i-1] - 2*α * x[i] + α*x[i+1] for i in 2:N-1];  # comprehension
+                α * x[end-1] - α * x[end];]
+    Q_map = LinearMap(Q_mul, N)
+    A_composed = ρ * I - Q_map   # map composition, performs no calculations
+    @show norm(A - sparse(A_composed))  # test produces the same matrix
+    gmres(A_composed, r, log=true)[2]
+
+In this example, the left-multiply of the ``A_composed`` used by ``gmres`` uses the left-multiply of ``Q_map`` and ``I`` with the rules
+of linearity.  The ``A_composed = ρ * I - Q_map`` operation simply creates the ``LinearMaps.LinearCombination`` type, and doesn't perform any calculations on its own.
 
 Iterative Methods for Linear-Least Squares
 ==========================================
@@ -904,9 +923,9 @@ For large problems, we can also consider Krylov methods for solving the linear-l
 which can solve the regularized 
 
 
-    .. math::
+.. math::
 
-        \min_x \| Ax -b \|^2 + \| \lambda x\|^2
+    \min_x \| Ax -b \|^2 + \| \lambda x\|^2
 
 
 The purpose of the :math:`\lambda \geq 0` parameter is to dampen the iteration process and/or regularize the solution.  This isn't required, but can help convergence for ill-conditioned :math:`A` matrices.  With the
@@ -930,15 +949,15 @@ We can compare solving the least-squares problem with LSMR and direct methods
     println("$(results[end])")
 
 
-Note that rather than forming this version of the normal equations, the LSMR algorithm uses the :math:`A x` and :math:`A' y` left and right vector products to implement an iterative
-solution.  Unlike the previous versions, a left-multiplies is insufficient since the least squares also deals with the transpose of the operators.  For this reason, to use
+Note that rather than forming this version of the normal equations, the LSMR algorithm uses the :math:`A x` and :math:`A' y` (i.e. the matrix-vector product, and the matrix-transpose vector product) to implement an iterative
+solution.  Unlike the previous versions, the left-multiplies is insufficient since the least squares also deals with the transpose of the operators.  For this reason, to use
 matrix-free methods you need to define the ``A * x`` and ``transpose(A) * y`` functions separately.
 
 .. code-block:: julia
 
-    # Could implement two functions
-    X_func(u) = X * u 
-    X_T_func(v) = X' * v  # i.e. right-product.
+    # Could implement as matrix-free functions.
+    X_func(u) = X * u  # matrix-vector product
+    X_T_func(v) = X' * v  # i.e. adjoint-vector product
 
     X_map = LinearMap(X_func, X_T_func, N, M) 
     results = IterativeSolvers.lsmr(X_map, y, log = true)
