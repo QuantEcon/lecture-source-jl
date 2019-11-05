@@ -15,6 +15,16 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-54984338-8"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-54984338-8');
+		</script>
+
 		<meta charset="utf-8">
 {% if nb_filename == 'index' %}
 		<title>Quantitative Economics with Julia</title>
@@ -618,14 +628,6 @@ var element = $('#{{ div_id }}');
         <script src="https://unpkg.com/popper.js@1"></script>
         <script src="https://unpkg.com/tippy.js@4"></script>
 		<script src="/_static/js/julia.js?v=1.1"></script>
-
-		<script async src="https://cse.google.com/cse.js?cx=006559439261123061640:j0o7s27tvxo"></script>
-
-		<script>
-		window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-		ga('create', 'UA-54984338-8', 'auto'); ga('set','transport','beacon'); ga('send', 'pageview')
-		</script>
-		<script src="https://www.google-analytics.com/analytics.js" async></script>
 
 	</body>
 </html>
