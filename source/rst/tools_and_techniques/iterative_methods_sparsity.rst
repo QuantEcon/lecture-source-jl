@@ -705,7 +705,7 @@ Another classic preconditioner is the Incomplete LU decomposition
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
     sol[end]    
  
- The ``τ`` parameter determines the degree of the LU decomposition to conduct, providing a tradeoff in preconditioner vs. solve speed.
+The ``τ`` parameter determines the degree of the LU decomposition to conduct, providing a tradeoff in preconditioner vs. solve speed.
 
 A good rule of thumb is that you should almost always be using a preconditioner with iterative methods, and you should experiment to find ones appropriate for your problem.
 
@@ -963,36 +963,102 @@ matrix-free methods you need to define the ``A * x`` and ``transpose(A) * y`` fu
     results = IterativeSolvers.lsmr(X_map, y, log = true)
     println("$(results[end])")
 
-.. Iterative Methods for Eigensystems
-.. ====================================
+Iterative Methods for Eigensystems
+====================================
 
-.. When you use ``eigen`` on a matrix, it calculates the full spectral decomposition, providing all of the eigenvalues and eigenvectors.
+When you use ``eigen`` on a dense matrix, it calculates an eigendecomposition and provides all of the eigenvalues and eigenvectors.
 
-.. While sometimes this is necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest :math:`O(N^3)` operations (i.e., it has
-.. one of the largest constants).  For large matrices it is often infeasible. 
+While sometimes this is necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest :math:`O(N^3)` operations (i.e., it has
+one of the largest constants).  For large matrices it is often infeasible. 
 
-.. Luckily, you frequently only need a few or even a single eigenvector/eigenvalue, which enables a different set of algorithms.
+Luckily, you frequently only need a few or even a single eigenvector/eigenvalue, which enables a different set of algorithms.
 
-.. For example, in the case of a discrete time markov chain, to find the stationary distribution we are looking for the
-.. eigenvector associated with the eigenvalue of 1.  As usual, a little linear algebra goes a long way.
+For example, in the case of a discrete time markov chain, to find the stationary distribution we are looking for the
+eigenvector associated with the eigenvalue of 1.  As usual, a little linear algebra goes a long way.
 
-.. From the `Perron-Frobenius theorem <https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem#Stochastic_matrices>`_, the largest eigenvalue of an irreducible stochastic matrix is 1 - the same eigenvalue we are looking for.
+From the `Perron-Frobenius theorem <https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem#Stochastic_matrices>`_, the largest eigenvalue of an irreducible stochastic matrix is 1 - the same eigenvalue we are looking for.
 
-.. Iterative methods for solving eigensystems allow targeting the smallest magnitude, largest magnitude, and many others.  The easiest library
-.. to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.  
+Iterative methods for solving eigensystems allow targeting the smallest magnitude, largest magnitude, and many others.  The easiest library
+to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.  
 
-.. .. code-block:: julia
+As an example,
 
-..     using Arpack, LinearAlgebra
-..     N = 1000
-..     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
-..     A_adjoint = A'
+.. code-block:: julia
 
-..     λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  # Find 1 of the largest magnitude eigenvalue
-..     ϕ = real(ϕ) ./ sum(real(ϕ))
-..     λ
+    using Arpack, LinearAlgebra
+    N = 1000
+    A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+    A_adjoint = A'
 
-.. Indeed, the ``λ`` is equal to ``1``.   Hint: if you get errors, increase ``maxiter``.
+    λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  # Find 1 of the largest magnitude eigenvalue
+    ϕ = real(ϕ) ./ sum(real(ϕ))
+    @show λ
+    @show mean(ϕ);
+
+Indeed, the ``λ`` is equal to ``1``.  If you choose ``nev = 2`` then it would provide the eigenpairs with the largest two eigenvalues in absolute magnitude.
+
+*Hint*: if you get errors using ``Arpack``, increase ``maxiter`` parameter for your problems.
+
+Iterative methods for eigensystems rely on matrix-vector products rather than decompositions, and are amenable to matrix-free approaches.  For example,
+take the Markov-chain for a simple counting process
+
+#. The count starts at :math:`1` and has a maximum of :math:`N`.
+#. With probability :math:`\theta \geq 0` and an existing count is lost with probability :math:`\zeta \geq 0` such that :math:`\theta + \zeta \leq 1`.
+#. If the count is at :math:`1` then the only transition is to add a count with probability :math:`\theta`
+#. If the current count is :math:`N` then the only transition is to lose the count with probability :math:`\zeta`
+
+First finding the transition matrix :math:`P` and its adjoint directly as a check
+
+.. code-block:: julia
+
+    θ = 0.1
+    ζ = 0.05
+    N = 5 
+    P = Tridiagonal(fill(ζ, N-1), [1-θ; fill(1-θ-ζ, N-2); 1-ζ], fill(θ, N-1))
+    P'
+
+Implementing the adjoint-vector product directly, and verifying that it gives the same matrix as the adjoint
+
+.. code-block:: julia
+
+    P_adj_mul(x) = [ (1-θ) * x[1] + ζ * x[2];
+                    [θ * x[i-1] + (1-θ-ζ) * x[i] + ζ * x[i+1] for i in 2:N-1];  # comprehension
+                θ * x[end-1] + (1-ζ) * x[end];]
+    P_adj_map = LinearMap(P_adj_mul, N)
+    @show norm(P' - sparse(P_adj_map)) 
+
+Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of :math:`P'`)
+
+.. code-block:: julia
+
+    λ, ϕ = eigs(P_adj_map, nev=1, which=:LM, maxiter=1000)
+    ϕ = real(ϕ) ./ sum(real(ϕ))
+    @show λ
+    @show ϕ
+
+Of course, for this simple of a problem the direct eigendecomposition will be significantly faster.  Only use matrix-free iterative methods for large systems where
+you do not need all of the eigenvalues.
+
+Krylov Methods for Markov Chain Dynamics
+========================================
+
+Recall that given an :math:`N` dimensional intensity matrix :math:`Q` of a CTMC, the evolution of the PDF from an initial condition :math:`\psi(0)` is the system of linear differential equations
+
+.. math::
+
+    \dot{\psi}(t) = Q^T \psi(t) 
+
+Consider an example where a firm has a discrete number of customers of different types.  To keep things simple, assume that the firm can there are :math:`m=1, \ldots M` types of consumers and that the firm may have :math:`n = 1, \ldots N` consumers of each type.
+
+To set notation, let :math:`n_m \in \{1, \ldots N\}` be the number of consumers of type :math:`m`, so that the state of a firm is :math:`n = \set{n_1, \ldots n_m \ldots, n_M}`.  The cardinality of possible states is then :math:`\mathcal{N} \equiv N^M` which can blow up fairly quickly as the number of types increases.
+
+The stochastic process is as follows
+
+#. For every :math:`1 \leq n_m(t) < N` there is a :math:`\theta` intensity of a new customer increasing :math:`n_m(t+\Delta) = n_m(t) + 1`
+#. For every :math:`1 < n_m(t) \leq N-1` there is a :math:`\zeta` intensity of losing a customer, so that :math:`n_m(t+\Delta) = n_m(t) - 1`
+
+In order to define an intensity matrix :math:`Q` of size :math:`\mathcal{N} \times \mathcal{N}`, we need to choose a consistent ordering of the states.  One way to do it
+is to enumerate them as a `mixed-radix number <https://en.wikipedia.org/wiki/Mixed_radix>`_ (actually, only mixed-radix if we have different :math:`N` for each :math:`m`), starting from the :math:`n_1 = 1, \ldots N` while fixing :math:`n_2 = 1, n_3 = 1,` etc. and then increment the :math:`n_2`, etc.
 
 .. Similarly, for a continuous time Markov Chain, to find the stationary distribution we are looking for the eigenvector associated with ``λ = 0`, which
 .. must be the smallest absolute magnitude.
