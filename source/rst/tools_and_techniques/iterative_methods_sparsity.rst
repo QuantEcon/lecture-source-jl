@@ -880,7 +880,7 @@ you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear oper
     println("$(results[end])")
 
 
-Finally, keep in mind that the linear operators can compose, so that :math:`A (c_1 x) + B (c_2 x) + x  == (c_1 A + c_2 B + I) x` is well-defined for any linear operators - just as
+Finally, keep in mind that the linear operators can compose, so that :math:`A (c_1 x) + B (c_2 x) + x  = (c_1 A + c_2 B + I) x` is well-defined for any linear operators - just as
 it would be for matrices :math:`A, B` and scalars :math:`c_1, c_2`.  
 
 For example, take :math:`2 A x + x = (2 A + I) x \equiv B x` as a new linear map,
@@ -889,7 +889,7 @@ For example, take :math:`2 A x + x = (2 A + I) x \equiv B x` as a new linear map
 
 
     B = 2.0 * A_map  + I  # composite linear operator
-    B * rand(N)  # left-multiply still functions
+    B * rand(N)  # left-multiply works with the composition
     typeof(B)
 
 
@@ -960,7 +960,7 @@ matrix-free methods you need to define the ``A * x`` and ``transpose(A) * y`` fu
     X_T_func(v) = X' * v  # i.e. adjoint-vector product
 
     X_map = LinearMap(X_func, X_T_func, N, M) 
-    results = IterativeSolvers.lsmr(X_map, y, log = true)
+    results = lsmr(X_map, y, log = true)
     println("$(results[end])")
 
 Iterative Methods for Eigensystems
@@ -1042,40 +1042,41 @@ you do not need all of the eigenvalues.
 Krylov Methods for Markov Chain Dynamics
 ========================================
 
-This example applies the methods in this lecture to a large continuous time Markov chain, and provides some practice working with arrays of arbitrary dimension.
+This example applies the methods in this lecture to a large continuous time Markov chain, and provides some practice working with arrays of arbitrary dimensions.
 
-Recall that given an :math:`N` dimensional intensity matrix :math:`Q` of a CTMC, the evolution of the PDF from an initial condition :math:`\psi(0)` is the system of linear differential equations
+Consider a version of the Markov-chain dynamics in :cite:`Perla2019`, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are :math:`m=1, \ldots M` types of consumers and that the firm may have :math:`n = 1, \ldots N` consumers of each type.
 
-.. math::
+To set notation, let :math:`n_m \in \{1, \ldots N\}` be the number of consumers of type :math:`m`, so that the state of a firm is :math:`\{n_1, \ldots n_m \ldots, n_M\}`.  The cardinality of possible states is then :math:`\mathbf{N}\equiv N^M` which can blow up quickly as the number of types increases.
 
-    \dot{\psi}(t) = Q^T \psi(t)
-
-Consider an example where a firm has a discrete number of customers of different types.  To keep things simple, assume that the firm can there are :math:`m=1, \ldots M` types of consumers and that the firm may have :math:`n = 1, \ldots N` consumers of each type.
-
-To set notation, let :math:`n_m \in \{1, \ldots N\}` be the number of consumers of type :math:`m`, so that the state of a firm is :math:`\set{n_1, \ldots n_m \ldots, n_M}`.  The cardinality of possible states is then :math:`\mathcal{N} \equiv N^M` which can blow up fairly quickly as the number of types increases.
-
-The stochastic process is as follows
+The stochastic process is a simple counting/forgetting process as follows.
 
 #. For every :math:`1 \leq n_m(t) < N` there is a :math:`\theta` intensity of a new customer increasing :math:`n_m(t+\Delta) = n_m(t) + 1`
 #. For every :math:`1 < n_m(t) \leq N` there is a :math:`\zeta` intensity of losing a customer, so that :math:`n_m(t+\Delta) = n_m(t) - 1`
 
-In order to define an intensity matrix :math:`Q` of size :math:`\mathcal{N} \times \mathcal{N}`, we need to choose a consistent ordering of the states.  But,
-before we enumerate them linearly, take a :math:`f` as a multidimensional array and look at the left product of the linear operator product :math:`Q f`.
+Matrix-free Infinesimal Generator
+---------------------------------
 
-For example, if we were looking at the :math:`(n_1, \ldots, n_M)` index of the product, then
+In order to define an intensity matrix :math:`Q` of size :math:`\mathbf{N}\times \mathcal{N}`, we need to choose a consistent ordering of the states.  But,
+before we enumerate them linearly, take a :math:`v\in R^{\mathbf{N}}` interpretted as a multidimensional array and look at the left product of the linear operator product :math:`Q v \to R^{\mathbf{N}}`.
+
+For example, if we were implementing the product at the row of :math:`Q` corresponding to the :math:`(n_1, \ldots, n_M)` state, then
 
 .. math::
 
     \begin{align}
-        Q_{(n_1, \ldots n_M)} f &= 
-    \theta \sum_{m=1}^M (n_m < N)  f(n_1, \ldots, n_m + 1, \ldots, n_M)\\
-                                            &+ \zeta \sum_{m=1}^M (1 < n_m)  f(n_1, \ldots, n_m - 1, \ldots, n_M)\\
-                                            &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)f(n_1, \ldots, n_M)
+        Q_{(n_1, \ldots n_M)} \cdot v &= 
+    \theta \sum_{m=1}^M (n_m < N)  v(n_1, \ldots, n_m + 1, \ldots, n_M)\\
+                                            &+ \zeta \sum_{m=1}^M (1 < n_m)  v(n_1, \ldots, n_m - 1, \ldots, n_M)\\
+                                            &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)v(n_1, \ldots, n_M)
     \end{align}
 
-Where the first term includes all of the arrivals of new customers into the various :math:`m`, the second term is the loss of a customer for the various :math:`m`, and the final term is the intensity of all exits from this state which requires counting the number of increments and decrements.
+Here:
 
-In practice, rather than working with the :math:`f` as a multidimensional type, we will need to enumerate the discrete states linearly.  An especially convenient
+- the first term includes all of the arrivals of new customers into the various :math:`m`
+- the second term is the loss of a customer for the various :math:`m`
+- the last term is the intensity of all exits from this state (i.e. counting the intensity of all other transititions to ensure the row would sum to :math:`0`)
+
+In practice, rather than working with the :math:`f` as a multidimensional type, we will need to enumerate the discrete states linearly so we can iterate :math:`f` between :math:`1` and `\mathbf{N}`.  An especially convenient
 approach is to enumerate them in the same order as the :math:`K` dimensional cartesian product of the :math:`N` states as a multi-dimensional array above.
 
 This can be done with the ``CartesianIndices`` function, which is used internally in Julia for the ``eachindex`` function.  For example,
@@ -1085,9 +1086,10 @@ This can be done with the ``CartesianIndices`` function, which is used internall
     N = 2
     M = 3
     shape = Tuple(fill(N, M))
-    f = zeros(shape...)  # 3-dimensional in this example
-    for ind in CartesianIndices(f)
-        println("f$(ind.I) = $(f[ind])")  # .I gets the tuple to display
+    v = rand(shape...)
+    @show typeof(v)
+    for ind in CartesianIndices(v)
+        println("v$(ind.I) = $(v[ind])")  # .I gets the tuple to display
     end
 
 The added benefit of this approach is that it will be the most efficient way to iterate through vectors in the implementation.
@@ -1106,11 +1108,10 @@ from the 3rd, then
 
     ind = CartesianIndex(1, 2, 2)  # example counts coming from CartesianIndices
     @show ind + e_m[1]  # increment 1st index
-    @show ind - e_m[3]  # decrement the 3rd index
+    @show ind - e_m[3];  # decrement the 3rd index
 
 
-This works, of course, because the ``CartesianIndex`` type is written to support efficient addition and subtraction.  A final step in the calculation is the
-count of indices in the states where increment and decrement occurs.  That is,
+This works, of course, because the ``CartesianIndex`` type is written to support efficient addition and subtraction.  Finally, to implement the operator we need to count of indices in the states where increment and decrement occurs.
 
 .. code-block:: julia
 
@@ -1132,35 +1133,39 @@ Next, implement the in-place matrix-free product
 
 .. code-block:: julia
 
-    function Q_mul!(df, f, p)
+    function Q_mul!(dv, v, p)
         @unpack θ, ζ, N, M, shape, e_m = p
-        f = reshape(f, shape)  # now can access f, df as M-dim arrays
-        df = reshape(df, shape)
-    
-        @inbounds for ind in CartesianIndices(f)
-            df[ind] = 0.0
+        v = reshape(v, shape)  # now can access v, dv as M-dim arrays
+        dv = reshape(dv, shape)
+
+        @inbounds for ind in CartesianIndices(v)
+            dv[ind] = 0.0
             for m in 1:M
                 n_m = ind[m]
                 if(n_m < N)
-                    df[ind] += θ * f[ind + e_m[m]]
+                    dv[ind] += θ * v[ind + e_m[m]]
                 end
                 if(n_m > 1)
-                    df[ind] += ζ * f[ind - e_m[m]]
+                    dv[ind] += ζ *v[ind - e_m[m]]
                 end
             end
-            df[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * f[ind]
+            dv[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * v[ind]
         end
     end
 
     p = default_params()
-    f = zeros(p.shape)
-    df = similar(f)
-    @btime Q_mul!($df, $f, $p)
+    v = zeros(p.shape)
+    dv = similar(v)
+    @btime Q_mul!($dv, $v, $p)
 
-From the output of the benchmarking, note that the implementation of the left-multiplication takes less than a 100 milliseconds, and allocates almost no memory even though the Markov chain has one million possible states (i.e. :math:`N^M = 10^6`).
+From the output of the benchmarking, note that the implementation of the left-multiplication takes less than a 100 milliseconds, and allocates little or no memory even though the Markov chain has one million possible states (i.e. :math:`N^M = 10^6`).
+
+
+Solving a Valuation Problems
+----------------------------
 
 As before, we could use this Markov Chain to solve a Bellman equations.  Assume that the firm discounts at rate :math:`\rho > 0` and gets a flow payoff of a different :math:`z_m` per
-customer of type :math:`m`.  For example, if the state of the firm is :math:`(n_1, n_2, n_3) = (2,3,2)` then they get :math:`2 z_1 + 3 z_2 + 2 z_3` in flow profits.
+customer of type :math:`m`.  For example, if the state of the firm is :math:`(n_1, n_2, n_3) = (2,3,2)` then they get :math:`\begin{bmatrix}2 & 3 & 2\end{bmatrix} \dot \begin{bmatrix}z_1& z_2 & z_3\end{bmatrix}` in flow profits.
 
 Given this profit function, we can write the simple Bellman equation in our standard form of :math:`\rho v = r + Q v` defining the appropriate payoff :math:`r`.  For example, if :math:`z_m = m^2 / 2` then
 
@@ -1171,11 +1176,43 @@ Given this profit function, we can write the simple Bellman equation in our stan
         r = [0.5 * dot(ind.I, z)  for ind in CartesianIndices(p.shape)]
         return reshape(r, p.N^p.M)  # return as a vector
     end
+    @show typeof(r_vec(p))
     r_vec(p) |> mean
 
-    
-Since the :math:`Q` operator is not symmetric, we could solve the :math:`(\rho - Q) v = r` equation with an iterative method such as GMRES.  Putting everything together and turning our
-matrix-free method into a linear operator
+Note that the returned :math:`r` is a vector, enumerated in the same order as the :math:`n_m` states.
+
+We can solve :math:`(\rho - Q) v = r` with an iterative method.
+
+Below, we create a linear operator and compare the algorithm for a few different iterative methods (GMRES, BiCGStab(l), IDR(s), etc.)  with a "small" problem
+of only ten-thousand possible states.
+
+.. code-block:: julia
+
+    p = default_params(N=10, M=4)
+    Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
+    A = p.ρ * I - Q
+    A_sparse = sparse(A)  # an expensive operation in this case
+    r = r_vec(p)
+    v_direct = A_sparse \ r
+    iv = zero(r)
+
+    @btime $A_sparse \ $r  # direct
+    @show norm(gmres(A, r) - v_direct)
+    @btime gmres!(iv, $A, $r) setup = (iv = zero(r))
+
+    @show norm(bicgstabl(A, r) - v_direct)
+    @btime bicgstabl!(iv, $A, $r) setup = (iv = zero(r))
+
+    @show norm(idrs(A, r) - v_direct)
+    @btime idrs!(iv, $A, $r) setup = (iv = zero(r));
+
+Here, we see that even if the :math:`A` matrix has been created, the direct sparse solvers (which uses a sparse LU or QR) is substantially slower than the iterative
+methods and allocates substantially more memory.  This is in addition to the allocaiton for the ``A_sparse`` matrix itself, which is not needed for iterative methods.
+
+The different iterative methods have tradeoffs when it comes to speed of accuracy, convergence speed, memory requirements, and usefulness of preconditioning.  Above this :math:`\mathbf{N} = 10,000`, the direct methods quickly become infeasible.
+
+
+ Putting everything together to solving much larger systems with GMRES as our linear solvers
 
 .. code-block:: julia
 
@@ -1192,8 +1229,15 @@ matrix-free method into a linear operator
     p = default_params(N=10, M=6)
     @btime solve_bellman($p);
 
-This solves a value function with a Markov chain of one-million states in a little over a second!  This general approach scales even further.  For example, try :math:`N=10, M=9`
-to solve a Bellman equaiton with a markov chain with one-billion possible states, which can be solved in XXX minutes.
+This solves a value function with a Markov chain of one-million states in a little over a second!  This general approach seems to scale roughly linearly.  For example, try :math:`N=10, M=8`
+to solve an equation with a Markov chain with one-hundred million possible states, which can be solved in around 3-4 minutes.  Above that order of magnitude, you may need to tinker with the linear solver parameters to ensure that you are not memory-limited (e.g. change the ``restart`` parameter of GMRES).
 
 
 TODO: FIgure out the adjoint and use matrix-free methods for the nullspace trick.
+
+
+Recall that given an :math:`N` dimensional intensity matrix :math:`Q` of a CTMC, the evolution of the PDF from an initial condition :math:`\psi(0)` is the system of linear differential equations
+
+.. math::
+
+    \dot{\psi}(t) = Q^T \psi(t)
