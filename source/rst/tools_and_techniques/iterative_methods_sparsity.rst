@@ -1291,26 +1291,96 @@ our ``Q`` operator.
     Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
     @show norm(sparse(Q)' - sparse(Q_T));  # reminder: use sparse only for testing!
 
-The steady state can be found as the zero-eigenvalue 
+As discussed previously, the steady-state can be found as the eigenvector associated with the zero-eigenvalue (i.e. solves :math:`Q^T \psi = 0 \psi`).  We could
+do this with a dense eigenvalue solution for relatively small matrices
 
 .. code-block:: julia
 
+    p = default_params(N=5, M=4) 
     eig_Q_T = eigen(Matrix(Q_T))
     vec = real(eig_Q_T.vectors[:,end])
     @show eig_Q_T.values[end]
     @show 
     direct_ψ = vec ./ sum(vec)
 
-Which could also found iteratively.  Or, using a trick
+This approach relies on a full factorization of the underlying matrix, delivering the entire spectrum.  For our purposes, this is not necessary.
+
+Instead, we could use the ``Arpack.jl`` package to target the smallest absolute magnitude eigenvalue, which relies on an iterative method.
+
+A final approach in this case is to notice that the :math:`\mathbf{N}\times\mathbf{N}` matrix is of
+rank :math:`\mathbf{N} - 1` when the Markov-chain is irreducible.  The stationary solutio is is a vector in the :math:`1` dimensional nullspace
+of the matrix.
+
+Solving a linear system with the right-hand side all :math:`0` s using Krylov methods will converge to a point in the nullspace.  That is, :math:`\min_x ||A x||_2` solved
+iteratively from a non-zero :math:`x` will converge to a point in the nullspace.
+
+We can use various Krylov methods for this trick (e.g. if the matrix is symmetric and positive definite, you could use Conjugate Gradient) but in our case we will
+use GMRES since we do not have any structure.
 
 .. code-block:: julia
 
-    iv = fill(1/(p.N^p.M), p.N^p.M)
-    sol = gmres!(iv, Q_T, zeros(5^4), log=true)
-    @show sol[2]
-    @show norm(iv - direct_ψ);
+    p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
+    Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+    ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
+    sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e. solve Ax = 0 iteratively    
+    ψ = ψ / sum(ψ)
+    @show norm(ψ - eigs_ψ);
 
 
-# TODO: Find the steady state.  Ask what is the mean valuation at the steady state?
+The speed and memory differences between this methods can be orders of magnitude.
 
-# TODO: What about the mean valuation in the transition path?  Matrix exponentials are another Krylov methods.
+.. code-block:: julia
+
+    p = default_params(N=4, M=4)  # Dense and sparse matrices are too slow for the full dataset.
+    Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+    Q_T_dense = Matrix(Q_T)
+    Q_T_sparse = sparse(Q_T)
+    b = zeros(p.N^p.M)
+    @btime eigen($Q_T_dense)
+    @btime eigs($Q_T_sparse, nev=1, which=:SM, v0 = iv) setup = (iv = fill(1/(p.N^p.M), p.N^p.M))
+    @btime gmres!(iv, $Q_T, $b) setup = (iv = fill(1/(p.N^p.M), p.N^p.M));
+
+
+The differences become even more stark as the matrix grows.  With ``default_params(N=5, M=5)`` the ``gmres`` solution is at least 3 orders of magnitude faster, and uses close to 3 orders of magnitude less memory than the dense solver.  In addition, it is The ``gmres`` is about an order of magnitude faster than the iterative sparse solver approach.
+
+The algorithm can solve for the steady state of :math:`10^5` states in a few seconds
+
+.. code-block:: julia
+
+    function stationary_ψ(p)
+        Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+        ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
+        sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e. solve Ax = 0 iteratively    
+        return ψ / sum(ψ)
+    end
+    p = default_params(N=10, M=5)
+    @btime stationary_ψ($p);
+
+As a final demonstration, consider calculating the full evolution of the :math:`ψ(t)` Markov chain.  For the constant
+:math:`Q'` matrix, the solution to this system of equations is :math:`\psi(t) = \exp(Q') \psi(0)`
+
+Matrix-free Krylov methods using a technique called `exponential integration <https://en.wikipedia.org/wiki/Exponential_integrator>`_ can solve this for high dimensional problems.
+
+For this, we can setup a ``MatrixFreeOperator`` for our ``Q_T_mul!`` function (equivalent to the ``LinearMap``, but with some additional requirements for the ODE solver) and use the `LinearExponential <http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Exponential-Methods-for-Linear-and-Affine-Problems-1>`_ time-stepping method.
+
+.. code-block:: julia
+
+    using OrdinaryDiffEq, DiffEqOperators
+
+    function solve_transition_dynamics(p, t)
+        @unpack N, M = p
+        
+        ψ_0 = [1.0; fill(0.0, N^M - 1)]
+        O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0), size=(N^M,N^M), opnorm=(p)->1.25)
+        
+        # define the corresponding ODE problem
+        prob = ODEProblem(O!,ψ_0,(0.0,t[end]), p)
+        return solve(prob, LinearExponential(krylov=:simple), tstops = t) 
+    end
+    t = 0.0:5.0:100.0
+    p = default_params(N=10, M=6) 
+    sol = solve_transition_dynamics(p, t)
+    v = solve_bellman(p)
+    plot(t, [dot(sol(tval), v) for tval in t], xlabel = "t", label = ["E_t(v)"])
+
+ The above plot (1) calculates the full dynamics of the Markov chain from the :math:`N_m = 1` for all :math:`m` initial condition; (2) solves the dynamics of a system of one-million ODEs; and; (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.
