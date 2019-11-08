@@ -1312,8 +1312,8 @@ A final approach in this case is to notice that the :math:`\mathbf{N}\times\math
 rank :math:`\mathbf{N} - 1` when the Markov-chain is irreducible.  The stationary solutio is is a vector in the :math:`1` dimensional nullspace
 of the matrix.
 
-Solving a linear system with the right-hand side all :math:`0` s using Krylov methods will converge to a point in the nullspace.  That is, :math:`\min_x ||A x||_2` solved
-iteratively from a non-zero :math:`x` will converge to a point in the nullspace.
+Solving a linear system with the right-hand side all :math:`0` s using Krylov methods will converge to a point in the nullspace.  That is, :math:`\min_x ||A x - 0||_2` solved
+iteratively from a non-zero initial condition will converge to a point in the nullspace.
 
 We can use various Krylov methods for this trick (e.g. if the matrix is symmetric and positive definite, you could use Conjugate Gradient) but in our case we will
 use GMRES since we do not have any structure.
@@ -1342,7 +1342,7 @@ The speed and memory differences between this methods can be orders of magnitude
     @btime gmres!(iv, $Q_T, $b) setup = (iv = fill(1/(p.N^p.M), p.N^p.M));
 
 
-The differences become even more stark as the matrix grows.  With ``default_params(N=5, M=5)`` the ``gmres`` solution is at least 3 orders of magnitude faster, and uses close to 3 orders of magnitude less memory than the dense solver.  In addition, it is The ``gmres`` is about an order of magnitude faster than the iterative sparse solver approach.
+The differences become even more stark as the matrix grows.  With ``default_params(N=5, M=5)`` the ``gmres`` solution is at least 3 orders of magnitude faster, and uses close to 3 orders of magnitude less memory than the dense solver.  In addition, the ``gmres`` is about an order of magnitude faster than the iterative sparse eigenvalue solver
 
 The algorithm can solve for the steady state of :math:`10^5` states in a few seconds
 

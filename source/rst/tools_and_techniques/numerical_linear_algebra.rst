@@ -688,7 +688,7 @@ In the continuous case, this becomes the system of linear differential equations
 
     \dot{ψ}(t) = Q(t)^T ψ(t) 
 
-given the initial condition :math:`ψ(0)` and where the :math:`Q(t)` intensity matrix is allows to vary with time.  In the simplest case of a constant :math:`Q` matrix, this is a simple constant-coefficient system of Linear ODEs with coefficients :math:`Q^T`
+given the initial condition :math:`\psi(0)` and where the :math:`Q(t)` intensity matrix is allows to vary with time.  In the simplest case of a constant :math:`Q` matrix, this is a simple constant-coefficient system of Linear ODEs with coefficients :math:`Q^T`
 
 If a stationary equilibria exists, note that :math:`\dot{ψ}(t) = 0`, and the stationary solution :math:`ψ^{*}` needs to fulfill
 
@@ -774,15 +774,15 @@ To find the stationary distribution, we calculate the eigenvalue and choose the 
     L_eig = eigen(Matrix(L'))
     @assert norm(L_eig.values[end]) < 1E-10
 
-    ϕ = L_eig.vectors[:,end]
-    ϕ = ϕ / sum(ϕ)
+    ψ = L_eig.vectors[:,end]
+    ψ = ψ / sum(ψ)
 
 
 We can reshape this to be two dimensional if it is helpful for visualization
 
 .. code-block:: julia
 
-    reshape(ϕ, N, size(A,1))
+    reshape(ψ, N, size(A,1))
 
 Irreducibility
 --------------
@@ -921,10 +921,10 @@ with the smallest magnitude eigenvalue (i.e. the :math:`\lambda = 0`)
 
     using Arpack
     L = sparse(L')
-    λ, ϕ = eigs(L, nev=1, which=:SM)  # find smallest 1 eigenvector
-    assert(λ) < 1E-8  # ensure it is the right eigenvalue/vector
-    ϕ = real(ϕ) ./ sum(real(ϕ))
-    reshape(ϕ, N, M)
+    λ, ψ = eigs(L, nev=1, which=:SM)  # find smallest 1 eigenvector
+    @assert λ < 1E-8  # ensure it is the right eigenvalue/vector
+    ψ = real(ψ) ./ sum(real(ψ))
+    reshape(ψ, N, M)
 
 .. _implementation_numerics:
 
@@ -1125,7 +1125,7 @@ A few more hints:
 Exercise 2a
 --------------
 
-Here we will calculate the evolution of the pdf of a discrete time Markov Chain, :math:`phi_t` given the initial condition :math:`phi_0`.
+Here we will calculate the evolution of the pdf of a discrete time Markov Chain, :math:`\psi_t` given the initial condition :math:`\psi_0`.
 
 Start with a simple symmetric tridiagonal matrix
 
@@ -1135,16 +1135,16 @@ Start with a simple symmetric tridiagonal matrix
     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2)])
     A_adjoint = A';
 
-1. Pick some large ``T`` and use the initial condition :math:`\phi_0 = \begin{bmatrix} 1 & 0 & \ldots & 0\end{bmatrix}`
-2. Write code to calculate :math:`\phi_t` to some :math:`T` by iterating the map for each :math:`t`, i.e.
+1. Pick some large ``T`` and use the initial condition :math:`\psi_0 = \begin{bmatrix} 1 & 0 & \ldots & 0\end{bmatrix}`
+2. Write code to calculate :math:`\psi_t` to some :math:`T` by iterating the map for each :math:`t`, i.e.
 
 .. math::
 
-    \phi_{t+1} = A' \phi_t 
+    \psi_{t+1} = A' \psi_t 
 
-3. What is the computational order of that calculating  :math:`\phi_T` using this iteration approach :math:`T < N`?
-4. What is the computational order of :math:`(A')^T = (A \ldots A)` and then :math:`\phi_T = (A')^T \phi_0` for :math:`T < N`?
-5. Benchmark calculating :math:`\phi_T` with the iterative calculation above as well as the direct :math:`\phi_T = (A')^T \phi_0` to see which is faster.  You can take the matrix power with just ``A_adjoint^T``, which uses specialized algorithms faster and more accurate than repeated matrix multiplication (but with the same computational order).
+3. What is the computational order of that calculating  :math:`\psi_T` using this iteration approach :math:`T < N`?
+4. What is the computational order of :math:`(A')^T = (A \ldots A)` and then :math:`\psi_T = (A')^T \psi_0` for :math:`T < N`?
+5. Benchmark calculating :math:`\psi_T` with the iterative calculation above as well as the direct :math:`\psi_T = (A')^T \psi_0` to see which is faster.  You can take the matrix power with just ``A_adjoint^T``, which uses specialized algorithms faster and more accurate than repeated matrix multiplication (but with the same computational order).
 6. Check the same if :math:`T = 2 N`
 
 *Note:* The algorithm used in Julia to take matrix powers  depends on the matrix structure, as always.  In the symmetric case, it can use an eigendecomposition, whereas with a general dense matrix it uses `squaring and scaling <https://doi.org/10.1137/090768539>`_.
@@ -1154,12 +1154,12 @@ Exercise 2b
 
 With the same setup as Exercise 2a, do an `eigendecomposition <https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix>`_ of ``A_transpose``.  That is, use ``eigen`` to factorize the adjoint :math:`A' = Q \Lambda Q^{-1}` where :math:`Q` the matrix of eigenvectors and :math:`\Lambda` the diagonal matrix of eigenvalues.  Calculate :math:`Q^{-1}` from the results.
 
-Use the factored matrix to calculate the sequence of :math:`\phi_t = (A')^t \phi_0` using the relationship
+Use the factored matrix to calculate the sequence of :math:`\psi_t = (A')^t \psi_0` using the relationship
 
 .. math::
 
-    \phi_t = Q \Lambda^t Q^{-1} \phi_0
+    \psi_t = Q \Lambda^t Q^{-1} \psi_0
 
 Where matrix powers of diagonal matrices are simply the element-wise power of each element.
 
-Benchmark the speed of calculating the sequence of :math:`\phi_t` up to ``T = 2N`` using this method.  In principle, the factorization and easy calculation of the power should give you benefits compared to simply iterating the map as we did in Exercise 2a.  Explain why it does or does not using computational order of each approach.
+Benchmark the speed of calculating the sequence of :math:`\psi_t` up to ``T = 2N`` using this method.  In principle, the factorization and easy calculation of the power should give you benefits compared to simply iterating the map as we did in Exercise 2a.  Explain why it does or does not using computational order of each approach.
