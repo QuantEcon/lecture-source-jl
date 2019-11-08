@@ -4,7 +4,7 @@
 
 
 *****************************************
-Conditioning and Krylov Methods
+Krylov Methods and Matrix Conditioning
 *****************************************
 
 .. contents:: :depth: 2
@@ -1245,8 +1245,8 @@ adjoint-vector product directly.
 
 The logic for the adjoint is that for a given :math:`(n_1,\ldots, n_m, \ldots n_M)` row is
 
-#. for :math:`1 < n_m \leq N` this state could have been entered another state with everything identical except one less customer in the :math:`m`th position
-#. for :math:`1 \leq n_m < N` this state could have been entered another state with everything identical except one more customer in the :math:`m`th position
+#. for :math:`1 < n_m \leq N` could enter from the identical state except with one less customer in the :math:`m` th position
+#. for :math:`1 \leq n_m < N` could enter from the identical state except with one more customer in the :math:`m` th position
 
 .. math::
 
@@ -1290,6 +1290,25 @@ our ``Q`` operator.
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
     Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
     @show norm(sparse(Q)' - sparse(Q_T));  # reminder: use sparse only for testing!
+
+The steady state can be found as the zero-eigenvalue 
+
+.. code-block:: julia
+
+    eig_Q_T = eigen(Matrix(Q_T))
+    vec = real(eig_Q_T.vectors[:,end])
+    @show eig_Q_T.values[end]
+    @show 
+    direct_ψ = vec ./ sum(vec)
+
+Which could also found iteratively.  Or, using a trick
+
+.. code-block:: julia
+
+    iv = fill(1/(p.N^p.M), p.N^p.M)
+    sol = gmres!(iv, Q_T, zeros(5^4), log=true)
+    @show sol[2]
+    @show norm(iv - direct_ψ);
 
 
 # TODO: Find the steady state.  Ask what is the mean valuation at the steady state?
