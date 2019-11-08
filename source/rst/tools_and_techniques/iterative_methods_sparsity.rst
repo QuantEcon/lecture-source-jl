@@ -563,7 +563,7 @@ Other Stationary Methods
 ------------------------
 
 In practice there are many better methods than Jacobi iteration, for example `Gauss-Siedel <https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method>`_. which
-splits the matrix :math:`A = L + U` into an lower triangular matrix :math:`L` and an upper triagular :math:`U` without the diagonal. 
+splits the matrix :math:`A = L + U` into an lower triangular matrix :math:`L` and an upper triangular :math:`U` without the diagonal. 
 
 The iteration becomes
 
@@ -607,7 +607,7 @@ This technique is a common with iterative methods:  frequently adding a dampenin
 Krylov Methods
 ===============
 
-A more commonly used set of iterative methods are based on `Krylov subspaces <https://en.wikipedia.org/wiki/Krylov_subspace>`_ which involve iterating the :math:`A^k x` matrix-vector product, and orthogonalizing to ensure the resulting iteration is not too collinear.
+A more commonly used set of iterative methods are based on `Krylov subspaces <https://en.wikipedia.org/wiki/Krylov_subspace>`_ which involve iterating the :math:`A^k x` matrix-vector product, and orthogonalize to ensure the resulting iteration is not too collinear.
 
 The prototypical Krylov method is `Conjugate Gradient <https://en.wikipedia.org/wiki/Conjugate_gradient_method>`_, which requires the :math:`A` matrix to be
 symmetric and positive definite.
@@ -1053,11 +1053,11 @@ The stochastic process is a simple counting/forgetting process as follows.
 #. For every :math:`1 \leq n_m(t) < N` there is a :math:`\theta` intensity of a new customer increasing :math:`n_m(t+\Delta) = n_m(t) + 1`
 #. For every :math:`1 < n_m(t) \leq N` there is a :math:`\zeta` intensity of losing a customer, so that :math:`n_m(t+\Delta) = n_m(t) - 1`
 
-Matrix-free Infinesimal Generator
----------------------------------
+Matrix-free Infinitesimal Generator
+-----------------------------------
 
 In order to define an intensity matrix :math:`Q` of size :math:`\mathbf{N}\times \mathcal{N}`, we need to choose a consistent ordering of the states.  But,
-before we enumerate them linearly, take a :math:`v\in R^{\mathbf{N}}` interpretted as a multidimensional array and look at the left product of the linear operator product :math:`Q v \to R^{\mathbf{N}}`.
+before we enumerate them linearly, take a :math:`v\in R^{\mathbf{N}}` interpreted as a multidimensional array and look at the left product of the linear operator product :math:`Q v \to R^{\mathbf{N}}`.
 
 For example, if we were implementing the product at the row of :math:`Q` corresponding to the :math:`(n_1, \ldots, n_M)` state, then
 
@@ -1074,7 +1074,7 @@ Here:
 
 - the first term includes all of the arrivals of new customers into the various :math:`m`
 - the second term is the loss of a customer for the various :math:`m`
-- the last term is the intensity of all exits from this state (i.e. counting the intensity of all other transititions to ensure the row would sum to :math:`0`)
+- the last term is the intensity of all exits from this state (i.e. counting the intensity of all other transitions to ensure the row would sum to :math:`0`)
 
 In practice, rather than working with the :math:`f` as a multidimensional type, we will need to enumerate the discrete states linearly so we can iterate :math:`f` between :math:`1` and `\mathbf{N}`.  An especially convenient
 approach is to enumerate them in the same order as the :math:`K` dimensional cartesian product of the :math:`N` states as a multi-dimensional array above.
@@ -1165,9 +1165,9 @@ Solving a Valuation Problem
 ----------------------------
 
 As before, we could use this Markov Chain to solve a Bellman equations.  Assume that the firm discounts at rate :math:`\rho > 0` and gets a flow payoff of a different :math:`z_m` per
-customer of type :math:`m`.  For example, if the state of the firm is :math:`(n_1, n_2, n_3) = (2,3,2)` then they get :math:`\begin{bmatrix}2 & 3 & 2\end{bmatrix} \dot \begin{bmatrix}z_1& z_2 & z_3\end{bmatrix}` in flow profits.
+customer of type :math:`m`.  For example, if the state of the firm is :math:`(n_1, n_2, n_3) = (2,3,2)` then it gets :math:`\begin{bmatrix}2 & 3 & 2\end{bmatrix} \cdot \begin{bmatrix}z_1& z_2 & z_3\end{bmatrix}` in flow profits.
 
-Given this profit function, we can write the simple Bellman equation in our standard form of :math:`\rho v = r + Q v` defining the appropriate payoff :math:`r`.  For example, if :math:`z_m = m^2 / 2` then
+Given this profit function, we can write the simple Bellman equation in our standard form of :math:`\rho v = r + Q v` defining the appropriate payoff :math:`r`.  For example, if :math:`z_m = m^2` then
 
 .. code-block:: julia
 
@@ -1181,7 +1181,7 @@ Given this profit function, we can write the simple Bellman equation in our stan
 
 Note that the returned :math:`r` is a vector, enumerated in the same order as the :math:`n_m` states.
 
-We can solve :math:`(\rho - Q) v = r` with an iterative method.
+Since the ordering of :math:`r` is consistent with that that of :math:`Q`, we can solve :math:`(\rho - Q) v = r` as a linear system.
 
 Below, we create a linear operator and compare the algorithm for a few different iterative methods `(GMRES, BiCGStab(l), IDR(s), etc.) <https://juliamath.github.io/IterativeSolvers.jl/dev/#What-method-should-I-use-for-linear-systems?-1>`_ with a small problem
 of only ten-thousand possible states.
@@ -1204,14 +1204,14 @@ of only ten-thousand possible states.
     @btime bicgstabl!(iv, $A, $r) setup = (iv = zero(r))
 
     @show norm(idrs(A, r) - v_direct)
-    @btime idrs!(iv, $A, $r) setup = (iv = zero(r));
+    @btime idrs($A, $r);
 
-Here, we see that even if the :math:`A` matrix has been created, the direct sparse solvers (which uses a sparse LU or QR) is at least an order of magnitude slower and allocating over an order of magnitude more memory.  This is in addition to the allocaiton for the ``A_sparse`` matrix itself, which is not needed for iterative methods.
+Here, we see that even if the :math:`A` matrix has been created, the direct sparse solvers (which uses a sparse LU or QR) is at least an order of magnitude slower and allocating over an order of magnitude more memory.  This is in addition to the allocation for the ``A_sparse`` matrix itself, which is not needed for iterative methods.
 
-The different iterative methods have tradeoffs when it comes to speed of accuracy, convergence speed, memory requirements, and usefulness of preconditioning.  Above this :math:`\mathbf{N} = 10,000`, the direct methods quickly become infeasible.
+The different iterative methods have tradeoffs when it comes to speed of accuracy, convergence speed, memory requirements, and usefulness of preconditioning.  Going much above this :math:`\mathbf{N} = 10^4`, the direct methods quickly become infeasible.
 
 
- Putting everything together to solving much larger systems with GMRES as our linear solvers
+Putting everything together to solving much larger systems with GMRES as our linear solvers
 
 .. code-block:: julia
 
@@ -1240,13 +1240,15 @@ Recall that given an :math:`N` dimensional intensity matrix :math:`Q` of a CTMC,
 
     \dot{\psi}(t) = Q^T \psi(t)
 
-With methods using matrices, we can simply take the transpose of the :math:`Q` matrix to find the adoint.  However, with matrix-free methods we need to implement the
+If :math:`Q` was a matrix, we could just take its to find the adoint.  However, with matrix-free methods we need to implement the
 adjoint-vector product directly.
 
-The logic for the adjoint is that for a given :math:`(n_1,\ldots, n_m, \ldots n_M)` row is
+The logic for the adjoint is that for a given :math:`n = (n_1,\ldots, n_m, \ldots n_M)`, the :math:`Q^T` product for that row has terms enter when
 
-#. for :math:`1 < n_m \leq N` could enter from the identical state except with one less customer in the :math:`m` th position
-#. for :math:`1 \leq n_m < N` could enter from the identical state except with one more customer in the :math:`m` th position
+#. :math:`1 < n_m \leq N`, entering into identical :math:`n` except with one less customer in the :math:`m` th position
+#. :math:`1 \leq n_m < N` entering into identical :math:`n` except with one more customer in the :math:`m` th position
+
+Implementing this logic first in math, and thne in code,
 
 .. math::
 
@@ -1296,12 +1298,11 @@ do this with a dense eigenvalue solution for relatively small matrices
 
 .. code-block:: julia
 
-    p = default_params(N=5, M=4) 
+    p = default_params(N=5, M=4)
     eig_Q_T = eigen(Matrix(Q_T))
     vec = real(eig_Q_T.vectors[:,end])
-    @show eig_Q_T.values[end]
-    @show 
     direct_ψ = vec ./ sum(vec)
+    @show eig_Q_T.values[end];
 
 This approach relies on a full factorization of the underlying matrix, delivering the entire spectrum.  For our purposes, this is not necessary.
 
@@ -1322,9 +1323,9 @@ use GMRES since we do not have any structure.
     p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
     Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
     ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
-    sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e. solve Ax = 0 iteratively    
+    sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e. solve Ax = 0 iteratively
     ψ = ψ / sum(ψ)
-    @show norm(ψ - eigs_ψ);
+    @show norm(ψ - direct_ψ);
 
 
 The speed and memory differences between this methods can be orders of magnitude.
@@ -1383,4 +1384,4 @@ For this, we can setup a ``MatrixFreeOperator`` for our ``Q_T_mul!`` function (e
     v = solve_bellman(p)
     plot(t, [dot(sol(tval), v) for tval in t], xlabel = "t", label = ["E_t(v)"])
 
- The above plot (1) calculates the full dynamics of the Markov chain from the :math:`N_m = 1` for all :math:`m` initial condition; (2) solves the dynamics of a system of one-million ODEs; and; (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.
+The above plot (1) calculates the full dynamics of the Markov chain from the :math:`n_m = 1` for all :math:`m` initial condition; (2) solves the dynamics of a system of one-million ODEs; and; (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.
