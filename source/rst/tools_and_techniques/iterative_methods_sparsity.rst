@@ -4,7 +4,7 @@
 
 
 *****************************************
-Conditioning and Iterative Methods
+Conditioning and Krylov Methods
 *****************************************
 
 .. contents:: :depth: 2
@@ -1161,7 +1161,7 @@ Next, implement the in-place matrix-free product
 From the output of the benchmarking, note that the implementation of the left-multiplication takes less than a 100 milliseconds, and allocates little or no memory even though the Markov chain has one million possible states (i.e. :math:`N^M = 10^6`).
 
 
-Solving a Valuation Problems
+Solving a Valuation Problem
 ----------------------------
 
 As before, we could use this Markov Chain to solve a Bellman equations.  Assume that the firm discounts at rate :math:`\rho > 0` and gets a flow payoff of a different :math:`z_m` per
@@ -1183,7 +1183,7 @@ Note that the returned :math:`r` is a vector, enumerated in the same order as th
 
 We can solve :math:`(\rho - Q) v = r` with an iterative method.
 
-Below, we create a linear operator and compare the algorithm for a few different iterative methods (GMRES, BiCGStab(l), IDR(s), etc.)  with a "small" problem
+Below, we create a linear operator and compare the algorithm for a few different iterative methods `(GMRES, BiCGStab(l), IDR(s), etc.) <https://juliamath.github.io/IterativeSolvers.jl/dev/#What-method-should-I-use-for-linear-systems?-1>`_ with a small problem
 of only ten-thousand possible states.
 
 .. code-block:: julia
@@ -1191,7 +1191,7 @@ of only ten-thousand possible states.
     p = default_params(N=10, M=4)
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
     A = p.ρ * I - Q
-    A_sparse = sparse(A)  # an expensive operation in this case
+    A_sparse = sparse(A)  # expensive: only use in tests
     r = r_vec(p)
     v_direct = A_sparse \ r
     iv = zero(r)
@@ -1206,8 +1206,7 @@ of only ten-thousand possible states.
     @show norm(idrs(A, r) - v_direct)
     @btime idrs!(iv, $A, $r) setup = (iv = zero(r));
 
-Here, we see that even if the :math:`A` matrix has been created, the direct sparse solvers (which uses a sparse LU or QR) is substantially slower than the iterative
-methods and allocates substantially more memory.  This is in addition to the allocaiton for the ``A_sparse`` matrix itself, which is not needed for iterative methods.
+Here, we see that even if the :math:`A` matrix has been created, the direct sparse solvers (which uses a sparse LU or QR) is at least an order of magnitude slower and allocating over an order of magnitude more memory.  This is in addition to the allocaiton for the ``A_sparse`` matrix itself, which is not needed for iterative methods.
 
 The different iterative methods have tradeoffs when it comes to speed of accuracy, convergence speed, memory requirements, and usefulness of preconditioning.  Above this :math:`\mathbf{N} = 10,000`, the direct methods quickly become infeasible.
 
@@ -1217,13 +1216,13 @@ The different iterative methods have tradeoffs when it comes to speed of accurac
 .. code-block:: julia
 
 
-    function solve_bellman(p; iv = zeros(p.N^p.M), log = false, maxiter = 10000)
+    function solve_bellman(p; iv = zeros(p.N^p.M))
         @unpack ρ, N, M = p
         Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
         A = ρ * I - Q
         r = r_vec(p)
         
-        sol = gmres!(iv, A, r, log = log, maxiter = maxiter)  # iterative solver, matrix-free
+        sol = gmres!(iv, A, r, log = false)  # iterative solver, matrix-free
         return sol
     end
     p = default_params(N=10, M=6)
@@ -1232,12 +1231,67 @@ The different iterative methods have tradeoffs when it comes to speed of accurac
 This solves a value function with a Markov chain of one-million states in a little over a second!  This general approach seems to scale roughly linearly.  For example, try :math:`N=10, M=8`
 to solve an equation with a Markov chain with one-hundred million possible states, which can be solved in around 3-4 minutes.  Above that order of magnitude, you may need to tinker with the linear solver parameters to ensure that you are not memory-limited (e.g. change the ``restart`` parameter of GMRES).
 
-
-TODO: FIgure out the adjoint and use matrix-free methods for the nullspace trick.
-
+Markov Chain Steady State and Dynamics
+----------------------------------------
 
 Recall that given an :math:`N` dimensional intensity matrix :math:`Q` of a CTMC, the evolution of the PDF from an initial condition :math:`\psi(0)` is the system of linear differential equations
 
 .. math::
 
     \dot{\psi}(t) = Q^T \psi(t)
+
+With methods using matrices, we can simply take the transpose of the :math:`Q` matrix to find the adoint.  However, with matrix-free methods we need to implement the
+adjoint-vector product directly.
+
+The logic for the adjoint is that for a given :math:`(n_1,\ldots, n_m, \ldots n_M)` row is
+
+#. for :math:`1 < n_m \leq N` this state could have been entered another state with everything identical except one less customer in the :math:`m`th position
+#. for :math:`1 \leq n_m < N` this state could have been entered another state with everything identical except one more customer in the :math:`m`th position
+
+.. math::
+
+    \begin{align}
+        Q^T_{(n_1, \ldots n_M)} \cdot \psi &= 
+    \theta \sum_{m=1}^M (n_m > 1)  \psi(n_1, \ldots, n_m - 1, \ldots, n_M)\\
+                                            &+ \zeta \sum_{m=1}^M (n_m < N)  \psi(n_1, \ldots, n_m + 1, \ldots, n_M)\\
+                                            &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)\psi(n_1, \ldots, n_M)
+    \end{align}
+
+
+.. code-block:: julia
+
+    function Q_T_mul!(dψ, ψ, p)
+        @unpack θ, ζ, N, M, shape, e_m = p
+        ψ = reshape(ψ, shape)
+        dψ = reshape(dψ, shape)
+
+        @inbounds for ind in CartesianIndices(ψ)
+            dψ[ind] = 0.0
+            for m in 1:M
+                n_m = ind[m]
+                if(n_m > 1)
+                    dψ[ind] += θ * ψ[ind - e_m[m]]
+                end
+                if(n_m < N)
+                    dψ[ind] += ζ *ψ[ind + e_m[m]]
+                end
+            end
+            dψ[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * ψ[ind]
+        end
+    end
+
+
+The ``sparse`` function for the operator is useful to test that the function is correct, and is the adjoint of
+our ``Q`` operator.
+
+.. code-block:: julia
+
+    p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
+    Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
+    Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+    @show norm(sparse(Q)' - sparse(Q_T));  # reminder: use sparse only for testing!
+
+
+# TODO: Find the steady state.  Ask what is the mean valuation at the steady state?
+
+# TODO: What about the mean valuation in the transition path?  Matrix exponentials are another Krylov methods.
