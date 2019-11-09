@@ -841,7 +841,7 @@ Or, directly using `BandedMatrices.jl <https://github.com/JuliaMatrices/BandedMa
 .. code-block:: julia
 
     using BandedMatrices
-    BandedMatrix(-1 => [1,2,3], -1 => [4,5,6])
+    BandedMatrix(1 => [1,2,3], -1 => [4,5,6])
 
 There is also a convenience function for generating random banded matrices
 
@@ -856,75 +856,75 @@ And, of course, specialized algorithms will be used to exploit the structure whe
     @show factorize(Symmetric(A)) |> typeof
     A \ rand(7)
 
-The algorithm a specialized LU decomposition for block-banded matrices.
+The factorization algorithm uses a specialized LU decomposition for banded matrices.
 
 
-BlockBanded and BandedBlockBanded
----------------------------------
+.. BlockBanded and BandedBlockBanded
+.. ---------------------------------
 
-Taking the structured matrix concept further, we can consider examples of matrices in blocks, each of which are banded, and even
-a matrix where each block is banded, and the blocks themselves are aligned along bands.
+.. Taking the structured matrix concept further, we can consider examples of matrices in blocks, each of which are banded, and even
+.. a matrix where each block is banded, and the blocks themselves are aligned along bands.
 
-This final type is common in the discretization of multiple dimensions with continuous time processes.  For example, take the
-example from above with 2 dimensions where the markov chain in the 2nd dimension depends on the current state in the first dimension.
+.. This final type is common in the discretization of multiple dimensions with continuous time processes.  For example, take the
+.. example from above with 2 dimensions where the markov chain in the 2nd dimension depends on the current state in the first dimension.
 
 
-.. code-block:: julia
+.. .. code-block:: julia
 
-    using BandedMatrices, BlockBandedMatrices, LazyArrays
-    function markov_chain_product_banded(Q_chains, A)
-        M = size(Q_chains[1], 1)
-        N = size(A, 1)
-        Q_bands = bandwidths(Q_chains[1])
+..     using BandedMatrices, BlockBandedMatrices, LazyArrays
+..     function markov_chain_product_banded(Q_chains, A)
+..         M = size(Q_chains[1], 1)
+..         N = size(A, 1)
+..         Q_bands = bandwidths(Q_chains[1])
 
-        Qs = blockdiag(sparse.(Q_chains)...)  # create diagonal blocks of every operator
-        Qs = BandedBlockBandedMatrix(Qs, (M*ones(Int64, N), M*ones(Int64, N)), (0,0), Q_bands)
+..         Qs = blockdiag(sparse.(Q_chains)...)  # create diagonal blocks of every operator
+..         Qs = BandedBlockBandedMatrix(Qs, (M*ones(Int64, N), M*ones(Int64, N)), (0,0), Q_bands)
 
-        # construct a kronecker product of A times I_M
-        As = BandedBlockBandedMatrix(Kron(A, Eye(M)))
-        return Qs + As
-    end
+..         # construct a kronecker product of A times I_M
+..         As = BandedBlockBandedMatrix(Kron(A, Eye(M)))
+..         return Qs + As
+..     end
 
-    α1 = 0.05
-    α2 = 0.15
-    α3 = 0.1
-    N = 5
-    symmetric_tridiagonal_chain(α, N) = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
-    Q1 = symmetric_tridiagonal_chain(α1, N)
-    Q2 = symmetric_tridiagonal_chain(α2, N)
-    Q3 = symmetric_tridiagonal_chain(α3, N)
-    A = Tridiagonal([0.1, 0.1], [-0.2, -0.3, -0.2], [0.2, 0.2])
-    M = size(A,1)
+..     α1 = 0.05
+..     α2 = 0.15
+..     α3 = 0.1
+..     N = 5
+..     symmetric_tridiagonal_chain(α, N) = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+..     Q1 = symmetric_tridiagonal_chain(α1, N)
+..     Q2 = symmetric_tridiagonal_chain(α2, N)
+..     Q3 = symmetric_tridiagonal_chain(α3, N)
+..     A = Tridiagonal([0.1, 0.1], [-0.2, -0.3, -0.2], [0.2, 0.2])
+..     M = size(A,1)
 
-    L = markov_chain_product_banded((Q1, Q2, Q3), A);
+..     L = markov_chain_product_banded((Q1, Q2, Q3), A);
 
-The sparsity pattern shows bands of bands
+.. The sparsity pattern shows bands of bands
 
-.. code-block:: julia
+.. .. code-block:: julia
 
-    using Plots
-    spy(sparse(L), markersize = 10)
+..     using Plots
+..     spy(sparse(L), markersize = 10)
 
-As before, define a payoff function and solve the equation :math:`\rho v = r + L v`
+.. As before, define a payoff function and solve the equation :math:`\rho v = r + L v`
 
-.. code-block:: julia
+.. .. code-block:: julia
 
-    r = vec([i + 2.0j for i in 1:N, j in 1:M])
-    ρ = 0.05
-    v = (ρ * I - L) \ r
-    reshape(v, N, M)
+..     r = vec([i + 2.0j for i in 1:N, j in 1:M])
+..     ρ = 0.05
+..     v = (ρ * I - L) \ r
+..     reshape(v, N, M)
 
-Or to find the stationary solution of the Markov chain, find the eigenvector associated
-with the smallest magnitude eigenvalue (i.e. the :math:`\lambda = 0`)
+.. Or to find the stationary solution of the Markov chain, find the eigenvector associated
+.. with the smallest magnitude eigenvalue (i.e. the :math:`\lambda = 0`)
 
-.. code-block:: julia
+.. .. code-block:: julia
 
-    using Arpack
-    L = sparse(L')
-    λ, ψ = eigs(L, nev=1, which=:SM)  # find smallest 1 eigenvector
-    @assert λ < 1E-8  # ensure it is the right eigenvalue/vector
-    ψ = real(ψ) ./ sum(real(ψ))
-    reshape(ψ, N, M)
+..     using Arpack
+..     L = sparse(L')
+..     λ, ψ = eigs(L, nev=1, which=:SM)  # find smallest 1 eigenvector
+..     @assert λ < 1E-8  # ensure it is the right eigenvalue/vector
+..     ψ = real(ψ) ./ sum(real(ψ))
+..     reshape(ψ, N, M)
 
 .. _implementation_numerics:
 
@@ -1120,7 +1120,7 @@ A few more hints:
 
 - You can just use random matrices, e.g. ``A = rand(N, N)``, etc. 
 - For all of them, preallocate the :math:`C` matrix beforehand with ``C = similar(A)`` or something equivalent.
-- To compare performance, put your code in a function and use ``@btime`` macro to time it.  Remember to escape globals if necessary (e.g. ``@btime f($A)`` rather than ``@btime f(A)``
+- To compare performance, put your code in a function and use ``@btime`` macro to time it.
 
 Exercise 2a
 --------------
