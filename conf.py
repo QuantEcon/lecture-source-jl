@@ -491,3 +491,6 @@ jupyter_pdf_book_title = "Quantitative Economics with Julia"
 
 # pdf toc file
 jupyter_pdf_book_index = "index_toc"
+
+# pdf book name
+jupyter_pdf_book_name = "quantitative_economics_with_julia"
