@@ -1,5 +1,5 @@
 
-/* julia.css v1.0 */
+/* julia.css v1.1 */
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}main{display:block}h1{font-size:2em;margin:.67em 0}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details{display:block}summary{display:list-item}template{display:none}[hidden]{display:none}
 /*! HTML5 Boilerplate v7.2.0 | MIT License | https://html5boilerplate.com/ */html{color:#222;font-size:1em;line-height:1.4}::-moz-selection{background:#b3d4fc;text-shadow:none}::selection{background:#b3d4fc;text-shadow:none}hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}audio,canvas,iframe,img,svg,video{vertical-align:middle}fieldset{border:0;margin:0;padding:0}textarea{resize:vertical}.browserupgrade{margin:.2em 0;background:#ccc;color:#000;padding:.2em 0}.hidden{display:none!important}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;white-space:nowrap;width:1px}.sr-only.focusable:active,.sr-only.focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;white-space:inherit;width:auto}.invisible{visibility:hidden}.clearfix:after,.clearfix:before{content:" ";display:table}.clearfix:after{clear:both}@media print{*,:after,:before{background:0 0!important;color:#000!important;-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}a,a:visited{text-decoration:underline}a[href]:after{content:" (" attr(href) ")"}abbr[title]:after{content:" (" attr(title) ")"}a[href^="#"]:after,a[href^="javascript:"]:after{content:""}pre{white-space:pre-wrap!important}blockquote,pre{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}img,tr{page-break-inside:avoid}h2,h3,p{orphans:3;widows:3}h2,h3{page-break-after:avoid}}
@@ -442,14 +442,16 @@ cite, code, tt {
 .lecture-options li {
 	margin: 0 0.5rem;
 }
-.lecture-options li a {
+.lecture-options li a, .lecture-options li .toggle {
 	display: block;
 	color: #444;
 	font-size: 0.8rem;
+	outline:0;
 }
-.lecture-options li a:hover {
+.lecture-options li a:hover, .lecture-options li .toggle:hover {
 	color: #004979;
 	text-decoration: none;
+	cursor: pointer;
 }
 .lecture-options li a svg {
 	margin:0 3px 0 0;
@@ -656,6 +658,18 @@ span.MathJax {font-size:0.92rem;}
 	}
 }
 
+@media only screen and (max-width: 950px) {
+	.lecture-options {
+		flex-direction: column;
+	}
+	.lecture-options li {
+		margin:0.2rem 0;
+	}
+	.lecture-options ul {
+		display: block;
+	}
+}
+
 @media only screen and (max-width: 768px) {
 	.header, .footer, .content, .home-alternatives {
 		padding-left: 2.5rem;
@@ -676,12 +690,6 @@ span.MathJax {font-size:0.92rem;}
 	.home-alternatives {
 		padding: 2rem 0;
 	}
-	.lecture-options {
-		flex-direction: column;
-	}
-	.lecture-options li {
-		margin:0.2rem 0;
-	}
 	.cell .output .prompt:before, .cell .input .prompt:before {
 		font-size: 14px;
 	}
@@ -693,9 +701,6 @@ span.MathJax {font-size:0.92rem;}
 		border-width:1px 1px 0 1px;
 		border-radius: 0;
 		padding:0.5rem 1rem;
-	}
-	.lecture-options ul {
-		display: block;
 	}
 	.status-table-container {
 		overflow-x: scroll;

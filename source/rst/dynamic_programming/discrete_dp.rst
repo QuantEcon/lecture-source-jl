@@ -46,7 +46,7 @@ This lecture covers
 * the theory of dynamic programming in a discrete setting, plus examples and
   applications
 
-* a powerful set of routines for solving discrete DPs from the `QuantEcon code libary <http://quantecon.org/julia_index.html>`_
+* a powerful set of routines for solving discrete DPs from the `QuantEcon code libary <http://quantecon.org/quantecon-jl>`_
 
 How to Read this Lecture
 ------------------------
@@ -317,7 +317,7 @@ Solving Discrete DPs
 
 Now that the theory has been set out, let's turn to solution methods.
 
-Code for solving discrete DPs is available in `ddp.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/ddp.jl>`_ from the `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ code library.
+Code for solving discrete DPs is available in `ddp.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/ddp.jl>`_ from the `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ code library.
 
 It implements the three most important solution methods for discrete dynamic programs, namely
 
@@ -618,7 +618,7 @@ Another interesting object is ``results.mc``, which is the controlled chain defi
 
 In other words, it gives the dynamics of the state when the agent follows the optimal policy.
 
-Since this object is an instance of `MarkovChain` from  `QuantEcon.jl <http://quantecon.org/julia_index.html>`_ (see :doc:`this lecture <../tools_and_techniques/finite_markov>` for more discussion), we
+Since this object is an instance of `MarkovChain` from  `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_ (see :doc:`this lecture <../tools_and_techniques/finite_markov>` for more discussion), we
 can easily simulate it, compute its stationary distribution and so on
 
 .. code-block:: julia
@@ -1072,7 +1072,7 @@ Dynamics of the capital stock
 -----------------------------
 
 Finally, let us work on `Exercise
-2 <https://lectures.quantecon.org/jl/optgrowth.html#Exercise-1>`__, where we plot
+2 <https://julia.quantecon.org/dynamic_programming/optgrowth.html#Exercise-1>`__, where we plot
 the trajectories of the capital stock for three different discount
 factors, :math:`0.9`, :math:`0.94`, and :math:`0.98`, with initial
 condition :math:`k_0 = 0.1`.

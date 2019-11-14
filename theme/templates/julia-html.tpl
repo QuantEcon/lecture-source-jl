@@ -15,6 +15,16 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-54984338-8"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-54984338-8');
+		</script>
+
 		<meta charset="utf-8">
 {% if nb_filename == 'index' %}
 		<title>Quantitative Economics with Julia</title>
@@ -38,8 +48,8 @@
 		<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski." />
 		<meta property="og:site_name" content="Quantitative Economics with Julia" />
 
-		<link rel="stylesheet" href="/_static/css/julia.css?v=1.0">
-		<link rel="stylesheet" href="https://assets.quantecon.org/css/menubar-20190925.css">
+		<link rel="stylesheet" href="/_static/css/julia.css?v=1.1">
+		<link rel="stylesheet" href="https://assets.quantecon.org/css/menubar-20191108.css">
 		<link rel="icon" href="/_static/img/favicon.ico" type="image/x-icon" />
 
 		<link href="https://fonts.googleapis.com/css?family=Droid+Serif|Source+Sans+Pro:400,700" rel="stylesheet">
@@ -55,40 +65,51 @@
 		<div class="qemb"> <!-- QuantEcon menubar -->
 
 			<p class="qemb-logo"><a href="https://quantecon.org/" title="quantecon.org"><span class="show-for-sr">QuantEcon</span></a></p>
-
-			<ul class="qemb-nav">
-			  <li class="qemb-dropdown"><a>Lectures</a>
-			    <ul>
-                  <li><a href="https://python.quantecon.org/" title="Quantitative Economics with Python"><span>Quantitative Economics with Python</span></a></li>
-                  <li><a href="https://julia.quantecon.org/" title="Quantitative Economics with Julia"><span>Quantitative Economics with Julia</span></a></li>
-			      <li><a href="https://datascience.quantecon.org/" title="DataScience"><span>QuantEcon DataScience</span></a></li>
-			      <li><a href="http://cheatsheets.quantecon.org/" title="Cheatsheets"><span>Cheatsheets</span></a></li>
-			    </ul>
-			  </li>
-			  <li class="qemb-dropdown"><a>Code</a>
-			    <ul>
-			      <li><a href="https://quantecon.org/quantecon-py" title="QuantEcon.py"><span>QuantEcon.py</span></a></li>
-			      <li><a href="https://quantecon.org/quantecon-jl" title="QuantEcon.jl"><span>QuantEcon.jl</span></a></li>
-			      <li><a href="https://jupinx.quantecon.org/">Jupinx</a></li>
-			  </ul>
-			  </li>
-			  <li class="qemb-dropdown"><a>Notebooks</a>
-			    <ul>
-			      <li><a href="https://quantecon.org/notebooks" title="QuantEcon Notebook Library"><span>NB Library</span></a></li>
-			      <li><a href="http://notes.quantecon.org/" title="QE Notes"><span>QE Notes</span></a></li>
-			    </ul>
-			  </li>
-			  <li class="qemb-dropdown"><a>Community</a>
-			    <ul>
-			      <li><a href="http://blog.quantecon.org/" title="Blog"><span>Blog</span></a></li>
-			      <li><a href="http://discourse.quantecon.org/" title="Forum"><span>Forum</span></a></li>
-			    </ul>
-			  </li>
-			  <li><a href="http://store.quantecon.org/" title="Store"><span class="show-for-sr">Store</span></a></li>
-			  <li><a href="https://github.com/QuantEcon/" title="Repository"><span class="show-for-sr">Repository</span></a></li>
-			  <li><a href="https://twitter.com/quantecon" title="Twitter"><span class="show-for-sr">Twitter</span></a></li>
-			</ul>
-
+		
+			<div class="qemb-menu">
+		
+				<ul class="qemb-groups">
+					<li>
+						<span>Lectures</span>
+						<ul>
+						<li><a href="https://python.quantecon.org/" title="Quantitative Economics with Python"><span>Quantitative Economics with Python</span></a></li>
+						<li><a href="https://julia.quantecon.org/" title="Quantitative Economics with Julia"><span>Quantitative Economics with Julia</span></a></li>
+						<li><a href="https://datascience.quantecon.org/" title="DataScience"><span>QuantEcon DataScience</span></a></li>
+						<li><a href="http://cheatsheets.quantecon.org/" title="Cheatsheets"><span>Cheatsheets</span></a></li>
+						</ul>
+					</li>
+					<li>
+						<span>Code</span>
+						<ul>
+						<li><a href="https://quantecon.org/quantecon-py" title="QuantEcon.py"><span>QuantEcon.py</span></a></li>
+						<li><a href="https://quantecon.org/quantecon-jl" title="QuantEcon.jl"><span>QuantEcon.jl</span></a></li>
+						<li><a href="https://jupinx.quantecon.org/">Jupinx</a></li>
+						</ul>
+					</li>
+					<li>
+						<span>Notebooks</span>
+						<ul>
+						<li><a href="https://quantecon.org/notebooks" title="QuantEcon Notebook Library"><span>NB Library</span></a></li>
+						<li><a href="http://notes.quantecon.org/" title="QE Notes"><span>QE Notes</span></a></li>
+						</ul>
+					</li>
+					<li>
+						<span>Community</span>
+						<ul>
+						<li><a href="http://blog.quantecon.org/" title="Blog"><span>Blog</span></a></li>
+						<li><a href="http://discourse.quantecon.org/" title="Forum"><span>Forum</span></a></li>
+						</ul>
+					</li>
+				</ul>
+		
+				<ul class="qemb-links">
+					<li><a href="http://store.quantecon.org/" title="Store"><span class="show-for-sr">Store</span></a></li>
+					<li><a href="https://github.com/QuantEcon/" title="Repository"><span class="show-for-sr">Repository</span></a></li>
+					<li><a href="https://twitter.com/quantecon" title="Twitter"><span class="show-for-sr">Twitter</span></a></li>
+				</ul>
+		
+			</div>
+	
 		</div>
 
 		<div class="wrapper">
@@ -159,8 +180,9 @@
 								<li><a href="/_downloads/pdf/{{nb_filename_with_path}}.pdf"><i class="fas fa-file-download"></i> Download PDF</a></li>
 								<li><a href="/_downloads/ipynb/{{nb_filename_with_path}}.ipynb"><i class="fas fa-file-download"></i> Download Notebook</a></li>
 {% endif %}
+								<li><span class="toggle" id="cloneButton"><i class="fas fa-file-code"></i> View Source</span></li>
 								<li><a target="_blank" href="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath={{nb_filename_with_path}}.ipynb" id="launchButton"><i class="fas fa-rocket"></i> Launch Notebook</a></li>
-								<li><a target="_blank" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/source/rst/{{nb_filename_with_path}}.rst" id="cloneButton"><i class="fas fa-file-code"></i> View Source</a></li>
+								<li><span class="toggle" id="settingsButton" title="Settings"><i class="fas fa-cog"></i> Settings</span></li>
 							</ul>
 							<ul>
 								<li><a href="/troubleshooting.html"><i class="fas fa-question-circle"></i> Troubleshooting</a></li>
@@ -615,16 +637,9 @@ var element = $('#{{ div_id }}');
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="https://unpkg.com/popper.js@1"></script>
-        <script src="https://unpkg.com/tippy.js@4"></script>
-		<script src="/_static/js/julia.js?v=1.0"></script>
-
-		<script async src="https://cse.google.com/cse.js?cx=006559439261123061640:j0o7s27tvxo"></script>
-
-		<script>
-		window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-		ga('create', 'UA-54984338-8', 'auto'); ga('set','transport','beacon'); ga('send', 'pageview')
-		</script>
-		<script src="https://www.google-analytics.com/analytics.js" async></script>
+		<script src="https://unpkg.com/tippy.js@4"></script>
+		<script src="https://assets.quantecon.org/js/menubar-20191106.js"></script>
+		<script src="/_static/js/julia.js?v=1.1"></script>
 
 	</body>
 </html>

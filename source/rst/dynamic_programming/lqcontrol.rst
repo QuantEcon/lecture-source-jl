@@ -537,7 +537,7 @@ Implementation
 ==============
 
 We will use code from `lqcontrol.jl <https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lqcontrol.jl>`__
-in `QuantEcon.jl <http://quantecon.org/julia_index.html>`_
+in `QuantEcon.jl <http://quantecon.org/quantecon-jl>`_
 to solve finite and infinite horizon linear quadratic control problems.
 
 In the module, the various updating, simulation and fixed point methods  act on a type  called ``LQ``, which includes

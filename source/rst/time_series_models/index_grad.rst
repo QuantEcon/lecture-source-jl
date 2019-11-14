@@ -4,7 +4,7 @@
 Time Series Models
 ***************************************
 
-These lectures look at important concepts in time series that are used in economics
+These lectures look at important concepts in time series that are used in economics.
 
 .. only:: html
 
