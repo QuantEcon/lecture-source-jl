@@ -566,9 +566,9 @@ A spectral decomposition, also known as an `eigendecomposition <https://en.wikip
 
 where :math:`Q` is a matrix made of the the eigenvectors of :math:`A` as columns, and :math:`\Lambda` is a diagonal matrix of the eigenvalues.  Only square, `diagonalizable <https://en.wikipedia.org/wiki/Diagonalizable_matrix>`_ matrices have an eigendecomposition (where a matrix is not diagonalizable if it does not have a full set of linearly independent eigenvectors).
 
-In Julia, whenever you ask for a full set of eigenvectors and eigenvalues, it will find them through this decomposition using an algorithm appropriate for the matrix type.  For example, symmetric, hermitian, or tridiagonal matrices have their own algorithms.
+In Julia, whenever you ask for a full set of eigenvectors and eigenvalues, it  decomposes using an algorithm appropriate for the matrix type.  For example, symmetric, hermitian, or tridiagonal matrices have specialized algorithms.
 
-To see this in operation,
+To see this,
 
 .. code-block:: julia
 
@@ -578,7 +578,7 @@ To see this in operation,
     Q = A_eig.vectors
     norm(Q * Λ * inv(Q) - A)
 
-Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, so if you attempt  to check ``Q * Λ * inv(Q) - A`` it may not be a real due number due to numerical inaccuracy.
+Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, so if you attempt  to check ``Q * Λ * inv(Q) - A`` - even for a positive-definite matrix - it may not be a real due number due to numerical inaccuracy.
     
 Continuous Time Markov Chains (CTMC)
 ====================================    
@@ -589,7 +589,7 @@ between state :math:`x` and state :math:`y` was summarized by the matrix :math:`
 As a brief introduction to continuous time processes, consider the same state-space as in the discrete
 case: :math:`S` a finite set with :math:`n` elements :math:`\{x_1, \ldots, x_n\}`.
 
-A **Markov chain** :math:`\{X_t\}` on :math:`S` is a sequence of random variables on :math:`S` that have the **Markov property**
+A **Markov chain** :math:`\{X_t\}` on :math:`S` is a sequence of random variables on :math:`S` that have the **Markov property**.
 
 In continuous time, the `Markov Property <https://en.wikipedia.org/wiki/Markov_property>`_ is more complicated, but intuitively is
 the same as the discrete time case.
@@ -609,7 +609,7 @@ state :math:`j` is
     \mathbb P \{ X(t + \Delta) = j  \,|\, X(t) \} = \begin{cases} q_{ij} \Delta + o(\Delta) & i \neq j\\
                                                                   1 + q_{ii} \Delta + o(\Delta) & i = j \end{cases}
 
-where :math:`q_{ij}` are parameters governing the transition process, and :math:`o(\Delta)` is `little-o notation <https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation>`_.  That is, :math:`\lim_{\Delta\to 0} o(\Delta)/\Delta = 0`.
+where :math:`q_{ij}` are "intensity" parameters governing the transition rate, and :math:`o(\Delta)` is `little-o notation <https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation>`_.  That is, :math:`\lim_{\Delta\to 0} o(\Delta)/\Delta = 0`.
 
 Just as in the discrete case, we can summarize these parameters by a :math:`N \times N` matrix, :math:`Q \in R^{N\times N}`.
 
@@ -681,7 +681,7 @@ In the continuous case, this becomes the system of linear differential equations
 
     \dot{ψ}(t) = Q(t)^T ψ(t) 
 
-given the initial condition :math:`\psi(0)` and where the :math:`Q(t)` intensity matrix is allows to vary with time.  In the simplest case of a constant :math:`Q` matrix, this is a simple constant-coefficient system of Linear ODEs with coefficients :math:`Q^T`
+given the initial condition :math:`\psi(0)` and where the :math:`Q(t)` intensity matrix is allows to vary with time.  In the simplest case of a constant :math:`Q` matrix, this is a simple constant-coefficient system of linear ODEs with coefficients :math:`Q^T`.
 
 If a stationary equilibria exists, note that :math:`\dot{ψ}(t) = 0`, and the stationary solution :math:`ψ^{*}` needs to fulfill
 
@@ -690,7 +690,7 @@ If a stationary equilibria exists, note that :math:`\dot{ψ}(t) = 0`, and the st
     0 = Q^T ψ^{*}
 
 
-Notice that this is of the form :math:`0 ψ^{*} = Q^T ψ^{*}` and hence is equivalent to finding the eigevector associated with the :math:`\lambda = 0` eigenvalue
+Notice that this is of the form :math:`0 ψ^{*} = Q^T ψ^{*}` and hence is equivalent to finding the eigenvector associated with the :math:`\lambda = 0` eigenvalue of :math:`Q^T`.
 
 With our example, we can calculate all of the eigenvalues and eigenvectors
 
@@ -742,7 +742,7 @@ This provides the combined markov chain for the :math:`(i,j)` process.  To see t
     using Plots
     spy(L, markersize = 10)
 
-To calculate a simple dynamic pricing problem, consider if the payoff of being in state :math:`(i,j)` is :math:`r_{ij} = i + 2j`
+To calculate a simple dynamic valuation, consider if the payoff of being in state :math:`(i,j)` is :math:`r_{ij} = i + 2j`
 
 .. code-block:: julia
 
@@ -760,7 +760,8 @@ Solving the equation :math:`\rho v = r + L v`
 The ``reshape`` helps to rearrange it back to being two-dimensional.
 
 
-To find the stationary distribution, we calculate the eigenvalue and choose the eigenvector associated with :math:`\lambda=0` .
+To find the stationary distribution, we calculate the eigenvalue and choose the eigenvector associated with :math:`\lambda=0` .  In this
+case, we can verify it is the last one.
 
 .. code-block:: julia
 
@@ -771,7 +772,7 @@ To find the stationary distribution, we calculate the eigenvalue and choose the 
     ψ = ψ / sum(ψ)
 
 
-We can reshape this to be two dimensional if it is helpful for visualization
+Reshaping this to be two dimensional if it is helpful for visualization
 
 .. code-block:: julia
 
@@ -790,7 +791,7 @@ is isomorphic to determining if the directed graph of the Markov chain is `stron
     N = 6
     Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
 
-This graph visually shows 
+We can verify that it is possible to move between every state in a finite number of steps with 
 
 .. code-block:: julia
 
@@ -812,12 +813,12 @@ Banded Matrices
 
 A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and the also the first super-diagonal (i.e. above the main diagonal).
 
-This is a special case of a more general type called a banded matrix, where the number of sub and super-diagonals can be greater than 1.  The 
-total width of main, sub-, and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
+This is a special case of a more general type called a banded matrix, where the number of sub- and super-diagonals can be greater than 1.  The 
+total width of main-, sub-, and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
 
 A :math:`N \times N` banded matrix with bandwidth :math:`P` has about :math:`N P` nonzeros in its sparsity pattern.
 
-These can be created directly as a dense matrix with ``diagm``
+These can be created directly as a dense matrix with ``diagm``.  For example, with a bandwidth of three and a zero diagonal.
 
 .. code-block:: julia
 
