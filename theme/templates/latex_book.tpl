@@ -101,6 +101,7 @@
 \renewcommand \caption [2][]{} % removes captions from all figures
 \setlist[itemize]{nosep}
 
+\setmainfont{Latin Modern Roman}
 % using CMU Serif for greek and latin letters in code blocks and Liberation Mono for rest%
 \setmonofont{Liberation Mono}
 \usepackage[Latin,Greek]{ucharclasses}
