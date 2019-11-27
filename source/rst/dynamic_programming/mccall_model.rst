@@ -308,7 +308,7 @@ Here's the distribution of wage offers we'll work with
     w = range(10.0, 60.0, length = n+1) # linearly space wages
 
     using StatsPlots
-    plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
+    plt = plot(w, pdf.(dist, support(dist)), xlabel = "wages", ylabel = "probabilities", legend = false)
 
 We can explore taking expectations over this distribution
 
