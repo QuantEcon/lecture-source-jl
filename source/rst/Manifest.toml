@@ -424,6 +424,12 @@ git-tree-sha1 = "b0313f5f1825aabb1adb186c837e0d339d02f351"
 uuid = "a1e7a1ef-7a5d-5822-a38c-be74e1bb89f4"
 version = "0.2.0"
 
+[[Expokit]]
+deps = ["LinearAlgebra", "SparseArrays", "Test"]
+git-tree-sha1 = "b0313f5f1825aabb1adb186c837e0d339d02f351"
+uuid = "a1e7a1ef-7a5d-5822-a38c-be74e1bb89f4"
+version = "0.2.0"
+
 [[ExponentialUtilities]]
 deps = ["LinearAlgebra", "Printf", "SparseArrays"]
 git-tree-sha1 = "85e1ce16aa9b98793df704e17e7a0ceadefe404f"
