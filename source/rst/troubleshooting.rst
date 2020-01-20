@@ -22,6 +22,16 @@ If you already have, make sure to try deleting your ``.julia`` directory (the "u
 
 You can find this directory by running ``DEPOT_PATH[1]`` in a Julia REPL. 
 
+Upgrading Julia 
+=================
+
+See the :ref:`lecture section <upgrading_julia>` on getting Atom and Jupyter working with a new version.
+
+Fixing Atom
+=============
+
+See the :ref:`lecture section <atom_troubleshooting>` on troubleshooting Atom. 
+
 Resetting a JupyterHub Lecture Set 
 ===================================
 
