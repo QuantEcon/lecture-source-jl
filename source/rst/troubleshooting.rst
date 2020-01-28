@@ -13,7 +13,7 @@ Troubleshooting
 This troubleshooting page is to help ensure you software environment is setup correctly
 to run this lecture set locally on your machine.
 
-Otherwise Fixing Your Local Environment
+Fixing Your Local Environment
 =========================================
 
 To set up a standard desktop environment, you can run the instructions in our `local setup lecture <https://julia.quantecon.org/getting_started_julia/getting_started.html#Desktop-Installation-of-Julia-and-Jupyter>`__. 

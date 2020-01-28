@@ -220,6 +220,13 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 
     ] add InstantiateFromURL
 
+Then, run 
+
+.. code-block:: juliia 
+    :class: no-execute 
+
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.4.0", instantiate = true)
+
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.
 
 After this step, open the downloaded :doc:`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to begin writing code.
