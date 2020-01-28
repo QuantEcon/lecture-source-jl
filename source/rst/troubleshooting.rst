@@ -13,17 +13,6 @@ Troubleshooting
 This troubleshooting page is to help ensure you software environment is setup correctly
 to run this lecture set locally on your machine.
 
-Can't Compile Packages
-==============================
-
-Some package issues displaying Python errors (such as with ``Queryverse``), can be fixed by running 
-
-.. code-block:: none 
-
-    ] build PyCall 
-
-first, and then trying to use the package again. 
-
 Otherwise Fixing Your Local Environment
 =========================================
 
