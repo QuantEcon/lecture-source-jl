@@ -32,7 +32,7 @@ Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running c
 
 3. Install Julia
 ```bash
-wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
+wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.3/julia-1.3.0-linux-x86_64.tar.gz | tar -xzv
 ```
 
 4. Assuming you installed anaconda in your home directory then,
@@ -40,7 +40,7 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux
 - Add something like the following:
 
 ```bash
-export PATH=~/anaconda3/bin:~/julia-1.2.0/bin:$PATH
+export PATH=~/anaconda3/bin:~/julia-1.3.0/bin:$PATH
 ```
 Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 
