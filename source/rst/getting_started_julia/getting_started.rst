@@ -77,6 +77,14 @@ Note: To set up the Julia terminal command on Mac, open a terminal and run ``sud
 
 The full command might look like ``sudo ln -s /Applications/Julia-1.3.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
 
+**Note**: To obtain the full set of packages we use, at this stage you can run the following (see :ref:`the package setup section <package_setup>`.)
+
+.. code-block:: juliia 
+    :class: no-execute 
+
+    using InstantiateFromURL
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.4.0", instantiate = true)
+
 .. _jupyter_installation:
 
 Installing Jupyter
@@ -225,6 +233,7 @@ Then, run
 .. code-block:: juliia 
     :class: no-execute 
 
+    using InstantiateFromURL
     github_project("QuantEcon/quantecon-notebooks-julia", version = "0.4.0", instantiate = true)
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.
