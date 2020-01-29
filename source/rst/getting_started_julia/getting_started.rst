@@ -79,7 +79,7 @@ The full command might look like ``sudo ln -s /Applications/Julia-1.3.app/Conten
 
 **Note**: To obtain the full set of packages we use, at this stage you can run the following (see :ref:`the package setup section <package_setup>`.)
 
-.. code-block:: juliia 
+.. code-block:: julia 
     :class: no-execute 
 
     using InstantiateFromURL
@@ -230,7 +230,7 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 
 Then, run 
 
-.. code-block:: juliia 
+.. code-block:: julia 
     :class: no-execute 
 
     using InstantiateFromURL
