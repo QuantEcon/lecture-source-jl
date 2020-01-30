@@ -12,7 +12,7 @@ This is assuming that you're not changing the `InstantiateFromURL` package. Whic
 
 5. Move them into the `quantecon-notebooks-julia` repo, and push.
 
-6. Issue a new release of the `quantecon-notebooks-julia` repo with the versiion number used above. 
+6. Issue a new release of the `quantecon-notebooks-julia` repo with the version number used above. 
 
 7. Update the `quantecon.syzygy.ca` (`ssh ptty2u@quantecon.syzygy.ca`, contact Ian Allison or Arnav Sood if you need access) by bumping the Dockerfile to use the new version in its InstantiateFromURL call. 
 
