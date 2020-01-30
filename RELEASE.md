@@ -1,5 +1,7 @@
 Here are the steps required to issue a new version of the lectures (e.g., to upgrade to a new Julia version.)
 
+This is assuming that you're not changing the `InstantiateFromURL` package. Which is something you should not do lightly, as you invalidate every user's setup.
+
 1. Bump references in the code (the literalinclude and the `getting_started` lecture RST) using the old version number, to the anticipated new version number.
 
 2. Bump the version number of the `source/rst/Project.TOML` to the new version number.
