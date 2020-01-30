@@ -16,6 +16,8 @@ This is assuming that you're not changing the `InstantiateFromURL` package. Whic
 
 7. Update the `quantecon.syzygy.ca` (`ssh ptty2u@quantecon.syzygy.ca`, contact Ian Allison or Arnav Sood if you need access) by bumping the Dockerfile to use the new version in its InstantiateFromURL call. 
 
+7a. On the syzygy, we do this simply by rebuilding the Docker image. Pull the `quantecon-syzygy` repo down and then run `sudo docker build . -t "quantecon/syzygy` once you're inside.)
+
 8. Update the `quantecon.syzygy.ca` to use a new Julia version number if necessary (involves updating the checksum.)
 
 9. Put out some sort of release announcement on the QuantEcon website and Discourse.
