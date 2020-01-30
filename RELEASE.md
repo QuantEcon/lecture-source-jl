@@ -1,6 +1,6 @@
 Here are the steps required to issue a new version of the lectures (e.g., to upgrade to a new Julia version.)
 
-1. Bump references in the code (the literalinclude and the `getting_started` lecture RST) to the old version number, to the anticipated new version number.
+1. Bump references in the code (the literalinclude and the `getting_started` lecture RST) using the old version number, to the anticipated new version number.
 
 2. Bump the version number of the `source/rst/Project.TOML` to the new version number.
 
