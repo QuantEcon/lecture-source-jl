@@ -4,7 +4,11 @@
 
 This is the source repository for [Quantitative Economics with Julia](https://lectures.quantecon.org/jl).  These instructions required for authorig/editing the textbook and notebooks, and are not necessary for typical usage.
 
-See `LICENSE.md` for licensing and copyright information. 
+See `LICENSE.md` for licensing and copyright information.
+
+## Release
+
+For information on releasing a new lecture version, see [the docs](RELEASE.md).
 
 ## Usage
 
