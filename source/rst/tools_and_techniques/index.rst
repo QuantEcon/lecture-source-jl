@@ -21,8 +21,6 @@ tools and techniques.
 
     linear_algebra
     orth_proj
-    numerical_linear_algebra
-    iterative_methods_sparsity
     lln_clt
     linear_models
     finite_markov
