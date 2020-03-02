@@ -412,6 +412,11 @@ git-tree-sha1 = "85e1ce16aa9b98793df704e17e7a0ceadefe404f"
 uuid = "d4d017d3-3776-5f7e-afef-a10c40355c18"
 version = "1.5.1"
 
+[[ExprTools]]
+git-tree-sha1 = "08c1f74d9ad03acf0ee84c12c9e665ab1a9a6e33"
+uuid = "e2ba6199-217a-4e67-a87a-7c52f15ade04"
+version = "0.1.0"
+
 [[EzXML]]
 deps = ["Printf", "XML2_jll"]
 git-tree-sha1 = "0fa3b52a04a4e210aeb1626def9c90df3ae65268"
@@ -594,6 +599,12 @@ git-tree-sha1 = "098e4d2c533924c921f9f9847274f2ad89e018b8"
 uuid = "83e8ac13-25f8-5344-8a64-a9f2b223428f"
 version = "0.5.0"
 
+[[InstantiateFromURL]]
+deps = ["BinaryProvider", "Dates", "HTTP", "Markdown", "Pkg", "Suppressor", "Test"]
+git-tree-sha1 = "cd0ca7febe310d4e7d509307780c670af7c00f39"
+uuid = "43edad99-fa64-5e4f-9937-1c09a410b73f"
+version = "0.4.0"
+
 [[InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -719,9 +730,9 @@ uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
 [[Libiconv_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "48563fe30f00c9d4a4d61891e71df389bf901142"
+git-tree-sha1 = "802f5b23c846cb4ed568cae0bfb0ce0d2ba1926d"
 uuid = "94ce4f54-9a6c-5748-9c1c-f9c7231a4531"
-version = "1.16.0+0"
+version = "1.16.0+1"
 
 [[LightGraphs]]
 deps = ["ArnoldiMethod", "DataStructures", "Distributed", "Inflate", "LinearAlgebra", "Random", "SharedArrays", "SimpleTraits", "SparseArrays", "Statistics"]
@@ -827,9 +838,10 @@ version = "0.4.3"
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[Mocking]]
-git-tree-sha1 = "bd2623f8b728af988d2afec53d611acb621f3bc4"
+deps = ["ExprTools"]
+git-tree-sha1 = "916b850daad0d46b8c71f65f719c49957e9513ed"
 uuid = "78c3b35d-d492-501b-9361-3d52fe80e533"
-version = "0.7.0"
+version = "0.7.1"
 
 [[MuladdMacro]]
 git-tree-sha1 = "c6190f9a7fc5d9d5915ab29f2134421b12d24a68"
@@ -1219,6 +1231,12 @@ version = "0.12.0"
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
 uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
+[[Suppressor]]
+deps = ["Compat"]
+git-tree-sha1 = "a39342763981e766a72938b59032dc02a2d74da5"
+uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+version = "0.1.1"
+
 [[TableShowUtils]]
 deps = ["DataValues", "Dates", "JSON", "Markdown", "Test"]
 git-tree-sha1 = "14c54e1e96431fb87f0d2f5983f090f1b9d06457"
@@ -1350,9 +1368,9 @@ version = "0.9.1"
 
 [[Zlib_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "5618a43055eb09377edca21d19d0e99bce24a9c3"
+git-tree-sha1 = "fd36a6739e256527287c5444960d0266712cd49e"
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
-version = "1.2.11+7"
+version = "1.2.11+8"
 
 [[Zygote]]
 deps = ["DiffRules", "FFTW", "FillArrays", "ForwardDiff", "IRTools", "InteractiveUtils", "LinearAlgebra", "MacroTools", "NNlib", "NaNMath", "Random", "Requires", "SpecialFunctions", "Statistics", "ZygoteRules"]
