@@ -484,7 +484,7 @@ jupyter_pdf_urlpath = "https://lectures.quantecon.org/jl/"
 ### pdf book options
 
 # make book
-jupyter_pdf_book = True
+jupyter_pdf_book = False
 
 # book title
 jupyter_pdf_book_title = "Quantitative Economics with Julia"
