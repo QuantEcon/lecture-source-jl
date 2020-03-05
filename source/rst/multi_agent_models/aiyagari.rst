@@ -299,7 +299,7 @@ As a first example of what we can do, let's compute and plot an optimal accumula
     # a indices with z fixed in each column
     a_star = reshape([a_vals[results.sigma[s_i]] for s_i in 1:n], a_size, z_size)
 
-    labels = ["z = z_vals[1]", "z = z_vals[2]"]
+    labels = ["z = $(z_vals[1])", "z = $(z_vals[2])"]
     plot(a_vals, a_star, label = labels, lw = 2, alpha = 0.6)
     plot!(a_vals, a_vals, label = "", color = :black, linestyle = :dash)
     plot!(xlabel = "current assets", ylabel = "next period assets", grid = false)
