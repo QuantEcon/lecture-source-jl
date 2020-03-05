@@ -101,7 +101,6 @@
 \renewcommand \caption [2][]{} % removes captions from all figures
 \setlist[itemize]{nosep}
 
-\setmainfont{Latin Modern Roman}
 % using CMU Serif for greek and latin letters in code blocks and Liberation Mono for rest%
 \setmonofont{Liberation Mono}
 \usepackage[Latin,Greek]{ucharclasses}
@@ -254,8 +253,7 @@
         ((*- elif type in ['text/latex']*))
             ((( custom_add_prompt(output.data['text/latex'] | wrap_text(88) | ansi2latex, cell, 'Out', 'outcolor', 'latex') )))
         ((* else -*))
-            ((( " " )))
-            ((( draw_prompt(cell, 'Out', 'outcolor','') )))((( super() )))
+            ((( custom_add_prompt( '' | wrap_text(88)| escape_latex  | ansi2latex, cell, 'Out', 'outcolor', 'plain') )))
         ((*- endif -*))
     ((*- endfor -*))
 ((* endblock execute_result *))
