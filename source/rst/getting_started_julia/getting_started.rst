@@ -73,9 +73,17 @@ This adds packages for
 
 * The ``InstantiateFromURL`` which is a tool written by the QE team to manage package dependencies for the lectures.
 
-Note: To set up the Julia terminal command on Mac, open a terminal and run ``go to a terminal and run ``sudo ln -s <where_julia_app_is>/Contents/Resources/julia/bin/julia /usr/local/bin/julia``.
+Note: To set up the Julia terminal command on Mac, open a terminal and run ``sudo ln -s <where_julia_app_is>/Contents/Resources/julia/bin/julia /usr/local/bin/julia``.
 
-The full command might look like ``sudo ln -s /Applications/Julia-1.2.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
+The full command might look like ``sudo ln -s /Applications/Julia-1.3.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
+
+**Note**: To obtain the full set of packages we use, at this stage you can run the following (see :ref:`the package setup section <package_setup>`.)
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    using InstantiateFromURL
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.5.0", instantiate = true)
 
 .. _jupyter_installation:
 
@@ -219,6 +227,14 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
     :class: hide-output
 
     ] add InstantiateFromURL
+
+Then, run 
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    using InstantiateFromURL
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.5.0", instantiate = true)
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.
 
