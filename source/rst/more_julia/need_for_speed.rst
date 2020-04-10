@@ -712,7 +712,7 @@ Let's experiment, using, respectively,
 
 * parametric typing
 
-As we'll see, the last of options these gives us the best performance, while still maintaining significant flexibility.
+As we'll see, the last of these options gives us the best performance, while still maintaining significant flexibility.
 
 Here's the untyped case
 
