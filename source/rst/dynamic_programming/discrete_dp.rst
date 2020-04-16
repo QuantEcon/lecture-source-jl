@@ -740,7 +740,7 @@ Setup
 -----
 
 Details of the model can be found in `the
-lecture <http://quant-econ.net/jl/optgrowth.html>`__. As in the lecture,
+lecture <https://julia.quantecon.org/dynamic_programming/optgrowth.html>`__. As in the lecture,
 we let :math:`f(k) = k^{\alpha}` with :math:`\alpha = 0.65`,
 :math:`u(c) = \log c`, and :math:`\beta = 0.95`.
 
