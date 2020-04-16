@@ -152,7 +152,7 @@ First-order conditions for this problem are
    \begin{aligned}
    \frac{\partial L}{\partial q_{1t}} & = a_0 - 2 a_1 q_{1t} - a_1 q_{2t} + \lambda_t - \beta^{-1}
                 \lambda_{t-1} = 0 , \quad t \geq 1 \cr
-                \frac{\partial L}{\partial v_{1t}} & = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0  
+                \frac{\partial L}{\partial v_{1t}} & = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0
     \end{aligned}
 
 These first-order conditions and the constraint :math:`q_{1t+1} = q_{1t} + v_{1t}` can be rearranged to take the form
@@ -246,7 +246,7 @@ and formulate the following Lagrangian for the Stackelberg leader firm
     \begin{aligned}
     \tilde L & = \sum_{t=0}^\infty  \beta^t\{ (a_0 -  a_1 (q_{1t} + q_{2t}) ) q_{2t} - \gamma (q_{2t+1} - q_{2t})^2 \} \cr
      &  + \sum_{t=0}^\infty \beta^t \theta_t \{ \delta_1 q_{1t} -  c_0 \delta_2^{-1} \beta^{-1}  \frac{1}{1 -\delta_2^{-1}} +  c_2 \delta_2^{-1} \beta^{-1}
-       \sum_{j=0}^\infty \delta_2^{-j} q_{2t+j+1} - q_{1t+1} 
+       \sum_{j=0}^\infty \delta_2^{-j} q_{2t+j+1} - q_{1t+1}
     \end{aligned}
 
 subject to initial conditions for :math:`q_{1t}, q_{2t}` at :math:`t=0`.
@@ -275,7 +275,7 @@ problems of which our duopoly model is an instance.
 
 We use the optimal linear regulator (a.k.a. the linear-quadratic dynamic
 programming problem described in `LQ Dynamic Programming
-problems <https://lectures.quantecon.org/py/lqcontrol.html>`__) to
+problems <https://python-intro.quantecon.org/lqcontrol.html>`__) to
 represent a Stackelberg leader's problem recursively.
 
 Let :math:`z_t` be an :math:`n_z \times 1` vector of **natural
@@ -479,7 +479,7 @@ Substituting :math:`v(y) = - y'P y` into Bellman equation :eq:`bellman-stack` gi
 
    -y' P y = {\rm max}_{  u, y^*} \left\{ -  y' R y -   u'Q     u - \beta y^{* \prime} P y^* \right\}
 
-which as in lecture `linear regulator <https://lectures.quantecon.org/py/lqcontrol.html>`__ gives
+which as in lecture `linear regulator <https://python-intro.quantecon.org/lqcontrol.html>`__ gives
 rise to the algebraic matrix Riccati equation
 
 .. math::
@@ -561,7 +561,7 @@ First-order conditions for this problem are
    \begin{aligned}
    \frac{\partial L}{\partial q_{1t}} & = a_0 - 2 a_1 q_{1t} - a_1 q_{2t} + \lambda_t - \beta^{-1}
                 \lambda_{t-1} = 0 , \quad t \geq 1 \cr
-                \frac{\partial L}{\partial v_{1t}} & = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0  
+                \frac{\partial L}{\partial v_{1t}} & = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0
     \end{aligned}
 
 These first-order order conditions and the constraint :math:`q_{1t+1} =

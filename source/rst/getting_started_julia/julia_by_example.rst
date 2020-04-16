@@ -94,7 +94,7 @@ There are three ways to install packages and versions (where the first two metho
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages.
 
-This code will download and install project files from GitHub, `QuantEcon/QuantEconLecturePackages <https://github.com/QuantEcon/QuantEconLecturePackages/>`_.
+This code will download and install project files from the `lecture repo <https://github.com/QuantEcon/quantecon-notebooks-julia/>`_.
 
 We will discuss it more in :ref:`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code.
 
