@@ -235,7 +235,7 @@ If you aren't able to install ``apm`` in your PATH, you can do the above by runn
 
 Then navigating to a folder like ``C:\Users\USERNAME\AppData\Local\atom\bin`` (which will contain the ``apm`` tool), and running:
 
-.. code-bock:: none 
+.. code-block:: none 
 
     ./apm uninstall ink julia-client
     ./apm install ink julia-client
