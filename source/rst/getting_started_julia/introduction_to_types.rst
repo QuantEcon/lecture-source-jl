@@ -158,7 +158,7 @@ Let's discuss how types are organized.
 
 Abstract vs Concrete Types
 ---------------------------
-(See `abstract types documentation  <https://docs.julialang.org/en/v1/manual/types/#Abstract-Types-1>`_)
+(See `abstract types documentation  <https://docs.julialang.org/en/v1/manual/types/#man-abstract-types-1>`_)
 
 Up to this point, most of the types we have worked with (e.g., ``Float64, Int64``) are examples of **concrete types**.
 
