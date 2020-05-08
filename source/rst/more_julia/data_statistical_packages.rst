@@ -31,7 +31,7 @@ Setup
 
     using LinearAlgebra, Statistics
     using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
-    using DataVoyager, GLM
+    using GLM
 
 DataFrames
 ========================
@@ -210,16 +210,6 @@ While it is possible to just use the ``Plots.jl`` library, there may be better o
         color=:Species
     )
 
-Another useful tool for exploring tabular data is `DataVoyager.jl <https://github.com/queryverse/DataVoyager.jl>`_.
-
-.. code-block:: julia
-    :class: no-execute
-
-    using DataVoyager
-    iris |> Voyager()
-
-The ``Voyager()`` function creates a separate window for analysis.
-
 Statistics and Econometrics
 =============================
 
@@ -288,17 +278,4 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
                                 weights = Pop, vcov = cluster(StateCategorical)))
     regtable(fixedeffectresults)
 
-To explore data use the interactive DataVoyager and VegaLite.
 
-.. code-block:: julia
-    
-    cigar = dataset("plm", "Cigar")
-    # cigar |> Voyager()
-
-    cigar |> @vlplot(
-        :point,
-        x=:Price,
-        y=:Sales,
-        color=:Year,
-        size=:NDI
-    )
