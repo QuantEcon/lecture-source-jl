@@ -508,7 +508,7 @@ The following snippet will give you the idea
 
 Comprehensions
 ------------------
-(`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_)
+(`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions-1>`_)
 
 Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. from iterables.
 
