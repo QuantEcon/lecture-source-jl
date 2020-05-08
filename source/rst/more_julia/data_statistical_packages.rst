@@ -199,6 +199,7 @@ To give an example directly from the source of the LINQ inspired `Query.jl <http
 While it is possible to just use the ``Plots.jl`` library, there may be better options for displaying tabular data -- such as `VegaLite.jl <https://github.com/queryverse/VegaLite.jl>`_.
 
 .. code-block:: julia
+    :class: hide-output
 
     using RDatasets, VegaLite
     iris = dataset("datasets", "iris")
@@ -209,6 +210,11 @@ While it is possible to just use the ``Plots.jl`` library, there may be better o
         y=:PetalWidth,
         color=:Species
     )
+
+Which produces figures like
+
+.. figure:: /_static/figures/VegaLite.png
+   :width: 100%
 
 Statistics and Econometrics
 =============================
