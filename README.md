@@ -2,7 +2,7 @@
 
 ## About this Repository 
 
-This is the source repository for [Quantitative Economics with Julia](https://lectures.quantecon.org/jl).  These instructions required for authorig/editing the textbook and notebooks, and are not necessary for typical usage.
+This is the source repository for [Quantitative Economics with Julia](https://julia.quantecon.org).  These instructions required for authoring/editing the textbook and notebooks, and are not necessary for typical usage.
 
 See `LICENSE.md` for licensing and copyright information.
 
@@ -12,13 +12,29 @@ For information on releasing a new lecture version, see [the docs](RELEASE.md).
 
 ## Usage
 
+### WSL if on Windows
+If on Windows, use WSL.
+
+To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or:
+1. Run `Powershell` as an administrator (i.e. right-click on the icon and choose `Run as Administrator`)
+2. Run `Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux` and a reboot may be required
+    - Or head to **Settings** -> **Update & Security** -> **For developers** and turn on **Developer mode**
+    - Then head to **Control Panel** -> **Settings** -> **Turn Windows features on and off**, and make sure **Windows Subsystem for Linux** is ticked
+3. Download a distribution such as [Ubuntu 18.04](https://aka.ms/wsl-ubuntu-1804) to your desktop
+    - Or choose from other [distros](https://docs.microsoft.com/en-us/windows/wsl/install-manual#downloading-distros)
+4. Double-click on the downloaded `.appx` file to install follow instructions
+    - Create a unix username and password
+    - No need for these to match your windows login, but it may be convenient (especailly the login)
+
+Hint on copy-paste:  One way to paste into a Windows terminal (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes)
+
+When running the ubuntu shell run it in `Powershell` as an administrator
+
 ### Prerequisities
 
-* The latest `quantecon/jupinx` Docker image (see the **Containerization** section), or: 
+1. Start within your home directory (using WSL if on Windows, make sure to  `run as administrator`).
 
-0. Start within your home directory, using [WSL](https://github.com/ubcecon/cluster_tools/blob/master/WSL.md#install-wsl-from-ubuntu-and-conda) if on Windows. If you're running from the shell, make sure you `run as administrator`.
-
-1. Go to your home directory and make sure key dependencies are installed
+2. Go to your home directory and make sure key dependencies are installed
 ```bash
 cd
 sudo apt update
@@ -28,15 +44,25 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
 ```
 
 2. Install Conda
-```bash
-wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
-bash Anaconda3-2019.07-Linux-x86_64.sh
-```
-Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running conda init?"
 
-3. Install Julia
+   -  In the Ubuntu terminal, first install python/etc. tools
+   ```bash
+   wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
+   bash Anaconda3-2020.02-Linux-x86_64.sh
+   ```
+   -  Create a directory `.conda` by running `mkdir ~/.conda` if the warning "Unable to register the environment" shows up
+3. The installation will take time. You should:
+   - accept default paths
+   - accept licensing terms
+   - *IMPORTANT* Manually choose `yes` to have it do the `conda init`
+   - Delete the installation file
+     ```bash
+     rm Anaconda3-2020.02-Linux-x86_64.sh
+     ```
+
+4. Install Julia
 ```bash
-wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.3/julia-1.3.0-linux-x86_64.tar.gz | tar -xzv
+wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux-x86_64.tar.gz | tar -xzv
 ```
 
 4. Assuming you installed anaconda in your home directory then,
@@ -44,7 +70,7 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.3/julia-1.3.0-linux
 - Add something like the following:
 
 ```bash
-export PATH=~/anaconda3/bin:~/julia-1.3.0/bin:$PATH
+export PATH=~/anaconda3/bin:~/julia-1.4.1/bin:$PATH
 ```
 Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 
@@ -59,14 +85,13 @@ pip install sphinxcontrib.bibtex
 conda install dask distributed
 ```
 
-
 6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
 
 ```bash
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
 
-It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
+Precompile the packages used by the lectures **before** building. To do this: 
 
 1. (Optional) Delete your `~/.julia` folder to start fresh.
 
@@ -74,28 +99,6 @@ It's recommended that you install and precompile the packages used by the lectur
 
 ```julia
 ] add InstantiateFromURL IJulia; precompile
-```
-
-#### (Optional, for Advanced Users) 
-
-To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl)
-```bash
-cd lecture-source-jl/util
-```
-Then
-```bash 
-julia packagecompile.jl
-```
-Finally, go to the `source/rst` to continue
-```bash
-cd ../source/rst
-```
-
-**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia with step 3. to get back to the old sysimg. 
-
-Finally, go to the `source/rst` to continue
-```bash
-cd ../source/rst
 ```
 
 3. Start a new REPL
@@ -110,7 +113,7 @@ This will take a long time to run.  You can safely ignore build errors for `Elec
  
 **You may see a lot of warnings** during this step if you chose to use PackageCompiler acceleration above. They can be safely ignored.
  
- 
+
 ### Building
 
 There are a few different targets, notably: 
@@ -149,23 +152,3 @@ To open the WSL in VS Code
 Specifying parallel execution (i.e., `make coverage parallel=8`) will use 8 cores instead of 1. This leads to a notable speedup in build times. (There are some [`zmq` errors](https://github.com/QuantEcon/sphinxcontrib-jupyter/issues/261) that sporadically pop up at very high core counts, i.e. above 8.)
 
 You can build only a few notebooks by `jupinx -w --files source/rst/<file>.rst`.
-
-### Containerized Build
-
-Alternately, you can use the `quantecon/jupinx` docker image, which has all these dependencies baked in. 
-
-The advantage of a containerized setup is that you can use a siloed, "pre-baked" setup environment to build the lectures. 
-
-0. Install [Docker](https://www.docker.com/).
-
-1. Run `docker pull quantecon/jupinx`. 
-
-2. In a terminal, cd to this repository, and run `docker run --name quantecon-docker -it -d -v "$(pwd)":/home/jovyan/work quantecon/jupinx` from inside the directory (Linux/macOS). It should spit out a container ID string then exit. Try `${PWD}` on Windows, but your mileage may vary. 
-
-     :warning: In order to guarantee reproducibility, you should either be mounting a fresh clone of this repository, or sanitize things by running `git clean -xdff` (remove uncommitted/untracked files) and `git reset --hard` (reset to the last git state.) Otherwise, local variance in the mounted files may impact your results.
-
-3. In the same terminal (i.e., not inside the container), run `docker exec quantecon-docker bash -c "cd work && make jupyter".` Change it to `jupyter-tests` if you want it to output/execute the test blocks. 
-
-4. Grab a coffee. The Julia side executes in serial, so it takes about an hour (modulo your processor speed.)
-
-5. After it's done, in a terminal run `docker stop quantecon-docker` and `docker rm quantecon-docker`. This will garbage-collect the container, and free the name `quantecon-docker` for your next run. If you're having trouble, run `docker rm -f quantecon-docker` to force removal. 

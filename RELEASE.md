@@ -1,23 +1,31 @@
-Here are the steps required to issue a new version of the lectures (e.g., to upgrade to a new Julia version.)
 
-This is assuming that you're not changing the `InstantiateFromURL` package. Which is something you should not do lightly, as you invalidate every user's setup.
+## Website
 
-1. Bump references in the code (the literalinclude and the `getting_started` lecture RST) using the old version number, to the anticipated new version number.
+1. Run a preview build using `make julia` using `make julia-preview` in the AWS Admin repo. If it looks good, go live on the HTML with `make julia-live`.  Arnav: anything else you can add here or does this require logging into the AWS server?  Wasn't there some way to do it in slack or something like that?
 
-2. Bump the version number of the `source/rst/Project.TOML` to the new version number.
+How to initiate a full coverage test, etc? 
 
-3. Run a preview build using `make julia` using `make julia-preview` in the AWS Admin repo. If it looks good, go live on the HTML with `make julia-live`.
+## Pushing Notebooks
 
-4. Download the executed notebooks using `scp -r ubuntu@build.quantecon.org:~/repos/lecture-source-jl/_build/website/jupyter/executed ~/some/local/path`.
+1. Download the executed notebooks using `scp -r ubuntu@build.quantecon.org:~/repos/lecture-source-jl/_build/website/jupyter/executed ~/some/local/path`.
+2. Move them into the `quantecon-notebooks-julia` repo, and push.
+3. Run the colab python script?  Describe it 
+4. Move them into the `quantecon-notebooks-julia-colab` repo, and push.
 
-5. Move them into the `quantecon-notebooks-julia` repo, and push.
+## Full Package Manifest Update
 
-6. Issue a new release of the `quantecon-notebooks-julia` repo with the version number used above. 
+Hints on how to Update and Add Packages
+- The basic process to updating packages.  Just `]up`, run coverage (locally?) and then update?  Or do you always run on the build server?
 
-7. Update the `quantecon.syzygy.ca` (`ssh ptty2u@quantecon.syzygy.ca`, contact Ian Allison or Arnav Sood if you need access) by bumping the Dockerfile to use the new version in its InstantiateFromURL call. 
+Then
+- Pick version number to tag it at?
+- Modify source/_static/includes/deps_generic.jl to reflect the version number
+- Modify source/rst/getting_started_julia/getting_started.rst  as well.
+- Do we need to do anything on the build server side or is that stuff automatic?
+- Issue a new release of the `quantecon-notebooks-julia` repo with the version number used above. 
 
-7a. On the syzygy, we do this simply by rebuilding the Docker image. Pull the `quantecon-syzygy` repo down and then run `sudo docker build . -t "quantecon/syzygy` once you're inside.)
-
-8. Update the `quantecon.syzygy.ca` to use a new Julia version number if necessary (involves updating the checksum.)
-
-9. Put out some sort of release announcement on the QuantEcon website and Discourse.
+## Upgrading to a new Julia Version
+- Where do we change the kernelspec?
+- If we have colab, point out where to modify the colab installation code
+- Do we need to do anything on the build server side or is that stuff automatic?
+- Put out some sort of release announcement on the QuantEcon website and Discourse.
