@@ -406,7 +406,7 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
         T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
         v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol,
-                            m = 2).zero # (5)
+                            m = 1).zero # (5)
         return (1 - β) * (c + β * E*v_star) # (3)
     end
 
