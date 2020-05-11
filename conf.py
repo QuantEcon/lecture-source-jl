@@ -388,9 +388,9 @@ jupyter_default_lang = "julia"
 jupyter_kernels = {
     "julia": {
         "kernelspec": {
-            "display_name": "Julia 1.3.0",
+            "display_name": "Julia 1.4.1",
             "language": "julia",
-            "name": "julia-1.3"
+            "name": "julia-1.4"
             },
         "file_extension": ".jl"
     }
