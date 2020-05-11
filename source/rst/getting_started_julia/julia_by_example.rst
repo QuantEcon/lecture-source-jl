@@ -813,7 +813,7 @@ Finally, to demonstrate the importance of composing different libraries, use a `
     using NLsolve, StaticArrays
     p = @SVector [1.0, 2.0, 0.1]
     β = 0.9
-    iv = @SVector  [0.8, 2.0, 51.0]
+    iv = [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
     sol = fixedpoint(v -> p .+ β * v, iv)
