@@ -795,7 +795,7 @@ function of the unemployment compensation rate
     @testset begin
         @test tax_vec[40] ≈ 55.78515130142509 atol = 1e-7
         @test empl_vec[50] ≈ 0.2787840354254594 atol = 1e-7
-        @test welfare_vec[17] ≈ 49.04709584618754 atol = 1e-6
+        @test welfare_vec[17] ≈ 49.04659995995766 atol = 1e-6
     end
 
 Welfare first increases and then decreases as unemployment benefits rise.
