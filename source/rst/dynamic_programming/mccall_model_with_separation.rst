@@ -267,7 +267,7 @@ Let's implement this iterative process
 
         # value function iteration
         x_iv = [V_iv; U_iv] # initial x val
-        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol).zero
+        xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol, m = 0).zero
         V = xstar[1:end-1]
         U = xstar[end]
 
