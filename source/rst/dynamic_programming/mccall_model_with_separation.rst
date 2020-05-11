@@ -321,8 +321,8 @@ We'll use the default parameterizations found in the code above.
     :class: test
 
     @testset "First Plot Tests" begin
-        @test U ≈ 45.62374663606431 # U value
-        @test V[3] ≈ 45.58117143145003 # Arbitrary V
+        @test U ≈ 45.62325326780855 # U value
+        @test V[3] ≈ 45.58067806319422 # Arbitrary V
     end
 
 
