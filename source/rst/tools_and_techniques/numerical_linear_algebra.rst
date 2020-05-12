@@ -102,9 +102,9 @@ You will sometimes need to think through how `combining algorithms  <https://en.
 #. a repetition of a :math:`O(N)` operation that itself uses an :math:`O(N)` one, you take the product.  The complexity becomes :math:`O(N^2)`
 
 
-With this, we have an important word of caution: dense matrix-multiplication is an `expensive operation <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Matrix_algebra>`_ for unstructured matrices, and the basic version is :math:`O(N^3)`.
+With this, we have an important word of caution: dense matrix-multiplication is an `expensive operation <https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Matrix_algebra>`_ for unstructured matrices.  The naive version is :math:`O(N^3)` while the fastest known algorithms (e.g Coppersmith-Winograd) are roughly :math:`O(N^{2.37})`.  In practice, it is reasonable to crudely approximate with :math:`O(N^3)` when doing an analysis, in part since the higher constant factors of the better scaling algorithms dominate the better complexity until matrices become very large.
 
-Of course, modern libraries use highly tuned and numerically stable `algorithms <https://en.wikipedia.org/wiki/Matrix_multiplication_algorithm>`_ to multiply matrices and exploit the computer architecture, memory cache, etc., but this simply lowers the constant of proportionality and they remain :math:`O(N^3)`.
+Of course, modern libraries use highly tuned and numerically stable `algorithms <https://en.wikipedia.org/wiki/Matrix_multiplication_algorithm>`_ to multiply matrices and exploit the computer architecture, memory cache, etc., but this simply lowers the constant of proportionality and they remain roughly approximated by  :math:`O(N^3)`.
 
 A consequence is that, since many algorithms require matrix-matrix multiplication, it is often not possible to go below that order without further matrix structure.
 
@@ -195,7 +195,7 @@ Matrix Multiplication
 
 While we write matrix multiplications in our algebra with abandon, in practice the operation scales very poorly without any matrix structure.
 
-Matrix multiplication is so important to modern computers that the constant of scaling is small using proper packages, but the order is still :math:`O(N^3)` in practice. 
+Matrix multiplication is so important to modern computers that the constant of scaling is small using proper packages, but the order is still roughly :math:`O(N^3)` in practice (although smaller in theory, as discussed above). 
 
 Sparse matrix multiplication, on the other hand, is :math:`O(N M_A M_B)` where :math:`M_A` are the number of nonzeros per row of :math:`A` and :math:`B` are the number of non-zeros per column of :math:`B`.
 
@@ -947,7 +947,7 @@ Numerical analysis sometimes to refer to the lowest level of code for basic oper
 
 That sort of code is difficult to write, and performance depends on the characteristics of the underlying hardware such as the `instruction set <https://en.wikipedia.org/wiki/Instruction_set_architecture>`_ available on the particular CPU, the size of the `CPU cache <https://en.wikipedia.org/wiki/CPU_cache>`_, and the layout of arrays in memory.
 
-Typically these operations are written in a `BLAS <https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms>`_ library, organized into different levels.  The levels roughly correspond to the computational order of the operations:  BLAS Level 1 are :math:`O(N)` operations such as linear products, Level 2 are :math:`O(N^2)` operations such as matrix-vector products, and Level 3 are :math:`O(N^3)` such as general matrix-matrix products.
+Typically these operations are written in a `BLAS <https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms>`_ library, organized into different levels.  The levels roughly correspond to the computational order of the operations:  BLAS Level 1 are :math:`O(N)` operations such as linear products, Level 2 are :math:`O(N^2)` operations such as matrix-vector products, and Level 3 are roughly :math:`O(N^3)` such as general matrix-matrix products.
 
 An example of a BLAS library is `OpenBLAS <https://github.com/xianyi/OpenBLAS>`_ used by default in Julia, or  the `Intel MKL <https://en.wikipedia.org/wiki/Math_Kernel_Library>`_ used in Matlab (and Julia if the ``MKL.jl`` package is installed).
 
@@ -1100,7 +1100,7 @@ Alternatively, you can take a row :math:`A_{i,:}` and column :math:`B_{:, j}` an
 
 Note that the inner product in a discrete space is simply a sum, and has the same complexity as the sum (i.e. :math:`O(N)` operations).
 
-For a dense matrix without any structure, this also makes it clear why the complexity is :math:`O(N^3)`: you need to evaluate it for :math:`N^2` elements in the matrix and do an :math:`O(N)` operation each time.
+For a dense matrix without any structure using a naive multiplication algorithm, this also makes it clear why the complexity is :math:`O(N^3)`: you need to evaluate it for :math:`N^2` elements in the matrix and do an :math:`O(N)` operation each time.
 
 For this exercise, implement matrix multiplication yourself and compare performance in a few permutations.  
 
