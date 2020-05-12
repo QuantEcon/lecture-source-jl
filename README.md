@@ -12,14 +12,13 @@ For information on releasing a new lecture version, see [the docs](RELEASE.md).
 
 ## Usage
 
-### WSL if on Windows
-If on Windows, use WSL 2.
+### WSL and VSCode if on Windows
+- To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+  - For the installation, run it in `Powershell` as an administrator
+  - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
+- Install [VSCode](https://code.visualstudio.com/) and remote WSL support on windows
+- Consider installing the shiny new [Windows Terminal](https://github.com/microsoft/terminal)
 
-To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and then https://docs.microsoft.com/en-us/windows/wsl/wsl2-install to install WSL2.
-
-Hint on copy-paste:  One way to paste into a Windows terminal (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes)
-
-When running the ubuntu shell run it in `Powershell` as an administrator
 
 ### Prerequisities
 
@@ -29,9 +28,11 @@ When running the ubuntu shell run it in `Powershell` as an administrator
 ```bash
 cd
 sudo apt update
+apt-get upgrade
 sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
+sudo pip install --upgrade --force-reinstall pyzmq
 ```
 
 2. Install Conda
@@ -57,7 +58,9 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux
 ```
 
 4. Assuming you installed anaconda in your home directory then,
-- Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
+- Within your home directory modify the `.bashrc`
+  - Use VSCode Remote on Windows or
+  - `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
 - Add something like the following:
 
 ```bash
@@ -71,9 +74,9 @@ Then, from your terminal, run `source .bashrc` to load the changes in the curren
 
 ```bash
 conda upgrade conda
-pip install jupinx
-pip install sphinxcontrib.bibtex
 conda install dask distributed
+pip install jupinx sphinxcontrib.bibtex jupinx guzzle_sphinx_theme
+
 ```
 
 6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
@@ -101,9 +104,6 @@ In the REPL, run
 ] activate .; instantiate; precompile
 ```
 This will take a long time to run.  You can safely ignore build errors for `Electron`
- 
-**You may see a lot of warnings** during this step if you chose to use PackageCompiler acceleration above. They can be safely ignored.
- 
 
 ### Building
 
