@@ -18,11 +18,27 @@ For information on releasing a new lecture version, see [the docs](RELEASE.md).
   - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
 - Install [VSCode](https://code.visualstudio.com/) and remote WSL support on windows
 - Consider installing the shiny new [Windows Terminal](https://github.com/microsoft/terminal)
+See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
 
+In a windows terminal run
+```
+ git config --global credential.helper wincred
+```
+In a WSL terminal,
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
+(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
+
+To open the WSL in VS Code
+- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
+- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 
 ### Prerequisities
 
-1. Start within your home directory (using WSL if on Windows, make sure to  `run as administrator`).
+1. Start within your home directory
 
 2. Go to your home directory and make sure key dependencies are installed
 ```bash
@@ -117,26 +133,7 @@ There are a few different targets, notably:
 
 * `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
 
-### Editing with WSL and VS Code
-See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
-
-In a windows terminal run
-```
- git config --global credential.helper wincred
-```
-In a WSL terminal,
-```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
-```
-(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
-
-To open the WSL in VS Code
-- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
-- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
-- Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
-- Consider adding the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for viewing the html from `_build/website/jupyter_html` files
+In vscode, the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) allows you to watch an output HTML file.  Install the extension (in WSL if required) and after generating the HTML, right click on it and say "Open with Live Server"
 
 ### Options and Special Cases
 
