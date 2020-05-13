@@ -96,7 +96,7 @@ First, lets define and explore condition number :math:`\kappa`
 where you can use the Cauchy–Schwarz inequality to show that :math:`\kappa(A) \geq 1`.  While the condition number can be calculated with any norm, but we will focus on the 2-norm.
 
 First, a warning on calculations: calculating the condition number for a matrix can be an expensive operation (as would calculating a determinant)
-and should be thought of as roughly equivalent to doing an eigendecomposition.  So use it for detective work judiciously.  
+and should be thought of as roughly equivalent to doing an eigendecomposition.  So use it for detective work judiciously.
 
 Lets look at the condition number of a few matrices using the ``cond`` function (which allows a choice of the norm, but we stick with the default 2-norm).
 
@@ -137,7 +137,7 @@ However, be careful since the determinant has a scale, while the condition numbe
     @show cond(1000 * A);
 
 In that case, the determinant of ``A`` is 1, while the condition number is unchanged.  This example also provides some
-intuition that ill-conditioned matrices typically occur when a matrix has radically different scales (e.g. contains both ``1`` and ``1E-6``, or ``1000`` and ``1E-3``).  This can occur frequently with both function approximation and linear-least squares. 
+intuition that ill-conditioned matrices typically occur when a matrix has radically different scales (e.g. contains both ``1`` and ``1E-6``, or ``1000`` and ``1E-3``).  This can occur frequently with both function approximation and linear-least squares.
 
 Condition Numbers and Matrix Operations
 ----------------------------------------
@@ -157,7 +157,7 @@ even more ill-conditioned.
 
 This comes up frequently when calculating the product of a matrix and its transpose (e.g. forming the covariance matrix).  A classic example is the `Läuchli matrix <https://link.springer.com/article/10.1007%2FBF01386022>`_.
 
-.. code-block:: julia 
+.. code-block:: julia
 
     lauchli(N, ϵ) = [ones(N)'; ϵ * I(N)]'
     ϵ = 1E-8
@@ -178,7 +178,7 @@ requires calculations of the eigenvalues of the covariance matrix
 
 .. code-block:: julia
 
-    sqrt.(eigen(L*L').values) |> sort
+    sort(sqrt.(Complex.(eigen(L*L').values)), lt = (x,y) -> abs(x) < abs(y))
 
 Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.
 
@@ -216,7 +216,7 @@ If we were to use the simplest, and most obvious polynomial basis, then the calc
 
 .. math::
 
-    P(x) = \sum_{i=0}^N c_i x^i 
+    P(x) = \sum_{i=0}^N c_i x^i
 
 To solve for the coefficients, we notice that this is a simple system of equations
 
@@ -228,13 +228,13 @@ To solve for the coefficients, we notice that this is a simple system of equatio
         \,y_N = c_0 + c_1 x_N + \ldots c_N x_N^N
     \end{array}
 
-Or, stacking as matrices and vectors :math:`c = \begin{bmatrix} c_0 & \ldots & c_N\end{bmatrix}, y = \begin{bmatrix} y_0 & \ldots & y_N\end{bmatrix}` and 
+Or, stacking as matrices and vectors :math:`c = \begin{bmatrix} c_0 & \ldots & c_N\end{bmatrix}, y = \begin{bmatrix} y_0 & \ldots & y_N\end{bmatrix}` and
 
 .. math::
 
     A = \begin{bmatrix} 1 & x_0 & x_0^2 & \ldots &x_0^N\\
                         \vdots & \vdots & \vdots & \vdots & \vdots \\
-                        1 & x_N & x_N^2 & \ldots & x_N^N 
+                        1 & x_N & x_N^2 & \ldots & x_N^N
         \end{bmatrix}
 
 We can then calculate the interpolating coefficients as the solution to
@@ -319,7 +319,7 @@ But an error of ``1E-10`` at the interpolating nodes themselves can be an issue 
 then the error will become non-trivial eventually - even without taking the inverse.
 
 The heart of the issue is that the monomial basis leads to a `Vandermonde matrix <https://en.wikipedia.org/wiki/Vandermonde_matrix>`_ which
-is especially ill-conditioned.  
+is especially ill-conditioned.
 
 Aside on Runge's Phenomena
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -347,11 +347,11 @@ First, interpolation with :math:`N = 5` and avoid taking the inverse.  In that c
     x_display = range(-1, 1, length = N_display)
     y_display = g.(x_display)
 
-    # interpolation 
+    # interpolation
     N = 5
     x = range(-1.0, 1.0, length = N+1)
     y = g.(x)
-    A_5 = [x_i^n for x_i in x, n in 0:N] 
+    A_5 = [x_i^n for x_i in x, n in 0:N]
     c_5 = A_5 \ y
 
     # use the coefficients to evaluate on x_display grid
@@ -390,7 +390,7 @@ Using an Orthogonal Polynomial Basis
 
 We can minimize the numerical issues of an ill-conditioned basis matrix by choosing a different basis for the polynomials.
 
-For example, `Chebyshev polynomials <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_ form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error 
+For example, `Chebyshev polynomials <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_ form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error
 
 .. code-block:: julia
 
@@ -421,7 +421,7 @@ However, sometimes you can't avoid ill-conditioned matrices. This is especially 
 Stationary Iterative Algorithms for Linear Systems
 ==================================================
 
-As before, consider solving the equation 
+As before, consider solving the equation
 
 .. math::
 
@@ -433,7 +433,7 @@ focus on cases where :math:`A` is both massive (e.g. potentially millions of equ
 While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
 of PDEs, and when working with big data.
 
-The methods in the previous lectures (e.g. factorization and approaches similar to Gaussian elimination) are called direct methods, and able 
+The methods in the previous lectures (e.g. factorization and approaches similar to Gaussian elimination) are called direct methods, and able
 in theory to converge to the exact solution in a finite number of steps while directly working with the matrix in memory.
 
 Instead, iterative solutions start with a guess on a solution and iterate until convergence.  The benefit will be that
@@ -453,7 +453,7 @@ discount rate :math:`\rho`, and the infinitesimal generator of the markov chain 
 
 .. math::
 
-    \rho v = r + Q v 
+    \rho v = r + Q v
 
 With the sizes and types of matrices here, iterative methods are inappropriate in practice, but it will help us understand
 the characteristics of convergence, and how they relate to matrix conditioning.
@@ -461,7 +461,7 @@ the characteristics of convergence, and how they relate to matrix conditioning.
 Stationary Methods
 --------------------
 
-First, we will solve with a direct methods, which will give the solution to machine precision.  
+First, we will solve with a direct methods, which will give the solution to machine precision.
 
 .. code:: julia
 
@@ -498,13 +498,13 @@ Jacobi Iteration
 ----------------
 
 For matrices that are **strictly diagonally dominant**, you can prove that a simple decomposition and iteration procedure
-will converge. 
+will converge.
 
 To solve a system :math:`A x = b`, split the matrix :math:`A` into its diagonal and off-diagonals.  That is,
 
-.. math:: 
+.. math::
 
-    A = D + R 
+    A = D + R
 
 where
 
@@ -563,13 +563,13 @@ Other Stationary Methods
 ------------------------
 
 In practice there are many better methods than Jacobi iteration, for example `Gauss-Siedel <https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method>`_. which
-splits the matrix :math:`A = L + U` into an lower triangular matrix :math:`L` and an upper triangular :math:`U` without the diagonal. 
+splits the matrix :math:`A = L + U` into an lower triangular matrix :math:`L` and an upper triangular :math:`U` without the diagonal.
 
 The iteration becomes
 
 .. math::
 
-    L x^{k+1} = b - U x^k 
+    L x^{k+1} = b - U x^k
 
 In that case, since the :math:`L` matrix is triangular, the system can be solved in :math:`O(N^2)` operations after :math:`b - U x^k` is formed
 
@@ -600,9 +600,9 @@ In that case, :math:`D + \omega L` is a triangular matrix, and hence the linear 
 
 The accuracy is now ``1E-7``.  If you change the parameter to :math:`\omega = 1.2`, the accuracy further increases to ``1E-9``.
 
-This technique is a common with iterative methods:  frequently adding a dampening or relaxation parameter will counterintuitively speed up the convergence process.  
+This technique is a common with iterative methods:  frequently adding a dampening or relaxation parameter will counterintuitively speed up the convergence process.
 
-**Note:** the stationary iterative methods are not always used directly, but are sometimes used as a "smoothing" step (e.g. running 5-10 times) prior to using other Krylov methods. 
+**Note:** the stationary iterative methods are not always used directly, but are sometimes used as a "smoothing" step (e.g. running 5-10 times) prior to using other Krylov methods.
 
 Krylov Methods
 ===============
@@ -652,7 +652,7 @@ Introduction to Preconditioning
 --------------------------------
 
 If you tell a numerical analyst you are using direct methods, their first question may be “which factorization?” - but if you tell them you
-are using an iterative method, they may ask "which preconditioner?".  
+are using an iterative method, they may ask "which preconditioner?".
 
 As discussed at the beginning of the lecture, the spectral properties of matrices determine the rate of convergence
 of iterative matrices.  In particular, ill-conditioned matrices can converge slowly with iterative methods for the same
@@ -663,13 +663,13 @@ operations.
 
 To see an example of a right-preconditioner, consider a matrix :math:`P` which has a convenient and numerically stable inverse.  Then,
 
-.. math:: 
+.. math::
 
     \begin{align}
     A x &= b\\
     A P^{-1} P x &= b\\
     A P^{-1} y &= b\\
-    P x &= y 
+    P x &= y
     \end{align}
 
 That is, solve :math:`(A P^{-1})y = b` for :math:`y`, and then solve :math:`P x = y` for :math:`x`.
@@ -680,7 +680,7 @@ resulting system and lower the condition number of the matrix.  To see this in a
 The diagonal precondition is simply ``P = Diagonal(A)``.  Depending on the matrix, this can change the condition number a little or a lot.
 
 .. code-block:: julia
-    
+
     AP = A * inv(Diagonal(A))
     @show cond(Matrix(A))
     @show cond(Matrix(AP));
@@ -689,7 +689,7 @@ But it may or may not decrease the number of iterations
 
 .. code-block:: julia
 
-    using Preconditioners    
+    using Preconditioners
     x = zeros(N)
     P = DiagonalPreconditioner(A)
     sol = cg!(x, A, b, log=true, maxiter = 1000)
@@ -703,8 +703,8 @@ Another classic preconditioner is the Incomplete LU decomposition
     x = zeros(N)
     P = ilu(A, τ = 0.1)
     sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
-    sol[end]    
- 
+    sol[end]
+
 The ``τ`` parameter determines the degree of the LU decomposition to conduct, providing a tradeoff in preconditioner vs. solve speed.
 
 A good rule of thumb is that you should almost always be using a preconditioner with iterative methods, and you should experiment to find ones appropriate for your problem.
@@ -881,7 +881,7 @@ you would use in-place ``mul!(y, A, x)`` function.  The wrappers for linear oper
 
 
 Finally, keep in mind that the linear operators can compose, so that :math:`A (c_1 x) + B (c_2 x) + x  = (c_1 A + c_2 B + I) x` is well-defined for any linear operators - just as
-it would be for matrices :math:`A, B` and scalars :math:`c_1, c_2`.  
+it would be for matrices :math:`A, B` and scalars :math:`c_1, c_2`.
 
 For example, take :math:`2 A x + x = (2 A + I) x \equiv B x` as a new linear map,
 
@@ -920,7 +920,7 @@ In theory, the solution to the least-squares problem, :math:`\min_x \| Ax -b \|^
 We saw, however, that in practice direct methods use a QR decomposition - in part because ill-conditioned :math:`A` become even worse when :math:`A' A` is formed.
 
 For large problems, we can also consider Krylov methods for solving the linear-least squares problem.  One formulation is the `LSMR <https://stanford.edu/group/SOL/software/lsmr/LSMR-SISC-2011.pdf>`_ algorithm
-which can solve the regularized 
+which can solve the regularized
 
 
 .. math::
@@ -959,7 +959,7 @@ matrix-free methods you need to define the ``A * x`` and ``transpose(A) * y`` fu
     X_func(u) = X * u  # matrix-vector product
     X_T_func(v) = X' * v  # i.e. adjoint-vector product
 
-    X_map = LinearMap(X_func, X_T_func, N, M) 
+    X_map = LinearMap(X_func, X_T_func, N, M)
     results = lsmr(X_map, y, log = true)
     println("$(results[end])")
 
@@ -969,7 +969,7 @@ Iterative Methods for Eigensystems
 When you use ``eigen`` on a dense matrix, it calculates an eigendecomposition and provides all of the eigenvalues and eigenvectors.
 
 While sometimes this is necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest :math:`O(N^3)` operations (i.e., it has
-one of the largest constants).  For large matrices it is often infeasible. 
+one of the largest constants).  For large matrices it is often infeasible.
 
 Luckily, you frequently only need a few or even a single eigenvector/eigenvalue, which enables a different set of algorithms.
 
@@ -979,7 +979,7 @@ eigenvector associated with the eigenvalue of 1.  As usual, a little linear alge
 From the `Perron-Frobenius theorem <https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem#Stochastic_matrices>`_, the largest eigenvalue of an irreducible stochastic matrix is 1 - the same eigenvalue we are looking for.
 
 Iterative methods for solving eigensystems allow targeting the smallest magnitude, largest magnitude, and many others.  The easiest library
-to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.  
+to use is `Arpack.jl <https://julialinearalgebra.github.io/Arpack.jl/latest/>`_.
 
 As an example,
 
@@ -1013,7 +1013,7 @@ First finding the transition matrix :math:`P` and its adjoint directly as a chec
 
     θ = 0.1
     ζ = 0.05
-    N = 5 
+    N = 5
     P = Tridiagonal(fill(ζ, N-1), [1-θ; fill(1-θ-ζ, N-2); 1-ζ], fill(θ, N-1))
     P'
 
@@ -1025,7 +1025,7 @@ Implementing the adjoint-vector product directly, and verifying that it gives th
                     [θ * x[i-1] + (1-θ-ζ) * x[i] + ζ * x[i+1] for i in 2:N-1];  # comprehension
                 θ * x[end-1] + (1-ζ) * x[end];]
     P_adj_map = LinearMap(P_adj_mul, N)
-    @show norm(P' - sparse(P_adj_map)) 
+    @show norm(P' - sparse(P_adj_map))
 
 Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of :math:`P'`)
 
@@ -1064,7 +1064,7 @@ For example, if we were implementing the product at the row of :math:`Q` corresp
 .. math::
 
     \begin{align}
-        Q_{(n_1, \ldots n_M)} \cdot v &= 
+        Q_{(n_1, \ldots n_M)} \cdot v &=
     \theta \sum_{m=1}^M (n_m < N)  v(n_1, \ldots, n_m + 1, \ldots, n_M)\\
                                             &+ \zeta \sum_{m=1}^M (1 < n_m)  v(n_1, \ldots, n_m - 1, \ldots, n_M)\\
                                             &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)v(n_1, \ldots, n_M)
@@ -1221,7 +1221,7 @@ Putting everything together to solving much larger systems with GMRES as our lin
         Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
         A = ρ * I - Q
         r = r_vec(p)
-        
+
         sol = gmres!(iv, A, r, log = false)  # iterative solver, matrix-free
         return sol
     end
@@ -1253,7 +1253,7 @@ Implementing this logic first in math, and thne in code,
 .. math::
 
     \begin{align}
-        Q^T_{(n_1, \ldots n_M)} \cdot \psi &= 
+        Q^T_{(n_1, \ldots n_M)} \cdot \psi &=
     \theta \sum_{m=1}^M (n_m > 1)  \psi(n_1, \ldots, n_m - 1, \ldots, n_M)\\
                                             &+ \zeta \sum_{m=1}^M (n_m < N)  \psi(n_1, \ldots, n_m + 1, \ldots, n_M)\\
                                             &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)\psi(n_1, \ldots, n_M)
@@ -1351,7 +1351,7 @@ The algorithm can solve for the steady state of :math:`10^5` states in a few sec
     function stationary_ψ(p)
         Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
         ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
-        sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e. solve Ax = 0 iteratively    
+        sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e. solve Ax = 0 iteratively
         return ψ / sum(ψ)
     end
     p = default_params(N=10, M=5)
@@ -1370,16 +1370,16 @@ For this, we can setup a ``MatrixFreeOperator`` for our ``Q_T_mul!`` function (e
 
     function solve_transition_dynamics(p, t)
         @unpack N, M = p
-        
+
         ψ_0 = [1.0; fill(0.0, N^M - 1)]
         O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0), size=(N^M,N^M), opnorm=(p)->1.25)
-        
+
         # define the corresponding ODE problem
         prob = ODEProblem(O!,ψ_0,(0.0,t[end]), p)
-        return solve(prob, LinearExponential(krylov=:simple), tstops = t) 
+        return solve(prob, LinearExponential(krylov=:simple), tstops = t)
     end
     t = 0.0:5.0:100.0
-    p = default_params(N=10, M=6) 
+    p = default_params(N=10, M=6)
     sol = solve_transition_dynamics(p, t)
     v = solve_bellman(p)
     plot(t, [dot(sol(tval), v) for tval in t], xlabel = "t", label = ["E_t(v)"])
