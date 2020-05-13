@@ -42,13 +42,12 @@ To open the WSL in VS Code
 
 2. Go to your home directory and make sure key dependencies are installed
 ```bash
-cd
-sudo apt update
+cd ~
+sudo sudo apt update
 apt-get upgrade
 sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
-sudo pip install --upgrade --force-reinstall pyzmq
 ```
 
 2. Install Conda
@@ -65,6 +64,7 @@ sudo pip install --upgrade --force-reinstall pyzmq
    - *IMPORTANT* Manually choose `yes` to have it do the `conda init`
    - Delete the installation file
      ```bash
+     sudo pip install --upgrade --force-reinstall pyzmq
      rm Anaconda3-2020.02-Linux-x86_64.sh
      ```
 
