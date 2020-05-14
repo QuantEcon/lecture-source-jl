@@ -83,7 +83,7 @@ The full command might look like ``sudo ln -s /Applications/Julia-1.3.app/Conten
     :class: no-execute 
 
     using InstantiateFromURL
-    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.6.0", instantiate = true)
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.6.0", instantiate = true, precompile = true)
 
 .. _jupyter_installation:
 
@@ -233,7 +233,7 @@ Then, run
     :class: no-execute 
 
     using InstantiateFromURL
-    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.6.0", instantiate = true)
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.6.0", instantiate = true, precompile = true)
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.
 
