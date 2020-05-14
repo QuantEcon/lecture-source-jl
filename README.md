@@ -12,32 +12,39 @@ For information on releasing a new lecture version, see [the docs](RELEASE.md).
 
 ## Usage
 
-### WSL if on Windows
-If on Windows, use WSL.
+### WSL and VSCode if on Windows
+- To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+  - For the installation, run it in `Powershell` as an administrator
+  - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
+- Install [VSCode](https://code.visualstudio.com/) and remote WSL support on windows
+- Consider installing the shiny new [Windows Terminal](https://github.com/microsoft/terminal)
+See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
 
-To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or:
-1. Run `Powershell` as an administrator (i.e. right-click on the icon and choose `Run as Administrator`)
-2. Run `Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux` and a reboot may be required
-    - Or head to **Settings** -> **Update & Security** -> **For developers** and turn on **Developer mode**
-    - Then head to **Control Panel** -> **Settings** -> **Turn Windows features on and off**, and make sure **Windows Subsystem for Linux** is ticked
-3. Download a distribution such as [Ubuntu 18.04](https://aka.ms/wsl-ubuntu-1804) to your desktop
-    - Or choose from other [distros](https://docs.microsoft.com/en-us/windows/wsl/install-manual#downloading-distros)
-4. Double-click on the downloaded `.appx` file to install follow instructions
-    - Create a unix username and password
-    - No need for these to match your windows login, but it may be convenient (especailly the login)
+In a windows terminal run
+```
+ git config --global credential.helper wincred
+```
+In a WSL terminal,
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
+(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
 
-Hint on copy-paste:  One way to paste into a Windows terminal (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes)
-
-When running the ubuntu shell run it in `Powershell` as an administrator
+To open the WSL in VS Code
+- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
+- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 
 ### Prerequisities
 
-1. Start within your home directory (using WSL if on Windows, make sure to  `run as administrator`).
+1. Start within your home directory
 
 2. Go to your home directory and make sure key dependencies are installed
 ```bash
-cd
-sudo apt update
+cd ~
+sudo sudo apt update
+apt-get upgrade
 sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
@@ -57,6 +64,7 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
    - *IMPORTANT* Manually choose `yes` to have it do the `conda init`
    - Delete the installation file
      ```bash
+     sudo pip install --upgrade --force-reinstall pyzmq
      rm Anaconda3-2020.02-Linux-x86_64.sh
      ```
 
@@ -66,7 +74,9 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux
 ```
 
 4. Assuming you installed anaconda in your home directory then,
-- Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
+- Within your home directory modify the `.bashrc`
+  - Use VSCode Remote on Windows or
+  - `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
 - Add something like the following:
 
 ```bash
@@ -80,9 +90,9 @@ Then, from your terminal, run `source .bashrc` to load the changes in the curren
 
 ```bash
 conda upgrade conda
-pip install jupinx
-pip install sphinxcontrib.bibtex
 conda install dask distributed
+pip install jupinx sphinxcontrib.bibtex jupinx guzzle_sphinx_theme
+
 ```
 
 6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
@@ -110,9 +120,6 @@ In the REPL, run
 ] activate .; instantiate; precompile
 ```
 This will take a long time to run.  You can safely ignore build errors for `Electron`
- 
-**You may see a lot of warnings** during this step if you chose to use PackageCompiler acceleration above. They can be safely ignored.
- 
 
 ### Building
 
@@ -126,26 +133,7 @@ There are a few different targets, notably:
 
 * `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
 
-### Editing with WSL and VS Code
-See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
-
-In a windows terminal run
-```
- git config --global credential.helper wincred
-```
-In a WSL terminal,
-```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
-```
-(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
-
-To open the WSL in VS Code
-- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
-- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
-- Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
-- Consider adding the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for viewing the html from `_build/website/jupyter_html` files
+In vscode, the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) allows you to watch an output HTML file.  Install the extension (in WSL if required) and after generating the HTML, right click on it and say "Open with Live Server"
 
 ### Options and Special Cases
 
