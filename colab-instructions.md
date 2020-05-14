@@ -5,14 +5,20 @@
 2. Run the following cell in the notebook
 
 ```
-!curl -sSL "https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux-x86_64.tar.gz" -o julia.tar.gz
-!tar -xzf julia.tar.gz -C /usr --strip-components 1
-!rm -rf julia.tar.gz*
-!julia -e 'using Pkg; pkg" up; add IJulia ;  precompile"'
-!echo "Julia Installed!"
+# Installation cell
+%%shell
+if ! command -v julia 3>&1 > /dev/null
+then
+    wget 'https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux-x86_64.tar.gz' \
+        -O /tmp/julia.tar.gz
+    tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
+    rm /tmp/julia.tar.gz
+fi
+julia -e 'using Pkg; pkg"add IJulia; precompile;"'
+echo 'Done'
 ```
 
-3. In the top menu, click "Edit," then "Notebook Settings," and then choose "Julia 1.4" as your runtime. Hit "Save."
+3. After it says "done," in the top menu, click "Edit," then "Notebook Settings," and then choose "Julia 1.4" as your runtime. Hit "Save."
 
 4. To test your setup, run a Julia command in the window (something like `versioninfo()`.) If it doesn't work, try refreshing your browser window in between steps (2) and (3).
 
