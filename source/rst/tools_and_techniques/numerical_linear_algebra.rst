@@ -811,7 +811,7 @@ Alternatively, as an example of a reducible Markov chain where states :math:`1` 
 Banded Matrices
 ===============
 
-A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and the also the first super-diagonal (i.e. above the main diagonal).
+A tridiagonal matrix has 3 non-zero diagonals.  The main diagonal, the first sub-diagonal (i.e. below the main diagonal) and also the first super-diagonal (i.e. above the main diagonal).
 
 This is a special case of a more general type called a banded matrix, where the number of sub- and super-diagonals can be greater than 1.  The
 total width of main-, sub-, and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.
@@ -841,7 +841,7 @@ There is also a convenience function for generating random banded matrices
 
 .. code-block:: julia
 
-    A = brand(7, 7, 3, 1)  # 7x7 matrix, 3 subdiagonals, 1 subdiagonal
+    A = brand(7, 7, 3, 1)  # 7x7 matrix, 3 subdiagonals, 1 superdiagonal
 
 And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the :math:`O(N P_L P_U)` for upper and lower bandwidths :math:`P`
 
@@ -932,8 +932,7 @@ Concretely, the lessons in this section are
 1. Don't worry about optimizing your code unless you need to.  Code clarity is your first-order concern.
 2. If you use other people's packages, they can worry about performance and you don't need to.
 3. If you absolutely need that "critical 3%" your intuition about performance is usually wrong on modern CPUs and GPUs, so let the compiler do its job.
-4. Benchmarking (e.g. ``@btime``) and `profiling <https://docs.julialang.org/en/v1/manual/profile/>`_ are the tools to figure out performance bottlenecks.  If 99% of
-   of computing time is spent in 1 small function, then there is no point optimizing anything else.
+4. Benchmarking (e.g. ``@btime``) and `profiling <https://docs.julialang.org/en/v1/manual/profile/>`_ are the tools to figure out performance bottlenecks.  If 99% of computing time is spent in 1 small function, then there is no point optimizing anything else.
 5. If you benchmark to show that a particular part of the code is an issue, and you can't find another library that does a better job, then you can worry about performance.
 
 You will rarely get to step 3, let alone step 5.
@@ -943,7 +942,7 @@ However, there is also a corollary:  "don't pessimize prematurely". That is, don
 Implementation Difficulty
 -------------------------
 
-Numerical analysis sometimes to refer to the lowest level of code for basic operations (e.g. a dot product, matrix-matrix product, convolutions) as ``kernels``.
+Numerical analysts sometimes refer to the lowest level of code for basic operations (e.g. a dot product, matrix-matrix product, convolutions) as ``kernels``.
 
 That sort of code is difficult to write, and performance depends on the characteristics of the underlying hardware such as the `instruction set <https://en.wikipedia.org/wiki/Instruction_set_architecture>`_ available on the particular CPU, the size of the `CPU cache <https://en.wikipedia.org/wiki/CPU_cache>`_, and the layout of arrays in memory.
 
@@ -955,7 +954,7 @@ On top of BLAS are `LAPACK <https://en.wikipedia.org/wiki/LAPACK>`_ operations, 
 
 The details of these packages are not especially relevant, but if you are talking about performance, people will inevitably start discussing these different packages and kernels.  There are a few important things to keep in mind:
 
-1. Leave writing kernels to the experts.  Even simple sounding algorithms can be very complicated to make high performance.
+1. Leave writing kernels to the experts.  Even simple sounding algorithms can be very complicated to implement with high performance.
 2. Your intuition about performance of code is probably going to be wrong.  If you use high quality libraries rather than writing your own kernels, you don't need to use your intuition.
 3. Don't get distracted by the jargon or acronyms above if you are reading about performance.
 
@@ -1136,8 +1135,8 @@ Start with a simple symmetric tridiagonal matrix
 
     \psi_{t+1} = A' \psi_t
 
-3. What is the computational order of that calculating  :math:`\psi_T` using this iteration approach :math:`T < N`?
-4. What is the computational order of :math:`(A')^T = (A \ldots A)` and then :math:`\psi_T = (A')^T \psi_0` for :math:`T < N`?
+3. What is the computational order of calculating  :math:`\psi_T` using this iteration approach :math:`T < N`?
+4. What is the computational order of :math:`(A')^T = (A' \ldots A')` and then :math:`\psi_T = (A')^T \psi_0` for :math:`T < N`?
 5. Benchmark calculating :math:`\psi_T` with the iterative calculation above as well as the direct :math:`\psi_T = (A')^T \psi_0` to see which is faster.  You can take the matrix power with just ``A_adjoint^T``, which uses specialized algorithms faster and more accurate than repeated matrix multiplication (but with the same computational order).
 6. Check the same if :math:`T = 2 N`
 
