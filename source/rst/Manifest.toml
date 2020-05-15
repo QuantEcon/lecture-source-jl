@@ -388,6 +388,12 @@ git-tree-sha1 = "8b2c5d49e13e0f449950fd2a103aaa9db3e567c5"
 uuid = "c894b116-72e5-5b58-be3c-e6d8d4ac2b12"
 version = "6.7.0"
 
+[[DiffEqNoiseProcess]]
+deps = ["DataStructures", "DiffEqBase", "LinearAlgebra", "Random", "RandomNumbers", "RecipesBase", "RecursiveArrayTools", "Requires", "ResettableStacks", "StaticArrays", "Statistics"]
+git-tree-sha1 = "f0472a979c3f85bd9a642e1107f27853b2652b15"
+uuid = "77a26b50-5914-5dd7-bc55-306e6241c503"
+version = "3.11.0"
+
 [[DiffEqOperators]]
 deps = ["BandedMatrices", "BlockBandedMatrices", "DiffEqBase", "ForwardDiff", "LazyArrays", "LinearAlgebra", "ModelingToolkit", "NNlib", "SparseArrays", "StaticArrays", "SuiteSparse"]
 git-tree-sha1 = "5ca3009b071a1bb6b5b874a75d54540c783ce4ec"
@@ -1365,6 +1371,12 @@ git-tree-sha1 = "d37400976e98018ee840e0ca4f9d20baa231dc6b"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.0.1"
 
+[[ResettableStacks]]
+deps = ["StaticArrays"]
+git-tree-sha1 = "d19e9c93de6020a96dbb2820567c78d0ab8f7248"
+uuid = "ae5879a3-cd67-5da8-be7f-38c6eb64a37b"
+version = "1.0.0"
+
 [[Revise]]
 deps = ["CodeTracking", "Distributed", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Pkg", "REPL", "UUIDs", "Unicode"]
 git-tree-sha1 = "3185d2ee31756af9e20ce045ddfaedcd0df9e4aa"
@@ -1498,6 +1510,12 @@ deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "Interpol
 git-tree-sha1 = "b9b7fff81f573465fcac4685df1497d968537a9e"
 uuid = "f3b207a7-027a-5e70-b257-86293d7955fd"
 version = "0.14.6"
+
+[[StochasticDiffEq]]
+deps = ["ArrayInterface", "DataStructures", "DiffEqBase", "DiffEqNoiseProcess", "FillArrays", "FiniteDiff", "ForwardDiff", "LinearAlgebra", "Logging", "MuladdMacro", "NLsolve", "Random", "RandomNumbers", "RecursiveArrayTools", "Reexport", "SparseArrays", "SparseDiffTools", "StaticArrays", "UnPack"]
+git-tree-sha1 = "9773696fb1791b78d095e9c0a71578fe5f159107"
+uuid = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
+version = "6.20.0"
 
 [[SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
