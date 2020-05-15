@@ -468,7 +468,7 @@ Benchmarking,
 QR Decomposition
 ----------------
 
-:ref:`Previously <qr_decomposition>`, we learned about applications of the QR application to solving the linear least squares.
+:ref:`Previously <qr_decomposition>`, we learned about applications of the QR decomposition to solving the linear least squares.
 
 While in principle, the solution to the least-squares problem
 
@@ -479,7 +479,7 @@ While in principle, the solution to the least-squares problem
 is :math:`x = (A'A)^{-1}A'b`, in practice note that :math:`A'A` becomes dense and calculating the inverse is rarely a good idea.
 
 The QR decomposition is a decomposition :math:`A = Q R` where :math:`Q` is an orthogonal matrix (i.e. :math:`Q'Q = Q Q' = I`) and :math:`R` is
-a upper triangular matrix.
+an upper triangular matrix.
 
 Given the  :ref:`previous derivation <qr_decomposition>` we showed that we can write the least squares problem as
 the solution to
@@ -578,7 +578,7 @@ To see this,
     Q = A_eig.vectors
     norm(Q * Λ * inv(Q) - A)
 
-Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, so if you attempt  to check ``Q * Λ * inv(Q) - A`` - even for a positive-definite matrix - it may not be a real due number due to numerical inaccuracy.
+Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, so if you attempt  to check ``Q * Λ * inv(Q) - A`` - even for a positive-definite matrix - it may not be a real number due to numerical inaccuracy.
 
 Continuous Time Markov Chains (CTMC)
 ====================================
