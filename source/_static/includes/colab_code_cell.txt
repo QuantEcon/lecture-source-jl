@@ -8,4 +8,5 @@ then
 fi
 julia -e 'using Pkg; pkg"add IJulia InstantiateFromURL; precompile;"'
 julia -e 'using InstantiateFromURL; github_project("QuantEcon/quantecon-notebooks-julia", instantiate = true, precompile = false)'
+julia -e 'using Plots, Distributions, Parameters, NLsolve, ForwardDiff, Expectations'
 echo 'Done'
