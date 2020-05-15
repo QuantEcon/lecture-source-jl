@@ -631,7 +631,7 @@ The :math:`Q` matrix is called the intensity matrix, or the infinitesimal genera
                         0 & 0 & 0 & 0 & 0.1 & -0.1\\
         \end{bmatrix}
 
-In that example, transitions only occur between adjacent states with the same intensity (except for a ``bouncing'' back of the bottom and top states).
+In the above example, transitions only occur between adjacent states with the same intensity (except for a ``bouncing'' back of the bottom and top states).
 
 Implementing the :math:`Q` using its tridiagonal structure
 
@@ -772,7 +772,7 @@ case, we can verify it is the last one.
     ψ = ψ / sum(ψ)
 
 
-Reshaping this to be two dimensional if it is helpful for visualization
+Reshaping this to be two dimensional if it is helpful for visualization.
 
 .. code-block:: julia
 
@@ -804,7 +804,7 @@ Alternatively, as an example of a reducible Markov chain where states :math:`1` 
 
     Q = [-0.2 0.2 0
         0.2 -0.2 0
-        0.2 0.6 -0.2]
+        0.2 0.6 -0.8]
     Q_graph = DiGraph(Q)
     @show is_strongly_connected(Q_graph);
 
