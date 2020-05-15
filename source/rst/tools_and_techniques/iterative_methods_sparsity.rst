@@ -428,7 +428,7 @@ As before, consider solving the equation
     A x = b
 
 We will now
-focus on cases where :math:`A` is both massive (e.g. potentially millions of equations), sparse, and sometimes ill-conditioned - but where there is always unique solution.
+focus on cases where :math:`A` is both massive (e.g. potentially millions of equations), sparse, and sometimes ill-conditioned - but where there is always a unique solution.
 
 While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
 of PDEs, and when working with big data.
@@ -548,7 +548,7 @@ The complexity here is a :math:`O(N^2)` for the matrix-vector product, and an :m
 
 The package `IterativeSolvers.jl <https://github.com/JuliaMath/IterativeSolvers.jl>`_ package implements this method.
 
-For our example, we start if a guess and solve for the value function and iterate
+For our example, we start with a guess and solve for the value function and iterate
 
 .. code-block:: julia
 
@@ -658,7 +658,7 @@ As discussed at the beginning of the lecture, the spectral properties of matrice
 of iterative matrices.  In particular, ill-conditioned matrices can converge slowly with iterative methods for the same
 reasons that naive value-function iteration will converge slowly if the discount rate is close to ``1``.
 
-Preconditioning solves this issue by adjusting the spectral properties of the matrix, at the cost of a some extra computational
+Preconditioning solves this issue by adjusting the spectral properties of the matrix, at the cost of some extra computational
 operations.
 
 To see an example of a right-preconditioner, consider a matrix :math:`P` which has a convenient and numerically stable inverse.  Then,
@@ -781,7 +781,7 @@ First, lets use a Krylov method to solve our simple valuation problem
     v_sol = results[1]
     println("$(results[end])")
 
-While the ``A`` matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are build on matrix-vector products, i.e. :math:`A x` for iterations on the :math:`x`.
+While the ``A`` matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are built on matrix-vector products, i.e. :math:`A x` for iterations on the :math:`x`.
 
 This product can be written directly for a given :math:`x`,
 
