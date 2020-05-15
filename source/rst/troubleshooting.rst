@@ -35,7 +35,7 @@ See the :ref:`lecture section <atom_troubleshooting>` on troubleshooting Atom.
 Resetting a JupyterHub Lecture Set 
 ===================================
 
-The lectures are delivered to JupyterHubs (like the `QuantEcon Syzygy server <https://quantecon.syzygy.ca>`__) using ``nbgitpuller``. 
+The lectures are delivered to JupyterHubs using ``nbgitpuller``. 
 
 To reset a single notebook, simply delete it and click the relevant link again. 
 
