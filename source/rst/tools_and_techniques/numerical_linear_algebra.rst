@@ -197,7 +197,7 @@ While we write matrix multiplications in our algebra with abundance, in practice
 
 Matrix multiplication is so important to modern computers that the constant of scaling is small using proper packages, but the order is still roughly :math:`O(N^3)` in practice (although smaller in theory, as discussed above).
 
-Sparse matrix multiplication, on the other hand, is :math:`O(N M_A M_B)` where :math:`M_A` and :math:`M_B` are the number of nonzeros per row of :math:`A` and :math:`B` are the number of non-zeros per column of :math:`B`.
+Sparse matrix multiplication, on the other hand, is :math:`O(N M_A M_B)` where :math:`M_A` are the number of nonzeros per row of :math:`A` and :math:`M_B` are the number of non-zeros per column of :math:`B`.
 
 By the rules of computational order, that means any algorithm requiring a matrix multiplication of dense matrices requires at least :math:`O(N^3)` operation.
 
@@ -254,7 +254,7 @@ Take a simple linear system of a dense matrix,
     A = rand(N,N)
     b = rand(N)
 
-On paper, we to solve for :math:`A x = b` by inverting the matrix,
+On paper, we try to solve the system :math:`A x = b` by inverting the matrix,
 
 .. code-block:: julia
 
