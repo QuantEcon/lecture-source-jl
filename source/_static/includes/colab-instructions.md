@@ -10,4 +10,4 @@ Instructions:
     -  It will **5 to 8 minutes** the first time you run it for Julia and key packages to install
 
 3. Refresh your browser, and then execute any code as normal.
-  - Even after installation, there will be more precompiling latency since we do not compile every package used in the notes in the setup step. 
+  - Even after installation, there will be more precompiling latency for some packages. 
