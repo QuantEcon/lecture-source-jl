@@ -431,10 +431,10 @@ With sparsity, the computational order is related to the number of non-zeros rat
 Cholesky Decomposition
 -----------------------
 
-For real, symmetric, `positive definitive <https://en.wikipedia.org/wiki/Definiteness_of_a_matrix>`_ matrices, a Cholesky decomposition is a specialized example of the LU decomposition where :math:`L = U'`.
+For real, symmetric, `positive semi-definite <https://en.wikipedia.org/wiki/Definiteness_of_a_matrix>`_ matrices, a Cholesky decomposition is a specialized example of the LU decomposition where :math:`L = U'`.
 
 
-The Cholesky is directly useful on its own (e.g. :doc:`Classical Control with Linear Algebra <../time_series_models/classical_filtering>`) but it is also an efficient factorization to solve symmetric positive definite system.
+The Cholesky is directly useful on its own (e.g. :doc:`Classical Control with Linear Algebra <../time_series_models/classical_filtering>`) but it is also an efficient factorization to solve symmetric positive semi-definite systems.
 
 As always, symmetry allows specialized algorithms.
 
@@ -442,13 +442,13 @@ As always, symmetry allows specialized algorithms.
 
     N = 500
     B = rand(N,N)
-    A_dense = B' * B  # an easy way to generate a symmetric positive definite matrix
+    A_dense = B' * B  # an easy way to generate a symmetric positive semi-definite matrix
     A = Symmetric(A_dense)  # flags the matrix as symmetric
 
     factorize(A) |> typeof
 
 Here, the :math:`A` decomposition is `Bunch-Kaufman <https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#LinearAlgebra.bunchkaufman>`_ rather than a
-Cholesky, because Julia doesn't know the matrix is positive definite.  We can manually factorize with a Cholesky,
+Cholesky, because Julia doesn't know the matrix is positive semi-definite.  We can manually factorize with a Cholesky,
 
 .. code-block:: julia
 
