@@ -90,7 +90,7 @@ equation :math:`1 = 1`.
 Finite Geometric Series
 -----------------------
 
-The second series that interests us is the finite geomtric series
+The second series that interests us is the finite geometric series
 
 .. math:: 1 + c + c^2 + c^3 + \cdots + c^T
 
@@ -107,7 +107,7 @@ set :math:`(-1,1)`.
 
 
 
-We now move on to describe some famuous economic applications of
+We now move on to describe some famous economic applications of
 geometric series.
 
 
@@ -175,7 +175,7 @@ bank stating promises to redeem note for gold or silver on demand).
 .. Dongchen: is there a way to add a little balance sheet here?
 .. with assets on the left side and liabilities on the right side?
 
-Ecah bank :math:`i` sets its reserves to satisfy the equation
+Each bank :math:`i` sets its reserves to satisfy the equation
 
 .. math::
   :label: reserves
@@ -289,7 +289,7 @@ Static Version
 
 
 An elementary Keynesian model of national income determination consists
-of three equations that describe aggegate demand for :math:`y` and its
+of three equations that describe aggregate demand for :math:`y` and its
 components.
 
 The first equation is a national income identity asserting that
@@ -356,7 +356,7 @@ We modify our consumption function to assume the form
 so that :math:`b` is the marginal propensity to consume (now) out of
 last period's income.
 
-We begin wtih an initial condition stating that
+We begin with an initial condition stating that
 
 .. math:: y_{-1} = 0
 
@@ -559,7 +559,7 @@ namely,
 
 .. math:: \frac{1}{1+r} = 1 - r + r^2 - r^3 + \cdots
 
-and the fact that :math:`r` is small to aproximate
+and the fact that :math:`r` is small to approximate
 :math:`\frac{1}{1+r} \approx 1 - r`.
 
 Use this approximation to write :math:`p_0` as
@@ -625,27 +625,22 @@ below
 
     # True present value of a finite lease
     function finite_lease_pv(T, g, r, x_0)
-        G = (1 .+ g)
-        R = (1 .+ r)
-        return (x_0 .* (1 .- G .^ (T .+ 1) .* R .^(.-T .- 1))) ./ (1 .- G .* R .^(-1))
+        G = 1 + g
+        R = 1 + r
+        return (x_0 * (1 - G^(T + 1)* R^(-(T + 1)))) / (1 - G * R^(-1))
     end
-    # First approximation for our finite lease
 
-    function finite_lease_pv_approx_f(T, g, r, x_0)
-        p = x_0 .* (T .+ 1) .+ x_0 .* r * g .* (T .+ 1) ./ (r - g)
-        return p
-    end
+    # First approximation for our finite lease
+    finite_lease_pv_approx_f(T, g, r, x_0) = x_0 * (T + 1) + x_0 * r * g * (T + 1) / (r - g)
 
     # Second approximation for our finite lease
-    function finite_lease_pv_approx_s(T, g, r, x_0)
-        return (x_0 .* (T .+ 1))
-    end
+    finite_lease_pv_approx_s(T, g, r, x_0) = x_0 * (T + 1)
 
     # Infinite lease
     function infinite_lease(g, r, x_0)
-        G = (1 .+ g)
-        R = (1 .+ r)
-        return x_0 ./ (1 .- G .* R .^ (-1))
+        G = 1 + g
+        R = 1 + r
+        return x_0 / (1 - G * R^(-1))
     end
 
 
@@ -660,24 +655,22 @@ First we study the quality of our approximations
     x_0 = 1
     T_max = 50
     T = 0:T_max
-    plt = plot(xlim=(-2.5, 52.5),ylim= (-1.653, 56.713), title= "Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+    y_1 = finite_lease_pv.(T, g, r, x_0)
+    y_2 = finite_lease_pv_approx_f.(T, g, r, x_0)
+    y_3 = finite_lease_pv_approx_s.(T, g, r, x_0)
 
-    y_1 = finite_lease_pv(T, g, r, x_0)
-    y_2 = finite_lease_pv_approx_f(T, g, r, x_0)
-    y_3 = finite_lease_pv_approx_s(T, g, r, x_0)
-
-    plot!(plt, T, y_1, label="True T-period Lease PV")
-    plot!(plt, T, y_2, label="T-period Lease First-order Approx.")
-    plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
-    plot!(plt, legend = :topleft)
+    plot(T, y_1, label="True T-period Lease PV", title= "Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p₀")
+    plot!(T, y_2, label="T-period Lease First-order Approx.")
+    plot!(T, y_3, label="T-period Lease First-order Approx. adj.")
+    plot!(legend = :topleft)
 
 .. code-block:: julia
     :class: test
 
     @testset begin
-    @test y_1[4] == 3.942123696037542
-    @test y_2[4] == 4.24
-    @test y_3[4] == 4
+    @test y_1[4] ≈ 3.942123696037542
+    @test y_2[4] ≈ 4.24
+    @test y_3[4] ≈ 4
     end
 
 Evidently our approximations perform well for small values of :math:`T`.
@@ -692,56 +685,54 @@ over different lease lengths :math:`T`.
     # Convergence of infinite and finite
     T_max = 1000
     T = 0:T_max
-    plt = plot(xlim=(-50, 1050),ylim= (-4.1, 108.1), title= "Infinite and Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
-    y_1 = finite_lease_pv(T, g, r, x_0)
+    y_1 = finite_lease_pv.(T, g, r, x_0)
     y_2 = ones(T_max+1) .* infinite_lease(g, r, x_0)
-    plot!(plt, T, y_1, label="T-period lease PV")
-    plot!(plt, T, y_2, linestyle = :dash, label="Infinite lease PV")
-    plot!(plt, legend = :bottomright)
+    plot(T, y_1, label="T-period lease PV", title= "Infinite and Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+    plot!(T, y_2, linestyle = :dash, label="Infinite lease PV")
+    plot!(legend = :bottomright)
 
 .. code-block:: julia
     :class: test
 
     @testset begin
-       @test y_1[4] == 3.942123696037542
-       @test y_2[4] == 103.00000000000004
+       @test y_1[4] ≈ 3.942123696037542
+       @test y_2[4] ≈ 103.00000000000004
     end
 
 
 The above graphs shows how as duration :math:`T \rightarrow +\infty`,
 the value of a lease of duration :math:`T` approaches the value of a
-perpetural lease.
+perpetual lease.
 
 Now we consider two different views of what happens as :math:`r` and
 :math:`g` covary
 
 .. code-block:: julia
 
-    # First view
-    # Changing r and g
-    plt = plot(xlim=(-0.5, 10.5),ylim= (-0.26, 16.7), title= "Value of lease of length T", xlabel = "T periods ahead", ylabel = "Present Value, p0")
     T_max = 10
     T=0:T_max
+
     # r >> g, much bigger than g
     r = 0.9
     g = 0.4
-    plot!(plt, finite_lease_pv(T, g, r, x_0), label="r >> g")
+    plot(finite_lease_pv.(T, g, r, x_0), label="r >> g", title= "Value of lease of length T", xlabel = "T periods ahead", ylabel = "Present Value, p0")
+
     # r > g
     r = 0.5
     g = 0.4
-    plot!(plt, finite_lease_pv(T, g, r, x_0), label="r > g", color="green")
+    plot!(finite_lease_pv.(T, g, r, x_0), label="r > g", color="green")
 
     # r ~ g, not defined when r = g, but approximately goes to straight
     # line with slope 1
     r = 0.4001
     g = 0.4
-    plot!(plt, finite_lease_pv(T, g, r, x_0), label="r ~ g", color="orange")
+    plot!(finite_lease_pv.(T, g, r, x_0), label="r ~ g", color="orange")
 
     # r < g
     r = 0.4
     g = 0.5
-    plot!(plt, finite_lease_pv(T, g, r, x_0), label="r < g", color="red")
-    plot!(plt, legend = :topleft)
+    plot!(finite_lease_pv.(T, g, r, x_0), label="r < g", color="red")
+    plot!(legend = :topleft)
 
 The above graphs gives a big hint for why the condition :math:`r > g` is
 necessary if a lease of length :math:`T = +\infty` is to have finite
@@ -755,21 +746,21 @@ visualization!
 
 .. code-block:: julia
 
-    # Second view
     T = 3
     r = 0.01:0.005:0.985
     g = 0.011:0.005:0.986
+    N = length(r)
 
-    rr = reshape(repeat(r, 196),196,196)'
-    gg = repeat(g, 1,196)
-    z = finite_lease_pv(T, gg, rr, x_0)
-    plot(r,g,z,st=:surface,c=:coolwarm,title= "Three Period Lease PV with varying g and r", xlabel = "r", ylabel = "g")
+    rr = reshape(repeat(r, N), N, N)'
+    gg = repeat(g, 1, N)
+    z = finite_lease_pv.(T, gg, rr, x_0)
+    plot(r, g, z, st=:surface, c=:coolwarm,title= "Three Period Lease PV with varying g and r", xlabel = "r", ylabel = "g")
 
 .. code-block:: julia
     :class: test
 
     @testset begin
-        @test z[4] == 4.096057303642319
+        @test z[4] ≈ 4.096057303642319
     end
 
 .. We can use a little calculus to study how the present value :math:`p_0`
@@ -827,11 +818,10 @@ of national income, and investment is fixed.
     function calculate_y(i, b, g, T, y_init)
         y = zeros(T+1)
         y[1] = i + b * y_init + g
-        ### not sure about this line
         for t = 2:(T+1)
             y[t] = b * y[t-1] + i + g
         end
-    return y
+        return y
     end
 
     # Initial values
@@ -842,17 +832,17 @@ of national income, and investment is fixed.
     y_init = 0
     T = 100
 
-    plt = plot(xlim=(-6, 107),ylim= (0.5, 1.9), title= "Path of Aggregate Output Over Time", xlabel = "t", ylabel = "yt")
-    plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init))
+    plot(0:T, calculate_y(i_0, b, g_0, T, y_init), title= "Path of Aggregate Output Over Time", xlabel = "t", label = "yt")
+
     # Output predicted by geometric series
-    hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline")
-    plot!(plt, legend = :bottomright)
+    hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline", label = "Predicted")
+    plot!(legend = :bottomright)
 
 .. code-block:: julia
     :class: test
 
     @testset begin
-        @test calculate_y(i_0, b, g_0, T, y_init)[4] == 1.4444444444444444
+        @test calculate_y(i_0, b, g_0, T, y_init)[4] ≈ 1.4444444444444444
     end
 
 In this model, income grows over time, until it gradually converges to
@@ -902,7 +892,7 @@ path of output over time
     # Changing government spending
     g_1 = 0.4
     y_1 = calculate_y(i_0, b, g_1, T, y_init)
-    plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
+    plt_2 = plot(x, y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
     plot!(plt_2, x, y_1, label="g=0.4", linestyle=:dash)
     plot!(plt_2, legend = :bottomright)
 
@@ -912,8 +902,8 @@ path of output over time
     :class: test
 
     @testset begin
-        @test y_1[2] == 1.33
-        @test y_1[10] == 4.5592509193
+        @test y_1[2] ≈ 1.33
+        @test y_1[10] ≈ 4.5592509193
     end
 
 Notice here, whether government spending increases from 0.3 to 0.4 or
