@@ -516,7 +516,7 @@ var element = $('#{{ div_id }}');
 
 			  <select id="launcher-public-input">
 				<option value="https://mybinder.org/v2/gh/QuantEcon/quantecon-notebooks-julia/master?filepath=">mybinder.org (Public)</option>
-				<option value="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia-colab/blob/master/>Google Colab (Public)</option>
+				<option value="https://colab.research.google.com/github/QuantEcon/quantecon-notebooks-julia-colab/blob/master/">Google Colab (Public)</option>
 			  </select>
 
 			  <i class="fas fa-check-circle"></i>
