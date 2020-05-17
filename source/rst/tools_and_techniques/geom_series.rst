@@ -351,6 +351,7 @@ We let :math:`c_t` be consumption at time :math:`t` and :math:`i_t` be
 investment at time :math:`t`.
 
 We modify our consumption function to assume the form
+
 .. math:: c_t = b y_{t-1}
 
 so that :math:`b` is the marginal propensity to consume (now) out of
