@@ -19,6 +19,7 @@ tools and techniques.
 .. toctree::
     :maxdepth: 2
 
+    sir_model
     linear_algebra
     orth_proj
     lln_clt
