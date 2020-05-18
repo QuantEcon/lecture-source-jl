@@ -135,17 +135,19 @@ There are a few different targets, notably:
 * `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
 
 ### Workflow for Editing with VS Code
+*Setup*
 A few useful extensions to install (in WSL if on windows):
 - https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
 - See https://github.com/ubcecon/tutorials/blob/master/vscode.md for general extensions as well as Julia and Python
 - https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext which requires the python extension
   - Note that for the RST extension you will need to have python extension installed.  When it asks for the python interpreter, choose `DocUtils` rather than sphinx
 
-One workflow is the following:
+*One Workflow*:
 - When you open the project, in the julia terminal go `;cd source/rst` and then `] activate .` to ensure you are using the package/manifest.
-- Edit the for the content.  With the RST extension, you can get a preview on the right hand side to see general layout.  It will have plenty of errors of the top, but is helpful
-- When editing the code, use `Ctrl+Shift+P` and type `Change Language Mode` to change it to Julia
-- With this, you can use `Shift+P,Ctrl+P`or `Alt+P` depending on your setup, to run one line of the coe at a time in the julia REPL.
+- Edit for the content.  With the RST extension, you can get a preview (`Ctrl+K Ctrl+R`, or clicking on the preview buton)
+  - It will have plenty of errors since it doesn't apply jupinx, but will help avoid obvious RST issues.
+- When ready to edit the code, use `Ctrl+Shift+P` and type `Change Language Mode` to change it to Julia
+  - With this, you can use `Shift+Enter,Ctrl+Enter`or `Alt+Enter` depending on your setup, to run one line of the code at a time in the Julia REPL.  If you activated the Package in above, it will use the correct versions of those packages.
 - When you want to see the results, run in the bash script to build the files
 ```bash
 jupinx -w --files source/rst/getting_started_julia/fundamental_types.rst
