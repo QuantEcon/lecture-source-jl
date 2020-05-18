@@ -75,7 +75,7 @@ This adds packages for
 
 Note: To set up the Julia terminal command on Mac, open a terminal and run ``sudo ln -s <where_julia_app_is>/Contents/Resources/julia/bin/julia /usr/local/bin/julia``.
 
-The full command might look like ``sudo ln -s /Applications/Julia-1.3.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
+The full command might look like ``sudo ln -s /Applications/Julia-1.4.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
 
 **Note**: To obtain the full set of packages we use, at this stage you can run the following (see :ref:`the package setup section <package_setup>`.)
 
@@ -204,7 +204,8 @@ Your first step is to get a copy of the notebooks in your JupyterHub environment
 
 While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment.
 
-JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: ``https://github.com/QuantEcon/quantecon-notebooks-julia``.
+JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: `https://github.com/QuantEcon/quantecon-notebooks-julia <https://github.com/QuantEcon/quantecon-notebooks-julia>`_.
+
 
 .. The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture).
 
