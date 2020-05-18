@@ -133,7 +133,22 @@ There are a few different targets, notably:
 
 * `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
 
-In vscode, the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) allows you to watch an output HTML file.  Install the extension (in WSL if required) and after generating the HTML, right click on it and say "Open with Live Server"
+### Workflow for Editing with VS Code
+A few useful extensions to install (in WSL if on windows):
+- https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
+- See https://github.com/ubcecon/tutorials/blob/master/vscode.md for general extensions as well as Julia and Python
+- https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext which requires the python extension
+  - Note that for the RST extension you will need to have python extension installed.  When it asks for the python interpreter, choose `DocUtils` rather than sphinx
+
+One workflow is the following:
+- Edit the for the content.  With the RST extension, you can get a preview on the right hand side to see general layout.  It will have plenty of errors of the top, but is helpful
+- When editing the code, use `Ctrl+Shift+P` and type `Change Language Mode` to change it to Julia
+- With this, you can use `Shift+P,Ctrl+P`or `Alt+P` depending on your setup, to run one line of the coe at a time in the julia REPL.
+- When you want to see the results, run in the bash script to build the files
+```bash
+jupinx -w --files source/rst/getting_started_julia/fundamental_types.rst
+```
+- And finally, you can watch the file with the LiveServer extension.  Go to the `_build/webiste/jupyter_html/getting_started_julia/fundamental_types.htm` etc. in the file explorer, and right click to "Open with LiveServer"
 
 ### Options and Special Cases
 
