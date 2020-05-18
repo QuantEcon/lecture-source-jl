@@ -16,29 +16,30 @@ For information on releasing a new lecture version, see [the docs](RELEASE.md).
 - To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
   - For the installation, run it in `Powershell` as an administrator
   - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
-- Install [VSCode](https://code.visualstudio.com/) and remote WSL support on windows
-- Consider installing the shiny new [Windows Terminal](https://github.com/microsoft/terminal)
-See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
+- Install [VSCode](https://code.visualstudio.com/) with remote WSL support on windows
+ - See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview)
+ - [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
 
-In a windows terminal run
-```
- git config --global credential.helper wincred
-```
-In a WSL terminal,
-```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
-```
-(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
 
 To open the WSL in VS Code
 - Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
 - Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
 
+To get git credentials integrated, in a windows terminal (i.e. not in WSL) run
+```
+ git config --global credential.helper wincred
+```
+Then in a WSL terminal (within VS Code or otherwise),
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
+(See more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
+
 ### Prerequisities
 
-1. Start within your home directory
+1. Start within your home directory in linux or in a WSL terminal
 
 2. Go to your home directory and make sure key dependencies are installed
 ```bash
@@ -74,9 +75,7 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux
 ```
 
 4. Assuming you installed anaconda in your home directory then,
-- Within your home directory modify the `.bashrc`
-  - Use VSCode Remote on Windows or
-  - `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
+- Within your home directory modify the `.bashrc` (with VS Code, you can edit directly after connecting to WSL)
 - Add something like the following:
 
 ```bash
@@ -95,7 +94,9 @@ pip install jupinx sphinxcontrib.bibtex jupinx guzzle_sphinx_theme
 
 ```
 
-6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
+6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https).
+
+On Windows, you want to clone to the WSL setup, not onto your windows drive.
 
 ```bash
 git clone https://github.com/QuantEcon/lecture-source-jl
@@ -103,7 +104,7 @@ git clone https://github.com/QuantEcon/lecture-source-jl
 
 Precompile the packages used by the lectures **before** building. To do this: 
 
-1. (Optional) Delete your `~/.julia` folder to start fresh.
+1. (Optional) If you have a major preexisting julia setup, consider deleting `~/.julia` folder to start fresh.
 
 2. In a Julia REPL (i.e. `julia` in terminal if your `.bashrc` was edited above), run
 
