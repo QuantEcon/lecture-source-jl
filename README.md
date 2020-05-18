@@ -142,6 +142,7 @@ A few useful extensions to install (in WSL if on windows):
   - Note that for the RST extension you will need to have python extension installed.  When it asks for the python interpreter, choose `DocUtils` rather than sphinx
 
 One workflow is the following:
+- When you open the project, in the julia terminal go `;cd source/rst` and then `] activate .` to ensure you are using the package/manifest.
 - Edit the for the content.  With the RST extension, you can get a preview on the right hand side to see general layout.  It will have plenty of errors of the top, but is helpful
 - When editing the code, use `Ctrl+Shift+P` and type `Change Language Mode` to change it to Julia
 - With this, you can use `Shift+P,Ctrl+P`or `Alt+P` depending on your setup, to run one line of the coe at a time in the julia REPL.
