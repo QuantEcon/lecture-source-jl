@@ -723,35 +723,44 @@ The output explains this, and lists some other methods of ``*`` which Julia thin
 .. code-block:: julia
     :class: skip-test
 
-    ones(2) * ones(2)
+    ones(2) * ones(2)  # does not conform, expect error
 
 
-If you want an inner product in this setting use ``dot()`` or the unicode ``\cdot<TAB>``
+Instead, you could take the transpose to form a row vector
 
 .. code-block:: julia
 
-    dot(ones(2), ones(2))
+    ones(2)' * ones(2)
 
 
-Matrix multiplication using one dimensional vectors is a bit inconsistent --
-pre-multiplication by the matrix is OK, but post-multiplication gives an error
+Alternatively, for inner product in this setting use ``dot()`` or the unicode ``\cdot<TAB>``
+
+.. code-block:: julia
+
+    @show dot(ones(2), ones(2))
+    @show ones(2) ⋅ ones(2);
+
+
+Matrix multiplication using one dimensional vectors similarly follows from treating them as
+column vectors.  Post-multiplication requires a transpose
 
 
 .. code-block:: julia
 
     b = ones(2, 2)
-
-
-.. code-block:: julia
-
     b * ones(2)
 
 
 .. code-block:: julia
-    :class: skip-test
 
-    ones(2) * b
+    ones(2)' * b
 
+Note that the type of the returned value in this case is not ``Array{Float64,1}`` but rather
+``Adjoint{Float64,Array{Float64,1}}``.
+
+This is since the left multiplication by a row vector should also be a row-vector.  It also hints
+that the types in Julia more complicated than first appears in the surface notation, as we will explore
+further in the :doc:`introduction to types lecture <../getting_started_julia/introduction_to_types>`.
 
 Elementwise Operations
 ------------------------
