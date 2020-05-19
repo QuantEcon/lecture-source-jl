@@ -428,7 +428,7 @@ As before, consider solving the equation
     A x = b
 
 We will now
-focus on cases where :math:`A` is both massive (e.g. potentially millions of equations), sparse, and sometimes ill-conditioned - but where there is always unique solution.
+focus on cases where :math:`A` is both massive (e.g. potentially millions of equations), sparse, and sometimes ill-conditioned - but where there is always a unique solution.
 
 While this may seem excessive, it occurs in practice due to the curse of dimensionality, discretizations
 of PDEs, and when working with big data.
@@ -548,7 +548,7 @@ The complexity here is a :math:`O(N^2)` for the matrix-vector product, and an :m
 
 The package `IterativeSolvers.jl <https://github.com/JuliaMath/IterativeSolvers.jl>`_ package implements this method.
 
-For our example, we start if a guess and solve for the value function and iterate
+For our example, we start with a guess and solve for the value function and iterate
 
 .. code-block:: julia
 
@@ -658,7 +658,7 @@ As discussed at the beginning of the lecture, the spectral properties of matrice
 of iterative matrices.  In particular, ill-conditioned matrices can converge slowly with iterative methods for the same
 reasons that naive value-function iteration will converge slowly if the discount rate is close to ``1``.
 
-Preconditioning solves this issue by adjusting the spectral properties of the matrix, at the cost of a some extra computational
+Preconditioning solves this issue by adjusting the spectral properties of the matrix, at the cost of some extra computational
 operations.
 
 To see an example of a right-preconditioner, consider a matrix :math:`P` which has a convenient and numerically stable inverse.  Then,
@@ -781,7 +781,7 @@ First, lets use a Krylov method to solve our simple valuation problem
     v_sol = results[1]
     println("$(results[end])")
 
-While the ``A`` matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are build on matrix-vector products, i.e. :math:`A x` for iterations on the :math:`x`.
+While the ``A`` matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are built on matrix-vector products, i.e. :math:`A x` for iterations on the :math:`x`.
 
 This product can be written directly for a given :math:`x`,
 
@@ -1076,7 +1076,7 @@ Here:
 - the second term is the loss of a customer for the various :math:`m`
 - the last term is the intensity of all exits from this state (i.e. counting the intensity of all other transitions to ensure the row would sum to :math:`0`)
 
-In practice, rather than working with the :math:`f` as a multidimensional type, we will need to enumerate the discrete states linearly so we can iterate :math:`f` between :math:`1` and `\mathbf{N}`.  An especially convenient
+In practice, rather than working with the :math:`f` as a multidimensional type, we will need to enumerate the discrete states linearly so we can iterate :math:`f` between :math:`1` and :math:`\mathbf{N}`.  An especially convenient
 approach is to enumerate them in the same order as the :math:`K` dimensional cartesian product of the :math:`N` states as a multi-dimensional array above.
 
 This can be done with the ``CartesianIndices`` function, which is used internally in Julia for the ``eachindex`` function.  For example,
@@ -1240,7 +1240,7 @@ Recall that given an :math:`N` dimensional intensity matrix :math:`Q` of a CTMC,
 
     \dot{\psi}(t) = Q^T \psi(t)
 
-If :math:`Q` was a matrix, we could just take its to find the adoint.  However, with matrix-free methods we need to implement the
+If :math:`Q` was a matrix, we could just take its transpose to find the adoint.  However, with matrix-free methods we need to implement the
 adjoint-vector product directly.
 
 The logic for the adjoint is that for a given :math:`n = (n_1,\ldots, n_m, \ldots n_M)`, the :math:`Q^T` product for that row has terms enter when
@@ -1248,12 +1248,12 @@ The logic for the adjoint is that for a given :math:`n = (n_1,\ldots, n_m, \ldot
 #. :math:`1 < n_m \leq N`, entering into identical :math:`n` except with one less customer in the :math:`m` th position
 #. :math:`1 \leq n_m < N` entering into identical :math:`n` except with one more customer in the :math:`m` th position
 
-Implementing this logic first in math, and thne in code,
+Implementing this logic first in math, and then in code,
 
 .. math::
 
     \begin{align}
-        Q^T_{(n_1, \ldots n_M)} \cdot \psi &=
+        Q^T_{(n_1, \ldots, n_M)} \cdot \psi &=
     \theta \sum_{m=1}^M (n_m > 1)  \psi(n_1, \ldots, n_m - 1, \ldots, n_M)\\
                                             &+ \zeta \sum_{m=1}^M (n_m < N)  \psi(n_1, \ldots, n_m + 1, \ldots, n_M)\\
                                             &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)\psi(n_1, \ldots, n_M)
