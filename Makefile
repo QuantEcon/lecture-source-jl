@@ -63,7 +63,6 @@ endif
 
 pdf:
 ifneq ($(strip $(parallel)),)
-<<<<<<< HEAD
 	@$(SPHINXBUILD) -M jupyterpdf "$(SOURCEDIR)" "$(BUILDDIR)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_theme_path="$(THEMEPATH)" -D jupyter_template_path="$(TEMPLATEPATH)" -D jupyter_latex_template="latex.tpl" -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1 -D jupyter_target_pdf=1 -D jupyter_number_workers=$(parallel)
 
 else
@@ -76,12 +75,6 @@ ifneq ($(strip $(parallel)),)
 
 else
 	@$(SPHINXBUILD) -M jupyter "$(SOURCEDIR)" "$(BUILDPDF)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1
-=======
-	@$(SPHINXBUILD) -M jupyterpdf "$(SOURCEDIR)" "$(BUILDDIR)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_latex_template="latex.tpl" -D jupyter_latex_template_book="latex_book.tpl" -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1 -D jupyter_pdf_book=1 -D jupyter_target_pdf=1 -D jupyter_number_workers=$(parallel)
-
-else
-	@$(SPHINXBUILD) -M jupyterpdf "$(SOURCEDIR)" "$(BUILDDIR)" $(FILES) $(SPHINXOPTS) $(O) -D jupyter_latex_template="latex.tpl" -D jupyter_latex_template_book="latex_book.tpl" -D jupyter_images_markdown=1 -D jupyter_execute_notebooks=1 -D jupyter_pdf_book=1 -D jupyter_target_pdf=1
->>>>>>> master
 endif
 
 notebooks:
