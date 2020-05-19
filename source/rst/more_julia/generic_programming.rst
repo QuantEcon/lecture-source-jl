@@ -696,7 +696,7 @@ Of course, univariate polynomials are another type of univariate function
 
 .. code-block:: julia
 
-    using Polynomials
+    using Polynomials.PolyCompat
     p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
     @show p
     @show p(1.0) # call like a function

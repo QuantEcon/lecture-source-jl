@@ -987,7 +987,7 @@ The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a pa
 
 .. code-block:: julia
 
-    using Polynomials
+    using Polynomials.PolyCompat
 
     p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
 

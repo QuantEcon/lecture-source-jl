@@ -567,7 +567,7 @@ Here's how it looks
 
 .. code-block:: julia
 
-  using Polynomials, LinearAlgebra
+  using Polynomials.PolyCompat, LinearAlgebra
 
   function LQFilter(d, h, y_m;
                     r = nothing,
