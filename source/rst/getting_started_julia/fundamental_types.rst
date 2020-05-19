@@ -741,7 +741,7 @@ Alternatively, for inner product in this setting use ``dot()`` or the unicode ``
     @show ones(2) ⋅ ones(2);
 
 
-Matrix multiplication using one dimensional vectors similarly follow from treating them as
+Matrix multiplication using one dimensional vectors similarly follows from treating them as
 column vectors.  Post-multiplication requires a transpose
 
 
