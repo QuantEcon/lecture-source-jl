@@ -27,7 +27,7 @@ Julia
 
 The coding language for this lecture series is Julia.
 
-Note that there's also a related set of `Python lectures <add link here>`__.
+Note that there's also a related set of `Python lectures <https://python.quantecon.org>`__.
 
 In terms of the differences,
 

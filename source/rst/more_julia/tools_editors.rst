@@ -203,8 +203,11 @@ Installing Juno
 
 At that point, you should see a built-in REPL at the bottom of the screen and be able to start using Julia and Atom.
 
+.. _atom_troubleshooting:
+
 Troubleshooting
 ^^^^^^^^^^^^^^^^^^^
+
 Sometimes, Juno will fail to find the Julia executable (say, if it's installed somewhere nonstandard, or you have multiple).
 
 To do this
@@ -222,8 +225,46 @@ If you upgrade Atom and it breaks Juno, run the following in a terminal.
 .. code-block:: none 
 
     apm uninstall ink julia-client
-    apm install ink julia-client
+    apm install ink julia-client 
 
+If you aren't able to install ``apm`` in your PATH, you can do the above by running the following in PowerShell:
+
+.. code-block:: none 
+
+    cd $ENV:LOCALAPPDATA/atom/bin
+
+Then navigating to a folder like ``C:\Users\USERNAME\AppData\Local\atom\bin`` (which will contain the ``apm`` tool), and running:
+
+.. code-block:: none 
+
+    ./apm uninstall ink julia-client
+    ./apm install ink julia-client
+
+.. _upgrading_julia: 
+
+Upgrading Julia
+^^^^^^^^^^^^^^^^^^^
+
+To get a new release working with Jupyter, run (in the new version's REPL)
+
+.. code-block:: julia 
+    :class: no-execute 
+
+    ] add IJulia 
+    ] build IJulia
+
+This will install (and build) the ``IJulia`` kernel.
+
+To get it working with Atom, open the command palette and type "Julia Client: Settings."
+
+Then, in the box labelled "Julia Path," enter the path to yor Julia executabe. 
+
+You can find the folder by running ``Sys.BINDIR`` in a new REPL, and then add the ``/julia`` at the end to give the exact path. 
+
+For example: 
+
+.. figure:: /_static/figures/julia-path.png
+    :width: 100%
 
 Standard Layout
 ------------------

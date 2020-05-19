@@ -2,45 +2,84 @@
 
 ## About this Repository 
 
-This is the source repository for [Quantitative Economics with Julia](https://lectures.quantecon.org/jl).  These instructions required for authorig/editing the textbook and notebooks, and are not necessary for typical usage.
+This is the source repository for [Quantitative Economics with Julia](https://julia.quantecon.org).  These instructions required for authoring/editing the textbook and notebooks, and are not necessary for typical usage.
 
-See `LICENSE.md` for licensing and copyright information. 
+See `LICENSE.md` for licensing and copyright information.
+
+## Release
+
+For information on releasing a new lecture version, see [the docs](RELEASE.md).
 
 ## Usage
 
+### WSL and VSCode if on Windows
+- To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+  - For the installation, run it in `Powershell` as an administrator
+  - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
+- Install [VSCode](https://code.visualstudio.com/) with remote WSL support on windows
+ - See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview)
+ - [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
+
+
+To open the WSL in VS Code
+- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
+- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
+
+To get git credentials integrated, in a windows terminal (i.e. not in WSL) run
+```
+ git config --global credential.helper wincred
+```
+Then in a WSL terminal (within VS Code or otherwise),
+```
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+```
+(See more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
+
 ### Prerequisities
 
-* The latest `quantecon/jupinx` Docker image (see the **Containerization** section), or: 
+1. Start within your home directory in linux or in a WSL terminal
 
-0. Start within your home directory, using [WSL](https://github.com/ubcecon/cluster_tools/blob/master/WSL.md#install-wsl-from-ubuntu-and-conda) if on Windows. If you're running from the shell, make sure you `run as administrator`.
-
-1. Go to your home directory and make sure key dependencies are installed
+2. Go to your home directory and make sure key dependencies are installed
 ```bash
-cd
-sudo apt update
+cd ~
+sudo sudo apt update
+apt-get upgrade
 sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
 ```
 
 2. Install Conda
-```bash
-wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
-bash Anaconda3-2019.07-Linux-x86_64.sh
-```
-Choose `yes` to: "Do you wish the installer to initialize Anaconda3 by running conda init?"
 
-3. Install Julia
+   -  In the Ubuntu terminal, first install python/etc. tools
+   ```bash
+   wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
+   bash Anaconda3-2020.02-Linux-x86_64.sh
+   ```
+   -  Create a directory `.conda` by running `mkdir ~/.conda` if the warning "Unable to register the environment" shows up
+3. The installation will take time. You should:
+   - accept default paths
+   - accept licensing terms
+   - *IMPORTANT* Manually choose `yes` to have it do the `conda init`
+   - Delete the installation file
+     ```bash
+     sudo pip install --upgrade --force-reinstall pyzmq
+     rm Anaconda3-2020.02-Linux-x86_64.sh
+     ```
+
+4. Install Julia
 ```bash
-wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz | tar -xzv
+wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux-x86_64.tar.gz | tar -xzv
 ```
 
 4. Assuming you installed anaconda in your home directory then,
-- Within your home directory, `edit .bashrc`.  This opens Vim.  Go to the bottom of the file, and type `i` to enter insert mode.
+- Within your home directory modify the `.bashrc` (with VS Code, you can edit directly after connecting to WSL)
 - Add something like the following:
 
 ```bash
-export PATH=~/anaconda3/bin:~/julia-1.2.0/bin:$PATH
+export PATH=~/anaconda3/bin:~/julia-1.4.1/bin:$PATH
 ```
 Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 
@@ -50,48 +89,27 @@ Then, from your terminal, run `source .bashrc` to load the changes in the curren
 
 ```bash
 conda upgrade conda
-pip install jupinx
-pip install sphinxcontrib.bibtex
 conda install dask distributed
+pip install jupinx sphinxcontrib.bibtex jupinx guzzle_sphinx_theme
+
 ```
 
+6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https).
 
-6. Clone the repo to your preferred location (note that WSL+vscode+ssh cloning has bugs, so use https)
+On Windows, you want to clone to the WSL setup, not onto your windows drive.
 
 ```bash
 git clone https://github.com/QuantEcon/lecture-source-jl
 ```
 
-It's recommended that you install and precompile the packages used by the lectures **before** building. To do this: 
+Precompile the packages used by the lectures **before** building. To do this: 
 
-1. (Optional) Delete your `~/.julia` folder to start fresh.
+1. (Optional) If you have a major preexisting julia setup, consider deleting `~/.julia` folder to start fresh.
 
 2. In a Julia REPL (i.e. `julia` in terminal if your `.bashrc` was edited above), run
 
 ```julia
 ] add InstantiateFromURL IJulia; precompile
-```
-
-#### (Optional, for Advanced Users) 
-
-To accelerate your builds with [PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl)
-```bash
-cd lecture-source-jl/util
-```
-Then
-```bash 
-julia packagecompile.jl
-```
-Finally, go to the `source/rst` to continue
-```bash
-cd ../source/rst
-```
-
-**This will have side-effects for your Julia system** (i.e., it will "bake in" a version of Plots.jl) You can re-run the script again whenever the upstream `quantecon-notebooks-julia` TOML changes, and reinstall Julia with step 3. to get back to the old sysimg. 
-
-Finally, go to the `source/rst` to continue
-```bash
-cd ../source/rst
 ```
 
 3. Start a new REPL
@@ -103,10 +121,7 @@ In the REPL, run
 ] activate .; instantiate; precompile
 ```
 This will take a long time to run.  You can safely ignore build errors for `Electron`
- 
-**You may see a lot of warnings** during this step if you chose to use PackageCompiler acceleration above. They can be safely ignored.
- 
- 
+
 ### Building
 
 There are a few different targets, notably: 
@@ -119,49 +134,28 @@ There are a few different targets, notably:
 
 * `jupinx -w --files source/rst/getting_started_julia/julia_by_example.rst`, or any other `.rst` for a single file
 
-### Editing with WSL and VS Code
-See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview) and [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
+### Workflow for Editing with VS Code
+*Setup*
+A few useful extensions to install (in WSL if on windows):
+- https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
+- See https://github.com/ubcecon/tutorials/blob/master/vscode.md for general extensions as well as Julia and Python
+- https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext which requires the python extension
+  - Note that for the RST extension you will need to have python extension installed.  When it asks for the python interpreter, choose `DocUtils` rather than sphinx
 
-In a windows terminal run
+*One Workflow*:
+- When you open the project, in the julia terminal go `;cd source/rst` and then `] activate .` to ensure you are using the package/manifest.
+- Edit for the content.  With the RST extension, you can get a preview (`Ctrl+K Ctrl+R`, or clicking on the preview buton)
+  - It will have plenty of errors since it doesn't apply jupinx, but will help avoid obvious RST issues.
+- When ready to edit the code, use `Ctrl+Shift+P` and type `Change Language Mode` to change it to Julia
+  - With this, you can use `Shift+Enter,Ctrl+Enter`or `Alt+Enter` depending on your setup, to run one line of the code at a time in the Julia REPL.  If you activated the Package in above, it will use the correct versions of those packages.
+- When you want to see the results, run in the bash script to build the files
+```bash
+jupinx -w --files source/rst/getting_started_julia/fundamental_types.rst
 ```
- git config --global credential.helper wincred
-```
-In a WSL terminal,
-```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
-```
-(see more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
-
-To open the WSL in VS Code
-- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
-- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
-- Consider adding a [RST Extension](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext)
-- Consider adding the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for viewing the html from `_build/website/jupyter_html` files
+- And finally, you can watch the file with the LiveServer extension.  Go to the `_build/webiste/jupyter_html/getting_started_julia/fundamental_types.htm` etc. in the file explorer, and right click to "Open with LiveServer"
 
 ### Options and Special Cases
 
 Specifying parallel execution (i.e., `make coverage parallel=8`) will use 8 cores instead of 1. This leads to a notable speedup in build times. (There are some [`zmq` errors](https://github.com/QuantEcon/sphinxcontrib-jupyter/issues/261) that sporadically pop up at very high core counts, i.e. above 8.)
 
 You can build only a few notebooks by `jupinx -w --files source/rst/<file>.rst`.
-
-### Containerized Build
-
-Alternately, you can use the `quantecon/jupinx` docker image, which has all these dependencies baked in. 
-
-The advantage of a containerized setup is that you can use a siloed, "pre-baked" setup environment to build the lectures. 
-
-0. Install [Docker](https://www.docker.com/).
-
-1. Run `docker pull quantecon/jupinx`. 
-
-2. In a terminal, cd to this repository, and run `docker run --name quantecon-docker -it -d -v "$(pwd)":/home/jovyan/work quantecon/jupinx` from inside the directory (Linux/macOS). It should spit out a container ID string then exit. Try `${PWD}` on Windows, but your mileage may vary. 
-
-     :warning: In order to guarantee reproducibility, you should either be mounting a fresh clone of this repository, or sanitize things by running `git clean -xdff` (remove uncommitted/untracked files) and `git reset --hard` (reset to the last git state.) Otherwise, local variance in the mounted files may impact your results.
-
-3. In the same terminal (i.e., not inside the container), run `docker exec quantecon-docker bash -c "cd work && make jupyter".` Change it to `jupyter-tests` if you want it to output/execute the test blocks. 
-
-4. Grab a coffee. The Julia side executes in serial, so it takes about an hour (modulo your processor speed.)
-
-5. After it's done, in a terminal run `docker stop quantecon-docker` and `docker rm quantecon-docker`. This will garbage-collect the container, and free the name `quantecon-docker` for your next run. If you're having trouble, run `docker rm -f quantecon-docker` to force removal. 

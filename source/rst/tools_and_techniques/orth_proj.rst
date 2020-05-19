@@ -646,6 +646,10 @@ A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman fi
 
 In some exercises below you are asked to implement this algorithm and test it using projection.
 
+.. _qr_decomposition:
+
+.. _qr_decomposition:
+
 QR Decomposition
 --------------------
 
@@ -673,6 +677,10 @@ Since :math:`x_j \in \mathop{\mathrm{span}}\{u_1, \ldots, u_j\}`, we have
     \quad \text{for } j = 1, \ldots, k
 
 Some rearranging gives :math:`X = Q R`.
+
+.. _qr_regression:
+
+.. _qr_regression:
 
 Linear Regression via QR Decomposition
 -----------------------------------------

@@ -246,7 +246,7 @@ Julia provides many functions for working with strings.
     strip(" foobar ")  # remove whitespace
 
 
-Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/stable/manual/strings/#Regular-Expressions-1>`_ for more info).
+Julia can also find and replace using `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`_ (`see regular expressions documentation <https://docs.julialang.org/en/v1/manual/strings/#Regular-Expressions-1>`_ for more info).
 
 .. code-block:: julia
 
@@ -508,7 +508,7 @@ The following snippet will give you the idea
 
 Comprehensions
 ------------------
-(`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#Comprehensions-1>`_)
+(`See comprehensions documentation <https://docs.julialang.org/en/v1/manual/arrays/#man-comprehensions-1>`_)
 
 Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. from iterables.
 

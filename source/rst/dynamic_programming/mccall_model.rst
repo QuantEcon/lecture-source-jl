@@ -308,7 +308,7 @@ Here's the distribution of wage offers we'll work with
     w = range(10.0, 60.0, length = n+1) # linearly space wages
 
     using StatsPlots
-    plt = plot(w, dist, xlabel = "wages", ylabel = "probabilities", legend = false)
+    plt = plot(w, pdf.(dist, support(dist)), xlabel = "wages", ylabel = "probabilities", legend = false)
 
 We can explore taking expectations over this distribution
 
@@ -406,7 +406,7 @@ In this case, we can use the ``fixedpoint`` algorithm discussed in :doc:`our Jul
         T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
         v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol,
-                            m = 6).zero # (5)
+                            m = 0).zero # (5)
         return (1 - β) * (c + β * E*v_star) # (3)
     end
 

@@ -14,7 +14,7 @@ This troubleshooting page is to help ensure you software environment is setup co
 to run this lecture set locally on your machine.
 
 Fixing Your Local Environment
-==============================
+=========================================
 
 To set up a standard desktop environment, you can run the instructions in our `local setup lecture <https://julia.quantecon.org/getting_started_julia/getting_started.html#Desktop-Installation-of-Julia-and-Jupyter>`__. 
 
@@ -22,10 +22,20 @@ If you already have, make sure to try deleting your ``.julia`` directory (the "u
 
 You can find this directory by running ``DEPOT_PATH[1]`` in a Julia REPL. 
 
+Upgrading Julia 
+=================
+
+See the :ref:`lecture section <upgrading_julia>` on getting Atom and Jupyter working with a new version.
+
+Fixing Atom
+=============
+
+See the :ref:`lecture section <atom_troubleshooting>` on troubleshooting Atom. 
+
 Resetting a JupyterHub Lecture Set 
 ===================================
 
-The lectures are delivered to JupyterHubs (like the `QuantEcon Syzygy server <https://quantecon.syzygy.ca>`__) using ``nbgitpuller``. 
+The lectures are delivered to JupyterHubs using ``nbgitpuller``. 
 
 To reset a single notebook, simply delete it and click the relevant link again. 
 

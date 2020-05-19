@@ -740,7 +740,7 @@ Setup
 -----
 
 Details of the model can be found in `the
-lecture <http://quant-econ.net/jl/optgrowth.html>`__. As in the lecture,
+lecture <https://julia.quantecon.org/dynamic_programming/optgrowth.html>`__. As in the lecture,
 we let :math:`f(k) = k^{\alpha}` with :math:`\alpha = 0.65`,
 :math:`u(c) = \log c`, and :math:`\beta = 0.95`.
 
@@ -1072,7 +1072,7 @@ Dynamics of the capital stock
 -----------------------------
 
 Finally, let us work on `Exercise
-2 <https://lectures.quantecon.org/jl/optgrowth.html#Exercise-1>`__, where we plot
+2 <https://julia.quantecon.org/dynamic_programming/optgrowth.html#Exercise-1>`__, where we plot
 the trajectories of the capital stock for three different discount
 factors, :math:`0.9`, :math:`0.94`, and :math:`0.98`, with initial
 condition :math:`k_0 = 0.1`.

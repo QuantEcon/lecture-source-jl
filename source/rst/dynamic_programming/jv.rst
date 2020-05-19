@@ -572,7 +572,7 @@ Looking at the dynamics, we can see that
 
 Referring back to the figure here.
 
-https://lectures.quantecon.org/jl/jv.html#Solving-for-Policies
+https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies
 
 we see that :math:`x_t \approx 1` means that
 :math:`s_t = s(x_t) \approx 0` and

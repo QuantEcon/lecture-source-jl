@@ -98,7 +98,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 .. code-block:: julia
     :class: no-execute
 
-    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()])
+    ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()], manifest = true)
 
 **Note**: Make sure you replace the ``quanteconuser`` with your GitHub ID.
 

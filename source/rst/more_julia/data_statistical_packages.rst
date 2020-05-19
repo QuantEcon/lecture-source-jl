@@ -31,7 +31,7 @@ Setup
 
     using LinearAlgebra, Statistics
     using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
-    using DataVoyager, GLM
+    using GLM
 
 DataFrames
 ========================
@@ -149,7 +149,7 @@ One way to do an additional calculation with a ``DataFrame`` is to tuse the ``@t
 Categorical Data
 ------------------
 
-For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/man/categorical.html#Categorical-Data-1>`_
+For data that is `categorical <https://juliadata.github.io/DataFrames.jl/stable/man/categorical/>`_
 
 .. code-block:: julia
 
@@ -209,16 +209,6 @@ While it is possible to just use the ``Plots.jl`` library, there may be better o
         y=:PetalWidth,
         color=:Species
     )
-
-Another useful tool for exploring tabular data is `DataVoyager.jl <https://github.com/queryverse/DataVoyager.jl>`_.
-
-.. code-block:: julia
-    :class: no-execute
-
-    using DataVoyager
-    iris |> Voyager()
-
-The ``Voyager()`` function creates a separate window for analysis.
 
 Statistics and Econometrics
 =============================
@@ -284,21 +274,8 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
     cigar = dataset("plm", "Cigar")
     cigar.StateCategorical =  categorical(cigar.State)
     cigar.YearCategorical =  categorical(cigar.Year)
-    fixedeffectresults = reg(cigar, @model(Sales ~ NDI, fe = StateCategorical + YearCategorical,
-                                weights = Pop, vcov = cluster(StateCategorical)))
+    fixedeffectresults = reg(cigar, @formula(Sales ~ NDI + fe(StateCategorical) + fe(YearCategorical)),
+                                weights = :Pop, Vcov.cluster(:State))
     regtable(fixedeffectresults)
 
-To explore data use the interactive DataVoyager and VegaLite.
 
-.. code-block:: julia
-    
-    cigar = dataset("plm", "Cigar")
-    # cigar |> Voyager()
-
-    cigar |> @vlplot(
-        :point,
-        x=:Price,
-        y=:Sales,
-        color=:Year,
-        size=:NDI
-    )

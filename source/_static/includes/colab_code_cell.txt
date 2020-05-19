@@ -1,0 +1,11 @@
+%%shell
+if ! command -v julia 3>&1 > /dev/null
+then
+    wget 'https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux-x86_64.tar.gz' \
+        -O /tmp/julia.tar.gz
+    tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
+    rm /tmp/julia.tar.gz
+    julia -e 'using Pkg; pkg"add IJulia InstantiateFromURL; precompile;"'
+    julia -e 'using InstantiateFromURL; github_project("QuantEcon/quantecon-notebooks-julia", version = "0.7.0", instantiate = true, precompile = false); using Plots, Distributions, Parameters, NLsolve, ForwardDiff, Expectations'
+    echo 'Done'
+fi
