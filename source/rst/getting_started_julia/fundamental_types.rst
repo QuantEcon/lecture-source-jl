@@ -733,7 +733,7 @@ Instead, you could take the transpose to form a row vector
     ones(2)' * ones(2)
 
 
-Alternatively, you can use an inner product in this setting use ``dot()`` or the unicode ``\cdot<TAB>``
+Alternatively, for inner product in this setting use ``dot()`` or the unicode ``\cdot<TAB>``
 
 .. code-block:: julia
 
