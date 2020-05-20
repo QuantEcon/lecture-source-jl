@@ -9,3 +9,4 @@ dask-worker-space/
 **/.projects
 .vscode
 util/*.toml
+theme/lecture-source-jl.theme/
