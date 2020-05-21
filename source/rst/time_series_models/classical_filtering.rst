@@ -568,6 +568,7 @@ Here's how it looks
 .. code-block:: julia
 
   using Polynomials.PolyCompat, LinearAlgebra
+  import Polynomials.PolyCompat: roots, coeffs
 
   function LQFilter(d, h, y_m;
                     r = nothing,
