@@ -57,7 +57,7 @@ Setup
 
 .. code-block:: julia
 
-    using Polynomials.PolyCompat, Plots, Random, Parameters
+    using Polynomials, Plots, Random, Parameters
     using LinearAlgebra, Statistics
 
 A Control Problem
@@ -987,12 +987,12 @@ Here's how it looks
         @unpack m, ϕ = lqf
 
         # Calculate the roots of the 2m-polynomial
-        ϕ_poly=Poly(ϕ[end:-1:1])
+        ϕ_poly=Polynomial(ϕ[end:-1:1])
         proots = roots(ϕ_poly)
 
         # sort the roots according to their length (in descending order)
         roots_sorted = sort(proots, by=abs)[end:-1:1]
-        z_0 = sum(ϕ) / polyval(poly(proots), 1.0)
+        z_0 = sum(ϕ) / (fromroots(proots))(1.0)
         z_1_to_m = roots_sorted[1:m]     # we need only those outside the unit circle
         λ = 1 ./ z_1_to_m
         return z_1_to_m, z_0, λ
@@ -1002,7 +1002,7 @@ Here's how it looks
         m = lqf.m
         z_1_to_m, z_0, λ = roots_of_characteristic(lqf)
         c_0 = (z_0 * prod(z_1_to_m) * (-1.0)^m)^(0.5)
-        c_coeffs = coeffs(poly(z_1_to_m)) * z_0 / c_0
+        c_coeffs = coeffs(Polynomial(z_1_to_m)) * z_0 / c_0
         return c_coeffs
     end
 

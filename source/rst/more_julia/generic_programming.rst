@@ -696,8 +696,8 @@ Of course, univariate polynomials are another type of univariate function
 
 .. code-block:: julia
 
-    using Polynomials.PolyCompat
-    p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
+    using Polynomials
+    p = Polynomial([2, -5, 2], :x)  # :x just gives a symbol for display
     @show p
     @show p(1.0) # call like a function
 
@@ -824,7 +824,7 @@ Implement the same features as Exercise 1a and 1b, but for the  `non-uniform tra
 ..    f(x) = x^2
 ..    x = 0:0.1:1.0
 ..    fi = LinearIntepoation(x, f.(x))
-..    p = poly([1.0, 2.0, 4.9])
+..    p = Polynomial([1.0, 2.0, 4.9])
 ..    @show sum(fi, 1/0)
 ..    @show fi(1.0)
 ..    @show sum(fi, y) # i.e., algorithm takes function as first argument and iterator
