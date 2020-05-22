@@ -8,6 +8,8 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
 2. To test locally, run `make coverage` (which will also execute the notebooks) or `make test` (which will generate the notebooks with tests, but no execution). Get tests passing. 
 
+    A. Note that to do this in parallel you can do something like `make coverage -e parallel=4`, depending on how many cores you have available. But if you're doing parallel, it's good practice to have the packages all precompiled first. 
+
 3. To test on the AWS server, go to the AWS admin repo, and run `make julia`. (If you need to test changes to non-RST files, like TOML or themes, run `make julia-clean`, but this will be sequential.) Coverage happens automatically with both of these. 
 
 4. If package changes are required, note the following steps: 
