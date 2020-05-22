@@ -26,9 +26,11 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
 5. If you're also bumping Julia versions, make sure you change the `conf.py` kernelspec to use the new one. Otherwise, each coverage will trivially fail. And colab will fail. **If you're updating the Julia version, make sure you also bump it in the Colab install script under source/_static/includes**. 
 
-    A. Don't forget to install the new Julia version on the ANU server. And you'll need to run something like `sudo ln -fs new_julia /usr/bin/julia`, so that running `julia` on the machine points to the new version. (TODO: Check syntax.) Note that you should install `InstantiateFromURL` and `IJulia` on the new version, and ideally grab the manifest version you intend to use with a `precompile = true`. 
+    A. Don't forget to install the new Julia version on the ANU server. Canonically these live in `~/applications`. 
+    
+    B. And you'll need to run something like `sudo ln -fs new_julia /usr/bin/julia`, so that running `julia` on the machine points to the new version. (TODO: Check syntax.) Note that you should install `InstantiateFromURL` and `IJulia` on the new version, and ideally grab the manifest version you intend to use with a `precompile = true`. 
 
-6. Once you get this stuff in a place that looks good (e.g., coverage on the website is 100%, etc.), you can go live with `make julia-live` from the AWS repo. 
+6. Once you get the source in a state that looks good (e.g., coverage on the website is 100%, etc.), you can go live with `make julia-live` from the AWS repo. 
 
 7. To update the notebooks, first download them using
 
