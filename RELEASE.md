@@ -42,6 +42,8 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
 10. Hit the binder button in the `../quantecon-notebooks-julia` repo to get it cached. 
 
+11. If appropriate, submit a PR to the `QuantEcon/website` repo with a news item (see https://github.com/QuantEcon/website/pull/7 for an example of how to format the PR.)
+
 ## Other Notes
 
 **Theme Updates**: TODO. (Need to get latest instructions from Matt on where this lives.) And note that the default launch option is not the first in the list of launch options (the default is given separately.)
