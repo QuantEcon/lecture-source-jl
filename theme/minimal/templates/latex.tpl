@@ -251,6 +251,8 @@
             ((( custom_add_prompt(output.data['text/plain'] | wrap_text(88) | escape_latex | ansi2latex, cell, 'Out', 'outcolor', 'plain') )))
         ((*- elif type in ['text/latex']*))
             ((( custom_add_prompt(output.data['text/latex'] | wrap_text(88) | ansi2latex, cell, 'Out', 'outcolor', 'latex') )))
+        ((*- elif type in ['image/png']*))
+            ((( custom_add_prompt(output.metadata.filenames['image/png'] | wrap_text(88) | ansi2latex, cell, 'Out', 'outcolor', 'png') )))
         ((* else -*))
             ((( custom_add_prompt( '' | wrap_text(88)| escape_latex  | ansi2latex, cell, 'Out', 'outcolor', 'plain') )))
         ((*- endif -*))
@@ -279,6 +281,13 @@
 \begin{Verbatim}[commandchars=\\\{\}, fontsize=\small, xleftmargin=-3.9em]
 ((( text.replace('$$','').replace('$\\',"\\(\\").replace('$','\)') | add_prompts(first='{\color{' ~ prompt_color ~ '}' ~ prompt ~ '[{\\color{' ~ prompt_color ~ '}' ~ execution_count ~ '}]:} ', cont=indention) )))
 \end{Verbatim}
+((*- elif type == 'png' -*))
+\begin{Verbatim}[commandchars=\\\{\}, fontsize=\small, xleftmargin=-3.9em]
+((( '' | add_prompts(first='{\color{' ~ prompt_color ~ '}' ~ prompt ~ '[{\\color{' ~ prompt_color ~ '}' ~ execution_count ~ '}]:} ', cont=indention) )))
+\end{Verbatim}
+\begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{(((text)))}
+\end{center}
 ((*- else -*))
 \begin{lstlisting}[mathescape, basicstyle=\small\ttfamily\color{black}, keywordstyle={\color{red}}, xleftmargin=-4.8em]
 ((( text | add_prompts(first='<@\\textcolor{red}{' ~ prompt ~ '[' ~ execution_count ~ ']: }@>', cont=indention) )))
