@@ -44,12 +44,12 @@ git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec
 2. Go to your home directory and make sure key dependencies are installed
 ```bash
 cd ~
-sudo sudo apt update
-apt-get upgrade
+sudo apt update
+sudo apt-get upgrade
 sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
-```
+```sudo 
 
 2. Install Conda
 
@@ -71,7 +71,7 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
 
 4. Install Julia
 ```bash
-wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux-x86_64.tar.gz | tar -xzv
+wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.2-linux-x86_64.tar.gz | tar -xzv
 ```
 
 4. Assuming you installed anaconda in your home directory then,
@@ -79,9 +79,8 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.1-linux
 - Add something like the following:
 
 ```bash
-export PATH=~/anaconda3/bin:~/julia-1.4.1/bin:$PATH
+export PATH=~/anaconda3/bin:~/julia-1.4.2/bin:$PATH
 ```
-Hit `<Esc>` to exit insert mode, and then type `:x` to save and exit.
 
 Then, from your terminal, run `source .bashrc` to load the changes in the current WSL terminal.
 
