@@ -895,6 +895,7 @@ We can use auto-differentiation to compare the results.
 .. code-block:: julia
 
     using Plots, ForwardDiff
+    gr(fmt = :png);
 
     # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
@@ -988,7 +989,7 @@ The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a pa
 .. code-block:: julia
 
     using Polynomials
-    
+
     p = Polynomial([2, -5, 2], :x)  # :x just gives a symbol for display
 
     @show p

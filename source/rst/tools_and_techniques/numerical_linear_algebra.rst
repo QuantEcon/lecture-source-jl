@@ -740,6 +740,7 @@ This provides the combined markov chain for the :math:`(i,j)` process.  To see t
 .. code-block:: julia
 
     using Plots
+    gr(fmt = :png)
     spy(L, markersize = 10)
 
 To calculate a simple dynamic valuation, consider if the payoff of being in state :math:`(i,j)` is :math:`r_{ij} = i + 2j`

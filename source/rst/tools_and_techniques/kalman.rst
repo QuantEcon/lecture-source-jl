@@ -103,7 +103,6 @@ This density :math:`p(x)` is shown below as a contour map, with the center of th
 .. code-block:: julia
 
     using Plots, Distributions
-
     gr(fmt = :png); # plots setup
 
 .. code-block:: julia

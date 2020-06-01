@@ -478,16 +478,12 @@ Setup
 
     using LinearAlgebra, Statistics
     using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test
 
     using Test
-
-.. code-block:: julia
-
-    using Plots, QuantEcon, Interpolations, NLsolve
-    gr(fmt = :png);
 
 .. code-block:: julia
 
