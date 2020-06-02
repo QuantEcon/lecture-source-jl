@@ -2,6 +2,8 @@
 
 Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. That's the one which executes all the build commands on the ANU server (which you should also get ssh access to; it's `build.quantecon.org` and the username is `ubuntu`.)
 
+**Note** That whenever it says to run something in the AWS repo, it means navigate to that directory **on your local machine**, and then run the command. The repo comes with the `ssh` key to run things on the `build.quantecon.org` server.
+
 ## Steps for a Full Release 
 
 1. Merge all RST changes into the source repo. 
@@ -52,6 +54,6 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
 **Package Changes**: Note that simply running `] up` might not actually update everything, since the resolver is trying to solve a joint optimization problem. So, it's good practice to check the results of `] up` against what the latest versions of packages actually are. If they're behind, try running things like `] add package@latest_version` to force it to give you the latest of important packages. 
 
-**PDFs**: TODO. Fill in with stuff from Aakash and Matt. Don't know much about this. 
+**PDFs**: To trigger a PDF build, run `make julia-pdf` from the AWS build repo. The PDF is a bit fragile (pre-Jupyterbook), e.g. doesn't include any `svg` plots (such as those from `VegaLite`), so check it over carefully for errors. 
 
 **Build results**: The `#notifications` channel in the QE slack will alert you to builds when completed. The `make julia` ones (only RST changes) are relatively quick. A full clean build takes about 6 hours. 
