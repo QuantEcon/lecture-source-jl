@@ -44,6 +44,8 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
 8. The executed notebooks you just downloaded can be dragged/dropped as-is into the `../quantecon-notebooks-julia` repository. Then push them, tag a release with the appropriate version number.
 
+   To tag a release, navigate to `https://github.com/QuantEcon/quantecon-notebooks-julia/releases`, click "Draft a New Release," and fill in the data. **The version number should be something like v0.8.0, with the v**. 
+
 9. For colab, drag these notebooks into the `../quantecon-notebooks-julia-colab` repo. And then run the colab build script that lives inside that repo before pushing. Tag a release (ideally with the same version number as the other repo; no need to keep these separate.)
 
 10. Hit the binder button in the `../quantecon-notebooks-julia` repo to get it cached.
