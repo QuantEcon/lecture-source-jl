@@ -886,6 +886,7 @@ dynamic program as outlined above
 .. code-block:: julia
 
     using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test

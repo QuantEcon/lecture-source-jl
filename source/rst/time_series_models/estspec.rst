@@ -225,6 +225,7 @@ where :math:`\{ \epsilon_t \}` is white noise with unit variance, and compares t
 .. code-block:: julia
 
     using QuantEcon, Plots, Random
+    gr(fmt = :png);
     Random.seed!(42) # For reproducible results.
 
     n = 40              # Data size

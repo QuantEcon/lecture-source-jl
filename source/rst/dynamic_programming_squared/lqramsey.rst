@@ -583,6 +583,7 @@ Description and clarifications are given below
 .. code-block:: julia
 
     using QuantEcon, Plots, LinearAlgebra, Parameters
+    gr(fmt = :png);
 
     abstract type AbstractStochProcess end
 
