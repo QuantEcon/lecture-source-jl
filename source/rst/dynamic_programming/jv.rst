@@ -39,6 +39,7 @@ Setup
     using LinearAlgebra, Statistics
     using Distributions, QuantEcon, Interpolations, Expectations, Parameters
     using Plots, NLsolve, Random
+    gr(fmt = :png);
 
 Model
 ========
@@ -386,9 +387,6 @@ The code is as follows
 
 
 .. code-block:: julia
-
-    using Plots, NLsolve
-    gr(fmt=:png);
 
     wp = JvWorker(grid_size=25)
     v_init = collect(wp.x_grid) .* 0.5

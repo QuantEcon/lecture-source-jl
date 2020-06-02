@@ -8,7 +8,7 @@
 %===============================================================================
 
 ((* block docclass *))
-\documentclass[a4paper,11pt, twoside]{book}
+\documentclass[11pt, twoside, a4paper]{article}
 ((* endblock docclass *))
 
 %===============================================================================
@@ -57,6 +57,7 @@
 \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
 \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
 \usepackage{fancyvrb} % verbatim replacement that allows latex
+\usepackage{xcolor}
 \usepackage{listings}
 \lstset{escapeinside={<@}{@>}}
 \usepackage{grffile} % extends the file name processing of package graphics
@@ -194,12 +195,10 @@
 ((* block maketitle *))
 \setttsize{\footnotesize}
 
-((*- if nb.metadata.get("latex_metadata", {}).get("jupyter_pdf_book_title", ""): -*))
-\title{\Huge \textbf{((( nb.metadata["latex_metadata"]["jupyter_pdf_book_title"] )))}}
-((*- endif *))
+\title{((( nb.metadata.get("latex_metadata", {}).get("title", "") | escape_latex )))}
 
 ((*- if nb.metadata.get("latex_metadata", {}).get("author", ""): -*))
-\author{\textsc{((( nb.metadata["latex_metadata"]["author"] )))}}
+\author{((( nb.metadata["latex_metadata"]["author"] )))}
 ((*- endif *))
 
 ((*- if nb.metadata.get("latex_metadata", {}).get("affiliation", ""): -*))
@@ -209,15 +208,15 @@
 \date{\today}
 \maketitle
 
-\setcounter{tocdepth}{0}
-\tableofcontents
+((*- if nb.metadata.get("latex_metadata", {}).get("logo", ""): -*))
+\begin{center}
+   \adjustimage{max size={0.6\linewidth}{0.6\paperheight}}{((( nb.metadata["latex_metadata"]["logo"] )))}
+\end{center}
+((*- endif -*))
 
-
-\parskip 0.09in
-
-\mainmatter
-
+% delete-till-here-book %
 ((* endblock maketitle *))
+
 
 %===============================================================================
 % Input
@@ -252,6 +251,8 @@
             ((( custom_add_prompt(output.data['text/plain'] | wrap_text(88) | escape_latex | ansi2latex, cell, 'Out', 'outcolor', 'plain') )))
         ((*- elif type in ['text/latex']*))
             ((( custom_add_prompt(output.data['text/latex'] | wrap_text(88) | ansi2latex, cell, 'Out', 'outcolor', 'latex') )))
+        ((*- elif type in ['image/png']*))
+            ((( custom_add_prompt(output.metadata.filenames['image/png'] | wrap_text(88) | ansi2latex, cell, 'Out', 'outcolor', 'png') )))
         ((* else -*))
             ((( custom_add_prompt( '' | wrap_text(88)| escape_latex  | ansi2latex, cell, 'Out', 'outcolor', 'plain') )))
         ((*- endif -*))
@@ -280,8 +281,15 @@
 \begin{Verbatim}[commandchars=\\\{\}, fontsize=\small, xleftmargin=-3.9em]
 ((( text.replace('$$','').replace('$\\',"\\(\\").replace('$','\)') | add_prompts(first='{\color{' ~ prompt_color ~ '}' ~ prompt ~ '[{\\color{' ~ prompt_color ~ '}' ~ execution_count ~ '}]:} ', cont=indention) )))
 \end{Verbatim}
+((*- elif type == 'png' -*))
+\begin{Verbatim}[commandchars=\\\{\}, fontsize=\small, xleftmargin=-3.9em]
+((( '' | add_prompts(first='{\color{' ~ prompt_color ~ '}' ~ prompt ~ '[{\\color{' ~ prompt_color ~ '}' ~ execution_count ~ '}]:} ', cont=indention) )))
+\end{Verbatim}
+\begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{(((text)))}
+\end{center}
 ((*- else -*))
-\begin{lstlisting}[mathescape, basicstyle=\small\ttfamily\color{black}, xleftmargin=-3.9em]
+\begin{lstlisting}[mathescape, basicstyle=\small\ttfamily\color{black}, keywordstyle={\color{red}}, xleftmargin=-4.8em]
 ((( text | add_prompts(first='<@\\textcolor{red}{' ~ prompt ~ '[' ~ execution_count ~ ']: }@>', cont=indention) )))
 \end{lstlisting}
 ((*- endif -*))
@@ -315,7 +323,10 @@
 
 
 ((* block bibliography *))
+% delete-from-here-book %
+((*- if nb.metadata.get("latex_metadata", {}).get("bib_include", ""): -*))
 % Add a bibliography block to the postdoc
 \bibliographystyle{plain}
-\bibliography{((( nb.metadata.get("latex_metadata", {}).get("bib", "bibliography-file") )))}
+\bibliography{((( nb.metadata.get("latex_metadata", {}).get("bib", "quant-econ") )))}
+((*- endif -*))
 ((* endblock bibliography *))

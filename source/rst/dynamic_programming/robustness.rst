@@ -1028,6 +1028,7 @@ The code for producing the graph shown above, with blue being for the robust pol
 .. code-block:: julia
 
     using QuantEcon, Plots, LinearAlgebra, Interpolations
+    gr(fmt = :png);
 
     # model parameters
     a_0 = 100

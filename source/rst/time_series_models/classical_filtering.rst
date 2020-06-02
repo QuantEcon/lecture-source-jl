@@ -567,7 +567,8 @@ Here's how it looks
 
 .. code-block:: julia
 
-  using Polynomials, LinearAlgebra
+  using Polynomials.PolyCompat, LinearAlgebra
+  import Polynomials.PolyCompat: roots, coeffs
 
   function LQFilter(d, h, y_m;
                     r = nothing,
@@ -674,7 +675,7 @@ Here's how it looks
       proots = roots(ϕ_poly)
       # sort the roots according to their length (in descending order)
       roots_sorted = sort(proots, by=abs)[end:-1:1]
-      z_0 = sum(ϕ) / polyval(poly(proots), 1.0)
+     z_0 = sum(ϕ) / polyval(poly(proots), 1.0)
       z_1_to_m = roots_sorted[1:m]     # we need only those outside the unit circle
       λ = 1 ./ z_1_to_m
       return z_1_to_m, z_0, λ

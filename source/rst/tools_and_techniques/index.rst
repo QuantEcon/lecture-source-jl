@@ -26,3 +26,5 @@ tools and techniques.
     finite_markov
     stationary_densities
     kalman
+    numerical_linear_algebra
+    iterative_methods_sparsity

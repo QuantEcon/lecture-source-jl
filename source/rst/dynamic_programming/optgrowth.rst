@@ -478,16 +478,12 @@ Setup
 
     using LinearAlgebra, Statistics
     using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test
 
     using Test
-
-.. code-block:: julia
-
-    using Plots, QuantEcon, Interpolations, NLsolve
-    gr(fmt = :png);
 
 .. code-block:: julia
 
@@ -516,17 +512,18 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
     using Optim
 
-    function T(w, grid, β, u, f, shocks, Tw = similar(w);
-                              compute_policy = false)
+    function T(w, grid, β, u, f, shocks; compute_policy = false)
         w_func = LinearInterpolation(grid, w)
         # objective for each grid point
-        objectives = (c -> u(c) + β * mean(w_func.(f(y - c) .* shocks)) for y in grid_y)
-        results = maximize.(objectives, 1e-10, grid_y) # solver result for each grid point
+        objectives = (c -> u(c) + β * mean(w_func.(f(y - c) .* shocks)) for y in grid)
+        results = maximize.(objectives, 1e-10, grid) # solver result for each grid point
+
         Tw = Optim.maximum.(results)
         if compute_policy
             σ = Optim.maximizer.(results)
             return Tw, σ
         end
+
         return Tw
     end
 
@@ -715,9 +712,7 @@ We can write a function that computes the exact fixed point
 .. code-block:: julia
 
     function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
-        Tw = similar(grid_y)
-        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw),
-                                   initial_w).zero # gets returned
+        fixedpoint(w -> T(w, grid_y, β, u, f, shocks), initial_w).zero # gets returned
     end
 
 We can check our result by plotting it against the true value
@@ -843,7 +838,7 @@ Here's one solution (assuming as usual that you've executed everything above)
         Tw = similar(grid_y)
         initial_w = 5 * log.(grid_y)
 
-        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw),
+        v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks),
                                    initial_w).zero
         Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
                                  compute_policy = true)
@@ -864,7 +859,7 @@ Here's one solution (assuming as usual that you've executed everything above)
 
     Tw = similar(grid_y)
     initial_w = 5 * log.(grid_y)
-    v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks, Tw),
+    v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks),
                                initial_w).zero
     Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
                              compute_policy = true)

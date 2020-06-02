@@ -895,6 +895,7 @@ We can use auto-differentiation to compare the results.
 .. code-block:: julia
 
     using Plots, ForwardDiff
+    gr(fmt = :png);
 
     # operator to get the derivative of this function using AD
     D(f) = x -> ForwardDiff.derivative(f, x)
@@ -989,10 +990,10 @@ The `Polynomial.jl <https://github.com/JuliaMath/Polynomials.jl>`_ provides a pa
 
     using Polynomials
 
-    p = Poly([2, -5, 2], :x)  # :x just gives a symbol for display
+    p = Polynomial([2, -5, 2], :x)  # :x just gives a symbol for display
 
     @show p
-    p′ = polyder(p)   # gives the derivative of p, another polynomial
+    p′ = derivative(p)   # gives the derivative of p, another polynomial
     @show p(0.1), p′(0.1)  # call like a function
     @show roots(p);   # find roots such that p(x) = 0
 
@@ -1003,10 +1004,10 @@ Exercise 4
 --------------
 
 Use your solution to Exercise 8(a/b) in :doc:`Introductory Examples <../getting_started_julia/julia_by_example>` to
-create a specialized version of Newton's method for ``Polynomials`` using the ``polyder`` function.
+create a specialized version of Newton's method for ``Polynomials`` using the ``derivative`` function.
 
-The signature of the function should be ``newtonsmethod(p::Poly, x_0; tolerance = 1E-7, maxiter = 100)``,
-where ``p::Poly`` ensures that this version of the function will be used anytime a polynomial is passed (i.e. dispatch).
+The signature of the function should be ``newtonsmethod(p::Polynomial, x_0; tolerance = 1E-7, maxiter = 100)``,
+where ``p::Polynomial`` ensures that this version of the function will be used anytime a polynomial is passed (i.e. dispatch).
 
 Compare the results of this function to the built-in ``roots(p)`` function.
 

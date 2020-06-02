@@ -550,6 +550,59 @@ Comprehensions can also create arrays of tuples or named tuples
     [ (num = i, animal = j) for i in 1:2, j in animals]
 
 
+Generators
+------------------
+(`See generator documentation <https://docs.julialang.org/en/v1/manual/arrays/#Generator-Expressions-1>`_)
+
+In some cases, you may wish to use a comprehension to create an iterable list rather
+than actually making it a concrete array.
+
+The benefit of this is that you can use functions which take general iterators rather
+than arrays without allocating and storing any temporary values.
+
+For example, the following code generates a temporary array of size 10,000 and finds the sum.
+
+.. code-block:: julia
+
+    xs = 1:10000
+    f(x) = x^2
+    f_x = f.(xs)
+    sum(f_x)
+
+We could have created the temporary using a comprehension, or even done the comprehension
+within the ``sum`` function, but these all create temporary arrays.
+
+.. code-block:: julia
+
+    f_x2 = [f(x) for x in xs]
+    @show sum(f_x2)
+    @show sum([f(x) for x in xs]); # still allocates temporary
+
+Note, that if you were hand-code this, you would be able to calculate the sum by simply
+iterating to 10000, applying ``f`` to each number, and accumulating the results.  No temporary
+vectors would be necessary.
+
+A generator can emulate this behavior, leading to clear (and sometimes more efficient) code when used
+with any function that accepts iterators.  All you need to do is drop the ``]`` brackets.
+
+
+.. code-block:: julia
+
+    sum(f(x) for x in xs)
+
+We can use ``BenchmarkTools`` to investigate
+
+.. code-block:: julia
+
+    using BenchmarkTools
+    @btime sum([f(x) for x in $xs])
+    @btime sum(f.($xs))
+    @btime sum(f(x) for x in $xs);
+
+Notice that the first two cases are nearly identical, and allocate a temporary array, while the
+final case using generators has no allocations.
+
+In this example you may see a speedup of over 1000x.  Whether using generators leads to code that is faster or slower depends on the cirumstances, and you should (1) always profile rather than guess; and (2) worry about code clarify first, and performance second---if ever.
 
 Comparisons and Logical Operators
 ===================================
@@ -1116,7 +1169,6 @@ You can create and define using ``function`` as well
     h = snapabove(f, 2.0)
 
     using Plots
-
     gr(fmt=:png);
     plot(h, 0.0:0.1:3.0)
 
@@ -1337,12 +1389,12 @@ Hints:
 Exercise 7
 ------------
 
-Redo Exercise 5 except 
+Redo Exercise 5 except
 
 1. Pass in a range instead of the ``a, b,`` and ``n``.  Test with a range such as ``nodes = -1.0:0.5:1.0``.
 2. Instead of the ``while`` used in the solution to Exercise 5, find a better way to efficiently bracket the ``x`` in the nodes.
 
-Hints: 
+Hints:
 * Rather than the signature as ``function linapprox(f, a, b, n, x)``, it should be called as ``function linapprox(f, nodes, x)``.
 * ``step(nodes), length(nodes), nodes[1]``, and ``nodes[end]`` may be useful.
 * Type ``?÷`` into jupyter to explore quotients from Euclidean division for more efficient bracketing.

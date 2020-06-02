@@ -235,6 +235,7 @@ Setup
 
     using LinearAlgebra, Statistics
     using DataFrames, Parameters, Plots
+    gr(fmt = :png);
 
 .. code-block:: julia
 

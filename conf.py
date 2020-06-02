@@ -451,8 +451,8 @@ jupyter_images_markdown = True
 jupyter_allow_html_only=True
 
 ## Theme specific variables
-jupyter_theme_path = 'theme'
-jupyter_template_path = 'theme/templates'
+# jupyter_theme_path = 'theme/minimal'    #Specified in Makefile
+# jupyter_template_path = 'theme/minimal/templates'   #Specified in Makefile
 
 # Jupyter dependencies
 jupyter_dependencies = {

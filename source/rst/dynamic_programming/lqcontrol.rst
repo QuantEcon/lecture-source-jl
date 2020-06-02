@@ -652,6 +652,7 @@ Setup
 
     using LinearAlgebra, Statistics
     using Plots, Plots.PlotMeasures, QuantEcon
+    gr(fmt = :png);
 
 .. code-block:: julia
     :class: test
@@ -1535,4 +1536,3 @@ Our solution code is
         @test xp[20] ≈ 2.8378651501210808
         @test q̄[25] ≈ 2.518687537862516
     end
-    
