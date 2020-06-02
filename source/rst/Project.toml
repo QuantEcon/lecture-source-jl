@@ -1,6 +1,6 @@
 name = "quantecon-notebooks-julia"
 authors = ["arnavs <me@arnavsood.com>"]
-version = "0.7.0"
+version = "0.8.0"
 
 [deps]
 AlgebraicMultigrid = "2169fc97-5a83-5252-b627-83903c6c433c"

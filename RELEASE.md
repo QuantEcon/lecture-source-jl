@@ -24,7 +24,7 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
     D. But, note that those repos don't need to be populated; the coverage etc. will run against the TOML in the `source/rst`, which will get carried over.
 
-    E. Also, good practice to do a global find/replace for the old version number, and update as appropriate (but don't do this blindly, because it may pop up in innocuous places; e.g. a package numbered v0.7.0.) Mainly, though, the version numbers are used in the `source/_static/includes/deps_generic.jl` and the getting started lecture.
+    E. Also, good practice to do a global find/replace for the old version number, and update as appropriate (but don't do this blindly, because it may pop up in innocuous places; e.g. a package numbered v0.8.0.) Mainly, though, the version numbers are used in the `source/_static/includes/deps_generic.jl` and the getting started lecture.
 
 5. If you're also bumping Julia versions, make sure you change the `conf.py` kernelspec to use the new one. Otherwise, each coverage will trivially fail. And colab will fail. **If you're updating the Julia version, make sure you also bump it in the Colab install script under source/_static/includes**.
 

@@ -79,11 +79,11 @@ The full command might look like ``sudo ln -s /Applications/Julia-1.4.app/Conten
 
 **Note**: To obtain the full set of packages we use, at this stage you can run the following (see :ref:`the package setup section <package_setup>`.)
 
-.. code-block:: julia 
-    :class: no-execute 
+.. code-block:: julia
+    :class: no-execute
 
     using InstantiateFromURL
-    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.7.0", instantiate = true, precompile = true)
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.8.0", instantiate = true, precompile = true)
 
 .. _jupyter_installation:
 
@@ -209,7 +209,7 @@ JupyterHub installations have different methods for cloning repositories, with w
 
 .. The left side of JupyterHub's interface has a ``files`` pane which you can use to navigate to and open the lectures (more on this in the next lecture).
 
-.. _package_setup: 
+.. _package_setup:
 
 Installing Packages
 =====================
@@ -228,13 +228,13 @@ To add this package, in an online Jupyter notebook run (typically with ``<Shift-
 
     ] add InstantiateFromURL
 
-Then, run 
+Then, run
 
-.. code-block:: julia 
-    :class: no-execute 
+.. code-block:: julia
+    :class: no-execute
 
     using InstantiateFromURL
-    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.7.0", instantiate = true, precompile = true)
+    github_project("QuantEcon/quantecon-notebooks-julia", version = "0.8.0", instantiate = true, precompile = true)
 
 If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.
 
