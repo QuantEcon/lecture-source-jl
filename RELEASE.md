@@ -30,11 +30,11 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
 
     0. Run `] add IJulia InstantiateFromURL` locally after install to update to the latest IJulia (for minor updates, can simply do `] build`.)
 
-    1. Don't forget to install the new Julia version on the ANU server. Canonically these live in `~/applications`. Navigate there and run `wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.2-linux-x86_64.tar.gz | tar -xzv`.
+    1. Don't forget to install the new Julia version on the ANU server. Canonically these live in `~/applications`. Navigate there and run (e.g.) `wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.2-linux-x86_64.tar.gz | tar -xzv`.
 
-    2. To make this the default, go to the home directory on that machine, run `vim .bashrc`, and then edit the path to Julia (should be top line in the file) to the new version. Then, either log out and ssh again, or run `source .bashrc` to pull the changes. 
+    2. To make this the default, go to the home directory on that machine, run `vim .bashrc`, and then edit the path to Julia (should be top line in the file) to the new version. Then, either log out and ssh again, or run `source .bashrc` to pull the changes.
 
-    3. As above, install `InstantiateFromURL` and `IJulia` on the new version, and ideally grab the manifest version you intend to use with a `precompile = true`.
+    3. As above, install `InstantiateFromURL` and `IJulia` on the new version, and ideally grab the manifest version you intend to use with a `precompile = true`. For minor updates, can simply run `] build`.
 
 6. Once you get the source in a state that looks good (e.g., coverage on the website is 100%, etc.), you can go live with `make julia-live` from the AWS repo.
 
