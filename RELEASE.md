@@ -35,6 +35,8 @@ Get Matt to add you to the `https://github.com/mmcky/QuantEcon.aws.admin` repo. 
     2. To make this the default, go to the home directory on that machine, run `vim .bashrc`, and then edit the path to Julia (should be top line in the file) to the new version. Then, either log out and ssh again, or run `source .bashrc` to pull the changes.
 
     3. As above, install `InstantiateFromURL` and `IJulia` on the new version, and ideally grab the manifest version you intend to use with a `precompile = true`. For minor updates, can simply run `] build`.
+    
+    4. When bumping Julia versions, you may have to **adjust tolerances on coverage** or **run `make-julia` twice to get coverage back up.** 
 
 6. Once you get the source in a state that looks good (e.g., coverage on the website is 100%, etc.), you can go live with `make julia-live` from the AWS repo.
 
