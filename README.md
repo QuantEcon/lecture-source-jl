@@ -16,6 +16,7 @@ For information on releasing a new lecture version, see [the docs](RELEASE.md).
 - To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
   - For the installation, run it in `Powershell` as an administrator
   - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
+  - Use WSL2 and see https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel for manual installation instructions if required.
 - Install [VSCode](https://code.visualstudio.com/) with remote WSL support on windows
  - See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview)
  - [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
