@@ -50,7 +50,7 @@ sudo apt-get upgrade
 sudo apt install make gcc unzip
 sudo apt-get update
 sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
-```sudo 
+``` 
 
 2. Install Conda
 
@@ -66,7 +66,7 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
    - *IMPORTANT* Manually choose `yes` to have it do the `conda init`
    - Delete the installation file
      ```bash
-     sudo pip install --upgrade --force-reinstall pyzmq
+     pip install --upgrade --force-reinstall pyzmq
      rm Anaconda3-2020.02-Linux-x86_64.sh
      ```
 
