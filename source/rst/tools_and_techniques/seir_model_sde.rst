@@ -2,9 +2,9 @@
 
 .. highlight:: julia
 
-*****************************************************************
+******************************************************************
 :index:`Modeling COVID 19 with (Stochastic) Differential Equations`
-*****************************************************************
+******************************************************************
 
 .. contents:: :depth: 2
 
@@ -55,11 +55,13 @@ Setup
 
     using Test # Put this before any code in the lecture.
 
-In addition, we will be exploring packages within the `SciML ecosystem <https://github.com/SciML/>`__.
+In addition, we will be exploring packages within the `SciML ecosystem <https://github.com/SciML/>`__ and
+others covered in previous lectures 
 
 .. code-block:: julia
 
     using OrdinaryDiffEq, StochasticDiffEq
+    using Parameters, StaticArrays, Plots 
 
 
 The SEIR Model
@@ -79,13 +81,13 @@ Comments:
 
 * Those in the exposed group are not yet infectious.
 
-Time Path
-----------
+Changes in the Infected State
+-------------------------------
 
 The flow across states follows the path :math:`S \to E \to I \to R`.
 
 
-All individuals in the population are eventually infected when 
+Since we are using a continuum approximation, all individuals in the population are eventually infected when 
 the transmission rate is positive and :math:`i(0) > 0`. 
 
 The interest is primarily in 
@@ -93,8 +95,7 @@ The interest is primarily in
 * the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
 * how long the caseload can be deferred (hopefully until a vaccine arrives)
 
-Using lower case letters for the fraction of the population in each state where we maintain a constant population throughout, the
-dynamics are
+Assume that there is a constant population of size :math:`N` throughout, then define the proportion of people in each state as :math:`s := S/N` etc.  With this, the SEIR model can be written as 
 
 .. math::
    \begin{aligned} 
@@ -114,54 +115,63 @@ In these equations,
 * :math:`\sigma` is called the *infection rate* (the rate at which those who are exposed become infected)
 * :math:`\gamma` is called the *recovery rate* (the rate at which infected people recover or die).
 * :math:`dy/dt` represents the time derivative for the particular variable
+* Since the states form a partition, so we can reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, it convenient to :math:`r(t)` in the system for graphing
 
 
-Note that the states form a partition, so we can reconstruct the "removed" fraction of the population is :math:`r = 1 - s - e - i`.
+In addition, we are interested in calculatin the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
 
-However, it may be convenient to leave the :math:`r(t)` in the system as well as :math:`c = i + r`, which is the cumulative caseload
-(i.e., all those who have or have had the infection).  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
 
-We will assume that the transmission rate follows a process with a reversion to a mean :math:`b` which will remain constant for now, but could conceivably be a policy parameter.
+Implementing the system of ODEs in :math:`s, e, i` would be enough to implement the model, but we will extend the basic model to enable some policy experiments.
+
+Evolution of Parameters
+-----------------------
+
+We will assume that the transmission rate follows a process with a reversion to a value :math:`b` which could conceivably be a policy parameter.  The intuition is that even if the targetted :math:`b(t)` was changed, lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`\beta(t)` moves towards :math:`b(t)`. 
 
 .. math::
    \begin{aligned} 
     \frac{d \beta}{d t} &= \eta (b - \beta)
     \end{aligned}
 
-Finally, let :math:`v(t)` be the mortality rate, which we will leave constant for now.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`m(t)`.  The differential equation
-follows, 
+Finally, let :math:`v(t)` be the mortality rate, which we will leave constant for now, i.e. :math:`\frac{d v}{d t} = 0`.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`m(t)`.  The differential equations then
+follow, 
 
 .. math::
 
-   \begin{aligned} 
+    \begin{aligned}\\
+    \frac{d v}{d t} &= 0\\
     \frac{d m}{d t} &= v \gamma  i
     \end{aligned}
 
-While we could conveivably integate the total deaths given the solution to the model, it is convenient to use the integrator built into the ODE solver.
+While we could conveivably integate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we added :math:`d m(t)/dt` rather than calculating :math:`m(t) = \int_0^t \gamma v(\tau) i(\tau) d \tau` after generating the full :math:`i(t)` path.
 
+This is a common trick when solving systems of ODEs.  While equivalent in principle if you used an appropriate quadrature scheme, this trick becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid).
 
-The system :eq:`seir_system` and the supplemental equations can be written in vector form in terms of the vector :math:`x := (s, e, i, r, \beta, c, m)` with parameter vector :math:`p := (\sigma, \gamma, b, eta)`
+The system :eq:`seir_system` and the supplemental equations can be written in vector form in terms of the vector :math:`x := (s, e, i, r, c, m, \beta, v)` with parameter vector :math:`p := (\sigma, \gamma, b, \eta)`
 
 .. math::
-    \frac{d x}{d t} = \begin{bmatrix}
+    \begin{aligned} 
+    \frac{d x}{d t} = F(x,t;p) := \begin{bmatrix}
             - \beta \, s \,  i  
         \\
         \beta \,  s \,  i  - \sigma e 
         \\
-        \sigma  e  - \gamma i
+        \sigma \, e  - \gamma i
         \\
-        \gamma  i
-        \\
-         \eta (b - \beta)
+        \gamma \, i
         \\
         \sigma e
         \\
-        v \gamma i
-        \end{bmatrix} =: F(x; p)
-
+        v \, \gamma \, i
+        \\
+         \eta (b(t) - \beta)
+        \\
+        0        
+        \end{bmatrix}
+    \end{aligned}         
     :label: dfcv
 
-Here we have maintained the time independence of the :math:`F(x)` function, but we could also have time-varying terms. 
+Here note that if :math:`b(t)` is time-invariant, then :math:`F(x)` is time-invariant as well. 
 
 Parameters
 ----------
@@ -172,137 +182,123 @@ As in Atkeson's note, we set
 
 * :math:`\sigma = 1/5.2` to reflect an average incubation period of 5.2 days.
 * :math:`\gamma = 1/18` to match an average illness duration of 18 days.
-* :math:`b = 1.6 \gamma` to match an **effective reproduction rate** of 1.6
+* :math:`\bar{b} / \gamma = 1.6` to match an **effective reproduction rate** of 1.6, and initially time-invariant
+* :math:`v = 0.01` for a one-percent mortality rate
 
 In addition, the transmission rate can be interpreted as 
 
-* :math:`\beta(t) := R(t) \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.
+* :math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.
 
 (The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
-:math:`R`, the symbol that represents the removed state.)
+:math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the reproduction number)
 
-Rather than set :math:`\eta`, we will begin by looking at the case where :math:`\beta(0) = \bar{\beta}`, and hence it remains constant.
-
+As we will initially consider the case where :math:`\beta(0) = \bar{b}`, the value of :math:`\eta` will drop out of this first experiment.
 
 Implementation
 ==============
 
-First we set the population size to match the US.
+First we set the population size to match the US and the parameters as described
 
 .. code-block:: julia
 
-    pop_size = 3.3e8
-
-Next we fix parameters as described above.
-
-.. code-block:: julia
-
+    N = 3.3e8  # US Population
     γ = 1 / 18
     σ = 1 / 5.2
+    η = 1 / 20   # a placeholder, drops out of firs texperiments.
 
 Now we construct a function that represents :math:`F` in :eq:`dfcv`
 
 .. code-block:: julia
 
-    function F(t, x, p)
-        s, e, i, r, β, c, m = x
-        σ, γ, b, η = p
-        return [-β * s * i;  # for d s(t)
-                 β * s * i -  σ * e; 
-                 σ * e - γ * i;
-                 γ * i;
-                 η (b - β)
-                 v * γ *  i
-                 σ * e]
-                 
-                 
- \frac{d m}{d t} &= v \gamma  i
+    # Reminder: could solve dynamics of SEIR states with just first 3 equations
+    function F(u, p, t)
+        s, e, i, r, c, m, β, v = u
+        @unpack σ, γ, b, η = p
 
+        return [-β * s * i;          # ds/dt = -βsi
+                 β * s * i -  σ * e; # de/dt =  βsi - σe
+                 σ * e - γ * i;      # di/dt =        σe -γi
+                 γ * i;              # dr/dt =            γi
+                 σ * e;              # dc/dt =        σe
+                 v * γ * i;          # dm/dt =           vγi
+                 η * (b(t, p) - β);  # dβ/dt = η(b(t) - β)
+                 0.0                 # dv/dt = 0
+                ]        
     end
 
 
-
-    #    """
-    #    Time derivative of the state vector.
-    #
-    #        * x is the state vector (array_like)
-    #        * t is time (scalar)
-    #        * R0 is the effective transmission rate, defaulting to a constant
-    #
-    #    """
-    #    s, e, i = x
-    #
-    #    # New exposure of susceptibles
-    #    β = R0(t) * γ if callable(R0) else R0 * γ
-    #    ne = β * s * i   
-    #    
-    #    # Time derivatives
-    #    ds = - ne
-    #    de = ne - σ * e
-    #    di = σ * e - γ * i
-    #    
-    #    return ds, de, di
-
-Note that ``R0`` can be either constant or a given function of time.
-
-The initial conditions are set to
+The baseline parameters are put into a named tuple generator (see previous lectures using ``Parameters.jl``) with default values discussed above.  
 
 .. code-block:: julia
 
-    # initial conditions of s, e, i
+    (t,p) = p.b̄
+    p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
+                      b̄ = 1.6 * γ, b = (t, p) -> p.b̄)
+
+Note that the default :math:`b(t)` function is simply the constant function :math:`\bar{b}`
+
+
+Setting initial conditions, we will assume a fixed :math:`i, e` along with
+assuming :math:`r = m = c = 0`, and that :math:`\beta(0) = \bar{b}` and :math:`v(0) = 0.01` 
+
+.. code-block:: julia
+
+    p = p_gen()  # use all default parameters
+ 
     i_0 = 1e-7
     e_0 = 4.0 * i_0
     s_0 = 1.0 - i_0 - e_0
 
-In vector form the initial condition is 
-
-.. code-block:: julia
-
-    x_0 = s_0, e_0, i_0
-
-We solve for the time path numerically using `odeint`, at a sequence of dates
-``t_vec``.
-
-.. code-block:: julia
-
-    #def solve_path(R0, t_vec, x_init=x_0):
-    #    """
-    #    Solve for i(t) and c(t) via numerical integration, 
-    #    given the time path for R0.
-    #
-    #    """
-    #    G = lambda x, t: F(x, t, R0)
-    #    s_path, e_path, i_path = odeint(G, x_init, t_vec).transpose()
-    #
-    #    c_path = 1 - s_path - e_path       # cumulative cases
-    #    return i_path, c_path
+    u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.0, p.b̄, 0.01]
+    tspan = (0.0, p.T)
+    prob = ODEProblem(F, u_0, tspan, p)
 
 
+The ``tspan`` determines that the :math:`t` used by the sovler, where the scale needs to be consistent with the arrival
+rate of the transition probabilities (i.e. the :math:`\gamma, \sigma` were chosen based on daily data).
+The time period we investigate will be 550 days, or around 18 months:
 
 Experiments
 ===========
 
 Let's run some experiments using this code.
 
-The time period we investigate will be 550 days, or around 18 months:
+First, we can solve the ODE using an appropriate algorthm (e.g. a good default for non-stiff ODEs might be ``Tsit5()``, which is the Tsitouras 5/4 Runge-Kutta method).
+
+Most high-performance ODE solvers appropriate for this class of problems will have adaptive time-stepping, so you
+will not specify any sort of grid
 
 .. code-block:: julia
 
-    t_length = 550
-    grid_size = 1000
-    #t_vec = np.linspace(0, t_length, grid_size)
+    sol = solve(prob, Tsit5())  # TODO: change the accuracy?
+    @show length(sol.t);
+
+We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses the an interpolator consistent with the
+solution to the ODE.
+
+See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on analyzing the solution, and `here <https://docs.sciml.ai/stable/basics/plot/>`__ for plotting tools.  The built-in plots for the solutions provide all of the `attributes <https://docs.juliaplots.org/latest/tutorial/`__ in `Plots.jl <https://github.com/JuliaPlots/Plots.jl>`__.
+
+.. code_block:: julia
+
+    # TODO: Chris, We could plot something else?  Also labels broken
+    plot(sol, vars = [1, 2, 3, 4], label = ["s", "i", "e", "r"], title = "SIER Proportions")
 
 
 
-Experiment 1: Constant R0 Case
+Experiment 1: Constant Reproduction Case
 ------------------------------
 
+Let's start with the case where :math:`R = \beta / b` is constant.
 
-Let's start with the case where ``R0`` is constant.
-
-We calculate the time path of infected people under different assumptions for ``R0``:
+We calculate the time path of infected people under different assumptions.
 
 .. code-block:: julia
+    γ_base = 1.0/18.0
+    R_vals = range(1.6, 3.0, length = 6)
+    b_vals = R_vals / γ_base
+    sols = [solve(ODEProblem(F, u_0, tspan, p_gen(b = b_vals)), Tsit5()) for b in b_vals]
+ 
+    # TODO: Probably clean ways to plot this 
 
     #R0_vals = np.linspace(1.6, 3.0, 6)
     #labels = [f'$R0 = {r:.2f}$' for r in R0_vals]
@@ -313,9 +309,7 @@ We calculate the time path of infected people under different assumptions for ``
     #    i_paths.append(i_path)
     #    c_paths.append(c_path)
 
-Here's some code to plot the time paths.
-
-.. code-block:: julia
+    # Here's some code to plot the time paths.
 
     #def plot_paths(paths, labels, times=t_vec):
     #
@@ -345,24 +339,25 @@ Here is cumulative cases, as a fraction of population:
     #plot_paths(c_paths, labels)
 
 
-
 Experiment 2: Changing Mitigation
 ---------------------------------
 
 Let's look at a scenario where mitigation (e.g., social distancing) is 
 successively imposed.
 
-Here's a specification for ``R0`` as a function of time.
+To do this, we will have :math:`\beta(0) \neq b` and examine the dynamics using the :math:`\frac{d \beta}{d t} &= \eta (b - \beta)` differential equation.
 
-.. code-block:: julia
+.. Mathematica Verification
+.. (\[Beta][t] /. 
+..     First@DSolve[{\[Beta]'[t] == \[Eta] (b - \[Beta][t]), \[Beta][
+..          0] == \[Beta]0}, \[Beta][t], 
+..       t] ) == \[Beta]0 E^(-t \[Eta]) + (1 - 
+..       E^(-t \[Eta])) b // FullSimplify
 
-    #def R0_mitigating(t, r0=3, η=1, r_bar=1.6): 
-    #    R0 = r0 * exp(- η * t) + (1 - exp(- η * t)) * r_bar
-    #    return R0
+      
+Note that in the simple case, where :math:`b` is independent of the state, the solution to the ODE with :math:`\beta(0) = \beta_0` is :math:`\beta(t) = \beta_0 e^{-\eta t} + b(1 - e^{-\eta t})`
 
-The idea is that ``R0`` starts off at 3 and falls to 1.6.
-
-This is due to progressive adoption of stricter mitigation measures.
+We will examine the case where :math:`R(t)` starts off at 3 and falls to 1.6 due to the progressive adoption of stricter mitigation measures.
 
 The parameter ``η`` controls the rate, or the speed at which restrictions are
 imposed.
@@ -374,19 +369,7 @@ We consider several different rates:
     #η_vals = 1/5, 1/10, 1/20, 1/50, 1/100
     #labels = [fr'$\eta = {η:.2f}$' for η in η_vals]
 
-This is what the time path of ``R0`` looks like at these alternative rates:
-
-.. code-block:: julia
-
-    #fig, ax = plt.subplots()
-    #
-    #for η, label in zip(η_vals, labels):
-    #    ax.plot(t_vec, R0_mitigating(t_vec, η=η), label=label)
-    #
-    #ax.legend()
-    #plt.show()
-
-Let's calculate the time path of infected people:
+Let's calculate the time path of infected people, current cases, and mortality
 
 .. code-block:: julia
 
@@ -398,16 +381,7 @@ Let's calculate the time path of infected people:
     #    i_paths.append(i_path)
     #    c_paths.append(c_path)
 
-
-This is current cases under the different scenarios:
-
-.. code-block:: julia
-
     #plot_paths(i_paths, labels)
-
-Here are cumulative cases, as a fraction of population:
-
-.. code-block:: julia
 
     #plot_paths(c_paths, labels)
 
