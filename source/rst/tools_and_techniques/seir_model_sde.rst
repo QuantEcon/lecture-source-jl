@@ -81,27 +81,44 @@ Comments:
 
 * Those in the exposed group are not yet infectious.
 
-Changes in the Infected State
--------------------------------
 
-The flow across states follows the path :math:`S \to E \to I \to R`.
-
-
-Since we are using a continuum approximation, all individuals in the population are eventually infected when 
-the transmission rate is positive and :math:`i(0) > 0`. 
 
 The interest is primarily in 
 
 * the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
 * how long the caseload can be deferred (hopefully until a vaccine arrives)
 
+
+
+Changes in the Infected State
+-------------------------------
+
+Within the SIER model, the flow across states follows the path :math:`S \to E \to I \to R`.  Extensions of this model, such as SIERS, relax lifetime immunity and allow transitions from :math:` R \to S`.
+
+The transitions between those states are governed by the following rates
+
+* :math:`\beta(t)` is called the *transmission rate* (the rate at which individuals bump into others and expose them to the virus).
+* :math:`\sigma` is called the *infection rate* (the rate at which those who are exposed become infected)
+* :math:`\gamma` is called the *recovery rate* (the rate at which infected people recover or die).
+
+
+In addition, the transmission rate can be interpreted as: math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.  For this reason, we will work with the :math:`R(t)` reparameterization.
+
+(The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
+:math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the effective reproduction number, unless stated otherwise)
+
+
 Assume that there is a constant population of size :math:`N` throughout, then define the proportion of people in each state as :math:`s := S/N` etc.  With this, the SEIR model can be written as 
+
+
+Since we are using a continuum approximation, all individuals in the population are eventually infected when 
+the transmission rate is positive and :math:`i(0) > 0`. 
 
 .. math::
    \begin{aligned} 
-        \frac{d s}{d t}  & = - \beta \, s \,  i  
+        \frac{d s}{d t}  & = - \gamma \, R \, s \,  i  
         \\
-        \frac{d e}{d t}   & = \beta \,  s \,  i  - \sigma e 
+        \frac{d e}{d t}   & = \gamma \, R \, s \,  i  - \sigma e 
         \\
          \frac{d i}{d t}  & = \sigma  e  - \gamma i
         \\
@@ -109,28 +126,23 @@ Assume that there is a constant population of size :math:`N` throughout, then de
    \end{aligned} 
    :label: seir_system
 
-In these equations,
+Here, :math:`dy/dt` represents the time derivative for the particular variable.
 
-* :math:`\beta(t)` is called the *transmission rate* (the rate at which individuals bump into others and expose them to the virus).
-* :math:`\sigma` is called the *infection rate* (the rate at which those who are exposed become infected)
-* :math:`\gamma` is called the *recovery rate* (the rate at which infected people recover or die).
-* :math:`dy/dt` represents the time derivative for the particular variable
-* Since the states form a partition, so we can reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, it convenient to :math:`r(t)` in the system for graphing
+Since the states form a partition, we can reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`, and will drop it from the system  
 
 
-In addition, we are interested in calculatin the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
+In addition, we are interested in calculating the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
 
-
-Implementing the system of ODEs in :math:`s, e, i` would be enough to implement the model, but we will extend the basic model to enable some policy experiments.
+Implementing the system of ODEs in :math:`s, e, i` would be enough to implement the model given fixed parameters, but we will extend the basic model to enable some policy experiments.
 
 Evolution of Parameters
 -----------------------
 
-We will assume that the transmission rate follows a process with a reversion to a value :math:`b` which could conceivably be a policy parameter.  The intuition is that even if the targetted :math:`b(t)` was changed, lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`\beta(t)` moves towards :math:`b(t)`. 
+We will assume that the transmission rate follows a process with a reversion to a value :math:`B(t)` which could conceivably be a policy parameter.  The intuition is that even if the targetted :math:`B(t)` was changed, lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R(t)` moves towards :math:`B(t)`. 
 
 .. math::
    \begin{aligned} 
-    \frac{d \beta}{d t} &= \eta (b - \beta)
+    \frac{d R}{d t} &= \eta (B - R)
     \end{aligned}
 
 Finally, let :math:`v(t)` be the mortality rate, which we will leave constant for now, i.e. :math:`\frac{d v}{d t} = 0`.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`m(t)`.  The differential equations then
@@ -147,31 +159,29 @@ While we could conveivably integate the total deaths given the solution to the m
 
 This is a common trick when solving systems of ODEs.  While equivalent in principle if you used an appropriate quadrature scheme, this trick becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid).
 
-The system :eq:`seir_system` and the supplemental equations can be written in vector form in terms of the vector :math:`x := (s, e, i, r, c, m, \beta, v)` with parameter vector :math:`p := (\sigma, \gamma, b, \eta)`
+The system :eq:`seir_system` and the supplemental equations can be written in vector form in terms of the vector :math:`x := (s, e, i, c, m, R, v)` with parameter vector :math:`p := (\sigma, \gamma, B, \eta)`
 
 .. math::
     \begin{aligned} 
     \frac{d x}{d t} = F(x,t;p) := \begin{bmatrix}
-            - \beta \, s \,  i  
+            - \gamma \, R \, s \,  i  
         \\
-        \beta \,  s \,  i  - \sigma e 
+        \gamma \, R \,  s \,  i  - \sigma e 
         \\
         \sigma \, e  - \gamma i
-        \\
-        \gamma \, i
         \\
         \sigma e
         \\
         v \, \gamma \, i
         \\
-         \eta (b(t) - \beta)
+         \eta (B(t) - R)
         \\
         0        
         \end{bmatrix}
     \end{aligned}         
     :label: dfcv
 
-Here note that if :math:`b(t)` is time-invariant, then :math:`F(x)` is time-invariant as well. 
+Here note that if :math:`B(t)` is time-invariant, then :math:`F(x)` is time-invariant as well. 
 
 Parameters
 ----------
@@ -182,17 +192,11 @@ As in Atkeson's note, we set
 
 * :math:`\sigma = 1/5.2` to reflect an average incubation period of 5.2 days.
 * :math:`\gamma = 1/18` to match an average illness duration of 18 days.
-* :math:`\bar{b} / \gamma = 1.6` to match an **effective reproduction rate** of 1.6, and initially time-invariant
+* :math:`B = R = 1.6` to match an **effective reproduction rate** of 1.6, and initially time-invariant
 * :math:`v = 0.01` for a one-percent mortality rate
 
-In addition, the transmission rate can be interpreted as 
 
-* :math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.
-
-(The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
-:math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the reproduction number)
-
-As we will initially consider the case where :math:`\beta(0) = \bar{b}`, the value of :math:`\eta` will drop out of this first experiment.
+As we will initially consider the case where :math:`R(0) = B`, the value of :math:`\eta` will drop out of this first experiment.
 
 Implementation
 ==============
@@ -212,17 +216,17 @@ Now we construct a function that represents :math:`F` in :eq:`dfcv`
 
     # Reminder: could solve dynamics of SEIR states with just first 3 equations
     function F(u, p, t)
-        s, e, i, r, c, m, β, v = u
-        @unpack σ, γ, b, η = p
 
-        return [-β * s * i;          # ds/dt = -βsi
-                 β * s * i -  σ * e; # de/dt =  βsi - σe
-                 σ * e - γ * i;      # di/dt =        σe -γi
-                 γ * i;              # dr/dt =            γi
-                 σ * e;              # dc/dt =        σe
-                 v * γ * i;          # dm/dt =           vγi
-                 η * (b(t, p) - β);  # dβ/dt = η(b(t) - β)
-                 0.0                 # dv/dt = 0
+        s, e, i, c, m, R, v = u
+        @unpack σ, γ, B, η = p
+
+        return [-γ*R*s*i;        # ds/dt = -γRsi
+                 γ*R*s*i -  σ*e; # de/dt =  γRsi - σe
+                 σ*e - γ*i;      # di/dt =        σe -γi
+                 σ*e;            # dc/dt =        σe
+                 v*γ*i;          # dm/dt =           vγi
+                 η*(B(t, p) - R);# dβ/dt = η(B(t) - R)
+                 0.0             # dv/dt = 0
                 ]        
     end
 
@@ -231,15 +235,13 @@ The baseline parameters are put into a named tuple generator (see previous lectu
 
 .. code-block:: julia
 
-    (t,p) = p.b̄
     p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
-                      b̄ = 1.6 * γ, b = (t, p) -> p.b̄)
+                      R̄ = 1.6, B = (t, p) -> p.R̄)
 
-Note that the default :math:`b(t)` function is simply the constant function :math:`\bar{b}`
+Note that the default :math:`B(t)` function is simply the constant function :math:`\bar{R}`
 
 
-Setting initial conditions, we will assume a fixed :math:`i, e` along with
-assuming :math:`r = m = c = 0`, and that :math:`\beta(0) = \bar{b}` and :math:`v(0) = 0.01` 
+Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :math:`R(0) = \bar{B}`, and :math:`v(0) = 0.01` 
 
 .. code-block:: julia
 
@@ -249,7 +251,7 @@ assuming :math:`r = m = c = 0`, and that :math:`\beta(0) = \bar{b}` and :math:`v
     e_0 = 4.0 * i_0
     s_0 = 1.0 - i_0 - e_0
 
-    u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.0, p.b̄, 0.01]
+    u_0 = [s_0, e_0, i_0, 0.0, 0.0, p.R̄, 0.01]
     tspan = (0.0, p.T)
     prob = ODEProblem(F, u_0, tspan, p)
 
@@ -280,23 +282,20 @@ See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on anal
 
 .. code_block:: julia
 
-    # TODO: Chris, We could plot something else?  Also labels broken
-    plot(sol, vars = [1, 2, 3, 4], label = ["s", "i", "e", "r"], title = "SIER Proportions")
-
+    # TODO: Chris, We could plot something else as well?  Deaths, etc??  Also labels broken
+    plot(sol, vars = [3, 5], label = ["i(t)" "c(t)"], lw = 2, title = "Current and Cumulated Infected")
 
 
 Experiment 1: Constant Reproduction Case
 ------------------------------
 
-Let's start with the case where :math:`R = \beta / b` is constant.
+Let's start with the case where :math:`B(t) = R = R̄` is constant.
 
 We calculate the time path of infected people under different assumptions.
 
 .. code-block:: julia
-    γ_base = 1.0/18.0
-    R_vals = range(1.6, 3.0, length = 6)
-    b_vals = R_vals / γ_base
-    sols = [solve(ODEProblem(F, u_0, tspan, p_gen(b = b_vals)), Tsit5()) for b in b_vals]
+    R̄_vals = range(1.6, 3.0, length = 6)
+    sols = [solve(ODEProblem(F, u_0, tspan, p_gen(R̄ = R̄_val)), Tsit5()) for R̄ in R̄_vals]
  
     # TODO: Probably clean ways to plot this 
 
@@ -343,9 +342,9 @@ Experiment 2: Changing Mitigation
 ---------------------------------
 
 Let's look at a scenario where mitigation (e.g., social distancing) is 
-successively imposed.
+successively imposed, but the target (:math:`R̄` is fixed)
 
-To do this, we will have :math:`\beta(0) \neq b` and examine the dynamics using the :math:`\frac{d \beta}{d t} &= \eta (b - \beta)` differential equation.
+To do this, we will have :math:`R(0) \neq R̄` and examine the dynamics using the :math:`\frac{d R}{d t} &= \eta (R̄ - R)` ODE.
 
 .. Mathematica Verification
 .. (\[Beta][t] /. 
@@ -355,9 +354,9 @@ To do this, we will have :math:`\beta(0) \neq b` and examine the dynamics using 
 ..       E^(-t \[Eta])) b // FullSimplify
 
       
-Note that in the simple case, where :math:`b` is independent of the state, the solution to the ODE with :math:`\beta(0) = \beta_0` is :math:`\beta(t) = \beta_0 e^{-\eta t} + b(1 - e^{-\eta t})`
+Note that in the simple case, where :math:`B(t) = \bar{R}` is independent of the state, the solution to the ODE with :math:`R(0) = R_0` is :math:`R(t) = R_0 e^{-\eta t} + \bar{R}(1 - e^{-\eta t})`
 
-We will examine the case where :math:`R(t)` starts off at 3 and falls to 1.6 due to the progressive adoption of stricter mitigation measures.
+We will examine the case where :math:`R(0) = 3` and then it falls to  to :math:`\bar{R} = 1.6` due to the progressive adoption of stricter mitigation measures.
 
 The parameter ``η`` controls the rate, or the speed at which restrictions are
 imposed.
@@ -391,24 +390,36 @@ Ending Lockdown
 ===============
 
 
-The following replicates `additional results <https://drive.google.com/file/d/1uS7n-7zq5gfSgrL3S0HByExmpq4Bn3oh/view>`__ by Andrew Atkeson on the timing of lifting lockdown.
+The following is inspired by replicates `additional results <https://drive.google.com/file/d/1uS7n-7zq5gfSgrL3S0HByExmpq4Bn3oh/view>`__ by Andrew Atkeson on the timing of lifting lockdown.
 
 Consider these two mitigation scenarios:
 
-1. :math:`R_t = 0.5` for 30 days and then :math:`R_t = 2` for the remaining 17 months. This corresponds to lifting lockdown in 30 days.
+1. choose :math:`B(t)` to target :math:`\bar{R} = 0.5` for 30 days and then :math:`\bar{R} = 2` for the remaining 17 months. This corresponds to lifting lockdown in 30 days.
 
-2. :math:`R_t = 0.5` for 120 days and then :math:`R_t = 2` for the remaining 14 months. This corresponds to lifting lockdown in 4 months.
+2. :math:`\bar{R} = 0.5` for 120 days and then :math:`\bar{R} = 2` for the remaining 14 months. This corresponds to lifting lockdown in 4 months.
+
+For both of these, we will choose a large :math:`\eta` to focus on the case where rapid changes in the lockdown policy remain feasible.
 
 The parameters considered here start the model with 25,000 active infections
 and 75,000 agents already exposed to the virus and thus soon to be contagious.
 
 .. code-block:: julia
 
-    # initial conditions
-    i_0 = 25_000 / pop_size
-    e_0 = 75_000 / pop_size
+    B_lift_early(t, p) = t < 30.0 ? 0.5 : 2.0
+    B_lift_late(t, p) = t < 120.0 ? 0.5 : 2.0  
+
+    
+    # initial conditions 
+    i_0 = 25000 / N
+    e_0 = 75000 / N
     s_0 = 1.0 - i_0 - e_0
-    x_0 = s_0, e_0, i_0
+
+    u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.5, 0.01]  # starting in lockdown, R=0.5
+    tspan = [0.0, 30.0, 120.0, p.T]  # add discontinuities to tspan for adaptive solver
+
+    # create two problems, with rapid movement of R towards B(t)
+    prob_early = ODEProblem(F, u_0, tspan, p_gen(B = B_lift_early, η = 10.0))  
+    prob_late = ODEProblem(F, u_0, tspan, p_gen(B = B_lift_late, η = 10.0)
 
 Let's calculate the paths:
 
