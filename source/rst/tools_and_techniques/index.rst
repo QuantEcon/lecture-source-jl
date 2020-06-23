@@ -20,6 +20,7 @@ tools and techniques.
     :maxdepth: 2
 
     linear_algebra
+    seir_model_sde
     orth_proj
     lln_clt
     linear_models
