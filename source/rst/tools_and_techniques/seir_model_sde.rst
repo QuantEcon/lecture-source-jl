@@ -204,7 +204,24 @@ Now we construct a function that represents :math:`F` in :eq:`dfcv`
 
 .. code-block:: julia
 
-    #def F(x, t, R0=1.6):
+    function F(t, x, p)
+        s, e, i, r, β, c, m = x
+        σ, γ, b, η = p
+        return [-β * s * i;  # for d s(t)
+                 β * s * i -  σ * e; 
+                 σ * e - γ * i;
+                 γ * i;
+                 η (b - β)
+                 v * γ *  i
+                 σ * e]
+                 
+                 
+ \frac{d m}{d t} &= v \gamma  i
+
+    end
+
+
+
     #    """
     #    Time derivative of the state vector.
     #
