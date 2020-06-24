@@ -93,7 +93,8 @@ The interest is primarily in
 Changes in the Infected State
 -------------------------------
 
-Within the SIER model, the flow across states follows the path :math:`S \to E \to I \to R`.  Extensions of this model, such as SIERS, relax lifetime immunity and allow transitions from :math:` R \to S`.
+Within the SIER model, the flow across states follows the path :math:`S \to E \to I \to R`.  Extensions of this model, such as SIERS, relax lifetime immunity and allow
+transitions from :math:`R \to S`.
 
 The transitions between those states are governed by the following rates
 
@@ -102,7 +103,7 @@ The transitions between those states are governed by the following rates
 * :math:`\gamma` is called the *recovery rate* (the rate at which infected people recover or die).
 
 
-In addition, the transmission rate can be interpreted as: math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.  For this reason, we will work with the :math:`R(t)` reparameterization.
+In addition, the transmission rate can be interpreted as: :math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.  For this reason, we will work with the :math:`R(t)` reparameterization.
 
 (The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
 :math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the effective reproduction number, unless stated otherwise)
@@ -128,7 +129,7 @@ the transmission rate is positive and :math:`i(0) > 0`.
 
 Here, :math:`dy/dt` represents the time derivative for the particular variable.
 
-Since the states form a partition, we can reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`, and will drop it from the system  
+Since the states form a partition, we could reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, for further experiments and plotting it is harmless to keep it in the system.
 
 
 In addition, we are interested in calculating the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
@@ -144,6 +145,7 @@ We will assume that the transmission rate follows a process with a reversion to 
    \begin{aligned} 
     \frac{d R}{d t} &= \eta (B - R)
     \end{aligned}
+    :label: Rode
 
 Finally, let :math:`v(t)` be the mortality rate, which we will leave constant for now, i.e. :math:`\frac{d v}{d t} = 0`.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`m(t)`.  The differential equations then
 follow, 
@@ -159,16 +161,19 @@ While we could conveivably integate the total deaths given the solution to the m
 
 This is a common trick when solving systems of ODEs.  While equivalent in principle if you used an appropriate quadrature scheme, this trick becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid).
 
-The system :eq:`seir_system` and the supplemental equations can be written in vector form in terms of the vector :math:`x := (s, e, i, c, m, R, v)` with parameter vector :math:`p := (\sigma, \gamma, B, \eta)`
+The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, c, m, R, v]` with parameter tuple :math:`p := (\sigma, \gamma, B, \eta)`
 
 .. math::
     \begin{aligned} 
-    \frac{d x}{d t} = F(x,t;p) := \begin{bmatrix}
-            - \gamma \, R \, s \,  i  
+    \frac{d x}{d t} &= F(x,t;p)
+        &:= \begin{bmatrix}
+        - \gamma \, R \, s \,  i  
         \\
         \gamma \, R \,  s \,  i  - \sigma e 
         \\
         \sigma \, e  - \gamma i
+        \\
+        \gamma i
         \\
         \sigma e
         \\
@@ -217,19 +222,30 @@ Now we construct a function that represents :math:`F` in :eq:`dfcv`
     # Reminder: could solve dynamics of SEIR states with just first 3 equations
     function F(u, p, t)
 
-        s, e, i, c, m, R, v = u
+        s, e, i, r, c, m, R, v = u
         @unpack σ, γ, B, η = p
 
-        return [-γ*R*s*i;        # ds/dt = -γRsi
-                 γ*R*s*i -  σ*e; # de/dt =  γRsi - σe
-                 σ*e - γ*i;      # di/dt =        σe -γi
-                 σ*e;            # dc/dt =        σe
-                 v*γ*i;          # dm/dt =           vγi
-                 η*(B(t, p) - R);# dβ/dt = η(B(t) - R)
-                 0.0             # dv/dt = 0
-                ]        
+        return [-γ*R*s*i;       # ds/dt = -γRsi
+                γ*R*s*i -  σ*e; # de/dt =  γRsi - σe
+                σ*e - γ*i;      # di/dt =         σe -γi
+                γ*i;            # dr/dt =             γi
+                σ*e;            # dc/dt =         σe
+                v*γ*i;          # dm/dt =            vγi
+                η*(B(t, p) - R);# dβ/dt = η(B(t) - R)
+                0.0             # dv/dt = 0
+                ]          
     end
 
+
+Written this way, we see that the first four rows represent the one-directional transition from the susceptible to removed state, where the negative terms are outflows, and the positive ones inflows.
+
+As there is no flow leaving the :math:`dr/dt` and all parameters are positive, unless we start with  a degenerate initial condition (e.g. :math:`e(0) = i(0) = 0`) the "Removed" state is asymptoically absorbing, and :math:`\lim_{t\to \infty} r(t) = 1`.  Crucial to this rsult is that individuals are arbitrarily divisible, and any arbitrarily small :math:`i > 0` leads to a strictly positive flow into the exposed state.
+
+We will discuss this topic further in the lecture on continuous-time
+markov-chains, as well as the limitations of these approximations when the discretness becomes essential
+
+Parameters
+-------------
 
 The baseline parameters are put into a named tuple generator (see previous lectures using ``Parameters.jl``) with default values discussed above.  
 
@@ -238,7 +254,7 @@ The baseline parameters are put into a named tuple generator (see previous lectu
     p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
                       R̄ = 1.6, B = (t, p) -> p.R̄)
 
-Note that the default :math:`B(t)` function is simply the constant function :math:`\bar{R}`
+Note that the default :math:`B(t)` function always equals :math:`\bar{R}`
 
 
 Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :math:`R(0) = \bar{B}`, and :math:`v(0) = 0.01` 
@@ -251,7 +267,7 @@ Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :m
     e_0 = 4.0 * i_0
     s_0 = 1.0 - i_0 - e_0
 
-    u_0 = [s_0, e_0, i_0, 0.0, 0.0, p.R̄, 0.01]
+    u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.0, p.R̄, 0.01]
     tspan = (0.0, p.T)
     prob = ODEProblem(F, u_0, tspan, p)
 
@@ -267,12 +283,12 @@ Let's run some experiments using this code.
 
 First, we can solve the ODE using an appropriate algorthm (e.g. a good default for non-stiff ODEs might be ``Tsit5()``, which is the Tsitouras 5/4 Runge-Kutta method).
 
-Most high-performance ODE solvers appropriate for this class of problems will have adaptive time-stepping, so you
+Most accurate and high-performance ODE solvers appropriate for this class of problems will have adaptive time-stepping, so you
 will not specify any sort of grid
 
 .. code-block:: julia
 
-    sol = solve(prob, Tsit5())  # TODO: change the accuracy?
+    sol = solve(prob, Tsit5())
     @show length(sol.t);
 
 We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses the an interpolator consistent with the
@@ -287,13 +303,14 @@ See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on anal
 
 
 Experiment 1: Constant Reproduction Case
-------------------------------
+----------------------------------------
 
-Let's start with the case where :math:`B(t) = R = R̄` is constant.
+Let's start with the case where :math:`B(t) = R = \bar{R}` is constant.
 
 We calculate the time path of infected people under different assumptions.
 
 .. code-block:: julia
+
     R̄_vals = range(1.6, 3.0, length = 6)
     sols = [solve(ODEProblem(F, u_0, tspan, p_gen(R̄ = R̄_val)), Tsit5()) for R̄ in R̄_vals]
  
@@ -342,9 +359,9 @@ Experiment 2: Changing Mitigation
 ---------------------------------
 
 Let's look at a scenario where mitigation (e.g., social distancing) is 
-successively imposed, but the target (:math:`R̄` is fixed)
+successively imposed, but the target (:math:`\bar{R}` is fixed)
 
-To do this, we will have :math:`R(0) \neq R̄` and examine the dynamics using the :math:`\frac{d R}{d t} &= \eta (R̄ - R)` ODE.
+To do this, we will have :math:`R(0) \neq \bar{R}` and examine the dynamics using the :math:`\frac{d R}{d t} &= \eta (\bar{R} - R)` ODE.
 
 .. Mathematica Verification
 .. (\[Beta][t] /. 
@@ -354,7 +371,7 @@ To do this, we will have :math:`R(0) \neq R̄` and examine the dynamics using th
 ..       E^(-t \[Eta])) b // FullSimplify
 
       
-Note that in the simple case, where :math:`B(t) = \bar{R}` is independent of the state, the solution to the ODE with :math:`R(0) = R_0` is :math:`R(t) = R_0 e^{-\eta t} + \bar{R}(1 - e^{-\eta t})`
+In the simple case, where :math:`B(t) = \bar{R}` is independent of the state, the solution to the ODE with :math:`R(0) = R_0` is :math:`R(t) = R_0 e^{-\eta t} + \bar{R}(1 - e^{-\eta t})`
 
 We will examine the case where :math:`R(0) = 3` and then it falls to  to :math:`\bar{R} = 1.6` due to the progressive adoption of stricter mitigation measures.
 
@@ -415,7 +432,7 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
     s_0 = 1.0 - i_0 - e_0
 
     u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.5, 0.01]  # starting in lockdown, R=0.5
-    tspan = [0.0, 30.0, 120.0, p.T]  # add discontinuities to tspan for adaptive solver
+    tstops = [0.0, 30.0, 120.0, p.T]  # ensure discontinuites used with adaptive timesteps
 
     # create two problems, with rapid movement of R towards B(t)
     prob_early = ODEProblem(F, u_0, tspan, p_gen(B = B_lift_early, η = 10.0))  
@@ -438,7 +455,7 @@ Let's calculate the paths:
     #    c_paths.append(c_path)
 
 
-Here is the number of active infections:
+Here is the number of active infections and mortality with the :math:`v(t) = 0.01` baseline.
 
 .. code-block:: julia
 
@@ -446,11 +463,6 @@ Here is the number of active infections:
 
 What kind of mortality can we expect under these scenarios?
 
-Suppose that 1\% of cases result in death
-
-.. code-block:: julia
-
-    #ν = 0.01
 
 This is the cumulative number of deaths:
 
@@ -469,3 +481,65 @@ This is the daily death rate:
 Pushing the peak of curve further into the future may reduce cumulative deaths
 if a vaccine is found.
 
+
+
+SIER with Aggregate Shocks
+===========================
+
+The model above is fully deterministic: given a steady state and exogenous :math:`B(t)` and  :math:`v(t)`.  We will extend our model to include a particular set of shocks which make the system a Stochastic Differential Equation (SDE).
+
+One source of randomness which would enter the model is considreing the discretness of individuals, and modeling a Markov Jump-process.  These topics include such as jump-processes and the connection between SDEs and Langevin equations typically used in the approximation of chemical reactions in well-mixed.
+
+Instead, here we will concentrate on randomness that comes from aggregate changes in behavior or policy.
+
+Shocks to Transmission Rates
+------------------------------
+
+First, we consider that the effective transmission rate :math:`R(t)` will depend on degrees of randomness in behavior and implementation.  For example,
+
+* Misinformation on facebook spreading non-uniformly
+* Large political rallies or protests
+* Deviations in the implementation and timing of lockdown policy within demographics, locations, or businesses within the system.
+
+To implement this, we will add on a diffusion term to :eq:`Rode` with an instantaneous volatility of :math:`\zeta \sqrt{R}`.  The scaling by R ensures that the process can never go negative since the variance converges to zero as R goes to zero.
+
+The notation for this `SDE <https://en.wikipedia.org/wiki/Stochastic_differential_equation#Use_in_probability_and_mathematical_finance>`__ is then
+
+.. math::
+   \begin{aligned} 
+    d R&= \eta (B - R) dt + \zeta \sqrt{R} dW
+    \end{aligned}
+    :label: Rsde
+
+where :math:`W` is standard Brownian motion (i.e a `Weiner Process <https://en.wikipedia.org/wiki/Wiener_process>`__.  This equation is used in the `Cox-Ingersoll-Ross <https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model>`__ and `Heston <https://en.wikipedia.org/wiki/Heston_model>`__ models of interest rates and stochastic volatility.
+
+Heuristically, if :math:`\zeta = 0`, we can divide by :math:`dt` and nest the original ODE in  :eq:`Rode`.
+
+Migration and Transporation
+----------------------------
+
+A second source of shocks are associated with policies where new individuals in the Exposed state enter the geography  We will maintain a constant population size and  assume (without specifying) compensating outflows to match the others, and assume that Infected individuals are effectively barred from entry.
+
+As it is the main consideration, lets add the diffusive term to the :math:`de` dynamics,
+
+
+.. math::
+   \begin{aligned} 
+    d e & = \left(\gamma \, R \, s \,  i  - \sigma e\right)dt + \theta \sqrt{e} d W
+    \end{aligned}
+    :label: esde
+
+With these, we can define a variance term, mostly zeros since we only have two independent shocks, we can combined them in diagonal noise term :math:`\Omega(u, t)`.  Extending 
+
+.. math::
+    \begin{aligned}
+    diag(\Omega) &:= \begin{bmatrix} 0 & \theta \sqrt{e} & 0 & 0 & 0 & 0 & \zeta \sqrt{r} & 0
+    \end{alignd}
+
+Finally, we can extend our existing :ref:`dfcv` definition to in
+
+
+    \begin{aligned} 
+    d u &= F(u,t;p)dt + \Omega dW
+    \end{aligned}         
+    :label: dfcvsde
