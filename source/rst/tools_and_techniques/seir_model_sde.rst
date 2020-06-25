@@ -87,6 +87,7 @@ The interest is primarily in
 
 * the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
 * how long the caseload can be deferred (hopefully until a vaccine arrives)
+* how to model aggregate shocks related to policy, behavior, and medical innovations
 
 
 
@@ -105,15 +106,10 @@ The transitions between those states are governed by the following rates
 
 In addition, the transmission rate can be interpreted as: :math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` is the *effective reproduction number* at time :math:`t`.  For this reason, we will work with the :math:`R(t)` reparameterization.
 
-(The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
-:math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the effective reproduction number, unless stated otherwise)
+The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
+:math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the effective reproduction number, unless stated otherwise.
 
-
-Assume that there is a constant population of size :math:`N` throughout, then define the proportion of people in each state as :math:`s := S/N` etc.  With this, the SEIR model can be written as 
-
-
-Since we are using a continuum approximation, all individuals in the population are eventually infected when 
-the transmission rate is positive and :math:`i(0) > 0`. 
+Assume that there is a constant population of size :math:`N` throughout, then define the proportion of people in each state as :math:`s := S/N` etc.  With this, and assuming a continuum approximation, the SEIR model can be written as 
 
 .. math::
    \begin{aligned} 
@@ -132,12 +128,47 @@ Here, :math:`dy/dt` represents the time derivative for the particular variable.
 Since the states form a partition, we could reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, for further experiments and plotting it is harmless to keep it in the system.
 
 
-In addition, we are interested in calculating the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
+Since we are using a continuum approximation, all individuals in the population are eventually infected when 
+the transmission rate is positive and :math:`i(0) > 0`. 
 
-Implementing the system of ODEs in :math:`s, e, i` would be enough to implement the model given fixed parameters, but we will extend the basic model to enable some policy experiments.
+We can begin writing the minimal code to solve the dynamics from a particular ``x_0 = [s_0, e_0, i_0]`` initial condition and parameter values.  First, by expressing the system 
+,
 
-Evolution of Parameters
+.. code-block:: julia
+
+    function F(x, p, t; γ = 1/18, R = 3.0, σ = 1/5.2)
+        s, e, i, r = x
+
+        return [-γ*R*s*i;       # ds/dt = -γRsi
+                γ*R*s*i -  σ*e; # de/dt =  γRsi -σe
+                σ*e - γ*i;      # di/dt =        σe -γi
+                      γ*i;      # dr/dt =            γi
+                ]          
+    end
+    i_0 = 1e-7
+    e_0 = 4.0 * i_0
+    s_0 = 1.0 - i_0 - e_0
+    r_0 = 0.0
+    x_0 = [s_0, e_0, i_0, r_0]  # initial condition
+
+    tspan = (0.0, 350.0)  # ≈ 18 months
+    prob = ODEProblem(F, x_0, tspan)  # create problem
+    sol = solve(prob, Tsit5())  # solve the model with a particular algorithm
+    plot(sol, labels = ["s" "e" "i" "r"], title = "SEIR Dynamics", lw = 2)
+ 
+Or as an alternative visualization, See the proportions over time
+
+.. code-block:: julia
+
+   areaplot(sol', labels = ["s" "e" "i" "r"], title = "SIER Proportions")
+
+
+While implementing the system of ODEs in :math:`s, e, i` is enough to understand basic dynamics, , but we will extend the basic model to enable some policy experiments.
+
+Extending the Model
 -----------------------
+
+First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
 
 We will assume that the transmission rate follows a process with a reversion to a value :math:`B(t)` which could conceivably be a policy parameter.  The intuition is that even if the targetted :math:`B(t)` was changed, lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R(t)` moves towards :math:`B(t)`. 
 
@@ -147,21 +178,21 @@ We will assume that the transmission rate follows a process with a reversion to 
     \end{aligned}
     :label: Rode
 
-Finally, let :math:`v(t)` be the mortality rate, which we will leave constant for now, i.e. :math:`\frac{d v}{d t} = 0`.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`m(t)`.  The differential equations then
+Finally, let :math:`m(t)` be the mortality rate, which we will leave constant for now, i.e. :math:`\frac{d m}{d t} = 0`.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`D(t)`.  The differential equations then
 follow, 
 
 .. math::
 
     \begin{aligned}\\
-    \frac{d v}{d t} &= 0\\
-    \frac{d m}{d t} &= v \gamma  i
+    \frac{d m}{d t} &= 0\\
+    \frac{d D}{d t} &= m \gamma  i
     \end{aligned}
 
-While we could conveivably integate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we added :math:`d m(t)/dt` rather than calculating :math:`m(t) = \int_0^t \gamma v(\tau) i(\tau) d \tau` after generating the full :math:`i(t)` path.
+While we could conveivably integate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we added :math:`d D(t)/dt` rather than calculating :math:`D(t) = \int_0^t \gamma m(\tau) i(\tau) d \tau` after generating the full :math:`i(t)` path.
 
 This is a common trick when solving systems of ODEs.  While equivalent in principle if you used an appropriate quadrature scheme, this trick becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid).
 
-The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, c, m, R, v]` with parameter tuple :math:`p := (\sigma, \gamma, B, \eta)`
+The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, c, D, R, m]` with parameter tuple :math:`p := (\sigma, \gamma, B, \eta)`
 
 .. math::
     \begin{aligned} 
@@ -220,9 +251,9 @@ Now we construct a function that represents :math:`F` in :eq:`dfcv`
 .. code-block:: julia
 
     # Reminder: could solve dynamics of SEIR states with just first 3 equations
-    function F(u, p, t)
+    function F(x, p, t)
 
-        s, e, i, r, c, m, R, v = u
+        s, e, i, r, c, B, R, m = x
         @unpack σ, γ, B, η = p
 
         return [-γ*R*s*i;       # ds/dt = -γRsi
@@ -230,9 +261,9 @@ Now we construct a function that represents :math:`F` in :eq:`dfcv`
                 σ*e - γ*i;      # di/dt =         σe -γi
                 γ*i;            # dr/dt =             γi
                 σ*e;            # dc/dt =         σe
-                v*γ*i;          # dm/dt =            vγi
+                v*γ*i;          # dD/dt =            vγi
                 η*(B(t, p) - R);# dβ/dt = η(B(t) - R)
-                0.0             # dv/dt = 0
+                0.0             # dm/dt = 0
                 ]          
     end
 
@@ -267,9 +298,9 @@ Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :m
     e_0 = 4.0 * i_0
     s_0 = 1.0 - i_0 - e_0
 
-    u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.0, p.R̄, 0.01]
+    x_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.0, p.R̄, 0.01]
     tspan = (0.0, p.T)
-    prob = ODEProblem(F, u_0, tspan, p)
+    prob = ODEProblem(F, x_0, tspan, p)
 
 
 The ``tspan`` determines that the :math:`t` used by the sovler, where the scale needs to be consistent with the arrival
@@ -312,7 +343,7 @@ We calculate the time path of infected people under different assumptions.
 .. code-block:: julia
 
     R̄_vals = range(1.6, 3.0, length = 6)
-    sols = [solve(ODEProblem(F, u_0, tspan, p_gen(R̄ = R̄_val)), Tsit5()) for R̄ in R̄_vals]
+    sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R̄ = R̄_val)), Tsit5()) for R̄ in R̄_vals]
  
     # TODO: Probably clean ways to plot this 
 
@@ -431,12 +462,12 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
     e_0 = 75000 / N
     s_0 = 1.0 - i_0 - e_0
 
-    u_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.5, 0.01]  # starting in lockdown, R=0.5
+    x_0 = [s_0, e_0, i_0, 0.0, 0.0, 0.5, 0.01]  # starting in lockdown, R=0.5
     tstops = [0.0, 30.0, 120.0, p.T]  # ensure discontinuites used with adaptive timesteps
 
     # create two problems, with rapid movement of R towards B(t)
-    prob_early = ODEProblem(F, u_0, tspan, p_gen(B = B_lift_early, η = 10.0))  
-    prob_late = ODEProblem(F, u_0, tspan, p_gen(B = B_lift_late, η = 10.0)
+    prob_early = ODEProblem(F, x_0, tspan, p_gen(B = B_lift_early, η = 10.0))  
+    prob_late = ODEProblem(F, x_0, tspan, p_gen(B = B_lift_late, η = 10.0)
 
 Let's calculate the paths:
 
@@ -455,7 +486,7 @@ Let's calculate the paths:
     #    c_paths.append(c_path)
 
 
-Here is the number of active infections and mortality with the :math:`v(t) = 0.01` baseline.
+Here is the number of active infections and mortality with the :math:`m(t) = 0.01` baseline.
 
 .. code-block:: julia
 
@@ -486,7 +517,7 @@ if a vaccine is found.
 SIER with Aggregate Shocks
 ===========================
 
-The model above is fully deterministic: given a steady state and exogenous :math:`B(t)` and  :math:`v(t)`.  We will extend our model to include a particular set of shocks which make the system a Stochastic Differential Equation (SDE).
+The model above is fully deterministic: given a steady state and exogenous :math:`B(t)` and  :math:`m(t)`.  We will extend our model to include a particular set of shocks which make the system a Stochastic Differential Equation (SDE).
 
 One source of randomness which would enter the model is considreing the discretness of individuals, and modeling a Markov Jump-process.  These topics include such as jump-processes and the connection between SDEs and Langevin equations typically used in the approximation of chemical reactions in well-mixed.
 
@@ -507,13 +538,13 @@ The notation for this `SDE <https://en.wikipedia.org/wiki/Stochastic_differentia
 
 .. math::
    \begin{aligned} 
-    d R&= \eta (B - R) dt + \zeta \sqrt{R} dW
+    d R&= \eta (B - R) dt + \zeta_R \sqrt{R} dW
     \end{aligned}
     :label: Rsde
 
 where :math:`W` is standard Brownian motion (i.e a `Weiner Process <https://en.wikipedia.org/wiki/Wiener_process>`__.  This equation is used in the `Cox-Ingersoll-Ross <https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model>`__ and `Heston <https://en.wikipedia.org/wiki/Heston_model>`__ models of interest rates and stochastic volatility.
 
-Heuristically, if :math:`\zeta = 0`, we can divide by :math:`dt` and nest the original ODE in  :eq:`Rode`.
+Heuristically, if :math:`\zeta_R = 0`, we can divide by :math:`dt` and nest the original ODE in  :eq:`Rode`.
 
 Migration and Transporation
 ----------------------------
@@ -525,21 +556,58 @@ As it is the main consideration, lets add the diffusive term to the :math:`de` d
 
 .. math::
    \begin{aligned} 
-    d e & = \left(\gamma \, R \, s \,  i  - \sigma e\right)dt + \theta \sqrt{e} d W
+    d e & = \left(\gamma \, R \, s \,  i  - \sigma e\right)dt + \zeta_e \sqrt{e} d W
     \end{aligned}
     :label: esde
 
-With these, we can define a variance term, mostly zeros since we only have two independent shocks, we can combined them in diagonal noise term :math:`\Omega(u, t)`.  Extending 
+
+Mortality Fluctuations
+-----------------------------------
+
+There may be a variety of medical interventions that are short of a vaccine, but still effect the :math:`m(t)` path.  In addition, imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school)
+
+We will begin by adding in sorts of random shocks, and leaving out dift or any mean-reversion for simplicity
+
+.. math::
+   \begin{aligned} 
+    d m & = \zeta_m \sqrt{m} d W
+    \end{aligned}
+
+
+
+
+Combining the Shocks
+---------------------
+
+With these, we can define a variance term, mostly zeros since we only have two independent shocks, we can combined them in diagonal noise term :math:`\Omega(x, t)`.  Extending 
 
 .. math::
     \begin{aligned}
-    diag(\Omega) &:= \begin{bmatrix} 0 & \theta \sqrt{e} & 0 & 0 & 0 & 0 & \zeta \sqrt{r} & 0
+    diag(\Omega) &:= \begin{bmatrix} 0\\
+    \zeta_e \sqrt{e}\\
+    0 \\ 0 \\  0 \\ 0 \\ 0 \\ \zeta_R \sqrt{r} \\
+     & \zeta_m \sqrt{m}
     \end{alignd}
 
 Finally, we can extend our existing :ref:`dfcv` definition to in
 
-
+.. math::
     \begin{aligned} 
-    d u &= F(u,t;p)dt + \Omega dW
+    d x &= F(x,t;p)dt + \Omega dW
     \end{aligned}         
-    :label: dfcvsde
+
+TODO: IMPLEMENT THIS WITH SDE
+
+Jump Processes
+==================
+
+We will extend the above with 2 variations:
+1. Assume that major medical advancements can arrival, which drop mortality, :math:`m(t)` in half.  As there remains a diffusion term, the resulting :math:`d x`, becomes a Jump diffusionAlso vaccination
+.. math::
+   \begin{aligned} 
+    d m & = \zeta_m \sqrt{m_t} d W + \theta N_t
+    \end{aligned}
+
+2. Vaccines arrival, :math:`v(t)` which being the process of directly enabling a "suceptible" to "removed jump".  More vaccine arrivals speed up the process.
+
+Will consider that vaccine arrival rates are time varying.  :math:`\alpha(t)`....  As there is no diffusion, this is called a Pure jump process.
