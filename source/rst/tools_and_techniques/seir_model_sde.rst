@@ -209,11 +209,11 @@ We will assume that the transmission rate follows a process with a reversion to 
 Finally, let :math:`m(t)` be the mortality rate, which we will leave constant for now, i.e. :math:`\frac{d m}{d t} = 0`.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state and define the cumulative number of deaths as :math:`M(t)`.
 
 .. math::
-
     \begin{aligned}\\
     \frac{d m}{d t} &= 0\\
     \frac{d M}{d t} &= m \gamma  i
     \end{aligned}
+    :label: Mode
 
 While we could conveivably integate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`d M(t)/dt` rather than calculating :math:`M(t) = \int_0^t \gamma m(\tau) i(\tau) d \tau` ex-post.
 
@@ -264,14 +264,6 @@ As we will initially consider the case where :math:`R(0) = B`, the value of :mat
 Implementation
 ==============
 
-# First we set the population size to match the US and the parameters as described
-
-# .. code-block:: julia
-
-#     N = 3.3E8  # US Population
-#     γ = 1 / 18
-#     σ = 1 / 5.2
-#     η = 1 / 20   # a placeholder, inactive in first experiments
 
 First, construct our :math:`F` from :eq:`dfcv`
 
@@ -518,10 +510,29 @@ One source of randomness which would enter the model is considering the discretn
 
 But rather than examining how granularity leads to aggregate fluctuations, we will concentrate on randomness that comes from aggregate changes in behavior or policy.
 
-Aggregate Shocks to Transmission Rates
-=======================================
+Introduction to SDEs: Aggregate Shocks to Transmission Rates
+==============================================================
 
 We will start by extending our model to include randomness in :math:`R(t)`, which makes it a system of Stochastic Differential Equations (SDEs).
+
+Continous-Time Stochastic Processes
+-----------------------------------
+
+In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which may have jumps (which are almost surely right-continous).  The most tractable of these includes the theory of `Levy Processes <https://en.wikipedia.org/wiki/L%C3%A9vy_process`_.
+
+**TBD:** Add definition of levy processes and the intuitive connection between statoionary increments and independence of increments.  Also, is there intuition why additive processes in continuous time lead to additive SDEs/etc.?  Might be useful.
+
+Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time...
+
+Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much more strict.  In practice, there are only two types of Levy Processes that can be used without careful measure theory.
+
+#. `Weiner Processes <https://en.wikipedia.org/wiki/Wiener_process>`__ (as known as Brownian Motion) which leads to a diffusion equations, and is the only continous-time Levy process with continuous paths
+#. `Poisson Processes <https://en.wikipedia.org/wiki/Poisson_point_process>`__ with an arrival rate of jumps in the variable.
+
+Every other Levy Process you will typically work with is composed of those building blocks (e.g. a `Diffusion Process <https://en.wikipedia.org/wiki/Diffusion_process`__ such as Geometric Brownian Motion is a transformation of a Weiner process, and a `jump diffusion <https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance>`__ is a diffusion process with a Poisson arrival of jumps).
+
+In this section, we will look at example of a diffusion process.
+
 
 Shocks to Transmission Rates
 ------------------------------
@@ -539,19 +550,19 @@ The notation for this `SDE <https://en.wikipedia.org/wiki/Stochastic_differentia
 
 .. math::
    \begin{aligned} 
-    d R&= \eta (B - R) dt + \zeta \sqrt{R} dW
+    d R_t &= \eta (B_t - R_t) dt + \zeta \sqrt{R_t} dW_t
     \end{aligned}
     :label: Rsde
 
 where :math:`W` is standard Brownian motion (i.e a `Weiner Process <https://en.wikipedia.org/wiki/Wiener_process>`__.  This equation is used in the `Cox-Ingersoll-Ross <https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model>`__ and `Heston <https://en.wikipedia.org/wiki/Heston_model>`__ models of interest rates and stochastic volatility.
 
-Heuristically, if :math:`\zeta = 0`, we can divide by :math:`dt` and nest the original ODE in  :eq:`Rode`.
+Heuristically, if :math:`\zeta = 0`, divide this equation by :math:`dt` and it nests the original ODE in  :eq:`Rode`.
 
 The general form of the SDE with these sorts of continuous-shocks is an extension of our :ref:`dfcv` definition .
 
 .. math::
     \begin{aligned} 
-    d x &= F(x,t;p)dt + G(x,t;p) dW
+    d x_t &= F(x_t,t_t;p)dt + G(x_t,t;p) dW
     \end{aligned}  
 
 Here, it is convenient to :math:`d W` with the same dimension as :math:`x` where we can use the matrix :math:`G(x,t;p)` to associate the shocks with the appropriate :math:`x`.
@@ -632,32 +643,28 @@ While ensembles, you may want to perform transformations, such as calculating ou
     function save_mortality(sol, ind)
         total = p.N * sol[8, :]
         flow = flow_deaths(sol, p)
-#        Ls = [sol.u[x][2] for x in 1:length(sol.u)]
-    #    Zs = [sol.u[x][1] for x in 1:length(sol.u)]
+        #TODO Add both total and flow
         return (DiffEqBase.build_solution(sol.prob, sol.alg, sol.t, total), false)
     end
 
     sol = solve(ensembleprob, SRA(), EnsembleThreads(), output_func = save_mortality, trajectories = 1000)
 
-For large-scale stochastic simulations, we can also use the ``output_func`` to reduce theamount of data stored for each simulation.
+For large-scale stochastic simulations, we can also use the ``output_func`` to reduce the amount of data stored for each simulation.
 
 .. code-block:: julia
 
-    # CHRIS TODO: Can't Figure out plotting these two (in separate panes)
+    # CHRIS TODO: Can't Figure out plotting.  Maybe both of them in separate panes
     summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
     summ2 = EnsembleSummary(sol, quantiles = [0.25, 0.75])
-    plot(summ, title = "Total Deaths")
-    plot!(summ2, idxs = (3,), labels = "Middle 50%")
+    plot(summ, title = "Total and Daily Deaths (TBD)")
+    plot!(summ2, labels = "Middle 50%")
 
 
 Performance of these tends to be high, for example, rerunning out 1000 trajectories is measured in seconds on most computers with multithreading enabled.
 
-.. code-block:: julia
-
-    @time solve(ensembleprob, SRA(), EnsembleThreads(), output_func = save_mortality, trajectories = 1000);
-
 .. 
-.. CHRIS: THIS ENDED UP SLOWER.  CAN ADD BACK IF WE CAN FIGURE OUT WHY
+.. CHRIS: THIS ENDED UP SLOWER and I am not sure why.  CAN ADD BACK IF WE CAN FIGURE OUT WHY
+.. 
 .. Furthermore, we can exploit Julia's generic programming to use a static array (or GPU, .. if available)
 .. 
 .. .. code-block:: julia
@@ -667,70 +674,255 @@ Performance of these tends to be high, for example, rerunning out 1000 trajector
 ..     ensembleprob = EnsembleProblem(prob)
 ..     sol = solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000)
 ..     @time solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000);
-.. 
+..
+.. TODO: link to the generic programming lecture, and explain why care was needed in the F definition.
 
 
-.. Migration and Transporation
-.. ----------------------------
-.. 
-.. A second source of shocks are associated with policies where new individuals in the .. Exposed state enter the geography  We will maintain a constant population size and  .. assume (without specifying) compensating outflows to match the others, and assume that .. Infected individuals are effectively barred from entry.
-.. 
-.. As it is the main consideration, lets add the diffusive term to the :math:`de` .. dynamics,
-.. 
-.. 
-.. .. math::
-..    \begin{aligned} 
-..     d e & = \left(\gamma \, R \, s \,  i  - \sigma e\right)dt + \zeta_e \sqrt{e} d W
-..     \end{aligned}
-..     :label: esde
-.. 
+Technological Progress and Policy Tradeoffs
+==============================================
+
+While the randomness inherent in the :math:`R(t)` can explain some of the sources of uncertainty that come from behavioral shocks, we have been ignoring two other considerations.
+
+First, technology, both in treatment and vaccination, is evolving and in an inherently non-detemrinistic way.  We will consider that the mortality rate :math:`m(t)` may evolve over time, as well as considering how a probability of vaccination development adds a path to the Removed state that does not require infection.
 
 
+In order to add one more degree of realism to the tradeoffs, we will consider that the actual death rate is driven by the mortality :math:`m(t)` but also capacity constraints in the economy with respect to medical resources for the infected state.  In particular, we assume that if :math:`i(t) > \bar{i}`, then the available medical resources are exhuasted, leading to quadratically increased death rate.
 
-Vacinations and Shocks to Mortality
-====================================
+Second, the only social objective measure we can explore with the current framework is minimizing the total deaths.  That ignores the possible policy tradeoffs between minimizing deaths and the impact on the general economy.
 
-The next step of randomness that we will consider involves uncertainty in technology.
+While a particular planner may decide that the only relevant welfare criteria is aggregate mortality, that leads to implausibly extreme policy (e.g. set :math:`B(t) = 0` forever).  Hence, we will add a proxy for economic impact of Covid and the shotdown policy, summarized by :math:`u(t)` for excess covid-related "unemployment".  A particular planner can then decide the weighting of the tradeoffs.
 
-Mortality Shocks
-------------------
+The policy choice :math:`B(t)` is then made a markov-process rather than current exogeous and deterministic one.
 
-There may be a variety of medical interventions that are short of a vaccine, but still effect the :math:`m(t)` path.  In addition, imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school)
+The inherent discretness of medical innovations and policy changes provides us an opportunity to explore the use of Poisson and jump diffusion. 
 
-We will begin by adding in sorts of random shocks, and leaving out dift or any mean-reversion for simplicity
+Mortality
+---------
+
+Imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school).  These sorts of relatively small changes might be best models as a continous path process, so we will add a diffusion term with volatility :math:`\xi\sqrt{m}` to the :math:`m` process
+
+In addition, there may be a variety of smaller medical interventions that are short of a vaccine, but still effect the :math:`m(t)` path.  For simplicity, we will assume that each innovation cuts the inherent mortality rate in half and arrives with intensity :math:`\alpha \geq 0`.  Combining these two leads to a jump diffusion process
 
 .. math::
    \begin{aligned} 
-    d m & = \zeta_m \sqrt{m} d W
+    d m_t & = \xi \sqrt{m_t} d W_t -  \frac{m}{2} d N_t^{\alpha}
     \end{aligned}
+    :label: dmt
 
-Combining the Shocks
----------------------
+In that notation, the :math:`d W_t` is still the increment of the brownian motion process while the  :math:`d N_t^{\alpha}` is a Poisson `counting process <https://en.wikipedia.org/wiki/Counting_process#:~:text=A%20counting%20process%20is%20a,(t)%20is%20an%20integer>`__ with rate :math:`\alpha`.
 
-With these, we can define a variance term, mostly zeros since we only have two independent shocks, we can combined them in diagonal noise term :math:`G(x, t)`.  Extending 
+
+In previous versions of model, :ref:`Mode` had deaths as the integration of the death probability :math:`m` of the flow leaving the :math:`I` state.  i.e.  :math:`\frac{d M}{d t} = m \gamma  i`.  Instead, we will add an additional term that the dealh probabilty is :math:`\pi(m, i) := m + \psi \max(0, i - \bar{i})` increasing as :math:`i < \bar{i}`.  The ``min`` is used to ensure that the mortality rate never goes above 1.  The differential equation for cumulative deaths is then
 
 .. math::
-    \begin{aligned}
-    diag(G) &:= \begin{bmatrix} 0\\
-    \zeta_e \sqrt{e}\\
-    0 \\ 0 \\  0 \\ 0 \\ 0 \\ \zeta_R \sqrt{r} \\
-     & \zeta_m \sqrt{m}
+    \begin{aligned}\\
+    \pi(m, i) &:= m + \psi \max(0, i - \bar{i})\\
+    d M_t &= \pi(m_t, i_t)\gamma i_t dt
     \end{aligned}
+    :label: Mode_nl
 
-       
+Vaccination
+-------------
 
-TODO: IMPLEMENT THIS WITH SDE
+The develeopmment of a vaccine is a classic discrete event.  Define the availability of a vaccine as :math:`V_t` where the initial condition is :math:`V(0) = 0`.  We assume that with an arrival rate :math:`\theta` a vaccine will be developed, leading to the a jump to :math:`V = 1`.
 
-Jump Processes
-==================
+The process for this leads to the following Jump process
 
-We will extend the above with 2 variations:
-1. Assume that major medical advancements can arrival, which drop mortality, :math:`m(t)` in half.  As there remains a diffusion term, the resulting :math:`d x`, becomes a Jump diffusionAlso vaccination
 .. math::
    \begin{aligned} 
-    d m & = \zeta_m \sqrt{m_t} d W + \theta N_t
+    d V_t & = (1 - V_t) d N_t^{\theta}
+    \end{aligned}
+    :label: dV
+
+where the increment :math:`(1 - V_t)` is 1 if the vaccine hasn't been developed, and zero if it has.  While the constant arrival rate :math:`\theta` is convenient for a simple model, there is no reason it couldn't be time or state dependent in the code or model. 
+
+With a vaccine, the model ceases to be a simple SEIR model since it is possible move from :math:`S \to R` without passing through :math:`E` and :math:`I`.
+
+As vaccines are not instantaneously delivered to all, we can let :math:`\nu` be the rate at which the vaccine is administered if available.  This leads to the following changes to :ref:`seir_system`
+
+.. math::
+   \begin{aligned} 
+        d s_t  & = \left(- \gamma \, R_t \, s_t \,  i _t - \nu \, V_t \, s_t\right)dt
+        \\
+         d r_t & =  (\gamma  i_t + \nu \, V_t \, s_t) dt
+   \end{aligned} 
+   :label: seir_system_vacc
+
+
+Unemployment and Lockdown Policy
+----------------------------------
+
+As a simple summary of the economic and social distortions due to the covid, consider that an aggregate state :math:`u(t)` (indicating "excess" unemployment due to covid) increases as the :math:`B(t)`policy deviates from the natural :math:`\bar{R}` level, but can also increase due to flow of deaths from covid.
+
+The second part of this is an important consideration: if the death rate is extremely high, then opening the economy may not help much as individuals are reluctant to return to normal economic activities.  We will assume that weights on these are :math:`\mu_B` and :math:`mu_M` respetivly.
+
+To represent the slow process of coming back to normal, we assume that the stock value :math:`u(t)` depreciates at rate :math:`\delta`.  Put together gives the ODE,
+
+.. math::
+   \begin{aligned} 
+        d u_t  & = (\mu_B(B_t - \bar{R})^2 + \mu_M \pi(s_t,i_t)  -\delta) u_t dt
+    \end{aligned}
+   :label: du
+
+The policy choice :math:`B(t)` is markov, and will not consider implementation of forward looking behavior in this lecture.  For a simple example, consider a policy driven by myopic political incentives and driven entirely by the death rates.  If :math:`\pi_t > \bar{\pi}` then set :math:`B(t) = R_0` and leave it at :math:`B(t) = \bar{R}` otherwise.
+
+Without getting into the measure theory, this sort of bang-bang policy doesn't work as the process ceases to be a Levy Process (and much of the intuitive of considering measurability of stochastic processes and expected present discounted value fail).
+
+To avoid these concerns, a standard trick is to make this a Levy Process by having a Poisson "policy evaluation" rate (which can be put arbitrarily high) where the policy is adjusted according to the rule.  Let that nuisance parameter by :math:`\Xi`, which gives the following pure-jump process for :math:`B(t)`
+
+.. math::
+   \begin{aligned} 
+        d B_t  & = J(m, i, B) \pi( dN^{\Xi}_t\\
+        J(m, i, B) &:= -(\pi(i,m) > bar{\pi})\max{B - R_0, 0} + (\pi(i,m) \leq \bar{\pi})\max{B - \bar{R}, 0} 
     \end{aligned}
 
-2. Vaccines arrival, :math:`v(t)` which being the process of directly enabling a "suceptible" to "removed jump".  More vaccine arrivals speed up the process.
 
-Will consider that vaccine arrival rates are time varying.  :math:`\alpha(t)`....  As there is no diffusion, this is called a Pure jump process.
+Implementing the Complete System
+---------------------------------
+
+To our model, we have added in three new variables (:math:`u, V,` and :math:`B`) and a number of new parameters :math:`\bar{i}, \xi, \alpha, \theta, \nu, \mu_B, \mu_M, R_0, \Xi, \delta, \psi`
+
+
+Stacking the :math:`u, V, B` at the end of the existing :math:`x` vector, we add or modify using  :ref:`seir_system_vacc`, :ref:`Mode_nl`, and :ref:`du`.
+
+Here, we will move from an "out of place" to an inplace differential equation.
+
+.. code-block:: julia
+
+    function F!(dx, x, p, t)
+
+        s, e, i, r, R, m, c, M, u, V, B = x
+        @unpack σ, γ, η, ī, ξ, α, θ, ν, μ_B, μ_M, R_0, Ξ, δ, π_bar, ψ, R̄, δ = p
+
+        π = min(1.0, m + ψ * max(0.0, i > ī))
+
+        dx[1] = -γ*R*s*i - ν*V*s;              # ds/dt
+        dx[2] = γ*R*s*i -  σ*e;                # de/dt
+        dx[3] = σ*e - γ*i;                     # di/dt
+        dx[4] = γ*i + ν*V*s;                   # dr/dt
+        dx[5] = η*(B(t, p) - R);               # dR/dt
+        dx[6] = 0.0;                           # dm/dt
+        dx[7] = σ*e;                           # dc/dt
+        dx[8] = π*γ*i;                         # dM/dt
+        dx[9] = (μ_B*(B - R̄)^2 + μ_M*π  - δ)*u;# du/dt 
+        dx[10] = 0.0;                          # dV/dt
+        dx[11] = 0.0;                          # dB/dt                 
+    end
+
+Note that the ``V, B`` terms do not have a drift as they are pure jump processes.
+
+Next, we need to consider how the variance term of the diffusion changes.  With the exception of the new brownian
+motion associated with the jump diffusion in :ref:`dmt`, everything else remains unchanged or zero.
+    
+.. code-block:: julia
+
+    function G!(dx, x, p, t)
+        @unpack ξ, ζ = p 
+        dx .= 0.0            
+        R = x[5]
+        m = x[6]
+        dx[5] = ζ*sqrt(R)
+        dx[6] = ζ*sqrt(m)
+    end
+
+
+Finally, we need to add in 3 jump processes which modify ``V, B, m`` separately.  The connection between a jump and a variable is not necsesary, however.
+
+
+Implementing the vaccination process,
+
+
+.. code-block:: julia
+
+    rate_V(x, p, t) = p.θ  # could be a function of time or state
+    function affect_V!(x, p, t)
+        integrate.u[10] = 1.0 # set the vacination state = 1
+    end
+    jump_V = ConstantRateJump(rate_V,affect_V!)        
+
+
+If the solver simulates an arrival rate of the jump, it calls the ``affect!`` function which takes in the current values through the ``integrator`` object and modifies the values directly.
+
+The other two jump processes are,
+
+.. code-block:: julia
+
+    rate_B(x, p, t) = p.Ξ  # constant
+
+    function affect_B!(integrator)
+        @unpack σ, γ, η, ī, ξ, α, θ, ν, μ_B, μ_M, R_0, Ξ, δ, π_bar, ψ, R̄, δ = integrator.p
+
+        m = integrator.u[6]
+        i = integrator.u[3]
+        π = min(1.0, m + ψ * max(0.0, i > ī))
+
+        if π > π_bar
+            integrate.u[11] = R_0
+        else
+            integrate.u[11] = R̄
+        end
+    end
+    jump_B = ConstantRateJump(rate_B, affect_B!)   
+
+    rate_m(x, p, t) = p.α
+    function affect_m!(x, p, t)
+        x[6] = x[6]/2  # half the inherent mortatilty
+    end
+    jump_m = ConstantRateJump(rate_m, affect_m!)           
+
+
+Collecting the new parameters and providing an extension of the initial condition with no vaccine or accumulated :math:`u(t)`
+
+.. code-block:: julia
+
+    p_full_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
+                      R̄ = 1.6, R_0 = 0.5, m_0 = 0.01, ζ = 0.03, N = 3.3E8,
+                      ī = 0.05,
+                      ξ = 0.05,
+                      α = 0.05,
+                      θ = 0.05,
+                      ν = 0.05,
+                      μ_B = 0.05,
+                      μ_M = 0.1,
+                      Ξ = 5.0,
+                      δ = 0.07,
+                      π_bar = 0.05,
+                      ψ = 2.0
+                    )
+
+    p =  p_full_gen()
+    i_0 = 25000 / p.N
+    e_0 = 75000 / p.N
+    s_0 = 1.0 - i_0 - e_0
+    x_0 = [s_0, e_0, i_0, 0.0, p.R̄, p.m_0, 0.0, 0.0, 0.0, 0.0, R̄]
+  
+    prob = SDEProblem(F!, G!, x_0, (0, p.T), p)
+    jump_prob = JumpProblem(prob, Direct(), jump_V, jump_B, jump_m)
+
+
+Solving and simulating,
+
+.. code-block:: julia
+
+    sol = solve(jump_prob, SRIW1())
+
+
+
+TODO:  Chris, lets make sure this is right, pick some parameters, and solve it?
+
+
+
+ROUGH NOTES ON THE SCIML LECTURE
+=====================================
+
+The hope is that we have all or almost all of the model elements developed here, so that we can
+focus on the machine learning/etc. in the following lecture and not implement any new model features (i.e. just shut things down as required).
+
+
+Some thoughts on the SciML lecture which would be separate:
+
+1.  Bayesian estimation and model uncertainty.  Have uncertainty on the parameter such as the :math:`m_0` parameter.  Show uncertainty that comes after the estimation of the parameter.
+2.  Explain how bayesian priors are a form of regularization.  With rare events like this, you will always have
+more parameters than data.
+3.  Solve the time-0 optimal policy problem using Flux of choosing the :math:`B` policy in some form.  For the objective, consider the uncertainty and the assymetry of being wrong.
+4. If we wanted to add in a model element, I think that putting in an asymptomatic state would be very helpful for explaining the role of uncertainty in evaluating the counterfactuals.
