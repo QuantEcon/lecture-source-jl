@@ -71,7 +71,7 @@ others covered in previous lectures
 
 
 The SEIR Model
-=============
+==============
 
 In the version of the SEIR model we will analyze there are four states.
 
@@ -302,7 +302,7 @@ The baseline parameters are put into a named tuple generator (see previous lectu
 .. code-block:: julia
 
     p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
-                      R̄ = 1.6, B = (t, p) -> p.R̄, m_0 = 0.01)
+                      R̄ = 1.6, B = (t, p) -> p.R̄, m_0 = 0.01, N = 3.3E8)
 
 Note that the default :math:`B(t)` function always equals :math:`\bar{R}`
 
@@ -468,19 +468,19 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
 
     B_lift_early(t, p) = t < 30.0 ? 0.5 : 2.0
     B_lift_late(t, p) = t < 120.0 ? 0.5 : 2.0  
+    p_early = p_gen(B = B_lift_early, η = 10.0)
+    p_late = p_gen(B = B_lift_late, η = 10.0)
+
     
     # initial conditions 
-    N = 3.3E8  # US Population
-    i_0 = 25000 / N
-    e_0 = 75000 / N
+    i_0 = 25000 / p_early.N
+    e_0 = 75000 / p_early.N
     s_0 = 1.0 - i_0 - e_0
     R_0 = 0.5
 
-    x_0 = [s_0, e_0, i_0, 0.0, R_0, p.m_0, 0.0, 0.0] # start in lockdown
+    x_0 = [s_0, e_0, i_0, 0.0, R_0, p_early.m_0, 0.0, 0.0] # start in lockdown
 
     # create two problems, with rapid movement of R towards B(t)
-    p_early = p_gen(B = B_lift_early, η = 10.0)
-    p_late = p_gen(B = B_lift_late, η = 10.0)
     prob_early = ODEProblem(F, x_0, tspan, p_early)  
     prob_late = ODEProblem(F, x_0, tspan, p_late)
 
@@ -500,11 +500,13 @@ To calculate the daily death, calculate the :math:`\gamma i(t) m(t)`.
 
 .. code-block:: julia
 
+    flow_deaths(sol, p) = p.N * sol[3,:] .* sol[6,:] * p.γ
+
     daily_early = sol_early[3,:] .* sol_early[6,:] * p_early.γ
     daily_late = sol_late[3,:] .* sol_late[6,:] * p_late.γ
 
-    plot(sol_early.t, daily_early, title = "Flow Deaths", label = "Lift Early")
-    plot!(sol_late.t, daily_late, label = "Lift Late")    
+    plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")
+    plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late")    
 
 Pushing the peak of curve further into the future may reduce cumulative deaths 
 if a vaccine is found.
@@ -549,7 +551,7 @@ The general form of the SDE with these sorts of continuous-shocks is an extensio
 
 .. math::
     \begin{aligned} 
-    d x &= F(x,t;p)dt + \G(x,t;p) dW
+    d x &= F(x,t;p)dt + G(x,t;p) dW
     \end{aligned}  
 
 Here, it is convenient to :math:`d W` with the same dimension as :math:`x` where we can use the matrix :math:`G(x,t;p)` to associate the shocks with the appropriate :math:`x`.
@@ -566,20 +568,107 @@ Since these are additive shocks, we will not need to modify the :math:`F` from o
 
 First create a new settings generator, and and then define a `SDEProblem<https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1>`__  with Diagonal Noise. 
 
-We solve the problem with the `SRIW1 <https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1>`__ algorithm, an Adaptive strong order 1.5 and weak order 2.0 for diagonal/scalar Ito SDEs)
+We solve the problem with the `SRA <https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1>`__ algorithm (Adaptive strong order 1.5 methods for additive Ito and Stratonovich SDEs)
 
 .. code-block:: julia
 
     p_sde_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
-                      R̄ = 1.6, B = (t, p) -> p.R̄, m_0 = 0.01, ζ = 1E-3)
+                      R̄ = 1.6, B = (t, p) -> p.R̄, m_0 = 0.01, ζ = 0.03, N = 3.3E8)
 
-    # TODO: CHRIS Easy way to have scalar noise or stick with this for now?
-    function G(x,p,t)
-        R = x[5]
-        return [0, 0, 0, 0, p.ζ * sqrt(R), 0, 0, 0]
-    end 
-    prob = SDEProblem(F, G, x_0, tspan, p_sde_gen())
-    sol = solve(prob, SRIW1())
+    p =  p_sde_gen()
+    i_0 = 25000 / p.N
+    e_0 = 75000 / p.N
+    s_0 = 1.0 - i_0 - e_0
+    R_0 = 1.5 * p.R̄
+    x_0 = [s_0, e_0, i_0, 0.0, R_0, p.m_0, 0.0, 0.0] # start in lockdown
+
+    G(x, p, t) = [0, 0, 0, 0, p.ζ*sqrt(x[5]), 0, 0, 0]
+
+    prob = SDEProblem(F, G, x_0, (0, p.T), p)
+    sol_1 = solve(prob, SRA())
+
+With stochastic differential equations, a "solution" is akin to a simulation for a particular realizaiton of the noise process.
+
+Plotting the number of infections for these two realizaitons of the shock process
+
+.. code-block:: julia
+
+    # TODO: PICK BETTER PLOT
+    plot(sol_1, vars = [2, 5] , title = "Stochastic R(t)", label = ["e(t)" "R(t)")
+
+If we solve this model a second time, and plot the flow of deaths, we can see differences over time
+
+.. code-block:: julia
+
+    sol_2 = solve(prob, SRA())
+    plot(sol_1.t, flow_deaths(sol_1, p), title = "Daily Deaths", label = "sim 1")
+    plot!(sol_2.t, flow_deaths(sol_2, p), label = "sim 2")
+
+
+
+While individual simulatations are useful, you often want to look at an ensemble of multiple trajectories of the SDE
+
+.. code-block:: julia
+
+    ensembleprob = EnsembleProblem(prob)
+    sol = solve(ensembleprob, SRA(), EnsembleSerial(),trajectories = 10)
+    plot(sol, vars = [3], title = "Infection Simulations", label = "i(t)")
+
+
+Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in `parallel <https://docs.sciml.ai/stable/features/ensemble/`_ using multiple threads, processes, or GPUs.
+
+.. code-block:: julia    
+
+    sol = solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000)
+    summ2 = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
+    plot(summ, idxs = (3,), title = "Quantiles of Infections Ensemble", labels = "Middle 95% Quantile")
+
+
+While ensembles, you may want to perform transformations, such as calculating our daily deaths.  This can be done with an ``output_func`` executed with every simulation.
+
+.. code-block:: julia    
+
+    # IS THRERE A BETTER WAY?
+    function save_mortality(sol, ind)
+        total = p.N * sol[8, :]
+        flow = flow_deaths(sol, p)
+#        Ls = [sol.u[x][2] for x in 1:length(sol.u)]
+    #    Zs = [sol.u[x][1] for x in 1:length(sol.u)]
+        return (DiffEqBase.build_solution(sol.prob, sol.alg, sol.t, total), false)
+    end
+
+    sol = solve(ensembleprob, SRA(), EnsembleThreads(), output_func = save_mortality, trajectories = 1000)
+
+For large-scale stochastic simulations, we can also use the ``output_func`` to reduce theamount of data stored for each simulation.
+
+.. code-block:: julia
+
+    # CHRIS TODO: Can't Figure out plotting these two (in separate panes)
+    summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
+    summ2 = EnsembleSummary(sol, quantiles = [0.25, 0.75])
+    plot(summ, title = "Total Deaths")
+    plot!(summ2, idxs = (3,), labels = "Middle 50%")
+
+
+Performance of these tends to be high, for example, rerunning out 1000 trajectories is measured in seconds on most computers with multithreading enabled.
+
+.. code-block:: julia
+
+    @time solve(ensembleprob, SRA(), EnsembleThreads(), output_func = save_mortality, trajectories = 1000);
+
+.. 
+.. CHRIS: THIS ENDED UP SLOWER.  CAN ADD BACK IF WE CAN FIGURE OUT WHY
+.. Furthermore, we can exploit Julia's generic programming to use a static array (or GPU, .. if available)
+.. 
+.. .. code-block:: julia
+.. 
+..     x_0_static = SVector{8}(x_0)
+..     prob = SDEProblem(F, G, x_0_static, (0, p.T), p)
+..     ensembleprob = EnsembleProblem(prob)
+..     sol = solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000)
+..     @time solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000);
+.. 
+
 
 .. Migration and Transporation
 .. ----------------------------
@@ -615,9 +704,6 @@ We will begin by adding in sorts of random shocks, and leaving out dift or any m
     d m & = \zeta_m \sqrt{m} d W
     \end{aligned}
 
-
-
-
 Combining the Shocks
 ---------------------
 
@@ -625,7 +711,7 @@ With these, we can define a variance term, mostly zeros since we only have two i
 
 .. math::
     \begin{aligned}
-    diag(\Omega) &:= \begin{bmatrix} 0\\
+    diag(G) &:= \begin{bmatrix} 0\\
     \zeta_e \sqrt{e}\\
     0 \\ 0 \\  0 \\ 0 \\ 0 \\ \zeta_R \sqrt{r} \\
      & \zeta_m \sqrt{m}
