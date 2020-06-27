@@ -908,10 +908,11 @@ Solving and simulating,
     sol = solve(jump_prob, SRIW1())
     plot(sol, vars = [8, 10])
 
-
-TODO:  Chris, lets make sure this is right, pick some parameters, and solve it?
-TODO: What sorts of experiments afte rthis?
-
+TODO:  Chris, lets make sure this is right, pick some parameters.
+TODO:  Lets show the same SIER decomposition we had before as a proportion, but with a vaccination arrival.
+TODO:  Maybe show a slice at time T = 550 or whatever of the distribution M(t) and u(t) as a histogram with 5, 50, and 95 percent confidence intervals?
+TODO:  Then show how those two change as the myopic B(t) policy changes?
+TODO:  Show how M(t) and u(t) change as the eta changes for a given policy?
 
 ROUGH NOTES ON THE SCIML LECTURE
 =====================================
@@ -927,3 +928,4 @@ Some thoughts on the SciML lecture which would be separate:
 more parameters than data.
 3.  Solve the time-0 optimal policy problem using Flux of choosing the :math:`B` policy in some form.  For the objective, consider the uncertainty and the assymetry of being wrong.
 4. If we wanted to add in a model element, I think that putting in an asymptomatic state would be very helpful for explaining the role of uncertainty in evaluating the counterfactuals.
+5. Solve for the optimal markovian B(t) policy through simulation and using Flux. 
