@@ -18,12 +18,10 @@ Coauthored with Chris Rackauckas
 
 This is a Julia version of code for analyzing the COVID-19 pandemic.
 
-The purpose of these notes is to introduce economists to quantitative modeling
-of infectious disease dynamics, and to modeling with ordinary and stochastic differential
+The purpose of these notes is to introduce economists to quantitative modeling of infectious disease dynamics, and to modeling with ordinary and stochastic differential
 equations.
 
-The main objective is to study the impact of suppression through social
-distancing on the spread of the infection.
+The main objective is to study the impact of suppression through social distancing on the spread of the infection.
 
 The focus is on US outcomes but the parameters can be adjusted to study
 other countries.
@@ -43,7 +41,7 @@ See further variations on the classic SIR model in Julia  `here <https://github.
 
 We then look at extending the model to include policy-relevant aggregate shocks, and
 examine the three main techniques for including stochasticity to continuous-time models:
-* Brownian Motion:  A diffusion process with  stochastic, continous paths.  The prototypical  Stochastic Differential Equation (SDE) with additive noise.
+* Brownian Motion:  A diffusion process with  stochastic, continuous paths.  The prototypical  Stochastic Differential Equation (SDE) with additive noise.
 * Pure-Jump Processes: A variable that jumps between a discrete number of values, typically with a Poisson arrival rate.
 * Jump-Diffusion Process: A stochastic process that contains both a diffusion term and arrival rates of discrete jumps.
 
@@ -101,7 +99,7 @@ The interest is primarily in
 Changes in the Infected State
 -------------------------------
 
-Within the SIER model, the flow across states follows the path :math:`S \to E \to I \to R`.  Extensions of this model, such as SIERS, relax lifetime immunity and allow
+Within the SEIR model, the flow across states follows the path :math:`S \to E \to I \to R`.  Extensions of this model, such as SEIRS, relax lifetime immunity and allow
 transitions from :math:`R \to S`.
 
 The transitions between those states are governed by the following rates
@@ -158,8 +156,7 @@ Written this way, we see that the four equations represent the one-directional t
 
 Consequently, with no flow leaving the :math:`dr/dt` and strictly positive parameter values the ``R`` state is absorbing, and :math:`\lim_{t\to \infty} r(t) = 1`.  Crucial to this result is that individuals are perfectly divisible, and any arbitrarily small :math:`i > 0` leads to a strictly positive flow into the exposed state.
 
-We will discuss this topic (and related topics of irreducibility) in the lecture on continuous-time
-markov-chains, as well as the limitations of these approximations when the discretness becomes essential (e.g. continuum approximations are incapable of modeling extinguishing of an outbreak).
+We will discuss this topic (and related topics of irreducibility) in the lecture on continuous-time Markov chains, as well as the limitations of these approximations when the discretness becomes essential (e.g. continuum approximations are incapable of modeling extinguishing of an outbreak).
 
 Given this system, we choose an initial condition and a timespan, and create a ``ODEProblem`` encapsulating the system.
 
@@ -182,14 +179,14 @@ With this, we can choose an ODE algorithm (e.g. a good default for non-stiff ODE
     plot(sol, labels = ["s" "e" "i" "r"], title = "SEIR Dynamics", lw = 2)
 
 
-We did not provide either a set of timesteps or a ``dt`` time stepsize to the ``solve``.  Most accurate and high-performance ODE solvers appropriate for this problem use adaptive time-stepping, changing the stepsize based the degree of curvature in the derivatives.
+We did not provide either a set of time steps or a ``dt`` time step size to the ``solve``.  Most accurate and high-performance ODE solvers appropriate for this problem use adaptive time-stepping, changing the step size based the degree of curvature in the derivatives.
 
 
 Or, as an alternative visualization, the proportions in each state over time
 
 .. code-block:: julia
 
-   areaplot(sol.t, sol', labels = ["s" "e" "i" "r"], title = "SIER Proportions")
+   areaplot(sol.t, sol', labels = ["s" "e" "i" "r"], title = "SEIR Proportions")
 
 
 While implementing the system of ODEs in :math:`(s, e, i)`, we will extend the basic model to enable some policy experiments and calculations of aggregate values.
@@ -197,9 +194,9 @@ While implementing the system of ODEs in :math:`(s, e, i)`, we will extend the b
 Extending the Model
 -----------------------
 
-First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituing from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
+First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituting from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
 
-We will assume that the transmission rate follows a process with a reversion to a value :math:`B(t)` which could conceivably be influenced by policy.  The intuition is that even if the targetted :math:`B(t)` was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R(t)` moves towards :math:`B(t)`. 
+We will assume that the transmission rate follows a process with a reversion to a value :math:`B(t)` which could conceivably be influenced by policy.  The intuition is that even if the targeted :math:`B(t)` was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R(t)` moves towards :math:`B(t)`. 
 
 .. math::
     \begin{aligned} 
@@ -217,7 +214,7 @@ Finally, let :math:`m(t)` be the mortality rate, which we will leave constant fo
     \end{aligned}
     :label: Mode
 
-While we could conveivably integate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`d M(t)/dt` rather than calculating :math:`M(t) = \int_0^t \gamma m(\tau) i(\tau) d \tau` ex-post.
+While we could conceivably integrate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`d M(t)/dt` rather than calculating :math:`M(t) = \int_0^t \gamma m(\tau) i(\tau) d \tau` ex-post.
 
 This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid).
 
@@ -315,7 +312,7 @@ Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :m
     prob = ODEProblem(F, x_0, (0.0, p.T), p)
 
 
-The ``tspan`` of ``(0.0, p.T)`` determines that the :math:`t` used by the sovler.  The time scale needs to be consistent with the arrival
+The ``tspan`` of ``(0.0, p.T)`` determines that the :math:`t` used by the solver.  The time scale needs to be consistent with the arrival
 rate of the transition probabilities (i.e. the :math:`\gamma, \sigma` were chosen based on daily data).
 The time period we investigate will be 550 days, or around 18 months:
 
@@ -329,8 +326,7 @@ Let's run some experiments using this code.
     sol = solve(prob, Tsit5())
     @show length(sol.t);
 
-We see that the adaptive time-stepping used approximately 50 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses the an interpolator consistent with the
-solution to the ODE.
+We see that the adaptive time-stepping used approximately 50 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.
 
 See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on analyzing the solution, and `here <https://docs.sciml.ai/stable/basics/plot/>`__ for plotting tools.  The built-in plots for the solutions provide all of the `attributes <https://docs.juliaplots.org/latest/tutorial/>`__ in `Plots.jl <https://github.com/JuliaPlots/Plots.jl>`__.
 
@@ -479,7 +475,7 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
     prob_late = ODEProblem(F, x_0, tspan, p_late)
 
 
-Unlike the previous examples, the :math:`B(t)` functions have discontinuties which might occur.  We can tell the adaptive time-stepping methods to ensure they include those points using ``tstops``
+Unlike the previous examples, the :math:`B(t)` functions have discontinuities which might occur.  We can tell the adaptive time-stepping methods to ensure they include those points using ``tstops``
 
 Let's calculate the paths:
 
@@ -508,7 +504,7 @@ if a vaccine is found.
 
 Despite its richness, the model above is fully deterministic.  The policy :math:`B(t)` could change over time, but only in predictable ways.
 
-One source of randomness which would enter the model is considering the discretness of individuals.  This topic, the connection to between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media are explored in our lecture on continuous time markov chains.
+One source of randomness which would enter the model is considering the discretness of individuals.  This topic, the connection to between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media are explored in our lecture on continuous time Markov chains.
 
 But rather than examining how granularity leads to aggregate fluctuations, we will concentrate on randomness that comes from aggregate changes in behavior or policy.
 
@@ -517,18 +513,18 @@ Introduction to SDEs: Aggregate Shocks to Transmission Rates
 
 We will start by extending our model to include randomness in :math:`R(t)`, which makes it a system of Stochastic Differential Equations (SDEs).
 
-Continous-Time Stochastic Processes
+Continuous-Time Stochastic Processes
 -----------------------------------
 
-In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which may have jumps (which are almost surely right-continous).  The most tractable of these includes the theory of `Levy Processes <https://en.wikipedia.org/wiki/L%C3%A9vy_process>`_.
+In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which may have jumps (which are almost surely right-continuous).  The most tractable of these includes the theory of `Levy Processes <https://en.wikipedia.org/wiki/L%C3%A9vy_process>`_.
 
-**TBD:** Add definition of levy processes and the intuitive connection between statoionary increments and independence of increments.  Also, is there intuition why additive processes in continuous time lead to additive SDEs/etc.?  Might be useful.
+**TBD:** Add definition of levy processes and the intuitive connection between stationary increments and independence of increments.  Also, is there intuition why additive processes in continuous time lead to additive SDEs/etc.?  Might be useful.
 
 Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time...
 
 Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much more strict.  In practice, there are only two types of Levy Processes that can be used without careful measure theory.
 
-#. `Weiner Processes <https://en.wikipedia.org/wiki/Wiener_process>`__ (as known as Brownian Motion) which leads to a diffusion equations, and is the only continous-time Levy process with continuous paths
+#. `Weiner Processes <https://en.wikipedia.org/wiki/Wiener_process>`__ (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths
 #. `Poisson Processes <https://en.wikipedia.org/wiki/Poisson_point_process>`__ with an arrival rate of jumps in the variable.
 
 Every other Levy Process you will typically work with is composed of those building blocks (e.g. a `Diffusion Process <https://en.wikipedia.org/wiki/Diffusion_process>`__ such as Geometric Brownian Motion is a transformation of a Weiner process, and a `jump diffusion <https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance>`__ is a diffusion process with a Poisson arrival of jumps).
@@ -541,7 +537,7 @@ Shocks to Transmission Rates
 
 Consider that the effective transmission rate :math:`R(t)` could depend on degrees of randomness in behavior and implementation.  For example,
 
-* Misinformation on facebook spreading non-uniformly
+* Misinformation on Facebook spreading non-uniformly
 * Large political rallies, elections, or protests
 * Deviations in the implementation and timing of lockdown policy within demographics, locations, or businesses within the system.
 * Aggregate shocks in opening/closing industries
@@ -579,7 +575,7 @@ As the shock only effects :math:`dR`, which is the 5th equation, define the matr
 
 Since these are additive shocks, we will not need to modify the :math:`F` from our equation.
 
-First create a new settings generator, and and then define a `SDEProblem <https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1>`__  with Diagonal Noise. 
+First create a new settings generator, and then define a `SDEProblem <https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1>`__  with Diagonal Noise. 
 
 We solve the problem with the `SRA <https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1>`__ algorithm (Adaptive strong order 1.5 methods for additive Ito and Stratonovich SDEs)
 
@@ -601,9 +597,9 @@ We solve the problem with the `SRA <https://docs.sciml.ai/stable/solvers/sde_sol
     sol_1 = solve(prob, SRA());
     @show length(sol_1.t);
 
-With stochastic differential equations, a "solution" is akin to a simulation for a particular realizaiton of the noise process.
+With stochastic differential equations, a "solution" is akin to a simulation for a particular realization of the noise process.
 
-Plotting the number of infections for these two realizaitons of the shock process
+Plotting the number of infections for these two realizations of the shock process
 
 .. code-block:: julia
 
@@ -620,7 +616,7 @@ If we solve this model a second time, and plot the flow of deaths, we can see di
 
 
 
-While individual simulatations are useful, you often want to look at an ensemble of multiple trajectories of the SDE
+While individual simulations are useful, you often want to look at an ensemble of multiple trajectories of the SDE
 
 .. code-block:: julia
 
@@ -686,16 +682,16 @@ Technological Progress and Policy Tradeoffs
 
 While the randomness inherent in the :math:`R(t)` can explain some of the sources of uncertainty that come from behavioral shocks, we have been ignoring two other considerations.
 
-First, technology, both in treatment and vaccination, is evolving and in an inherently non-detemrinistic way.  We will consider that the mortality rate :math:`m(t)` may evolve over time, as well as considering how a probability of vaccination development adds a path to the Removed state that does not require infection.
+First, technology, both in treatment and vaccination, is evolving and in an inherently non-deterministic way.  We will consider that the mortality rate :math:`m(t)` may evolve over time, as well as considering how a probability of vaccination development adds a path to the Removed state that does not require infection.
 
 
 In order to add one more degree of realism to the tradeoffs, we will consider that the actual death rate is driven by the mortality :math:`m(t)` but also capacity constraints in the economy with respect to medical resources for the infected state.  In particular, we assume that if :math:`i(t) > \bar{i}`, then the available medical resources are exhuasted, leading to quadratically increased death rate.
 
 Second, the only social objective measure we can explore with the current framework is minimizing the total deaths.  That ignores the possible policy tradeoffs between minimizing deaths and the impact on the general economy.
 
-While a particular planner may decide that the only relevant welfare criteria is aggregate mortality, that leads to implausibly extreme policy (e.g. set :math:`B(t) = 0` forever).  Hence, we will add a proxy for economic impact of Covid and the shotdown policy, summarized by :math:`u(t)` for excess covid-related "unemployment".  A particular planner can then decide the weighting of the tradeoffs.
+While a particular planner may decide that the only relevant welfare criteria is aggregate mortality, that leads to implausibly extreme policy (e.g. set :math:`B(t) = 0` forever).  Hence, we will add a proxy for economic impact of COVID and the shutdown policy, summarized by :math:`u(t)` for excess COVID-related "unemployment".  A particular planner can then decide the weighting of the tradeoffs.
 
-The policy choice :math:`B(t)` is then made a markov-process rather than current exogeous and deterministic one.
+The policy choice :math:`B(t)` is then made a Markov process rather than current exogenous and deterministic one.
 
 The inherent discretness of medical innovations and policy changes provides us an opportunity to explore the use of Poisson and jump diffusion. 
 
@@ -755,9 +751,9 @@ As vaccines are not instantaneously delivered to all, we can let :math:`\nu` be 
 Unemployment and Lockdown Policy
 ----------------------------------
 
-As a simple summary of the economic and social distortions due to the covid, consider that an aggregate state :math:`u(t)` (indicating "excess" unemployment due to covid) increases as the :math:`B(t)`policy deviates from the natural :math:`\bar{R}` level, but can also increase due to flow of deaths from covid.
+As a simple summary of the economic and social distortions due to the COVID, consider that an aggregate state :math:`u(t)` (indicating "excess" unemployment due to COVID) increases as the :math:`B(t)`policy deviates from the natural :math:`\bar{R}` level, but can also increase due to flow of deaths from COVID.
 
-The second part of this is an important consideration: if the death rate is extremely high, then opening the economy may not help much as individuals are reluctant to return to normal economic activities.  We will assume that weights on these are :math:`\mu_B` and :math:`mu_M` respetivly.
+The second part of this is an important consideration: if the death rate is extremely high, then opening the economy may not help much as individuals are reluctant to return to normal economic activities.  We will assume that weights on these are :math:`\mu_B` and :math:`mu_M` respectively.
 
 To represent the slow process of coming back to normal, we assume that the stock value :math:`u(t)` depreciates at rate :math:`\delta`.  Put together gives the ODE,
 
@@ -767,7 +763,7 @@ To represent the slow process of coming back to normal, we assume that the stock
     \end{aligned}
    :label: du
 
-The policy choice :math:`B(t)` is markov, and will not consider implementation of forward looking behavior in this lecture.  For a simple example, consider a policy driven by myopic political incentives and driven entirely by the death rates.  If :math:`\pi_t > \bar{\pi}` then set :math:`B(t) = R_0` and leave it at :math:`B(t) = \bar{R}` otherwise.
+The policy choice :math:`B(t)` is Markov, and will not consider implementation of forward looking behavior in this lecture.  For a simple example, consider a policy driven by myopic political incentives and driven entirely by the death rates.  If :math:`\pi_t > \bar{\pi}` then set :math:`B(t) = R_0` and leave it at :math:`B(t) = \bar{R}` otherwise.
 
 Without getting into the measure theory, this sort of bang-bang policy doesn't work as the process ceases to be a Levy Process (and much of the intuitive of considering measurability of stochastic processes and expected present discounted value fail).
 
@@ -788,7 +784,7 @@ To our model, we have added in three new variables (:math:`u, V,` and :math:`B`)
 
 Stacking the :math:`u, V, B` at the end of the existing :math:`x` vector, we add or modify using  :eq:`seir_system_vacc`, :eq:`Mode_nl`, and :eq:`du`.
 
-Here, we will move from an "out of place" to an inplace differential equation.
+Here, we will move from an "out of place" to an in-place differential equation.
 
 .. code-block:: julia
 
@@ -814,7 +810,7 @@ Here, we will move from an "out of place" to an inplace differential equation.
 
 Note that the ``V, B`` terms do not have a drift as they are pure jump processes.
 
-Next, we need to consider how the variance term of the diffusion changes.  With the exception of the new brownian
+Next, we need to consider how the variance term of the diffusion changes.  With the exception of the new Brownian
 motion associated with the jump diffusion in :eq:`dmt`, everything else remains unchanged or zero.
     
 .. code-block:: julia
@@ -910,6 +906,8 @@ Solving and simulating,
     sol = solve(jump_prob, SRIW1())
     plot(sol, vars = [8, 10])
 
-
-TODO:  Chris, lets make sure this is right, pick some parameters, and solve it?
-TODO: What sorts of experiments afte rthis?
+TODO:  Chris, lets make sure this is right, pick some parameters.
+TODO:  Lets show the same SEIR decomposition we had before as a proportion, but with a vaccination arrival.
+TODO:  Maybe show a slice at time T = 550 or whatever of the distribution M(t) and u(t) as a histogram with 5, 50, and 95 percent confidence intervals?
+TODO:  Then show how those two change as the myopic B(t) policy changes?
+TODO:  Show how M(t) and u(t) change as the eta changes for a given policy?
