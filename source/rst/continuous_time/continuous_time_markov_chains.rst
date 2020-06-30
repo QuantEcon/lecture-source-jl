@@ -1,4 +1,4 @@
-.. _seir_sciml:
+.. _ctmc:
 
 .. include:: /_static/includes/header.raw
 
