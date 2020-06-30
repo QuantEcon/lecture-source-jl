@@ -19,3 +19,4 @@ This section of the course contains foundational mathematical and computational 
     :maxdepth: 2
 
     seir_model_sde
+    seir_sciml
