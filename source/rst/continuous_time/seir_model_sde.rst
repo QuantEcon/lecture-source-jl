@@ -1,10 +1,12 @@
+.. _seir_model_sde:
+
 .. include:: /_static/includes/header.raw
 
 .. highlight:: julia
 
-******************************************************************
+*******************************************************************
 :index:`Modeling COVID 19 with (Stochastic) Differential Equations`
-******************************************************************
+*******************************************************************
 
 .. contents:: :depth: 2
 
@@ -66,7 +68,7 @@ others covered in previous lectures
 .. code-block:: julia
 
     using OrdinaryDiffEq, StochasticDiffEq, DiffEqJump
-    using Parameters, StaticArrays, Plots 
+    using Parameters, StaticArrays, Plots
 
 
 The SEIR Model
@@ -170,7 +172,7 @@ Given this system, we choose an initial condition and a timespan, and create a `
     x_0 = [s_0, e_0, i_0, r_0]  # initial condition
 
     tspan = (0.0, 350.0)  # ≈ 350 days
-    prob = ODEProblem(F_simple, x_0, tspan)
+    prob = ODEProblem(F_simple, x_0, tspan, nothing)
 
 With this, we can choose an ODE algorithm (e.g. a good default for non-stiff ODEs of this sort might be ``Tsit5()``, which is the Tsitouras 5/4 Runge-Kutta method).
 
@@ -718,7 +720,7 @@ In previous versions of model, :eq:`Mode` had deaths as the integration of the d
 .. math::
     \begin{aligned}
     \pi(m, i) &:= m + \psi \max(0, i - \bar{i})\\
-    d M_t &= \pi(m_t, i_t)\gamma i_t dt
+    d M_t &= \pi(m_t, i_t)\gamma i_t dt\\
     \end{aligned}
     :label: Mode_nl
 
@@ -911,19 +913,3 @@ Solving and simulating,
 
 TODO:  Chris, lets make sure this is right, pick some parameters, and solve it?
 TODO: What sorts of experiments afte rthis?
-
-
-ROUGH NOTES ON THE SCIML LECTURE
-=====================================
-
-The hope is that we have all or almost all of the model elements developed here, so that we can
-focus on the machine learning/etc. in the following lecture and not implement any new model features (i.e. just shut things down as required).
-
-
-Some thoughts on the SciML lecture which would be separate:
-
-1.  Bayesian estimation and model uncertainty.  Have uncertainty on the parameter such as the :math:`m_0` parameter.  Show uncertainty that comes after the estimation of the parameter.
-2.  Explain how bayesian priors are a form of regularization.  With rare events like this, you will always have
-more parameters than data.
-3.  Solve the time-0 optimal policy problem using Flux of choosing the :math:`B` policy in some form.  For the objective, consider the uncertainty and the assymetry of being wrong.
-4. If we wanted to add in a model element, I think that putting in an asymptomatic state would be very helpful for explaining the role of uncertainty in evaluating the counterfactuals.

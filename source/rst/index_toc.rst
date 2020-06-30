@@ -27,6 +27,7 @@
     more_julia/index
     tools_and_techniques/index
     dynamic_programming/index
+    continuous_time/index    
     multi_agent_models/index
     time_series_models/index
     dynamic_programming_squared/index

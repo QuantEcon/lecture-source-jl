@@ -463,7 +463,8 @@ jupyter_dependencies = {
     'more_julia': [],
     'multi_agent_models': [],
     'time_series_models': [],
-    'tools_and_techniques': []
+    'tools_and_techniques': [],
+    'continuous_time': []    
 }
 
 jupyter_download_nb_execute=True
