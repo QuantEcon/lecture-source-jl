@@ -20,3 +20,4 @@ This section of the course contains foundational mathematical and computational 
 
     seir_model_sde
     seir_sciml
+    continuous_time_markov_chains
