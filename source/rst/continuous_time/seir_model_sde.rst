@@ -30,13 +30,13 @@ In the first part, dynamics are modeled using a standard SEIR (Susceptible-Expos
 of disease spread, represented as a system of ordinary differential
 equations where the number of agents is large and there are no exogenous stochastic shocks.
 
-The first part of the model follows the notes from 
+The first part of the model follows the notes from
 provided by `Andrew Atkeson <https://sites.google.com/site/andyatkeson/>`__
 
-* `NBER Working Paper No. 26867 <https://www.nber.org/papers/w26867>`__ 
+* `NBER Working Paper No. 26867 <https://www.nber.org/papers/w26867>`__
 * `COVID-19 Working papers and code <https://sites.google.com/site/andyatkeson/home?authuser=0>`__
 
-See further variations on the classic SIR model in Julia  `here <https://github.com/epirecipes/sir-julia>`__. 
+See further variations on the classic SIR model in Julia  `here <https://github.com/epirecipes/sir-julia>`__.
 
 
 We then look at extending the model to include policy-relevant aggregate shocks, and
@@ -61,12 +61,12 @@ Setup
     using Test # Put this before any code in the lecture.
 
 In addition, we will be exploring packages within the `SciML ecosystem <https://github.com/SciML/>`__ and
-others covered in previous lectures 
+others covered in previous lectures
 
 .. code-block:: julia
 
     using OrdinaryDiffEq, StochasticDiffEq, DiffEqJump
-    using Parameters, StaticArrays, Plots
+    using Parameters, StaticArrays, Plots, RecursiveArrayTools
 
 
 The SEIR Model
@@ -88,7 +88,7 @@ Comments:
 
 
 
-The interest is primarily in 
+The interest is primarily in
 
 * the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
 * how long the caseload can be deferred (hopefully until a vaccine arrives)
@@ -109,23 +109,23 @@ The transitions between those states are governed by the following rates
 * :math:`\gamma` is called the *recovery rate* (the rate at which infected people recover or die).
 
 
-In addition, the transmission rate can be rep-parameterized as: :math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` has the interpretation as the *effective reproduction number* at time :math:`t`.  For this reason, we will work with the :math:`R(t)` reparameterization.
+In addition, the transmission rate can be re-parameterized as: :math:`R(t) := \beta(t) / \gamma` where :math:`R(t)` has the interpretation as the *effective reproduction number* at time :math:`t`.  For this reason, we will work with the :math:`R(t)` reparameterization.
 
 The notation is standard in the epidemiology literature - though slightly confusing, since :math:`R(t)` is different to
 :math:`R`, the symbol that represents the removed state. Throughout the rest of the lecture, we will always use :math:`R` to represent the effective reproduction number, unless stated otherwise.
 
-Assume that there is a constant population of size :math:`N` throughout, then define the proportion of people in each state as :math:`s := S/N` etc.  With this, and assuming a continuum approximation, the SEIR model can be written as 
+Assume that there is a constant population of size :math:`N` throughout, then define the proportion of people in each state as :math:`s := S/N` etc.  With this, and assuming a continuum approximation, the SEIR model can be written as
 
 .. math::
-   \begin{aligned} 
-        \frac{d s}{d t}  & = - \gamma \, R \, s \,  i  
+   \begin{aligned}
+        \frac{d s}{d t}  & = - \gamma \, R \, s \,  i
         \\
-        \frac{d e}{d t}   & = \gamma \, R \, s \,  i  - \sigma e 
+        \frac{d e}{d t}   & = \gamma \, R \, s \,  i  - \sigma e
         \\
          \frac{d i}{d t}  & = \sigma  e  - \gamma i
         \\
-         \frac{d r}{d t}  & = \gamma  i         
-   \end{aligned} 
+         \frac{d r}{d t}  & = \gamma  i
+   \end{aligned}
    :label: seir_system
 
 Here, :math:`dy/dt` represents the time derivative for the particular variable.
@@ -133,8 +133,8 @@ Here, :math:`dy/dt` represents the time derivative for the particular variable.
 Since the states form a partition, we could reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, for further experiments and plotting it is harmless to keep it in the system.
 
 
-Since we are using a continuum approximation, all individuals in the population are eventually infected when 
-the transmission rate is positive and :math:`i(0) > 0`. 
+Since we are using a continuum approximation, all individuals in the population are eventually infected when
+the transmission rate is positive and :math:`i(0) > 0`.
 
 We can begin writing the minimal code to solve the dynamics from a particular ``x_0 = [s_0, e_0, i_0, r_0]`` initial condition and parameter values.
 
@@ -148,15 +148,15 @@ First, define the system of equations
         return [-γ*R*s*i;       # ds/dt = -γRsi
                  γ*R*s*i -  σ*e;# de/dt =  γRsi -σe
                  σ*e - γ*i;     # di/dt =        σe -γi
-                      γ*i;      # dr/dt =            γi
-                ]          
+                       γ*i;     # dr/dt =            γi
+                ]
     end
 
 Written this way, we see that the four equations represent the one-directional transition from the susceptible to removed state, where the negative terms are outflows, and the positive ones inflows.  The equation associated with the state :math:`R` has inflows and no outflows, so any agents which end up in that state are "trapped".
 
 Consequently, with no flow leaving the :math:`dr/dt` and strictly positive parameter values the ``R`` state is absorbing, and :math:`\lim_{t\to \infty} r(t) = 1`.  Crucial to this result is that individuals are perfectly divisible, and any arbitrarily small :math:`i > 0` leads to a strictly positive flow into the exposed state.
 
-We will discuss this topic (and related topics of irreducibility) in the lecture on continuous-time Markov chains, as well as the limitations of these approximations when the discretness becomes essential (e.g. continuum approximations are incapable of modeling extinguishing of an outbreak).
+We will discuss this topic (and related topics of irreducibility) in the lecture on continuous-time Markov chains, as well as the limitations of these approximations when the discreteness becomes essential (e.g. continuum approximations are incapable of modeling extinguishing of an outbreak).
 
 Given this system, we choose an initial condition and a timespan, and create a ``ODEProblem`` encapsulating the system.
 
@@ -169,7 +169,7 @@ Given this system, we choose an initial condition and a timespan, and create a `
     x_0 = [s_0, e_0, i_0, r_0]  # initial condition
 
     tspan = (0.0, 350.0)  # ≈ 350 days
-    prob = ODEProblem(F_simple, x_0, tspan, nothing)
+    prob = ODEProblem(F_simple, x_0, tspan)
 
 With this, we can choose an ODE algorithm (e.g. a good default for non-stiff ODEs of this sort might be ``Tsit5()``, which is the Tsitouras 5/4 Runge-Kutta method).
 
@@ -196,12 +196,12 @@ Extending the Model
 
 First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituting from the time-derivatives of :math:`i(t), r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
 
-We will assume that the transmission rate follows a process with a reversion to a value :math:`B(t)` which could conceivably be influenced by policy.  The intuition is that even if the targeted :math:`B(t)` was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R(t)` moves towards :math:`B(t)`. 
+We will assume that the transmission rate follows a process with a reversion to a value :math:`B(t)` which could conceivably be influenced by policy.  The intuition is that even if the targeted :math:`B(t)` was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R(t)` moves towards :math:`B(t)`.
 
 .. math::
-    \begin{aligned} 
+    \begin{aligned}
     \frac{d R}{d t} &= \eta (B - R)\\
-    \end{aligned}         
+    \end{aligned}
     :label: Rode
 
 
@@ -216,17 +216,17 @@ Finally, let :math:`m(t)` be the mortality rate, which we will leave constant fo
 
 While we could conceivably integrate the total deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`d M(t)/dt` rather than calculating :math:`M(t) = \int_0^t \gamma m(\tau) i(\tau) d \tau` ex-post.
 
-This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid).
+This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid). Note that when doing so, :math:`M(0) = \int_0^0 \gamma m(\tau) i(\tau) d \tau = 0` is the initial condition.
 
 The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, R, m, c, M]` with parameter tuple :math:`p := (\sigma, \gamma, B, \eta)`
 
 .. math::
-    \begin{aligned} 
+    \begin{aligned}
     \frac{d x}{d t} &= F(x,t;p)\\
         &:= \begin{bmatrix}
-        - \gamma \, R \, s \,  i  
+        - \gamma \, R \, s \,  i
         \\
-        \gamma \, R \,  s \,  i  - \sigma e 
+        \gamma \, R \,  s \,  i  - \sigma e
         \\
         \sigma \, e  - \gamma i
         \\
@@ -234,16 +234,16 @@ The system :eq:`seir_system` and the supplemental equations can be written in ve
         \\
          \eta (B(t) - R)
         \\
-        0        
+        0
         \\
         \sigma e
         \\
         m \, \gamma \, i
         \end{bmatrix}
-    \end{aligned}         
+    \end{aligned}
     :label: dfcv
 
-Here note that if :math:`B(t)` is time-invariant, then :math:`F(x)` is time-invariant as well. 
+Here note that if :math:`B(t)` is time-invariant, then :math:`F(x)` is time-invariant as well.
 
 Parameters
 ----------
@@ -281,14 +281,14 @@ First, construct our :math:`F` from :eq:`dfcv`
                 0.0;            # dm/dt
                 σ*e;            # dc/dt
                 m*γ*i;          # dM/dt
-                ]          
+                ]
     end
 
 
 Parameters
 -------------
 
-The baseline parameters are put into a named tuple generator (see previous lectures using ``Parameters.jl``) with default values discussed above.  
+The baseline parameters are put into a named tuple generator (see previous lectures using ``Parameters.jl``) with default values discussed above.
 
 .. code-block:: julia
 
@@ -298,21 +298,22 @@ The baseline parameters are put into a named tuple generator (see previous lectu
 Note that the default :math:`B(t)` function always equals :math:`\bar{R}`
 
 
-Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :math:`R(0) = \bar{B}`, and :math:`v(0) = 0.01` 
+Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :math:`R(0) = \bar{B}`, and :math:`m(0) = 0.01`
 
 .. code-block:: julia
 
     p = p_gen()  # use all default parameters
- 
+
     i_0 = 1E-7
     e_0 = 4.0 * i_0
     s_0 = 1.0 - i_0 - e_0
 
     x_0 = [s_0, e_0, i_0, 0.0, p.R̄, p.m_0, 0.0, 0.0]
-    prob = ODEProblem(F, x_0, (0.0, p.T), p)
+    tspan = (0.0, p.T)
+    prob = ODEProblem(F, x_0, tspan, p)
 
 
-The ``tspan`` of ``(0.0, p.T)`` determines that the :math:`t` used by the solver.  The time scale needs to be consistent with the arrival
+The ``tspan`` of ``(0.0, p.T)`` determines the :math:`t` used by the solver.  The time scale needs to be consistent with the arrival
 rate of the transition probabilities (i.e. the :math:`\gamma, \sigma` were chosen based on daily data).
 The time period we investigate will be 550 days, or around 18 months:
 
@@ -332,51 +333,32 @@ See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on anal
 
 .. code_block:: julia
 
-    # TODO: Chris, nice ways to resvale things or use two axis?
-    plot(sol, vars = [7, 8], label = ["c(t)" "M(t)"], lw = 2, title = "Cumulative Infected and Total Mortality")
-
+    plot(sol, vars = [7, 8], label = ["c(t)" "M(t)"], lw = 2,
+              title = "Cumulative Infected and Total Mortality",
+              layout = (2,1))
 
 Experiment 1: Constant Reproduction Case
 ----------------------------------------
 
 Let's start with the case where :math:`B(t) = R = \bar{R}` is constant.
 
-We calculate the time path of infected people under different assumptions.
+We calculate the time path of infected people under different assumptions of :math:`\bar{R}`:
 
 .. code-block:: julia
 
     R̄_vals = range(1.6, 3.0, length = 6)
-    sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R̄ = R̄)), Tsit5()) for R̄ in R̄_vals];
- 
-    # TODO: Probably clean ways to plot this , but don't know them!
+    sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R̄ = R̄)), Tsit5(), saveat=0.5) for R̄ in R̄_vals];
 
-    #R0_vals = np.linspace(1.6, 3.0, 6)
-    #labels = [f'$R0 = {r:.2f}$' for r in R0_vals]
-    #i_paths, c_paths = [], []
-    #
-    #for r in R0_vals:
-    #    i_path, c_path = solve_path(r, t_vec)
-    #    i_paths.append(i_path)
-    #    c_paths.append(c_path)
-
-    # Here's some code to plot the time paths.
-
-    #def plot_paths(paths, labels, times=t_vec):
-    #
-    #    fig, ax = plt.subplots()
-    #
-    #    for path, label in zip(paths, labels):
-    #        ax.plot(times, path, label=label)
-    #        
-    #    ax.legend(loc='upper left')
-    #
-    #    plt.show()
+Here we chose ``saveat=0.5`` to get solutions that were evenly spaced at timepoints ``0.5``. Note that changing the saved points does not change the internal steps of the solvers since it uses an interpolation to generate the output points.
 
 Let's plot current cases as a fraction of the population.
 
 .. code-block:: julia
 
-    #plot_paths(i_paths, labels)
+    labels = permutedims(["R0 = $r" for r in R̄_vals])
+    infecteds = [sol[3,:] for sol in sols]
+    plot(infecteds,label=labels,legend=:topleft)
+
 
 As expected, lower effective transmission rates defer the peak of infections.
 
@@ -386,25 +368,26 @@ Here is cumulative cases, as a fraction of population:
 
 .. code-block:: julia
 
-    #plot_paths(c_paths, labels)
+    cumulative_infected = [sol[7,:] for sol in sols]
+    plot(cumulative_infected,label=labels,legend=:topleft)
 
 
 Experiment 2: Changing Mitigation
 ---------------------------------
 
-Let's look at a scenario where mitigation (e.g., social distancing) is 
+Let's look at a scenario where mitigation (e.g., social distancing) is
 successively imposed, but the target (:math:`\bar{R}` is fixed)
 
 To do this, we will have :math:`R(0) \neq \bar{R}` and examine the dynamics using the :math:`\frac{d R}{d t} = \eta (\bar{R} - R)` ODE.
 
 .. Mathematica Verification
-.. (\[Beta][t] /. 
+.. (\[Beta][t] /.
 ..     First@DSolve[{\[Beta]'[t] == \[Eta] (b - \[Beta][t]), \[Beta][
-..          0] == \[Beta]0}, \[Beta][t], 
-..       t] ) == \[Beta]0 E^(-t \[Eta]) + (1 - 
+..          0] == \[Beta]0}, \[Beta][t],
+..       t] ) == \[Beta]0 E^(-t \[Eta]) + (1 -
 ..       E^(-t \[Eta])) b // FullSimplify
 
-      
+
 In the simple case, where :math:`B(t) = \bar{R}` is independent of the state, the solution to the ODE with :math:`R(0) = R_0` is :math:`R(t) = R_0 e^{-\eta t} + \bar{R}(1 - e^{-\eta t})`
 
 We will examine the case where :math:`R(0) = 3` and then it falls to  to :math:`\bar{R} = 1.6` due to the progressive adoption of stricter mitigation measures.
@@ -416,25 +399,33 @@ We consider several different rates:
 
 .. code-block:: julia
 
-    #η_vals = 1/5, 1/10, 1/20, 1/50, 1/100
-    #labels = [fr'$\eta = {η:.2f}$' for η in η_vals]
+    η_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
+    labels = ["\eta = $η" for η in η_vals]
 
 Let's calculate the time path of infected people, current cases, and mortality
 
 .. code-block:: julia
 
-    #i_paths, c_paths = [], []
-    #
-    #for η in η_vals:
-    #    R0 = lambda t: R0_mitigating(t, η=η)
-    #    i_path, c_path = solve_path(R0, t_vec)
-    #    i_paths.append(i_path)
-    #    c_paths.append(c_path)
+    x_0 = [s_0, e_0, i_0, 0.0, 3.0, p.m_0, 0.0, 0.0]
+    sols = [solve(ODEProblem(F, x_0, tspan, p_gen(η=η)), Tsit5(), saveat=0.5) for η in η_vals];
 
-    #plot_paths(i_paths, labels)
+First let's plot the :math:`\bar{R}` over time:
 
-    #plot_paths(c_paths, labels)
+.. code-block:: julia
+    Rs = [sol[5,:] for sol in sols]
+    plot(Rs,label=labels,legend=:topleft)
 
+Now let's plot the number of infected persons and the cumulative number
+of infected persons:
+
+.. code-block:: julia
+    infecteds = [sol[3,:] for sol in sols]
+    plot(infecteds,label=labels,legend=:topleft)
+
+
+.. code-block:: julia
+    cumulative_infected = [sol[7,:] for sol in sols]
+    plot(cumulative_infected,label=labels,legend=:topleft)
 
 
 Ending Lockdown
@@ -457,12 +448,12 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
 .. code-block:: julia
 
     B_lift_early(t, p) = t < 30.0 ? 0.5 : 2.0
-    B_lift_late(t, p) = t < 120.0 ? 0.5 : 2.0  
+    B_lift_late(t, p) = t < 120.0 ? 0.5 : 2.0
     p_early = p_gen(B = B_lift_early, η = 10.0)
     p_late = p_gen(B = B_lift_late, η = 10.0)
 
-    
-    # initial conditions 
+
+    # initial conditions
     i_0 = 25000 / p_early.N
     e_0 = 75000 / p_early.N
     s_0 = 1.0 - i_0 - e_0
@@ -471,11 +462,11 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
     x_0 = [s_0, e_0, i_0, 0.0, R_0, p_early.m_0, 0.0, 0.0] # start in lockdown
 
     # create two problems, with rapid movement of R towards B(t)
-    prob_early = ODEProblem(F, x_0, tspan, p_early)  
+    prob_early = ODEProblem(F, x_0, tspan, p_early)
     prob_late = ODEProblem(F, x_0, tspan, p_late)
 
 
-Unlike the previous examples, the :math:`B(t)` functions have discontinuities which might occur.  We can tell the adaptive time-stepping methods to ensure they include those points using ``tstops``
+Unlike the previous examples, the :math:`B(t)` functions have discontinuities which might occur.  Note that we can imporve the efficiency of the adaptive time-stepping methods by telling them to step exactly at that point by using ``tstops``
 
 Let's calculate the paths:
 
@@ -483,7 +474,7 @@ Let's calculate the paths:
 
     sol_early = solve(prob_early, Tsit5(), tstops = [30.0, 120.0])
     sol_late = solve(prob_late, Tsit5(), tstops = [30.0, 120.0])
-    plot(sol_early, vars =[8], title = "Total Mortality", label = "Lift Early")
+    plot(sol_early, vars =[8], title = "Total Mortality", label = "Lift Early", legend = :topleft)
     plot!(sol_late, vars =[8], label = "Lift Late")
 
 To calculate the daily death, calculate the :math:`\gamma i(t) m(t)`.
@@ -496,15 +487,15 @@ To calculate the daily death, calculate the :math:`\gamma i(t) m(t)`.
     daily_late = sol_late[3,:] .* sol_late[6,:] * p_late.γ
 
     plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")
-    plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late")    
+    plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late")
 
-Pushing the peak of curve further into the future may reduce cumulative deaths 
+Pushing the peak of curve further into the future may reduce cumulative deaths
 if a vaccine is found.
 
 
 Despite its richness, the model above is fully deterministic.  The policy :math:`B(t)` could change over time, but only in predictable ways.
 
-One source of randomness which would enter the model is considering the discretness of individuals.  This topic, the connection to between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media are explored in our lecture on continuous time Markov chains.
+One source of randomness which would enter the model is considering the discreteness of individuals.  This topic, the connection between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media are explored in our lecture on continuous time Markov chains.
 
 But rather than examining how granularity leads to aggregate fluctuations, we will concentrate on randomness that comes from aggregate changes in behavior or policy.
 
@@ -527,7 +518,7 @@ Unlike in discrete-time, where a modeller has license to be creative, the rules 
 #. `Weiner Processes <https://en.wikipedia.org/wiki/Wiener_process>`__ (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths
 #. `Poisson Processes <https://en.wikipedia.org/wiki/Poisson_point_process>`__ with an arrival rate of jumps in the variable.
 
-Every other Levy Process you will typically work with is composed of those building blocks (e.g. a `Diffusion Process <https://en.wikipedia.org/wiki/Diffusion_process>`__ such as Geometric Brownian Motion is a transformation of a Weiner process, and a `jump diffusion <https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance>`__ is a diffusion process with a Poisson arrival of jumps).
+Every other Levy Process can be represented by these building blocks (e.g. a `Diffusion Process <https://en.wikipedia.org/wiki/Diffusion_process>`__ such as Geometric Brownian Motion is a transformation of a Weiner process, and a `jump diffusion <https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance>`__ is a diffusion process with a Poisson arrival of jumps).
 
 In this section, we will look at example of a diffusion process.
 
@@ -547,7 +538,7 @@ To implement this, we will add on a diffusion term to :eq:`Rode` with an instant
 The notation for this `SDE <https://en.wikipedia.org/wiki/Stochastic_differential_equation#Use_in_probability_and_mathematical_finance>`__ is then
 
 .. math::
-    \begin{aligned} 
+    \begin{aligned}
     d R_t &= \eta (B_t - R_t) dt + \zeta \sqrt{R_t} dW_t\\
     \end{aligned}
     :label: Rsde
@@ -559,9 +550,9 @@ Heuristically, if :math:`\zeta = 0`, divide this equation by :math:`dt` and it n
 The general form of the SDE with these sorts of continuous-shocks is an extension of our :eq:`dfcv` definition .
 
 .. math::
-    \begin{aligned} 
+    \begin{aligned}
     d x_t &= F(x_t,t;p)dt + G(x_t,t;p) dW
-    \end{aligned}  
+    \end{aligned}
 
 Here, it is convenient to :math:`d W` with the same dimension as :math:`x` where we can use the matrix :math:`G(x,t;p)` to associate the shocks with the appropriate :math:`x`.
 
@@ -572,12 +563,9 @@ As the shock only effects :math:`dR`, which is the 5th equation, define the matr
     diag(G) &:= \begin{bmatrix} 0 & 0 & 0 & 0 & \zeta \sqrt{R} & 0 & 0 & 0 \end{bmatrix}
     \end{aligned}
 
+First create a new settings generator, and then define a `SDEProblem <https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1>`__  with Diagonal Noise.
 
-Since these are additive shocks, we will not need to modify the :math:`F` from our equation.
-
-First create a new settings generator, and then define a `SDEProblem <https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1>`__  with Diagonal Noise. 
-
-We solve the problem with the `SRA <https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1>`__ algorithm (Adaptive strong order 1.5 methods for additive Ito and Stratonovich SDEs)
+We solve the problem with the `SOSRI <https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1>`__ algorithm (Adaptive strong order 1.5 methods for diagonal noise Ito and Stratonovich SDEs)
 
 .. code-block:: julia
 
@@ -594,88 +582,101 @@ We solve the problem with the `SRA <https://docs.sciml.ai/stable/solvers/sde_sol
     G(x, p, t) = [0, 0, 0, 0, p.ζ*sqrt(x[5]), 0, 0, 0]
 
     prob = SDEProblem(F, G, x_0, (0, p.T), p)
-    sol_1 = solve(prob, SRA());
+    sol_1 = solve(prob, SOSRI());
     @show length(sol_1.t);
 
-With stochastic differential equations, a "solution" is akin to a simulation for a particular realization of the noise process.
-
-Plotting the number of infections for these two realizations of the shock process
+With stochastic differential equations, a "solution" is akin to a simulation for a particular realization of the noise process. If we take two solutions and plot the number of infections, we will see differences over time:
 
 .. code-block:: julia
+    sol_2 = solve(prob, SOSRI());
+    plot(sol_1,vars=[2], title = "Number of Infections", label = "Trajectory 1")
+    plot!(sol_2,vars=[2], label = "Trajectory 2")
 
-    # TODO: PICK BETTER PLOT
-    plot(sol_1, vars = [2, 5] , title = "Stochastic R(t)", label = ["e(t)" "R(t)"])
 
-If we solve this model a second time, and plot the flow of deaths, we can see differences over time
+The same holds for other variables such as the flow of deaths:
 
 .. code-block:: julia
-
-    sol_2 = solve(prob, SRA())
-    plot(sol_1.t, flow_deaths(sol_1, p), title = "Daily Deaths", label = "sim 1")
-    plot!(sol_2.t, flow_deaths(sol_2, p), label = "sim 2")
+    plot(sol_1,vars=[5], title = "Flow of Deaths", label = "Trajectory 1")
+    plot!(sol_2,vars=[5], label = "Trajectory 2")
 
 
-
-While individual simulations are useful, you often want to look at an ensemble of multiple trajectories of the SDE
+While individual simulations are useful, you often want to look at an ensemble of trajectories of the SDE in order to get an accurate picture of how the system evolves on average. We can use the ``EnsembleProblem`` in order to have the solution compute multiple trajectories at once. The returned ``EnsembleSolution`` acts like an array of solutions but is imbued to plot recipes to showcase aggregate quantities. For example:
 
 .. code-block:: julia
 
     ensembleprob = EnsembleProblem(prob)
-    sol = solve(ensembleprob, SRA(), EnsembleSerial(),trajectories = 10)
+    sol = solve(ensembleprob, SOSRI(), EnsembleSerial(),trajectories = 10)
     plot(sol, vars = [3], title = "Infection Simulations", label = "i(t)")
 
 
-Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in `parallel <https://docs.sciml.ai/stable/features/ensemble/>`_ using multiple threads, processes, or GPUs.
+Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in `parallel <https://docs.sciml.ai/stable/features/ensemble/>`_ using multiple threads, processes, or GPUs. Here we showcase ``EnsembleSummary`` which calculates summary information from an ensemble and plots the solution with the quantiles:
 
-.. code-block:: julia    
+.. code-block:: julia
 
-    sol = solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000)
+    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
     summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
     plot(summ, idxs = (3,), title = "Quantiles of Infections Ensemble", labels = "Middle 95% Quantile")
 
 
 While ensembles, you may want to perform transformations, such as calculating our daily deaths.  This can be done with an ``output_func`` executed with every simulation.
 
-.. code-block:: julia    
+.. code-block:: julia
 
-    # IS THRERE A BETTER WAY?
     function save_mortality(sol, ind)
-        total = p.N * sol[8, :]
-        flow = flow_deaths(sol, p)
-        #TODO Add both total and flow
-        return (DiffEqBase.build_solution(sol.prob, sol.alg, sol.t, total), false)
+        # Save x[5]=flow and N*x[8]=total from solution
+        flow_and_total = [[x[5],p.N .* x[8]] for x in sol]
+        return (DiffEqArray(flow_and_total,sol.t), false)
     end
+    ensembleprob = EnsembleProblem(prob,  output_func = save_mortality)
+    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), saveat = 0.5, trajectories = 1000)
 
-    sol = solve(ensembleprob, SRA(), EnsembleThreads(), output_func = save_mortality, trajectories = 1000)
 
-For large-scale stochastic simulations, we can also use the ``output_func`` to reduce the amount of data stored for each simulation.
+Note that by using ``output_func`` we only end up storing the portions of the solution which we need. For large-scale stochastic simulations, this can be very helpful in reducing the amount of data stored for each simulation.
 
 .. code-block:: julia
 
-    # CHRIS TODO: Can't Figure out plotting.  Maybe both of them in separate panes
+    ensembleprob = EnsembleProblem(prob)
+    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), saveat = 0.5, trajectories = 1000)
     summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
     summ2 = EnsembleSummary(sol, quantiles = [0.25, 0.75])
-    plot(summ, title = "Total and Daily Deaths (TBD)")
-    plot!(summ2, labels = "Middle 50%")
+    plot(summ, idxs = [5], title = "Daily Deaths (TBD)")
+    plot!(summ2, idxs = [5], labels = "Middle 50%")
+
+.. code-block:: julia
+
+    plot(summ, idxs = [8], title = "Cumulative Death Percentage (TBD)")
+    plot!(summ2, idxs = [8], labels = "Middle 50%")
 
 
 Performance of these tends to be high, for example, rerunning out 1000 trajectories is measured in seconds on most computers with multithreading enabled.
 
-.. 
-.. CHRIS: THIS ENDED UP SLOWER and I am not sure why.  CAN ADD BACK IF WE CAN FIGURE OUT WHY
-.. 
-.. Furthermore, we can exploit Julia's generic programming to use a static array (or GPU, .. if available)
-.. 
-.. .. code-block:: julia
-.. 
-..     x_0_static = SVector{8}(x_0)
-..     prob = SDEProblem(F, G, x_0_static, (0, p.T), p)
-..     ensembleprob = EnsembleProblem(prob)
-..     sol = solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000)
-..     @time solve(ensembleprob, SRA(), EnsembleThreads(),trajectories = 1000);
-..
-.. TODO: link to the generic programming lecture, and explain why care was needed in the F definition.
+.. code-block:: julia
 
+    function F_static(x, p, t)
+
+        s, e, i, r, R, m, c, M = x
+        @unpack σ, γ, B, η = p
+
+        return SA[-γ*R*s*i;       # ds/dt
+                γ*R*s*i -  σ*e; # de/dt
+                σ*e - γ*i;      # di/dt
+                γ*i;            # dr/dt
+                η*(B(t, p) - R);# dR/dt
+                0.0;            # dm/dt
+                σ*e;            # dc/dt
+                m*γ*i;          # dM/dt
+                ]
+    end
+    G_static(x, p, t) = SA[0, 0, 0, 0, p.ζ*sqrt(x[5]), 0, 0, 0]
+
+    x_0_static = SVector{8}(x_0)
+    prob_static = SDEProblem(F_static, G_static, x_0_static, (0, p.T), p)
+    ensembleprob = EnsembleProblem(prob_static)
+    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
+    @time solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
+
+Note that these routines can also be auto-GPU accelerated by using
+``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`
 
 Technological Progress and Policy Tradeoffs
 ==============================================
@@ -693,7 +694,7 @@ While a particular planner may decide that the only relevant welfare criteria is
 
 The policy choice :math:`B(t)` is then made a Markov process rather than current exogenous and deterministic one.
 
-The inherent discretness of medical innovations and policy changes provides us an opportunity to explore the use of Poisson and jump diffusion. 
+The inherent discretness of medical innovations and policy changes provides us an opportunity to explore the use of Poisson and jump diffusion.
 
 Mortality
 ---------
@@ -703,7 +704,7 @@ Imperfect mixing of different demographic groups could lead to aggregate shocks 
 In addition, there may be a variety of smaller medical interventions that are short of a vaccine, but still effect the :math:`m(t)` path.  For simplicity, we will assume that each innovation cuts the inherent mortality rate in half and arrives with intensity :math:`\alpha \geq 0`.  Combining these two leads to a jump diffusion process
 
 .. math::
-   \begin{aligned} 
+   \begin{aligned}
     d m_t & = \xi \sqrt{m_t} d W_t -  \frac{m}{2} d N_t^{\alpha}\\
     \end{aligned}
     :label: dmt
@@ -728,23 +729,23 @@ The develeopmment of a vaccine is a classic discrete event.  Define the availabi
 The process for this leads to the following Jump process
 
 .. math::
-    \begin{aligned} 
+    \begin{aligned}
     d V_t & = (1 - V_t) d N_t^{\theta}
     \end{aligned}
     :label: dV
 
-where the increment :math:`(1 - V_t)` is 1 if the vaccine hasn't been developed, and zero if it has.  While the constant arrival rate :math:`\theta` is convenient for a simple model, there is no reason it couldn't be time or state dependent in the code or model. 
+where the increment :math:`(1 - V_t)` is 1 if the vaccine hasn't been developed, and zero if it has.  While the constant arrival rate :math:`\theta` is convenient for a simple model, there is no reason it couldn't be time or state dependent in the code or model.
 
 With a vaccine, the model ceases to be a simple SEIR model since it is possible move from :math:`S \to R` without passing through :math:`E` and :math:`I`.
 
 As vaccines are not instantaneously delivered to all, we can let :math:`\nu` be the rate at which the vaccine is administered if available.  This leads to the following changes to :eq:`seir_system`
 
 .. math::
-   \begin{aligned} 
+   \begin{aligned}
         d s_t  & = \left(- \gamma \, R_t \, s_t \,  i _t - \nu \, V_t \, s_t\right)dt
         \\
          d r_t & =  (\gamma  i_t + \nu \, V_t \, s_t) dt
-   \end{aligned} 
+   \end{aligned}
    :label: seir_system_vacc
 
 
@@ -758,7 +759,7 @@ The second part of this is an important consideration: if the death rate is extr
 To represent the slow process of coming back to normal, we assume that the stock value :math:`u(t)` depreciates at rate :math:`\delta`.  Put together gives the ODE,
 
 .. math::
-   \begin{aligned} 
+   \begin{aligned}
         d u_t  & = (\mu_B(B_t - \bar{R})^2 + \mu_M \pi(s_t,i_t)  -\delta) u_t dt\\
     \end{aligned}
    :label: du
@@ -770,7 +771,7 @@ Without getting into the measure theory, this sort of bang-bang policy doesn't w
 To avoid these concerns, a standard trick is to make this a Levy Process by having a Poisson "policy evaluation" rate (which can be put arbitrarily high) where the policy is adjusted according to the rule.  Let that nuisance parameter by :math:`\Xi`, which gives the following pure-jump process for :math:`B(t)`
 
 .. math::
-   \begin{aligned} 
+   \begin{aligned}
         d B_t  & = J(m, i, B) dN^{\Xi}_t\\
         J(m, i, B) &:= -(\pi(i,m) > \bar{\pi})\max(B - R_0, 0) + (\pi(i,m) \leq \bar{\pi})\max(B - \bar{R}, 0) \\
     \end{aligned}
@@ -803,16 +804,16 @@ Here, we will move from an "out of place" to an in-place differential equation.
         dx[6] = 0.0;                           # dm/dt
         dx[7] = σ*e;                           # dc/dt
         dx[8] = π*γ*i;                         # dM/dt
-        dx[9] = (μ_B*(B - R̄)^2 + μ_M*π  - δ)*u;# du/dt 
+        dx[9] = (μ_B*(B - R̄)^2 + μ_M*π  - δ)*u;# du/dt
         dx[10] = 0.0;                          # dV/dt
-        dx[11] = 0.0;                          # dB/dt                 
+        dx[11] = 0.0;                          # dB/dt
     end
 
 Note that the ``V, B`` terms do not have a drift as they are pure jump processes.
 
 Next, we need to consider how the variance term of the diffusion changes.  With the exception of the new Brownian
 motion associated with the jump diffusion in :eq:`dmt`, everything else remains unchanged or zero.
-    
+
 .. code-block:: julia
 
     function G!(dx, x, p, t)
@@ -825,7 +826,7 @@ motion associated with the jump diffusion in :eq:`dmt`, everything else remains 
     end
 
 
-Finally, we need to add in 3 jump processes which modify ``V, B, m`` separately.  The connection between a jump and a variable is not necsesary, however.
+Finally, we need to add in 3 jump processes which modify ``V, B, m`` separately.  The connection between a jump and a variable is not necessary, however.
 
 
 Implementing the vaccination process,
@@ -837,7 +838,7 @@ Implementing the vaccination process,
     function affect_V!(integrator)
         integrator.u[10] = 1.0 # set the vacination state = 1
     end
-    jump_V = ConstantRateJump(rate_V,affect_V!)        
+    jump_V = ConstantRateJump(rate_V,affect_V!)
 
 
 If the solver simulates an arrival rate of the jump, it calls the ``affect!`` function which takes in the current values through the ``integrator`` object and modifies the values directly.
@@ -861,13 +862,13 @@ The other two jump processes are,
             integrator.u[11] = R̄
         end
     end
-    jump_B = ConstantRateJump(rate_B, affect_B!)   
+    jump_B = ConstantRateJump(rate_B, affect_B!)
 
     rate_m(x, p, t) = p.α
     function affect_m!(integrator)
         integrator.u[6] = integrator.u[6]/2  # half the inherent mortatilty
     end
-    jump_m = ConstantRateJump(rate_m, affect_m!)           
+    jump_m = ConstantRateJump(rate_m, affect_m!)
 
 
 Collecting the new parameters and providing an extension of the initial condition with no vaccine or accumulated :math:`u(t)`
@@ -894,7 +895,7 @@ Collecting the new parameters and providing an extension of the initial conditio
     e_0 = 75000 / p.N
     s_0 = 1.0 - i_0 - e_0
     x_0 = [s_0, e_0, i_0, 0.0, p.R̄, p.m_0, 0.0, 0.0, 0.0, 0.0, p.R̄]
-  
+
     prob = SDEProblem(F!, G!, x_0, (0, p.T), p)
     jump_prob = JumpProblem(prob, Direct(), jump_V, jump_B, jump_m)
 
@@ -903,7 +904,7 @@ Solving and simulating,
 
 .. code-block:: julia
 
-    sol = solve(jump_prob, SRIW1())
+    sol = solve(jump_prob, SOSRI())
     plot(sol, vars = [8, 10])
 
 TODO:  Chris, lets make sure this is right, pick some parameters.
