@@ -334,8 +334,7 @@ See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on anal
 .. code_block:: julia
 
     plot(sol, vars = [7, 8], label = ["c(t)" "M(t)"], lw = 2,
-              title = "Cumulative Infected and Total Mortality",
-              layout = (2,1))
+              title = ["Cumulative Infected" "Total Mortality"], layout = (2,1))
 
 Experiment 1: Constant Reproduction Case
 ----------------------------------------
@@ -355,9 +354,9 @@ Let's plot current cases as a fraction of the population.
 
 .. code-block:: julia
 
-    labels = permutedims(["R0 = $r" for r in R̄_vals])
+    labels = permutedims(["R_bar = $r" for r in R̄_vals])
     infecteds = [sol[3,:] for sol in sols]
-    plot(infecteds,label=labels,legend=:topleft)
+    plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t", ylabel = "i(t)", title = "Current Cases")
 
 
 As expected, lower effective transmission rates defer the peak of infections.
@@ -369,7 +368,8 @@ Here is cumulative cases, as a fraction of population:
 .. code-block:: julia
 
     cumulative_infected = [sol[7,:] for sol in sols]
-    plot(cumulative_infected,label=labels,legend=:topleft)
+    plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
+    ylabel = "c(t)", title = "Cumulative Infected")
 
 
 Experiment 2: Changing Mitigation
@@ -400,7 +400,7 @@ We consider several different rates:
 .. code-block:: julia
 
     η_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
-    labels = ["\eta = $η" for η in η_vals]
+    labels = permutedims(["eta = $η" for η in η_vals])
 
 Let's calculate the time path of infected people, current cases, and mortality
 
@@ -412,20 +412,26 @@ Let's calculate the time path of infected people, current cases, and mortality
 First let's plot the :math:`\bar{R}` over time:
 
 .. code-block:: julia
+
     Rs = [sol[5,:] for sol in sols]
-    plot(Rs,label=labels,legend=:topleft)
+    plot(Rs, label=labels, legend=:topright, lw = 2, xlabel = "t",
+    ylabel = "R_bar(t)", title = "Effective Reproduction Rate")
 
 Now let's plot the number of infected persons and the cumulative number
 of infected persons:
 
 .. code-block:: julia
+
     infecteds = [sol[3,:] for sol in sols]
-    plot(infecteds,label=labels,legend=:topleft)
+    plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
+    ylabel = "i(t)", title = "Current Infected")
 
 
 .. code-block:: julia
+
     cumulative_infected = [sol[7,:] for sol in sols]
-    plot(cumulative_infected,label=labels,legend=:topleft)
+    plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
+    ylabel = "c(t)", title = "Cumulative Infected")
 
 
 Ending Lockdown
@@ -588,16 +594,18 @@ We solve the problem with the `SOSRI <https://docs.sciml.ai/stable/solvers/sde_s
 With stochastic differential equations, a "solution" is akin to a simulation for a particular realization of the noise process. If we take two solutions and plot the number of infections, we will see differences over time:
 
 .. code-block:: julia
-    sol_2 = solve(prob, SOSRI());
-    plot(sol_1,vars=[2], title = "Number of Infections", label = "Trajectory 1")
-    plot!(sol_2,vars=[2], label = "Trajectory 2")
+
+    sol_2 = solve(prob, SOSRI())
+    plot(sol_1, vars=[3], title = "Number of Infections", label = "Trajectory 1", lm = 2, xlabel = "t", ylabel = "i(t)")
+    plot!(sol_2, vars=[3], label = "Trajectory 2", lm = 2, ylabel = "i(t)")
 
 
 The same holds for other variables such as the flow of deaths:
 
 .. code-block:: julia
-    plot(sol_1,vars=[5], title = "Flow of Deaths", label = "Trajectory 1")
-    plot!(sol_2,vars=[5], label = "Trajectory 2")
+
+    plot(sol_1, vars=[5], title = "Flow of Deaths", label = "Trajectory 1", lw = 2, xlabel = "t", ylabel = "c(t)")
+    plot!(sol_2, vars=[5], label = "Trajectory 2", lw = 2)
 
 
 While individual simulations are useful, you often want to look at an ensemble of trajectories of the SDE in order to get an accurate picture of how the system evolves on average. We can use the ``EnsembleProblem`` in order to have the solution compute multiple trajectories at once. The returned ``EnsembleSolution`` acts like an array of solutions but is imbued to plot recipes to showcase aggregate quantities. For example:
@@ -606,16 +614,16 @@ While individual simulations are useful, you often want to look at an ensemble o
 
     ensembleprob = EnsembleProblem(prob)
     sol = solve(ensembleprob, SOSRI(), EnsembleSerial(),trajectories = 10)
-    plot(sol, vars = [3], title = "Infection Simulations", label = "i(t)")
+    plot(sol, vars = [3], title = "Infection Simulations", ylabel = "i(t)", xlabel = "t", lm = 2)
 
 
 Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in `parallel <https://docs.sciml.ai/stable/features/ensemble/>`_ using multiple threads, processes, or GPUs. Here we showcase ``EnsembleSummary`` which calculates summary information from an ensemble and plots the solution with the quantiles:
 
 .. code-block:: julia
 
-    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
-    summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
-    plot(summ, idxs = (3,), title = "Quantiles of Infections Ensemble", labels = "Middle 95% Quantile")
+    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = 1000)
+    summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
+    plot(summ, idxs = (3,), title = "Quantiles of Infections Ensemble", ylabel = "i(t)", xlabel = "t", labels = "Middle 95% Quantile", legend = :topright)
 
 
 While ensembles, you may want to perform transformations, such as calculating our daily deaths.  This can be done with an ``output_func`` executed with every simulation.
@@ -657,7 +665,7 @@ Performance of these tends to be high, for example, rerunning out 1000 trajector
         s, e, i, r, R, m, c, M = x
         @unpack σ, γ, B, η = p
 
-        return SA[-γ*R*s*i;       # ds/dt
+        return SA[-γ*R*s*i;     # ds/dt
                 γ*R*s*i -  σ*e; # de/dt
                 σ*e - γ*i;      # di/dt
                 γ*i;            # dr/dt
