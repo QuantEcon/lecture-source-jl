@@ -533,7 +533,7 @@ Consider that the effective transmission rate :math:`R(t)` could depend on degre
 * Deviations in the implementation and timing of lockdown policy within demographics, locations, or businesses within the system.
 * Aggregate shocks in opening/closing industries
 
-To implement this, we will add on a diffusion term to :eq:`Rode` with an instantaneous volatility of :math:`\zeta \sqrt{R}`.  The scaling by the :math:`\sqrt{R}` ensures that the process can never go negative since the variance converges to zero as R goes to zero.
+To implement this, we will add on a diffusion term to :eq:`Rode` with an instantaneous volatility of :math:`\zeta \sqrt{R}`.  The scaling by the :math:`\sqrt{R}` ensure that the process (used in finance as the `CIR <https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model>`__ model of interest rates) stays weakly positive.  The heuristic explanation is that the variance of the shocks converges to zero as R goes to zero, enabling the upwards drift to dominate.  See `here <https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model#Distribution>`__ for a heuristic description of when the process is weakly and strictly positive.
 
 The notation for this `SDE <https://en.wikipedia.org/wiki/Stochastic_differential_equation#Use_in_probability_and_mathematical_finance>`__ is then
 
