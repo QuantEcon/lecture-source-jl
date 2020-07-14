@@ -243,7 +243,7 @@ The system :eq:`seir_system` and the supplemental equations can be written in ve
     \end{aligned}
     :label: dfcv
 
-Here note that if :math:`B(t)` is time-invariant, then :math:`F(x)` is time-invariant as well.
+Note that if :math:`B(t)` is time-invariant, then :math:`F(x)` is time-invariant as well.
 
 Parameters
 ----------
@@ -390,7 +390,7 @@ To do this, we will have :math:`R(0) \neq \bar{R}` and examine the dynamics usin
 
 In the simple case, where :math:`B(t) = \bar{R}` is independent of the state, the solution to the ODE with :math:`R(0) = R_0` is :math:`R(t) = R_0 e^{-\eta t} + \bar{R}(1 - e^{-\eta t})`
 
-We will examine the case where :math:`R(0) = 3` and then it falls to  to :math:`\bar{R} = 1.6` due to the progressive adoption of stricter mitigation measures.
+We will examine the case where :math:`R(0) = 3` and then it falls to :math:`\bar{R} = 1.6` due to the progressive adoption of stricter mitigation measures.
 
 The parameter ``η`` controls the rate, or the speed at which restrictions are
 imposed.
@@ -472,7 +472,7 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
     prob_late = ODEProblem(F, x_0, tspan, p_late)
 
 
-Unlike the previous examples, the :math:`B(t)` functions have discontinuities which might occur.  Note that we can imporve the efficiency of the adaptive time-stepping methods by telling them to step exactly at that point by using ``tstops``
+Unlike the previous examples, the :math:`B(t)` functions have discontinuities which might occur.  We can improve the efficiency of the adaptive time-stepping methods by telling them to step exactly at that point by using ``tstops``
 
 Let's calculate the paths:
 
@@ -501,9 +501,9 @@ if a vaccine is found.
 
 Despite its richness, the model above is fully deterministic.  The policy :math:`B(t)` could change over time, but only in predictable ways.
 
-One source of randomness which would enter the model is considering the discreteness of individuals.  This topic, the connection between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media are explored in our lecture on continuous time Markov chains.
+One way that randomness can enter the model is through the discreteness of individuals.  This topic, the connection between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media are explored in our lecture on continuous time Markov chains.
 
-But rather than examining how granularity leads to aggregate fluctuations, we will concentrate on randomness that comes from aggregate changes in behavior or policy.
+Below, rather than examining how granularity leads to aggregate fluctuations, we will concentrate on randomness that comes from aggregate changes in behavior or policy.
 
 Introduction to SDEs: Aggregate Shocks to Transmission Rates
 ==============================================================
@@ -519,7 +519,7 @@ In continuous-time, there is an important distinction between randomness that le
 
 Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time...
 
-Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much more strict.  In practice, there are only two types of Levy Processes that can be used without careful measure theory.
+Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much stricter.  In practice, there are only two types of Levy Processes that can be used without careful measure theory.
 
 #. `Weiner Processes <https://en.wikipedia.org/wiki/Wiener_process>`__ (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths
 #. `Poisson Processes <https://en.wikipedia.org/wiki/Poisson_point_process>`__ with an arrival rate of jumps in the variable.
@@ -532,7 +532,7 @@ In this section, we will look at example of a diffusion process.
 Shocks to Transmission Rates
 ------------------------------
 
-Consider that the effective transmission rate :math:`R(t)` could depend on degrees of randomness in behavior and implementation.  For example,
+The effective transmission rate :math:`R(t)` can depend on degrees of randomness in behavior and implementation.  For example,
 
 * Misinformation on Facebook spreading non-uniformly
 * Large political rallies, elections, or protests
@@ -694,7 +694,7 @@ While the randomness inherent in the :math:`R(t)` can explain some of the source
 First, technology, both in treatment and vaccination, is evolving and in an inherently non-deterministic way.  We will consider that the mortality rate :math:`m(t)` may evolve over time, as well as considering how a probability of vaccination development adds a path to the Removed state that does not require infection.
 
 
-In order to add one more degree of realism to the tradeoffs, we will consider that the actual death rate is driven by the mortality :math:`m(t)` but also capacity constraints in the economy with respect to medical resources for the infected state.  In particular, we assume that if :math:`i(t) > \bar{i}`, then the available medical resources are exhuasted, leading to quadratically increased death rate.
+In order to add one more degree of realism to the tradeoffs, we will consider that the actual death rate is driven by the mortality :math:`m(t)` but also capacity constraints in the economy with respect to medical resources for the infected state.  In particular, we assume that if :math:`i(t) > \bar{i}`, then the available medical resources are exhausted, leading to quadratically increased death rate.
 
 Second, the only social objective measure we can explore with the current framework is minimizing the total deaths.  That ignores the possible policy tradeoffs between minimizing deaths and the impact on the general economy.
 
@@ -702,12 +702,12 @@ While a particular planner may decide that the only relevant welfare criteria is
 
 The policy choice :math:`B(t)` is then made a Markov process rather than current exogenous and deterministic one.
 
-The inherent discretness of medical innovations and policy changes provides us an opportunity to explore the use of Poisson and jump diffusion.
+The inherent discreteness of medical innovations and policy changes provides us an opportunity to explore the use of Poisson and jump diffusion.
 
 Mortality
 ---------
 
-Imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school).  These sorts of relatively small changes might be best models as a continous path process, so we will add a diffusion term with volatility :math:`\xi\sqrt{m}` to the :math:`m` process
+Imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school).  These sorts of relatively small changes might be best models as a continuous path process, so we will add a diffusion term with volatility :math:`\xi\sqrt{m}` to the :math:`m` process
 
 In addition, there may be a variety of smaller medical interventions that are short of a vaccine, but still effect the :math:`m(t)` path.  For simplicity, we will assume that each innovation cuts the inherent mortality rate in half and arrives with intensity :math:`\alpha \geq 0`.  Combining these two leads to a jump diffusion process
 
@@ -717,10 +717,10 @@ In addition, there may be a variety of smaller medical interventions that are sh
     \end{aligned}
     :label: dmt
 
-In that notation, the :math:`d W_t` is still the increment of the brownian motion process while the  :math:`d N_t^{\alpha}` is a Poisson `counting process <https://en.wikipedia.org/wiki/Counting_process#:~:text=A%20counting%20process%20is%20a,(t)%20is%20an%20integer>`__ with rate :math:`\alpha`.
+In that notation, the :math:`d W_t` is still the increment of the Brownian motion process while the  :math:`d N_t^{\alpha}` is a Poisson `counting process <https://en.wikipedia.org/wiki/Counting_process#:~:text=A%20counting%20process%20is%20a,(t)%20is%20an%20integer>`__ with rate :math:`\alpha`.
 
 
-In previous versions of model, :eq:`Mode` had deaths as the integration of the death probability :math:`m` of the flow leaving the :math:`I` state.  i.e.  :math:`\frac{d M}{d t} = m \gamma  i`.  Instead, we will add an additional term that the dealh probabilty is :math:`\pi(m, i) := m + \psi \max(0, i - \bar{i})` increasing as :math:`i < \bar{i}`.  The ``min`` is used to ensure that the mortality rate never goes above 1.  The differential equation for cumulative deaths is then
+In previous versions of model, :eq:`Mode` had deaths as the integration of the death probability :math:`m` of the flow leaving the :math:`I` state.  i.e.  :math:`\frac{d M}{d t} = m \gamma  i`.  Instead, we will add an additional term that the death probability is :math:`\pi(m, i) := m + \psi \max(0, i - \bar{i})` increasing as :math:`i < \bar{i}`.  The ``min`` is used to ensure that the mortality rate never goes above 1.  The differential equation for cumulative deaths is then
 
 .. math::
     \begin{aligned}
