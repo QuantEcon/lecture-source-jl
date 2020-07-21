@@ -38,6 +38,11 @@ The first part of the model is inspired by
 
 We then extend this deterministic model in :doc:`this lecture <covid_sde>` which build on this model, adding in aggregate shocks and policy tradeoffs.
 
+The interest is primarily in
+
+* the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
+* how long the caseload can be deferred (hopefully until a vaccine arrives)
+
 Setup
 ------------------
 
@@ -53,19 +58,18 @@ Setup
 
     using Test # Put this before any code in the lecture.
 
-In addition, we will be exploring packages within the `SciML ecosystem <https://github.com/SciML/>`__ and
-others covered in previous lectures
+In addition, we will be exploring packaged for `Ordinary Differential Equations <https://diffeq.sciml.ai/dev/tutorials/ode_example/>`__ within the `SciML ecosystem <https://github.com/SciML/>`__
 
 .. code-block:: julia
 
     using OrdinaryDiffEq
-    using Parameters, StaticArrays, Plots, RecursiveArrayTools
+    using Parameters, Plots
 
 
 The SEIR Model
 ==============
 
-In the version of the SEIR model, all individuals in the population are assumed to be in one of these four states.
+In the version of the SEIR model, all individuals in the population are assumed to be in a finite number of states.
 
 The states are: susceptible (S), exposed (E), infected (I) and removed (R).
 
@@ -80,12 +84,6 @@ Comments:
 * Those in the exposed group are not yet infectious.
 
 
-
-The interest is primarily in
-
-* the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
-* how long the caseload can be deferred (hopefully until a vaccine arrives)
-* how to model aggregate shocks related to policy, behavior, and medical innovations
 
 Changes in the Infected State
 -------------------------------
@@ -146,7 +144,7 @@ Note that the notation :math:`R_0` is standard in the epidemiology literature - 
 
 Prior to solving the model directly, we make a few changes to :eq:`seir_system_big`
 
-* Re-parameterize the :math:`\beta(t) = \gamma R_0(t)`
+* Re-parameterize using :math:`\beta(t) = \gamma R_0(t)`
 * Define the proportion of individuals in each state as :math:`s := S/N` etc.
 * Divide each equation in :eq:`seir_system_big` by :math:`N`, and write the system of ODEs in terms of the proportions
 
@@ -233,19 +231,19 @@ We will assume that the transmission rate follows a process with a reversion to 
 
 Finally, let :math:`\delta` be the mortality rate, which we will leave constant.  The cumulative deaths can be integrated through the flow :math:`\gamma i` entering the "Removed" state.
 
-Define the cumulative number of deaths as :math:`D(t)` with the proportion:math:`d(t) := D(t)/N`.
+Define the cumulative number of deaths as :math:`D(t)` with the proportion :math:`d(t) := D(t)/N`.
 
 .. math::
     \begin{aligned}\\
-    \frac{d d}{d t} &= m \gamma  i
+    \frac{d}{d t}d(t) &= \delta \gamma  i
     \end{aligned}
     :label: Mode
 
-While we could conceivably integrate the deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`d d(t)/dt` rather than calculating :math:`d(t) = \int_0^t \gamma \delta i(\tau) d \tau` ex-post.
+While we could conceivably integrate the deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`\frac{d}{dt} d(t)` rather than calculating :math:`d(t) = \int_0^t \delta \gamma\, i(\tau) d \tau` ex-post.
 
-This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid). Note that when doing so, :math:`d(0) = \int_0^0 \gamma \delta i(\tau) d \tau = 0` is the initial condition.
+This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid). Note that when doing so, :math:`d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0` is the initial condition.
 
-The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, R₀, c, d]` with parameter tuple :math:`p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(t))`
+The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, R₀, c, d]` with parameter tuple :math:`p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))`
 
 Note that in those parameters, :math:`\bar{R}_0(t)` is an exogenous function.
 
@@ -261,7 +259,7 @@ Note that in those parameters, :math:`\bar{R}_0(t)` is an exogenous function.
         \\
         \gamma i
         \\
-         \eta (\bar{R}_0(t) - R_0)
+        \eta (\bar{R}_0(t) - R_0)
         \\
         \sigma e
         \\
@@ -340,6 +338,7 @@ Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :m
 
 The ``tspan`` of ``(0.0, p.T)`` determines the :math:`t` used by the solver.  The time scale needs to be consistent with the arrival
 rate of the transition probabilities (i.e. the :math:`\gamma, \sigma` were chosen based on daily data).
+
 The time period we investigate will be 550 days, or around 18 months:
 
 Experiments
@@ -352,7 +351,7 @@ Let's run some experiments using this code.
     sol = solve(prob, Tsit5())
     @show length(sol.t);
 
-We see that the adaptive time-stepping used approximately 50 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.
+We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.
 
 See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on analyzing the solution, and `here <https://docs.sciml.ai/stable/basics/plot/>`__ for plotting tools.  The built-in plots for the solutions provide all of the `attributes <https://docs.juliaplots.org/latest/tutorial/>`__ in `Plots.jl <https://github.com/JuliaPlots/Plots.jl>`__.
 
@@ -373,7 +372,9 @@ We calculate the time path of infected people under different assumptions of :ma
     R₀_n_vals = range(1.6, 3.0, length = 6)
     sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R₀_n = R₀_n)), Tsit5(), saveat=0.5) for R₀_n in R₀_n_vals];
 
-Here we chose ``saveat=0.5`` to get solutions that were evenly spaced at timepoints ``0.5``. Note that changing the saved points does not change the internal steps of the solvers since it uses an interpolation to generate the output points.
+Here we chose ``saveat=0.5`` to get solutions that were evenly spaced at timepoints ``0.5``.
+
+Changing the saved points does not change the adaptive time-stepping of the solvers.
 
 Let's plot current cases as a fraction of the population.
 
@@ -394,14 +395,14 @@ Here is cumulative cases, as a fraction of population:
 
     cumulative_infected = [sol[6,:] for sol in sols]
     plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
-    ylabel = "c(t)", title = "Cumulative Infected")
+    ylabel = "c(t)", title = "Cumulative Cases")
 
 
 Experiment 2: Changing Mitigation
 ---------------------------------
 
 Let's look at a scenario where mitigation (e.g., social distancing) is
-successively imposed, but the target (:math:`R_{0n}` is fixed)
+successively imposed, but the target (:math:`R_{0n}`) is fixed.
 
 To do this, we will have :math:`R_0(0) \neq R_{0n}` and examine the dynamics using the :math:`\frac{d R_0}{d t} = \eta (R_{0n} - R_0)` ODE.
 
@@ -463,7 +464,7 @@ Ending Lockdown
 ===============
 
 
-The following is inspired by replicates `additional results <https://drive.google.com/file/d/1uS7n-7zq5gfSgrL3S0HByExmpq4Bn3oh/view>`__ by Andrew Atkeson on the timing of lifting lockdown.
+The following is inspired by `additional results <https://drive.google.com/file/d/1uS7n-7zq5gfSgrL3S0HByExmpq4Bn3oh/view>`__ by Andrew Atkeson on the timing of lifting lockdown.
 
 Consider these two mitigation scenarios:
 
@@ -508,17 +509,17 @@ Let's calculate the paths:
     plot(sol_early, vars = [7], title = "Total Mortality", label = "Lift Early", legend = :topleft)
     plot!(sol_late, vars = [7], label = "Lift Late")
 
-To calculate the daily death, :math:`\frac{d D(t)}{dt}`, calculate the :math:` N \delta \gamma i(t)`.
+To calculate the daily death, :math:`\frac{d D(t)}{dt}`, calculate :math:`N \delta \gamma i(t)`.
 
 .. code-block:: julia
 
-flow_deaths(sol, p) = p.N * p.δ * p.γ * sol[3,:] 
+    flow_deaths(sol, p) = p.N * p.δ * p.γ * sol[3,:] 
 
-plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")
-plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late")
+    plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")
+    plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late")
 
 Pushing the peak of curve further into the future may reduce cumulative deaths
-if a vaccine is found.
+if a vaccine is found, or allow health authorities to better smooth the caseload.
 
 Randomness
 ------------
