@@ -98,9 +98,9 @@ Jumping directly to the equations in :math:`s, i, r, d` already normalized by :m
 
 .. math::
    \begin{aligned}
-        d s  & = - \gamma \, R_0 \, s \,  i \, dt
+        d s  & = - \gamma \, R_0 \, s \,  i dt
         \\
-         d i  & = \gamma \, R_0 \, s \,  i  - \gamma i \, dt
+         d i  & = \left(\gamma \, R_0 \, s \,  i  - \gamma i \right) dt
         \\
         d r  & = (1-\delta) \gamma  i \, dt 
         \\
@@ -128,7 +128,7 @@ Beyond changes in policy, :math:`R_0(t)` can depend on degrees of randomness in 
 * Deviations in the implementation and timing of lockdown policy within demographics, locations, or businesses within the system.
 * Aggregate shocks in opening/closing industries
 
-To implement this, we will add on a diffusion term to with an instantaneous volatility of :math:`\zeta \sqrt{R_0}`.
+To implement this, we will add on a diffusion term to with an instantaneous volatility of :math:`\sigma \sqrt{R_0}`.
 
 * This equation is used in the `Cox-Ingersoll-Ross <https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model>`__ and `Heston <https://en.wikipedia.org/wiki/Heston_model>`__ models of interest rates and stochastic volatility.
 * The scaling by the :math:`\sqrt{R_0}` ensure that the process stays weakly positive.  The heuristic explanation is that the variance of the shocks converges to zero as R₀ goes to zero, enabling the upwards drift to dominate.
@@ -138,13 +138,17 @@ The notation for this `SDE <https://en.wikipedia.org/wiki/Stochastic_differentia
 
 .. math::
     \begin{aligned}
-    d R_{0t} &= \eta (\bar{R}_{0t} - R_{0t}) dt + \zeta \sqrt{R_{0t}} dW_t\\
+    d R_{0t} &= \eta (\bar{R}_{0t} - R_{0t}) dt + \sigma \sqrt{R_{0t}} dW_t\\
     \end{aligned}
     :label: Rsde
 
 where :math:`W` is standard Brownian motion (i.e a `Weiner Process <https://en.wikipedia.org/wiki/Wiener_process>`__.
 
-Heuristically, if :math:`\zeta = 0`, divide this equation by :math:`dt` and it nests the original ODE used in the previous lecture
+Heuristically, if :math:`\sigma = 0`, divide this equation by :math:`dt` and it nests the original ODE used in the previous lecture.
+
+While we do not consider any calibration for the :math:`\sigma` parameter, empirical studies such as `Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities <https://www.nber.org/papers/w27128>`__ (Figure 6) show highly volatile :math:`R_0(t)` estimates over time.  
+
+Even after lockdowns are first implemented, we see variation between 0.5 and 1.5.  When we consider that countries are made of interconnecting cities with such variable contact rates, a high :math:`\sigma` seems reasonable.
 
 Mortality Rates
 ----------------
@@ -259,7 +263,7 @@ Next create a settings generator, and then define a `SDEProblem <https://docs.sc
 .. code-block:: julia
 
     p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01, σ = 0.02, ξ = 0.005, θ = 0.2, N = 3.3E8)
+                    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01, σ = 0.03, ξ = 0.005, θ = 0.2, N = 3.3E8)
     p =  p_gen()  # use all defaults
     i_0 = 25000 / p.N
     r_0 = 0.0
@@ -341,123 +345,272 @@ In addition, you can calculate more quantiles and stack graphs
     plot!(summ2, idxs = (2,4,5,6),
         labels = "Middle 50% Quantile", legend =  [:topleft :topleft :bottomright :bottomright])
 
-
 Some important additional features of the ensemble and SDE infrastructure are 
 
-* Plotting https://diffeq.sciml.ai/stable/basics/plot/
-* `Noise Processes <https://diffeq.sciml.ai/stable/features/noise_process/>`__ and `Non-diagonal noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example-4:-Systems-of-SDEs-with-Non-Diagonal-Noise-1>`__ : Variations on the simple diagonal noise example provided above
+* `Plotting <https://diffeq.sciml.ai/stable/basics/plot/>`__
+* `Noise Processes <https://diffeq.sciml.ai/stable/features/noise_process/>`__, `Non-diagonal noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example-4:-Systems-of-SDEs-with-Non-Diagonal-Noise-1>`__, and `Correlated Noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example:-Spatially-Colored-Noise-in-the-Heston-Model-1>`__
+* `Parallel Ensemble features <https://diffeq.sciml.ai/stable/features/ensemble/>`__
+* Transforming the ensemble calculations with an `output_func or reduction <https://diffeq.sciml.ai/stable/features/ensemble/#Building-a-Problem-1>`__ 
+* Auto-GPU accelerated by using ``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`
 
-Lifting Lockdown
------------------
+Changing Mitigation
+--------------------
 
-Consider a variation on the previous policy where the lockdown is relaxed at a slower speed.
+Consider a policy maker who wants to consider the impact of relaxing lockdown at various speeds.
 
 We will shut down the shocks to the mortality rate to focus on the variation caused by the volatility in :math:`R_0(t)`.
 
-We can overlay the ensembles to see the impact on the proportion dead
+Consider :math:`\eta = 1/50` and :math:`\eta = 1/20`, where we start at the same initial conditoin of :math:`R_0(0) = 0.5`.
 
 .. code-block:: julia
 
-    summ_1 = EnsembleSummary(solve(EnsembleProblem(SDEProblem(F, G, x_0, (0, 120.0), p_gen(η = 1/50, ξ = 0.0))), SOSRI(), EnsembleThreads(), trajectories = 1000))
-    summ_2 = EnsembleSummary(solve(EnsembleProblem(SDEProblem(F, G, x_0, (0, 120.0), p_gen(η = 1/20, ξ = 0.0))), SOSRI(), EnsembleThreads(), trajectories = 1000))
+    function generate_η_experiment(η; p_gen = p_gen, trajectories = 1000, saveat = 1.0, x_0 = x_0, T = 120.0)
+        p = p_gen(η = 1/50, ξ = 0.0)
+        ensembleprob = EnsembleProblem(SDEProblem(F, G, x_0, (0, T), p))
+        sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+        return EnsembleSummary(sol)
+    end
+
+    # Evaluate two different lockdown scenarios
+    η_1 = 1/50
+    η_2 = 1/20
+    summ_1 = generate_η_experiment(η_1)
+    summ_1 = generate_η_experiment(η_2)
     plot(summ_1, idxs = (4,5),
         title = ["Proportion Dead" "R_0"],
         ylabel = ["d(t)" "R_0(t)"], xlabel = "t",
         legend = [:topleft :bottomright],
-        labels = "Middle 95% Quantile, eta = 1/50", layout = (2, 1), size = (900, 900), fillalpha = 0.5)
+        labels = "Middle 95% Quantile, eta = $η_1", layout = (2, 1), size = (900, 900), fillalpha = 0.5)
     plot!(summ_2, idxs = (4,5),
         legend = [:topleft :bottomright],
-        labels = "Middle 95% Quantile, eta = 1/20", size = (900, 900), fillalpha = 0.5)
+        labels = "Middle 95% Quantile, eta = η_2", size = (900, 900), fillalpha = 0.5)
 
-While the the mean of the :math:`d(t)` increases, almost mechanically, we see that the 95% quantile for later time periods is also much larger - even after the :math:`R_0` has converged.
+While the the mean of the :math:`d(t)` increases, unsurprisingly, we see that the 95% quantile for later time periods is also much larger - even after the :math:`R_0` has converged.
 
-That is, volatile contact rates (and hence :math:`R_0`) can catastrophic worst-case scenarios due to the dynamics of the system.
+That is, volatile contact rates (and hence :math:`R_0`) can interact to make catastrophic worst-case scenarios due to the nonlinear dynamics of the system.
 
-Additional Calculations
--------------------------
+Ending Lockdown
+===============
 
-Furthermore, in the ensembles, you may want to perform calculations and reductions.
+As in the deterministic lecture, we can consider two mitigation scenarios
 
-In our case, we need to fill in the placeholder for the daily deaths, :math:`\Delta D`.
+Consider these two mitigation scenarios:
 
-This can be done with an ``output_func`` executed at the end of every simulation and before the data is collected
+1. choose :math:`\bar{R}_0(t)` to target :math:`R_0(t) = 0.5` for 30 days and then :math:`R_0(t) = 2` for the remaining 17 months. This corresponds to lifting lockdown in 30 days.
 
-* See `
-*  A benefit of using ``output_func`` is that we only end up storing the portions of the solution which we need. For large-scale stochastic simulations, this can be very helpful in reducing the amount of data stored for each simulation.
-* Note: an additional transformation is the `reduction <https://diffeq.sciml.ai/stable/features/ensemble/#Example-3:-Using-the-Reduction-to-Halt-When-Estimator-is-Within-Tolerance-1>`__ which allows you the output of ensembles as they are completed in parallel.  If the ensemble uses an ``output_func`` then it is a reduction on the output of that function.
+2. :math:`R_0(t) = 0.5` for 120 days and then :math:`R_0(t) = 2` for the remaining 14 months. This corresponds to lifting lockdown in 4 months.
 
+Since estimates of the :math:`R_0(t)` discussed show it to have wide variation, we will , such as in show it to have 
+
+We start the model with 100,000 active infections.
 
 .. code-block:: julia
-    
-    function save_ensemble_data(sol, ind)        
-        flow_and_total = [[x[5], p.N .* x[8]] for x in sol]
-        return (DiffEqArray(flow_and_total, sol.t), false)
-    end
-    saveat = 1.0  # store data at daily frequency, not a dt step-size
+
+    R₀_L = 0.5  # lockdown 
+    η_experiment = 1.0/10
+    σ_experiment = 0.04
+    R̄₀_lift_early(t, p) = t < 30.0 ? R₀_L : 2.0
+    R̄₀_lift_late(t, p) = t < 120.0 ? R₀_L : 2.0
+
+    p_early = p_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
+    p_late = p_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
+
+
+    # initial conditions
+    i_0 = 100000 / p_early.N
+    r_0 = 0.0
+    d_0 = 0.0
+    s_0 = 1.0 - i_0 - r_0 - d_0
+    δ_0 = p_early.δ_bar
+
+    x_0 = [s_0, i_0, r_0, d_0, R₀_L, δ_0]  # start in lockdown
+    prob_early = SDEProblem(F, G, x_0, (0, p_early.T), p_early)
+    prob_late = SDEProblem(F, G, x_0, (0, p_late.T), p_late)
+
+
+Simulating for a single realization of the shocks, we see the results are qualitatively similar to what we had before
+
+.. code-block:: julia
+
+    sol_early = solve(prob_early, SOSRI())
+    sol_late = solve(prob_late, SOSRI())
+    plot(sol_early, vars = [5, 1,2,4], title = ["R_0" "Susceptible" "Infected" "Dead"], layout = (2, 2), size = (900, 600),
+        ylabel = ["R_0(t)" "s(t)" "i(t)" "d(t)"], xlabel = "t",
+            legend = [:bottomright :topright :topright :topleft],
+            label = ["Early" "Early" "Early" "Early"])
+    plot!(sol_late, vars = [5, 1,2,4],
+            legend = [:bottomright :topright :topright :topleft],
+            label = ["Late" "Late" "Late" "Late"])
+
+
+However, note that this masks highly volatile values induced by the in :math:`R_0` variation, as seen in the ensemble
+
+.. code-block:: julia
+
     trajectories = 1000
+    saveat = 2.0
+    ensemble_sol_early = solve(EnsembleProblem(prob_early), SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+    ensemble_sol_late = solve(EnsembleProblem(prob_late), SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+    summ_early = EnsembleSummary(ensemble_sol_early)
+    summ_late = EnsembleSummary(ensemble_sol_late)
 
-    ensembleprob = EnsembleProblem(prob,  output_func = save_ensemble_data)
-    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), saveat = saveat, trajectories = trajectories)
+    plot(summ_early, idxs = (5, 1, 2, 4), title = ["R_0" "Susceptible" "Infected" "Dead"], layout = (2, 2), size = (900, 600),
+        ylabel = ["R_0(t)" "s(t)" "i(t)" "d(t)"], xlabel = "t",
+            legend = [:bottomright :topright :topright :topleft],
+            label = ["Early" "Early" "Early" "Early"])
+    plot!(summ_late, idxs = (5, 1,2,4),
+            legend = [:bottomright :topright :topright :topleft],
+            label = ["Late" "Late" "Late" "Late"])
 
-
-In addition, note the use of ``saveat`` in the ``solve`` function.
-
-This option will only save data when running the ensembles at that frequency (or, we could give it a vector of dates instead).  Unless the saveat happened to be exactly at the timestep, it will use the built-in interpolation of the solver.  i.e. this has nothing to do with the step-size of the solver itself. 
-
-Since we are using adaptive time-stepping methods here, we would otherwise not have the ``sol.t`` for different simulations coincide, so this is a necessary step when returning a ``DiffEqArray``.  If you are not using an ``output_func``, then the ensemble code will automatically use interpolation to make times comparable.
+Finally, rather than looking at the ensemble summary, we can extra the data directly from the ensemble to do our own analysis.
 
 
 .. code-block:: julia
 
-    ensembleprob = EnsembleProblem(prob)
-    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), saveat = 1.0, trajectories = 1000)
-    summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.5, and 0.95 quantiles
-    summ2 = EnsembleSummary(sol, quantiles = [0.25, 0.75])
-    plot(summ, idxs = [5], title = "Daily Deaths (TBD)")
-    plot!(summ2, idxs = [5], labels = "Middle 50%")
+    N = p_early.N
+    bins_1 = N * range(0.000, 0.009, length = 30)
+    bins_2 = N * range(0.007, 0.009, length = 30)
+    t_1 = 350
+    t_2 = p_early.T  # i.e. the last element
+    hist_1 = histogram([N * ensemble_sol_early.u[i](t_1)[4] for i in 1:trajectories], label = "Early", fillalpha = 0.5, normalize = :probability, bins = bins_1, title = "Total Deaths at at t = $t_1", legend = :topleft)
+    histogram!(hist_1, [N * ensemble_sol_late.u[i](t_1)[4] for i in 1:trajectories], label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_1)
+    hist_2 = histogram([N * ensemble_sol_early.u[i][4, end] for i in 1:trajectories], label = "Early", fillalpha = 0.5, normalize = :probability, bins = bins_2, title = "Total Deaths at at t = $t_2")
+    histogram!(hist_2, [N * ensemble_sol_late.u[i][4, end] for i in 1:trajectories], label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_2)
+    plot(hist_1, hist_2, size = (600,600), layout = (2, 1))
+
+This shows that there are significant differences after a year, but by 550 days the graphs largely coincide. 
+
+In the above code given the return from ``solve`` on an ``EnsembleProblem`` , e.g. ``ensemble_sol = solve(...)``
+
+* You can access the i'th simulation as ``ensemble_sol[i]``, which then has all of the standard `solution handling <https://diffeq.sciml.ai/stable/basics/solution/>`__ features
+* You can evaluate at a real time period, ``t``, with ``ensemble_sol[i](t)``.  Or access the 4th element with ``ensemble_sol[i](t)[4]``
+* If the ``t`` was not exactly one of the ``saveat`` values (if specified) or the adaptive timesteps (if it was not), then it will use interpolation
+* Alternatively, to access the results of the ODE as a grid exactly at the timesteps, where ``j`` is timestep index, use ``ensemble_sol[i][j]`` or the 4th element with ``ensemble_sol[i][4, j]``
+* Warning: unless you have chosen a ``saveat`` grid, the timesteps will be aligned .   That is, ``ensemble_sol[i_1].t`` wouldn't match ``ensemble_sol[i_2].t`` and may have a different size.  Use interpolation with ``ensemble_sol[i_1](t)`` etc.
+
+Reinfection
+===============
+
+As a final experiment, consider a model where the immunity is only temporary, and individuals become susceptible again.
+
+In particular, assume that at rate :math:`\nu` immunity is lost.  For illustration, we will examine the case if the average immunity lasts 6 months (i.e. :math:`1/\nu = 180`)
+
+The transition modifies the differential equation :eq:`SIRD` to become 
+
+.. math::
+   \begin{aligned}
+        d s  & = \left(- \gamma \, R_0 \, s \,  i + \nu \, r \right) dt
+        \\
+         d i  & = \left(\gamma \, R_0 \, s \,  i  - \gamma i \right) dt
+        \\
+        d r  & = \left((1-\delta) \gamma  i - \nu \, r\right) dt 
+        \\
+        d d  & = \delta \gamma  i \, dt
+        \\         
+   \end{aligned}
+   :label: SIRDRE
+
+This change modifies the underlying ``F`` function and adds a parameter, but otherwise the model remains the same.
+
+We will redo the "Ending Lockdown" simulation from above, where the only difference is the new transition. 
 
 .. code-block:: julia
 
-    plot(summ, idxs = [4], labels = "Middle 95%", title = "Cumulative Death Proportion")
-    plot!(summ2, idxs = [4], labels = "Middle 50%")
-
-
-Static Arrays and GPUs
--------------------------
-
-
-Performance of these tends to be high, for example, rerunning out 1000 trajectories is measured in seconds on most computers with multi-threading enabled.
-
-
-In addition, we can write versions with static arrays given the small dimension of the system.
-
-.. code-block:: julia
-
-    function F_static(x, p, t)
+    function F_reinfect(x, p, t)
         s, i, r, d, R₀, δ = x
-        @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
+        @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar, ν = p
 
-        return SA[-γ*R₀*s*i;      # ds/dt
+        return [-γ*R₀*s*i + ν*r;  # ds/dt
                 γ*R₀*s*i - γ*i;   # di/dt
-                (1-δ)*γ*i;        # dr/dt
+                (1-δ)*γ*i - ν*r   # dr/dt
                 δ*γ*i;            # dd/dt
                 η*(R̄₀(t, p) - R₀);# dR₀/dt
                 θ*(δ_bar - δ);    # dδ/dt
                 ]
     end
 
-    function G_static(x, p, t)
-        s, i, r, d, R₀, δ = x
-        @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
+    p_re_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
+                    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01, σ = 0.03, ξ = 0.005, θ = 0.2, N = 3.3E8, ν = 1/120)
 
-        return SA[0; 0; 0; 0; σ*sqrt(R₀); ξ*sqrt(δ * (1-δ))]
-    end
+    p_re_early = p_re_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
+    p_re_late = p_re_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
 
-    x_0_static = SVector{6}(x_0)
-    prob_static = SDEProblem(F_static, G_static, x_0_static, (0, p.T), p)
-    ensembleprob = EnsembleProblem(prob_static)
-    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
-    @time solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
+    prob_re_early = SDEProblem(F_reinfect, G, x_0, (0, p_re_early.T), p_re_early)
+    prob_re_late = SDEProblem(F_reinfect, G, x_0, (0, p_re_late.T), p_re_late)
+    ensemble_sol_re_early = solve(EnsembleProblem(prob_re_early), SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+    ensemble_sol_re_late = solve(EnsembleProblem(prob_re_late), SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+    summ_re_early = EnsembleSummary(ensemble_sol_re_early)
+    summ_re_late = EnsembleSummary(ensemble_sol_re_late)
 
-Note that these routines can also be auto-GPU accelerated by using
-``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`
+The ensemble simulations for the :math:`\nu = 0` and :math:`\nu > 0` can be compared to see the impact in the absence of medical innovations.
+
+.. code-block:: julia
+
+    plot(summ_late, idxs = (1, 2, 3, 4), title = ["Susceptible" "Infected" "Recovered" "Dead"], layout = (2, 2), size = (900, 600),
+        ylabel = ["s(t)" "i(t)" "r(t)" "d(t)"], xlabel = "t",
+            legend = :topleft,
+            label = ["s(t)" "i(t)" "r(t)" "d(t)"])
+    plot!(summ_re_late, idxs =  (1, 2, 3, 4),
+            legend = :topleft,
+            label = ["s(t); nu > 0" "i(t); nu > 0" "r(t); nu > 0" "d(t); nu > 0"])
+
+Finally, we can examine the same early vs. late histogram (centered at a different value)
+
+.. code-block:: julia
+
+    bins_re_1 = N * range(0.003, 0.011, length = 30)
+    bins_re_2 = N * range(0.01, 0.015, length = 30)
+    hist_re_1 = histogram([N * ensemble_sol_re_early.u[i](t_1)[4] for i in 1:trajectories], label = "Early", fillalpha = 0.5, normalize = :probability, title = "Total Deaths at at t = $t_1", legend = :topleft, bins = bins_re_1)
+    histogram!(hist_re_1, [N * ensemble_sol_re_late.u[i](t_1)[4] for i in 1:trajectories], label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
+    hist_re_2 = histogram([N * ensemble_sol_re_early.u[i][4, end] for i in 1:trajectories], label = "Early", fillalpha = 0.5, normalize = :probability, title = "Total Deaths at at t = $t_2", bins = bins_re_2)
+    histogram!(hist_re_2, [N * ensemble_sol_re_late.u[i][4, end] for i in 1:trajectories], label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_2)
+    plot(hist_re_1, hist_re_2, size = (600,600), layout = (2, 1))
+
+In this case, there are significant differences between the early and late deaths and high variance.
+
+This bleak simulation has assumed that no individuals has long-term immunity and that there will be no medical advancements on that time horizon - both of which are unlikely to be true.
+
+Nevertheless, it suggest that the timing of lifting lockdown has a more profound impact after 18 months if we allow stochastic shocks imperfect immunity.
+
+
+.. NOTE: I COMMENTED THIS ALL OUT BECAUSE IT WAS SLOWER.  WE CAN TUNE LATER.
+
+.. Static Arrays and GPUs
+.. -------------------------
+
+
+.. Performance of these tends to be high, for example, rerunning out 1000 trajectories is measured in seconds on most computers with multi-threading enabled.
+
+
+.. In addition, we can write versions with static arrays given the small dimension of the system.
+
+.. .. code-block:: julia
+
+..     function F_static(x, p, t)
+..         s, i, r, d, R₀, δ = x
+..         @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
+
+..         return SA[-γ*R₀*s*i;      # ds/dt
+..                 γ*R₀*s*i - γ*i;   # di/dt
+..                 (1-δ)*γ*i;        # dr/dt
+..                 δ*γ*i;            # dd/dt
+..                 η*(R̄₀(t, p) - R₀);# dR₀/dt
+..                 θ*(δ_bar - δ);    # dδ/dt
+..                 ]
+..     end
+
+..     function G_static(x, p, t)
+..         s, i, r, d, R₀, δ = x
+..         @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
+
+..         return SA[0; 0; 0; 0; σ*sqrt(R₀); ξ*sqrt(δ * (1-δ))]
+..     end
+
+..     x_0_static = SVector{6}(x_0)
+..     prob_static = SDEProblem(F_static, G_static, x_0_static, (0, p.T), p)
+..     ensembleprob = EnsembleProblem(prob_static)
+..     sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
+..     @time solve(ensembleprob, SOSRI(), EnsembleThreads(),trajectories = 1000)
+
+.. Note that these routines can also be auto-GPU accelerated by using
+.. ``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`

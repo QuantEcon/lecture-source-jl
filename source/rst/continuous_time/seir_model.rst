@@ -358,7 +358,8 @@ See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on anal
 .. code-block:: julia
 
     plot(sol, vars = [6, 7], label = ["c(t)" "d(t)"], lw = 2,
-              title = ["Cumulative Infected" "Death Proportion"], layout = (2,1))
+         title = ["Cumulative Infected" "Death Proportion"],
+         layout = (1,2), size = (900, 300))
 
 Experiment 1: Constant Reproduction Case
 ----------------------------------------
