@@ -21,11 +21,6 @@ This is a Julia version of code for analyzing the COVID-19 pandemic.
 The purpose of these notes is to introduce economists to quantitative modeling of infectious disease dynamics, and to modeling with ordinary differential
 equations.
 
-The main objective is to study the impact of suppression through social distancing on the spread of the infection.
-
-The focus is on US outcomes but the parameters can be adjusted to study
-other countries.
-
 In this lecture, dynamics are modeled using a standard SEIR (Susceptible-Exposed-Infected-Removed) model
 of disease spread, represented as a system of ordinary differential
 equations where the number of agents is large and there are no exogenous stochastic shocks.
@@ -40,7 +35,8 @@ We then extend this deterministic model in :doc:`this lecture <covid_sde>` which
 
 The interest is primarily in
 
-* the number of infections at a given time (which determines whether or not the health care system is overwhelmed) and
+* studying the impact of suppression through social distancing on the spread of the infection
+* the number of infections at a given time (which determines whether or not the health care system is overwhelmed); and
 * how long the caseload can be deferred (hopefully until a vaccine arrives)
 
 Setup
@@ -58,7 +54,7 @@ Setup
 
     using Test # Put this before any code in the lecture.
 
-In addition, we will be exploring packaged for `Ordinary Differential Equations <https://diffeq.sciml.ai/dev/tutorials/ode_example/>`__ within the `SciML ecosystem <https://github.com/SciML/>`__
+In addition, we will be exploring the `Ordinary Differential Equations <https://diffeq.sciml.ai/dev/tutorials/ode_example/>`__ package within the `SciML ecosystem <https://github.com/SciML/>`__.
 
 .. code-block:: julia
 
@@ -102,7 +98,7 @@ The transitions between those states are governed by the following rates
 * :math:`\sigma` is called the *infection rate* (the rate at which those who are exposed become infected)
 * :math:`\gamma` is called the *recovery rate* (the rate at which infected people recover or die)
 
-The :math:`\beta(t)` is influenced by both the characteristics of the disease (e.g. the type and length of prolonged contact required for a transmission) and behavior of the individuals (e.g. social distancing, hygiene).
+The rate :math:`\beta(t)` is influenced by both the characteristics of the disease (e.g. the type and length of prolonged contact required for a transmission) and behavior of the individuals (e.g. social distancing, hygiene).
 
 The SEIR model can then be written as
 
@@ -123,8 +119,9 @@ Here, :math:`dy/dt` represents the time derivative for the particular variable.
 The first term of :eq:`seir_system_big`, :math:`-\beta \, S \,  \frac{I}{N}`, is the flow of individuals moving from :math:`S \to E`, and highlights the underlying dynamics of the epidemic
 
 * Individuals in the susceptible state (S) have a rate :math:`\beta(t)` of prolonged contacts with other individuals where transmission would occur if either was infected
-* Of these, a fraction :math:`\frac{I(t)}{N}` will be with infected agents (since we assumed that exposed individuals are not yet infectious)
-* Finally, there are :math:`S(t)` susceptible individuals at any point in time
+* Of these contacts, a fraction :math:`\frac{I(t)}{N}` will be with infected agents (since we assumed that exposed individuals are not yet infectious)
+* Finally, there are :math:`S(t)` susceptible individuals.
+* The product of those terms is the outflow from the :math:`S` state.
 
 
 Basic Reproduction Number
@@ -138,7 +135,7 @@ Analyzing the system in :eq:`seir_system_big` provides some intuition on the :ma
 
 * Individual transitions from the infected to removed state occur at a Poisson rate :math:`\gamma`, the expected time in the infected state is :math:`1/\gamma`
 * Prolonged interactions occur at rate :math:`\beta`, so a new individual entering the infected state will potentially transmit the virus to an average of :math:`R_0 = \beta \times 1 / \gamma` others
-* In more complicated models, see :cite:`heffernan2005perspectives` for a formal definition for arbitrary models, and an analysis on how :math:`R_0 < 1` \
+* In more complicated models, see :cite:`heffernan2005perspectives` for a formal definition for arbitrary models, and an analysis on how :math:`R_0 < 1`
 
 Note that the notation :math:`R_0` is standard in the epidemiology literature - though confusing, since :math:`R_0` is unrelated to :math:`R`, the symbol that represents the removed state.  For the remainder of the lecture, we will avoid using :math:`R` for removed state.
 
@@ -160,13 +157,13 @@ Prior to solving the model directly, we make a few changes to :eq:`seir_system_b
    \end{aligned}
    :label: seir_system
 
-Since the states form a partition, we could reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, for further experiments and plotting it is harmless to keep it in the system.
+Since the states form a partition, we could reconstruct the "removed" fraction of the population as :math:`r = 1 - s - e - i`.  However, keeping it in the system will make plotting more convenient.
 
 
 Implementation
 --------------
 
-We begin by implementing a simple version of this model with a constant :math:`R_0`.
+We begin by implementing a simple version of this model with a constant :math:`R_0` and some baseline parameter values (which we discuss later).
 
 First, define the system of equations
 
@@ -186,8 +183,8 @@ Given this system, we choose an initial condition and a timespan, and create a `
 
 .. code-block:: julia
 
-    i_0 = 1E-7
-    e_0 = 4.0 * i_0
+    i_0 = 1E-7                  # 33 = 1E-7 * 330 million currently infected
+    e_0 = 4.0 * i_0             # 132 = 1E-7 *330 million exposed
     s_0 = 1.0 - i_0 - e_0
     r_0 = 0.0
     x_0 = [s_0, e_0, i_0, r_0]  # initial condition
@@ -195,7 +192,7 @@ Given this system, we choose an initial condition and a timespan, and create a `
     tspan = (0.0, 350.0)  # ≈ 350 days
     prob = ODEProblem(F_simple, x_0, tspan)
 
-With this, we can choose an ODE algorithm (e.g. a good default for non-stiff ODEs of this sort might be ``Tsit5()``, which is the Tsitouras 5/4 Runge-Kutta method).
+With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be ``Tsit5()``, which is the Tsitouras 5/4 Runge-Kutta method).
 
 .. code-block:: julia
 
@@ -239,32 +236,32 @@ Define the cumulative number of deaths as :math:`D(t)` with the proportion :math
     \end{aligned}
     :label: Mode
 
-While we could conceivably integrate the deaths given the solution to the model, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`\frac{d}{dt} d(t)` rather than calculating :math:`d(t) = \int_0^t \delta \gamma\, i(\tau) d \tau` ex-post.
+While we could integrate the deaths given the solution to the model ex-post, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`\frac{d}{dt} d(t)` rather than calculating :math:`d(t) = \int_0^t \delta \gamma\, i(\tau) d \tau` ex-post.
 
-This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially important and convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid). Note that when doing so, :math:`d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0` is the initial condition.
+This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid). Note that when doing so, :math:`d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0` is the initial condition.
 
 The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, R₀, c, d]` with parameter tuple :math:`p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))`
 
-Note that in those parameters, :math:`\bar{R}_0(t)` is an exogenous function.
+Note that in those parameters, the targeted reproduction number, :math:`\bar{R}_0(t)`, is an exogenous function.
 
-.. math::
+    .. math::
     \begin{aligned}
     \frac{d x}{d t} &= F(x,t;p)\\
-        &:= \begin{bmatrix}
-        - \gamma \, R_0 \, s \,  i
-        \\
-        \gamma \, R_0 \,  s \,  i  - \sigma e
-        \\
-        \sigma \, e  - \gamma i
-        \\
-        \gamma i
-        \\
-        \eta (\bar{R}_0(t) - R_0)
-        \\
-        \sigma e
-        \\
-        \delta \, \gamma \, i
-        \end{bmatrix}
+    &:= \begin{bmatrix}
+    - \gamma \, R_0 \, s \,  i
+    \\
+    \gamma \, R_0 \,  s \,  i  - \sigma e
+    \\
+    \sigma \, e  - \gamma i
+    \\
+    \gamma i
+    \\
+    \eta (\bar{R}_0(t) - R_0)
+    \\
+    \sigma e
+    \\
+    \delta \, \gamma \, i
+    \end{bmatrix}
     \end{aligned}
     :label: dfcv
 
@@ -273,17 +270,17 @@ Note that if :math:`\bar{R}_0(t)` is time-invariant, then :math:`F(x, t)` is tim
 Parameters
 ----------
 
-Both :math:`\sigma` and :math:`\gamma` are thought of as fixed, biologically determined parameters.
+The parameters, :math:`\sigma, \delta,` and :math:`\gamma` should be thought of as parameters determined from biology and medical technology, and independent of social interactions.
 
 As in Atkeson's note, we set
 
 * :math:`\sigma = 1/5.2` to reflect an average incubation period of 5.2 days.
 * :math:`\gamma = 1/18` to match an average illness duration of 18 days.
-* :math:`\bar{R}_0 = R_0(0) = 1.6` to match a **basic reproduction number** of 1.6, and initially time-invariant
+* :math:`\bar{R}_0(t) = R_0(0) = 1.6` to match a **basic reproduction number** of 1.6, and initially time-invariant
 * :math:`\delta = 0.01` for a one-percent mortality rate
 
 
-As we will initially consider the case where :math:`R_0(0) = \bar{R}_0`, the value of :math:`\eta` will drop out of this first experiment.
+As we will initially consider the case where :math:`R_0(0) = \bar{R}_0(0)`, the parameter :math:`\eta` will not influence the first experiment.
 
 Implementation
 ==============
@@ -305,20 +302,26 @@ First, construct our :math:`F` from :eq:`dfcv`
                 σ*e;              # dc/dt
                 δ*γ*i;            # dd/dt
                 ]
-    end
+    end;
+
+
+This function takes the vector ``x`` of states in the system and extracts the fixed parameters passed into the ``p`` object.
+
+The only confusing part of the notation is the ``R̄₀(t, p)`` which evaluates the ``p.R̄₀`` at this time (and also allows it to depend on the ``p`` parameter).
 
 
 Parameters
 -------------
 
-The baseline parameters are put into a named tuple generator (see previous lectures using ``Parameters.jl``) with default values discussed above.
+The baseline parameters are put into a named tuple generator (see previous lectures using `Parameters.jl <https://github.com/mauro3/Parameters.jl>`__) with default values discussed above.
 
 .. code-block:: julia
 
     p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
-                    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ = 0.01, N = 3.3E8)
+                    R₀_n = 1.6, δ = 0.01, N = 3.3E8,
+                    R̄₀ = (t, p) -> p.R₀_n)
 
-Note that the default :math:`\bar{R}_0(t)` function always equals :math:`R_{0n}` -- a natural level of the :math:`R_0`.
+Note that the default :math:`\bar{R}_0(t)` function always equals :math:`R_{0n}` -- a parameterizable natural level of :math:`R_0` used only by the ``R̄₀`` function
 
 
 Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :math:`R_0(0) = R_{0n}`, and :math:`m(0) = 0.01`
@@ -337,7 +340,7 @@ Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :m
 
 
 The ``tspan`` of ``(0.0, p.T)`` determines the :math:`t` used by the solver.  The time scale needs to be consistent with the arrival
-rate of the transition probabilities (i.e. the :math:`\gamma, \sigma` were chosen based on daily data).
+rate of the transition probabilities (i.e. the :math:`\gamma, \sigma` were chosen based on daily data, so the unit of :math:`t` is a day).
 
 The time period we investigate will be 550 days, or around 18 months:
 
@@ -351,15 +354,25 @@ Let's run some experiments using this code.
     sol = solve(prob, Tsit5())
     @show length(sol.t);
 
-We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desires accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.
+We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desired accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.
 
-See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on analyzing the solution, and `here <https://docs.sciml.ai/stable/basics/plot/>`__ for plotting tools.  The built-in plots for the solutions provide all of the `attributes <https://docs.juliaplots.org/latest/tutorial/>`__ in `Plots.jl <https://github.com/JuliaPlots/Plots.jl>`__.
+While it may seem that 45 time intervals is extremely small for that range, for much of the :math:`t`, the functions are very flat - and hence adaptive time-stepping algorithms can move quickly and interpolate accurately.
+
+
+The solution object has `built in <https://docs.sciml.ai/stable/basics/plot/>`__ plotting support.
 
 .. code-block:: julia
 
     plot(sol, vars = [6, 7], label = ["c(t)" "d(t)"], lw = 2,
          title = ["Cumulative Infected" "Death Proportion"],
          layout = (1,2), size = (900, 300))
+
+
+A few more comments:
+
+* If you want to ensure that there are specific points that the adaptive-time stepping must include (e.g. at known discontinuities) use `tstops <https://diffeq.sciml.ai/stable/basics/common_solver_opts/#Output-Control-1>`__.
+* The built-in plots for the solutions provide all of the `attributes <https://docs.juliaplots.org/latest/tutorial/>`__ in `Plots.jl <https://github.com/JuliaPlots/Plots.jl>`__.
+* See `here <https://docs.sciml.ai/stable/basics/solution/>`__ for details on analyzing the solution and extracting the output.
 
 Experiment 1: Constant Reproduction Case
 ----------------------------------------
@@ -373,9 +386,9 @@ We calculate the time path of infected people under different assumptions of :ma
     R₀_n_vals = range(1.6, 3.0, length = 6)
     sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R₀_n = R₀_n)), Tsit5(), saveat=0.5) for R₀_n in R₀_n_vals];
 
-Here we chose ``saveat=0.5`` to get solutions that were evenly spaced at timepoints ``0.5``.
+Here we chose ``saveat=0.5`` to get solutions that were evenly spaced every ``0.5``.
 
-Changing the saved points does not change the adaptive time-stepping of the solvers.
+Changing the saved points is just a question of storage/interpolation, and does not change the adaptive time-stepping of the solvers.
 
 Let's plot current cases as a fraction of the population.
 
@@ -405,7 +418,7 @@ Experiment 2: Changing Mitigation
 Let's look at a scenario where mitigation (e.g., social distancing) is
 successively imposed, but the target (:math:`R_{0n}`) is fixed.
 
-To do this, we will have :math:`R_0(0) \neq R_{0n}` and examine the dynamics using the :math:`\frac{d R_0}{d t} = \eta (R_{0n} - R_0)` ODE.
+To do this, we start with :math:`R_0(0) \neq R_{0n}` and examine the dynamics using the :math:`\frac{d R_0}{d t} = \eta (R_{0n} - R_0)` ODE.
 
 .. Mathematica Verification
 .. (\[Beta][t] /.
@@ -436,7 +449,7 @@ Let's calculate the time path of infected people, current cases, and mortality
     x_0 = [s_0, e_0, i_0, 0.0, 3.0, 0.0, 0.0]
     sols = [solve(ODEProblem(F, x_0, tspan, p_gen(η=η)), Tsit5(), saveat=0.5) for η in η_vals];
 
-First let's plot the :math:`R_0` over time:
+Next, plot the :math:`R_0` over time:
 
 .. code-block:: julia
 
@@ -510,7 +523,7 @@ Let's calculate the paths:
     plot(sol_early, vars = [7], title = "Total Mortality", label = "Lift Early", legend = :topleft)
     plot!(sol_late, vars = [7], label = "Lift Late")
 
-To calculate the daily death, :math:`\frac{d D(t)}{dt}`, calculate :math:`N \delta \gamma i(t)`.
+Next we examine the daily deaths, :math:`\frac{d D(t)}{dt} = N \delta \gamma i(t)`.
 
 .. code-block:: julia
 
