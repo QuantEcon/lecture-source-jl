@@ -73,7 +73,7 @@ This type of `compartmentalized model <https://en.wikipedia.org/wiki/Compartment
 
 Comments:
 
-* Those in state R have been infected and either recovered or died.  In other versions of these models, R may refer only to recovered agents.
+* Those in state R have been infected and either recovered or died.  Note that in some variations, R may refer only to recovered agents.
 
 * Those who have recovered, and live, are assumed to have acquired immunity.
 
@@ -121,7 +121,7 @@ The first term of :eq:`seir_system_big`, :math:`-\beta \, S \,  \frac{I}{N}`, is
 * Individuals in the susceptible state (S) have a rate :math:`\beta(t)` of prolonged contacts with other individuals where transmission would occur if either was infected
 * Of these contacts, a fraction :math:`\frac{I(t)}{N}` will be with infected agents (since we assumed that exposed individuals are not yet infectious)
 * Finally, there are :math:`S(t)` susceptible individuals.
-* The product of those terms is the outflow from the :math:`S` state.
+* The sign indicates that the product of those terms is the outflow from the :math:`S` state, and an inflow to the :math:`E` state.
 
 
 Basic Reproduction Number
@@ -135,7 +135,7 @@ Analyzing the system in :eq:`seir_system_big` provides some intuition on the :ma
 
 * Individual transitions from the infected to removed state occur at a Poisson rate :math:`\gamma`, the expected time in the infected state is :math:`1/\gamma`
 * Prolonged interactions occur at rate :math:`\beta`, so a new individual entering the infected state will potentially transmit the virus to an average of :math:`R_0 = \beta \times 1 / \gamma` others
-* In more complicated models, see :cite:`heffernan2005perspectives` for a formal definition for arbitrary models, and an analysis on how :math:`R_0 < 1`
+* In more complicated models, see :cite:`heffernan2005perspectives` for a formal definition for arbitrary models, and an analysis on the role of :math:`R_0 < 1`. 
 
 Note that the notation :math:`R_0` is standard in the epidemiology literature - though confusing, since :math:`R_0` is unrelated to :math:`R`, the symbol that represents the removed state.  For the remainder of the lecture, we will avoid using :math:`R` for removed state.
 
@@ -183,8 +183,8 @@ Given this system, we choose an initial condition and a timespan, and create a `
 
 .. code-block:: julia
 
-    i_0 = 1E-7                  # 33 = 1E-7 * 330 million currently infected
-    e_0 = 4.0 * i_0             # 132 = 1E-7 *330 million exposed
+    i_0 = 1E-7                  # 33 = 1E-7 * 330 million population = initially infected
+    e_0 = 4.0 * i_0             # 132 = 1E-7 *330 million = initially exposed
     s_0 = 1.0 - i_0 - e_0
     r_0 = 0.0
     x_0 = [s_0, e_0, i_0, r_0]  # initial condition
@@ -215,7 +215,7 @@ While maintaining the core system of ODEs in :math:`(s, e, i, r)`, we will exten
 Extending the Model
 -----------------------
 
-First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituting from the time-derivatives of :math:`i(t)` and :math:`r(t)` yields :math:`\frac{d c}{d t} = \sigma e`
+First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as :math:`c = i + r`.  Differentiating that expression and substituting from the time-derivatives of :math:`i(t)` and :math:`r(t)` yields :math:`\frac{d c}{d t} = \sigma e`.
 
 We will assume that the transmission rate follows a process with a reversion to a value :math:`\bar{R}_0(t)` which could conceivably be influenced by policy.  The intuition is that even if the targeted :math:`\bar{R}_0(t)` was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where :math:`\eta` governs the speed of :math:`R_0(t)` moves towards :math:`\bar{R}_0(t)`.
 
@@ -238,32 +238,32 @@ Define the cumulative number of deaths as :math:`D(t)` with the proportion :math
 
 While we could integrate the deaths given the solution to the model ex-post, it is more convenient to use the integrator built into the ODE solver.  That is, we add :math:`\frac{d}{dt} d(t)` rather than calculating :math:`d(t) = \int_0^t \delta \gamma\, i(\tau) d \tau` ex-post.
 
-This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is no fixed time grid). Note that when doing so, :math:`d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0` is the initial condition.
+This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is not a regular time grid). Note that when doing so, :math:`d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0` is the initial condition.
 
 The system :eq:`seir_system` and the supplemental equations can be written in vector form :math:`x := [s, e, i, r, R₀, c, d]` with parameter tuple :math:`p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))`
 
 Note that in those parameters, the targeted reproduction number, :math:`\bar{R}_0(t)`, is an exogenous function.
 
-    .. math::
-    \begin{aligned}
-    \frac{d x}{d t} &= F(x,t;p)\\
-    &:= \begin{bmatrix}
-    - \gamma \, R_0 \, s \,  i
-    \\
-    \gamma \, R_0 \,  s \,  i  - \sigma e
-    \\
-    \sigma \, e  - \gamma i
-    \\
-    \gamma i
-    \\
-    \eta (\bar{R}_0(t) - R_0)
-    \\
-    \sigma e
-    \\
-    \delta \, \gamma \, i
+The model is then :math:`\frac{d x}{d t} = F(x,t)`  where,
+
+.. math::
+    F(x,t) := \begin{bmatrix}
+        -\gamma \, R_0 \, s \,  i
+        \\
+        \gamma \, R_0 \,  s \,  i  - \sigma e
+        \\
+        \sigma \, e  - \gamma i
+        \\
+        \gamma i
+        \\
+        \eta (\bar{R}_0(t) - R_0)
+        \\
+        \sigma e
+        \\
+        \delta \, \gamma \, i
     \end{bmatrix}
-    \end{aligned}
     :label: dfcv
+
 
 Note that if :math:`\bar{R}_0(t)` is time-invariant, then :math:`F(x, t)` is time-invariant as well.
 
@@ -319,12 +319,12 @@ The baseline parameters are put into a named tuple generator (see previous lectu
 
     p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
                     R₀_n = 1.6, δ = 0.01, N = 3.3E8,
-                    R̄₀ = (t, p) -> p.R₀_n)
+                    R̄₀ = (t, p) -> p.R₀_n);
 
 Note that the default :math:`\bar{R}_0(t)` function always equals :math:`R_{0n}` -- a parameterizable natural level of :math:`R_0` used only by the ``R̄₀`` function
 
 
-Setting initial conditions, we will assume a fixed :math:`i, e`, :math:`r=0`, :math:`R_0(0) = R_{0n}`, and :math:`m(0) = 0.01`
+Setting initial conditions, we choose a fixed :math:`s, i, e, r`, as well as :math:`R_0(0) = R_{0n}` and :math:`m(0) = 0.01`
 
 .. code-block:: julia
 
@@ -384,7 +384,8 @@ We calculate the time path of infected people under different assumptions of :ma
 .. code-block:: julia
 
     R₀_n_vals = range(1.6, 3.0, length = 6)
-    sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R₀_n = R₀_n)), Tsit5(), saveat=0.5) for R₀_n in R₀_n_vals];
+    sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R₀_n = R₀_n)),
+                  Tsit5(), saveat=0.5) for R₀_n in R₀_n_vals];
 
 Here we chose ``saveat=0.5`` to get solutions that were evenly spaced every ``0.5``.
 
@@ -396,7 +397,8 @@ Let's plot current cases as a fraction of the population.
 
     labels = permutedims(["R_0 = $r" for r in R₀_n_vals])
     infecteds = [sol[3,:] for sol in sols]
-    plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t", ylabel = "i(t)", title = "Current Cases")
+    plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
+         ylabel = "i(t)", title = "Current Cases")
 
 
 As expected, lower effective transmission rates defer the peak of infections.
@@ -409,14 +411,14 @@ Here is cumulative cases, as a fraction of population:
 
     cumulative_infected = [sol[6,:] for sol in sols]
     plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
-    ylabel = "c(t)", title = "Cumulative Cases")
+         ylabel = "c(t)", title = "Cumulative Cases")
 
 
 Experiment 2: Changing Mitigation
 ---------------------------------
 
 Let's look at a scenario where mitigation (e.g., social distancing) is
-successively imposed, but the target (:math:`R_{0n}`) is fixed.
+successively imposed, but the target (maintaining :math:`R_{0n}`) is fixed.
 
 To do this, we start with :math:`R_0(0) \neq R_{0n}` and examine the dynamics using the :math:`\frac{d R_0}{d t} = \eta (R_{0n} - R_0)` ODE.
 
@@ -440,7 +442,7 @@ We consider several different rates:
 .. code-block:: julia
 
     η_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
-    labels = permutedims(["eta = $η" for η in η_vals])
+    labels = permutedims(["eta = $η" for η in η_vals]);
 
 Let's calculate the time path of infected people, current cases, and mortality
 
@@ -455,7 +457,7 @@ Next, plot the :math:`R_0` over time:
 
     Rs = [sol[5,:] for sol in sols]
     plot(Rs, label=labels, legend=:topright, lw = 2, xlabel = "t",
-    ylabel = "R_0(t)", title = "Basic Reproduction Number")
+         ylabel = "R_0(t)", title = "Basic Reproduction Number")
 
 Now let's plot the number of infected persons and the cumulative number
 of infected persons:
@@ -464,14 +466,14 @@ of infected persons:
 
     infecteds = [sol[3,:] for sol in sols]
     plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
-    ylabel = "i(t)", title = "Current Infected")
+         ylabel = "i(t)", title = "Current Infected")
 
 
 .. code-block:: julia
 
     cumulative_infected = [sol[6,:] for sol in sols]
     plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
-    ylabel = "c(t)", title = "Cumulative Infected")
+         ylabel = "c(t)", title = "Cumulative Infected")
 
 
 Ending Lockdown
@@ -512,7 +514,7 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
     prob_late = ODEProblem(F, x_0, tspan, p_late)
 
 
-Unlike the previous examples, the :math:`\bar{R}_0(t)` functions have discontinuities which might occur.  We can improve the efficiency of the adaptive time-stepping methods by telling them to step exactly at that point by using ``tstops``
+Unlike the previous examples, the :math:`\bar{R}_0(t)` functions have discontinuities which might occur.  We can improve the efficiency of the adaptive time-stepping methods by telling them to include a step exactly at those points by using ``tstops``
 
 Let's calculate the paths:
 

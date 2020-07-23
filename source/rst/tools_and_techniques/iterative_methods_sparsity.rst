@@ -990,7 +990,8 @@ As an example,
     A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
     A_adjoint = A'
 
-    λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  # Find 1 of the largest magnitude eigenvalue
+    # Find 1 of the largest magnitude eigenvalue
+    λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)  
     ϕ = real(ϕ) ./ sum(real(ϕ))
     @show λ
     @show mean(ϕ);
@@ -1245,8 +1246,8 @@ adjoint-vector product directly.
 
 The logic for the adjoint is that for a given :math:`n = (n_1,\ldots, n_m, \ldots n_M)`, the :math:`Q^T` product for that row has terms enter when
 
-#. :math:`1 < n_m \leq N`, entering into the identical :math:`n` except with one less customer in the :math:`m`th position
-#. :math:`1 \leq n_m < N`, entering into the identical :math:`n` except with one more customer in the :math:`m`th position
+#. :math:`1 < n_m \leq N`, entering into the identical :math:`n` except with one less customer in the :math:`m` position
+#. :math:`1 \leq n_m < N`, entering into the identical :math:`n` except with one more customer in the :math:`m` position
 
 Implementing this logic, first in math and then in code,
 
@@ -1312,7 +1313,7 @@ A final approach in this case is to notice that the :math:`\mathbf{N}\times\math
 rank :math:`\mathbf{N} - 1` when the Markov chain is irreducible.  The stationary solution is a vector in the :math:`1`-dimensional nullspace
 of the matrix.
 
-Using Krylov methods to solve a linear system with the right-hand side all :math:`0`s will converge to a point in the nullspace.  That is, :math:`\min_x ||A x - 0||_2` solved
+Using Krylov methods to solve a linear system with the right-hand side all 0 values will converge to a point in the nullspace.  That is, :math:`\min_x ||A x - 0||_2` solved
 iteratively from a non-zero initial condition will converge to a point in the nullspace.
 
 We can use various Krylov methods for this trick (e.g., if the matrix is symmetric and positive definite, we could use Conjugate Gradient) but in our case we will
@@ -1372,7 +1373,8 @@ For this, we can set up a ``MatrixFreeOperator`` for our ``Q_T_mul!`` function (
         @unpack N, M = p
 
         ψ_0 = [1.0; fill(0.0, N^M - 1)]
-        O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0), size=(N^M,N^M), opnorm=(p)->1.25)
+        O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0),
+                                size=(N^M,N^M), opnorm=(p)->1.25)
 
         # define the corresponding ODE problem
         prob = ODEProblem(O!,ψ_0,(0.0,t[end]), p)
@@ -1382,6 +1384,6 @@ For this, we can set up a ``MatrixFreeOperator`` for our ``Q_T_mul!`` function (
     p = default_params(N=10, M=6)
     sol = solve_transition_dynamics(p, t)
     v = solve_bellman(p)
-    plot(t, [dot(sol(tval), v) for tval in t], xlabel = "t", label = ["E_t(v)"])
+    plot(t, [dot(sol(tval), v) for tval in t], xlabel = "t", label = "E_t(v)")
 
 The above plot (1) calculates the full dynamics of the Markov chain from the :math:`n_m = 1` for all :math:`m` initial condition; (2) solves the dynamics of a system of a million ODEs; and (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.

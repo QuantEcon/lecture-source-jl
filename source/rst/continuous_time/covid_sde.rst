@@ -28,7 +28,7 @@ Here we extend the model to include policy-relevant aggregate shocks.
 Continuous-Time Stochastic Processes
 ------------------------------------
 
-In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which have (almost surely right-continuous) jumps in their paths at a finite number of points on any compact interval.  The most tractable of these includes the theory of `Levy Processes <https://en.wikipedia.org/wiki/L%C3%A9vy_process>`_.
+In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which have (`almost surely right-continuous <https://en.wikipedia.org/wiki/C%C3%A0dl%C3%A0g>`__) jumps in their paths.  The most tractable of these includes the theory of `Levy Processes <https://en.wikipedia.org/wiki/L%C3%A9vy_process>`_.
 
 .. **TBD:** Add definition of levy processes and the intuitive connection between stationary increments and independence of increments.
 
@@ -71,9 +71,9 @@ others covered in previous lectures
 The Basic SIR/SIRD Model
 =========================
 
-To demonstrate another common `compartmentalized model <https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Elaborations_on_the_basic_SIR_model>`__ we will change the SEIR model to remove the exposed state, and more carefully manage the death state, D.
+To demonstrate another common `compartmentalized model <https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Elaborations_on_the_basic_SIR_model>`__ we will change the :doc:`previous SEIR <seir_model>` model to remove the exposed state, and more carefully manage the death state, D.
 
-The states are: susceptible (S), infected (I), resistant (R), or dead (D).
+The states are are now: susceptible (S), infected (I), resistant (R), or dead (D).
 
 
 Comments:
@@ -109,11 +109,14 @@ Jumping directly to the equations in :math:`s, i, r, d` already normalized by :m
    \end{aligned}
    :label: SIRD
 
+Note that the notation has changed to heuristically put the :math:`dt` on the right hand side, which will be used when adding the stochastic shocks.
 
-Introduction to SDEs: Aggregate Shocks to Transmission Rates
-==============================================================
+Introduction to SDEs
+====================
 
-We start by extending our model to include randomness in :math:`R_0(t)`, which makes it a system of Stochastic Differential Equations (SDEs).
+We start by extending our model to include randomness in :math:`R_0(t)` and then the mortality rate :math:`\delta(t)`.
+
+The result is a system of Stochastic Differential Equations (SDEs).
 
 Shocks to Transmission Rates
 ------------------------------
@@ -189,10 +192,8 @@ The general form of the SDE is.
 With the drift,
 
 .. math::
-    \begin{aligned}
-    F(x,t;p)\\
-        &:= \begin{bmatrix}
-        - \gamma \, R_0 \, s \,  i
+    F(x,t;p) := \begin{bmatrix}
+        -\gamma \, R_0 \, s \,  i
         \\
         \gamma \, R_0 \,  s \,  i  - \gamma i
         \\
@@ -204,8 +205,7 @@ With the drift,
         \\
         \theta (\bar{\delta} - \delta)
         \\
-        \end{bmatrix}
-    \end{aligned}
+    \end{bmatrix}
     :label: dfcvsde
 
 
@@ -215,7 +215,7 @@ As the two independent sources of Brownian motion only affect the :math:`d R_0` 
 
 .. math::
     \begin{aligned}
-    diag(G(x, t)) &:= \begin{bmatrix} 0 & 0 & 0 & 0 & \sigma \sqrt{R_0} & \xi \sqrt{\delta (1-\delta)} \end{bmatrix}
+    G(x, t) &:= diag\left(\begin{bmatrix} 0 & 0 & 0 & 0 & \sigma \sqrt{R_0} & \xi \sqrt{\delta (1-\delta)} \end{bmatrix}\right)
     \end{aligned}
     :label: dG
 
@@ -251,8 +251,9 @@ Next create a settings generator, and then define a `SDEProblem <https://docs.sc
 
 .. code-block:: julia
 
-    p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
+    p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
+                      R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01,
+                      σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
     p =  p_gen()  # use all defaults
     i_0 = 25000 / p.N
     r_0 = 0.0
@@ -271,7 +272,9 @@ We solve the problem with the `SOSRI <https://docs.sciml.ai/stable/solvers/sde_s
     sol_1 = solve(prob, SOSRI());
     @show length(sol_1.t);
 
+
 As in the deterministic case of the previous lecture, we are using an adaptive time-stepping method.  However, since this is an SDE, (1) you will tend to see more timesteps required due to the greater curvature; and (2) the number of timesteps will change with different shock realizations.
+
 
 With stochastic differential equations, a "solution" is akin to a simulation for a particular realization of the noise process.
 
@@ -280,20 +283,25 @@ If we take two solutions and plot the number of infections, we will see differen
 .. code-block:: julia
 
     sol_2 = solve(prob, SOSRI())
-    plot(sol_1, vars=[2], title = "Number of Infections", label = "Trajectory 1", lm = 2, xlabel = "t", ylabel = "i(t)")
+    plot(sol_1, vars=[2], title = "Number of Infections", label = "Trajectory 1",
+         lm = 2, xlabel = "t", ylabel = "i(t)")
     plot!(sol_2, vars=[2], label = "Trajectory 2", lm = 2, ylabel = "i(t)")
 
 The same holds for other variables such as the cumulative deaths, mortality, and :math:`R_0`:
 
 .. code-block:: julia
 
-    plot_1 = plot(sol_1, vars=[4], title = "Cumulative Death Proportion", label = "Trajectory 1", lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
+    plot_1 = plot(sol_1, vars=[4], title = "Cumulative Death Proportion", label = "Trajectory 1",
+                  lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
     plot!(plot_1, sol_2, vars=[4], label = "Trajectory 2", lw = 2)
-    plot_2 = plot(sol_1, vars=[3], title = "Cumulative Recovered Proportion", label = "Trajectory 1", lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
+    plot_2 = plot(sol_1, vars=[3], title = "Cumulative Recovered Proportion", label = "Trajectory 1",
+                  lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
     plot!(plot_2, sol_2, vars=[3], label = "Trajectory 2", lw = 2)
-    plot_3 = plot(sol_1, vars=[5], title = "R_0 transition from lockdown", label = "Trajectory 1", lw = 2, xlabel = "t", ylabel = "R_0(t)")
+    plot_3 = plot(sol_1, vars=[5], title = "R_0 transition from lockdown", label = "Trajectory 1",
+                  lw = 2, xlabel = "t", ylabel = "R_0(t)")
     plot!(plot_3, sol_2, vars=[5], label = "Trajectory 2", lw = 2)
-    plot_4 = plot(sol_1, vars=[6], title = "Mortality Rate", label = "Trajectory 1", lw = 2, xlabel = "t", ylabel = "delta(t)", ylim = (0.006, 0.014))
+    plot_4 = plot(sol_1, vars=[6], title = "Mortality Rate", label = "Trajectory 1",
+                  lw = 2, xlabel = "t", ylabel = "delta(t)", ylim = (0.006, 0.014))
     plot!(plot_4, sol_2, vars=[6], label = "Trajectory 2", lw = 2)
     plot(plot_1, plot_2, plot_3, plot_4, size = (900, 600))
 
@@ -309,7 +317,9 @@ Ensembles
 
 While individual simulations are useful, you often want to look at an ensemble of trajectories of the SDE in order to get an accurate picture of how the system evolves.
 
-To do this, use the ``EnsembleProblem`` in order to have the solution compute multiple trajectories at once. The returned ``EnsembleSolution`` acts like an array of solutions but is imbued to plot recipes to showcase aggregate quantities. For example:
+To do this, use the ``EnsembleProblem`` in order to have the solution compute multiple trajectories at once. The returned ``EnsembleSolution`` acts like an array of solutions but is imbued to plot recipes to showcase aggregate quantities.
+
+For example:
 
 .. code-block:: julia
 
@@ -326,7 +336,7 @@ Or, more frequently, you may want to run many trajectories and plot quantiles, w
     sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories)
     summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
     plot(summ, idxs = (2,), title = "Quantiles of Infections Ensemble", ylabel = "i(t)",
-        xlabel = "t", labels = "Middle 95% Quantile", legend = :topright)
+         xlabel = "t", labels = "Middle 95% Quantile", legend = :topright)
 
 In addition, you can calculate more quantiles and stack graphs
 
@@ -350,7 +360,7 @@ Some additional features of the ensemble and SDE infrastructure are
 * `Noise Processes <https://diffeq.sciml.ai/stable/features/noise_process/>`__, `Non-diagonal noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example-4:-Systems-of-SDEs-with-Non-Diagonal-Noise-1>`__, and `Correlated Noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example:-Spatially-Colored-Noise-in-the-Heston-Model-1>`__
 * `Parallel Ensemble features <https://diffeq.sciml.ai/stable/features/ensemble/>`__
 * Transforming the ensemble calculations with an `output_func or reduction <https://diffeq.sciml.ai/stable/features/ensemble/#Building-a-Problem-1>`__ 
-* Auto-GPU accelerated by using ``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`
+* Auto-GPU accelerated by using ``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`__
 
 Changing Mitigation
 --------------------
@@ -363,7 +373,8 @@ Consider :math:`\eta = 1/50` and :math:`\eta = 1/20`, where we start at the same
 
 .. code-block:: julia
 
-    function generate_η_experiment(η; p_gen = p_gen, trajectories = 100, saveat = 1.0, x_0 = x_0, T = 120.0)
+    function generate_η_experiment(η; p_gen = p_gen, trajectories = 100,
+                                  saveat = 1.0, x_0 = x_0, T = 120.0)
         p = p_gen(η = η, ξ = 0.0)
         ensembleprob = EnsembleProblem(SDEProblem(F, G, x_0, (0, T), p))
         sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),
@@ -466,9 +477,9 @@ However, note that this masks highly volatile values induced by the in :math:`R_
         legend = [:bottomright :topright :topright :topleft],
         label = ["Late" "Late" "Late" "Late"])
 
-Finally, rather than looking at the ensemble summary, we can extra the data directly from the ensemble to do our own analysis.
+Finally, rather than looking at the ensemble summary, we can use data directly from the ensemble to do our own analysis.
 
-For example, we can extract the ensemble solutions at an intermediate and final time step. 
+For example, evaluating at an intermediate (``t = 350``) and final time step. 
 
 .. code-block:: julia
 
@@ -476,17 +487,19 @@ For example, we can extract the ensemble solutions at an intermediate and final 
     t_1 = 350
     t_2 = p_early.T  # i.e. the last element
     bins_1 = range(0.000, 0.009, length = 30)
+    bins_2 = 30  # number rather than grid.
 
     hist_1 = histogram([ensemble_sol_early.u[i](t_1)[4] for i in 1:trajectories],
-        fillalpha = 0.5, normalize = :probability, legend = :topleft, bins = bins_1,
-        label = "Early", title = "Death Proportion at t = $t_1")
+                       fillalpha = 0.5, normalize = :probability,
+                       legend = :topleft, bins = bins_1,
+                       label = "Early", title = "Death Proportion at t = $t_1")
     histogram!(hist_1, [ensemble_sol_late.u[i](t_1)[4] for i in 1:trajectories],
-        label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_1)
+               label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_1)
     hist_2 = histogram([ensemble_sol_early.u[i][4, end] for i in 1:trajectories],
-        fillalpha = 0.5, normalize = :probability, bins = 30,
-        label = "Early", title = "Death Proportion at t = $t_2")
+                       fillalpha = 0.5, normalize = :probability, bins = bins_2,
+                       label = "Early", title = "Death Proportion at t = $t_2")
     histogram!(hist_2, [ensemble_sol_late.u[i][4, end] for i in 1:trajectories],
-        label = "Late", fillalpha = 0.5, normalize = :probability, bins = 30)
+               label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_2)
     plot(hist_1, hist_2, size = (600,600), layout = (2, 1))
 
 
@@ -580,15 +593,17 @@ Finally, we can examine the same early vs. late lockdown histogram
     bins_re_1 = range(0.003, 0.012, length = 50)
     bins_re_2 = range(0.012, 0.019, length = 50)
     hist_re_1 = histogram([ensemble_sol_re_early.u[i](t_1)[4] for i in 1:trajectories],
-        fillalpha = 0.5, normalize = :probability, legend = :topleft, bins = bins_re_1,
-        label = "Early", title = "Death Proportion at t = $t_1")
+                          fillalpha = 0.5, normalize = :probability,
+                          legend = :topleft, bins = bins_re_1,
+                          label = "Early", title = "Death Proportion at t = $t_1")
     histogram!(hist_re_1, [ensemble_sol_re_late.u[i](t_1)[4] for i in 1:trajectories],
-        label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
+               label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
     hist_re_2 = histogram([ensemble_sol_re_early.u[i][4, end] for i in 1:trajectories],
-        fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
-        label = "Early", title = "Death Proportion at t = $t_2")
+                          fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
+                          label = "Early", title = "Death Proportion at t = $t_2")
     histogram!(hist_re_2, [ensemble_sol_re_late.u[i][4, end] for i in 1:trajectories],
-        label = "Late", fillalpha = 0.5, normalize = :probability, bins =  bins = bins_re_2)
+               label = "Late", fillalpha = 0.5, normalize = :probability,
+               bins =  bins = bins_re_2)
     plot(hist_re_1, hist_re_2, size = (600,600), layout = (2, 1))
 
 In this case, there are significant differences between the early and late deaths and high variance.
