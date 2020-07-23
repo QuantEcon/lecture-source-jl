@@ -371,7 +371,7 @@ Let's try calling this
 
     foo() # exported, so don't need to qualify the namespace
 
-**Note:** If you didn't follow the instructions to add a :ref:`startup file <jl_startup_file>`, you may need to quit your REPL and load the package again.
+**Note:** You may need to quit your REPL and load the package again.
 
 Jupyter Workflow
 ------------------------

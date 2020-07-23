@@ -27,45 +27,6 @@ Preliminary Setup
 
 Follow the instructions for setting up Julia :ref:`on your local computer <jl_jupyterlocal>`.
 
-.. _jl_startup_file:
-
-Creating a Startup File (Recommended)
-----------------------------------------------------
-
-Whenever the Julia compiler or REPL starts, it will look for a file called ``startup.jl`` (see `Julia Manual <https://docs.julialang.org/en/v1/manual/getting-started/#man-getting-started-1>`_).
-
-We provide a file here which does two things
-
-* Makes the REPL shell mode "sticky," so you don't need to keep running ``;`` for new commands.
-
-* Loads the ``Revise.jl`` package on startup, which lets you see changes you make to a package in real-time (i.e., no need to quit the REPL, open again, and load again).
-
-The location for the file is relative to your default Julia environment (e.g. ``~/.julia/config/startup.jl`` or ``C:\Users\USERNAME\.julia\config\startup.jl`` on Windows).
-
-Recall that you can find the location of the ``~/.julia`` directory by running
-
-.. code-block:: julia
-
-    DEPOT_PATH[1]
-
-**Note:** On Mac, this won't be visible in the Finder unless you specifically enable that option, but you can get to it by running ``cd .julia; open .`` from a new terminal.
-
-To add the file:
-
-* In the ``julia`` terminal, type the following
-
-    .. code-block:: none
-
-        ] add  Revise REPL; precompile
-
-* Create the ``~/.julia/config/`` directory if necessary in the terminal or file explorer.
-
-* Download the file `startup.jl <https://s3-ap-southeast-2.amazonaws.com/lectures.quantecon.org/jl/_static/includes/startup.jl>`_ into that directory.
-
-* For convenience, you may find it useful on your operating system to change the directory where the REPL starts.
-
-On Windows, if you have a shortcut on your desktop or on the taskbar, you could: (1) right-click on the icon; (2) right click on the "julia" text; (3) choose "Properties", and (4) change the "Start In" to be something such as ``C:\Users\YOURUSERNAME\Documents``.
-
 .. _repl_main:
 
 The REPL
