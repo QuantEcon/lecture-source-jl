@@ -26,6 +26,7 @@
     more_julia/index
     tools_and_techniques/index_grad
     dynamic_programming/index_grad
+    continuous_time/index    
     multi_agent_models/index_grad
     time_series_models/index_grad
     zreferences
