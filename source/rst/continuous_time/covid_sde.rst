@@ -98,13 +98,13 @@ Jumping directly to the equations in :math:`s, i, r, d` already normalized by :m
 
 .. math::
    \begin{aligned}
-        d s  & = - \gamma \, R_0 \, s \,  i dt
+        d s  & = - \gamma \, R_0 \, s \,  i \, dt
         \\
-         d i  & = \left(\gamma \, R_0 \, s \,  i  - \gamma i \right) dt
+         d i  & = \left(\gamma \, R_0 \, s \,  i  - \gamma  \, i \right) dt
         \\
-        d r  & = (1-\delta) \gamma  i \, dt 
+        d r  & = (1-\delta) \gamma  \, i \, dt 
         \\
-        d d  & = \delta \gamma  i \, dt
+        d d  & = \delta  \, \gamma  \, i \, dt
         \\         
    \end{aligned}
    :label: SIRD
@@ -556,7 +556,7 @@ We will redo the "Ending Lockdown" simulation from above, where the only differe
 
     p_re_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
                     R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n,
-                    δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1/120)
+                    δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1/360)
 
     p_re_early = p_re_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
     p_re_late = p_re_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
@@ -590,20 +590,20 @@ Finally, we can examine the same early vs. late lockdown histogram
 
 .. code-block:: julia
 
-    bins_re_1 = range(0.003, 0.012, length = 50)
-    bins_re_2 = range(0.012, 0.019, length = 50)
+    bins_re_1 = range(0.003, 0.010, length = 50)
+    bins_re_2 = range(0.0085, 0.0102, length = 50)
     hist_re_1 = histogram([ensemble_sol_re_early.u[i](t_1)[4] for i in 1:trajectories],
-                          fillalpha = 0.5, normalize = :probability,
-                          legend = :topleft, bins = bins_re_1,
-                          label = "Early", title = "Death Proportion at t = $t_1")
+                        fillalpha = 0.5, normalize = :probability,
+                        legend = :topleft, bins = bins_re_1,
+                        label = "Early", title = "Death Proportion at t = $t_1")
     histogram!(hist_re_1, [ensemble_sol_re_late.u[i](t_1)[4] for i in 1:trajectories],
-               label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
+            label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
     hist_re_2 = histogram([ensemble_sol_re_early.u[i][4, end] for i in 1:trajectories],
-                          fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
-                          label = "Early", title = "Death Proportion at t = $t_2")
+                        fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
+                        label = "Early", title = "Death Proportion at t = $t_2")
     histogram!(hist_re_2, [ensemble_sol_re_late.u[i][4, end] for i in 1:trajectories],
-               label = "Late", fillalpha = 0.5, normalize = :probability,
-               bins =  bins = bins_re_2)
+            label = "Late", fillalpha = 0.5, normalize = :probability,
+            bins =  bins = bins_re_2)
     plot(hist_re_1, hist_re_2, size = (600,600), layout = (2, 1))
 
 In this case, there are significant differences between the early and late deaths and high variance.
