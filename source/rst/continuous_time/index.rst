@@ -18,5 +18,6 @@ This section of the course contains foundational mathematical and computational 
 .. toctree::
     :maxdepth: 2
 
-    seir_model_sde
+    seir_model
+    covid_sde
     seir_sciml
