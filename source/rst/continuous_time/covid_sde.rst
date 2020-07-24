@@ -66,6 +66,7 @@ others covered in previous lectures
 
     using OrdinaryDiffEq, StochasticDiffEq
     using Parameters, Plots
+    gr(fmt=:png);
 
 
 The Basic SIR/SIRD Model
@@ -309,8 +310,8 @@ The same holds for other variables such as the cumulative deaths, mortality, and
 See `here  <https://diffeq.sciml.ai/stable/solvers/sde_solve/#Recommended-Methods-1>`__ for comments on finding the appropriate SDE algorithm given the structure of :math:`F(x, t)` and :math:`G(x, t)`
 
 * If :math:`G` has diagonal noise (i.e. :math:`G(x, t)` is a diagonal, and possibly a function of the state), then ``SOSRI`` is the typical choice.
-* If :math:`G` has additive and diagonal noise (i.e. :math:`G(t)` is a diagonal and independent from the state), then ``SOSRA`` is usually the best algorithm for even mildly stiff :math:`F`.
-* If adaptivity is not required, then ``EM`` (i.e. Euler-Maruyama method typically used by economists) is flexible in its ability to handle different noise processes.
+* If :math:`G` has additive noise (i.e. :math:`G(t)` is independent from the state), then ``SOSRA`` is usually the best algorithm for even mildly stiff :math:`F`.
+* If :math:`G` is non-diagonal in the general case, then ``LambaEM`` is a generally applicable algorithm. If adaptivity is not required, then :math:`EM` (i.e. Euler-Maruyama typically used by economists) is equally flexible.
 
 Ensembles
 -----------
