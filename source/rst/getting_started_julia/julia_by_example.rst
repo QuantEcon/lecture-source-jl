@@ -462,7 +462,7 @@ Example: Variations on Fixed Points
 Take a mapping :math:`f : X \to X` for some set :math:`X`.
 
 
-If there exists an :math:`x^* \in X` such that :math:`f(x^*) = x^*`, then :math:`x^*`: is called a "fixed point" of :math:`f`.
+If there exists an :math:`x^* \in X` such that :math:`f(x^*) = x^*`, then :math:`x^*` is called a "fixed point" of :math:`f`.
 
 For our second example, we will start with a simple example of determining fixed points of a function.
 
@@ -479,7 +479,7 @@ Consider the simple equation, where the scalars :math:`p,\beta` are given, and  
 
 Of course, in this simple example, with parameter restrictions this can be solved as :math:`v = p/(1 - \beta)`.
 
-Rearrange the equation in terms of a map :math:`f(x) : \mathbb R \to \mathbb R`
+Rearrange the equation in terms of a map :math:`f : \mathbb R \to \mathbb R`
 
 .. math::
     :label: fixed_point_map
@@ -493,7 +493,7 @@ where
     f(v) := p + \beta v
 
 
-Therefore, a fixed point :math:`v^*` of :math:`f(\cdot)` is a solution to the above problem.
+Therefore, a fixed point :math:`v^*` of :math:`f` is a solution to the above problem.
 
 While Loops
 ---------------------
