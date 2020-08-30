@@ -509,7 +509,7 @@ For this exact ``f`` function,  we can see the convergence to :math:`v = p/(1-\b
 
 .. math::
 
-    v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^{n-1} \beta^i + \beta^n v_0
+    v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^n \beta^i + \beta^{n+1} v_0
 
 To implement the iteration in :eq:`fixed_point_naive`, we start by solving this problem with a ``while`` loop.
 
