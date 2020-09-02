@@ -527,8 +527,8 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
     # setup the algorithm
     v_old = v_iv
     normdiff = Inf
-    iter = 1
-    while normdiff > tolerance && iter <= maxiter
+    iter = 0
+    while normdiff > tolerance && iter < maxiter
         v_new = p + β * v_old # the f(v) map
         normdiff = norm(v_new - v_old)
 
@@ -551,16 +551,18 @@ An alternative approach is to use a ``for`` loop, and check for convergence in e
     # setup the algorithm
     v_old = v_iv
     normdiff = Inf
-    iter = 1
+    iter = 0
     for i in 1:maxiter
         v_new = p + β * v_old # the f(v) map
         normdiff = norm(v_new - v_old)
-        if normdiff < tolerance # check convergence
-            iter = i
-            break # converged, exit loop
-        end
+
         # replace and continue
         v_old = v_new
+	iter = i
+	
+        if normdiff <= tolerance # check convergence
+            break # converged, exit loop
+        end
     end
     println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
 
