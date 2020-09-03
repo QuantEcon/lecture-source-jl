@@ -791,7 +791,7 @@ Using our own, homegrown iteration and simply passing in a bivariate map:
 
     sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) " *
-    "iterations")
+            "iterations")
 
 This also works without any modifications with the ``fixedpoint`` library function.
 
