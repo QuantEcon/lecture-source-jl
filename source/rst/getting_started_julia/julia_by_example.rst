@@ -576,12 +576,12 @@ The first problem with this setup is that it depends on being sequentially run -
 .. code-block:: julia
 
     # better, but still poor style
-    function v_fp(β, ρ, v_iv, tolerance, maxiter)
+    function v_fp(β, p, v_iv, tolerance, maxiter)
         # setup the algorithm
         v_old = v_iv
         normdiff = Inf
-        iter = 1
-        while normdiff > tolerance && iter <= maxiter
+        iter = 0
+        while normdiff > tolerance && iter < maxiter
             v_new = p + β * v_old # the f(v) map
             normdiff = norm(v_new - v_old)
 
@@ -619,8 +619,8 @@ A key feature of languages like Julia, is the ability to efficiently handle func
         # setup the algorithm
         x_old = iv
         normdiff = Inf
-        iter = 1
-        while normdiff > tolerance && iter <= maxiter
+        iter = 0
+        while normdiff > tolerance && iter < maxiter
             x_new = f(x_old) # use the passed in map
             normdiff = norm(x_new - x_old)
             x_old = x_new
@@ -656,8 +656,8 @@ To enable this, Julia has two features:  named function parameters, and named tu
         # setup the algorithm
         x_old = iv
         normdiff = Inf
-        iter = 1
-        while normdiff > tolerance && iter <= maxiter
+        iter = 0
+        while normdiff > tolerance && iter < maxiter
             x_new = f(x_old) # use the passed in map
             normdiff = norm(x_new - x_old)
             x_old = x_new
@@ -728,7 +728,7 @@ While a key benefit of using a package is that the code is clearer, and the impl
     println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
             "$(sol.iterations) iterations")
 
-Note that this completes in ``3`` iterations vs ``177`` for the naive fixed point iteration algorithm.
+Note that this completes in ``3`` iterations vs ``176`` for the naive fixed point iteration algorithm.
 
 Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the ``f`` function.
 
@@ -738,7 +738,7 @@ The only other change in this function is the move from directly defining ``f(v)
 
 Similar to anonymous functions in MATLAB, and lambda functions in Python, Julia enables the creation of small functions without any names.
 
-The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(x)``.
+The code ``v -> p .+ β * v`` defines a function of a dummy argument, ``v`` with the same body as our ``f(v)``.
 
 Composing Packages
 ----------------------------
@@ -790,7 +790,7 @@ Using our own, homegrown iteration and simply passing in a bivariate map:
     f(v) = p .+ β * v # note that p and β are used in the function!
 
     sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
-    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
+    println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) " *
     "iterations")
 
 This also works without any modifications with the ``fixedpoint`` library function.
@@ -801,7 +801,7 @@ This also works without any modifications with the ``fixedpoint`` library functi
 
     p = [1.0, 2.0, 0.1]
     β = 0.9
-    iv =[0.8, 2.0, 51.0]
+    iv = [0.8, 2.0, 51.0]
     f(v) = p .+ β * v
 
     sol = fixedpoint(v -> p .+ β * v, iv)
