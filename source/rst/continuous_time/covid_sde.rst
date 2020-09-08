@@ -17,7 +17,7 @@ Coauthored with Chris Rackauckas
 
 This lecture continues the analyzing of the COVID-19 pandemic established in :doc:`this lecture <seir_model>`.
 
-As before, the model is inspired by 
+As before, the model is inspired by
 *  Notes from `Andrew Atkeson <https://sites.google.com/site/andyatkeson/>`__ and `NBER Working Paper No. 26867 <https://www.nber.org/papers/w26867>`__
 * `Estimating and Forecasting Disease Scenarios for COVID-19 with an SIR Model <https://www.nber.org/papers/w27335>`__ by Andrew Atkeson, Karen Kopecky and Tao Zha
 * `Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities <https://www.nber.org/papers/w27128>`__ by Jesús Fernández-Villaverde and Charles I. Jones
@@ -32,9 +32,9 @@ In continuous-time, there is an important distinction between randomness that le
 
 .. **TBD:** Add definition of levy processes and the intuitive connection between stationary increments and independence of increments.
 
-Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time, and usually fulfill the measurability required for calculating expected present discounted values.  
+Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time, and usually fulfill the measurability required for calculating expected present discounted values.
 
-Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much stricter.  In practice, there are only two types of Levy Processes that can be used without careful measure theory.
+Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much stricter.  One can show that a Levy process's noise can be decomposed into two portions:
 
 #. `Weiner Processes <https://en.wikipedia.org/wiki/Wiener_process>`__ (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths
 #. `Poisson Processes <https://en.wikipedia.org/wiki/Poisson_point_process>`__ with an arrival rate of jumps in the variable.
@@ -79,7 +79,7 @@ The states are are now: susceptible (S), infected (I), resistant (R), or dead (D
 
 Comments:
 
-* Unlike the previous SEIR model, the R state is only for those recovered, alive, and currently resistant.  
+* Unlike the previous SEIR model, the R state is only for those recovered, alive, and currently resistant.
 
 * As before, we start by assuming those have recovered have acquired immunity.
 
@@ -103,10 +103,10 @@ Jumping directly to the equations in :math:`s, i, r, d` already normalized by :m
         \\
          d i  & = \left(\gamma \, R_0 \, s \,  i  - \gamma  \, i \right) dt
         \\
-        d r  & = (1-\delta) \gamma  \, i \, dt 
+        d r  & = (1-\delta) \gamma  \, i \, dt
         \\
         d d  & = \delta  \, \gamma  \, i \, dt
-        \\         
+        \\
    \end{aligned}
    :label: SIRD
 
@@ -150,9 +150,9 @@ where :math:`W` is standard Brownian motion (i.e a `Weiner Process <https://en.w
 
 Heuristically, if :math:`\sigma = 0`, divide this equation by :math:`dt` and it nests the original ODE used in the previous lecture.
 
-While we do not consider any calibration for the :math:`\sigma` parameter, empirical studies such as `Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities <https://www.nber.org/papers/w27128>`__ (Figure 6) show highly volatile :math:`R_0(t)` estimates over time.  
+While we do not consider any calibration for the :math:`\sigma` parameter, empirical studies such as `Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities <https://www.nber.org/papers/w27128>`__ (Figure 6) show highly volatile :math:`R_0(t)` estimates over time.
 
-Even after lockdowns are first implemented, we see variation between 0.5 and 1.5.  Since countries are made of interconnecting cities with such variable contact rates, a high :math:`\sigma` seems reasonable both intuitively and empirically. 
+Even after lockdowns are first implemented, we see variation between 0.5 and 1.5.  Since countries are made of interconnecting cities with such variable contact rates, a high :math:`\sigma` seems reasonable both intuitively and empirically.
 
 Mortality Rates
 ----------------
@@ -169,14 +169,14 @@ Let :math:`\delta(t)` be the mortality rate and in addition,
 * Unlike the well-studied Cox-Ingersoll-Ross model, we make no claims on the long-run behavior of this process, but will be examining the behavior on a small timescale so this is not an issue.
 
 Given this, the stochastic process for the mortality rate is,
- 
+
 .. math::
     \begin{aligned}
     d \delta_t & = \theta (\bar{\delta} - \delta_t) dt + \xi \sqrt{(\delta_t (1-\delta_t)} d W_t\\
     \end{aligned}
     :label: dmt
 
-Where the :math:`W_t` Brownian motion is independent from the previous process. 
+Where the :math:`W_t` Brownian motion is independent from the previous process.
 
 System of SDEs
 ---------------
@@ -310,8 +310,9 @@ The same holds for other variables such as the cumulative deaths, mortality, and
 See `here  <https://diffeq.sciml.ai/stable/solvers/sde_solve/#Recommended-Methods-1>`__ for comments on finding the appropriate SDE algorithm given the structure of :math:`F(x, t)` and :math:`G(x, t)`
 
 * If :math:`G` has diagonal noise (i.e. :math:`G(x, t)` is a diagonal, and possibly a function of the state), then ``SOSRI`` is the typical choice.
-* If :math:`G` has additive noise (i.e. :math:`G(t)` is independent from the state), then ``SOSRA`` is usually the best algorithm for even mildly stiff :math:`F`.
-* If :math:`G` is non-diagonal in the general case, then ``LambaEM`` is a generally applicable algorithm. If adaptivity is not required, then :math:`EM` (i.e. Euler-Maruyama typically used by economists) is equally flexible.
+* If :math:`G` has additive (i.e. :math:`G(t)` is a independent from the state), then ``SOSRA`` is usually the best algorithm for even mildly stiff :math:`F`.
+* If the noise process is more general, ``LambaEM`` and `RKMilGeneral`` are flexible to all noise processes.
+* If high accuracy and adaptivity are not required, then ``EM`` (i.e. Euler-Maruyama method typically used by economists) is flexible in its ability to handle different noise processes.
 
 Ensembles
 -----------
@@ -360,7 +361,7 @@ Some additional features of the ensemble and SDE infrastructure are
 * `Plotting <https://diffeq.sciml.ai/stable/basics/plot/>`__
 * `Noise Processes <https://diffeq.sciml.ai/stable/features/noise_process/>`__, `Non-diagonal noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example-4:-Systems-of-SDEs-with-Non-Diagonal-Noise-1>`__, and `Correlated Noise <https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example:-Spatially-Colored-Noise-in-the-Heston-Model-1>`__
 * `Parallel Ensemble features <https://diffeq.sciml.ai/stable/features/ensemble/>`__
-* Transforming the ensemble calculations with an `output_func or reduction <https://diffeq.sciml.ai/stable/features/ensemble/#Building-a-Problem-1>`__ 
+* Transforming the ensemble calculations with an `output_func or reduction <https://diffeq.sciml.ai/stable/features/ensemble/#Building-a-Problem-1>`__
 * Auto-GPU accelerated by using ``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`__
 
 Changing Mitigation
@@ -417,7 +418,7 @@ We start the model with 100,000 active infections.
 
 .. code-block:: julia
 
-    R₀_L = 0.5  # lockdown 
+    R₀_L = 0.5  # lockdown
     η_experiment = 1.0/10
     σ_experiment = 0.04
     R̄₀_lift_early(t, p) = t < 30.0 ? R₀_L : 2.0
@@ -480,7 +481,7 @@ However, note that this masks highly volatile values induced by the in :math:`R_
 
 Finally, rather than looking at the ensemble summary, we can use data directly from the ensemble to do our own analysis.
 
-For example, evaluating at an intermediate (``t = 350``) and final time step. 
+For example, evaluating at an intermediate (``t = 350``) and final time step.
 
 .. code-block:: julia
 
@@ -504,7 +505,7 @@ For example, evaluating at an intermediate (``t = 350``) and final time step.
     plot(hist_1, hist_2, size = (600,600), layout = (2, 1))
 
 
-This shows that there are significant differences after a year, but by 550 days the graphs largely coincide. 
+This shows that there are significant differences after a year, but by 550 days the graphs largely coincide.
 
 In the above code given the return from ``solve`` on an ``EnsembleProblem`` , e.g. ``ensemble_sol = solve(...)``
 
@@ -521,7 +522,7 @@ As a final experiment, consider a model where the immunity is only temporary, an
 
 In particular, assume that at rate :math:`\nu` immunity is lost.  For illustration, we will examine the case if the average immunity lasts 12 months (i.e. :math:`1/\nu = 360`)
 
-The transition modifies the differential equation :eq:`SIRD` to become 
+The transition modifies the differential equation :eq:`SIRD` to become
 
 .. math::
    \begin{aligned}
@@ -529,16 +530,16 @@ The transition modifies the differential equation :eq:`SIRD` to become
         \\
          d i  & = \left(\gamma \, R_0 \, s \,  i  - \gamma i \right) dt
         \\
-        d r  & = \left((1-\delta) \gamma  i - \nu \, r\right) dt 
+        d r  & = \left((1-\delta) \gamma  i - \nu \, r\right) dt
         \\
         d d  & = \delta \gamma  i \, dt
-        \\         
+        \\
    \end{aligned}
    :label: SIRDRE
 
 This change modifies the underlying ``F`` function and adds a parameter, but otherwise the model remains the same.
 
-We will redo the "Ending Lockdown" simulation from above, where the only difference is the new transition. 
+We will redo the "Ending Lockdown" simulation from above, where the only difference is the new transition.
 
 .. code-block:: julia
 
@@ -656,12 +657,12 @@ Nevertheless, it suggest that the timing of lifting lockdown has a more profound
 .. Note that these routines can also be auto-GPU accelerated by using
 .. ``EnsembleGPUArray()`` from `DiffEqGPU <https://github.com/SciML/DiffEqGPU.jl/>`
 
-.. 
+..
 .. Daily Deaths
 .. --------------
-.. 
+..
 .. Outside of the system of equations, a key calculation will be the :math:`d/dt D(t)`, i.e. the daily deaths, where our timescale is already in days.
-.. 
-.. 
+..
+..
 .. Define :math:`\Delta D \approx d/dt D(t)` where we assume that the parameters are roughly fixed over a 1-day time-horizon.  In that case, we define :math:`\Delta D := N \delta \gamma i`.
-.. 
+..
