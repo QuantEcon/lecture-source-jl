@@ -60,7 +60,7 @@ In addition, we will be exploring the `Ordinary Differential Equations <https://
 
     using OrdinaryDiffEq
     using Parameters, Plots
-
+    gr(fmt=:png);
 
 The SEIR Model
 ==============

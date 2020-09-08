@@ -342,6 +342,8 @@ First, interpolate with :math:`N = 5` and avoid taking the inverse.  In that cas
 .. code-block:: julia
 
     using Plots
+    gr(fmt=:png);
+
     N_display = 100
     g(x) = 1/(1 + 25x^2)
     x_display = range(-1, 1, length = N_display)
