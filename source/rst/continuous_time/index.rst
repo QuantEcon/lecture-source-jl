@@ -20,4 +20,3 @@ This section of the course contains foundational mathematical and computational 
 
     seir_model
     covid_sde
-    seir_sciml

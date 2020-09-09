@@ -311,7 +311,7 @@ See `here  <https://diffeq.sciml.ai/stable/solvers/sde_solve/#Recommended-Method
 
 * If :math:`G` has diagonal noise (i.e. :math:`G(x, t)` is a diagonal, and possibly a function of the state), then ``SOSRI`` is the typical choice.
 * If :math:`G` has additive (i.e. :math:`G(t)` is a independent from the state), then ``SOSRA`` is usually the best algorithm for even mildly stiff :math:`F`.
-* If the noise process is more general, ``LambaEM`` and `RKMilGeneral`` are flexible to all noise processes.
+* If the noise process is more general, ``LambaEM`` and ``RKMilGeneral`` are flexible to all noise processes.
 * If high accuracy and adaptivity are not required, then ``EM`` (i.e. Euler-Maruyama method typically used by economists) is flexible in its ability to handle different noise processes.
 
 Ensembles
