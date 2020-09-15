@@ -941,11 +941,11 @@ Take a random walk, starting from :math:`x_0 = 1`
 
 * Furthermore, assume that the :math:`x_{t_{\max}} = 0`  (i.e. at :math:`t_{\max}`, the value drops to zero, regardless of its current state).
 * The sequence of shocks :math:`\{\epsilon_t\}` is assumed to be iid and standard normal.
-* For a given path :math:`\{x_t\}` define a **first-passage time** as :math:`T_a = \min\{t\, |\, x_t \leq a\}`, where by the assumption of the process :math:`T_a \leq t_{\max}`.
+* For a given path :math:`\{x_t\}`, define the **first-passage time** through zero as :math:`T_0 = \min\{t\, |\, x_t \leq 0\}`, where by the assumption of the process :math:`T_0 \leq t_{\max}`.
 
 Start with :math:`\sigma = 0.2, \alpha = 1.0`
 
-1. calculate the first-passage time, :math:`T_0`, for 100 simulated random walks -- to a :math:`t_{\max} = 200` and plot a histogram
+1. calculate :math:`T_0` for 100 simulated random walks to :math:`t_{\max} = 200` and plot a histogram
 2. plot the sample mean of :math:`T_0` from the simulation for :math:`\alpha \in \{0.8, 1.0, 1.2\}`
 
 .. _jbe_ex8a:
@@ -955,11 +955,11 @@ Exercise 8(a)
 
 This exercise is more challenging.
 
-The root of a univariate function :math:`f(\cdot)` is an :math:`x` such that :math:`f(x) = 0`.
+A root of a univariate function :math:`f` is an :math:`x` such that :math:`f(x) = 0`.
 
 One solution method to find local roots of smooth functions is called Newton's method.
 
-Starting with an :math:`x_0` guess, a function :math:`f(\cdot)` and the first-derivative :math:`f'(\cdot)`, the algorithm is to repeat
+Starting with an :math:`x_0` guess, a function :math:`f` and the first-derivative :math:`f'`, the algorithm is to repeat
 
 .. math::
 
@@ -989,9 +989,9 @@ For those impatient to use more advanced features of Julia, implement a version 
 
     f(0.1), f_prime(0.1)
 
-#. Using the ``D(f)`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative.
+#. Using the ``D`` operator definition above, implement a version of Newton's method that does not require the user to provide an analytical derivative.
 
-#. Test the sorts of ``f`` functions which can be automatically integrated by ``ForwardDff.jl``.
+#. Test the sorts of ``f`` functions which can be automatically differentiated by ``ForwardDiff.jl``.
 
 
 Solutions
@@ -1188,7 +1188,7 @@ As a hint, notice the following pattern for finding the number of draws of a uni
 
     draws = drawsuntilthreshold(0.2, maxdraws=100)
 
-Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly
+Additionally, it is sometimes convenient to just push numbers onto an array without indexing it directly
 
 .. code-block:: julia
 
