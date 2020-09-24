@@ -56,8 +56,8 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
 
    -  In the Ubuntu terminal, first install python/etc. tools
    ```bash
-   wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
-   bash Anaconda3-2020.02-Linux-x86_64.sh
+   wget https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
+   bash Anaconda3-2020.07-Linux-x86_64.sh
    ```
    -  Create a directory `.conda` by running `mkdir ~/.conda` if the warning "Unable to register the environment" shows up
 3. The installation will take time. You should:
@@ -67,12 +67,12 @@ sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5
    - Delete the installation file
      ```bash
      pip install --upgrade --force-reinstall pyzmq
-     rm Anaconda3-2020.02-Linux-x86_64.sh
+     rm Anaconda3-2020.07-Linux-x86_64.sh
      ```
 
 4. Install Julia
 ```bash
-wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.2-linux-x86_64.tar.gz | tar -xzv
+wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.1-linux-x86_64.tar.gz | tar -xzv
 ```
 
 4. Assuming you installed anaconda in your home directory then,
@@ -80,7 +80,7 @@ wget -qO- https://julialang-s3.julialang.org/bin/linux/x64/1.4/julia-1.4.2-linux
 - Add something like the following:
 
 ```bash
-export PATH=~/anaconda3/bin:~/julia-1.4.2/bin:$PATH
+export PATH=~/anaconda3/bin:~/julia-1.5.1/bin:$PATH
 ```
 
 Then, from your terminal, run `source .bashrc` to load the changes in the current WSL terminal.
