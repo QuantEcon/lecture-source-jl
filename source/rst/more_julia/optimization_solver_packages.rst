@@ -260,7 +260,7 @@ Or, using the complicated iterative function we defined for the `squareroot`,
     squareroot'(2.0)
 
 
-You can Zygote supports combinations of vectors and scalars as the function parameters.
+Zygote supports combinations of vectors and scalars as the function parameters.
 
 .. code-block:: julia
 
