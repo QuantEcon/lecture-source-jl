@@ -42,8 +42,7 @@ Desktop Installation of Julia and Jupyter
 If you want to install these tools locally on your machine
 
 * Download and install Julia, from `download page <http://julialang.org/downloads/>`_ , accepting all default options.
-
-    * We do **not** recommend `JuliaPro <https://juliacomputing.com/products/juliapro.html>`_.
+* Currently, these instructions and packages will work with Julia 1.4.X or 1.5.X
 
 .. _intro_repl:
 
@@ -73,9 +72,7 @@ This adds packages for
 
 * The ``InstantiateFromURL`` which is a tool written by the QE team to manage package dependencies for the lectures.
 
-Note: To set up the Julia terminal command on Mac, open a terminal and run ``sudo ln -s <where_julia_app_is>/Contents/Resources/julia/bin/julia /usr/local/bin/julia``.
-
-The full command might look like ``sudo ln -s /Applications/Julia-1.4.app/Contents/Resources/julia/bin/julia /usr/local/bin/julia``, if you placed the app in your ``Applications`` folder.
+Note: To set up the Julia terminal command on Mac, see `here <https://julialang.org/downloads/platform/#macos>`__.
 
 **Note**: To obtain the full set of packages we use, at this stage you can run the following (see :ref:`the package setup section <package_setup>`.)
 
@@ -93,18 +90,20 @@ Installing Jupyter
 If you have previously installed Jupyter (e.g., installing Anaconda Python by `downloading the binary <https://www.anaconda.com/download/>`)
 then the ``add IJulia`` installs everything you need into your existing environment.
 
-Otherwise - or in addition - you can install it directly from the Julia REPL
+Otherwise, you can let ``IJulia`` install its own version of Conda by following `these instructions <https://julialang.github.io/IJulia.jl/dev/manual/running/>`__.
 
-.. code-block:: julia
-    :class: no-execute
+.. Otherwise - or in addition - you can install it directly from the Julia REPL
 
-    using IJulia; jupyterlab()
+.. .. code-block:: julia
+..     :class: no-execute
 
-Choose the default, ``y`` if asked to install Jupyter and then JupyterLab via Conda.
+..     using IJulia; jupyterlab()
 
-After the installation, a JupyterLab tab should open in your browser.
+.. Choose the default, ``y`` if asked to install Jupyter and then JupyterLab via Conda.
 
-(Optional) To enable launching JupyterLab from a terminal, use :ref:`add Julia's Jupyter to your path <add_jupyter_to_path>`.
+.. After the installation, a JupyterLab tab should open in your browser.
+
+.. (Optional) To enable launching JupyterLab from a terminal, use :ref:`add Julia's Jupyter to your path <add_jupyter_to_path>`.
 
 .. _clone_lectures:
 
@@ -131,15 +130,27 @@ Choose a path you like and clone the repo.
 
 **Note:** the workflow will be easiest if you clone the repo to the default location relative to the home folder for your user.
 
-From a Julia REPL, start JupyterLab by executing
+Then, you can run Jupyterlab using the Conda installation with
 
-.. code-block:: julia
-    :class: no-execute
+.. code-block:: none
 
-    using IJulia; jupyterlab()
+    jupyter lab
 
 
-Alternatively, if you installed Jupyter separately in :ref:`Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal.
+Or following `these instructions <https://julialang.github.io/IJulia.jl/dev/manual/running/>`__ instructions if you didn't install Anaconda separately.
+
+
+.. add_jupyter_to_path
+
+.. From a Julia REPL, start JupyterLab by executing
+
+.. .. code-block:: julia
+..     :class: no-execute
+
+..     using IJulia; jupyterlab()
+
+
+.. Alternatively, if you installed Jupyter separately in :ref:`Jupyter Installation <jupyter_installation>` or :ref:`added Jupyter to your path <add_jupyter_to_path>` then run ``jupyter lab`` in your terminal.
 
 .. At the top, under the "Repository" dropdown, click "Open in Terminal" (Mac, Linux) or "Open in Command Prompt" (Windows).
 

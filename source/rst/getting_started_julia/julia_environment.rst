@@ -23,24 +23,32 @@ Getting Started
 
 Recall that the easiest way to get started with these notebooks is to follow the :ref:`cloning instructions <clone_lectures>` earlier.
 
-To summarize, if on a desktop you should clone the `notebooks repository <https://github.com/quantecon/quantecon-notebooks-julia>`, then in a Julia REPL type
+.. To summarize, if on a desktop you should clone the `notebooks repository <https://github.com/quantecon/quantecon-notebooks-julia>` and installed Anaconda, then in a terminal 
 
-.. code-block:: julia
-    :class: no-execute
+.. .. code-block:: none
 
-    using IJulia; jupyterlab()
+..     jupyter lab
 
-Hint: Julia will remember the last commands in the REPL, so you can use up-arrow to restart JupyterLab.
 
-Alternatively, if you are using an online Jupyter, then you can directly open a new notebook.
 
-Finally, if you installed Jupyter separately or have added :ref:`added Jupyter to the Path <add_jupyter_to_path>` then ``cd`` to the folder location in a terminal, and run
+.. , then in a Julia REPL type
+
+.. .. code-block:: julia
+..     :class: no-execute
+
+..     using IJulia; jupyterlab()
+
+.. Hint: Julia will remember the last commands in the REPL, so you can use up-arrow to restart JupyterLab.
+
+.. Alternatively, if you are using an online Jupyter, then you can directly open a new notebook.
+
+Assuming you have Jupyter installed and in your path, ``cd`` to the folder location in a terminal, and run
 
 .. code-block:: none
 
    jupyter lab
 
-Regardless, your web browser should open to a page that looks something like this
+Your web browser should open to a page that looks something like this
 
 .. figure:: /_static/figures/starting_nb_julia.png
    :width: 100%
@@ -271,31 +279,31 @@ If you are using a JupyterHub installation, you can start the REPL in JupyterLab
 We examine the REPL and its different modes in more detail in the :ref:`tools and editors <repl_main>` lecture.
 
 
-.. _add_jupyter_to_path:
+.. .. _add_jupyter_to_path:
 
-(Optional) Adding Jupyter to the Path
-=====================================
+.. (Optional) Adding Jupyter to the Path
+.. =====================================
 
-If you :ref:`installed Jupyter using Julia <jupyter_installation>`, then you may find it convenient to add it to your system path
-in order to launch JupyterLab without running a Julia terminal.
+.. If you :ref:`installed Jupyter using Julia <jupyter_installation>`, then you may find it convenient to add it to your system path
+.. in order to launch JupyterLab without running a Julia terminal.
 
-The default location for the Jupyter binaries is relative to the ``.julia`` folder (e.g., ``"C:\Users\USERNAME\.julia\conda\3\Scripts`` on Windows).
+.. The default location for the Jupyter binaries is relative to the ``.julia`` folder (e.g., ``"C:\Users\USERNAME\.julia\conda\3\Scripts`` on Windows).
 
-You can find the directory in a Julia REPL using by executing
+.. You can find the directory in a Julia REPL using by executing
 
 
-.. code-block:: julia
-    :class: no-execute
+.. .. code-block:: julia
+..     :class: no-execute
 
-    ] add Conda
-    using Conda
-    Conda.SCRIPTDIR
+..     ] add Conda
+..     using Conda
+..     Conda.SCRIPTDIR
 
-On Linux/OSX, you could add that path to your ``.bashrc``.
+.. On Linux/OSX, you could add that path to your ``.bashrc``.
 
-On Windows, to add directly to the path, type ``;`` to enter shell mode and then execute
+.. On Windows, to add directly to the path, type ``;`` to enter shell mode and then execute
 
-.. code-block:: julia
-    :class: no-execute
+.. .. code-block:: julia
+..     :class: no-execute
 
-    setx PATH "$(Conda.SCRIPTDIR);%PATH%"
+..     setx PATH "$(Conda.SCRIPTDIR);%PATH%"
