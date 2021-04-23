@@ -683,8 +683,7 @@ To show the flexibilty of this code, we can use it to find a fixed point of the 
 
 .. code-block:: julia
 
-    r = 2.0
-    f(x) = r * x * (1 - x)
+    f(x; r = 2.0) = r * x * (1 - x)
 
     sol = fixedpointmap(f, iv=0.8)
     println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
