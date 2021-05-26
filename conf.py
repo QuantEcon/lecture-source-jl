@@ -499,4 +499,28 @@ jupyter_pdf_book_index = "index_toc"
 # pdf book name
 jupyter_pdf_book_name = "quantitative_economics_with_julia"
 
+# sphinx-tomyst config
+
+JUPYTEXT_HEADER = """
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+kernelspec:
+  display_name: Julia
+  language: julia
+  name: julia
+---
+"""
+tomyst_jupytext_header = JUPYTEXT_HEADER
+
+tomyst_default_language = "julia"
+
+# Set Destination path
+tomyst_static_file_path = ['source/rst/_static']
+tomyst_parser = "myst_nb"
+tomyst_conf_removeblocks = True
+tomyst_conf_dropcontaining = ["sphinxcontrib.jupyter"]
+
 # {{ tomyst-remove-finish }}
