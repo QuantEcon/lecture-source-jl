@@ -40,6 +40,7 @@ extensions = [
 	'IPython.sphinxext.ipython_console_highlighting',
     # Custom Sphinx Extensions
     'sphinxcontrib.jupyter',
+    'sphinx_tomyst'
 ]
 
 # Retired Extensions but may be useful in Future
@@ -365,6 +366,8 @@ linkcheck_ignore = [r'https:\/\/github\.com\/.*?#.*'] #Anchors on Github seem to
 
 linkcheck_timeout = 30
 
+# {{ tomyst-remove-start }}
+
 # --------------------------------------------
 # jupyter Sphinx Extension conversion settings
 # --------------------------------------------
@@ -495,3 +498,5 @@ jupyter_pdf_book_index = "index_toc"
 
 # pdf book name
 jupyter_pdf_book_name = "quantitative_economics_with_julia"
+
+# {{ tomyst-remove-finish }}
