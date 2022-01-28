@@ -617,7 +617,7 @@ Here's one solution
         @assert length(w) - 1 ∈ support(dist) && w̄ <= w[end]
         while true
             # Generate a wage draw
-            w_val = w[rand(dist)] # the wage dist set up earlier
+            w_val = w[rand(dist)+1] # the wage dist set up earlier
             if w_val ≥ w̄
                 stopping_time = t
                 break
